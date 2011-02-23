@@ -16,10 +16,10 @@ import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.PositionConstants;
 import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.ExpressionLayout;
-import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
@@ -47,16 +47,20 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
     private void createContent() {
         // normal column
         if (!XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
+            Figure container = new Figure();
+            container.setLayoutManager(new ExpressionLayout());
             columnExpressionFigure = new ExpressionFigure();
             columnExpressionFigure.setText(treeNode.getExpression());
             CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
             columnExpressionFigure.setBorder(compoundBorder);
+            container.add(columnExpressionFigure);
 
             nameLabel = new Label();
             nameLabel.setText(treeNode.getName());
-            nameLabel.setBorder(new RowBorder());
+            nameLabel.setLabelAlignment(PositionConstants.LEFT);
+            nameLabel.setBorder(new RowBorder(2, 18, 2, -1));
 
-            this.add(columnExpressionFigure);
+            this.add(container);
             this.add(nameLabel);
         }
         // xml root
@@ -98,7 +102,7 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
     public void updateNameFigure() {
         if (!XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
             nameLabel.setText(treeNode.getName());
-        } else if (XmlMapUtil.DOCUMENT.equals(treeNode.getType()) && treeNode.eContainer() instanceof InputXmlTree) {
+        } else if (XmlMapUtil.DOCUMENT.equals(treeNode.getType()) && treeNode.eContainer() instanceof OutputXmlTree) {
             ((TreeBranchFigure) treeBranch.getElement()).updataNameFigure();
         }
     }

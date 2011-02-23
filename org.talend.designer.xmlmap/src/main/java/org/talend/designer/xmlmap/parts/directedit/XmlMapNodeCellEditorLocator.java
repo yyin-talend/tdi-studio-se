@@ -37,10 +37,10 @@ public class XmlMapNodeCellEditorLocator implements CellEditorLocator {
         figure.translateToAbsolute(copy);
         if (control instanceof Text) {
             Text text = (Text) control;
-            text.setBounds(copy.x, copy.y, copy.width, copy.height);
+            text.setBounds(copy.x + 1, copy.y + 1, copy.width - 1, copy.height - 1);
         } else {
             Composite text = (Composite) control;
-            text.setBounds(copy.x, copy.y, copy.width, copy.height);
+            text.setBounds(copy.x + 1, copy.y + 1, copy.width - 1, copy.height - 1);
         }
 
     }

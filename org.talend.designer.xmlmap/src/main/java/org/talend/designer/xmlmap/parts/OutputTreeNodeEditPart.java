@@ -23,7 +23,7 @@ import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.figures.OutputTreeNodeFigure;
 import org.talend.designer.xmlmap.figures.TreeBranchFigure;
 import org.talend.designer.xmlmap.figures.XmlTreeBranch;
-import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
+import org.talend.designer.xmlmap.figures.layout.TreeNodeLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -45,7 +45,8 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
         // normal column and tree root
         else {
             figure = new OutputTreeNodeFigure(this);
-            figure.setLayoutManager(new EqualWidthLayout());
+            figure.setLayoutManager(new TreeNodeLayout(findOutputXmlTreePart(this)));
+            // figure.setLayoutManager(new EqualWidthLayout());
         }
         return figure;
     }
@@ -120,6 +121,15 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
             return ((XmlTreeBranch) getFigure()).getContentsPane();
         }
         return super.getContentPane();
+    }
+
+    private OutputXmlTreeEditPart findOutputXmlTreePart(OutputTreeNodeEditPart treeNodePart) {
+        if (treeNodePart.getParent() instanceof OutputXmlTreeEditPart) {
+            return (OutputXmlTreeEditPart) treeNodePart.getParent();
+        } else {
+            return findOutputXmlTreePart((OutputTreeNodeEditPart) treeNodePart.getParent());
+        }
+
     }
 
 }

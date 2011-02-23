@@ -19,11 +19,11 @@ import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.designer.xmlmap.figures.CenterVarFigure;
-import org.talend.designer.xmlmap.image.ImageInfo;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
+import org.talend.designer.xmlmap.ui.resource.ImageInfo;
+import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -32,9 +32,9 @@ public class VarTableEditPart extends BaseEditPart {
 
     private CenterVarFigure centerVarFigure;
 
-    private Image restorImage = ImageProvider.getImage(ImageInfo.RESTORE_ICON);
+    private Image restorImage = ImageProviderMapper.getImage(ImageInfo.RESTORE_ICON);
 
-    private Image miniImage = ImageProvider.getImage(ImageInfo.MINIMIZE_ICON);
+    private Image miniImage = ImageProviderMapper.getImage(ImageInfo.MINIMIZE_ICON);
 
     private static Label minitooltip = new Label("Minimize");
 
@@ -45,7 +45,6 @@ public class VarTableEditPart extends BaseEditPart {
         /* Center var figure */
         VarTable model = (VarTable) getModel();
         centerVarFigure = new CenterVarFigure(model);
-        centerVarFigure.getHeader().getVarText().setText(model.getName());
         return centerVarFigure;
     }
 

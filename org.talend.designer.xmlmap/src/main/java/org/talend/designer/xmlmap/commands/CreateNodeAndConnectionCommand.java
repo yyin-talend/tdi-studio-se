@@ -260,11 +260,12 @@ public class CreateNodeAndConnectionCommand extends Command {
                             Connection conn = XmlmapFactory.eINSTANCE.createConnection();
                             conn.setSource(sourceNode);
                             conn.setTarget(targetOutputNode);
-                            targetOutputNode.getIncomingConnections().add(conn);
-                            sourceNode.getOutgoingConnections().add(conn);
                             if (xmlMapData != null) {
                                 xmlMapData.getConnections().add(conn);
                             }
+                            targetOutputNode.getIncomingConnections().add(conn);
+                            sourceNode.getOutgoingConnections().add(conn);
+
                         } else {
                             // add target node
                             OutputTreeNode targetNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();

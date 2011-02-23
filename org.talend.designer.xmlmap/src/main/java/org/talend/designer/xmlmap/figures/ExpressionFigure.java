@@ -32,7 +32,7 @@ public class ExpressionFigure extends Label implements IExpressionBuilderCell {
 
     public ExpressionFigure() {
         setBorder(new CompoundBorder(new RowBorder(), new ColumnBorder()));
-        setTextAlignment(PositionConstants.LEFT);
+        setLabelAlignment(PositionConstants.LEFT);
     }
 
     public XmlTreeBranch getTreeBranch() {

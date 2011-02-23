@@ -29,7 +29,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
-import org.talend.designer.xmlmap.ui.color.ColorProviderMapper;
+import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
+import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.ui.tabs.TabFolderEditors;
 import org.talend.designer.xmlmap.ui.tabs.table.TreeSchemaTableEntry;
@@ -134,6 +135,7 @@ public class MapperUI {
 
             public void widgetDisposed(DisposeEvent e) {
                 ColorProviderMapper.releaseColors();
+                FontProviderMapper.releaseFonts();
             }
 
         });

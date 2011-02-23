@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.xmlmap.ui.color;
+package org.talend.designer.xmlmap.ui.resource;
 
 import java.util.Collection;
 import java.util.HashMap;

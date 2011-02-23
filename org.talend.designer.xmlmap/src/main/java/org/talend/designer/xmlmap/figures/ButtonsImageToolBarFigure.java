@@ -22,11 +22,12 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.designer.xmlmap.image.ImageInfo;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.ui.resource.ImageInfo;
+import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -40,9 +41,9 @@ public class ButtonsImageToolBarFigure extends Figure {
 
     private VarTable parentTable;
 
-    private Image restorImage = ImageProvider.getImage(ImageInfo.RESTORE_ICON);
+    private Image restorImage = ImageProviderMapper.getImage(ImageInfo.RESTORE_ICON);
 
-    private Image miniImage = ImageProvider.getImage(ImageInfo.MINIMIZE_ICON);
+    private Image miniImage = ImageProviderMapper.getImage(ImageInfo.MINIMIZE_ICON);
 
     private static Label minitooltip = new Label("Minimize");
 

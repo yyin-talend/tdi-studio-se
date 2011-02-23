@@ -15,17 +15,14 @@ package org.talend.designer.xmlmap.figures;
 import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.MarginBorder;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
-import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
-import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 
@@ -73,35 +70,7 @@ public class VarTableContainerFigure extends Figure {
             }
 
         });
-        Font cFont = new Font(null, "Arial", 10, SWT.BOLD);
-        columnTitle = new ToolBarContainer();
-        columnTitle.setOpaque(true);
-        // columnTitle.setBackgroundColor(ColorConstants.tooltipBackground);
-        // columnTitle.setBorder(new LineBorder());
-        columnTitle.setLayoutManager(new EqualWidthLayout());
-        Label expression = new Label();
-        expression.setOpaque(true);
-        expression.setBackgroundColor(ColorConstants.menuBackground);
-        expression.setText("Expression");
-        CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
-        expression.setBorder(compoundBorder);
-        expression.setFont(cFont);
-        Label type = new Label();
-        type.setOpaque(true);
-        type.setBackgroundColor(ColorConstants.menuBackground);
-        type.setText("Type");
-        type.setFont(cFont);
-        compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
-        type.setBorder(compoundBorder);
-        Label varriable = new Label();
-        varriable.setText("Varriable");
-        varriable.setOpaque(true);
-        varriable.setBackgroundColor(ColorConstants.menuBackground);
-        varriable.setFont(cFont);
-        varriable.setBorder(new RowBorder());
-        columnTitle.add(expression);
-        columnTitle.add(type);
-        columnTitle.add(varriable);
+        columnTitle = new ColumnTitleFigure();
         ToolbarLayout containerLayout = new ToolbarLayout();
         containerLayout.setVertical(true);
         columnsContainer = new Figure();
@@ -117,5 +86,35 @@ public class VarTableContainerFigure extends Figure {
 
     public Figure getColumnsContainer() {
         return this.columnsContainer;
+    }
+
+    class ColumnTitleFigure extends ToolBarContainer {
+
+        public ColumnTitleFigure() {
+
+            Label expression = new Label();
+            expression.setText("Expression");
+            expression.setBorder(new MarginBorder(3, 10, 3, -1));
+            expression.setLabelAlignment(PositionConstants.LEFT);
+            this.add(expression);
+
+            Label column1 = new Label();
+            column1.setText("Type");
+            column1.setBorder(new MarginBorder(3, 10, 3, -1));
+            column1.setLabelAlignment(PositionConstants.LEFT);
+            this.add(column1);
+
+            Label varriable = new Label();
+            varriable.setText("Varriable");
+            varriable.setBorder(new MarginBorder(3, 10, 3, -1));
+            varriable.setLabelAlignment(PositionConstants.LEFT);
+            this.add(varriable);
+
+            this.setLayoutManager(new EqualWidthLayout());
+
+            setBackgroundColor(ColorConstants.menuBackground);
+            setOpaque(true);
+        }
+
     }
 }

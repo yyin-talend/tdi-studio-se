@@ -37,7 +37,7 @@ public class ExpressionLayout extends AbstractLayout {
 
         if (children.size() == 1) {
             child = (IFigure) children.get(0);
-            Rectangle newBounds = new Rectangle(cX, cY, clientArea.width, clientArea.width);
+            Rectangle newBounds = new Rectangle(cX, cY, clientArea.width, clientArea.height);
             child.setBounds(newBounds);
 
         } else {
@@ -50,10 +50,12 @@ public class ExpressionLayout extends AbstractLayout {
                     TreeBranch treeBranch = expressionChild.getTreeBranch();
                     if (treeBranch != null) {
                         IFigure element = treeBranch.getElement();
-                        height = element.getBounds().height + treeBranch.getRoot().getMajorSpacing();
-                        Rectangle newBounds = new Rectangle(cX, y, clientArea.width, height);
-                        child.setBounds(newBounds);
-                        y = newBounds.bottom();
+                        if (treeBranch.getRoot() != null) {
+                            height = element.getBounds().height + treeBranch.getRoot().getMajorSpacing();
+                            Rectangle newBounds = new Rectangle(cX, y, clientArea.width, height);
+                            child.setBounds(newBounds);
+                            y = newBounds.bottom();
+                        }
 
                     }
 
@@ -90,14 +92,14 @@ public class ExpressionLayout extends AbstractLayout {
     protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {
 
         // no use ,need modify later
-        List children = container.getChildren();
-        Dimension childSize;
-        IFigure child;
+        // List children = container.getChildren();
+        // Dimension childSize;
+        // IFigure child;
         int height = 0, width = 0;
-        for (int i = 0; i < children.size(); i++) {
-            child = (IFigure) children.get(i);
-
-        }
+        // for (int i = 0; i < children.size(); i++) {
+        // child = (IFigure) children.get(i);
+        //
+        // }
         return new Dimension(width, height);
     }
 

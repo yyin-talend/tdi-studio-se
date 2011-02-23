@@ -36,6 +36,7 @@ import org.talend.designer.xmlmap.editor.actions.CreateAttributeAction;
 import org.talend.designer.xmlmap.editor.actions.CreateElementAction;
 import org.talend.designer.xmlmap.editor.actions.DeleteTreeNodeAction;
 import org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml;
+import org.talend.designer.xmlmap.editor.actions.OutputImportTreeFromXml;
 import org.talend.designer.xmlmap.editor.actions.SetGroupAction;
 import org.talend.designer.xmlmap.editor.actions.SetLoopAction;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -83,6 +84,13 @@ public class XmlMapEditor extends GraphicalEditor {
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#createActions()
      */
     protected void createActions() {
+
+        OutputImportTreeFromXml outputImportAction = new OutputImportTreeFromXml(this, getGraphicalViewer().getControl()
+                .getShell());
+        outputImportAction.setMapperManager(mapperManager);
+        getActionRegistry().registerAction(outputImportAction);
+        getSelectionActions().add(outputImportAction.getId());
+
         ImportTreeFromXml importAction = new ImportTreeFromXml(this, getGraphicalViewer().getControl().getShell());
         importAction.setMapperManager(mapperManager);
         getActionRegistry().registerAction(importAction);
@@ -216,7 +224,12 @@ public class XmlMapEditor extends GraphicalEditor {
             if (selectedEditParts != null && !selectedEditParts.isEmpty()) {
                 if (selectedEditParts.get(0) instanceof OutputTreeNodeEditPart) {
                     OutputTreeNode model = (OutputTreeNode) ((OutputTreeNodeEditPart) selectedEditParts.get(0)).getModel();
-                    if (XmlMapUtil.getXPathLength(model.getXpath()) > 2) {
+                    if (XmlMapUtil.DOCUMENT.equals(model.getType()) || XmlMapUtil.getXPathLength(model.getXpath()) > 2) {
+                        OutputImportTreeFromXml importAction = (OutputImportTreeFromXml) getActionRegistry().getAction(
+                                OutputImportTreeFromXml.ID);
+                        importAction.update();
+                        menu.add(importAction);
+
                         CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(
                                 CreateElementAction.ID);
                         createElement.update();

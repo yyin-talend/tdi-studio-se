@@ -281,6 +281,7 @@ public class XmlMapUtil {
                 mapData.getConnections().remove(connection);
             }
         }
+        treeNode.getOutgoingConnections().clear();
 
         // TreeNode detach children's connections
         if (treeNode instanceof TreeNode) {
@@ -299,6 +300,7 @@ public class XmlMapUtil {
     }
 
     public static void detachConnectionsSouce(AbstractNode treeNode, XmlMapData mapData, boolean detachChildren) {
+        treeNode.setExpression("");
         for (Connection connection : treeNode.getIncomingConnections()) {
             AbstractNode source = connection.getSource();
             if (source.getOutgoingConnections().contains(connection)) {
@@ -306,6 +308,8 @@ public class XmlMapUtil {
                 mapData.getConnections().remove(connection);
             }
         }
+        treeNode.getIncomingConnections().clear();
+
         if (treeNode instanceof OutputTreeNode) {
             OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
             if (detachChildren && !outputTreeNode.getChildren().isEmpty()) {
@@ -327,6 +331,7 @@ public class XmlMapUtil {
                 }
             }
         }
+        treeNode.getLookupOutgoingConnections().clear();
     }
 
     public static void detachLookupSource(TreeNode treeNode, XmlMapData mapData) {
@@ -337,6 +342,7 @@ public class XmlMapUtil {
                 mapData.getConnections().remove(connection);
             }
         }
+        treeNode.getLookupIncomingConnections().clear();
     }
 
     public static void findParentsForLoopNode(TreeNode loopNode, List list) {

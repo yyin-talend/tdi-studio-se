@@ -16,6 +16,7 @@ import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
@@ -78,7 +79,8 @@ public class TreeNodeFigure extends ToolBarContainer {
 
             nameLabel = new Label();
             nameLabel.setText(treeNode.getName());
-            nameLabel.setBorder(new RowBorder());
+            nameLabel.setLabelAlignment(PositionConstants.LEFT);
+            nameLabel.setBorder(new RowBorder(2, 18, 2, -1));
             this.add(nameLabel);
         }
         // xml root

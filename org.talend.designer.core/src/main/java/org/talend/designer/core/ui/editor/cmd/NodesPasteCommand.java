@@ -22,6 +22,7 @@ import java.util.Set;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
@@ -431,6 +432,10 @@ public class NodesPasteCommand extends Command {
                         }
                         ((Node) pastedNode).setExternalData(externalNode.getExternalData());
                     }
+                    if (copiedNode.getExternalNode().getExternalEmfData() != null) {
+                        externalNode.setExternalEmfData(EcoreUtil.copy(copiedNode.getExternalNode().getExternalEmfData()));
+                    }
+
                     for (IMetadataTable metaTable : copiedNode.getMetadataList()) {
                         String oldName = metaTable.getTableName();
                         String newName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":" + metaTable.getTableName()); //$NON-NLS-1$

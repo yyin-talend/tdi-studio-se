@@ -17,14 +17,17 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.MarginBorder;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
-import org.talend.designer.xmlmap.ui.color.ColorInfo;
-import org.talend.designer.xmlmap.ui.color.ColorProviderMapper;
+import org.talend.designer.xmlmap.ui.resource.ColorInfo;
+import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
+import org.talend.designer.xmlmap.ui.resource.FontInfo;
+import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
 
 /**
  * wchen class global comment. Detailled comment
@@ -47,8 +50,10 @@ public class OutputXmlTreeFigure extends GenericFigure {
         this.setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
         Label tableName = new Label();
         tableName.setText(xmlTree.getName());
-        Font erFont = new Font(null, "Arial", 9, SWT.BOLD); //$NON-NLS-1$
+        Font erFont = FontProviderMapper.getFont(FontInfo.FONT_SYSTEM_BOLD);
         tableName.setFont(erFont);
+        tableName.setLabelAlignment(PositionConstants.LEFT);
+        tableName.setBorder(new MarginBorder(5, 10, 5, -1));
         tableName.setOpaque(true);
         tableName.setBackgroundColor(ColorConstants.yellow);
         this.add(tableName);
@@ -81,13 +86,14 @@ public class OutputXmlTreeFigure extends GenericFigure {
 
             Label expression = new Label();
             expression.setText("Expression");
-            Font cFont = new Font(null, "Arial", 10, SWT.BOLD);
-            expression.setFont(cFont);
+            expression.setBorder(new MarginBorder(3, 10, 3, -1));
+            expression.setLabelAlignment(PositionConstants.LEFT);
             this.add(expression);
 
             Label column1 = new Label();
             column1.setText("Column");
-            column1.setFont(cFont);
+            column1.setBorder(new MarginBorder(3, 10, 3, -1));
+            column1.setLabelAlignment(PositionConstants.LEFT);
             this.add(column1);
             this.setLayoutManager(new EqualWidthLayout());
 

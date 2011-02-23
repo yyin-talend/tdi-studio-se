@@ -31,8 +31,8 @@ import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.TreeContainerLayout;
 import org.talend.designer.xmlmap.figures.layout.XmlMapDataLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
-import org.talend.designer.xmlmap.ui.color.ColorInfo;
-import org.talend.designer.xmlmap.ui.color.ColorProviderMapper;
+import org.talend.designer.xmlmap.ui.resource.ColorInfo;
+import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 
 /**
  * wchen class global comment. Detailled comment
@@ -52,7 +52,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
         EqualWidthLayout manager = new EqualWidthLayout();
         manager.setUseParentHeight(true);
         // mainFigure.setLayoutManager(manager);
-        XmlMapDataLayout manager2 = new XmlMapDataLayout();
+        XmlMapDataLayout manager2 = new XmlMapDataLayout(this);
         mainFigure.setLayoutManager(manager2);
 
         // input
@@ -60,7 +60,8 @@ public class XmlMapDataEditPart extends BaseEditPart {
         scrollPane.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
         leftFigure = new RectangleFigure();
         leftFigure.setBorder(new LineBorder(ColorConstants.darkBlue));
-        ToolbarLayout subManager = new TreeContainerLayout(mainFigure, manager2);
+        // ToolbarLayout subManager = new ToolbarLayout();
+        ToolbarLayout subManager = new TreeContainerLayout();
         subManager.setSpacing(20);
         subManager.setVertical(true);
         leftFigure.setLayoutManager(subManager);
@@ -89,7 +90,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
         rightFigure.setBorder(new LineBorder(ColorConstants.darkBlue));
 
         // subManager = new ToolbarLayout();
-        subManager = new TreeContainerLayout(mainFigure, manager2);
+        subManager = new TreeContainerLayout();
 
         subManager.setSpacing(20);
         subManager.setVertical(true);

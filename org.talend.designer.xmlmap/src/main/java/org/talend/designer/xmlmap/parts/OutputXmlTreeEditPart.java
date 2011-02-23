@@ -52,6 +52,7 @@ public class OutputXmlTreeEditPart extends BaseEditPart {
         switch (type) {
         case Notification.ADD:
         case Notification.REMOVE:
+        case Notification.REMOVE_MANY:
             switch (featureId) {
             case XmlmapPackage.OUTPUT_XML_TREE__NODES:
                 refreshChildren();

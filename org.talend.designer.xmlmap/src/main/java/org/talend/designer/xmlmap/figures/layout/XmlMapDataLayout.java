@@ -15,13 +15,19 @@ package org.talend.designer.xmlmap.figures.layout;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
 /**
  * wchen class global comment. Detailled comment
  */
 public class XmlMapDataLayout extends EqualWidthLayout {
+
+    AbstractGraphicalEditPart editPart;
+
+    public XmlMapDataLayout(AbstractGraphicalEditPart editPart) {
+        this.editPart = editPart;
+    }
 
     private int devideWidth;
 
@@ -33,28 +39,17 @@ public class XmlMapDataLayout extends EqualWidthLayout {
     public void layout(IFigure parent) {
         List children = parent.getChildren();
         int numChildren = children.size();
-        Viewport viewPort = getViewPort(parent);
-        Rectangle clientArea = viewPort.getClientArea();
-        devideWidth = (clientArea.width - (numChildren - 1) * spacing) / numChildren;
+        org.eclipse.swt.graphics.Point avilableSize = editPart.getViewer().getControl().getSize();
+        devideWidth = (avilableSize.x - (numChildren - 1) * spacing) / numChildren;
+        Rectangle clientArea = parent.getClientArea();
         int x = clientArea.x;
+        int y = clientArea.y;
         for (int i = 0; i < numChildren; i++) {
             IFigure child = (IFigure) children.get(i);
-            Rectangle newBounds = new Rectangle(x, clientArea.y, devideWidth, clientArea.height);
+            Rectangle newBounds = new Rectangle(x, y, devideWidth, avilableSize.y);
             child.setBounds(newBounds);
             x = x + devideWidth;
         }
-    }
-
-    public Viewport getViewPort(IFigure figure) {
-        if (figure.getParent() instanceof Viewport) {
-            return (Viewport) figure.getParent();
-        } else {
-            return getViewPort(figure.getParent());
-        }
-    }
-
-    public int getDevideWidth() {
-        return this.devideWidth;
     }
 
 }

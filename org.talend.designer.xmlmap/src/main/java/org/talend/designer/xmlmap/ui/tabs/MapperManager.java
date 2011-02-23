@@ -359,7 +359,6 @@ public class MapperManager implements ISelectionChangedListener {
                             if (event.index < oldSelectedOut.getNodes().size()) {
                                 TreeNode treeNode = oldSelectedOut.getNodes().get(event.index);
                                 if (treeNode != null) {
-                                    String oldType = treeNode.getType();
 
                                     XmlMapUtil.detachConnectionsSouce(treeNode, copyOfMapData);
                                     treeNode.getChildren().clear();

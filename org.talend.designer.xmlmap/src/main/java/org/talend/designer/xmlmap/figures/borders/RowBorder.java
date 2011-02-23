@@ -12,21 +12,36 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.borders;
 
-import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.geometry.Insets;
+import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class RowBorder extends AbstractBorder {
+public class RowBorder extends MarginBorder {
 
-    public Insets getInsets(IFigure figure) {
-        return new Insets(1, 0, 0, 0);
+    public RowBorder(Insets insets) {
+        super(insets);
+    }
+
+    public RowBorder(int t, int l, int b, int r) {
+        super(t, l, b, r);
+    }
+
+    public RowBorder() {
+        super(new Insets(1, 0, 0, 0));
     }
 
     public void paint(IFigure figure, Graphics graphics, Insets insets) {
-        graphics.drawLine(getPaintRectangle(figure, insets).getTopLeft(), tempRect.getTopRight());
+        graphics.drawLine(getRectangleToPaint(figure).getTopLeft(), tempRect.getTopRight());
     }
+
+    public Rectangle getRectangleToPaint(IFigure figure) {
+        tempRect.setBounds(figure.getBounds());
+        return tempRect;
+    }
+
 }
