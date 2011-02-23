@@ -85,11 +85,11 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryPreferenceStore;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.dialog.StatusConfirmSettingDialog;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
@@ -560,8 +560,8 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
             preferenceStore.load();
         } catch (PersistenceException e) {
             String detailError = e.getMessage();
-            new ErrorDialogWidthDetailArea(new Shell(), RepositoryPlugin.PLUGIN_ID, Messages
-                    .getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
+            new ErrorDialogWidthDetailArea(new Shell(), RepositoryPlugin.PLUGIN_ID,
+                    Messages.getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
         }
         return preferenceStore;
     }
@@ -694,117 +694,123 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                 continue;
             }
             TableItem tableItem = null;
-            if (!object.getRepositoryNode().getObjectType().equals(ERepositoryObjectType.JOB_DOC)) {
-                if (isDocumentStatus()) {
-                    ERepositoryObjectType type = object.getRepositoryNode().getContentType();
-                    if (type.equals(ERepositoryObjectType.DOCUMENTATION) || type.equals(ERepositoryObjectType.BUSINESS_PROCESS)) {
-                        itemTable.setRedraw(false);
-                        tableItem = new TableItem(itemTable, SWT.NONE);
-                    }
-                } else if (isTechinalStatus()) {
+
+            // for bug 17692
+            ERepositoryObjectType objectType = object.getRepositoryNode().getObjectType();
+            if (!objectType.equals(ERepositoryObjectType.JOB_DOC) && !objectType.equals(ERepositoryObjectType.JOBLET_DOC)) {
+                if (isTechinalStatus()) {
                     ERepositoryObjectType type = object.getRepositoryNode().getContentType();
                     if (!type.equals(ERepositoryObjectType.DOCUMENTATION) && !type.equals(ERepositoryObjectType.BUSINESS_PROCESS)
                             && !type.equals(ERepositoryObjectType.JOBLETS)) {
                         itemTable.setRedraw(false);
                         tableItem = new TableItem(itemTable, SWT.NONE);
                     }
-                } else {
-                    itemTable.setRedraw(false);
-                    tableItem = new TableItem(itemTable, SWT.NONE);
                 }
-
-                if (tableItem != null) {
-                    tableItem.setData(object);
-                    try {
-                        statusHelper.getStatusList(object.getProperty());
-                    } catch (PersistenceException e1) {
-                        // TODO Auto-generated catch block
+                // else {
+                // itemTable.setRedraw(false);
+                // tableItem = new TableItem(itemTable, SWT.NONE);
+                // }
+            } else {
+                if (isDocumentStatus()) {
+                    ERepositoryObjectType type = object.getRepositoryNode().getContentType();
+                    if (type.equals(ERepositoryObjectType.JOBS) || type.equals(ERepositoryObjectType.JOBLETS)) {
+                        itemTable.setRedraw(false);
+                        tableItem = new TableItem(itemTable, SWT.NONE);
                     }
-                    object.getProperty().setOldStatusCode(statusHelper.getStatusCode(object.getStatusCode()));
-                    ERepositoryObjectType itemType = object.getRepositoryObjectType();
-                    tableItem.setImage(getItemsImage(CoreImageProvider.getIcon(itemType)));
-                    tableItem.setText(object.getLabel());
-                    // old version
-                    tableItem.setText(1, statusHelper.getStatusLabel(object.getStatusCode()));
-
-                    TableEditor versionEditor = null;
-
-                    if (isFixedstatus()) {
-                        String version = statusCombo.getText();
-                        tableItem.setText(2, version);
-
-                        if (!object.getProperty().getOldStatusCode().equals(statusHelper.getStatusCode(version))) {
-                            tableItem.setForeground(2, redColor);
-                        } else {
-                            tableItem.setForeground(2, Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
-                        }
-                    } else {
-                        // new version
-                        versionEditor = new TableEditor(itemTable);
-                        Composite versionComposit = new Composite(itemTable, SWT.NONE);
-                        GridLayout layout = new GridLayout(3, false);
-                        layout.horizontalSpacing = 1;
-                        layout.verticalSpacing = 0;
-                        layout.marginHeight = 0;
-                        layout.marginWidth = 0;
-                        versionComposit.setLayout(layout);
-
-                        final CCombo statusItemCombo = new CCombo(versionComposit, SWT.BORDER | SWT.READ_ONLY);
-                        GridData data = new GridData(GridData.FILL_HORIZONTAL);
-                        statusItemCombo.setLayoutData(data);
-                        statusItemCombo.setEditable(false);
-                        ERepositoryObjectType type = object.getRepositoryNode().getContentType();
-                        if (!type.equals(ERepositoryObjectType.DOCUMENTATION)
-                                && !type.equals(ERepositoryObjectType.BUSINESS_PROCESS)) {
-                            statusItemCombo.setItems(toArray(technicalStatusList));
-                            statusItemCombo.select(0);
-                            if (!object.getProperty().getOldStatusCode().equals("DEV")) {
-                                statusItemCombo.setForeground(redColor);
-                            } else {
-                                statusItemCombo.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
-                            }
-                        } else {
-                            statusItemCombo.setItems(toArray(documentStatusList));
-                            statusItemCombo.select(0);
-                            if (!object.getProperty().getOldStatusCode().equals("UCK")) {
-                                statusItemCombo.setForeground(redColor);
-                            } else {
-                                statusItemCombo.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
-                            }
-                        }
-                        statusItemCombo.addSelectionListener(new SelectionAdapter() {
-
-                            public void widgetSelected(SelectionEvent e) {
-                                String version = statusItemCombo.getText();
-                                String status = statusHelper.getStatusCode(version);
-                                if (!status.equals(object.getProperty().getOldStatusCode())) {
-                                    statusItemCombo.setForeground(redColor);
-                                }
-                                object.getProperty().setStatusCode(statusHelper.getStatusCode(version));
-                            }
-                        });
-
-                        versionEditor.minimumWidth = itemTable.getColumn(2).getWidth();
-                        versionEditor.setEditor(versionComposit, tableItem, 2);
-                    }
-                    TableEditor delEditor = new TableEditor(itemTable);
-                    Label delLabel = new Label(itemTable, SWT.CENTER);
-                    delLabel.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
-                    delLabel.setImage(ImageProvider.getImage(EImage.DELETE_ICON));
-                    delLabel.setToolTipText(Messages.getString("VersionManagementDialog.DeletedTip")); //$NON-NLS-1$
-                    delLabel.pack();
-                    addLabelMouseListener(delLabel, object, tableItem);
-                    delEditor.minimumWidth = 25;
-                    delEditor.horizontalAlignment = SWT.CENTER;
-                    delEditor.setEditor(delLabel, tableItem, 3);
-                    if (isFixedstatus()) {
-                        tableItem.setData(ITEM_EDITOR_KEY, new TableEditor[] { delEditor });
-                    } else if (versionEditor != null) {
-                        tableItem.setData(ITEM_EDITOR_KEY, new TableEditor[] { versionEditor, delEditor });
-                    }
-                    itemTable.setRedraw(true);
                 }
             }
+
+            if (tableItem != null) {
+                tableItem.setData(object);
+                try {
+                    statusHelper.getStatusList(object.getProperty());
+                } catch (PersistenceException e1) {
+                    // TODO Auto-generated catch block
+                }
+                object.getProperty().setOldStatusCode(statusHelper.getStatusCode(object.getStatusCode()));
+                ERepositoryObjectType itemType = object.getRepositoryObjectType();
+                tableItem.setImage(getItemsImage(CoreImageProvider.getIcon(itemType)));
+                tableItem.setText(object.getLabel());
+                // old version
+                tableItem.setText(1, statusHelper.getStatusLabel(object.getStatusCode()));
+
+                TableEditor versionEditor = null;
+
+                if (isFixedstatus()) {
+                    String version = statusCombo.getText();
+                    tableItem.setText(2, version);
+
+                    if (!object.getProperty().getOldStatusCode().equals(statusHelper.getStatusCode(version))) {
+                        tableItem.setForeground(2, redColor);
+                    } else {
+                        tableItem.setForeground(2, Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
+                    }
+                } else {
+                    // new version
+                    versionEditor = new TableEditor(itemTable);
+                    Composite versionComposit = new Composite(itemTable, SWT.NONE);
+                    GridLayout layout = new GridLayout(3, false);
+                    layout.horizontalSpacing = 1;
+                    layout.verticalSpacing = 0;
+                    layout.marginHeight = 0;
+                    layout.marginWidth = 0;
+                    versionComposit.setLayout(layout);
+
+                    final CCombo statusItemCombo = new CCombo(versionComposit, SWT.BORDER | SWT.READ_ONLY);
+                    GridData data = new GridData(GridData.FILL_HORIZONTAL);
+                    statusItemCombo.setLayoutData(data);
+                    statusItemCombo.setEditable(false);
+                    ERepositoryObjectType type = object.getRepositoryNode().getContentType();
+                    if (!type.equals(ERepositoryObjectType.DOCUMENTATION) && !type.equals(ERepositoryObjectType.BUSINESS_PROCESS)) {
+                        statusItemCombo.setItems(toArray(technicalStatusList));
+                        statusItemCombo.select(0);
+                        if (!object.getProperty().getOldStatusCode().equals("DEV")) {
+                            statusItemCombo.setForeground(redColor);
+                        } else {
+                            statusItemCombo.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
+                        }
+                    } else {
+                        statusItemCombo.setItems(toArray(documentStatusList));
+                        statusItemCombo.select(0);
+                        if (!object.getProperty().getOldStatusCode().equals("UCK")) {
+                            statusItemCombo.setForeground(redColor);
+                        } else {
+                            statusItemCombo.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
+                        }
+                    }
+                    statusItemCombo.addSelectionListener(new SelectionAdapter() {
+
+                        public void widgetSelected(SelectionEvent e) {
+                            String version = statusItemCombo.getText();
+                            String status = statusHelper.getStatusCode(version);
+                            if (!status.equals(object.getProperty().getOldStatusCode())) {
+                                statusItemCombo.setForeground(redColor);
+                            }
+                            object.getProperty().setStatusCode(statusHelper.getStatusCode(version));
+                        }
+                    });
+
+                    versionEditor.minimumWidth = itemTable.getColumn(2).getWidth();
+                    versionEditor.setEditor(versionComposit, tableItem, 2);
+                }
+                TableEditor delEditor = new TableEditor(itemTable);
+                Label delLabel = new Label(itemTable, SWT.CENTER);
+                delLabel.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
+                delLabel.setImage(ImageProvider.getImage(EImage.DELETE_ICON));
+                delLabel.setToolTipText(Messages.getString("VersionManagementDialog.DeletedTip")); //$NON-NLS-1$
+                delLabel.pack();
+                addLabelMouseListener(delLabel, object, tableItem);
+                delEditor.minimumWidth = 25;
+                delEditor.horizontalAlignment = SWT.CENTER;
+                delEditor.setEditor(delLabel, tableItem, 3);
+                if (isFixedstatus()) {
+                    tableItem.setData(ITEM_EDITOR_KEY, new TableEditor[] { delEditor });
+                } else if (versionEditor != null) {
+                    tableItem.setData(ITEM_EDITOR_KEY, new TableEditor[] { versionEditor, delEditor });
+                }
+                itemTable.setRedraw(true);
+            }
+
         }
     }
 
