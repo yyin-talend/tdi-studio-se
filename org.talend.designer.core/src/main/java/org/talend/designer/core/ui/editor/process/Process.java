@@ -3404,10 +3404,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             }
-        } else {
-            ProcessType process = this.getProcessType();
-            process.getParameters().getRoutinesParameter().addAll(parameters.getRoutinesParameter());
         }
+        // else {
+        // ProcessType process = this.getProcessType();
+        // process.getParameters().getRoutinesParameter().addAll(parameters.getRoutinesParameter());
+        // }
 
     }
 
