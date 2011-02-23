@@ -130,9 +130,9 @@ public class StatsAndLogsConstants {
 
     public static final String[] ACCESS_VERSION_DRIVER = new String[] { "ACCESS_2003", "ACCESS_2007" }; //$NON-NLS-1$ //$NON-NLS-1$
 
-    public static final String[] AS400_VERSION_DISPLAY = new String[] { "V5R3 to V6R1", "V5R2 to V5R4" }; //$NON-NLS-1$ //$NON-NLS-2$
+    public static final String[] AS400_VERSION_DISPLAY = new String[] { "V5R4 to V6R1", "V5R2 to V5R4" }; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-2$
 
-    public static final String[] AS400_VERSION_CODE = new String[] { "AS400_V5R3_V6R1", "AS400_V5R2_V5R4" }; //$NON-NLS-1$ //$NON-NLS-2$ 
+    public static final String[] AS400_VERSION_CODE = new String[] { "AS400_V5R4_V6R1", "AS400_V5R2_V5R4" }; //$NON-NLS-1$ //$NON-NLS-2$ 
 
     public static final String[] AS400_VERSION_DRIVER = new String[] { "jt400_V5R3.jar", "jt400_V5R2.jar" }; //$NON-NLS-1$ //$NON-NLS-1$
 
