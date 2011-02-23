@@ -269,17 +269,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					}
 				  } else{
 				    temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
-				    if(cell_<%=cid%>.getType() == jxl.CellType.NUMBER) {
-						String content = cell_<%=cid%>.getContents();
-						if(content!=null && content.indexOf(".")!=-1) {
-							jxl.NumberCell nc = (jxl.NumberCell)cell_<%=cid%>;
-							String literal = String.valueOf(nc.getValue());
-							if(literal!=null && (literal.indexOf("E")!=-1)) {
-								literal = df.format(nc.getValue());
-							}
-							temp_row_<%=cid%>[i] = literal;
-						}
-					}
 				  }
 					
 				}else{
