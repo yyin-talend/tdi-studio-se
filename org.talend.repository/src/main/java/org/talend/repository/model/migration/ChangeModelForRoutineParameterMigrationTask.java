@@ -114,4 +114,9 @@ public class ChangeModelForRoutineParameterMigrationTask extends AbstractJobMigr
         return gc.getTime();
     }
 
+    @Override
+    public boolean isDeprecated() {
+        return true;
+    }
+
 }
