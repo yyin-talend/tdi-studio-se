@@ -29,13 +29,14 @@ if (null != metadatas && 0 < metadatas.size()) {
 				for (int i = 0; i < sizeColumns; i++) {
 					IMetadataColumn column = columns.get(i);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					if ("payload".equals(column.getLabel())) {
 %>
 	Document esbProviderResponseDoc_<%=cid%> = <%=conn.getName()%>.<%=column.getLabel()%>; 
-	System.out.println("--- [tESBProviderResponse] request put to response: " + esbProviderResponseDoc_<%=cid%>);
 	((QueuedExchangeContextImpl<org.dom4j.Document>) globalMap.get(uuid))
 		.serveOutputMessage(esbProviderResponseDoc_<%=cid%>.getDocument());
 <%
-					break; // TODO: ??? mutli-columns handling
+						break;
+					}
 				}
 			}
 		}
