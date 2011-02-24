@@ -95,6 +95,8 @@ public class NodeContainer extends Element {
 
     private Rectangle errorMarkRectangle;
 
+    private Rectangle errorRectangle;
+
     protected Set<IConnection> outputs = new HashSet<IConnection>();
 
     protected Set<IConnection> inputs = new HashSet<IConnection>();
@@ -180,6 +182,7 @@ public class NodeContainer extends Element {
         errorLocation.x = nodeLocation.x + nodeSize.width;
         errorLocation.y = nodeLocation.y - errorSize.height;
         errorRectangle = new Rectangle(errorLocation, errorSize);
+        this.errorRectangle = errorRectangle;
         statusRectangle.union(errorRectangle);
 
         warningLocation.x = nodeLocation.x + nodeSize.width;
@@ -227,6 +230,7 @@ public class NodeContainer extends Element {
         errorLocation.x = nodeLocation.x + nodeSize.width;
         errorLocation.y = nodeLocation.y - errorSize.height;
         errorRectangle = new Rectangle(errorLocation, errorSize);
+        this.errorRectangle = errorRectangle;
         statusRectangle.union(errorRectangle);
 
         warningLocation.x = nodeLocation.x + nodeSize.width;
@@ -537,5 +541,9 @@ public class NodeContainer extends Element {
             }
         }
         outputs.add(conn);
+    }
+
+    public Rectangle getErrorRectangle() {
+        return this.errorRectangle;
     }
 }

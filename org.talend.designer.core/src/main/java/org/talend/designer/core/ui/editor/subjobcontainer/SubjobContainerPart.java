@@ -40,13 +40,23 @@ import org.eclipse.gef.requests.SelectionRequest;
 import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
+import org.talend.core.model.general.ILibrariesService;
+import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.ui.dialog.mergeorder.ErrorMessageDialog;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.NodeSnapToGeometry;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
+import org.talend.librariesmanager.ui.views.ModulesView;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -316,10 +326,57 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
                         dialog.open();
                         break;
                     }
+                } else if (nodeCon.getErrorRectangle() != null && nodeCon.getErrorRectangle().contains(location)) {
+                    Node node = nodeCon.getNode();
+                    showModules(node);
                 }
             }
         }
         super.performRequest(req);
     }
 
+    private void showModules(Node node) {
+        ILibrariesService moduleService = CorePlugin.getDefault().getLibrariesService();
+        if (moduleService == null) {
+            return;
+        }
+        List<Problem> problems = moduleService.getProblems(node, node);
+        List<Problem> mproblems = new ArrayList<Problem>();
+        List<String> modulesName = new ArrayList<String>();
+        String componentName = null;
+        String moduleStr = "Module_";
+        for (Problem pro : problems) {
+            if (pro.getStatus() == ProblemStatus.ERROR && pro.getKey() != null && pro.getKey().startsWith(moduleStr)) {
+                mproblems.add(pro);
+            }
+        }
+        if (mproblems.isEmpty()) {
+            return;
+        }
+        for (Problem pro : mproblems) {
+            if (componentName == null) {
+                componentName = pro.getComponentName();
+            }
+            String key = pro.getKey();
+            if (key.contains(moduleStr)) {
+                int first = key.indexOf(moduleStr);
+                String keydes = key.substring(first + moduleStr.length());
+                modulesName.add(keydes);
+            }
+        }
+
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        final IWorkbenchPage page = window.getActivePage();
+        if (page == null) {
+            return;
+        }
+        try {
+            IViewPart view = page.showView("org.talend.designer.codegen.perlmodule.ModulesView");
+            if (view instanceof ModulesView) {
+                ((ModulesView) view).selectUninstalledItem(componentName, modulesName);
+            }
+        } catch (PartInitException e) {
+            ExceptionHandler.process(e);
+        }
+    }
 }
