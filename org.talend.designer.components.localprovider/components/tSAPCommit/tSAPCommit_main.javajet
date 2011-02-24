@@ -3,6 +3,7 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
 " 
 %>
 
@@ -17,20 +18,56 @@ imports="
     boolean close = ("true").equals(ElementParameterParser.getValue(node,"__CLOSE__"));
 
     String conn = "conn_" + connection;
-%>
-com.sap.mw.jco.JCO.Client client_<%=cid %> = (com.sap.mw.jco.JCO.Client)globalMap.get("<%=conn%>");	
-
-if(client_<%=cid %> != null)
-{
-	com.sap.mw.jco.IRepository repository_<%=cid %> = com.sap.mw.jco.JCO.createRepository("REPOSITORY", client_<%=cid %>);
-
-	com.sap.mw.jco.IFunctionTemplate functionTemplate_<%=cid %> = repository_<%=cid %>.getFunctionTemplate("BAPI_TRANSACTION_COMMIT");
-
-    com.sap.mw.jco.JCO.Function function_<%=cid %> = functionTemplate_<%=cid %>.getFunction();
     
-	client_<%=cid %>.execute(function_<%=cid %>);
+    String version = "SAP2";
+    List<? extends INode> nodes = node.getProcess().getGraphicalNodes();
+    for(INode targetNode : nodes){
+    	if (targetNode.getUniqueName().equals(connection)) {
+	      version = ElementParameterParser.getValue(targetNode, "__SAP_VERSION__");
+	    }
+    }
+%>
+<%if("SAP2".equals(version)){%>
+				
+	com.sap.mw.jco.JCO.Client client_<%=cid %> = (com.sap.mw.jco.JCO.Client)globalMap.get("<%=conn%>");	
 	
-<%  if(close){%>
-    com.sap.mw.jco.JCO.releaseClient(client_<%=cid %>);
-<% }%>
-}
+	if(client_<%=cid %> != null)
+	{
+		com.sap.mw.jco.IRepository repository_<%=cid %> = com.sap.mw.jco.JCO.createRepository("REPOSITORY", client_<%=cid %>);
+	
+		com.sap.mw.jco.IFunctionTemplate functionTemplate_<%=cid %> = repository_<%=cid %>.getFunctionTemplate("BAPI_TRANSACTION_COMMIT");
+	
+	    com.sap.mw.jco.JCO.Function function_<%=cid %> = functionTemplate_<%=cid %>.getFunction();
+	    
+		try{
+			client_<%=cid %>.execute(function_<%=cid %>);
+	    }catch (Exception e_<%=cid%>) {
+			com.sap.mw.jco.JCO.releaseClient(client_<%=cid %>);
+		    throw new RuntimeException(e_<%=cid%>.getMessage());
+		}	
+	
+<%}else if("SAP3".equals(version)){%>
+	com.sap.conn.jco.JCoDestination dest_<%=cid%> = (com.sap.conn.jco.JCoDestination)globalMap.get("conn_<%=connection %>");
+	if(dest_<%=cid%> != null)
+	{
+		com.sap.conn.jco.JCoRepository repository_<%=cid %> = dest_<%=cid%>.getRepository();
+		
+		com.sap.conn.jco.JCoFunctionTemplate functionTemplate_<%=cid %> = repository_<%=cid %>.getFunctionTemplate("BAPI_TRANSACTION_COMMIT");
+		
+		com.sap.conn.jco.JCoFunction function_<%=cid %> = functionTemplate_<%=cid %>.getFunction();
+		
+		try{
+			function_<%=cid %>.execute(dest_<%=cid%>);
+		}catch (Exception e_<%=cid%>) {
+			com.sap.conn.jco.JCoContext.end(dest_<%=cid%>);
+		    throw new RuntimeException(e_<%=cid%>.getMessage());
+		}
+<%}%>
+		<%if(close){%>
+			<%if("SAP2".equals(version)){%>
+		    	com.sap.mw.jco.JCO.releaseClient(client_<%=cid %>);
+		    <%}else if("SAP3".equals(version)){%>
+				com.sap.conn.jco.JCoContext.end(dest_<%=cid%>);
+			<%}%>
+		<%}%>
+	}

@@ -34,10 +34,20 @@
 
 	<PARAMETERS>
 		<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="1">
-		 	<DEFAULT>(To use this component, you need first to add the SAP Java Connector (sapjco.jar) in the Modules view)</DEFAULT>
+		 	<DEFAULT>(To use this component, you need first to add the SAP Java Connector (sapjco.jar or sapjco3.jar) in the Modules view)</DEFAULT>
 		</PARAMETER>
 		
 		<PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true" NUM_ROW="5" REPOSITORY_VALUE="SAP" />
+		
+		<PARAMETER 
+			NAME="SAP_VERSION" 
+			FIELD="CLOSED_LIST" 
+			NUM_ROW="6">
+			<ITEMS DEFAULT="SAP2">
+				<ITEM NAME="SAP2" VALUE="SAP2"/>
+				<ITEM NAME="SAP3" VALUE="SAP3"/>
+			</ITEMS>
+		</PARAMETER>
 		
 		<PARAMETER NAME="SERVERTYPE" FIELD="CLOSED_LIST" NUM_ROW="7" GROUP="CONNECTION" >
       		<ITEMS DEFAULT="APPLICATIONSERVER">
@@ -82,7 +92,9 @@
 
   <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="sapjco-ntintel-2.1.8" MODULE="sapjco.jar" REQUIRED="true" />       
+       <IMPORT NAME="sapjco-ntintel-2.1.8" MODULE="sapjco.jar" REQUIRED="true" />
+       <IMPORT NAME="sapjco-ntintel-3" MODULE="sapjco3.jar" REQUIRED="true" />
+       <IMPORT NAME="talend-sap" MODULE="talend-sap.jar" REQUIRED="true" />       
      </IMPORTS>
   </CODEGENERATION>
 
