@@ -63,35 +63,25 @@ class QueuedExchangeContextImpl<T> {
 	}
 
 	public T getInputMessage() {
-		System.out.println(System.currentTimeMillis() + " -> getInputMessage");
-		T request = input;
-		System.out.println("Recieved message");
-		System.out.println(System.currentTimeMillis() + " <- getInputMessage: ");
-		return request;
+		return input;
 	}
 
 	public void serveOutputMessage(T response) {
-		System.out.println(System.currentTimeMillis() + " -> serveOutputMessage");
-		this.output = response;
-		System.out.println(System.currentTimeMillis() + " <- serveOutputMessage");
+		output = response;
 	}
 
 	public void serveBusinessFault(String faultMessage, T faultDetails) {
-		System.out.println(System.currentTimeMillis() + " -> serveBusinessFault");
 		this.faultMessage =
 			(null == faultMessage || 0 == faultMessage.trim().length())
-				? "talend job business fault" : faultMessage;
+				? "Talend job business fault" : faultMessage;
 		this.faultDetails = faultDetails;
-		System.out.println(System.currentTimeMillis() + " <- serveBusinessFault");
 	}
 
 	public void serveFault(String faultMessage, Throwable fault) {
-		System.out.println(System.currentTimeMillis() + " -> serveFault");
 		this.faultMessage =
 			(null == faultMessage || 0 == faultMessage.trim().length())
-				? "talend job error" : faultMessage;
+				? "Talend job error" : faultMessage;
 		this.fault = fault;
-		System.out.println(System.currentTimeMillis() + " <- serveFault");
 	}
 
 	public boolean isFault() {
@@ -194,7 +184,6 @@ class QueuedMessageHandlerImpl<T> {
 @javax.xml.ws.ServiceMode(
 		value = javax.xml.ws.Service.Mode.PAYLOAD
 	)
-//@javax.xml.ws.ServiceMode(value = javax.xml.ws.Service.Mode.MESSAGE)
 @javax.xml.ws.WebServiceProvider()
 class ESBProvider_<%=cid%> implements
 		javax.xml.ws.Provider<javax.xml.transform.Source> {
@@ -229,13 +218,13 @@ class ESBProvider_<%=cid%> implements
 					partName = "request"
 				) javax.xml.transform.Source request) {
 
-		System.out.println(System.currentTimeMillis() + " -> handleMessage");
+		// System.out.println(System.currentTimeMillis() + " -> handleMessage");
 
 		try {
 			org.dom4j.io.DocumentResult docResult = new org.dom4j.io.DocumentResult();
 			factory.newTransformer().transform(request, docResult);
 			org.dom4j.Document requestDoc = docResult.getDocument();
-			System.out.println("request: " + requestDoc.asXML());
+			// System.out.println("request: " + requestDoc.asXML());
 
 			QueuedExchangeContextImpl<org.dom4j.Document> messageExchange =
 				messageHandler.invoke(requestDoc);
@@ -243,7 +232,7 @@ class ESBProvider_<%=cid%> implements
 			try {
 				if (messageExchange.isFault()) {
 					String faultString = messageExchange.getFaultMessage();
-					System.out.println("fault: " + faultString);
+					// System.out.println("fault: " + faultString);
 					
 					if (messageExchange.isBusinessFault()) {
 						org.dom4j.Document faultDoc = messageExchange.getBusinessFaultDetails();
@@ -254,7 +243,7 @@ class ESBProvider_<%=cid%> implements
 							soapFactory.createFault(faultString,
 									new javax.xml.namespace.QName(TNS, "businessFault"));
 						if (null != faultDoc) {
-							System.out.println("business fault details: " + faultDoc.asXML());
+							// System.out.println("business fault details: " + faultDoc.asXML());
 							org.dom4j.io.DOMWriter writer = new org.dom4j.io.DOMWriter();
 							org.w3c.dom.Document faultDetailDom = writer.write(faultDoc);
 							soapFault.addDetail().appendChild(
@@ -264,7 +253,7 @@ class ESBProvider_<%=cid%> implements
 						throw new javax.xml.ws.soap.SOAPFaultException(soapFault);
 					} else {
 						Throwable error = messageExchange.getFault();
-						System.out.println("job error: " + error.getMessage());
+						// System.out.println("job error: " + error.getMessage());
 						if (error instanceof RuntimeException) {
 							throw (RuntimeException) error;
 						} else {
@@ -273,7 +262,7 @@ class ESBProvider_<%=cid%> implements
 					}
 				} else {
 					org.dom4j.Document responseDoc = messageExchange.getResponse();
-					System.out.println("response: " + responseDoc.asXML());
+					// System.out.println("response: " + responseDoc.asXML());
 
 					return new org.dom4j.io.DocumentSource(responseDoc);
 				}
@@ -281,11 +270,13 @@ class ESBProvider_<%=cid%> implements
 				messageExchange.completeQueuedProcessing();
 			}
 
-		} catch (Exception ex) {
+		} catch (RuntimeException ex) {
+			throw ex;
+		} catch (Throwable ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
-			System.out.println(System.currentTimeMillis() + " <- handleMessage");
+			// System.out.println(System.currentTimeMillis() + " <- handleMessage");
 		}
 	}
 }

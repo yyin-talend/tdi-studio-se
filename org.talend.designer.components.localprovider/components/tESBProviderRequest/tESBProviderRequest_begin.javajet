@@ -10,12 +10,8 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 %>
-
-System.out.println("--- [tESBProviderRequest] Initializing the component");
-
 //*** ESB context initialization
-	final String endpointUrl = <%= ElementParameterParser.getValue(node, "__ESB_ENDPOINT__")%>;
-	System.out.println("endpoint url: " + endpointUrl);
+	final String endpointUrl = <%=ElementParameterParser.getValue(node, "__ESB_ENDPOINT__")%>;
 //*** ESB context initialization finish
 
 <%@ include file="tESBProvider.javajet" %> 
@@ -23,19 +19,14 @@ System.out.println("--- [tESBProviderRequest] Initializing the component");
 //*** external processor(s) initialization
 	final QueuedMessageHandlerImpl<org.dom4j.Document> handler =
 		new QueuedMessageHandlerImpl<org.dom4j.Document>();
-	HandlerThread_<%=cid%> handlerThread_<%=cid%> = new HandlerThread_<%=cid%>(handler, this.getClass().getSimpleName());
+	HandlerThread_<%=cid%> handlerThread_<%=cid%> =
+		new HandlerThread_<%=cid%>(handler, this.getClass().getSimpleName());
 	handlerThread_<%=cid%>.start();
 
 	globalMap.put("esbHandler", handler);
 //*** external processor(s) initialization finish
 
-
-String result_<%=cid%> = null;
-//result_<%=cid%> = "uninitialized";
-
-int counter_<%=cid%> = 0;
-
-//globalMap.put("esbResponseMap", new java.util.HashMap<String, Object>(2)); // TODO
+int nb_line_<%=cid%> = 0;
 
 try {
 	QueuedExchangeContextImpl<org.dom4j.Document> messagesExchange_<%=cid%> = null;

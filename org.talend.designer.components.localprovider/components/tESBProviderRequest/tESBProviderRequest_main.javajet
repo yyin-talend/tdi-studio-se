@@ -25,14 +25,11 @@
 						continue;
 					}
 %>
-			System.out.println("--- [tESBProviderRequest] main method part is working");
-
-			System.out.println(" %%% waiting request cycle - begin");
 			QueuedMessageHandlerImpl<org.dom4j.Document> esbHandler_<%=cid%> =
 				(QueuedMessageHandlerImpl<org.dom4j.Document>) globalMap.get("esbHandler");
 			messagesExchange_<%=cid%> = esbHandler_<%=cid%>.fetchNext();
 			globalMap.put(uuid, messagesExchange_<%=cid%>);
-			System.out.println(" %%% waiting request cycle - request is GOT");
+
 			org.dom4j.Document requestMessage_<%=cid%> =
 				messagesExchange_<%=cid%>.getInputMessage();
 

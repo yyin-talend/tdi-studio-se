@@ -9,21 +9,20 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode) codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	String kListen = ElementParameterParser.getValue(node, "__KEEPLISTENING__");
 %>
 		} catch (Throwable e) {
-			messagesExchange_<%=cid%>.serveFault("talend job execution error", e);
+			messagesExchange_<%=cid%>.serveFault("Talend job execution error", e);
 		} finally {
 			messagesExchange_<%=cid%>.release();
-            // clear for next cycle
-            boolean keepListening_<%=cid%> = "true".equals("<%=kListen%>");
-            // Exit from this loop is made by the configuring "Keep listening"
-            // parameter to false. Then we will have a break before.
-            if (!keepListening_<%=cid%>) {
-                System.out.println("--- [tESBProviderRequest] 'keep listening' is FALSE - job will be stopped");
-                break;
-            }
+
+			// Exit from this loop is made by the configuring "Keep listening"
+			// parameter to false. Then we will have a break before.
+			if ("false".equals("<%=ElementParameterParser.getValue(node, "__KEEPLISTENING__")%>")) {
+				break;
+			}
 		}
+		nb_line_<%=cid%>++;
+		globalMap.put("<%=cid%>_NB_LINE", nb_line_<%=cid%>);
 	} // This is the end of the ESB Service Provider loop
 } finally {
 	// for "keep listening" == false web service need a time to serve response
