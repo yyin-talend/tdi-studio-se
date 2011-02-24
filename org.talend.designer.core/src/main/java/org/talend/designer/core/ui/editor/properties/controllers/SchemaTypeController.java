@@ -503,6 +503,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
         metadataNode = findRepositoryNode(names[1], repositoryNode);
         if (metadataNode != null) {
             AbstractCreateTableAction action = new CreateTableAction(metadataNode);
+            action.setAvoidUnloadResources(true);
             action.run();
         }
 
