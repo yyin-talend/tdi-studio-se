@@ -10,25 +10,12 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.xmlmap.figures;
+package org.talend.designer.xmlmap.figures.cells;
 
-import org.eclipse.draw2d.Label;
-import org.talend.designer.xmlmap.figures.cells.ITextCell;
-import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 
 /**
- * DOC hywang class global comment. Detailled comment
+ * DOC Administrator  class global comment. Detailled comment
  */
-public class VarNodeTextLabel extends Label implements ITextCell {
-
-    private DirectEditType type;
-
-    public void setDirectEditType(DirectEditType type) {
-        this.type = type;
-    }
-
-    public DirectEditType getDirectEditType() {
-        return this.type;
-    }
+public interface IExpressionBuilderCell {
 
 }

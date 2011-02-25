@@ -13,18 +13,20 @@
 package org.talend.designer.xmlmap.figures;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
+import org.talend.designer.xmlmap.figures.treetools.ToolBarButtonImageFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public class VariableContainerFigure extends ToolBarContainer {
+public class VariableContainerFigure extends Figure {
 
     protected ToolBarButtonImageFigure checkImage;
 
@@ -45,9 +47,9 @@ public class VariableContainerFigure extends ToolBarContainer {
         // if(varNode.)
         Label nullableToolTip = new Label("Nullable");
         if (!varNode.isNullable()) {
-            checkImage = new CheckButtonImageFigure(ImageProvider.getImage(EImage.UNCHECKED_ICON));
+            checkImage = new ToolBarButtonImageFigure(ImageProvider.getImage(EImage.UNCHECKED_ICON));
         } else if (varNode.isNullable()) {
-            checkImage = new CheckButtonImageFigure(ImageProvider.getImage(EImage.CHECKED_ICON));
+            checkImage = new ToolBarButtonImageFigure(ImageProvider.getImage(EImage.CHECKED_ICON));
         }
         checkImage.setToolTip(nullableToolTip);
         variableLabel = new VarNodeTextLabel();

@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFilePackage;
 
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
@@ -116,6 +117,13 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * @generated
      */
     private EClass iConnectionEClass = null;
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass abstractInOutTreeEClass = null;
 
                 /**
      * <!-- begin-user-doc -->
@@ -256,7 +264,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getInputXmlTree_Name() {
+    public EAttribute getInputXmlTree_Lookup() {
         return (EAttribute)inputXmlTreeEClass.getEStructuralFeatures().get(1);
     }
 
@@ -265,8 +273,35 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getInputXmlTree_Lookup() {
+    public EAttribute getInputXmlTree_MatchingMode() {
         return (EAttribute)inputXmlTreeEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getInputXmlTree_LookupMode() {
+        return (EAttribute)inputXmlTreeEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getInputXmlTree_InnerJoin() {
+        return (EAttribute)inputXmlTreeEClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getInputXmlTree_Persistent() {
+        return (EAttribute)inputXmlTreeEClass.getEStructuralFeatures().get(5);
     }
 
     /**
@@ -292,8 +327,17 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getOutputXmlTree_Name() {
+    public EAttribute getOutputXmlTree_Reject() {
         return (EAttribute)outputXmlTreeEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getOutputXmlTree_RejectInnerJoin() {
+        return (EAttribute)outputXmlTreeEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -571,6 +615,60 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EClass getAbstractInOutTree() {
+        return abstractInOutTreeEClass;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractInOutTree_ExpressionFilter() {
+        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(0);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractInOutTree_ActivateExpressionFilter() {
+        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(1);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractInOutTree_ActivateCondensedTool() {
+        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(2);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractInOutTree_Minimized() {
+        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(3);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractInOutTree_Name() {
+        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(4);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EEnum getNodeType() {
         return nodeTypeEEnum;
     }
@@ -611,12 +709,16 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
         inputXmlTreeEClass = createEClass(INPUT_XML_TREE);
         createEReference(inputXmlTreeEClass, INPUT_XML_TREE__NODES);
-        createEAttribute(inputXmlTreeEClass, INPUT_XML_TREE__NAME);
         createEAttribute(inputXmlTreeEClass, INPUT_XML_TREE__LOOKUP);
+        createEAttribute(inputXmlTreeEClass, INPUT_XML_TREE__MATCHING_MODE);
+        createEAttribute(inputXmlTreeEClass, INPUT_XML_TREE__LOOKUP_MODE);
+        createEAttribute(inputXmlTreeEClass, INPUT_XML_TREE__INNER_JOIN);
+        createEAttribute(inputXmlTreeEClass, INPUT_XML_TREE__PERSISTENT);
 
         outputXmlTreeEClass = createEClass(OUTPUT_XML_TREE);
         createEReference(outputXmlTreeEClass, OUTPUT_XML_TREE__NODES);
-        createEAttribute(outputXmlTreeEClass, OUTPUT_XML_TREE__NAME);
+        createEAttribute(outputXmlTreeEClass, OUTPUT_XML_TREE__REJECT);
+        createEAttribute(outputXmlTreeEClass, OUTPUT_XML_TREE__REJECT_INNER_JOIN);
 
         varTableEClass = createEClass(VAR_TABLE);
         createEAttribute(varTableEClass, VAR_TABLE__NAME);
@@ -656,6 +758,13 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEReference(iConnectionEClass, ICONNECTION__SOURCE);
         createEReference(iConnectionEClass, ICONNECTION__TARGET);
 
+        abstractInOutTreeEClass = createEClass(ABSTRACT_IN_OUT_TREE);
+        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__EXPRESSION_FILTER);
+        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__ACTIVATE_EXPRESSION_FILTER);
+        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__ACTIVATE_CONDENSED_TOOL);
+        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__MINIMIZED);
+        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__NAME);
+
         // Create enums
         nodeTypeEEnum = createEEnum(NODE_TYPE);
     }
@@ -692,6 +801,8 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
         // Add supertypes to classes
         xmlMapDataEClass.getESuperTypes().add(theTalendFilePackage.getAbstractExternalData());
+        inputXmlTreeEClass.getESuperTypes().add(this.getAbstractInOutTree());
+        outputXmlTreeEClass.getESuperTypes().add(this.getAbstractInOutTree());
         treeNodeEClass.getESuperTypes().add(this.getAbstractNode());
         outputTreeNodeEClass.getESuperTypes().add(this.getTreeNode());
         varNodeEClass.getESuperTypes().add(this.getAbstractNode());
@@ -707,12 +818,16 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
         initEClass(inputXmlTreeEClass, InputXmlTree.class, "InputXmlTree", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getInputXmlTree_Nodes(), this.getTreeNode(), null, "nodes", null, 0, -1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getInputXmlTree_Name(), ecorePackage.getEString(), "name", null, 0, 1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getInputXmlTree_Lookup(), ecorePackage.getEBoolean(), "lookup", null, 0, 1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getInputXmlTree_MatchingMode(), ecorePackage.getEString(), "matchingMode", null, 0, 1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getInputXmlTree_LookupMode(), ecorePackage.getEString(), "lookupMode", null, 0, 1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getInputXmlTree_InnerJoin(), ecorePackage.getEBoolean(), "innerJoin", null, 0, 1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getInputXmlTree_Persistent(), ecorePackage.getEBoolean(), "persistent", null, 0, 1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(outputXmlTreeEClass, OutputXmlTree.class, "OutputXmlTree", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getOutputXmlTree_Nodes(), this.getOutputTreeNode(), null, "nodes", null, 0, -1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getOutputXmlTree_Name(), ecorePackage.getEString(), "name", null, 0, 1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getOutputXmlTree_Reject(), ecorePackage.getEBoolean(), "reject", null, 0, 1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getOutputXmlTree_RejectInnerJoin(), ecorePackage.getEBoolean(), "rejectInnerJoin", null, 0, 1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(varTableEClass, VarTable.class, "VarTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getVarTable_Name(), ecorePackage.getEString(), "name", null, 0, 1, VarTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -751,6 +866,13 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEClass(iConnectionEClass, IConnection.class, "IConnection", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getIConnection_Source(), this.getAbstractNode(), null, "source", null, 0, 1, IConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getIConnection_Target(), this.getAbstractNode(), null, "target", null, 0, 1, IConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(abstractInOutTreeEClass, AbstractInOutTree.class, "AbstractInOutTree", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getAbstractInOutTree_ExpressionFilter(), ecorePackage.getEString(), "expressionFilter", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractInOutTree_ActivateExpressionFilter(), ecorePackage.getEBoolean(), "activateExpressionFilter", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractInOutTree_ActivateCondensedTool(), ecorePackage.getEBoolean(), "activateCondensedTool", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractInOutTree_Minimized(), ecorePackage.getEBoolean(), "minimized", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractInOutTree_Name(), ecorePackage.getEString(), "name", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         // Initialize enums and add enum literals
         initEEnum(nodeTypeEEnum, NodeType.class, "NodeType");

@@ -99,12 +99,14 @@ public class XmlmapSwitch<T> {
             case XmlmapPackage.INPUT_XML_TREE: {
                 InputXmlTree inputXmlTree = (InputXmlTree)theEObject;
                 T result = caseInputXmlTree(inputXmlTree);
+                if (result == null) result = caseAbstractInOutTree(inputXmlTree);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
             case XmlmapPackage.OUTPUT_XML_TREE: {
                 OutputXmlTree outputXmlTree = (OutputXmlTree)theEObject;
                 T result = caseOutputXmlTree(outputXmlTree);
+                if (result == null) result = caseAbstractInOutTree(outputXmlTree);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -159,6 +161,12 @@ public class XmlmapSwitch<T> {
             case XmlmapPackage.ICONNECTION: {
                 IConnection iConnection = (IConnection)theEObject;
                 T result = caseIConnection(iConnection);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE: {
+                AbstractInOutTree abstractInOutTree = (AbstractInOutTree)theEObject;
+                T result = caseAbstractInOutTree(abstractInOutTree);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -328,6 +336,21 @@ public class XmlmapSwitch<T> {
      * @generated
      */
     public T caseIConnection(IConnection object) {
+        return null;
+    }
+
+                /**
+     * Returns the result of interpreting the object as an instance of '<em>Abstract In Out Tree</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Abstract In Out Tree</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseAbstractInOutTree(AbstractInOutTree object) {
         return null;
     }
 

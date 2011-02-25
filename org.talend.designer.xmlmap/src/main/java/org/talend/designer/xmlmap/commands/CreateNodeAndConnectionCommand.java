@@ -14,14 +14,12 @@ package org.talend.designer.xmlmap.commands;
 
 import java.util.List;
 
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.designer.xmlmap.figures.CenterVarFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -35,7 +33,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
-import org.talend.designer.xmlmap.parts.VarTableEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.view.DragAndDrogDialog;
 
@@ -243,18 +240,20 @@ public class CreateNodeAndConnectionCommand extends Command {
                 } else if (o instanceof VarNodeEditPart) {
                     VarNodeEditPart sourceVarNode = (VarNodeEditPart) o;
                     VarNode sourceNode = (VarNode) sourceVarNode.getModel();
+
+                    String tableName = "Var";
+                    if (sourceNode.eContainer() instanceof VarTable) {
+                        tableName = ((VarTable) sourceNode.eContainer()).getName();
+                    }
+
                     if (targetEditPart instanceof OutputTreeNodeEditPart) {
                         if (update) {
                             // update expression
                             String expression = targetOutputNode.getExpression();
-                            IFigure tableFigure = ((VarTableEditPart) sourceVarNode.getParent()).getFigure();
                             if (expression == null) {
-                                expression = ((CenterVarFigure) tableFigure).getHeader().getVarText().getText() + "."
-                                        + sourceNode.getName();
+                                expression = tableName + "." + sourceNode.getName();
                             } else {
-                                expression = expression + " "
-                                        + ((CenterVarFigure) tableFigure).getHeader().getVarText().getText() + "."
-                                        + sourceNode.getName();
+                                expression = expression + " " + tableName + "." + sourceNode.getName();
                             }
                             targetOutputNode.setExpression(expression);
                             Connection conn = XmlmapFactory.eINSTANCE.createConnection();

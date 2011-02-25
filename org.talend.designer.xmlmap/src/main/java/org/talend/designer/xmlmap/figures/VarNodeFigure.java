@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.CompoundBorder;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
@@ -26,17 +27,18 @@ import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
+import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public class VarNodeFigure extends ToolBarContainer {
+public class VarNodeFigure extends Figure {
 
     private VarNode varNode;
 
     protected Label expression;
 
-    protected VarNodeTypeLabel type;
+    protected ComboCellLabel type;
 
     // protected Label expression, type;
 
@@ -57,7 +59,8 @@ public class VarNodeFigure extends ToolBarContainer {
         CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
         expression.setBorder(compoundBorder);
 
-        type = new VarNodeTypeLabel();
+        type = new ComboCellLabel();
+        type.setDirectEditType(DirectEditType.VAR_NODE_TYPE);
         type.setText(getTypeDisplayValue(varNode));
         compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
         type.setBorder(compoundBorder);
@@ -107,9 +110,9 @@ public class VarNodeFigure extends ToolBarContainer {
                 }
                 VarNodeFigure.this.setBackgroundColor(ColorConstants.yellow);
                 CenterVarFigure tabelFigure = (CenterVarFigure) VarNodeFigure.this.getParent().getParent().getParent();
-                tabelFigure.imageButtonsFigure.remove.setEnabled(true);
-                tabelFigure.imageButtonsFigure.move_up.setEnabled(true);
-                tabelFigure.imageButtonsFigure.move_down.setEnabled(true);
+                tabelFigure.imageButtonsFigure.getRemove().setEnabled(true);
+                tabelFigure.imageButtonsFigure.getMove_up().setEnabled(true);
+                tabelFigure.imageButtonsFigure.getMove_down().setEnabled(true);
                 tabelFigure.validate();
                 tabelFigure.getSelectionNodes().clear();
                 tabelFigure.getSelectionNodes().add(varNode);

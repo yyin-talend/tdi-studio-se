@@ -13,6 +13,8 @@
 package org.talend.designer.xmlmap.parts.directedit;
 
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.gef.GraphicalEditPart;
@@ -32,10 +34,12 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
-import org.talend.designer.xmlmap.figures.IComboCell;
-import org.talend.designer.xmlmap.figures.IExpressionBuilderCell;
-import org.talend.designer.xmlmap.figures.ITextCell;
-import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.figures.cells.IComboCell;
+import org.talend.designer.xmlmap.figures.cells.IExpressionBuilderCell;
+import org.talend.designer.xmlmap.figures.cells.ITextCell;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 
@@ -44,41 +48,20 @@ import org.talend.expressionbuilder.IExpressionBuilderDialogService;
  */
 public class XmlMapNodeDirectEditManager extends DirectEditManager {
 
-    private TreeNode treeNodeModel;
-
-    private VarNode varNodeModel;
-
     private GraphicalEditPart source;
 
     private CellEditorLocator locator;
 
-    private String[] items;
+    private Object model;
+
+    private Map<CellEditor, DirectEditType> cellAndType = new HashMap<CellEditor, DirectEditType>();
 
     public XmlMapNodeDirectEditManager(GraphicalEditPart source, CellEditorLocator locator) {
         super(source, null, locator);
         this.source = source;
         this.locator = locator;
-        Object model = source.getModel();
-        if (model instanceof TreeNode) {
-            this.treeNodeModel = (TreeNode) model;
-        }
-        if (model instanceof VarNode) {
-            this.varNodeModel = (VarNode) model;
-        }
-    }
+        model = source.getModel();
 
-    public XmlMapNodeDirectEditManager(GraphicalEditPart source, Class editorType, CellEditorLocator locator, String[] items) {
-        super(source, editorType, locator);
-        this.source = source;
-        this.locator = locator;
-        Object model = source.getModel();
-        if (model instanceof TreeNode) {
-            this.treeNodeModel = (TreeNode) model;
-        }
-        if (model instanceof VarNode) {
-            this.varNodeModel = (VarNode) model;
-        }
-        this.items = items;
     }
 
     /*
@@ -88,32 +71,101 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
      */
     @Override
     protected void initCellEditor() {
-        if (treeNodeModel != null) {
-            String expression = treeNodeModel.getExpression() == null ? "" : treeNodeModel.getExpression();
-            getCellEditor().setValue(expression);
-            Text text = ((ExtendedTextCellEditor) getCellEditor()).getTextControl();
-            text.selectAll();
-        } else if (varNodeModel != null) {
-            Control control = getCellEditor().getControl();
-            if (control instanceof CCombo) {
-                CCombo combo = (CCombo) control;
-                combo.setText(getTypeDisplayValue(varNodeModel));
-            } else if (control instanceof Text) {
-                String variable = varNodeModel.getName();
-                if (variable == null) {
-                    variable = "";
+        DirectEditType directEditType = cellAndType.get(getCellEditor());
+        if (model instanceof AbstractNode) {
+            AbstractNode abstractNode = (AbstractNode) model;
+            if (directEditType != null) {
+                switch (directEditType) {
+                case EXPRESSION:
+                    String expression = abstractNode.getExpression() == null ? "" : abstractNode.getExpression();
+                    getCellEditor().setValue(expression);
+                    Text text = ((ExtendedTextCellEditor) getCellEditor()).getTextControl();
+                    text.selectAll();
+                    break;
+                case NODE_NAME:
+                    String variable = abstractNode.getName();
+                    if (variable == null) {
+                        variable = "";
+                    }
+                    getCellEditor().setValue(variable);
+                    text = (Text) ((TextCellEditor) getCellEditor()).getControl();
+                    text.selectAll();
+
+                    break;
+                case VAR_NODE_TYPE:
+                    if (getCellEditor() instanceof ComboBoxCellEditor) {
+                        CCombo combo = (CCombo) getCellEditor().getControl();
+                        combo.setText(getTypeDisplayValue((VarNode) abstractNode));
+                    }
+                    break;
                 }
-                getCellEditor().setValue(variable);
-                Text text = (Text) ((TextCellEditor) getCellEditor()).getControl();
-                text.selectAll();
-            } else {
-                String expression = varNodeModel.getExpression() == null ? "" : varNodeModel.getExpression();
-                getCellEditor().setValue(expression);
-                Text text = ((ExtendedTextCellEditor) getCellEditor()).getTextControl();
-                text.selectAll();
+
             }
-            // getCellEditor().setValue(varNodeModel.getExpression());
+        } else if (model instanceof InputXmlTree) {
+            InputXmlTree inputxmlTree = (InputXmlTree) model;
+            if (directEditType != null) {
+                switch (directEditType) {
+                case EXPRESSION_FILTER:
+                    if (getCellEditor() instanceof TextCellEditor) {
+                        Text text = (Text) getCellEditor().getControl();
+                        text.setText(inputxmlTree.getExpressionFilter());
+                    }
+                    break;
+                case LOOKUP_MODEL:
+                    if (getCellEditor() instanceof ComboBoxCellEditor) {
+                        CCombo combo = (CCombo) getCellEditor().getControl();
+                        combo.setText(inputxmlTree.getLookupMode());
+                    }
+                    break;
+                case MATCH_MODEL:
+                    if (getCellEditor() instanceof ComboBoxCellEditor) {
+                        CCombo combo = (CCombo) getCellEditor().getControl();
+                        combo.setText(inputxmlTree.getMatchingMode());
+                    }
+                    break;
+                case JOIN_MODEL:
+                    if (getCellEditor() instanceof ComboBoxCellEditor) {
+                        CCombo combo = (CCombo) getCellEditor().getControl();
+                        combo.setText(String.valueOf(inputxmlTree.isInnerJoin()));
+                    }
+                    break;
+                case PERSISTENT_MODEL:
+                    if (getCellEditor() instanceof ComboBoxCellEditor) {
+                        CCombo combo = (CCombo) getCellEditor().getControl();
+                        combo.setText(String.valueOf(inputxmlTree.isPersistent()));
+                    }
+                    break;
+
+                }
+            }
+
+        } else if (model instanceof OutputXmlTree) {
+            OutputXmlTree outputTree = (OutputXmlTree) model;
+            if (directEditType != null) {
+                switch (directEditType) {
+                case EXPRESSION_FILTER:
+                    if (getCellEditor() instanceof TextCellEditor) {
+                        Text text = (Text) getCellEditor().getControl();
+                        text.setText(outputTree.getExpressionFilter());
+                    }
+                    break;
+                case OUTPUT_REJECT:
+                    if (getCellEditor() instanceof ComboBoxCellEditor) {
+                        CCombo combo = (CCombo) getCellEditor().getControl();
+                        combo.setText(String.valueOf(outputTree.isReject()));
+                    }
+                    break;
+                case LOOK_UP_INNER_JOIN_REJECT:
+                    if (getCellEditor() instanceof ComboBoxCellEditor) {
+                        CCombo combo = (CCombo) getCellEditor().getControl();
+                        combo.setText(String.valueOf(outputTree.isRejectInnerJoin()));
+                    }
+                    break;
+                }
+            }
+
         }
+
     }
 
     private String getTypeDisplayValue(VarNode varNode) {
@@ -139,46 +191,37 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
     protected CellEditor createCellEditorOn(Composite composite) {
         Composite parent = (Composite) source.getViewer().getControl();
         CellEditor cellEditor = null;
-        if (treeNodeModel != null) {
-
+        Figure figure = null;
+        if (this.locator instanceof XmlMapNodeCellEditorLocator) {
+            XmlMapNodeCellEditorLocator lo = (XmlMapNodeCellEditorLocator) locator;
+            figure = lo.getFigure();
+        }
+        if (figure instanceof IComboCell) {
+            try {
+                Constructor constructor = ComboBoxCellEditor.class
+                        .getConstructor(new Class[] { Composite.class, String[].class });
+                cellEditor = (CellEditor) constructor.newInstance(new Object[] { composite,
+                        getComboItemsByType(((IComboCell) figure).getDirectEditType()) });
+                cellAndType.put(cellEditor, ((IComboCell) figure).getDirectEditType());
+            } catch (Exception e) {
+                return null;
+            }
+        } else if (figure instanceof ITextCell) {
+            cellEditor = new TextCellEditor(composite);
+            cellAndType.put(cellEditor, ((ITextCell) figure).getDirectEditType());
+        } else if (figure instanceof IExpressionBuilderCell && model instanceof AbstractNode) {
             IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
                     IExpressionBuilderDialogService.class);
             CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
             cellEditor = new ExpressionCellEditor(composite, behavior);
-            ((ExpressionCellEditor) cellEditor).setOwnerId(treeNodeModel.getXpath());
+            ((ExpressionCellEditor) cellEditor).setOwnerId(((AbstractNode) model).getExpression());
             IExpressionBuilderDialogController dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService)
                     .getExpressionBuilderInstance(parent, (ExpressionCellEditor) cellEditor, null);
-
+            cellAndType.put(cellEditor, DirectEditType.EXPRESSION);
             behavior.setCellEditorDialog(dialog);
-        } else if (varNodeModel != null) {
-            Figure figure = null;
-            if (this.locator instanceof XmlMapNodeCellEditorLocator) {
-                XmlMapNodeCellEditorLocator lo = (XmlMapNodeCellEditorLocator) locator;
-                figure = lo.getFigure();
-            }
-            if (figure instanceof IComboCell) {
-                try {
-                    Constructor constructor = ComboBoxCellEditor.class.getConstructor(new Class[] { Composite.class,
-                            String[].class });
-                    cellEditor = (CellEditor) constructor.newInstance(new Object[] { composite, items });
-                } catch (Exception e) {
-                    return null;
-                }
-            } else if (figure instanceof ITextCell) {
-                cellEditor = new TextCellEditor(composite);
-            } else if (figure instanceof IExpressionBuilderCell && varNodeModel != null) {
-                IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
-                        IExpressionBuilderDialogService.class);
-                CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
-                cellEditor = new ExpressionCellEditor(composite, behavior);
-                ((ExpressionCellEditor) cellEditor).setOwnerId(varNodeModel.getExpression());
-                IExpressionBuilderDialogController dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService)
-                        .getExpressionBuilderInstance(parent, (ExpressionCellEditor) cellEditor, null);
-
-                behavior.setCellEditorDialog(dialog);
-            }
-
         }
+
+        // }
         return cellEditor;
     }
 
@@ -195,6 +238,35 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
             }
         }
         return super.isDirty();
+
+    }
+
+    @Override
+    protected Object getDirectEditFeature() {
+        return cellAndType.get(getCellEditor());
+    }
+
+    private String[] getComboItemsByType(DirectEditType type) {
+        if (type == null) {
+            return new String[0];
+        }
+
+        switch (type) {
+        case VAR_NODE_TYPE:
+            String[] items = JavaTypesManager.getJavaTypesLabels();
+            return items;
+        case LOOKUP_MODEL:
+            return new String[0];
+        case MATCH_MODEL:
+            return new String[0];
+        case JOIN_MODEL:
+        case PERSISTENT_MODEL:
+        case OUTPUT_REJECT:
+        case LOOK_UP_INNER_JOIN_REJECT:
+            return new String[] { String.valueOf(Boolean.TRUE), String.valueOf(Boolean.FALSE) };
+        default:
+            return new String[0];
+        }
 
     }
 }

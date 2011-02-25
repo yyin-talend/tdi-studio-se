@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.xmlmap.figures;
+package org.talend.designer.xmlmap.figures.treetools;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
@@ -22,6 +22,7 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.designer.xmlmap.figures.CenterVarFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
@@ -33,7 +34,7 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
 /**
  * DOC hywang class global comment. Detailled comment
  */
-public class ButtonsImageToolBarFigure extends Figure {
+public class VarToolBarFigure extends Figure {
 
     protected ImageFigure add, remove, move_up, move_down, miniSize;
 
@@ -49,7 +50,7 @@ public class ButtonsImageToolBarFigure extends Figure {
 
     private static Label restoretooltip = new Label("Restore");
 
-    public ButtonsImageToolBarFigure(VarTable parentTable) {
+    public VarToolBarFigure(VarTable parentTable) {
         this.parentTable = parentTable;
         newStateIsMinimized = parentTable.isMinimized();
         createToolbar();
@@ -62,17 +63,17 @@ public class ButtonsImageToolBarFigure extends Figure {
         ToolbarLayout manager = new ToolbarLayout();
         manager.setVertical(false);
         this.setLayoutManager(manager);
-        add = new AddButtonImageFigure(ImageProvider.getImage(EImage.ADD_ICON));
-        remove = new RemoveButtonImageFigure(ImageProvider.getImage(EImage.MINUS_ICON));
+        add = new ToolBarButtonImageFigure(ImageProvider.getImage(EImage.ADD_ICON));
+        remove = new ToolBarButtonImageFigure(ImageProvider.getImage(EImage.MINUS_ICON));
         remove.setEnabled(false);
-        move_up = new MoveUpButtonImageFigure(ImageProvider.getImage(EImage.UP_ICON));
+        move_up = new ToolBarButtonImageFigure(ImageProvider.getImage(EImage.UP_ICON));
         move_up.setEnabled(false);
-        move_down = new MoveDownButtonImageFigure(ImageProvider.getImage(EImage.DOWN_ICON));
+        move_down = new ToolBarButtonImageFigure(ImageProvider.getImage(EImage.DOWN_ICON));
         move_down.setEnabled(false);
         if (newStateIsMinimized) {
-            miniSize = new MinisizeButtonImageFigure(restorImage);
+            miniSize = new ToolBarButtonImageFigure(restorImage);
         } else if (!newStateIsMinimized) {
-            miniSize = new MinisizeButtonImageFigure(miniImage);
+            miniSize = new ToolBarButtonImageFigure(miniImage);
         }
         setToolTips();
         this.add(add);

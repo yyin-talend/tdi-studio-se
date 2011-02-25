@@ -10,12 +10,11 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.xmlmap.figures;
-
+package org.talend.designer.xmlmap.figures.cells;
 
 /**
- * DOC Administrator  class global comment. Detailled comment
+ * DOC Administrator class global comment. Detailled comment
  */
-public interface ITextCell {
+public interface IComboCell extends IWidgetCell {
 
 }

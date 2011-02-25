@@ -25,6 +25,7 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.swt.graphics.Font;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
+import org.talend.designer.xmlmap.figures.treetools.VarToolBarFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.ui.resource.FontInfo;
@@ -35,13 +36,13 @@ import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
  */
 public class CenterVarFigure extends Figure {
 
-    protected ToolBarContainer header;
+    protected Figure header;
 
     private VarTable table;
 
     protected VarTableContainerFigure VarTableContainerFigure;
 
-    protected ButtonsImageToolBarFigure imageButtonsFigure;
+    protected VarToolBarFigure imageButtonsFigure;
 
     private List<VarNode> selectionNodes = new ArrayList<VarNode>();
 
@@ -60,7 +61,7 @@ public class CenterVarFigure extends Figure {
      * DOC hywang Comment method "createComponents".
      */
     protected void createComponents() {
-        header = new ToolBarContainer();
+        header = new Figure();
         header.setOpaque(true);
         header.setBackgroundColor(ColorConstants.tooltipBackground);
         header.setBorder(new RowBorder());
@@ -71,11 +72,9 @@ public class CenterVarFigure extends Figure {
         varText.setFont(erFont);
         varText.setLabelAlignment(PositionConstants.LEFT);
         varText.setBorder(new MarginBorder(5, 10, 5, -1));
-        imageButtonsFigure = new ButtonsImageToolBarFigure(table);
+        imageButtonsFigure = new VarToolBarFigure(table);
         header.add(varText);
-        header.setVarText(varText);
         header.add(imageButtonsFigure);
-        header.setToolbar(imageButtonsFigure);
         VarTableContainerFigure = new VarTableContainerFigure(table);
         // if (table.isIsMinimized()) {
         // VarTableContainerFigure.setPreferredSize(imageButtonsFigure.getPreferredSize().width, 0);
@@ -88,7 +87,7 @@ public class CenterVarFigure extends Figure {
         // this.add(columnsContainer);
     }
 
-    public ToolBarContainer getHeader() {
+    public Figure getHeader() {
         return this.header;
     }
 
@@ -100,7 +99,7 @@ public class CenterVarFigure extends Figure {
         return this.selectionNodes;
     }
 
-    public ButtonsImageToolBarFigure getImageButtonsFigure() {
+    public VarToolBarFigure getImageButtonsFigure() {
         return this.imageButtonsFigure;
     }
 

@@ -34,13 +34,14 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#getNodes <em>Nodes</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#isReject <em>Reject</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#isRejectInnerJoin <em>Reject Inner Join</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class OutputXmlTreeImpl extends EObjectImpl implements OutputXmlTree {
+public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXmlTree {
     /**
      * The cached value of the '{@link #getNodes() <em>Nodes</em>}' containment reference list.
      * <!-- begin-user-doc -->
@@ -52,24 +53,44 @@ public class OutputXmlTreeImpl extends EObjectImpl implements OutputXmlTree {
     protected EList<OutputTreeNode> nodes;
 
     /**
-     * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+     * The default value of the '{@link #isReject() <em>Reject</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getName()
+     * @see #isReject()
      * @generated
      * @ordered
      */
-    protected static final String NAME_EDEFAULT = null;
+    protected static final boolean REJECT_EDEFAULT = false;
 
     /**
-     * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+     * The cached value of the '{@link #isReject() <em>Reject</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getName()
+     * @see #isReject()
      * @generated
      * @ordered
      */
-    protected String name = NAME_EDEFAULT;
+    protected boolean reject = REJECT_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #isRejectInnerJoin() <em>Reject Inner Join</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isRejectInnerJoin()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean REJECT_INNER_JOIN_EDEFAULT = false;
+
+    /**
+     * The cached value of the '{@link #isRejectInnerJoin() <em>Reject Inner Join</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isRejectInnerJoin()
+     * @generated
+     * @ordered
+     */
+    protected boolean rejectInnerJoin = REJECT_INNER_JOIN_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -107,8 +128,8 @@ public class OutputXmlTreeImpl extends EObjectImpl implements OutputXmlTree {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String getName() {
-        return name;
+    public boolean isReject() {
+        return reject;
     }
 
     /**
@@ -116,11 +137,32 @@ public class OutputXmlTreeImpl extends EObjectImpl implements OutputXmlTree {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setName(String newName) {
-        String oldName = name;
-        name = newName;
+    public void setReject(boolean newReject) {
+        boolean oldReject = reject;
+        reject = newReject;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.OUTPUT_XML_TREE__NAME, oldName, name));
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.OUTPUT_XML_TREE__REJECT, oldReject, reject));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public boolean isRejectInnerJoin() {
+        return rejectInnerJoin;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setRejectInnerJoin(boolean newRejectInnerJoin) {
+        boolean oldRejectInnerJoin = rejectInnerJoin;
+        rejectInnerJoin = newRejectInnerJoin;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN, oldRejectInnerJoin, rejectInnerJoin));
     }
 
     /**
@@ -147,8 +189,10 @@ public class OutputXmlTreeImpl extends EObjectImpl implements OutputXmlTree {
         switch (featureID) {
             case XmlmapPackage.OUTPUT_XML_TREE__NODES:
                 return getNodes();
-            case XmlmapPackage.OUTPUT_XML_TREE__NAME:
-                return getName();
+            case XmlmapPackage.OUTPUT_XML_TREE__REJECT:
+                return isReject();
+            case XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN:
+                return isRejectInnerJoin();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -166,8 +210,11 @@ public class OutputXmlTreeImpl extends EObjectImpl implements OutputXmlTree {
                 getNodes().clear();
                 getNodes().addAll((Collection<? extends OutputTreeNode>)newValue);
                 return;
-            case XmlmapPackage.OUTPUT_XML_TREE__NAME:
-                setName((String)newValue);
+            case XmlmapPackage.OUTPUT_XML_TREE__REJECT:
+                setReject((Boolean)newValue);
+                return;
+            case XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN:
+                setRejectInnerJoin((Boolean)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -184,8 +231,11 @@ public class OutputXmlTreeImpl extends EObjectImpl implements OutputXmlTree {
             case XmlmapPackage.OUTPUT_XML_TREE__NODES:
                 getNodes().clear();
                 return;
-            case XmlmapPackage.OUTPUT_XML_TREE__NAME:
-                setName(NAME_EDEFAULT);
+            case XmlmapPackage.OUTPUT_XML_TREE__REJECT:
+                setReject(REJECT_EDEFAULT);
+                return;
+            case XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN:
+                setRejectInnerJoin(REJECT_INNER_JOIN_EDEFAULT);
                 return;
         }
         super.eUnset(featureID);
@@ -201,8 +251,10 @@ public class OutputXmlTreeImpl extends EObjectImpl implements OutputXmlTree {
         switch (featureID) {
             case XmlmapPackage.OUTPUT_XML_TREE__NODES:
                 return nodes != null && !nodes.isEmpty();
-            case XmlmapPackage.OUTPUT_XML_TREE__NAME:
-                return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+            case XmlmapPackage.OUTPUT_XML_TREE__REJECT:
+                return reject != REJECT_EDEFAULT;
+            case XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN:
+                return rejectInnerJoin != REJECT_INNER_JOIN_EDEFAULT;
         }
         return super.eIsSet(featureID);
     }
@@ -217,8 +269,10 @@ public class OutputXmlTreeImpl extends EObjectImpl implements OutputXmlTree {
         if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (name: ");
-        result.append(name);
+        result.append(" (reject: ");
+        result.append(reject);
+        result.append(", rejectInnerJoin: ");
+        result.append(rejectInnerJoin);
         result.append(')');
         return result.toString();
     }

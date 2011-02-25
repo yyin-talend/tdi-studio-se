@@ -118,6 +118,10 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
                 return createIConnectionAdapter();
             }
             @Override
+            public Adapter caseAbstractInOutTree(AbstractInOutTree object) {
+                return createAbstractInOutTreeAdapter();
+            }
+            @Override
             public Adapter caseAbstractExternalData(AbstractExternalData object) {
                 return createAbstractExternalDataAdapter();
             }
@@ -292,6 +296,20 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createIConnectionAdapter() {
+        return null;
+    }
+
+                /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree <em>Abstract In Out Tree</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree
+     * @generated
+     */
+    public Adapter createAbstractInOutTreeAdapter() {
         return null;
     }
 

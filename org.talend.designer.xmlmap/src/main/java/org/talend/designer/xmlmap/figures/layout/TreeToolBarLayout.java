@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2011 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2010 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -16,37 +16,30 @@ import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class TreeNodeLayout extends EqualWidthLayout {
-
-    private AbstractGraphicalEditPart treeEditPart;
-
-    public TreeNodeLayout(AbstractGraphicalEditPart treeEditPart) {
-        super();
-        this.treeEditPart = treeEditPart;
-    }
+public class TreeToolBarLayout extends EqualWidthLayout {
 
     @Override
     public void layout(IFigure parent) {
         List children = parent.getChildren();
         int numChildren = children.size();
         Rectangle clientArea = transposer.t(parent.getClientArea());
-        int x = clientArea.x;
-        int y = clientArea.y;
+        int x = clientArea.x + clientArea.width;
+        int y = clientArea.y + 2;
         int availableHeight = clientArea.height;
-
-        Rectangle treeBounds = treeEditPart.getFigure().getBounds();
-        int avialableExpressionWidth = (treeBounds.width - numChildren - 1) / numChildren;
 
         Dimension prefSizes[] = new Dimension[numChildren];
         Dimension minSizes[] = new Dimension[numChildren];
 
+        // Calculate the width and height hints. If it's a vertical
+        // ToolBarLayout,
+        // then ignore the height hint (set it to -1); otherwise, ignore the
+        // width hint. These hints will be passed to the children of the parent
+        // figure when getting their preferred size.
         int wHint = -1;
         int hHint = -1;
         if (isHorizontal()) {
@@ -54,6 +47,15 @@ public class TreeNodeLayout extends EqualWidthLayout {
         } else {
             wHint = parent.getClientArea(Rectangle.SINGLETON).width;
         }
+
+        /*
+         * Calculate sum of preferred heights of all children(totalHeight). Calculate sum of minimum heights of all
+         * children(minHeight). Cache Preferred Sizes and Minimum Sizes of all children.
+         * 
+         * totalHeight is the sum of the preferred heights of all children totalMinHeight is the sum of the minimum
+         * heights of all children prefMinSumHeight is the sum of the difference between all children's preferred
+         * heights and minimum heights. (This is used as a ratio to calculate how much each child will shrink).
+         */
         IFigure child;
         int totalHeight = 0;
         int totalMinHeight = 0;
@@ -84,10 +86,7 @@ public class TreeNodeLayout extends EqualWidthLayout {
             amntShrinkHeight = 0;
         }
 
-        int maxHeightInRow = 0;
-        int totalWith = 0;
-
-        for (int i = 0; i < numChildren; i++) {
+        for (int i = numChildren - 1; i >= 0; i--) {
             int amntShrinkCurrentHeight = 0;
             int prefHeight = prefSizes[i].height;
             int minHeight = minSizes[i].height;
@@ -98,71 +97,14 @@ public class TreeNodeLayout extends EqualWidthLayout {
             if (prefMinSumHeight != 0)
                 amntShrinkCurrentHeight = (prefHeight - minHeight) * amntShrinkHeight / (prefMinSumHeight);
 
-            if (i == 0) {
-                newBounds.width = avialableExpressionWidth;
-            } else if (i == numChildren - 1) {
-                if (newBounds.width < avialableExpressionWidth) {
-                    newBounds.width = avialableExpressionWidth;
-                }
-            }
+            newBounds.x = x - newBounds.width - spacing;
 
             newBounds.height -= amntShrinkCurrentHeight;
             child.setBounds(transposer.t(newBounds));
 
             amntShrinkHeight -= amntShrinkCurrentHeight;
             prefMinSumHeight -= (prefHeight - minHeight);
-            if (i != 0 && i % numChildren == 0) {
-                y += newBounds.height + spacing;
-            }
-            x += newBounds.width + spacing;
-
-            totalWith = totalWith + newBounds.width + spacing;
-            maxHeightInRow = Math.max(maxHeightInRow, newBounds.height);
+            x = newBounds.x - spacing;
         }
-
-        for (int i = 0; i < numChildren; i++) {
-            child = (IFigure) children.get(i);
-            child.getBounds().height = maxHeightInRow;
-        }
-
     }
-
-    @Override
-    protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {
-        Insets insets = container.getInsets();
-        if (isHorizontal()) {
-            wHint = -1;
-            if (hHint >= 0)
-                hHint = Math.max(0, hHint - insets.getHeight());
-        } else {
-            hHint = -1;
-            if (wHint >= 0)
-                wHint = Math.max(0, wHint - insets.getWidth());
-        }
-
-        List children = container.getChildren();
-        Dimension prefSize = calculateChildrenSize(children, wHint, hHint, true);
-        // Do a second pass, if necessary
-        if (wHint >= 0 && prefSize.width > wHint) {
-            prefSize = calculateChildrenSize(children, prefSize.width, hHint, true);
-        } else if (hHint >= 0 && prefSize.width > hHint) {
-            prefSize = calculateChildrenSize(children, wHint, prefSize.width, true);
-        }
-
-        prefSize.height += Math.max(0, children.size() - 1) * spacing;
-
-        /*
-         * add expression with ,because calculatePreferredSize of ExpressionLayout returns Dimension(0,0) , need modify
-         * later
-         */
-        Rectangle treeBounds = treeEditPart.getFigure().getBounds();
-        int avialableExpressionWidth = (treeBounds.width - container.getChildren().size() - 1) / container.getChildren().size();
-
-        Dimension pSize = transposer.t(prefSize).expand(insets.getWidth(), insets.getHeight())
-                .union(getBorderPreferredSize(container));
-
-        return new Dimension(pSize.width + avialableExpressionWidth, pSize.height);
-
-    }
-
 }

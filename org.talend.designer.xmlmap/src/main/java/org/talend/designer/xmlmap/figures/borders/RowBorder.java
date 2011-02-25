@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.borders;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MarginBorder;
@@ -36,6 +37,7 @@ public class RowBorder extends MarginBorder {
     }
 
     public void paint(IFigure figure, Graphics graphics, Insets insets) {
+        graphics.setForegroundColor(ColorConstants.menuBackground);
         graphics.drawLine(getRectangleToPaint(figure).getTopLeft(), tempRect.getTopRight());
     }
 

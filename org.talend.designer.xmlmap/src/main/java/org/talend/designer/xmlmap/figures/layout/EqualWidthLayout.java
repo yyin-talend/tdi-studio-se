@@ -16,18 +16,19 @@ import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ToolbarLayout;
-import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.talend.designer.xmlmap.figures.ToolBarContainer;
 
 /**
- * DOC Administrator class global comment. Detailled comment
+ * wchen Horizontal layout , children shares the width of parent.
  */
 public class EqualWidthLayout extends ToolbarLayout {
 
-    private boolean useParentHeight;
+    public EqualWidthLayout() {
+        transposer.setEnabled(false);
+        setVertical(false);
+    }
 
     @Override
     public void layout(IFigure parent) {
@@ -37,21 +38,25 @@ public class EqualWidthLayout extends ToolbarLayout {
         int x = clientArea.x;
         int y = clientArea.y;
         int availableHeight = clientArea.height;
-        int availableWidth = clientArea.width;
 
         Dimension prefSizes[] = new Dimension[numChildren];
         Dimension minSizes[] = new Dimension[numChildren];
 
         int wHint = -1;
         int hHint = -1;
-        if (isHorizontal()) {
-            hHint = parent.getClientArea(Rectangle.SINGLETON).height;
-        } else {
-            wHint = parent.getClientArea(Rectangle.SINGLETON).width;
-        }
+        hHint = parent.getClientArea(Rectangle.SINGLETON).height;
+        wHint = parent.getClientArea(Rectangle.SINGLETON).width;
 
         int devideWidth = (wHint - (numChildren - 1) * spacing) / numChildren;
 
+        /*
+         * Calculate sum of preferred heights of all children(totalHeight). Calculate sum of minimum heights of all
+         * children(minHeight). Cache Preferred Sizes and Minimum Sizes of all children.
+         * 
+         * totalHeight is the sum of the preferred heights of all children totalMinHeight is the sum of the minimum
+         * heights of all children prefMinSumHeight is the sum of the difference between all children's preferred
+         * heights and minimum heights. (This is used as a ratio to calculate how much each child will shrink).
+         */
         IFigure child;
         int totalHeight = 0;
         int totalMinHeight = 0;
@@ -82,7 +87,6 @@ public class EqualWidthLayout extends ToolbarLayout {
             amntShrinkHeight = 0;
         }
 
-        int maxHeightInRow = 0;
         for (int i = 0; i < numChildren; i++) {
             int amntShrinkCurrentHeight = 0;
             int prefHeight = prefSizes[i].height;
@@ -95,56 +99,32 @@ public class EqualWidthLayout extends ToolbarLayout {
             if (prefMinSumHeight != 0)
                 amntShrinkCurrentHeight = (prefHeight - minHeight) * amntShrinkHeight / (prefMinSumHeight);
 
-            newBounds.width = devideWidth;
+            int width = Math.min(prefWidth, transposer.t(child.getMaximumSize()).width);
+            if (matchWidth)
+                width = transposer.t(child.getMaximumSize()).width;
 
+            width = Math.min(devideWidth, Math.min(clientArea.width, width));
+            newBounds.width = width;
+
+            int adjust = clientArea.width - width;
+            switch (minorAlignment) {
+            case ALIGN_TOPLEFT:
+                adjust = 0;
+                break;
+            case ALIGN_CENTER:
+                adjust /= 2;
+                break;
+            case ALIGN_BOTTOMRIGHT:
+                break;
+            }
+            newBounds.x += adjust;
             newBounds.height -= amntShrinkCurrentHeight;
             child.setBounds(transposer.t(newBounds));
 
             amntShrinkHeight -= amntShrinkCurrentHeight;
             prefMinSumHeight -= (prefHeight - minHeight);
-            if (i != 0 && i % numChildren == 0) {
-                y += newBounds.height + spacing;
-            }
-            x += newBounds.width + spacing;
 
-            maxHeightInRow = Math.max(maxHeightInRow, newBounds.height);
-        }
-
-        if (isUseParentHeight()) {
-            Viewport viewPort = getViewPort(parent);
-            if (viewPort != null) {
-                if (viewPort.getBounds().height < availableHeight) {
-                    availableHeight = viewPort.getBounds().height;
-                }
-                if (viewPort.getBounds().width < availableWidth) {
-                    availableWidth = viewPort.getBounds().width;
-                }
-            }
-        }
-
-        for (int i = 0; i < numChildren; i++) {
-            child = (IFigure) children.get(i);
-            if (isUseParentHeight()) {
-                child.getBounds().height = availableHeight;
-            } else {
-                child.getBounds().height = maxHeightInRow;
-
-            }
-        }
-
-    }
-
-    /**
-     * 
-     * Used for three main scrollPane to get the same size as the editor , maybe changed latter
-     * 
-     * @return
-     */
-    private Viewport getViewPort(IFigure figure) {
-        if (figure.getParent() instanceof Viewport) {
-            return (Viewport) figure.getParent();
-        } else {
-            return getViewPort(figure.getParent());
+            x = x + newBounds.width + spacing;
         }
     }
 
@@ -159,25 +139,21 @@ public class EqualWidthLayout extends ToolbarLayout {
             if (wHint >= 0)
                 wHint = Math.max(0, wHint - insets.getWidth());
         }
-        boolean isToolBarContainer = false;
-        if (container instanceof ToolBarContainer) {
-            isToolBarContainer = true;
-        }
 
         List children = container.getChildren();
-        Dimension prefSize = calculateChildrenSize(children, wHint, hHint, true, isToolBarContainer);
+        Dimension prefSize = calculateChildrenSize(children, wHint, hHint, true);
         // Do a second pass, if necessary
         if (wHint >= 0 && prefSize.width > wHint) {
-            prefSize = calculateChildrenSize(children, prefSize.width, hHint, true, isToolBarContainer);
+            prefSize = calculateChildrenSize(children, prefSize.width, hHint, true);
         } else if (hHint >= 0 && prefSize.width > hHint) {
-            prefSize = calculateChildrenSize(children, wHint, prefSize.width, true, isToolBarContainer);
+            prefSize = calculateChildrenSize(children, wHint, prefSize.width, true);
         }
 
         prefSize.height += Math.max(0, children.size() - 1) * spacing;
         return transposer.t(prefSize).expand(insets.getWidth(), insets.getHeight()).union(getBorderPreferredSize(container));
     }
 
-    private Dimension calculateChildrenSize(List children, int wHint, int hHint, boolean preferred, boolean isToolBarContainer) {
+    protected Dimension calculateChildrenSize(List children, int wHint, int hHint, boolean preferred) {
         Dimension childSize;
         IFigure child;
         int height = 0, width = 0;
@@ -186,7 +162,8 @@ public class EqualWidthLayout extends ToolbarLayout {
             childSize = transposer.t(preferred ? getChildPreferredSize(child, wHint, hHint) : getChildMinimumSize(child, wHint,
                     hHint));
             width = Math.max(width, childSize.width);
-            if (isToolBarContainer) {
+
+            if (isHorizontal()) {
                 height = Math.max(height, childSize.height);
             } else {
                 height += childSize.height;
@@ -195,11 +172,11 @@ public class EqualWidthLayout extends ToolbarLayout {
         return new Dimension(width, height);
     }
 
-    public boolean isUseParentHeight() {
-        return useParentHeight;
+    public void setVertical(boolean flag) {
+        if (horizontal != flag)
+            return;
+        invalidate();
+        horizontal = !flag;
     }
 
-    public void setUseParentHeight(boolean useParentHeight) {
-        this.useParentHeight = useParentHeight;
-    }
 }

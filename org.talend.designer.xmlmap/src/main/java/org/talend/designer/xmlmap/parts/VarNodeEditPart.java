@@ -29,10 +29,8 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
-import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.designer.xmlmap.figures.TreeNodeFigure;
 import org.talend.designer.xmlmap.figures.VarNodeFigure;
 import org.talend.designer.xmlmap.figures.VariableContainerFigure;
@@ -82,9 +80,7 @@ public class VarNodeEditPart extends BaseEditPart implements NodeEditPart {
                     figure = ((VariableContainerFigure) figure).getVariableLabel();
                 }
                 selectedFigure = (Figure) figure;
-                String[] items = JavaTypesManager.getJavaTypesLabels();
-                directEditManager = new XmlMapNodeDirectEditManager(this, ComboBoxCellEditor.class,
-                        new XmlMapNodeCellEditorLocator(selectedFigure), items);
+                directEditManager = new XmlMapNodeDirectEditManager(this, new XmlMapNodeCellEditorLocator(selectedFigure));
             }
             // }
             directEditManager.show();

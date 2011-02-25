@@ -91,7 +91,6 @@ public class VarTableEditPart extends BaseEditPart {
                 } else {
                     minisize.setImage(miniImage);
                     minisize.setToolTip(minitooltip);
-
                 }
                 // refreshChildren();
                 // refreshVisuals();

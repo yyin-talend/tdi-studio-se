@@ -21,8 +21,12 @@ import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
-import org.eclipse.swt.graphics.Font;
+import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
+import org.talend.designer.xmlmap.figures.layout.OutTreeLayout;
+import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
+import org.talend.designer.xmlmap.figures.treesettings.OutputTreeSettingContainer;
+import org.talend.designer.xmlmap.figures.treetools.OutputTreeToolBarContainer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
@@ -40,23 +44,47 @@ public class OutputXmlTreeFigure extends GenericFigure {
 
     protected Figure tableColumnstitle;
 
+    private Figure header;
+
+    private OutputTreeToolBarContainer imageButtonsFigure;
+
+    private FilterContainer filterFigure;
+
     public OutputXmlTreeFigure(OutputXmlTree xmlTree) {
         this.xmlTree = xmlTree;
         createContents();
     }
 
     protected void createContents() {
-        setLayoutManager(new ToolbarLayout());
+        setLayoutManager(new OutTreeLayout(xmlTree));
         this.setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
+
+        header = new Figure();
+        header.setOpaque(true);
+        header.setBackgroundColor(ColorConstants.tooltipBackground);
+        header.setBorder(new RowBorder());
+        header.setLayoutManager(new EqualWidthLayout());
         Label tableName = new Label();
+        // tableName.setBorder(new LineBorder(ColorConstants.black));
         tableName.setText(xmlTree.getName());
-        Font erFont = FontProviderMapper.getFont(FontInfo.FONT_SYSTEM_BOLD);
-        tableName.setFont(erFont);
+        tableName.setFont(FontProviderMapper.getFont(FontInfo.FONT_SYSTEM_BOLD));
         tableName.setLabelAlignment(PositionConstants.LEFT);
         tableName.setBorder(new MarginBorder(5, 10, 5, -1));
-        tableName.setOpaque(true);
-        tableName.setBackgroundColor(ColorConstants.yellow);
-        this.add(tableName);
+
+        header.add(tableName);
+
+        imageButtonsFigure = new OutputTreeToolBarContainer(xmlTree);
+
+        header.setOpaque(true);
+        header.setBackgroundColor(ColorConstants.yellow);
+        this.add(header);
+
+        header.add(imageButtonsFigure);
+        OutputTreeSettingContainer settingContainer = new OutputTreeSettingContainer(xmlTree);
+        this.add(settingContainer);
+
+        filterFigure = new FilterContainer(xmlTree);
+        this.add(filterFigure);
 
         tableColumnstitle = new ColumnTitleFigure();
         this.add(tableColumnstitle);
@@ -80,7 +108,7 @@ public class OutputXmlTreeFigure extends GenericFigure {
         return this.columnContainer;
     }
 
-    class ColumnTitleFigure extends ToolBarContainer {
+    class ColumnTitleFigure extends Figure {
 
         public ColumnTitleFigure() {
 

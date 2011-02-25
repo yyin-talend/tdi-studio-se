@@ -20,17 +20,18 @@ import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
-import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.ExpressionLayout;
+import org.talend.designer.xmlmap.figures.layout.TreeNodeLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class TreeNodeFigure extends ToolBarContainer {
+public class TreeNodeFigure extends Figure {
 
     private XmlTreeBranch treeBranch;
 
@@ -62,7 +63,7 @@ public class TreeNodeFigure extends ToolBarContainer {
         }
 
         if (isLookup) {
-            this.setLayoutManager(new EqualWidthLayout());
+            this.setLayoutManager(new TreeNodeLayout(findInputXmlTreePart(treeNodePart)));
         } else {
             this.setLayoutManager(new ToolbarLayout());
         }
@@ -140,6 +141,15 @@ public class TreeNodeFigure extends ToolBarContainer {
     public void refreshChildren() {
         this.getChildren().clear();
         createContent();
+    }
+
+    private InputXmlTreeEditPart findInputXmlTreePart(TreeNodeEditPart treeNodePart) {
+        if (treeNodePart.getParent() instanceof InputXmlTreeEditPart) {
+            return (InputXmlTreeEditPart) treeNodePart.getParent();
+        } else {
+            return findInputXmlTreePart((TreeNodeEditPart) treeNodePart.getParent());
+        }
+
     }
 
 }

@@ -12,10 +12,23 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures;
 
+import org.eclipse.draw2d.Label;
+import org.talend.designer.xmlmap.figures.cells.IComboCell;
+import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 
 /**
- * DOC Administrator  class global comment. Detailled comment
+ * DOC Administrator class global comment. Detailled comment
  */
-public interface IComboCell {
+public class ComboCellLabel extends Label implements IComboCell {
+
+    private DirectEditType type;
+
+    public void setDirectEditType(DirectEditType type) {
+        this.type = type;
+    }
+
+    public DirectEditType getDirectEditType() {
+        return this.type;
+    }
 
 }

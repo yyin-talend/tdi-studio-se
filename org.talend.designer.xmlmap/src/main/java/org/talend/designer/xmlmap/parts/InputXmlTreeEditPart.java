@@ -15,27 +15,31 @@ package org.talend.designer.xmlmap.parts;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
-import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.figures.InputXmlTreeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
+import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 
 /**
  * wchen class global comment. Detailled comment
  */
 public class InputXmlTreeEditPart extends BaseEditPart {
 
-    InputXmlTreeFigure figure;
+    private InputXmlTreeFigure figure;
+
+    private ExpressionFigure oldExpression;
 
     @Override
     protected IFigure createFigure() {
         figure = new InputXmlTreeFigure((InputXmlTree) getModel());
+        addFigureListener(figure);
         return figure;
     }
 
@@ -51,21 +55,7 @@ public class InputXmlTreeEditPart extends BaseEditPart {
 
     @Override
     protected void addChildVisual(EditPart childEditPart, int index) {
-        try {
-            super.addChildVisual(childEditPart, index);
-            IFigure child = ((GraphicalEditPart) childEditPart).getFigure();
-            int childHeight = child.getBounds().height;
-            IFigure parent = ((GraphicalEditPart) childEditPart.getParent()).getFigure();
-            int parentHeight = parent.getBounds().height;
-            int parentWidth = parent.getBounds().width;
-            int parentX = parent.getBounds().x;
-            int parentY = parent.getBounds().y;
-            parentHeight += childHeight;
-            Rectangle newBounds = new Rectangle(parentX, parentY, parentWidth, parentHeight);
-            parent.setBounds(newBounds);
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
+        super.addChildVisual(childEditPart, index);
     }
 
     @Override
@@ -86,6 +76,9 @@ public class InputXmlTreeEditPart extends BaseEditPart {
             switch (featureId) {
             case XmlmapPackage.INPUT_XML_TREE__NODES:
                 refreshChildren();
+                break;
+            case XmlmapPackage.INPUT_XML_TREE__ACTIVATE_CONDENSED_TOOL:
+                getFigure().validate();
             }
         }
     }
@@ -94,6 +87,31 @@ public class InputXmlTreeEditPart extends BaseEditPart {
     protected void createEditPolicies() {
         super.createEditPolicies();
         installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
+        installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
+    }
+
+    private void addFigureListener(final IFigure figure) {
+        figure.addMouseListener(new MouseListener() {
+
+            public void mousePressed(MouseEvent me) {
+                IFigure findFigureAt = figure.findFigureAt(me.x, me.y);
+                if (findFigureAt instanceof ExpressionFigure) {
+                    ExpressionFigure expressionFigure = (ExpressionFigure) findFigureAt;
+                    if (oldExpression == null) {
+
+                    }
+                } else {
+
+                }
+            }
+
+            public void mouseReleased(MouseEvent me) {
+            }
+
+            public void mouseDoubleClicked(MouseEvent me) {
+            }
+
+        });
     }
 
 }

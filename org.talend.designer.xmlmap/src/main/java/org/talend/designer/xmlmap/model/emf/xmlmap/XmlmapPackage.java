@@ -118,6 +118,70 @@ public interface XmlmapPackage extends EPackage {
     int XML_MAP_DATA_FEATURE_COUNT = TalendFilePackage.ABSTRACT_EXTERNAL_DATA_FEATURE_COUNT + 4;
 
     /**
+     * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl <em>Abstract In Out Tree</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getAbstractInOutTree()
+     * @generated
+     */
+    int ABSTRACT_IN_OUT_TREE = 11;
+
+    /**
+     * The feature id for the '<em><b>Expression Filter</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_IN_OUT_TREE__EXPRESSION_FILTER = 0;
+
+    /**
+     * The feature id for the '<em><b>Activate Expression Filter</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_IN_OUT_TREE__ACTIVATE_EXPRESSION_FILTER = 1;
+
+    /**
+     * The feature id for the '<em><b>Activate Condensed Tool</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_IN_OUT_TREE__ACTIVATE_CONDENSED_TOOL = 2;
+
+    /**
+     * The feature id for the '<em><b>Minimized</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_IN_OUT_TREE__MINIMIZED = 3;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_IN_OUT_TREE__NAME = 4;
+
+    /**
+     * The number of structural features of the '<em>Abstract In Out Tree</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_IN_OUT_TREE_FEATURE_COUNT = 5;
+
+    /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputXmlTreeImpl <em>Input Xml Tree</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -128,13 +192,40 @@ public interface XmlmapPackage extends EPackage {
     int INPUT_XML_TREE = 1;
 
     /**
-     * The feature id for the '<em><b>Nodes</b></em>' containment reference list.
+     * The feature id for the '<em><b>Expression Filter</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int INPUT_XML_TREE__NODES = 0;
+    int INPUT_XML_TREE__EXPRESSION_FILTER = ABSTRACT_IN_OUT_TREE__EXPRESSION_FILTER;
+
+    /**
+     * The feature id for the '<em><b>Activate Expression Filter</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_XML_TREE__ACTIVATE_EXPRESSION_FILTER = ABSTRACT_IN_OUT_TREE__ACTIVATE_EXPRESSION_FILTER;
+
+    /**
+     * The feature id for the '<em><b>Activate Condensed Tool</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_XML_TREE__ACTIVATE_CONDENSED_TOOL = ABSTRACT_IN_OUT_TREE__ACTIVATE_CONDENSED_TOOL;
+
+    /**
+     * The feature id for the '<em><b>Minimized</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_XML_TREE__MINIMIZED = ABSTRACT_IN_OUT_TREE__MINIMIZED;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -143,7 +234,16 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int INPUT_XML_TREE__NAME = 1;
+    int INPUT_XML_TREE__NAME = ABSTRACT_IN_OUT_TREE__NAME;
+
+    /**
+     * The feature id for the '<em><b>Nodes</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_XML_TREE__NODES = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 0;
 
     /**
      * The feature id for the '<em><b>Lookup</b></em>' attribute.
@@ -152,7 +252,43 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int INPUT_XML_TREE__LOOKUP = 2;
+    int INPUT_XML_TREE__LOOKUP = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 1;
+
+    /**
+     * The feature id for the '<em><b>Matching Mode</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_XML_TREE__MATCHING_MODE = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 2;
+
+    /**
+     * The feature id for the '<em><b>Lookup Mode</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_XML_TREE__LOOKUP_MODE = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 3;
+
+    /**
+     * The feature id for the '<em><b>Inner Join</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_XML_TREE__INNER_JOIN = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 4;
+
+    /**
+     * The feature id for the '<em><b>Persistent</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_XML_TREE__PERSISTENT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 5;
 
     /**
      * The number of structural features of the '<em>Input Xml Tree</em>' class.
@@ -161,7 +297,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int INPUT_XML_TREE_FEATURE_COUNT = 3;
+    int INPUT_XML_TREE_FEATURE_COUNT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 6;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl <em>Output Xml Tree</em>}' class.
@@ -174,13 +310,40 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_XML_TREE = 2;
 
     /**
-     * The feature id for the '<em><b>Nodes</b></em>' containment reference list.
+     * The feature id for the '<em><b>Expression Filter</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int OUTPUT_XML_TREE__NODES = 0;
+    int OUTPUT_XML_TREE__EXPRESSION_FILTER = ABSTRACT_IN_OUT_TREE__EXPRESSION_FILTER;
+
+    /**
+     * The feature id for the '<em><b>Activate Expression Filter</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_XML_TREE__ACTIVATE_EXPRESSION_FILTER = ABSTRACT_IN_OUT_TREE__ACTIVATE_EXPRESSION_FILTER;
+
+    /**
+     * The feature id for the '<em><b>Activate Condensed Tool</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_XML_TREE__ACTIVATE_CONDENSED_TOOL = ABSTRACT_IN_OUT_TREE__ACTIVATE_CONDENSED_TOOL;
+
+    /**
+     * The feature id for the '<em><b>Minimized</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_XML_TREE__MINIMIZED = ABSTRACT_IN_OUT_TREE__MINIMIZED;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -189,7 +352,34 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int OUTPUT_XML_TREE__NAME = 1;
+    int OUTPUT_XML_TREE__NAME = ABSTRACT_IN_OUT_TREE__NAME;
+
+    /**
+     * The feature id for the '<em><b>Nodes</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_XML_TREE__NODES = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 0;
+
+    /**
+     * The feature id for the '<em><b>Reject</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_XML_TREE__REJECT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 1;
+
+    /**
+     * The feature id for the '<em><b>Reject Inner Join</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_XML_TREE__REJECT_INNER_JOIN = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 2;
 
     /**
      * The number of structural features of the '<em>Output Xml Tree</em>' class.
@@ -198,7 +388,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int OUTPUT_XML_TREE_FEATURE_COUNT = 2;
+    int OUTPUT_XML_TREE_FEATURE_COUNT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 3;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarTableImpl <em>Var Table</em>}' class.
@@ -846,7 +1036,7 @@ public interface XmlmapPackage extends EPackage {
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getNodeType()
      * @generated
      */
-    int NODE_TYPE = 11;
+    int NODE_TYPE = 12;
 
 
     /**
@@ -925,17 +1115,6 @@ public interface XmlmapPackage extends EPackage {
     EReference getInputXmlTree_Nodes();
 
     /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#getName <em>Name</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Name</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#getName()
-     * @see #getInputXmlTree()
-     * @generated
-     */
-    EAttribute getInputXmlTree_Name();
-
-    /**
      * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#isLookup <em>Lookup</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -945,6 +1124,50 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EAttribute getInputXmlTree_Lookup();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#getMatchingMode <em>Matching Mode</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Matching Mode</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#getMatchingMode()
+     * @see #getInputXmlTree()
+     * @generated
+     */
+    EAttribute getInputXmlTree_MatchingMode();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#getLookupMode <em>Lookup Mode</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Lookup Mode</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#getLookupMode()
+     * @see #getInputXmlTree()
+     * @generated
+     */
+    EAttribute getInputXmlTree_LookupMode();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#isInnerJoin <em>Inner Join</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Inner Join</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#isInnerJoin()
+     * @see #getInputXmlTree()
+     * @generated
+     */
+    EAttribute getInputXmlTree_InnerJoin();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#isPersistent <em>Persistent</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Persistent</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree#isPersistent()
+     * @see #getInputXmlTree()
+     * @generated
+     */
+    EAttribute getInputXmlTree_Persistent();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree <em>Output Xml Tree</em>}'.
@@ -968,15 +1191,26 @@ public interface XmlmapPackage extends EPackage {
     EReference getOutputXmlTree_Nodes();
 
     /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#getName <em>Name</em>}'.
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isReject <em>Reject</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Name</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#getName()
+     * @return the meta object for the attribute '<em>Reject</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isReject()
      * @see #getOutputXmlTree()
      * @generated
      */
-    EAttribute getOutputXmlTree_Name();
+    EAttribute getOutputXmlTree_Reject();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isRejectInnerJoin <em>Reject Inner Join</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Reject Inner Join</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isRejectInnerJoin()
+     * @see #getOutputXmlTree()
+     * @generated
+     */
+    EAttribute getOutputXmlTree_RejectInnerJoin();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarTable <em>Var Table</em>}'.
@@ -1301,6 +1535,71 @@ public interface XmlmapPackage extends EPackage {
     EReference getIConnection_Target();
 
                 /**
+     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree <em>Abstract In Out Tree</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Abstract In Out Tree</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree
+     * @generated
+     */
+    EClass getAbstractInOutTree();
+
+                /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getExpressionFilter <em>Expression Filter</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Expression Filter</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getExpressionFilter()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EAttribute getAbstractInOutTree_ExpressionFilter();
+
+                /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateExpressionFilter <em>Activate Expression Filter</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Activate Expression Filter</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateExpressionFilter()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EAttribute getAbstractInOutTree_ActivateExpressionFilter();
+
+                /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateCondensedTool <em>Activate Condensed Tool</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Activate Condensed Tool</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateCondensedTool()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EAttribute getAbstractInOutTree_ActivateCondensedTool();
+
+                /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMinimized <em>Minimized</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Minimized</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMinimized()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EAttribute getAbstractInOutTree_Minimized();
+
+                /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getName <em>Name</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Name</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getName()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EAttribute getAbstractInOutTree_Name();
+
+                /**
      * Returns the meta object for enum '{@link org.talend.designer.xmlmap.model.emf.xmlmap.NodeType <em>Node Type</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1393,20 +1692,44 @@ public interface XmlmapPackage extends EPackage {
         EReference INPUT_XML_TREE__NODES = eINSTANCE.getInputXmlTree_Nodes();
 
         /**
-         * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute INPUT_XML_TREE__NAME = eINSTANCE.getInputXmlTree_Name();
-
-        /**
          * The meta object literal for the '<em><b>Lookup</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
          */
         EAttribute INPUT_XML_TREE__LOOKUP = eINSTANCE.getInputXmlTree_Lookup();
+
+        /**
+         * The meta object literal for the '<em><b>Matching Mode</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute INPUT_XML_TREE__MATCHING_MODE = eINSTANCE.getInputXmlTree_MatchingMode();
+
+        /**
+         * The meta object literal for the '<em><b>Lookup Mode</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute INPUT_XML_TREE__LOOKUP_MODE = eINSTANCE.getInputXmlTree_LookupMode();
+
+        /**
+         * The meta object literal for the '<em><b>Inner Join</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute INPUT_XML_TREE__INNER_JOIN = eINSTANCE.getInputXmlTree_InnerJoin();
+
+        /**
+         * The meta object literal for the '<em><b>Persistent</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute INPUT_XML_TREE__PERSISTENT = eINSTANCE.getInputXmlTree_Persistent();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl <em>Output Xml Tree</em>}' class.
@@ -1427,12 +1750,20 @@ public interface XmlmapPackage extends EPackage {
         EReference OUTPUT_XML_TREE__NODES = eINSTANCE.getOutputXmlTree_Nodes();
 
         /**
-         * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+         * The meta object literal for the '<em><b>Reject</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute OUTPUT_XML_TREE__NAME = eINSTANCE.getOutputXmlTree_Name();
+        EAttribute OUTPUT_XML_TREE__REJECT = eINSTANCE.getOutputXmlTree_Reject();
+
+        /**
+         * The meta object literal for the '<em><b>Reject Inner Join</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute OUTPUT_XML_TREE__REJECT_INNER_JOIN = eINSTANCE.getOutputXmlTree_RejectInnerJoin();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarTableImpl <em>Var Table</em>}' class.
@@ -1689,6 +2020,56 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EReference ICONNECTION__TARGET = eINSTANCE.getIConnection_Target();
+
+                                /**
+         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl <em>Abstract In Out Tree</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getAbstractInOutTree()
+         * @generated
+         */
+        EClass ABSTRACT_IN_OUT_TREE = eINSTANCE.getAbstractInOutTree();
+
+                                /**
+         * The meta object literal for the '<em><b>Expression Filter</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TREE__EXPRESSION_FILTER = eINSTANCE.getAbstractInOutTree_ExpressionFilter();
+
+                                /**
+         * The meta object literal for the '<em><b>Activate Expression Filter</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TREE__ACTIVATE_EXPRESSION_FILTER = eINSTANCE.getAbstractInOutTree_ActivateExpressionFilter();
+
+                                /**
+         * The meta object literal for the '<em><b>Activate Condensed Tool</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TREE__ACTIVATE_CONDENSED_TOOL = eINSTANCE.getAbstractInOutTree_ActivateCondensedTool();
+
+                                /**
+         * The meta object literal for the '<em><b>Minimized</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TREE__MINIMIZED = eINSTANCE.getAbstractInOutTree_Minimized();
+
+                                /**
+         * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TREE__NAME = eINSTANCE.getAbstractInOutTree_Name();
 
                                 /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.NodeType <em>Node Type</em>}' enum.

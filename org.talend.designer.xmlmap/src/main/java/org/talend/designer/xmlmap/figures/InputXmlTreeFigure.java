@@ -21,7 +21,11 @@ import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
+import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
+import org.talend.designer.xmlmap.figures.layout.TreeLayout;
+import org.talend.designer.xmlmap.figures.treesettings.InputTreeSettingContainer;
+import org.talend.designer.xmlmap.figures.treetools.InputTreeToolBarContainer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
@@ -39,14 +43,24 @@ public class InputXmlTreeFigure extends GenericFigure {
 
     protected Figure tableColumnstitle;
 
+    private Figure header;
+
+    private InputTreeToolBarContainer imageButtonsFigure;
+
     public InputXmlTreeFigure(InputXmlTree xmlTree) {
         this.xmlTree = xmlTree;
         createContents();
     }
 
     protected void createContents() {
-        setLayoutManager(new ToolbarLayout());
+        setLayoutManager(new TreeLayout(xmlTree));
         this.setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
+
+        header = new Figure();
+        header.setOpaque(true);
+        header.setBackgroundColor(ColorConstants.tooltipBackground);
+        header.setBorder(new RowBorder());
+        header.setLayoutManager(new EqualWidthLayout());
         Label tableName = new Label();
         // tableName.setBorder(new LineBorder(ColorConstants.black));
         tableName.setText(xmlTree.isLookup() ? "lookup : " : "main :" + xmlTree.getName());
@@ -54,9 +68,18 @@ public class InputXmlTreeFigure extends GenericFigure {
         tableName.setLabelAlignment(PositionConstants.LEFT);
         tableName.setBorder(new MarginBorder(5, 10, 5, -1));
 
-        tableName.setOpaque(true);
-        tableName.setBackgroundColor(ColorConstants.yellow);
-        this.add(tableName);
+        header.add(tableName);
+        imageButtonsFigure = new InputTreeToolBarContainer(xmlTree);
+
+        header.setOpaque(true);
+        header.setBackgroundColor(ColorConstants.yellow);
+        this.add(header);
+
+        if (xmlTree.isLookup()) {
+            header.add(imageButtonsFigure);
+            InputTreeSettingContainer settingContainer = new InputTreeSettingContainer(xmlTree);
+            this.add(settingContainer);
+        }
 
         tableColumnstitle = new ColumnTitleFigure();
         this.add(tableColumnstitle);
@@ -81,7 +104,7 @@ public class InputXmlTreeFigure extends GenericFigure {
         return this.columnContainer;
     }
 
-    class ColumnTitleFigure extends ToolBarContainer {
+    class ColumnTitleFigure extends Figure {
 
         public ColumnTitleFigure() {
             if (xmlTree.isLookup()) {

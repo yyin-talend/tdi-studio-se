@@ -10,14 +10,11 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.xmlmap.figures;
-
-import org.eclipse.draw2d.Label;
-
+package org.talend.designer.xmlmap.figures.cells;
 
 /**
- * DOC Administrator  class global comment. Detailled comment
+ * DOC Administrator class global comment. Detailled comment
  */
-public class VarNodeTypeLabel extends Label implements IComboCell {
+public interface ITextAreaCell {
 
 }

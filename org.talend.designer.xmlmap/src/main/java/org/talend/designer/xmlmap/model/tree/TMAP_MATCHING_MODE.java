@@ -27,11 +27,11 @@ public enum TMAP_MATCHING_MODE implements IUIMatchingMode {
                  "TMAP_MATCHING_MODE.UNIQUE_MATCH.tooltip", ImageInfo.UNIQUE_MATCH), //$NON-NLS-1$
     FIRST_MATCH(MATCHING_MODE.FIRST_MATCH, "TMAP_MATCHING_MODE.FIRST_MATCH.label", //$NON-NLS-1$
                 "TMAP_MATCHING_MODE.FIRST_MATCH.tooltip", ImageInfo.FIRST_MATCH), //$NON-NLS-1$
-    LAST_MATCH(/* @deprecated: replaced by UNIQUE_MATCH */
-    MATCHING_MODE.LAST_MATCH, "TMAP_MATCHING_MODE.LAST_MATCH.label", //$NON-NLS-1$
+    /* @deprecated: replaced by UNIQUE_MATCH */
+    LAST_MATCH(MATCHING_MODE.LAST_MATCH, "TMAP_MATCHING_MODE.LAST_MATCH.label", //$NON-NLS-1$
                "TMAP_MATCHING_MODE.LAST_MATCH.tooltip", ImageInfo.LAST_MATCH), //$NON-NLS-1$
     ALL_MATCHES(MATCHING_MODE.ALL_MATCHES, "TMAP_MATCHING_MODE.ALL_MATCHES.label", //$NON-NLS-1$ 
-                "TMAP_MATCHING_MODE.ALL_MATCHES.tooltip", ImageInfo.ALL_MATCHES), ; //$NON-NLS-1$
+                "TMAP_MATCHING_MODE.ALL_MATCHES.tooltip", ImageInfo.ALL_MATCHES), ; //$NON-NLS-1$ 
 
     private String label;
 

@@ -15,21 +15,23 @@ package org.talend.designer.xmlmap.figures.layout;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
+import org.talend.designer.xmlmap.figures.treesettings.OutputTreeSettingContainer;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class TreeNodeLayout extends EqualWidthLayout {
+public class OutTreeLayout extends ToolbarLayout {
 
-    private AbstractGraphicalEditPart treeEditPart;
+    private OutputXmlTree outputTree;
 
-    public TreeNodeLayout(AbstractGraphicalEditPart treeEditPart) {
-        super();
-        this.treeEditPart = treeEditPart;
+    public OutTreeLayout(OutputXmlTree outputTree) {
+        this.outputTree = outputTree;
     }
 
     @Override
@@ -41,12 +43,14 @@ public class TreeNodeLayout extends EqualWidthLayout {
         int y = clientArea.y;
         int availableHeight = clientArea.height;
 
-        Rectangle treeBounds = treeEditPart.getFigure().getBounds();
-        int avialableExpressionWidth = (treeBounds.width - numChildren - 1) / numChildren;
-
         Dimension prefSizes[] = new Dimension[numChildren];
         Dimension minSizes[] = new Dimension[numChildren];
 
+        // Calculate the width and height hints. If it's a vertical
+        // ToolBarLayout,
+        // then ignore the height hint (set it to -1); otherwise, ignore the
+        // width hint. These hints will be passed to the children of the parent
+        // figure when getting their preferred size.
         int wHint = -1;
         int hHint = -1;
         if (isHorizontal()) {
@@ -54,6 +58,15 @@ public class TreeNodeLayout extends EqualWidthLayout {
         } else {
             wHint = parent.getClientArea(Rectangle.SINGLETON).width;
         }
+
+        /*
+         * Calculate sum of preferred heights of all children(totalHeight). Calculate sum of minimum heights of all
+         * children(minHeight). Cache Preferred Sizes and Minimum Sizes of all children.
+         * 
+         * totalHeight is the sum of the preferred heights of all children totalMinHeight is the sum of the minimum
+         * heights of all children prefMinSumHeight is the sum of the difference between all children's preferred
+         * heights and minimum heights. (This is used as a ratio to calculate how much each child will shrink).
+         */
         IFigure child;
         int totalHeight = 0;
         int totalMinHeight = 0;
@@ -84,50 +97,61 @@ public class TreeNodeLayout extends EqualWidthLayout {
             amntShrinkHeight = 0;
         }
 
-        int maxHeightInRow = 0;
-        int totalWith = 0;
-
         for (int i = 0; i < numChildren; i++) {
             int amntShrinkCurrentHeight = 0;
             int prefHeight = prefSizes[i].height;
             int minHeight = minSizes[i].height;
             int prefWidth = prefSizes[i].width;
+            int minWidth = minSizes[i].width;
             Rectangle newBounds = new Rectangle(x, y, prefWidth, prefHeight);
 
             child = (IFigure) children.get(i);
-            if (prefMinSumHeight != 0)
-                amntShrinkCurrentHeight = (prefHeight - minHeight) * amntShrinkHeight / (prefMinSumHeight);
+            if (outputTree != null) {
+                if (child instanceof OutputTreeSettingContainer) {
+                    if (!outputTree.isActivateCondensedTool()) {
+                        child.setBounds(new Rectangle(x, y, 0, 0));
+                        continue;
+                    }
+                }
 
-            if (i == 0) {
-                newBounds.width = avialableExpressionWidth;
-            } else if (i == numChildren - 1) {
-                if (newBounds.width < avialableExpressionWidth) {
-                    newBounds.width = avialableExpressionWidth;
+                if (child instanceof FilterContainer) {
+                    if (!outputTree.isActivateExpressionFilter()) {
+                        child.setBounds(new Rectangle(x, y, 0, 0));
+                        continue;
+                    }
                 }
             }
 
+            if (prefMinSumHeight != 0)
+                amntShrinkCurrentHeight = (prefHeight - minHeight) * amntShrinkHeight / (prefMinSumHeight);
+
+            int width = Math.min(prefWidth, transposer.t(child.getMaximumSize()).width);
+            if (matchWidth)
+                width = transposer.t(child.getMaximumSize()).width;
+            width = Math.max(minWidth, Math.min(clientArea.width, width));
+            newBounds.width = width;
+
+            int adjust = clientArea.width - width;
+            switch (minorAlignment) {
+            case ALIGN_TOPLEFT:
+                adjust = 0;
+                break;
+            case ALIGN_CENTER:
+                adjust /= 2;
+                break;
+            case ALIGN_BOTTOMRIGHT:
+                break;
+            }
+            newBounds.x += adjust;
             newBounds.height -= amntShrinkCurrentHeight;
             child.setBounds(transposer.t(newBounds));
 
             amntShrinkHeight -= amntShrinkCurrentHeight;
             prefMinSumHeight -= (prefHeight - minHeight);
-            if (i != 0 && i % numChildren == 0) {
-                y += newBounds.height + spacing;
-            }
-            x += newBounds.width + spacing;
-
-            totalWith = totalWith + newBounds.width + spacing;
-            maxHeightInRow = Math.max(maxHeightInRow, newBounds.height);
+            y += newBounds.height + spacing;
         }
-
-        for (int i = 0; i < numChildren; i++) {
-            child = (IFigure) children.get(i);
-            child.getBounds().height = maxHeightInRow;
-        }
-
     }
 
-    @Override
     protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {
         Insets insets = container.getInsets();
         if (isHorizontal()) {
@@ -150,19 +174,35 @@ public class TreeNodeLayout extends EqualWidthLayout {
         }
 
         prefSize.height += Math.max(0, children.size() - 1) * spacing;
+        return transposer.t(prefSize).expand(insets.getWidth(), insets.getHeight()).union(getBorderPreferredSize(container));
+    }
 
-        /*
-         * add expression with ,because calculatePreferredSize of ExpressionLayout returns Dimension(0,0) , need modify
-         * later
-         */
-        Rectangle treeBounds = treeEditPart.getFigure().getBounds();
-        int avialableExpressionWidth = (treeBounds.width - container.getChildren().size() - 1) / container.getChildren().size();
+    private Dimension calculateChildrenSize(List children, int wHint, int hHint, boolean preferred) {
+        Dimension childSize;
+        IFigure child;
+        int height = 0, width = 0;
+        for (int i = 0; i < children.size(); i++) {
+            child = (IFigure) children.get(i);
 
-        Dimension pSize = transposer.t(prefSize).expand(insets.getWidth(), insets.getHeight())
-                .union(getBorderPreferredSize(container));
+            if (outputTree != null) {
+                if (child instanceof OutputTreeSettingContainer) {
+                    if (!outputTree.isActivateCondensedTool()) {
+                        continue;
+                    }
+                }
 
-        return new Dimension(pSize.width + avialableExpressionWidth, pSize.height);
-
+                if (child instanceof FilterContainer) {
+                    if (!outputTree.isActivateExpressionFilter()) {
+                        continue;
+                    }
+                }
+            }
+            childSize = transposer.t(preferred ? getChildPreferredSize(child, wHint, hHint) : getChildMinimumSize(child, wHint,
+                    hHint));
+            height += childSize.height;
+            width = Math.max(width, childSize.width);
+        }
+        return new Dimension(width, height);
     }
 
 }

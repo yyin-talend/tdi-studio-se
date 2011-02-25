@@ -25,6 +25,7 @@ public enum ImageInfo {
     ADD("/icons/add.png"), //$NON-NLS-1$
     REFRESH("/icons/arrow_refresh.png"), //$NON-NLS-1$
     REFRESH_CACHE("/icons/arrow_refresh_cache.png"), //$NON-NLS-1$
+    ACTIVATE_FILTER_ICON("/icons/addfilter.png"), //$NON-NLS-1$
 
     ARROW_RIGHT("/icons/arrow_right.png"), //$NON-NLS-1$
     ARROW_RIGHT_EDIT("/icons/arrow_right_edit.png"), //$NON-NLS-1$
@@ -33,6 +34,8 @@ public enum ImageInfo {
     UNIQUE_MATCH("/icons/last_match.png"), //$NON-NLS-1$
     LAST_MATCH("/icons/last_match.png"), //$NON-NLS-1$
     ALL_MATCHES("/icons/all_matches.png"), //$NON-NLS-1$
+
+    FILTER_BUTTON("/icons/button.jpg"),
 
     LOOKUP_KEY_ICON("/icons/lookup_key16.png"), //$NON-NLS-1$
     CONDENSED_TOOL_ICON("/icons/condensedToolItem.png"),

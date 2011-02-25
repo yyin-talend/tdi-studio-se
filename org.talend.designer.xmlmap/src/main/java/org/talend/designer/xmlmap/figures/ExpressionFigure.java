@@ -17,6 +17,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PositionConstants;
 import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
+import org.talend.designer.xmlmap.figures.cells.IExpressionBuilderCell;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 
 /**

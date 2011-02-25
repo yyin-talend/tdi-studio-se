@@ -88,7 +88,7 @@ public class VarTableContainerFigure extends Figure {
         return this.columnsContainer;
     }
 
-    class ColumnTitleFigure extends ToolBarContainer {
+    class ColumnTitleFigure extends Figure {
 
         public ColumnTitleFigure() {
 

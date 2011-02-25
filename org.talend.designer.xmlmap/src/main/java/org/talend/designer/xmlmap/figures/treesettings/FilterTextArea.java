@@ -1,0 +1,31 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2011 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.designer.xmlmap.figures.treesettings;
+
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.LineBorder;
+import org.talend.designer.xmlmap.figures.cells.ITextAreaCell;
+import org.talend.designer.xmlmap.ui.resource.ColorInfo;
+import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
+
+/**
+ * DOC talend class global comment. Detailled comment
+ */
+public class FilterTextArea extends Label implements ITextAreaCell {
+
+    public FilterTextArea() {
+        setBackgroundColor(ColorConstants.white);
+        setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
+    }
+}

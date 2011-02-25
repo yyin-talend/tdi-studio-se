@@ -21,6 +21,7 @@ import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
+import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 
 /**
  * wchen class global comment. Detailled comment
@@ -70,6 +71,7 @@ public class OutputXmlTreeEditPart extends BaseEditPart {
     protected void createEditPolicies() {
         super.createEditPolicies();
         installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
+        installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
     }
 
 }

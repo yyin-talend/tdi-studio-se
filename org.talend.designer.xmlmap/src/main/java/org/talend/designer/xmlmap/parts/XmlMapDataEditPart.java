@@ -27,7 +27,6 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.LayerConstants;
-import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.TreeContainerLayout;
 import org.talend.designer.xmlmap.figures.layout.XmlMapDataLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
@@ -49,9 +48,6 @@ public class XmlMapDataEditPart extends BaseEditPart {
     protected IFigure createFigure() {
         Figure mainFigure = new Figure();
 
-        EqualWidthLayout manager = new EqualWidthLayout();
-        manager.setUseParentHeight(true);
-        // mainFigure.setLayoutManager(manager);
         XmlMapDataLayout manager2 = new XmlMapDataLayout(this);
         mainFigure.setLayoutManager(manager2);
 
