@@ -20,7 +20,13 @@ imports="
 					com.marketo.www.mktows.LeadRecord[] leadRecords_<%=cid%> = leadRecordList_<%=cid%>.toArray(new com.marketo.www.mktows.LeadRecord[leadRecordList_<%=cid%>.size()]);
 					try{
 						client_<%=cid%>.syncMultipleLeads(<%=deDupenabled%>,leadRecords_<%=cid%>);
+						nb_call_<%=cid%>++;		
 					}catch(Exception ex_<%=cid%>){
+						if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){
+			    			if(!client_<%=cid%>.isSystemError((org.apache.axis.AxisFault)ex_<%=cid%>)){
+								nb_call_<%=cid%>++;		
+							}
+			    		}
 						<%
 				        if (dieOnError) {
 				        %>
@@ -38,3 +44,4 @@ imports="
 <%				
 			}
 %>
+globalMap.put("<%=cid %>_NB_CALL",nb_call_<%=cid%>);     

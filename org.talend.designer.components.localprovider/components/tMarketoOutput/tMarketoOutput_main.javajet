@@ -108,6 +108,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 					Integer marketoId_<%=cid%> = null;
 					try{
 						com.marketo.www.mktows.ResultSyncLead syncLead_<%=cid%> = client_<%=cid%>.syncLead(false,null,client_<%=cid%>.buildLead(leadAllAttrList_<%=cid%>));
+						nb_call_<%=cid%>++;
 						com.marketo.www.mktows.SyncStatus syncStatus_<%=cid%> = syncLead_<%=cid%>.getSyncStatus();
 						if (!com.marketo.www.mktows.LeadSyncStatus.FAILED.equals(syncStatus_<%=cid%>.getStatus())) {
 							hasFault_<%=cid%> = false;
@@ -118,6 +119,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 							marketoId_<%=cid%> = syncStatus_<%=cid%>.getLeadId();
 						}
 					}catch(Exception ex_<%=cid%>){
+						if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){
+			    			if(!client_<%=cid%>.isSystemError((org.apache.axis.AxisFault)ex_<%=cid%>)){
+								nb_call_<%=cid%>++;		
+							}
+			    		}
 						hasFault_<%=cid%> = true;
 						<%
 						if (dieOnError) {
@@ -141,7 +147,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 						com.marketo.www.mktows.LeadRecord[] leadRecords_<%=cid%> = leadRecordList_<%=cid%>.toArray(new com.marketo.www.mktows.LeadRecord[leadRecordList_<%=cid%>.size()]);
 						try{
 							com.marketo.www.mktows.ResultSyncMultipleLeads syncLeads_<%=cid%> = client_<%=cid%>.syncMultipleLeads(<%=deDupenabled%>,leadRecords_<%=cid%>);
+							nb_call_<%=cid%>++;
 						 }catch(Exception ex_<%=cid%>){
+						 	if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){
+				    			if(!client_<%=cid%>.isSystemError((org.apache.axis.AxisFault)ex_<%=cid%>)){
+									nb_call_<%=cid%>++;		
+								}
+				    		}
 							<%
 					        if (dieOnError) {
 					        %>

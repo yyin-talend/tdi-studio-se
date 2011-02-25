@@ -29,7 +29,9 @@
 	}
 	String timeout = ElementParameterParser.getValue(node, "__TIMEOUT__");
     List<IMetadataTable> metadatas = node.getMetadataList();
-
+%>
+int nb_call_<%=cid%> = 0;
+<%
 if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     IMetadataTable metadata = metadatas.get(0);
     

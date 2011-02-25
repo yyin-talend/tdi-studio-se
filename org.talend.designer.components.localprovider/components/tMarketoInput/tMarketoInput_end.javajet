@@ -73,3 +73,4 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 	}
 }	
 %>	
+globalMap.put("<%=cid %>_NB_CALL",nb_call_<%=cid%>);     

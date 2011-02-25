@@ -72,7 +72,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 	if(!listTypeFlag_<%=cid%>.equals(<%=conn.getName()%>.ListKeyType) || !listValueFlag_<%=cid%>.equals(<%=conn.getName()%>.ListKeyValue)){
 		try{
 			client_<%=cid%>.listOperation("<%=operation%>",listTypeFlag_<%=cid%>,listValueFlag_<%=cid%>,leadKeyList_<%=cid%>.toArray(new com.marketo.www.mktows.LeadKey[leadKeyList_<%=cid%>.size()]),<%=strict%>);
+			nb_call_<%=cid%>++;		
 		}catch(Exception ex_<%=cid%>){
+			if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){
+    			if(!client_<%=cid%>.isSystemError((org.apache.axis.AxisFault)ex_<%=cid%>)){
+					nb_call_<%=cid%>++;		
+				}
+    		}
 			<%
 	        if (strict) {
 	        %>
@@ -95,7 +101,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 	try{
 		whetherReject_<%=cid%> = false;
 		resultListOperation_<%=cid%> = client_<%=cid%>.listOperation("<%=operation%>",<%=conn.getName()%>.ListKeyType,<%=conn.getName()%>.ListKeyValue,leadKeyList_<%=cid%>.toArray(new com.marketo.www.mktows.LeadKey[leadKeyList_<%=cid%>.size()]),<%=strict%>);
+		nb_call_<%=cid%>++;
 	}catch(Exception ex_<%=cid%>){
+		if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){
+			if(!client_<%=cid%>.isSystemError((org.apache.axis.AxisFault)ex_<%=cid%>)){
+				nb_call_<%=cid%>++;		
+			}
+		}
 		whetherReject_<%=cid%> = true;
 		<%
         if (strict) {
