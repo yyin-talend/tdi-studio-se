@@ -109,7 +109,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%		
 						if(coluLabel.equals("link")){
 %>
-							<%=coluLabel%>Element.addAttribute("href", <%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : <%=conn.getName() %>.<%=column.getLabel() %>);
+							//<%=coluLabel%>Element.addAttribute("href", <%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : <%=conn.getName() %>.<%=column.getLabel() %>);
+
+							<%=coluLabel%>Element.setText(<%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : <%=conn.getName() %>.<%=column.getLabel() %>);
 <%
     					}else if(javaType == JavaTypesManager.STRING ){
 %>	
