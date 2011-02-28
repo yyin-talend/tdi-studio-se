@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -51,16 +52,20 @@ public class FillParametersForDatabaseConnectionMigrationTask extends AbstractIt
     public ExecutionResult execute(Item item) {
         if (item instanceof DatabaseConnectionItem) {
             DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
-            DatabaseConnection dbconn = (DatabaseConnection) dbItem.getConnection();
-            EList<orgomg.cwm.objectmodel.core.Package> pkgs = dbconn.getDataPackage();
-            fillParametersForColumns(pkgs); // get all tdtables and set sqldatatype
-            dbconn.setName(dbItem.getProperty().getLabel());
-            try {
-                factory.save(dbItem, true);
-                return ExecutionResult.SUCCESS_WITH_ALERT;
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-                return ExecutionResult.FAILURE;
+            Connection connection = dbItem.getConnection();
+            // for bug 18985
+            if (connection instanceof DatabaseConnection) {
+                DatabaseConnection dbconn = (DatabaseConnection) connection;
+                EList<orgomg.cwm.objectmodel.core.Package> pkgs = dbconn.getDataPackage();
+                fillParametersForColumns(pkgs); // get all tdtables and set sqldatatype
+                dbconn.setName(dbItem.getProperty().getLabel());
+                try {
+                    factory.save(dbItem, true);
+                    return ExecutionResult.SUCCESS_WITH_ALERT;
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                    return ExecutionResult.FAILURE;
+                }
             }
         }
         return ExecutionResult.SUCCESS_NO_ALERT;
