@@ -824,7 +824,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 						%>
 						java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
 						if (globalMap.get("<%=cid%>_COPY_STARTED") == null) {
-						    ((com.vertica.PGStatement)stmt_<%=cid%>).startCopyIn(template_<%=cid%>, bais_<%=cid%>);
+						  
+						    ((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
 						    globalMap.put("<%=cid%>_COPY_STARTED",Boolean.TRUE);
 						} else {
 						    ((com.vertica.PGStatement)stmt_<%=cid%>).addStreamToCopyIn(bais_<%=cid%>);
