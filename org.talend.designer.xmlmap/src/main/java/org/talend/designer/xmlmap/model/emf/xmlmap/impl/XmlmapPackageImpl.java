@@ -21,7 +21,9 @@ import org.talend.designer.core.model.utils.emf.talendfile.TalendFilePackage;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -116,7 +118,21 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    private EClass filterConnectionEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     private EClass iConnectionEClass = null;
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass iNodeConnectionEClass = null;
 
                 /**
      * <!-- begin-user-doc -->
@@ -543,6 +559,15 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EReference getTreeNode_FilterOutGoingConnections() {
+        return (EReference)treeNodeEClass.getEStructuralFeatures().get(10);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getOutputTreeNode() {
         return outputTreeNodeEClass;
     }
@@ -588,6 +613,33 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EClass getFilterConnection() {
+        return filterConnectionEClass;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getFilterConnection_Source() {
+        return (EReference)filterConnectionEClass.getEStructuralFeatures().get(0);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getFilterConnection_Target() {
+        return (EReference)filterConnectionEClass.getEStructuralFeatures().get(1);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getIConnection() {
         return iConnectionEClass;
     }
@@ -597,8 +649,8 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getIConnection_Source() {
-        return (EReference)iConnectionEClass.getEStructuralFeatures().get(0);
+    public EClass getINodeConnection() {
+        return iNodeConnectionEClass;
     }
 
                 /**
@@ -606,8 +658,17 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getIConnection_Target() {
-        return (EReference)iConnectionEClass.getEStructuralFeatures().get(1);
+    public EReference getINodeConnection_Source() {
+        return (EReference)iNodeConnectionEClass.getEStructuralFeatures().get(0);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getINodeConnection_Target() {
+        return (EReference)iNodeConnectionEClass.getEStructuralFeatures().get(1);
     }
 
                 /**
@@ -669,6 +730,15 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EReference getAbstractInOutTree_FilterIncomingConnections() {
+        return (EReference)abstractInOutTreeEClass.getEStructuralFeatures().get(5);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EEnum getNodeType() {
         return nodeTypeEEnum;
     }
@@ -707,6 +777,14 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEReference(xmlMapDataEClass, XML_MAP_DATA__VAR_TABLES);
         createEReference(xmlMapDataEClass, XML_MAP_DATA__CONNECTIONS);
 
+        abstractInOutTreeEClass = createEClass(ABSTRACT_IN_OUT_TREE);
+        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__EXPRESSION_FILTER);
+        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__ACTIVATE_EXPRESSION_FILTER);
+        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__ACTIVATE_CONDENSED_TOOL);
+        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__MINIMIZED);
+        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__NAME);
+        createEReference(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS);
+
         inputXmlTreeEClass = createEClass(INPUT_XML_TREE);
         createEReference(inputXmlTreeEClass, INPUT_XML_TREE__NODES);
         createEAttribute(inputXmlTreeEClass, INPUT_XML_TREE__LOOKUP);
@@ -744,26 +822,26 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEAttribute(treeNodeEClass, TREE_NODE__MAIN);
         createEReference(treeNodeEClass, TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS);
         createEReference(treeNodeEClass, TREE_NODE__LOOKUP_INCOMING_CONNECTIONS);
+        createEReference(treeNodeEClass, TREE_NODE__FILTER_OUT_GOING_CONNECTIONS);
 
         outputTreeNodeEClass = createEClass(OUTPUT_TREE_NODE);
         createEAttribute(outputTreeNodeEClass, OUTPUT_TREE_NODE__DEFAULT_VALUE);
 
         varNodeEClass = createEClass(VAR_NODE);
 
+        iConnectionEClass = createEClass(ICONNECTION);
+
+        iNodeConnectionEClass = createEClass(INODE_CONNECTION);
+        createEReference(iNodeConnectionEClass, INODE_CONNECTION__SOURCE);
+        createEReference(iNodeConnectionEClass, INODE_CONNECTION__TARGET);
+
         connectionEClass = createEClass(CONNECTION);
 
         lookupConnectionEClass = createEClass(LOOKUP_CONNECTION);
 
-        iConnectionEClass = createEClass(ICONNECTION);
-        createEReference(iConnectionEClass, ICONNECTION__SOURCE);
-        createEReference(iConnectionEClass, ICONNECTION__TARGET);
-
-        abstractInOutTreeEClass = createEClass(ABSTRACT_IN_OUT_TREE);
-        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__EXPRESSION_FILTER);
-        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__ACTIVATE_EXPRESSION_FILTER);
-        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__ACTIVATE_CONDENSED_TOOL);
-        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__MINIMIZED);
-        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__NAME);
+        filterConnectionEClass = createEClass(FILTER_CONNECTION);
+        createEReference(filterConnectionEClass, FILTER_CONNECTION__SOURCE);
+        createEReference(filterConnectionEClass, FILTER_CONNECTION__TARGET);
 
         // Create enums
         nodeTypeEEnum = createEEnum(NODE_TYPE);
@@ -806,8 +884,10 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         treeNodeEClass.getESuperTypes().add(this.getAbstractNode());
         outputTreeNodeEClass.getESuperTypes().add(this.getTreeNode());
         varNodeEClass.getESuperTypes().add(this.getAbstractNode());
-        connectionEClass.getESuperTypes().add(this.getIConnection());
-        lookupConnectionEClass.getESuperTypes().add(this.getIConnection());
+        iNodeConnectionEClass.getESuperTypes().add(this.getIConnection());
+        connectionEClass.getESuperTypes().add(this.getINodeConnection());
+        lookupConnectionEClass.getESuperTypes().add(this.getINodeConnection());
+        filterConnectionEClass.getESuperTypes().add(this.getIConnection());
 
         // Initialize classes and features; add operations and parameters
         initEClass(xmlMapDataEClass, XmlMapData.class, "XmlMapData", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -815,6 +895,14 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEReference(getXmlMapData_OutputTrees(), this.getOutputXmlTree(), null, "outputTrees", null, 0, -1, XmlMapData.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getXmlMapData_VarTables(), this.getVarTable(), null, "varTables", null, 0, -1, XmlMapData.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getXmlMapData_Connections(), this.getIConnection(), null, "connections", null, 0, -1, XmlMapData.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(abstractInOutTreeEClass, AbstractInOutTree.class, "AbstractInOutTree", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getAbstractInOutTree_ExpressionFilter(), ecorePackage.getEString(), "expressionFilter", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractInOutTree_ActivateExpressionFilter(), ecorePackage.getEBoolean(), "activateExpressionFilter", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractInOutTree_ActivateCondensedTool(), ecorePackage.getEBoolean(), "activateCondensedTool", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractInOutTree_Minimized(), ecorePackage.getEBoolean(), "minimized", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractInOutTree_Name(), ecorePackage.getEString(), "name", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getAbstractInOutTree_FilterIncomingConnections(), this.getFilterConnection(), null, "filterIncomingConnections", null, 0, -1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(inputXmlTreeEClass, InputXmlTree.class, "InputXmlTree", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getInputXmlTree_Nodes(), this.getTreeNode(), null, "nodes", null, 0, -1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -853,26 +941,26 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEAttribute(getTreeNode_Main(), ecorePackage.getEBoolean(), "main", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getTreeNode_LookupOutgoingConnections(), this.getLookupConnection(), null, "lookupOutgoingConnections", null, 0, -1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getTreeNode_LookupIncomingConnections(), this.getLookupConnection(), null, "lookupIncomingConnections", null, 0, -1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getTreeNode_FilterOutGoingConnections(), this.getFilterConnection(), null, "filterOutGoingConnections", null, 0, -1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(outputTreeNodeEClass, OutputTreeNode.class, "OutputTreeNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getOutputTreeNode_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, OutputTreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(varNodeEClass, VarNode.class, "VarNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
+        initEClass(iConnectionEClass, IConnection.class, "IConnection", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(iNodeConnectionEClass, INodeConnection.class, "INodeConnection", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getINodeConnection_Source(), this.getAbstractNode(), null, "source", null, 0, 1, INodeConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getINodeConnection_Target(), this.getAbstractNode(), null, "target", null, 0, 1, INodeConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
         initEClass(connectionEClass, Connection.class, "Connection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         initEClass(lookupConnectionEClass, LookupConnection.class, "LookupConnection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-        initEClass(iConnectionEClass, IConnection.class, "IConnection", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getIConnection_Source(), this.getAbstractNode(), null, "source", null, 0, 1, IConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getIConnection_Target(), this.getAbstractNode(), null, "target", null, 0, 1, IConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-        initEClass(abstractInOutTreeEClass, AbstractInOutTree.class, "AbstractInOutTree", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getAbstractInOutTree_ExpressionFilter(), ecorePackage.getEString(), "expressionFilter", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getAbstractInOutTree_ActivateExpressionFilter(), ecorePackage.getEBoolean(), "activateExpressionFilter", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getAbstractInOutTree_ActivateCondensedTool(), ecorePackage.getEBoolean(), "activateCondensedTool", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getAbstractInOutTree_Minimized(), ecorePackage.getEBoolean(), "minimized", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getAbstractInOutTree_Name(), ecorePackage.getEString(), "name", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEClass(filterConnectionEClass, FilterConnection.class, "FilterConnection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getFilterConnection_Source(), this.getTreeNode(), null, "source", null, 0, 1, FilterConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getFilterConnection_Target(), this.getAbstractInOutTree(), null, "target", null, 0, 1, FilterConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         // Initialize enums and add enum literals
         initEEnum(nodeTypeEEnum, NodeType.class, "NodeType");

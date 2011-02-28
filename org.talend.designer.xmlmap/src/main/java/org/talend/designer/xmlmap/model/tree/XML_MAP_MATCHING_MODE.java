@@ -20,18 +20,25 @@ import org.talend.designer.xmlmap.ui.resource.ImageInfo;
  * Matching modes.
  * 
  */
-public enum TMAP_MATCHING_MODE implements IUIMatchingMode {
-    ALL_ROWS(MATCHING_MODE.ALL_ROWS, "TMAP_MATCHING_MODE.ALL_ROWS.label", //$NON-NLS-1$
-             "TMAP_MATCHING_MODE.ALL_ROWS.tooltip", ImageInfo.ALL_MATCHES), //$NON-NLS-1$ 
-    UNIQUE_MATCH(MATCHING_MODE.UNIQUE_MATCH, "TMAP_MATCHING_MODE.UNIQUE_MATCH.label", //$NON-NLS-1$
-                 "TMAP_MATCHING_MODE.UNIQUE_MATCH.tooltip", ImageInfo.UNIQUE_MATCH), //$NON-NLS-1$
-    FIRST_MATCH(MATCHING_MODE.FIRST_MATCH, "TMAP_MATCHING_MODE.FIRST_MATCH.label", //$NON-NLS-1$
-                "TMAP_MATCHING_MODE.FIRST_MATCH.tooltip", ImageInfo.FIRST_MATCH), //$NON-NLS-1$
+public enum XML_MAP_MATCHING_MODE implements IUIMatchingMode {
+    ALL_ROWS(MATCHING_MODE.ALL_ROWS, "All rows", "Matches with all lookup's rows", ImageInfo.ALL_MATCHES),
+    UNIQUE_MATCH(
+                 MATCHING_MODE.UNIQUE_MATCH,
+                 "Unique match",
+                 "Matches only with the last matching loaded lookup''s row ",
+                 ImageInfo.UNIQUE_MATCH),
+    FIRST_MATCH(
+                MATCHING_MODE.FIRST_MATCH,
+                "First match",
+                "Matches only with the first matching loaded lookup''s row",
+                ImageInfo.FIRST_MATCH),
     /* @deprecated: replaced by UNIQUE_MATCH */
-    LAST_MATCH(MATCHING_MODE.LAST_MATCH, "TMAP_MATCHING_MODE.LAST_MATCH.label", //$NON-NLS-1$
-               "TMAP_MATCHING_MODE.LAST_MATCH.tooltip", ImageInfo.LAST_MATCH), //$NON-NLS-1$
-    ALL_MATCHES(MATCHING_MODE.ALL_MATCHES, "TMAP_MATCHING_MODE.ALL_MATCHES.label", //$NON-NLS-1$ 
-                "TMAP_MATCHING_MODE.ALL_MATCHES.tooltip", ImageInfo.ALL_MATCHES), ; //$NON-NLS-1$ 
+    LAST_MATCH(
+               MATCHING_MODE.LAST_MATCH,
+               "Last match",
+               "Matches only with the last matching loaded lookup''s row",
+               ImageInfo.LAST_MATCH),
+    ALL_MATCHES(MATCHING_MODE.ALL_MATCHES, "All matches", "Matches with all the matching lookup's row", ImageInfo.ALL_MATCHES), ;
 
     private String label;
 
@@ -58,7 +65,7 @@ public enum TMAP_MATCHING_MODE implements IUIMatchingMode {
      * 
      * @param labelKey
      */
-    TMAP_MATCHING_MODE(MATCHING_MODE multipleMatchingMode, String labelKey, String tooltipKey, ImageInfo imageInfo) {
+    XML_MAP_MATCHING_MODE(MATCHING_MODE multipleMatchingMode, String labelKey, String tooltipKey, ImageInfo imageInfo) {
         this.label = labelKey;
         this.multipleMatchingMode = multipleMatchingMode;
         this.tooltipText = tooltipKey;
@@ -89,9 +96,9 @@ public enum TMAP_MATCHING_MODE implements IUIMatchingMode {
     }
 
     public static IUIMatchingMode parse(String matchingMode) {
-        TMAP_MATCHING_MODE multipleMatchingMode = null;
-        TMAP_MATCHING_MODE[] tmapMultipleMatchingModes = values();
-        for (TMAP_MATCHING_MODE tmapMultipleMatchingMode : tmapMultipleMatchingModes) {
+        XML_MAP_MATCHING_MODE multipleMatchingMode = null;
+        XML_MAP_MATCHING_MODE[] tmapMultipleMatchingModes = values();
+        for (XML_MAP_MATCHING_MODE tmapMultipleMatchingMode : tmapMultipleMatchingModes) {
             if (tmapMultipleMatchingMode.toString().equals(matchingMode)) {
                 multipleMatchingMode = tmapMultipleMatchingMode;
                 break;

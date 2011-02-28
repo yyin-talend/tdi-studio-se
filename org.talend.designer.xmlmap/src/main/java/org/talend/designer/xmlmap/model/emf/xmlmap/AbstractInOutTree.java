@@ -6,6 +6,7 @@
  */
 package org.talend.designer.xmlmap.model.emf.xmlmap;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -21,6 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateCondensedTool <em>Activate Condensed Tool</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMinimized <em>Minimized</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getName <em>Name</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getFilterIncomingConnections <em>Filter Incoming Connections</em>}</li>
  * </ul>
  * </p>
  *
@@ -158,5 +160,21 @@ public interface AbstractInOutTree extends EObject {
      * @generated
      */
     void setName(String value);
+
+    /**
+     * Returns the value of the '<em><b>Filter Incoming Connections</b></em>' reference list.
+     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection}.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Filter Incoming Connections</em>' reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Filter Incoming Connections</em>' reference list.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getAbstractInOutTree_FilterIncomingConnections()
+     * @model
+     * @generated
+     */
+    EList<FilterConnection> getFilterIncomingConnections();
 
 } // AbstractInOutTree

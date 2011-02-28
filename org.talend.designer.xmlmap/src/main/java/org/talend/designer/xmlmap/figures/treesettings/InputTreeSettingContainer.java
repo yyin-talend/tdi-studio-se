@@ -24,6 +24,11 @@ import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
+import org.talend.designer.xmlmap.model.tree.IUILookupMode;
+import org.talend.designer.xmlmap.model.tree.IUIMatchingMode;
+import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
+import org.talend.designer.xmlmap.model.tree.XML_MAP_MATCHING_MODE;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 
 /**
@@ -64,7 +69,7 @@ public class InputTreeSettingContainer extends Figure {
         lookupModelRow.add(label);
         lookupModel = new ComboCellLabel();
         lookupModel.setDirectEditType(DirectEditType.LOOKUP_MODEL);
-        lookupModel.setText(inputxmlTree.getLookupMode());
+        lookupModel.setText(getLookupDisplayName(inputxmlTree.getLookupMode()));
         lookupModel.setLabelAlignment(PositionConstants.LEFT);
         lookupModel.setBorder(new RowBorder(2, 10, 2, -1));
         lookupModelRow.add(lookupModel);
@@ -80,7 +85,7 @@ public class InputTreeSettingContainer extends Figure {
         matchModelRow.add(label);
         matchModel = new ComboCellLabel();
         matchModel.setDirectEditType(DirectEditType.MATCH_MODEL);
-        matchModel.setText(inputxmlTree.getMatchingMode());
+        matchModel.setText(getMatchModelDisplayName(inputxmlTree.getMatchingMode()));
         matchModel.setLabelAlignment(PositionConstants.LEFT);
         matchModel.setBorder(new RowBorder(2, 10, 2, -1));
         matchModelRow.add(matchModel);
@@ -96,7 +101,7 @@ public class InputTreeSettingContainer extends Figure {
         joinModelRow.add(label);
         joinModel = new ComboCellLabel();
         joinModel.setDirectEditType(DirectEditType.JOIN_MODEL);
-        joinModel.setText(inputxmlTree.isInnerJoin() ? "true" : "false");
+        joinModel.setText(String.valueOf(inputxmlTree.isInnerJoin()));
         joinModel.setLabelAlignment(PositionConstants.LEFT);
         joinModel.setBorder(new RowBorder(2, 10, 2, -1));
         joinModelRow.add(joinModel);
@@ -112,7 +117,7 @@ public class InputTreeSettingContainer extends Figure {
         persistentModelRow.add(label);
         persistentModel = new ComboCellLabel();
         persistentModel.setDirectEditType(DirectEditType.PERSISTENT_MODEL);
-        persistentModel.setText(inputxmlTree.isPersistent() ? "true" : "false");
+        persistentModel.setText(String.valueOf(inputxmlTree.isPersistent()));
         persistentModel.setLabelAlignment(PositionConstants.LEFT);
         persistentModel.setBorder(new RowBorder(2, 10, 2, -1));
         persistentModelRow.add(persistentModel);
@@ -120,6 +125,27 @@ public class InputTreeSettingContainer extends Figure {
         container.setOpaque(true);
         container.setBackgroundColor(ColorConstants.white);
         this.add(container);
+    }
+
+    private String getLookupDisplayName(String lookupModel) {
+        IUILookupMode[] availableJoins = { XML_MAP_LOOKUP_MODE.LOAD_ONCE, XML_MAP_LOOKUP_MODE.RELOAD,
+                XML_MAP_LOOKUP_MODE.CACHE_OR_RELOAD };
+        for (IUILookupMode model : availableJoins) {
+            if (model.toString().equals(lookupModel)) {
+                return model.getLabel();
+            }
+        }
+        return lookupModel;
+    }
+
+    private String getMatchModelDisplayName(String matcheModel) {
+        IUIMatchingMode[] allMatchingModel = XML_MAP_MATCHING_MODE.values();
+        for (IUIMatchingMode model : allMatchingModel) {
+            if (model.toString().equals(matcheModel)) {
+                return model.getLabel();
+            }
+        }
+        return matcheModel;
     }
 
     class ColumnTitleFigure extends Figure {
@@ -144,7 +170,22 @@ public class InputTreeSettingContainer extends Figure {
         }
     }
 
-    public void update() {
+    public void update(int type) {
+        switch (type) {
+        case XmlmapPackage.INPUT_XML_TREE__LOOKUP_MODE:
+            lookupModel.setText(getLookupDisplayName(inputxmlTree.getLookupMode()));
+            break;
+        case XmlmapPackage.INPUT_XML_TREE__MATCHING_MODE:
+            matchModel.setText(getMatchModelDisplayName(inputxmlTree.getMatchingMode()));
+            break;
+        case XmlmapPackage.INPUT_XML_TREE__INNER_JOIN:
+            joinModel.setText(String.valueOf(inputxmlTree.isInnerJoin()));
+            break;
+        case XmlmapPackage.INPUT_XML_TREE__PERSISTENT:
+            persistentModel.setText(String.valueOf(inputxmlTree.isPersistent()));
+        default:
+            break;
+        }
 
     }
 

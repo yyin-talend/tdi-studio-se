@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
+import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -48,6 +49,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isMain <em>Main</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getLookupOutgoingConnections <em>Lookup Outgoing Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getLookupIncomingConnections <em>Lookup Incoming Connections</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getFilterOutGoingConnections <em>Filter Out Going Connections</em>}</li>
  * </ul>
  * </p>
  *
@@ -223,6 +225,16 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * @ordered
      */
     protected EList<LookupConnection> lookupIncomingConnections;
+
+    /**
+     * The cached value of the '{@link #getFilterOutGoingConnections() <em>Filter Out Going Connections</em>}' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getFilterOutGoingConnections()
+     * @generated
+     * @ordered
+     */
+    protected EList<FilterConnection> filterOutGoingConnections;
 
     /**
      * <!-- begin-user-doc -->
@@ -431,6 +443,18 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EList<FilterConnection> getFilterOutGoingConnections() {
+        if (filterOutGoingConnections == null) {
+            filterOutGoingConnections = new EObjectResolvingEList<FilterConnection>(FilterConnection.class, this, XmlmapPackage.TREE_NODE__FILTER_OUT_GOING_CONNECTIONS);
+        }
+        return filterOutGoingConnections;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -468,6 +492,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return getLookupOutgoingConnections();
             case XmlmapPackage.TREE_NODE__LOOKUP_INCOMING_CONNECTIONS:
                 return getLookupIncomingConnections();
+            case XmlmapPackage.TREE_NODE__FILTER_OUT_GOING_CONNECTIONS:
+                return getFilterOutGoingConnections();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -514,6 +540,10 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 getLookupIncomingConnections().clear();
                 getLookupIncomingConnections().addAll((Collection<? extends LookupConnection>)newValue);
                 return;
+            case XmlmapPackage.TREE_NODE__FILTER_OUT_GOING_CONNECTIONS:
+                getFilterOutGoingConnections().clear();
+                getFilterOutGoingConnections().addAll((Collection<? extends FilterConnection>)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -556,6 +586,9 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__LOOKUP_INCOMING_CONNECTIONS:
                 getLookupIncomingConnections().clear();
                 return;
+            case XmlmapPackage.TREE_NODE__FILTER_OUT_GOING_CONNECTIONS:
+                getFilterOutGoingConnections().clear();
+                return;
         }
         super.eUnset(featureID);
     }
@@ -588,6 +621,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return lookupOutgoingConnections != null && !lookupOutgoingConnections.isEmpty();
             case XmlmapPackage.TREE_NODE__LOOKUP_INCOMING_CONNECTIONS:
                 return lookupIncomingConnections != null && !lookupIncomingConnections.isEmpty();
+            case XmlmapPackage.TREE_NODE__FILTER_OUT_GOING_CONNECTIONS:
+                return filterOutGoingConnections != null && !filterOutGoingConnections.isEmpty();
         }
         return super.eIsSet(featureID);
     }

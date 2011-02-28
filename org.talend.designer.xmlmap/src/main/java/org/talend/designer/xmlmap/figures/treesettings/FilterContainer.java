@@ -19,13 +19,23 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.MarginBorder;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jface.dialogs.TrayDialog;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IService;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.ui.resource.ImageInfo;
 import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
+import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 
 /**
  * wchen class global comment. Detailled comment
@@ -38,8 +48,13 @@ public class FilterContainer extends Figure {
 
     private ImageFigure button;
 
-    public FilterContainer(OutputXmlTree outputTree) {
+    private FilterTextArea textArea;
+
+    private Composite parent;
+
+    public FilterContainer(OutputXmlTree outputTree, Composite parent) {
         this.outputTree = outputTree;
+        this.parent = parent;
         createContent();
     }
 
@@ -48,7 +63,7 @@ public class FilterContainer extends Figure {
         manager.setSpacing(5);
         setLayoutManager(manager);
 
-        FilterTextArea textArea = new FilterTextArea();
+        textArea = new FilterTextArea();
         textArea.setText(outputTree.getExpressionFilter());
         this.add(textArea);
 
@@ -56,12 +71,53 @@ public class FilterContainer extends Figure {
         setBackgroundColor(ColorConstants.white);
 
         button = new ImageFigure(ImageProviderMapper.getImage(ImageInfo.FILTER_BUTTON));
+        addButtonListener();
         this.add(button);
 
         setOpaque(true);
         setBackgroundColor(ColorConstants.yellow);
         setBorder(new MarginBorder(2));
 
+    }
+
+    private void addButtonListener() {
+        IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
+                IExpressionBuilderDialogService.class);
+
+        final IExpressionBuilderDialogController dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService)
+                .getExpressionBuilderInstance(parent, null, null);
+
+        button.addMouseListener(new MouseListener() {
+
+            public void mousePressed(MouseEvent me) {
+                if (dialog instanceof TrayDialog) {
+                    TrayDialog parentDialog = (TrayDialog) dialog;
+                    dialog.setDefaultExpression(outputTree.getExpressionFilter());
+                    if (Window.OK == parentDialog.open()) {
+                        String expressionForTable = dialog.getExpressionForTable();
+                        outputTree.setExpressionFilter(expressionForTable);
+                    }
+                }
+
+            }
+
+            public void mouseReleased(MouseEvent me) {
+                // TODO Auto-generated method stub
+
+            }
+
+            public void mouseDoubleClicked(MouseEvent me) {
+                // TODO Auto-generated method stub
+
+            }
+
+        });
+    }
+
+    public void update(int type) {
+        if (XmlmapPackage.OUTPUT_XML_TREE__EXPRESSION_FILTER == type) {
+            textArea.setText(outputTree.getExpressionFilter());
+        }
     }
 
     class FilterContainerLayout extends EqualWidthLayout {
@@ -107,25 +163,6 @@ public class FilterContainer extends Figure {
                 newBounds = new Rectangle(x, y, prefSizes[1].width, DEFAULT_HEIGHT);
                 child1.setBounds(newBounds);
             }
-
-            // for (int i = numChildren - 1; i >= 0; i--) {
-            // int prefWidth = prefSizes[i].width;
-            // Rectangle newBounds = new Rectangle(x, y, prefWidth, DEFAULT_HEIGHT);
-            //
-            // newBounds.x = x - prefWidth - 2;
-            //
-            // if (i == 0) {
-            // newBounds.width = widthColumn0;
-            // } else if (i == 1) {
-            // newBounds.width = widthColumn1;
-            // }
-            //
-            // child = (IFigure) children.get(i);
-            //
-            // child.setBounds(transposer.t(newBounds));
-            //
-            // x = x + newBounds.width + spacing;
-            // }
 
         }
 

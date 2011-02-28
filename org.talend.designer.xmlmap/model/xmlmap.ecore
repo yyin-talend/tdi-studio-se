@@ -13,6 +13,17 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="connections" upperBound="-1"
         eType="#//IConnection" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractInOutTree" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="expressionFilter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="activateExpressionFilter"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="activateCondensedTool"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimized" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="filterIncomingConnections"
+        upperBound="-1" eType="#//FilterConnection"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InputXmlTree" eSuperTypes="#//AbstractInOutTree">
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodes" upperBound="-1"
         eType="#//TreeNode" containment="true"/>
@@ -58,6 +69,8 @@
         upperBound="-1" eType="#//LookupConnection"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lookupIncomingConnections"
         upperBound="-1" eType="#//LookupConnection"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="filterOutGoingConnections"
+        upperBound="-1" eType="#//FilterConnection"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OutputTreeNode" eSuperTypes="#//TreeNode">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -68,19 +81,16 @@
     <eLiterals name="ATTRIBUT" value="1"/>
     <eLiterals name="NAME_SPACE" value="2"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Connection" eSuperTypes="#//IConnection"/>
-  <eClassifiers xsi:type="ecore:EClass" name="LookupConnection" eSuperTypes="#//IConnection"/>
-  <eClassifiers xsi:type="ecore:EClass" name="IConnection" abstract="true" interface="true">
+  <eClassifiers xsi:type="ecore:EClass" name="IConnection" abstract="true" interface="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="INodeConnection" abstract="true" interface="true"
+      eSuperTypes="#//IConnection">
     <eStructuralFeatures xsi:type="ecore:EReference" name="source" eType="#//AbstractNode"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//AbstractNode"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AbstractInOutTree" abstract="true">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="expressionFilter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="activateExpressionFilter"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="activateCondensedTool"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimized" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Connection" eSuperTypes="#//INodeConnection"/>
+  <eClassifiers xsi:type="ecore:EClass" name="LookupConnection" eSuperTypes="#//INodeConnection"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FilterConnection" eSuperTypes="#//IConnection">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" eType="#//TreeNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//AbstractInOutTree"/>
   </eClassifiers>
 </ecore:EPackage>

@@ -116,6 +116,15 @@ public interface XmlmapFactory extends EFactory {
     LookupConnection createLookupConnection();
 
                 /**
+     * Returns a new object of class '<em>Filter Connection</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Filter Connection</em>'.
+     * @generated
+     */
+    FilterConnection createFilterConnection();
+
+                /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

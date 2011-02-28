@@ -83,13 +83,7 @@ public class TreeLayout extends ToolbarLayout {
         totalHeight += (numChildren - 1) * spacing;
         totalMinHeight += (numChildren - 1) * spacing;
         prefMinSumHeight = totalHeight - totalMinHeight;
-        /*
-         * The total amount that the children must be shrunk is the sum of the preferred Heights of the children minus
-         * Max(the available area and the sum of the minimum heights of the children).
-         * 
-         * amntShrinkHeight is the combined amount that the children must shrink amntShrinkCurrentHeight is the amount
-         * each child will shrink respectively
-         */
+
         int amntShrinkHeight = totalHeight - Math.max(availableHeight, totalMinHeight);
 
         if (amntShrinkHeight < 0) {
@@ -112,9 +106,6 @@ public class TreeLayout extends ToolbarLayout {
                 }
             }
 
-            if (prefMinSumHeight != 0)
-                amntShrinkCurrentHeight = (prefHeight - minHeight) * amntShrinkHeight / (prefMinSumHeight);
-
             int width = Math.min(prefWidth, transposer.t(child.getMaximumSize()).width);
             if (matchWidth)
                 width = transposer.t(child.getMaximumSize()).width;
@@ -136,7 +127,6 @@ public class TreeLayout extends ToolbarLayout {
             newBounds.height -= amntShrinkCurrentHeight;
             child.setBounds(transposer.t(newBounds));
 
-            amntShrinkHeight -= amntShrinkCurrentHeight;
             prefMinSumHeight -= (prefHeight - minHeight);
             y += newBounds.height + spacing;
         }

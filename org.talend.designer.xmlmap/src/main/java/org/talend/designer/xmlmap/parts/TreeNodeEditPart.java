@@ -39,7 +39,7 @@ import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.figures.TreeBranchFigure;
 import org.talend.designer.xmlmap.figures.TreeNodeFigure;
 import org.talend.designer.xmlmap.figures.XmlTreeBranch;
-import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -57,7 +57,7 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
 /**
  * wchen class global comment. Detailled comment
  */
-public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
+public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
 
     // for expand and collapse
     protected IFigure rootAnchor;
@@ -481,7 +481,7 @@ public class TreeNodeEditPart extends BaseEditPart implements NodeEditPart {
 
             Object model = TreeNodeEditPart.this.getModel();
             boolean loctionRight = false;
-            IConnection connection = (IConnection) connectionPart.getModel();
+            INodeConnection connection = (INodeConnection) connectionPart.getModel();
             // if current is input tree node or var node ,get figure right location
             if (model == connection.getSource()
                     && (connection.getTarget() instanceof OutputTreeNode || connection.getTarget() instanceof VarNode)) {

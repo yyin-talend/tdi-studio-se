@@ -12,8 +12,9 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts.directedit;
 
-import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.draw2d.Figure;
@@ -23,9 +24,9 @@ import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
 import org.talend.commons.ui.swt.tableviewer.celleditor.CellEditorDialogBehavior;
@@ -36,11 +37,16 @@ import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.designer.xmlmap.figures.cells.IComboCell;
 import org.talend.designer.xmlmap.figures.cells.IExpressionBuilderCell;
+import org.talend.designer.xmlmap.figures.cells.ITextAreaCell;
 import org.talend.designer.xmlmap.figures.cells.ITextCell;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
+import org.talend.designer.xmlmap.model.tree.IUILookupMode;
+import org.talend.designer.xmlmap.model.tree.IUIMatchingMode;
+import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
+import org.talend.designer.xmlmap.model.tree.XML_MAP_MATCHING_MODE;
 import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 
 /**
@@ -108,19 +114,23 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                 case EXPRESSION_FILTER:
                     if (getCellEditor() instanceof TextCellEditor) {
                         Text text = (Text) getCellEditor().getControl();
-                        text.setText(inputxmlTree.getExpressionFilter());
+                        String expressionFilter = inputxmlTree.getExpressionFilter();
+                        if (expressionFilter == null) {
+                            expressionFilter = "";
+                        }
+                        text.setText(expressionFilter);
                     }
                     break;
                 case LOOKUP_MODEL:
                     if (getCellEditor() instanceof ComboBoxCellEditor) {
                         CCombo combo = (CCombo) getCellEditor().getControl();
-                        combo.setText(inputxmlTree.getLookupMode());
+                        combo.setText(getLookupDisplayName(inputxmlTree.getLookupMode()));
                     }
                     break;
                 case MATCH_MODEL:
                     if (getCellEditor() instanceof ComboBoxCellEditor) {
                         CCombo combo = (CCombo) getCellEditor().getControl();
-                        combo.setText(inputxmlTree.getMatchingMode());
+                        combo.setText(getMatchModelDisplayName(inputxmlTree.getMatchingMode()));
                     }
                     break;
                 case JOIN_MODEL:
@@ -146,7 +156,11 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                 case EXPRESSION_FILTER:
                     if (getCellEditor() instanceof TextCellEditor) {
                         Text text = (Text) getCellEditor().getControl();
-                        text.setText(outputTree.getExpressionFilter());
+                        String expressionFilter = outputTree.getExpressionFilter();
+                        if (expressionFilter == null) {
+                            expressionFilter = "";
+                        }
+                        text.setText(expressionFilter);
                     }
                     break;
                 case OUTPUT_REJECT:
@@ -188,6 +202,27 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
         return displayedValue;
     }
 
+    private String getLookupDisplayName(String lookupModel) {
+        IUILookupMode[] availableJoins = { XML_MAP_LOOKUP_MODE.LOAD_ONCE, XML_MAP_LOOKUP_MODE.RELOAD,
+                XML_MAP_LOOKUP_MODE.CACHE_OR_RELOAD };
+        for (IUILookupMode model : availableJoins) {
+            if (model.toString().equals(lookupModel)) {
+                return model.getLabel();
+            }
+        }
+        return lookupModel;
+    }
+
+    private String getMatchModelDisplayName(String matcheModel) {
+        IUIMatchingMode[] allMatchingModel = XML_MAP_MATCHING_MODE.values();
+        for (IUIMatchingMode model : allMatchingModel) {
+            if (model.toString().equals(matcheModel)) {
+                return model.getLabel();
+            }
+        }
+        return matcheModel;
+    }
+
     protected CellEditor createCellEditorOn(Composite composite) {
         Composite parent = (Composite) source.getViewer().getControl();
         CellEditor cellEditor = null;
@@ -198,10 +233,14 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
         }
         if (figure instanceof IComboCell) {
             try {
-                Constructor constructor = ComboBoxCellEditor.class
-                        .getConstructor(new Class[] { Composite.class, String[].class });
-                cellEditor = (CellEditor) constructor.newInstance(new Object[] { composite,
-                        getComboItemsByType(((IComboCell) figure).getDirectEditType()) });
+                // Constructor constructor = ComboBoxCellEditor.class
+                // .getConstructor(new Class[] { Composite.class, String[].class });
+                // cellEditor = (CellEditor) constructor.newInstance(new Object[] { composite,
+                // getComboItemsByType(((IComboCell) figure).getDirectEditType()) });
+                cellEditor = new XmlComboCellEditor();
+                cellEditor.create(composite);
+                ((XmlComboCellEditor) cellEditor).setItems(getComboItemsByType(((IComboCell) figure).getDirectEditType()));
+
                 cellAndType.put(cellEditor, ((IComboCell) figure).getDirectEditType());
             } catch (Exception e) {
                 return null;
@@ -219,6 +258,9 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                     .getExpressionBuilderInstance(parent, (ExpressionCellEditor) cellEditor, null);
             cellAndType.put(cellEditor, DirectEditType.EXPRESSION);
             behavior.setCellEditorDialog(dialog);
+        } else if (figure instanceof ITextAreaCell) {
+            cellEditor = new TextCellEditor(composite, SWT.MULTI);
+            cellAndType.put(cellEditor, DirectEditType.EXPRESSION_FILTER);
         }
 
         // }
@@ -227,16 +269,48 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
 
     @Override
     protected boolean isDirty() {
-        Object model = getEditPart().getModel();
-        if (model instanceof VarNode) {
-            Control control = getCellEditor().getControl();
-            if (control instanceof CCombo) {
+        // Object model = getEditPart().getModel();
+        // if (model instanceof VarNode) {
+        // Control control = getCellEditor().getControl();
+        // if (control instanceof CCombo) {
+        //
+        // return !((CCombo) control).getText().equals(((VarNode) model).getType());
+        // } else if (control instanceof Text) {
+        // return !((Text) control).getText().equals(((VarNode) model).getName());
+        // }
+        // }
+        //
+        //
+        //
+        //
+        //
+        // DirectEditType directEditType = cellAndType.get(getCellEditor());
+        // if (getCellEditor() instanceof ComboBoxCellEditor && directEditType != null) {
+        // ComboBoxCellEditor combo = (ComboBoxCellEditor) getCellEditor();
+        // int selectIndex = (Integer) combo.getValue();
+        // String newValue = combo.getItems()[selectIndex];
+        // if (model instanceof AbstractNode) {
+        // switch (directEditType) {
+        // case VAR_NODE_TYPE:
+        // JavaType javaTypeFromLabel = JavaTypesManager.getJavaTypeFromLabel((String) newValue);
+        // if (javaTypeFromLabel == null) {
+        // javaTypeFromLabel = JavaTypesManager.getDefaultJavaType();
+        // }
+        // return ((VarNode) model).getType().equals(javaTypeFromLabel.getId());
+        //
+        // }
+        // } else if (model instanceof InputXmlTree) {
+        // InputXmlTree inputTree = (InputXmlTree) model;
+        // switch (directEditType) {
+        // case LOOKUP_MODEL:
+        // return newValue.equals(inputTree.getLookupMode());
+        // case MATCH_MODEL:
+        // return newValue.equals(inputTree.getMatchingMode());
+        // }
+        //
+        // }
+        // }
 
-                return !((CCombo) control).getText().equals(((VarNode) model).getType());
-            } else if (control instanceof Text) {
-                return !((Text) control).getText().equals(((VarNode) model).getName());
-            }
-        }
         return super.isDirty();
 
     }
@@ -256,9 +330,20 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
             String[] items = JavaTypesManager.getJavaTypesLabels();
             return items;
         case LOOKUP_MODEL:
-            return new String[0];
+            IUILookupMode[] availableJoins = { XML_MAP_LOOKUP_MODE.LOAD_ONCE, XML_MAP_LOOKUP_MODE.RELOAD,
+                    XML_MAP_LOOKUP_MODE.CACHE_OR_RELOAD };
+            String names[] = new String[availableJoins.length];
+            for (int i = 0; i < availableJoins.length; i++) {
+                names[i] = availableJoins[i].getLabel();
+            }
+            return names;
         case MATCH_MODEL:
-            return new String[0];
+            IUIMatchingMode[] matchModel = getMatchModel();
+            String names2[] = new String[matchModel.length];
+            for (int i = 0; i < matchModel.length; i++) {
+                names2[i] = (matchModel[i].getLabel());
+            }
+            return names2;
         case JOIN_MODEL:
         case PERSISTENT_MODEL:
         case OUTPUT_REJECT:
@@ -269,4 +354,34 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
         }
 
     }
+
+    private IUIMatchingMode[] getMatchModel() {
+        IUIMatchingMode[] allMatchingModel = XML_MAP_MATCHING_MODE.values();
+        List<IUIMatchingMode> avilable = new ArrayList<IUIMatchingMode>();
+        if (model instanceof InputXmlTree) {
+            InputXmlTree inputTree = (InputXmlTree) model;
+            for (int i = 0; i < allMatchingModel.length; ++i) {
+                IUIMatchingMode matchingMode = allMatchingModel[i];
+                final String text = matchingMode.getLabel();
+                if (matchingMode == XML_MAP_MATCHING_MODE.LAST_MATCH) {
+                    continue;
+                }
+                if (text.length() != 0) {
+
+                    if (matchingMode == XML_MAP_MATCHING_MODE.ALL_ROWS
+                            && !inputTree.getMatchingMode().equals(XML_MAP_MATCHING_MODE.ALL_ROWS.toString())
+                            || matchingMode != XML_MAP_MATCHING_MODE.ALL_ROWS
+                            && !inputTree.getMatchingMode().equals(XML_MAP_MATCHING_MODE.ALL_ROWS.toString())) {
+                        // avilable.add(matchingMode);
+                    } else {
+                        avilable.add(matchingMode);
+                    }
+
+                }
+            }
+        }
+
+        return avilable.toArray(new IUIMatchingMode[avilable.size()]);
+    }
+
 }

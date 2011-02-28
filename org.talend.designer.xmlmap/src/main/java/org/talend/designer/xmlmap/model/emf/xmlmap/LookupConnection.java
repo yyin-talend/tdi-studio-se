@@ -18,6 +18,6 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface LookupConnection extends IConnection {
+public interface LookupConnection extends INodeConnection {
 
 } // LookupConnection

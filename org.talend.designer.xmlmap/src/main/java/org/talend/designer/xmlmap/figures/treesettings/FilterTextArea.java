@@ -15,7 +15,9 @@ package org.talend.designer.xmlmap.figures.treesettings;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.PositionConstants;
 import org.talend.designer.xmlmap.figures.cells.ITextAreaCell;
+import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 
@@ -24,8 +26,20 @@ import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
  */
 public class FilterTextArea extends Label implements ITextAreaCell {
 
+    private DirectEditType type;
+
     public FilterTextArea() {
         setBackgroundColor(ColorConstants.white);
         setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
+        setLabelAlignment(PositionConstants.LEFT | PositionConstants.TOP);
     }
+
+    public void setDirectEditType(DirectEditType type) {
+        this.type = type;
+    }
+
+    public DirectEditType getDirectEditType() {
+        return DirectEditType.EXPRESSION_FILTER;
+    }
+
 }

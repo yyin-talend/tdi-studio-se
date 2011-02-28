@@ -21,6 +21,7 @@ import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.OutTreeLayout;
@@ -28,6 +29,7 @@ import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
 import org.talend.designer.xmlmap.figures.treesettings.OutputTreeSettingContainer;
 import org.talend.designer.xmlmap.figures.treetools.OutputTreeToolBarContainer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
+import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.ui.resource.FontInfo;
@@ -48,10 +50,15 @@ public class OutputXmlTreeFigure extends GenericFigure {
 
     private OutputTreeToolBarContainer imageButtonsFigure;
 
+    private OutputTreeSettingContainer settingContainer;
+
     private FilterContainer filterFigure;
 
-    public OutputXmlTreeFigure(OutputXmlTree xmlTree) {
-        this.xmlTree = xmlTree;
+    private OutputXmlTreeEditPart treePart;
+
+    public OutputXmlTreeFigure(OutputXmlTreeEditPart treePart) {
+        this.treePart = treePart;
+        this.xmlTree = (OutputXmlTree) treePart.getModel();
         createContents();
     }
 
@@ -80,10 +87,10 @@ public class OutputXmlTreeFigure extends GenericFigure {
         this.add(header);
 
         header.add(imageButtonsFigure);
-        OutputTreeSettingContainer settingContainer = new OutputTreeSettingContainer(xmlTree);
+        settingContainer = new OutputTreeSettingContainer(xmlTree);
         this.add(settingContainer);
 
-        filterFigure = new FilterContainer(xmlTree);
+        filterFigure = new FilterContainer(xmlTree, (Composite) treePart.getViewer().getControl());
         this.add(filterFigure);
 
         tableColumnstitle = new ColumnTitleFigure();
@@ -102,6 +109,11 @@ public class OutputXmlTreeFigure extends GenericFigure {
         columnContainer.setBackgroundColor(ColorConstants.white);
         // this.add(columnContainer);
         this.add(scroll);
+    }
+
+    public void update(int type) {
+        settingContainer.update(type);
+        filterFigure.update(type);
     }
 
     public IFigure getColumnContainer() {

@@ -31,6 +31,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
+import org.talend.designer.xmlmap.model.tree.XML_MAP_MATCHING_MODE;
 import org.talend.designer.xmlmap.ui.MapperUI;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -109,6 +111,12 @@ public class MapperMain {
                 inputTree.setLookup(EConnectionType.FLOW_MAIN != inData.getConnection().getLineStyle());
                 copyOfMapData.getInputTrees().add(inputTree);
             }
+            if (inputTree.getLookupMode() == null) {
+                inputTree.setLookupMode(XML_MAP_LOOKUP_MODE.LOAD_ONCE.toString());
+            }
+            if (inputTree.getMatchingMode() == null) {
+                inputTree.setMatchingMode(XML_MAP_MATCHING_MODE.UNIQUE_MATCH.toString());
+            }
 
             List<IMetadataColumn> listColumns = inData.getTable().getListColumns();
             if (inData.getTable() != null && listColumns != null) {
@@ -151,8 +159,7 @@ public class MapperMain {
                             treeRoot.setName("root");
                             treeRoot.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                             treeRoot.setNodeType(NodeType.ELEMENT);
-                            treeRoot.setXpath(XmlMapUtil.getXPath(found.getXpath(), treeRoot.getName(),
-                                    treeRoot.getNodeType()));
+                            treeRoot.setXpath(XmlMapUtil.getXPath(found.getXpath(), treeRoot.getName(), treeRoot.getNodeType()));
                             children.add(treeRoot);
                         }
                     }
@@ -242,8 +249,7 @@ public class MapperMain {
                             treeRoot.setName("root");
                             treeRoot.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                             treeRoot.setNodeType(NodeType.ELEMENT);
-                            treeRoot.setXpath(XmlMapUtil.getXPath(found.getXpath(), treeRoot.getName(),
-                                    treeRoot.getNodeType()));
+                            treeRoot.setXpath(XmlMapUtil.getXPath(found.getXpath(), treeRoot.getName(), treeRoot.getNodeType()));
                             children.add(treeRoot);
                         }
                     }

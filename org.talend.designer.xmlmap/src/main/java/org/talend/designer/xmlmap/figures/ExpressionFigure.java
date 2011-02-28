@@ -19,6 +19,7 @@ import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.cells.IExpressionBuilderCell;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
+import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 
 /**
  * DOC talend class global comment. Detailled comment
@@ -30,6 +31,8 @@ public class ExpressionFigure extends Label implements IExpressionBuilderCell {
     private XmlTreeBranch treeBranch;
 
     private TreeNodeEditPart treeNodePart;
+
+    private DirectEditType type;
 
     public ExpressionFigure() {
         setBorder(new CompoundBorder(new RowBorder(), new ColumnBorder()));
@@ -50,6 +53,14 @@ public class ExpressionFigure extends Label implements IExpressionBuilderCell {
 
     public void setTreeNodePart(TreeNodeEditPart treeNodePart) {
         this.treeNodePart = treeNodePart;
+    }
+
+    public void setDirectEditType(DirectEditType type) {
+        this.type = type;
+    }
+
+    public DirectEditType getDirectEditType() {
+        return DirectEditType.EXPRESSION;
     }
 
     // @Override

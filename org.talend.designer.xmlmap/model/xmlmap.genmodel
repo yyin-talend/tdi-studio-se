@@ -18,6 +18,14 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//XmlMapData/varTables"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//XmlMapData/connections"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="xmlmap.ecore#//AbstractInOutTree">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractInOutTree/expressionFilter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractInOutTree/activateExpressionFilter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractInOutTree/activateCondensedTool"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractInOutTree/minimized"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractInOutTree/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//AbstractInOutTree/filterIncomingConnections"/>
+    </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//InputXmlTree">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//InputXmlTree/nodes"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//InputXmlTree/lookup"/>
@@ -55,23 +63,22 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/main"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//TreeNode/lookupOutgoingConnections"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//TreeNode/lookupIncomingConnections"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//TreeNode/filterOutGoingConnections"/>
     </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//OutputTreeNode">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputTreeNode/defaultValue"/>
     </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//VarNode"/>
+    <genClasses image="false" ecoreClass="xmlmap.ecore#//IConnection"/>
+    <genClasses image="false" ecoreClass="xmlmap.ecore#//INodeConnection">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//INodeConnection/source"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//INodeConnection/target"/>
+    </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//Connection"/>
     <genClasses ecoreClass="xmlmap.ecore#//LookupConnection"/>
-    <genClasses image="false" ecoreClass="xmlmap.ecore#//IConnection">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//IConnection/source"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//IConnection/target"/>
-    </genClasses>
-    <genClasses image="false" ecoreClass="xmlmap.ecore#//AbstractInOutTree">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractInOutTree/expressionFilter"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractInOutTree/activateExpressionFilter"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractInOutTree/activateCondensedTool"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractInOutTree/minimized"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractInOutTree/name"/>
+    <genClasses ecoreClass="xmlmap.ecore#//FilterConnection">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//FilterConnection/source"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//FilterConnection/target"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

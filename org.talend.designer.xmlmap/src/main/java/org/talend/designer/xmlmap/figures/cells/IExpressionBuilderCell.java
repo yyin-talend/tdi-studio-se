@@ -12,10 +12,9 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.cells;
 
-
 /**
- * DOC Administrator  class global comment. Detailled comment
+ * DOC Administrator class global comment. Detailled comment
  */
-public interface IExpressionBuilderCell {
+public interface IExpressionBuilderCell extends IWidgetCell {
 
 }

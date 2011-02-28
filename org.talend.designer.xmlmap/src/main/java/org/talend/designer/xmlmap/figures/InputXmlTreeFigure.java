@@ -47,6 +47,8 @@ public class InputXmlTreeFigure extends GenericFigure {
 
     private InputTreeToolBarContainer imageButtonsFigure;
 
+    private InputTreeSettingContainer settingContainer;
+
     public InputXmlTreeFigure(InputXmlTree xmlTree) {
         this.xmlTree = xmlTree;
         createContents();
@@ -77,7 +79,7 @@ public class InputXmlTreeFigure extends GenericFigure {
 
         if (xmlTree.isLookup()) {
             header.add(imageButtonsFigure);
-            InputTreeSettingContainer settingContainer = new InputTreeSettingContainer(xmlTree);
+            settingContainer = new InputTreeSettingContainer(xmlTree);
             this.add(settingContainer);
         }
 
@@ -102,6 +104,11 @@ public class InputXmlTreeFigure extends GenericFigure {
 
     public IFigure getColumnContainer() {
         return this.columnContainer;
+    }
+
+    public void update(int type) {
+        settingContainer.update(type);
+
     }
 
     class ColumnTitleFigure extends Figure {

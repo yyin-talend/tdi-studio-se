@@ -96,6 +96,12 @@ public class XmlmapSwitch<T> {
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE: {
+                AbstractInOutTree abstractInOutTree = (AbstractInOutTree)theEObject;
+                T result = caseAbstractInOutTree(abstractInOutTree);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
             case XmlmapPackage.INPUT_XML_TREE: {
                 InputXmlTree inputXmlTree = (InputXmlTree)theEObject;
                 T result = caseInputXmlTree(inputXmlTree);
@@ -144,9 +150,23 @@ public class XmlmapSwitch<T> {
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
+            case XmlmapPackage.ICONNECTION: {
+                IConnection iConnection = (IConnection)theEObject;
+                T result = caseIConnection(iConnection);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case XmlmapPackage.INODE_CONNECTION: {
+                INodeConnection iNodeConnection = (INodeConnection)theEObject;
+                T result = caseINodeConnection(iNodeConnection);
+                if (result == null) result = caseIConnection(iNodeConnection);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
             case XmlmapPackage.CONNECTION: {
                 Connection connection = (Connection)theEObject;
                 T result = caseConnection(connection);
+                if (result == null) result = caseINodeConnection(connection);
                 if (result == null) result = caseIConnection(connection);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
@@ -154,19 +174,15 @@ public class XmlmapSwitch<T> {
             case XmlmapPackage.LOOKUP_CONNECTION: {
                 LookupConnection lookupConnection = (LookupConnection)theEObject;
                 T result = caseLookupConnection(lookupConnection);
+                if (result == null) result = caseINodeConnection(lookupConnection);
                 if (result == null) result = caseIConnection(lookupConnection);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
-            case XmlmapPackage.ICONNECTION: {
-                IConnection iConnection = (IConnection)theEObject;
-                T result = caseIConnection(iConnection);
-                if (result == null) result = defaultCase(theEObject);
-                return result;
-            }
-            case XmlmapPackage.ABSTRACT_IN_OUT_TREE: {
-                AbstractInOutTree abstractInOutTree = (AbstractInOutTree)theEObject;
-                T result = caseAbstractInOutTree(abstractInOutTree);
+            case XmlmapPackage.FILTER_CONNECTION: {
+                FilterConnection filterConnection = (FilterConnection)theEObject;
+                T result = caseFilterConnection(filterConnection);
+                if (result == null) result = caseIConnection(filterConnection);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -325,6 +341,21 @@ public class XmlmapSwitch<T> {
     }
 
     /**
+     * Returns the result of interpreting the object as an instance of '<em>Filter Connection</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Filter Connection</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseFilterConnection(FilterConnection object) {
+        return null;
+    }
+
+    /**
      * Returns the result of interpreting the object as an instance of '<em>IConnection</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
@@ -336,6 +367,21 @@ public class XmlmapSwitch<T> {
      * @generated
      */
     public T caseIConnection(IConnection object) {
+        return null;
+    }
+
+                /**
+     * Returns the result of interpreting the object as an instance of '<em>INode Connection</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>INode Connection</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseINodeConnection(INodeConnection object) {
         return null;
     }
 

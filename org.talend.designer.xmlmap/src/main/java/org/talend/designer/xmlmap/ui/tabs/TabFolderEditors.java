@@ -82,6 +82,8 @@ public class TabFolderEditors extends CTabFolder {
 
     private MapperManager mapperManage;
 
+    private StyledTextHandler styledTextHandler;
+
     public TabFolderEditors(Composite parent, MapperManager mapperManager, int style) {
         super(parent, style);
         tabFolderEditors = this;
@@ -117,13 +119,6 @@ public class TabFolderEditors extends CTabFolder {
 
         addListenersToOutputButtons();
 
-        // item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        //        item.setText("Expression editor"); //$NON-NLS-1$
-
-        // StyledText styledText = createStyledText(item);
-
-        // this.styledTextHandler = new StyledTextHandler(styledText);
-
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
         item.setText("Tree schema editor"); //$NON-NLS-1$
 
@@ -135,6 +130,13 @@ public class TabFolderEditors extends CTabFolder {
 
         outputTreeSchemaEditor = new OutputXmlTreeSchemaTableView(mapperManage.getSelectedOutputTreeSchemaModel(null),
                 xmlTreeEditorContainer);
+
+        item = new CTabItem(tabFolderEditors, SWT.BORDER);
+        item.setText("Expression editor"); //$NON-NLS-1$
+
+        StyledText styledText = createStyledText(item);
+
+        this.styledTextHandler = new StyledTextHandler(styledText, mapperManage);
 
         tabFolderEditors.addListener(SWT.Selection, new Listener() {
 
@@ -249,18 +251,13 @@ public class TabFolderEditors extends CTabFolder {
 
     private StyledText createStyledText(CTabItem item) {
         StyledText styledText = null;
-        // if (MapperMain.isStandAloneMode()) {
-        // styledText = new StyledText(tabFolderEditors, SWT.V_SCROLL | SWT.H_SCROLL);
-        // } else {
+
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         ECodeLanguage language = repositoryContext.getProject().getLanguage();
         IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
-        // styledText = new ColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
-        // colorManager, language.getName());
         styledText = new UnnotifiableColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, preferenceStore,
                 language.getName());
-        // }
         styledText.setEnabled(false);
         item.setControl(styledText);
         return styledText;
@@ -282,8 +279,8 @@ public class TabFolderEditors extends CTabFolder {
         return outputTreeSchemaEditor;
     }
 
-    // public StyledTextHandler getStyledTextHandler() {
-    // return this.styledTextHandler;
-    // }
+    public StyledTextHandler getStyledTextHandler() {
+        return this.styledTextHandler;
+    }
 
 }

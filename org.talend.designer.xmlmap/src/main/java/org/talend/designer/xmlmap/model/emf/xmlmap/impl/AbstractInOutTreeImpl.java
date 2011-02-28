@@ -6,14 +6,18 @@
  */
 package org.talend.designer.xmlmap.model.emf.xmlmap.impl;
 
+import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 
 /**
@@ -28,6 +32,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl#isActivateCondensedTool <em>Activate Condensed Tool</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl#isMinimized <em>Minimized</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl#getFilterIncomingConnections <em>Filter Incoming Connections</em>}</li>
  * </ul>
  * </p>
  *
@@ -133,6 +138,16 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
      * @ordered
      */
     protected String name = NAME_EDEFAULT;
+
+    /**
+     * The cached value of the '{@link #getFilterIncomingConnections() <em>Filter Incoming Connections</em>}' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getFilterIncomingConnections()
+     * @generated
+     * @ordered
+     */
+    protected EList<FilterConnection> filterIncomingConnections;
 
     /**
      * <!-- begin-user-doc -->
@@ -263,6 +278,18 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
      * <!-- end-user-doc -->
      * @generated
      */
+    public EList<FilterConnection> getFilterIncomingConnections() {
+        if (filterIncomingConnections == null) {
+            filterIncomingConnections = new EObjectResolvingEList<FilterConnection>(FilterConnection.class, this, XmlmapPackage.ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS);
+        }
+        return filterIncomingConnections;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -276,6 +303,8 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
                 return isMinimized();
             case XmlmapPackage.ABSTRACT_IN_OUT_TREE__NAME:
                 return getName();
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS:
+                return getFilterIncomingConnections();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -285,6 +314,7 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
      * <!-- end-user-doc -->
      * @generated
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
@@ -302,6 +332,10 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
                 return;
             case XmlmapPackage.ABSTRACT_IN_OUT_TREE__NAME:
                 setName((String)newValue);
+                return;
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS:
+                getFilterIncomingConnections().clear();
+                getFilterIncomingConnections().addAll((Collection<? extends FilterConnection>)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -330,6 +364,9 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
             case XmlmapPackage.ABSTRACT_IN_OUT_TREE__NAME:
                 setName(NAME_EDEFAULT);
                 return;
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS:
+                getFilterIncomingConnections().clear();
+                return;
         }
         super.eUnset(featureID);
     }
@@ -352,6 +389,8 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
                 return minimized != MINIMIZED_EDEFAULT;
             case XmlmapPackage.ABSTRACT_IN_OUT_TREE__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS:
+                return filterIncomingConnections != null && !filterIncomingConnections.isEmpty();
         }
         return super.eIsSet(featureID);
     }

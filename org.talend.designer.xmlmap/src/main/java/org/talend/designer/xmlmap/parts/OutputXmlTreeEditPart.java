@@ -14,13 +14,21 @@ package org.talend.designer.xmlmap.parts;
 
 import java.util.List;
 
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.Request;
+import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
+import org.eclipse.gef.requests.DirectEditRequest;
 import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
+import org.talend.designer.xmlmap.figures.cells.IWidgetCell;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
+import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
+import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
 import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 
 /**
@@ -28,11 +36,13 @@ import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
  */
 public class OutputXmlTreeEditPart extends BaseEditPart {
 
-    OutputXmlTreeFigure figure;
+    private OutputXmlTreeFigure figure;
+
+    private XmlMapNodeDirectEditManager directEditManager;
 
     @Override
     protected IFigure createFigure() {
-        figure = new OutputXmlTreeFigure((OutputXmlTree) getModel());
+        figure = new OutputXmlTreeFigure(this);
         return figure;
     }
 
@@ -63,6 +73,11 @@ public class OutputXmlTreeEditPart extends BaseEditPart {
             switch (featureId) {
             case XmlmapPackage.OUTPUT_XML_TREE__NODES:
                 refreshChildren();
+            case XmlmapPackage.OUTPUT_XML_TREE__REJECT:
+            case XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN:
+            case XmlmapPackage.OUTPUT_XML_TREE__EXPRESSION_FILTER:
+                ((OutputXmlTreeFigure) getFigure()).update(featureId);
+
             }
         }
     }
@@ -72,6 +87,22 @@ public class OutputXmlTreeEditPart extends BaseEditPart {
         super.createEditPolicies();
         installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
         installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
+    }
+
+    @Override
+    public void performRequest(Request req) {
+        if (RequestConstants.REQ_DIRECT_EDIT.equals(req.getType())) {
+            DirectEditRequest drequest = (DirectEditRequest) req;
+            Point figureLocation = drequest.getLocation();
+
+            IFigure findFigureAt = getFigure().findFigureAt(figureLocation.x, figureLocation.y);
+
+            if (findFigureAt instanceof IWidgetCell) {
+                directEditManager = new XmlMapNodeDirectEditManager(this, new XmlMapNodeCellEditorLocator((Figure) findFigureAt));
+                directEditManager.show();
+            }
+        }
+
     }
 
 }

@@ -18,6 +18,6 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Connection extends IConnection {
+public interface Connection extends INodeConnection {
 
 } // Connection

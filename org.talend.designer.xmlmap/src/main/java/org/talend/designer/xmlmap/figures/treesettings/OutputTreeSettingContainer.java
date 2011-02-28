@@ -24,6 +24,7 @@ import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 
 /**
@@ -60,7 +61,7 @@ public class OutputTreeSettingContainer extends Figure {
         joinModelRow.add(label);
         reject = new ComboCellLabel();
         reject.setDirectEditType(DirectEditType.OUTPUT_REJECT);
-        reject.setText(outputxmlTree.isReject() ? "true" : "false");
+        reject.setText(String.valueOf(outputxmlTree.isReject()));
         reject.setLabelAlignment(PositionConstants.LEFT);
         reject.setBorder(new RowBorder(2, 10, 2, -1));
         joinModelRow.add(reject);
@@ -76,7 +77,7 @@ public class OutputTreeSettingContainer extends Figure {
         persistentModelRow.add(label);
         innerJoinReject = new ComboCellLabel();
         innerJoinReject.setDirectEditType(DirectEditType.LOOK_UP_INNER_JOIN_REJECT);
-        innerJoinReject.setText(outputxmlTree.isRejectInnerJoin() ? "true" : "false");
+        innerJoinReject.setText(String.valueOf(outputxmlTree.isRejectInnerJoin()));
         innerJoinReject.setLabelAlignment(PositionConstants.LEFT);
         innerJoinReject.setBorder(new RowBorder(2, 10, 2, -1));
         persistentModelRow.add(innerJoinReject);
@@ -108,8 +109,15 @@ public class OutputTreeSettingContainer extends Figure {
         }
     }
 
-    public void update() {
-
+    public void update(int type) {
+        switch (type) {
+        case XmlmapPackage.OUTPUT_XML_TREE__REJECT:
+            reject.setText(String.valueOf(outputxmlTree.isReject()));
+            break;
+        case XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN:
+            innerJoinReject.setText(String.valueOf(outputxmlTree.isRejectInnerJoin()));
+            break;
+        }
     }
 
 }

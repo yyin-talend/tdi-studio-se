@@ -21,21 +21,22 @@ import org.talend.designer.xmlmap.ui.resource.ImageInfo;
  * $Id$
  * 
  */
-public enum TMAP_LOOKUP_MODE implements IUILookupMode {
-    LOAD_ONCE(LOOKUP_MODE.LOAD_ONCE, "TMAP_LOOKUP_MODE.LOAD_ONCE.label", //$NON-NLS-1$
-              "TMAP_LOOKUP_MODE.LOAD_ONCE.tooltip"//$NON-NLS-1$
-              ,
-              ImageInfo.ARROW_RIGHT),
+public enum XML_MAP_LOOKUP_MODE implements IUILookupMode {
+    LOAD_ONCE(LOOKUP_MODE.LOAD_ONCE, "Load once", "Load once the lookup at subjob start", ImageInfo.ARROW_RIGHT),
 
-    LOAD_ONCE_AND_UPDATE(LOOKUP_MODE.LOAD_ONCE_AND_UPDATE, "TMAP_LOOKUP_MODE.LOAD_ONCE_AND_UPDATE.label", //$NON-NLS-1$
-                         "TMAP_LOOKUP_MODE.LOAD_ONCE_AND_UPDATE.tooltip", ImageInfo.ARROW_RIGHT_EDIT), //$NON-NLS-1$
+    LOAD_ONCE_AND_UPDATE(
+                         LOOKUP_MODE.LOAD_ONCE_AND_UPDATE,
+                         "Load once and update",
+                         "Load once the lookup at subjob start and add/update the lookup row during the process",
+                         ImageInfo.ARROW_RIGHT_EDIT),
 
-    RELOAD(LOOKUP_MODE.RELOAD, "TMAP_LOOKUP_MODE.RELOAD.label", //$NON-NLS-1$ 
-           "TMAP_LOOKUP_MODE.RELOAD.tooltip", ImageInfo.REFRESH), //$NON-NLS-1$
+    RELOAD(LOOKUP_MODE.RELOAD, "Reload at each row", "Reload the lookup at each row", ImageInfo.REFRESH),
 
-    CACHE_OR_RELOAD(LOOKUP_MODE.CACHE_OR_RELOAD, "TMAP_LOOKUP_MODE.CACHE_OR_RELOAD.label",//$NON-NLS-1$
-                    "TMAP_LOOKUP_MODE.CACHE_OR_RELOAD.tooltip", ImageInfo.REFRESH_CACHE), //$NON-NLS-1$
-    ;
+    CACHE_OR_RELOAD(
+                    LOOKUP_MODE.CACHE_OR_RELOAD,
+                    "Reload at each row (cache)",
+                    "At each row, get result from the cache or reload the lookup",
+                    ImageInfo.REFRESH_CACHE), ;
 
     private String label;
 
@@ -62,7 +63,7 @@ public enum TMAP_LOOKUP_MODE implements IUILookupMode {
      * 
      * @param labelKey
      */
-    TMAP_LOOKUP_MODE(LOOKUP_MODE multipleMatchingMode, String labelKey, String tooltipKey, ImageInfo imageInfo) {
+    XML_MAP_LOOKUP_MODE(LOOKUP_MODE multipleMatchingMode, String labelKey, String tooltipKey, ImageInfo imageInfo) {
         this.multipleMatchingMode = multipleMatchingMode;
         this.label = labelKey;
         this.tooltipText = tooltipKey;
@@ -102,9 +103,9 @@ public enum TMAP_LOOKUP_MODE implements IUILookupMode {
     }
 
     public static IUILookupMode parse(String matchingMode) {
-        TMAP_LOOKUP_MODE multipleMatchingMode = null;
-        TMAP_LOOKUP_MODE[] tmapMultipleMatchingModes = values();
-        for (TMAP_LOOKUP_MODE tmapMultipleMatchingMode : tmapMultipleMatchingModes) {
+        XML_MAP_LOOKUP_MODE multipleMatchingMode = null;
+        XML_MAP_LOOKUP_MODE[] tmapMultipleMatchingModes = values();
+        for (XML_MAP_LOOKUP_MODE tmapMultipleMatchingMode : tmapMultipleMatchingModes) {
             if (tmapMultipleMatchingMode.toString().equals(matchingMode)) {
                 multipleMatchingMode = tmapMultipleMatchingMode;
                 break;

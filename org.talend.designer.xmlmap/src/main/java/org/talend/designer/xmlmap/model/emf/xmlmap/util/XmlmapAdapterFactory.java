@@ -78,6 +78,10 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
                 return createXmlMapDataAdapter();
             }
             @Override
+            public Adapter caseAbstractInOutTree(AbstractInOutTree object) {
+                return createAbstractInOutTreeAdapter();
+            }
+            @Override
             public Adapter caseInputXmlTree(InputXmlTree object) {
                 return createInputXmlTreeAdapter();
             }
@@ -106,6 +110,14 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
                 return createVarNodeAdapter();
             }
             @Override
+            public Adapter caseIConnection(IConnection object) {
+                return createIConnectionAdapter();
+            }
+            @Override
+            public Adapter caseINodeConnection(INodeConnection object) {
+                return createINodeConnectionAdapter();
+            }
+            @Override
             public Adapter caseConnection(Connection object) {
                 return createConnectionAdapter();
             }
@@ -114,12 +126,8 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
                 return createLookupConnectionAdapter();
             }
             @Override
-            public Adapter caseIConnection(IConnection object) {
-                return createIConnectionAdapter();
-            }
-            @Override
-            public Adapter caseAbstractInOutTree(AbstractInOutTree object) {
-                return createAbstractInOutTreeAdapter();
+            public Adapter caseFilterConnection(FilterConnection object) {
+                return createFilterConnectionAdapter();
             }
             @Override
             public Adapter caseAbstractExternalData(AbstractExternalData object) {
@@ -286,6 +294,20 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
     }
 
     /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection <em>Filter Connection</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection
+     * @generated
+     */
+    public Adapter createFilterConnectionAdapter() {
+        return null;
+    }
+
+    /**
      * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}'.
      * <!-- begin-user-doc -->
      * This default implementation returns null so that we can easily ignore cases;
@@ -296,6 +318,20 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createIConnectionAdapter() {
+        return null;
+    }
+
+                /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection <em>INode Connection</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection
+     * @generated
+     */
+    public Adapter createINodeConnectionAdapter() {
         return null;
     }
 

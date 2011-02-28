@@ -24,7 +24,7 @@ import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
-import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -33,6 +33,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -42,43 +43,33 @@ public class DirectEditCommand extends Command {
 
     private AbstractNode model;
 
-    private String expression;
-
     private final String XPRESSION_PATTERN = "(\\[\\s*\\w+\\.\\w+\\s*:\\s*(/\\w+)+(/@\\w+)*\\s*\\])|((?!\\[)\\s*\\w+\\.\\w+(?!\\]))";
-
-    private EXMLMapNodeProperty property;
 
     private Object newValue;
 
-    private boolean isExpression = true;
+    private DirectEditType type;
 
-    public DirectEditCommand(AbstractNode model, String expression) {
+    public DirectEditCommand(AbstractNode model, DirectEditType type, Object newValue) {
         this.model = (AbstractNode) model;
-        this.expression = expression;
-    }
-
-    public DirectEditCommand(AbstractNode model, EXMLMapNodeProperty property, Object newValue, boolean isExpression) {
-        this.model = (AbstractNode) model;
-        this.property = property;
         this.newValue = newValue;
-        this.isExpression = isExpression;
+        this.type = type;
     }
 
     @Override
     public void execute() {
         try {
             if (model != null) {
-                if (isExpression) {
-                    model.setExpression(expression);
+                if (DirectEditType.EXPRESSION.equals(type)) {
+                    model.setExpression((String) newValue);
 
                     Pattern regex = Pattern.compile(XPRESSION_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
                             | Pattern.MULTILINE);
-                    Matcher regexMatcher = regex.matcher(expression);
+                    Matcher regexMatcher = regex.matcher((String) newValue);
                     List<String> matched = new ArrayList<String>();
                     while (regexMatcher.find()) {
                         matched.add(regexMatcher.group().trim());
                     }
-                    EList<? extends IConnection> connections = null;
+                    EList<? extends INodeConnection> connections = null;
                     if (model instanceof OutputTreeNode || model instanceof VarNode) {
                         connections = model.getIncomingConnections();
                     } else if (model instanceof TreeNode) {
@@ -92,7 +83,7 @@ public class DirectEditCommand extends Command {
                         for (int i = 0; i < matched.size(); i++) {
                             String convertToXpath = XmlMapUtil.convertToXpath(matched.get(i));
                             boolean found = false;
-                            for (IConnection conn : connections) {
+                            for (INodeConnection conn : connections) {
                                 if (conn.getSource() instanceof TreeNode) {
                                     if (convertToXpath != null && convertToXpath.equals(((TreeNode) conn.getSource()).getXpath())) {
                                         found = true;
@@ -109,7 +100,7 @@ public class DirectEditCommand extends Command {
                                     }
                                     AbstractNode sourceNode = findConnectionSource(mapperData, convertToXpath, findFromVar);
                                     if (sourceNode != null) {
-                                        IConnection connection = null;
+                                        INodeConnection connection = null;
                                         if (model instanceof OutputTreeNode || model instanceof VarNode) {
                                             connection = XmlmapFactory.eINSTANCE.createConnection();
                                             sourceNode.getOutgoingConnections().add((Connection) connection);
@@ -140,10 +131,10 @@ public class DirectEditCommand extends Command {
                             }
                         }
                     }
-                    List<IConnection> copyOfConnections = new ArrayList<IConnection>(connections);
+                    List<INodeConnection> copyOfConnections = new ArrayList<INodeConnection>(connections);
                     copyOfConnections.removeAll(usefullConnections);
                     if (model instanceof OutputTreeNode || model instanceof VarNode) {
-                        for (IConnection connection : copyOfConnections) {
+                        for (INodeConnection connection : copyOfConnections) {
                             if (connection.getSource() != null) {
                                 if (connection.getSource().getOutgoingConnections().contains(connection)) {
                                     connection.getSource().getOutgoingConnections().remove(connection);
@@ -154,7 +145,7 @@ public class DirectEditCommand extends Command {
                         model.getIncomingConnections().removeAll(copyOfConnections);
 
                     } else if (model instanceof TreeNode) {
-                        for (IConnection connection : copyOfConnections) {
+                        for (INodeConnection connection : copyOfConnections) {
                             if (connection.getSource() != null) {
                                 if (((TreeNode) connection.getSource()).getLookupOutgoingConnections().contains(connection)) {
                                     ((TreeNode) connection.getSource()).getLookupOutgoingConnections().remove(connection);
@@ -166,25 +157,18 @@ public class DirectEditCommand extends Command {
 
                     }
 
-                } else {
-                    if (model instanceof VarNode) {
-                        VarNode varModel = (VarNode) model;
-                        switch (property) {
-                        case VARNODE_TYPE:
-                            JavaType javaTypeFromLabel = JavaTypesManager.getJavaTypeFromLabel((String) newValue);
-                            if (javaTypeFromLabel == null) {
-                                javaTypeFromLabel = JavaTypesManager.getDefaultJavaType();
-                            }
-                            varModel.setType(javaTypeFromLabel.getId());
-                            break;
-                        case VARNODE_VARIABLE:
-                            varModel.setName((String) newValue);
-                            break;
-                        }
+                } else if (DirectEditType.VAR_NODE_TYPE.equals(type)) {
+                    VarNode varModel = (VarNode) model;
+                    JavaType javaTypeFromLabel = JavaTypesManager.getJavaTypeFromLabel((String) newValue);
+                    if (javaTypeFromLabel == null) {
+                        javaTypeFromLabel = JavaTypesManager.getDefaultJavaType();
                     }
+                    varModel.setType(javaTypeFromLabel.getId());
+                } else if (DirectEditType.NODE_NAME.equals(type)) {
+                    model.setName((String) newValue);
                 }
-
             }
+
         } catch (PatternSyntaxException ex) {
             // Syntax error in the regular expression
         }

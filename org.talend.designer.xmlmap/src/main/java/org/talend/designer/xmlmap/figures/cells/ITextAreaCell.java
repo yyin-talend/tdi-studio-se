@@ -15,6 +15,6 @@ package org.talend.designer.xmlmap.figures.cells;
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public interface ITextAreaCell {
+public interface ITextAreaCell extends IWidgetCell {
 
 }

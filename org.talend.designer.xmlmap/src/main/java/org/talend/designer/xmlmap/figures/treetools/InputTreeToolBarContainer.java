@@ -24,8 +24,8 @@ import org.eclipse.swt.graphics.Image;
 import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsManager;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.tree.IUIMatchingMode;
-import org.talend.designer.xmlmap.model.tree.TMAP_LOOKUP_MODE;
-import org.talend.designer.xmlmap.model.tree.TMAP_MATCHING_MODE;
+import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
+import org.talend.designer.xmlmap.model.tree.XML_MAP_MATCHING_MODE;
 import org.talend.designer.xmlmap.ui.resource.ImageInfo;
 import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
 
@@ -61,9 +61,9 @@ public class InputTreeToolBarContainer extends Figure {
 
     public Map<String, Object> getDefaultSetting() {
         if (defaultSettingMap.isEmpty()) {
-            defaultSettingMap.put(TreeSettingsManager.LOOKUP_MODEL_SETTING, TMAP_LOOKUP_MODE.LOAD_ONCE);
-            defaultSettingMap.put(TreeSettingsManager.MATCH_MODEL_SETTING, new IUIMatchingMode[] { TMAP_MATCHING_MODE.ALL_ROWS,
-                    TMAP_MATCHING_MODE.UNIQUE_MATCH });
+            defaultSettingMap.put(TreeSettingsManager.LOOKUP_MODEL_SETTING, XML_MAP_LOOKUP_MODE.LOAD_ONCE);
+            defaultSettingMap.put(TreeSettingsManager.MATCH_MODEL_SETTING, new IUIMatchingMode[] { XML_MAP_MATCHING_MODE.ALL_ROWS,
+                    XML_MAP_MATCHING_MODE.UNIQUE_MATCH });
             defaultSettingMap.put(TreeSettingsManager.JOIN_MODEL_SETTING, false);
             defaultSettingMap.put(TreeSettingsManager.PERSISTENCE_MODEL_SETTING, false);
         }

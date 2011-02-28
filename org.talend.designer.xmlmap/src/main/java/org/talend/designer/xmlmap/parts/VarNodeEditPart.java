@@ -45,7 +45,7 @@ import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 /**
  * DOC hywang class global comment. Detailled comment
  */
-public class VarNodeEditPart extends BaseEditPart implements NodeEditPart {
+public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
 
     private VarNodeFigure varNodeFigure;
 
