@@ -21,9 +21,13 @@ package org.talend.designer.codegen.config;
 public enum EInternalTemplate {
     HEADER("header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     FOOTER("footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    FOOTER_ROUTE("footer_route", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    HEADER_ROUTE("header_route", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     CONTEXT("context", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     SUBPROCESS_HEADER("subprocess_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     SUBPROCESS_FOOTER("subprocess_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    SUBPROCESS_HEADER_ROUTE("subprocess_header_route", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    SUBPROCESS_FOOTER_ROUTE("subprocess_footer_route", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     SUBTREE_BEGIN("subtree_begin", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     SUBTREE_END("subtree_end", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     CLOSE_BLOCKS_CODE("close_blocks_code", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
