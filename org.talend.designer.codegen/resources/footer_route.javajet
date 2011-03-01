@@ -1,0 +1,56 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.IProcess
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.CorePlugin
+        org.talend.core.model.process.EConnectionType
+        org.talend.core.model.process.IConnection	
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn
+		java.util.Vector
+		java.util.List
+		java.util.ArrayList
+		org.talend.core.model.process.IContextParameter
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		org.talend.core.model.utils.JavaResourcesHelper
+		org.talend.core.model.process.ElementParameterParser
+	" 
+	class="Footer" 
+	skeleton="footer_java.skeleton"	
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    Vector v = (Vector) codeGenArgument.getArgument();
+    IProcess process = (IProcess)v.get(0);
+%>
+	
+    
+    public static void main(String[] args){
+    	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
+    
+        int exitCode = <%=process.getName() %>Class.runJobInTOS(args);
+         
+        System.exit(exitCode);
+    }    
+   
+ 
+    public String[][] runJob(String[] args) {  
+    
+		int exitCode = runJobInTOS(args);
+		String[][] bufferValue = new String[][] { { Integer.toString(exitCode) } };
+		return bufferValue;
+    }
+    
+    
+    public int runJobInTOS(String[] args) {	
+		try {
+			Route();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		return 1;
+  }			
+}

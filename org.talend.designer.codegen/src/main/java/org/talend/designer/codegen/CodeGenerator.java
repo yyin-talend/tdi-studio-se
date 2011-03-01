@@ -212,25 +212,39 @@ public class CodeGenerator implements ICodeGenerator {
 
                     boolean displayMethodSize = isMethodSizeNeeded();
                     NodesSubTree lastSubtree = null;
+                    boolean generateHeaders = true;
                     for (NodesSubTree subTree : processTree.getSubTrees()) {
                         lastSubtree = subTree;
-                        if(subTree.getRootNode().isStart()) {
-                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
-                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_HEADER, subTree));
-                        }
-                        if(subTree.getRootNode().getIncomingConnections()!=null && subTree.getRootNode().getIncomingConnections().size()>0) {
-                            if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.RUN_IF)) {
-                                componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_RUNIF, subTree));
+                        
+                        //Generate headers only one time, for each routes in the CamelContext.
+                        if(generateHeaders) {
+                            if(subTree.getRootNode().isStart()) {
+                                componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER_ROUTE, subTree));
+                                componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_HEADER, subTree));
                                 componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
-                                            ETypeGen.CAMEL));
-                            }
-                        } else {
-                            componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
                                         ETypeGen.CAMEL));
+                            }
+                            generateHeaders = false;
+                        } else {
+                            if(subTree.getRootNode().isStart()) {
+                                componentsCode.append(";"); // Close the previous route in the CamelContext
+                                componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
+                                        ETypeGen.CAMEL)); // And generate the component par of code
+                            } else {
+                                if(subTree.getRootNode().getIncomingConnections()!=null && subTree.getRootNode().getIncomingConnections().size()>0) {
+                                    if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_WHEN) || subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_OTHER)) {
+										//If WHEN or OTHERWISE link, we generate the .when or the .otherwise before generation the component part
+                                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_RUNIF, subTree));
+                                    }
+                                    componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
+                                            ETypeGen.CAMEL)); // The component part for a component linked to a WHEN or OTHERWISE.
+                                } 
+                            }
                         }
                     }
+                    componentsCode.append(";"); // Close the last route in the CamelContext
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_FOOTER, lastSubtree));
-                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, lastSubtree));
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER_ROUTE, lastSubtree));
                 }
 
             } else {
