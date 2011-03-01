@@ -694,11 +694,10 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
             return ImageInfo.CONDENSED_TOOL_ICON3;
         case 4:
             return ImageInfo.CONDENSED_TOOL_ICON4;
-            // FIXME: need icon5, icon6
         case 5:
-            return ImageInfo.CONDENSED_TOOL_ICON4;
+            return ImageInfo.CONDENSED_TOOL_ICON5;
         case 6:
-            return ImageInfo.CONDENSED_TOOL_ICON4;
+            return ImageInfo.CONDENSED_TOOL_ICON6;
         default:
             return null;
         }
