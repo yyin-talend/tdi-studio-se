@@ -5,10 +5,11 @@ Bundle-SymbolicName: org.talend.designer.mapper.advanced;singleton:=true
 Bundle-Version: 2.1.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.talend.designer.mapper,
+ org.talend.model,
  org.talend.commons,
  org.talend.designer.codegen,
- org.talend.model
+ org.talend.designer.mapper,
+ org.talend.core
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
 Export-Package: org.talend.designer.mapper.advanced
