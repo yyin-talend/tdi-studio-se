@@ -56,6 +56,7 @@ public enum EParameterName {
     PROPERTY_TYPE(Messages.getString("EParameterName.propertyType")), //$NON-NLS-1$
     REPOSITORY_PROPERTY_TYPE("Repository"), //$NON-NLS-1$  Hidden parameter so no translation needed
     CONDITION(Messages.getString("EParameterName.condition")), //$NON-NLS-1$
+    ROUTETYPE(Messages.getString("EParameterName.routeType")),
     COMPONENT_NAME(Messages.getString("EParameterName.componentName")), //$NON-NLS-1$
     UPDATE_COMPONENTS("Update components"), //$NON-NLS-1$  Hidden parameter so no translation needed
     ICONSELECTION("Icon(32x32)"), //$NON-NLS-1$

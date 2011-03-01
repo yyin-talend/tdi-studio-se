@@ -197,7 +197,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                         Connection connection = (Connection) elem;
                         process = (Process) connection.getSource().getProcess();
                         // see bug 0001645
-                        if (connection.getLineStyle().equals(EConnectionType.RUN_IF)) {
+                        if (connection.getLineStyle().equals(EConnectionType.RUN_IF)
+                                || connection.getLineStyle().equals(EConnectionType.ROUTE_WHEN)) {
                             viewer = (TalendJavaSourceViewer) TalendJavaSourceViewer.createViewerForIfConnection(b);
                         }
                     }

@@ -217,6 +217,40 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setNumRow(1);
             addElementParameter(param);
         }
+        if (lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
+
+            IElementParameter param = new ElementParameter(this);
+            param.setCategory(EComponentCategory.BASIC);
+            param.setName(EParameterName.ROUTETYPE.getName());
+            param.setDisplayName(EParameterName.ROUTETYPE.getDisplayName());
+            String[] strList = { "el", "groovy", "javascript", "jxpath", "mvel", "ognl", "php", "python", "ruby", "simple",
+                    "sql", "xpath", "xquery" };
+            param.setListItemsValue(strList); //$NON-NLS-1$
+            param.setListItemsDisplayName(strList);
+            param.setListItemsDisplayCodeName(strList);
+            param.setNbLines(1);
+            param.setFieldType(EParameterFieldType.CLOSED_LIST);
+            param.setShow(true);
+            param.setNumRow(1);
+            addElementParameter(param);
+
+            param = new ElementParameter(this);
+            switch (LanguageManager.getCurrentLanguage()) {
+            case JAVA:
+                param.setFieldType(EParameterFieldType.MEMO_JAVA);
+                break;
+            default:
+                param.setFieldType(EParameterFieldType.MEMO_PERL);
+            }
+            param.setCategory(EComponentCategory.BASIC);
+            param.setValue(""); //$NON-NLS-1$
+            param.setNbLines(5);
+            param.setName(EParameterName.CONDITION.getName());
+            param.setDisplayName(EParameterName.CONDITION.getDisplayName());
+            param.setShow(true);
+            param.setNumRow(2);
+            addElementParameter(param);
+        }
 
         if (lineStyle.equals(EConnectionType.ITERATE)) {
             IElementParameter param = new ElementParameter(this);
@@ -560,12 +594,13 @@ public class Connection extends Element implements IConnection, IPerformance {
 
             if (!lineStyle.equals(EConnectionType.TABLE) && !lineStyle.equals(EConnectionType.ITERATE)) {
                 if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
-                        EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)
-                        && source != null
-                        && source.getComponent().getName().equals(source.getLabel())) {
+                        EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF,
+                        EConnectionType.ROUTE_WHEN)
+                        && source != null && source.getComponent().getName().equals(source.getLabel())) {
                     uniqueName = connectorName;
                 } else if (!isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
-                        EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)
+                        EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF,
+                        EConnectionType.ROUTE_WHEN)
                         || uniqueName == null || !uniqueName.startsWith(lineStyle.getDefaultLinkName())) {
                     uniqueName = name;
                 }
@@ -654,6 +689,12 @@ public class Connection extends Element implements IConnection, IPerformance {
             // if "RunIf" got a custom name
             labelText = sourceNodeConnector.getLinkName() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             // bug 8087
+            if (outputId >= 0) {
+                labelText += " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            updateName = true;
+        } else if (getLineStyle().equals(EConnectionType.ROUTE_WHEN) && (!sourceNodeConnector.getLinkName().equals(name))) {
+            labelText = sourceNodeConnector.getLinkName() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             if (outputId >= 0) {
                 labelText += " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -772,7 +813,8 @@ public class Connection extends Element implements IConnection, IPerformance {
                     uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_ITERATE_CONNECTION_NAME);
                 }
             } else if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
-                    EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)) {
+                    EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF,
+                    EConnectionType.ROUTE_WHEN)) {
                 // see 3443, these links should have unique name
                 if (uniqueName == null || uniqueName.equals(lineStyle.getDefaultLinkName())) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(lineStyle.getDefaultLinkName());
@@ -1022,7 +1064,7 @@ public class Connection extends Element implements IConnection, IPerformance {
     }
 
     public String getCondition() {
-        if (lineStyle.equals(EConnectionType.RUN_IF)) {
+        if (lineStyle.equals(EConnectionType.RUN_IF) || lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
             return (String) getPropertyValue(EParameterName.CONDITION.getName());
         } else {
             return null;

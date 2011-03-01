@@ -2462,7 +2462,8 @@ public class Node extends Element implements IGraphicalNode {
                 if ((getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                         || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                         || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
-                        || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
+                        || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)
+                        || (getCurrentActiveLinksNbInput(EConnectionType.ROUTE_WHEN) > 0)) {
 
                     String errorMessage = Messages.getString("Node.errorMessage2"); //$NON-NLS-1$
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -3264,6 +3265,9 @@ public class Node extends Element implements IGraphicalNode {
             Problems.add(ProblemStatus.ERROR, this, errorMessage);
         } else if ((getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0) && isFirstLinkOrder) {
             String errorMessage = Messages.getString("Node.errorMessage3"); //$NON-NLS-1$
+            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+        } else if ((getCurrentActiveLinksNbInput(EConnectionType.ROUTE_WHEN) > 0) && isFirstLinkOrder) {
+            String errorMessage = Messages.getString("Node.errorMessage5"); //$NON-NLS-1$
             Problems.add(ProblemStatus.ERROR, this, errorMessage);
         } else if ((getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0 || getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)
                 && isFirstLinkOrder) {

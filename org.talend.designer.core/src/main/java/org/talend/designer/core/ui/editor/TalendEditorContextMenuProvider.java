@@ -237,6 +237,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             }
 
             retrieveConnectors(subMenu, EConnectionType.ITERATE);
+            retrieveConnectors(subMenu, EConnectionType.ROUTE);
 
             subMenu = new MenuManager("Link"); //$NON-NLS-1$
             menu.appendToGroup(GROUP_CONNECTIONS, subMenu);
@@ -299,6 +300,10 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             subMenu.add(new Separator());
 
             retrieveConnectors(subMenu, EConnectionType.RUN_IF);
+
+            retrieveConnectors(subMenu, EConnectionType.ROUTE_WHEN);
+
+            retrieveConnectors(subMenu, EConnectionType.ROUTE_OTHER);
 
             retrieveConnectors(subMenu, EConnectionType.ON_COMPONENT_OK);
 

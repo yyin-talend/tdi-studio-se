@@ -120,7 +120,8 @@ public class MainConnectionComposite extends MultipleThreadDynamicComposite {
 
     private boolean conIf() {
         Connection connection = (Connection) elem;
-        return (connection.getLineStyle() == EConnectionType.RUN_IF) || (connection.getLineStyle() == EConnectionType.ITERATE);
+        return (connection.getLineStyle() == EConnectionType.RUN_IF) || (connection.getLineStyle() == EConnectionType.ROUTE_WHEN)
+                || (connection.getLineStyle() == EConnectionType.ITERATE);
     }
 
     private boolean resumingIf() {

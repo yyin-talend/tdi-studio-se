@@ -544,7 +544,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 } else if (propertyValue.equals(EConnectionType.ON_COMPONENT_OK)
                         || propertyValue.equals(EConnectionType.ON_COMPONENT_ERROR)
                         || propertyValue.equals(EConnectionType.RUN_IF) || propertyValue.equals(EConnectionType.ON_SUBJOB_OK)
-                        || propertyValue.equals(EConnectionType.ON_SUBJOB_ERROR)) {
+                        || propertyValue.equals(EConnectionType.ON_SUBJOB_ERROR)
+                        || propertyValue.equals(EConnectionType.ROUTE_WHEN)) {
 
                     int length = categories.length;
                     EComponentCategory[] newCategories;

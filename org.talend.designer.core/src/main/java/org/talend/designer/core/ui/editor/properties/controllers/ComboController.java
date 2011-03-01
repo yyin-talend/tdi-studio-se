@@ -609,7 +609,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                 }
             }
         } else {
-            for (int i = 0; i < originalList.length; i++) {
+            for (int i = 0; originalList != null && i < originalList.length; i++) {
                 stringToDisplay.add(originalList[i]);
             }
         }
