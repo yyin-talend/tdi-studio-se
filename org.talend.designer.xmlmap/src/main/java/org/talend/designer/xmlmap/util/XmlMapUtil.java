@@ -322,6 +322,10 @@ public class XmlMapUtil {
     }
 
     public static void detachLookupTarget(TreeNode treeNode, XmlMapData mapData) {
+        detachLookupTarget(treeNode, mapData, true);
+    }
+
+    public static void detachLookupTarget(TreeNode treeNode, XmlMapData mapData, boolean detachChildren) {
         for (LookupConnection connection : treeNode.getLookupOutgoingConnections()) {
             if (connection.getTarget() instanceof TreeNode) {
                 TreeNode target = (TreeNode) connection.getTarget();
@@ -332,9 +336,22 @@ public class XmlMapUtil {
             }
         }
         treeNode.getLookupOutgoingConnections().clear();
+
+        if (detachChildren) {
+            if (!treeNode.getChildren().isEmpty()) {
+                for (TreeNode child : treeNode.getChildren()) {
+                    detachLookupTarget(child, mapData, detachChildren);
+                }
+            }
+        }
+
     }
 
     public static void detachLookupSource(TreeNode treeNode, XmlMapData mapData) {
+        detachLookupSource(treeNode, mapData, true);
+    }
+
+    public static void detachLookupSource(TreeNode treeNode, XmlMapData mapData, boolean detachChildren) {
         for (LookupConnection connection : treeNode.getLookupIncomingConnections()) {
             TreeNode source = (TreeNode) connection.getSource();
             if (source.getLookupOutgoingConnections().contains(connection)) {
@@ -343,6 +360,14 @@ public class XmlMapUtil {
             }
         }
         treeNode.getLookupIncomingConnections().clear();
+
+        if (detachChildren) {
+            if (!treeNode.getChildren().isEmpty()) {
+                for (TreeNode child : treeNode.getChildren()) {
+                    detachLookupSource(child, mapData, detachChildren);
+                }
+            }
+        }
     }
 
     public static void findParentsForLoopNode(TreeNode loopNode, List list) {
@@ -381,6 +406,39 @@ public class XmlMapUtil {
         Pattern regex = Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*$", Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE);//$NON-NLS-1$
         Matcher regexMatcher = regex.matcher(newName);
         return regexMatcher.matches();
+    }
+
+    public static boolean hasAtLeastOneHashKey(InputXmlTree inputTree) {
+        if (inputTree == null) {
+            return false;
+        }
+        boolean hasHashKey;
+        for (TreeNode node : inputTree.getNodes()) {
+            hasHashKey = hasHashKey(node);
+            if (hasHashKey) {
+                return hasHashKey;
+            }
+        }
+        return false;
+
+    }
+
+    private static boolean hasHashKey(TreeNode node) {
+        if (node.getExpression() != null && !node.getExpression().trim().equals("")) {
+            return true;
+        } else {
+            boolean childHasKey = false;
+            if (!node.getChildren().isEmpty()) {
+                for (TreeNode child : node.getChildren()) {
+                    childHasKey = hasHashKey(child);
+                    if (childHasKey) {
+                        return childHasKey;
+                    }
+                }
+            }
+            return false;
+        }
+
     }
 
 }

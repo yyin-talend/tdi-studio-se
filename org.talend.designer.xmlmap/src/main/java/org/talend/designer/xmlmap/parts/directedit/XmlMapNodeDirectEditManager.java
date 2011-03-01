@@ -39,14 +39,18 @@ import org.talend.designer.xmlmap.figures.cells.IComboCell;
 import org.talend.designer.xmlmap.figures.cells.IExpressionBuilderCell;
 import org.talend.designer.xmlmap.figures.cells.ITextAreaCell;
 import org.talend.designer.xmlmap.figures.cells.ITextCell;
+import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsManager;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.tree.IUILookupMode;
 import org.talend.designer.xmlmap.model.tree.IUIMatchingMode;
+import org.talend.designer.xmlmap.model.tree.LOOKUP_MODE;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_MATCHING_MODE;
+import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 
 /**
@@ -61,6 +65,8 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
     private Object model;
 
     private Map<CellEditor, DirectEditType> cellAndType = new HashMap<CellEditor, DirectEditType>();
+
+    private final String[] joinModel = new String[] { TreeSettingsManager.INNER_JOIN, TreeSettingsManager.LEFT_OUTER_JOIN };
 
     public XmlMapNodeDirectEditManager(GraphicalEditPart source, CellEditorLocator locator) {
         super(source, null, locator);
@@ -136,7 +142,13 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                 case JOIN_MODEL:
                     if (getCellEditor() instanceof ComboBoxCellEditor) {
                         CCombo combo = (CCombo) getCellEditor().getControl();
-                        combo.setText(String.valueOf(inputxmlTree.isInnerJoin()));
+                        String join = "";
+                        if (inputxmlTree.isInnerJoin()) {
+                            join = joinModel[0];
+                        } else {
+                            join = joinModel[1];
+                        }
+                        combo.setText(join);
                     }
                     break;
                 case PERSISTENT_MODEL:
@@ -233,10 +245,21 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
         }
         if (figure instanceof IComboCell) {
             try {
-                // Constructor constructor = ComboBoxCellEditor.class
-                // .getConstructor(new Class[] { Composite.class, String[].class });
-                // cellEditor = (CellEditor) constructor.newInstance(new Object[] { composite,
-                // getComboItemsByType(((IComboCell) figure).getDirectEditType()) });
+                // tree setting can be edit or not
+                if (source instanceof InputXmlTreeEditPart) {
+                    InputXmlTree inputTree = (InputXmlTree) ((InputXmlTreeEditPart) source).getModel();
+                    if (DirectEditType.JOIN_MODEL.equals(((IComboCell) figure).getDirectEditType())) {
+                        if (!XmlMapUtil.hasAtLeastOneHashKey(inputTree)) {
+                            return null;
+                        }
+                    }
+                    if (DirectEditType.PERSISTENT_MODEL.equals(((IComboCell) figure).getDirectEditType())) {
+                        if (LOOKUP_MODE.CACHE_OR_RELOAD.toString().equals(inputTree.getLookupMode())) {
+                            return null;
+                        }
+                    }
+                }
+
                 cellEditor = new XmlComboCellEditor();
                 cellEditor.create(composite);
                 ((XmlComboCellEditor) cellEditor).setItems(getComboItemsByType(((IComboCell) figure).getDirectEditType()));
@@ -269,50 +292,7 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
 
     @Override
     protected boolean isDirty() {
-        // Object model = getEditPart().getModel();
-        // if (model instanceof VarNode) {
-        // Control control = getCellEditor().getControl();
-        // if (control instanceof CCombo) {
-        //
-        // return !((CCombo) control).getText().equals(((VarNode) model).getType());
-        // } else if (control instanceof Text) {
-        // return !((Text) control).getText().equals(((VarNode) model).getName());
-        // }
-        // }
-        //
-        //
-        //
-        //
-        //
-        // DirectEditType directEditType = cellAndType.get(getCellEditor());
-        // if (getCellEditor() instanceof ComboBoxCellEditor && directEditType != null) {
-        // ComboBoxCellEditor combo = (ComboBoxCellEditor) getCellEditor();
-        // int selectIndex = (Integer) combo.getValue();
-        // String newValue = combo.getItems()[selectIndex];
-        // if (model instanceof AbstractNode) {
-        // switch (directEditType) {
-        // case VAR_NODE_TYPE:
-        // JavaType javaTypeFromLabel = JavaTypesManager.getJavaTypeFromLabel((String) newValue);
-        // if (javaTypeFromLabel == null) {
-        // javaTypeFromLabel = JavaTypesManager.getDefaultJavaType();
-        // }
-        // return ((VarNode) model).getType().equals(javaTypeFromLabel.getId());
-        //
-        // }
-        // } else if (model instanceof InputXmlTree) {
-        // InputXmlTree inputTree = (InputXmlTree) model;
-        // switch (directEditType) {
-        // case LOOKUP_MODEL:
-        // return newValue.equals(inputTree.getLookupMode());
-        // case MATCH_MODEL:
-        // return newValue.equals(inputTree.getMatchingMode());
-        // }
-        //
-        // }
-        // }
-
         return super.isDirty();
-
     }
 
     @Override
@@ -345,6 +325,7 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
             }
             return names2;
         case JOIN_MODEL:
+            return joinModel;
         case PERSISTENT_MODEL:
         case OUTPUT_REJECT:
         case LOOK_UP_INNER_JOIN_REJECT:
@@ -363,19 +344,26 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
             for (int i = 0; i < allMatchingModel.length; ++i) {
                 IUIMatchingMode matchingMode = allMatchingModel[i];
                 final String text = matchingMode.getLabel();
-                if (matchingMode == XML_MAP_MATCHING_MODE.LAST_MATCH) {
-                    continue;
-                }
-                if (text.length() != 0) {
 
-                    if (matchingMode == XML_MAP_MATCHING_MODE.ALL_ROWS
-                            && !inputTree.getMatchingMode().equals(XML_MAP_MATCHING_MODE.ALL_ROWS.toString())
-                            || matchingMode != XML_MAP_MATCHING_MODE.ALL_ROWS
-                            && !inputTree.getMatchingMode().equals(XML_MAP_MATCHING_MODE.ALL_ROWS.toString())) {
-                        // avilable.add(matchingMode);
+                if (text.length() != 0) {
+                    if (inputTree.getMatchingMode().equals(XML_MAP_MATCHING_MODE.ALL_ROWS.toString())) {
+                        if (matchingMode.equals(XML_MAP_MATCHING_MODE.ALL_ROWS)) {
+                            avilable.add(matchingMode);
+                        }
                     } else {
-                        avilable.add(matchingMode);
+                        if (!matchingMode.equals(XML_MAP_MATCHING_MODE.ALL_ROWS)) {
+                            avilable.add(matchingMode);
+                        }
                     }
+
+                    // if (matchingMode == XML_MAP_MATCHING_MODE.ALL_ROWS
+                    // && !inputTree.getMatchingMode().equals(XML_MAP_MATCHING_MODE.ALL_ROWS.toString())
+                    // || matchingMode != XML_MAP_MATCHING_MODE.ALL_ROWS
+                    // && !inputTree.getMatchingMode().equals(XML_MAP_MATCHING_MODE.ALL_ROWS.toString())) {
+                    // // avilable.add(matchingMode);
+                    // } else {
+                    // avilable.add(matchingMode);
+                    // }
 
                 }
             }

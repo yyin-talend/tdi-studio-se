@@ -55,41 +55,42 @@ public class CreateAttributeAction extends SelectionAction {
         boolean needWarning = false;
         if (input) {
             treeNode = XmlmapFactory.eINSTANCE.createTreeNode();
-            if (!treeNode.getOutgoingConnections().isEmpty()) {
+            if (!parent.getOutgoingConnections().isEmpty()) {
                 needWarning = true;
             }
         } else {
             treeNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
             OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
-            EList<Connection> incomingConnections = outputTreeNode.getIncomingConnections();
+            EList<Connection> incomingConnections = parent.getIncomingConnections();
             if (!incomingConnections.isEmpty()) {
                 needWarning = true;
             }
         }
         boolean canContinue = true;
-        // Shell shell = this.part.getSite().getShell();
         if (needWarning) {
             canContinue = MessageDialog.openConfirm(null, "Warning",
                     "Do you want to disconnect the existing linker and then add an sub element for the selected element ?");
         }
 
         if (canContinue) {
-            if (input) {
-                XmlMapUtil.detachConnectionsTarget(parent, mapperManager.getCopyOfMapData(), false);
-            } else {
-                XmlMapUtil.detachConnectionsSouce(parent, mapperManager.getCopyOfMapData(), false);
-            }
-
             InputDialog dialog = new InputDialog(null, "Create New Element", "Input the new element's valid label", "", null);
             int open = dialog.open();
             if (open == Window.OK) {
+                if (input) {
+                    XmlMapUtil.detachConnectionsTarget(parent, mapperManager.getCopyOfMapData(), false);
+                    XmlMapUtil.detachLookupSource(parent, mapperManager.getCopyOfMapData(), false);
+                    XmlMapUtil.detachLookupTarget(parent, mapperManager.getCopyOfMapData(), false);
+                } else {
+                    XmlMapUtil.detachConnectionsSouce(parent, mapperManager.getCopyOfMapData(), false);
+                }
                 treeNode.setName(dialog.getValue());
                 treeNode.setNodeType(NodeType.ATTRIBUT);
                 treeNode.setXpath(XmlMapUtil.getXPath(this.parent.getXpath(), treeNode.getName(), treeNode.getNodeType()));
                 treeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                 parent.getChildren().add(treeNode);
+                parent.setExpression("");
             }
-            if (mapperManager != null) {
+            if (open == Window.OK && mapperManager != null) {
                 if (input) {
                     TreeNode docRoot = XmlMapUtil.getInputTreeNodeRoot(parent);
                     if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {

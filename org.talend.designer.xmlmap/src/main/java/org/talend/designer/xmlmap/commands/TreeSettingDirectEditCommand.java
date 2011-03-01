@@ -15,8 +15,13 @@ package org.talend.designer.xmlmap.commands;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsManager;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
+import org.talend.designer.xmlmap.model.tree.IUILookupMode;
+import org.talend.designer.xmlmap.model.tree.IUIMatchingMode;
+import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
+import org.talend.designer.xmlmap.model.tree.XML_MAP_MATCHING_MODE;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 
 /**
@@ -46,13 +51,17 @@ public class TreeSettingDirectEditCommand extends Command {
                 if (type != null) {
                     switch (type) {
                     case LOOKUP_MODEL:
-                        inputTree.setLookupMode((String) newValue);
+                        inputTree.setLookupMode(getLookupModelByLabel((String) newValue));
                         break;
                     case MATCH_MODEL:
-                        inputTree.setMatchingMode((String) newValue);
+                        inputTree.setMatchingMode(getMatchModelByLabel((String) newValue));
                         break;
                     case JOIN_MODEL:
-                        inputTree.setInnerJoin(Boolean.valueOf((String) newValue));
+                        if (TreeSettingsManager.INNER_JOIN.equals(newValue)) {
+                            inputTree.setInnerJoin(true);
+                        } else {
+                            inputTree.setInnerJoin(false);
+                        }
                         break;
                     case PERSISTENT_MODEL:
                         inputTree.setPersistent(Boolean.valueOf((String) newValue));
@@ -84,6 +93,27 @@ public class TreeSettingDirectEditCommand extends Command {
         } catch (PatternSyntaxException ex) {
             // Syntax error in the regular expression
         }
+    }
+
+    private String getLookupModelByLabel(String label) {
+        IUILookupMode[] availableLookups = { XML_MAP_LOOKUP_MODE.LOAD_ONCE, XML_MAP_LOOKUP_MODE.RELOAD,
+                XML_MAP_LOOKUP_MODE.CACHE_OR_RELOAD };
+        for (IUILookupMode mode : availableLookups) {
+            if (mode.getLabel().equals(label.trim())) {
+                return mode.toString();
+            }
+        }
+        return "";
+    }
+
+    private String getMatchModelByLabel(String label) {
+        IUIMatchingMode[] allMatchingModel = XML_MAP_MATCHING_MODE.values();
+        for (IUIMatchingMode mode : allMatchingModel) {
+            if (mode.getLabel().equals(label)) {
+                return mode.toString();
+            }
+        }
+        return "";
     }
 
 }

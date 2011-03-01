@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.treesettings;
 
-
 /**
  * wchen class global comment. Detailled comment
  */
@@ -29,5 +28,9 @@ public class TreeSettingsManager {
     public static final String OUTPUT_REJECT = "Catch output reject"; //$NON-NLS-1$
 
     public static final String LOOK_UP_INNER_JOIN_REJECT = "Catch lookup inner join reject"; //$NON-NLS-1$
+
+    public static final String INNER_JOIN = "Inner Join";
+
+    public static final String LEFT_OUTER_JOIN = "Left Outer Join";
 
 }

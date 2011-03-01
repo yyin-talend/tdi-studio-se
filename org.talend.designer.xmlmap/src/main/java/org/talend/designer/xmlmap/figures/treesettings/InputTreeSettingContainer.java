@@ -101,7 +101,15 @@ public class InputTreeSettingContainer extends Figure {
         joinModelRow.add(label);
         joinModel = new ComboCellLabel();
         joinModel.setDirectEditType(DirectEditType.JOIN_MODEL);
-        joinModel.setText(String.valueOf(inputxmlTree.isInnerJoin()));
+
+        String join = "";
+        if (inputxmlTree.isInnerJoin()) {
+            join = TreeSettingsManager.INNER_JOIN;
+        } else {
+            join = TreeSettingsManager.LEFT_OUTER_JOIN;
+        }
+
+        joinModel.setText(join);
         joinModel.setLabelAlignment(PositionConstants.LEFT);
         joinModel.setBorder(new RowBorder(2, 10, 2, -1));
         joinModelRow.add(joinModel);

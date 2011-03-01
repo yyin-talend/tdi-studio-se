@@ -32,12 +32,6 @@ public enum XML_MAP_MATCHING_MODE implements IUIMatchingMode {
                 "First match",
                 "Matches only with the first matching loaded lookup''s row",
                 ImageInfo.FIRST_MATCH),
-    /* @deprecated: replaced by UNIQUE_MATCH */
-    LAST_MATCH(
-               MATCHING_MODE.LAST_MATCH,
-               "Last match",
-               "Matches only with the last matching loaded lookup''s row",
-               ImageInfo.LAST_MATCH),
     ALL_MATCHES(MATCHING_MODE.ALL_MATCHES, "All matches", "Matches with all the matching lookup's row", ImageInfo.ALL_MATCHES), ;
 
     private String label;

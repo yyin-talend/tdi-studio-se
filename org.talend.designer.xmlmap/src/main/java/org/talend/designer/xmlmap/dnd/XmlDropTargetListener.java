@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.xmlmap.dnd;
 
+import java.util.List;
+
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
@@ -96,9 +98,37 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
             boolean isLookup = false;
             if (getTargetEditPart() instanceof TreeNodeEditPart && !(getTargetEditPart() instanceof OutputTreeNodeEditPart)) {
                 TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) getTargetEditPart().getModel());
+                InputXmlTree targetTree = null;
                 if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
                     isLookup = ((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
+                    targetTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
                 }
+
+                // can't drag and drop in the same lookup , can't drop if sources are from different trees
+                InputXmlTree inputTree = null;
+                if (isLookup && transferedObj instanceof List) {
+                    List dragedObject = (List) transferedObj;
+                    for (Object obj : dragedObject) {
+                        if (obj instanceof TreeNodeEditPart) {
+                            inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) ((TreeNodeEditPart) obj).getModel());
+                            if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
+                                InputXmlTree sourceTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
+                                if (targetTree == sourceTree) {
+                                    event.detail = DND.DROP_NONE;
+                                    return;
+                                }
+                                if (inputTree == null) {
+                                    inputTree = sourceTree;
+                                } else if (inputTree != sourceTree) {
+                                    event.detail = DND.DROP_NONE;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
             }
 
             if (!(getTargetEditPart() instanceof OutputTreeNodeEditPart) && !(getTargetEditPart() instanceof VarNodeEditPart)

@@ -209,6 +209,13 @@ public class DirectEditCommand extends Command {
                 }
             }
         }
+        if (node instanceof TreeNode) {
+            if (((TreeNode) node).getChildren().isEmpty()) {
+                return node;
+            } else {
+                return null;
+            }
+        }
         return node;
     }
 

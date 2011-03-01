@@ -35,6 +35,7 @@ import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.swt.SWT;
 import org.talend.commons.ui.swt.geftree.figure.TreeBranch;
+import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.figures.TreeBranchFigure;
 import org.talend.designer.xmlmap.figures.TreeNodeFigure;
@@ -364,6 +365,27 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                     }
                 }
             case XmlmapPackage.TREE_NODE__EXPRESSION:
+                if (getModel() instanceof TreeNode && !(getModel() instanceof OutputTreeNode)) {
+                    TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) getModel());
+                    if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
+                        InputXmlTree inputTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
+                        if (inputTree.isLookup()) {
+                            if (((TreeNode) getModel()).getExpression() != null
+                                    && !((TreeNode) getModel()).getExpression().trim().equals("")) {
+                                if (MATCHING_MODE.ALL_ROWS.toString().equals(inputTree.getMatchingMode())) {
+                                    inputTree.setMatchingMode(MATCHING_MODE.UNIQUE_MATCH.toString());
+                                }
+                            } else {
+                                boolean hasAtLeastOneHashKey = XmlMapUtil.hasAtLeastOneHashKey(inputTree);
+                                if (!hasAtLeastOneHashKey) {
+                                    if (!MATCHING_MODE.ALL_ROWS.toString().equals(inputTree.getMatchingMode())) {
+                                        inputTree.setMatchingMode(MATCHING_MODE.ALL_ROWS.toString());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 if (getFigure() instanceof TreeNodeFigure) {
                     TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
                     if (outputFigure.getColumnExpressionFigure() != null) {

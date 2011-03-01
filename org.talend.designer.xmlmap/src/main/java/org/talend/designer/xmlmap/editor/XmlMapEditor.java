@@ -56,6 +56,7 @@ public class XmlMapEditor extends GraphicalEditor {
 
     public XmlMapEditor(MapperManager mapperManager) {
         DefaultEditDomain defaultEditDomain = new DefaultEditDomain(this);
+        defaultEditDomain.getCommandStack().addCommandStackListener(this);
         setEditDomain(defaultEditDomain);
         this.mapperManager = mapperManager;
     }

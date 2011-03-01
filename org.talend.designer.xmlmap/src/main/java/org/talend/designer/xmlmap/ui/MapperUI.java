@@ -2,10 +2,13 @@ package org.talend.designer.xmlmap.ui;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
@@ -13,7 +16,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
-import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
@@ -33,7 +35,6 @@ import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.ui.tabs.TabFolderEditors;
-import org.talend.designer.xmlmap.ui.tabs.table.TreeSchemaTableEntry;
 
 public class MapperUI {
 
@@ -51,11 +52,11 @@ public class MapperUI {
 
     private TabFolderEditors tabFolderEditors;
 
-    private ExtendedTableModel<TreeSchemaTableEntry> inputTreeSchemaTableModel;
-
-    private ExtendedTableModel<TreeSchemaTableEntry> outTreeSchemaTableModel;
-
     private MapperManager mapperManager;
+
+    private XmlMapEditor editor;
+
+    private boolean closeWithoutPrompt;
 
     public MapperUI(MapperManager mapperManager) {
         this.mapperManager = mapperManager;
@@ -74,6 +75,36 @@ public class MapperUI {
         } else {
             mapperShell = new Shell(activeShell, style);
         }
+
+        mapperShell.addShellListener(new ShellListener() {
+
+            public void shellActivated(ShellEvent e) {
+            }
+
+            public void shellClosed(ShellEvent e) {
+                if (editor != null && editor.isDirty() && !closeWithoutPrompt) {
+                    boolean closeWindow = MessageDialog.openConfirm(mapperShell, "Close without save",
+                            "Are you sure to close window without save modifications ?");
+                    if (!closeWindow) {
+                        e.doit = false;
+                    } else {
+                        // mapperManager.getUiManager().prepareClosing(SWT.CANCEL);
+                    }
+
+                }
+
+            }
+
+            public void shellDeactivated(ShellEvent e) {
+            }
+
+            public void shellDeiconified(ShellEvent e) {
+            }
+
+            public void shellIconified(ShellEvent e) {
+            }
+
+        });
 
         mapperShell.setMaximized(true);
 
@@ -95,27 +126,9 @@ public class MapperUI {
         mainSashForm.setLayoutData(mainSashFormGridData);
 
         datasViewSashForm = new SashForm(mainSashForm, SWT.SMOOTH | SWT.HORIZONTAL | SWT.BORDER);
-        XmlMapEditor editor = new XmlMapEditor(mapperManager);
+        editor = new XmlMapEditor(mapperManager);
         editor.createPartControl(datasViewSashForm);
 
-        // // *******************************************
-        // /* test for vartable */
-        // VarTable varTable1 = XmlmapFactory.eINSTANCE.createVarTable();
-        // varTable1.setName("Var");
-        // VarNode varnode1 = XmlmapFactory.eINSTANCE.createVarNode();
-        // varnode1.setName("var1");
-        // varnode1.setType("String");
-        // varnode1.setExpression("xml/root/var1");
-        //
-        // VarNode varnode2 = XmlmapFactory.eINSTANCE.createVarNode();
-        // varnode2.setName("var2");
-        // varnode2.setType("String");
-        // varnode2.setExpression("xml/root/var2");
-        //
-        // varTable1.getNodes().add(varnode1);
-        // varTable1.getNodes().add(varnode2);
-        // copyOfMapData.getVarTables().add(varTable1);
-        // // *******************************************
         if (copyOfMapData.getVarTables().isEmpty()) {
             VarTable varTable1 = XmlmapFactory.eINSTANCE.createVarTable();
             varTable1.setName("Var"); //$NON-NLS-N$
@@ -173,6 +186,9 @@ public class MapperUI {
                     }
                 }
             }
+        }
+        if (response == SWT.OK) {
+            closeWithoutPrompt = true;
         }
         if (response == SWT.OK || response == SWT.CANCEL) {
             mapperShell.close();

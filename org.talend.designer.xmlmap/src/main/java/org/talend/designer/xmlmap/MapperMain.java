@@ -115,7 +115,7 @@ public class MapperMain {
                 inputTree.setLookupMode(XML_MAP_LOOKUP_MODE.LOAD_ONCE.toString());
             }
             if (inputTree.getMatchingMode() == null) {
-                inputTree.setMatchingMode(XML_MAP_MATCHING_MODE.UNIQUE_MATCH.toString());
+                inputTree.setMatchingMode(XML_MAP_MATCHING_MODE.ALL_ROWS.toString());
             }
 
             List<IMetadataColumn> listColumns = inData.getTable().getListColumns();

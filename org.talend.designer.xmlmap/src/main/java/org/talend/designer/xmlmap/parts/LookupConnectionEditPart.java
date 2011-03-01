@@ -59,6 +59,11 @@ public class LookupConnectionEditPart extends BaseConnectionEditPart {
 
     private int calculateConnOffset() {
         LookupConnection model = (LookupConnection) getModel();
+
+        if (model.getSource() == null) {
+            return 0;
+        }
+
         EList<LookupConnection> outgoingConnections = ((TreeNode) model.getSource()).getLookupOutgoingConnections();
         int indexOf = outgoingConnections.indexOf(model);
         if (indexOf != -1) {
