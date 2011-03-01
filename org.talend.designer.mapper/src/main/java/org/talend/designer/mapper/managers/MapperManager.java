@@ -1107,6 +1107,8 @@ public class MapperManager extends AbstractMapperManager {
             defaultSettingMap.put(DataMapTableView.PERSISTENCE_MODEL_SETTING, false);
             defaultSettingMap.put(DataMapTableView.OUTPUT_REJECT, false);
             defaultSettingMap.put(DataMapTableView.LOOK_UP_INNER_JOIN_REJECT, false);
+            defaultSettingMap.put(DataMapTableView.SCHEMA_TYPE, false);
+            defaultSettingMap.put(DataMapTableView.SCHEMA_ID, null);
         }
         return defaultSettingMap;
     }

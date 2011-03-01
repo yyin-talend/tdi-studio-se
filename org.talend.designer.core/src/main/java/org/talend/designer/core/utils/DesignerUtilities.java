@@ -21,11 +21,16 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
@@ -141,5 +146,16 @@ public class DesignerUtilities {
             }
         }
 
+    }
+
+    public static String getRepositoryAliasName(ConnectionItem connectionItem) {
+        ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
+        String aliasName = repositoryObjectType.getAlias();
+        Connection connection = connectionItem.getConnection();
+        if (connection instanceof DatabaseConnection) {
+            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
+            aliasName += " (" + currentDbType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return aliasName;
     }
 }

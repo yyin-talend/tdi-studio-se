@@ -432,7 +432,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         externalTable.setMinimized(pTable.isMinimized());
         externalTable.setName(pTable.getName());
         externalTable.setMetadataTableEntries(getExternalEntities(pTable.getMapperTableEntries()));
-
+        externalTable.setId(pTable.getId());
     }
 
     private List<ExternalMapperTableEntry> getExternalEntities(List<MapperTableEntry> pEntities) {

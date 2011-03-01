@@ -14,6 +14,7 @@ package org.talend.designer.mapper.ui.visualmap.table;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -35,8 +36,8 @@ import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableRemov
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
@@ -110,6 +111,10 @@ public class OutputDataMapTableView extends DataMapTableView {
         if (tableMapSettingEntriesModel != null) {
             tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, OUTPUT_REJECT, null));
             tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, LOOK_UP_INNER_JOIN_REJECT, null));
+            tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_TYPE, null));
+            if (getOutputTable().isRepository()) {
+                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_ID, null));
+            }
         }
 
         mapSettingViewerCreator = extendedTableViewerForMapSetting.getTableViewerCreator();
@@ -138,17 +143,38 @@ public class OutputDataMapTableView extends DataMapTableView {
 
     }
 
-    protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final ComboBoxCellEditor functComboBox) {
+    protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final CellEditor cellEditor) {
         return new IBeanPropertyAccessors<GlobalMapEntry, Object>() {
 
             public Object get(GlobalMapEntry bean) {
-                functComboBox.setItems(new String[] { "true", "false" });
                 IDataMapTable parent = bean.getParent();
                 OutputTable outputTable = (OutputTable) parent;
-                if (OUTPUT_REJECT.equals(bean.getName())) {
-                    return String.valueOf(outputTable.isReject());
-                } else if (LOOK_UP_INNER_JOIN_REJECT.equals(bean.getName())) {
-                    return String.valueOf(outputTable.isRejectInnerJoin());
+                if (cellEditor instanceof ComboBoxCellEditor) {
+                    ComboBoxCellEditor functComboBox = (ComboBoxCellEditor) cellEditor;
+                    functComboBox.setItems(new String[] { "true", "false" });
+                    if (OUTPUT_REJECT.equals(bean.getName())) {
+                        return String.valueOf(outputTable.isReject());
+                    } else if (LOOK_UP_INNER_JOIN_REJECT.equals(bean.getName())) {
+                        return String.valueOf(outputTable.isRejectInnerJoin());
+                    } else if (SCHEMA_TYPE.equals(bean.getName())) {
+                        functComboBox.setItems(new String[] { BULIT_IN, REPOSITORY });
+                        return outputTable.isRepository() ? REPOSITORY : BULIT_IN;
+                    }
+                } else if (cellEditor instanceof CustomDialogCellEditor) {
+                    CustomDialogCellEditor customDialogCellEditor = (CustomDialogCellEditor) cellEditor;
+                    if (OUTPUT_REJECT.equals(bean.getName())) {
+                        customDialogCellEditor.setType(CellValueType.BOOL);
+                        return String.valueOf(outputTable.isReject());
+                    } else if (LOOK_UP_INNER_JOIN_REJECT.equals(bean.getName())) {
+                        customDialogCellEditor.setType(CellValueType.BOOL);
+                        return String.valueOf(outputTable.isRejectInnerJoin());
+                    } else if (SCHEMA_TYPE.equals(bean.getName())) {
+                        customDialogCellEditor.setType(CellValueType.SCHEMA_TYPE);
+                        return outputTable.isRepository() ? REPOSITORY : BULIT_IN;
+                    } else if (SCHEMA_ID.equals(bean.getName())) {
+                        customDialogCellEditor.setType(CellValueType.SCHEMA_ID);
+                        return getSchemaDisplayName(outputTable.getId());
+                    }
                 }
 
                 return "";
@@ -167,6 +193,13 @@ public class OutputDataMapTableView extends DataMapTableView {
                 } else if (LOOK_UP_INNER_JOIN_REJECT.equals(bean.getName())) {
                     previous = outputTable.isRejectInnerJoin();
                     outputTable.setRejectInnerJoin(Boolean.valueOf(value.toString()));
+                } else if (SCHEMA_TYPE.equals(bean.getName())) {
+                    previous = outputTable.isRepository();
+                    outputTable.setRepository(REPOSITORY.equals(value));
+                    showSchemaIDSetting(REPOSITORY.equals(value));
+                } else if (SCHEMA_ID.equals(bean.getName())) {
+                    previous = outputTable.getId();
+                    outputTable.setId(String.valueOf(value));
                 }
 
                 refreshCondensedImage(outputTable, bean.getName(), previous);
@@ -174,13 +207,14 @@ public class OutputDataMapTableView extends DataMapTableView {
         };
     }
 
-    private void refreshCondensedImage(OutputTable table, String option, Object previousValue) {
+    protected void refreshCondensedImage(AbstractInOutTable absTable, String option, Object previousValue) {
+        OutputTable table = (OutputTable) absTable;
         if (OUTPUT_REJECT.equals(option)) {
             if (mapperManager.getDefaultSetting().get(OUTPUT_REJECT).equals(table.isReject())) {
                 if (changedOptions > 0)
                     changedOptions--;
             } else if (mapperManager.getDefaultSetting().get(OUTPUT_REJECT).equals(previousValue)) {
-                if (changedOptions < 4)
+                if (changedOptions < 6)
                     changedOptions++;
             }
         } else if (LOOK_UP_INNER_JOIN_REJECT.equals(option)) {
@@ -188,7 +222,23 @@ public class OutputDataMapTableView extends DataMapTableView {
                 if (changedOptions > 0)
                     changedOptions--;
             } else if (mapperManager.getDefaultSetting().get(LOOK_UP_INNER_JOIN_REJECT).equals(previousValue)) {
-                if (changedOptions < 4)
+                if (changedOptions < 6)
+                    changedOptions++;
+            }
+        } else if (SCHEMA_TYPE.equals(option)) {
+            if (mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(table.isRepository())) {
+                if (changedOptions > 0)
+                    changedOptions--;
+            } else if (mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(previousValue)) {
+                if (changedOptions < 6)
+                    changedOptions++;
+            }
+        } else if (SCHEMA_ID.equals(option)) {
+            if (mapperManager.getDefaultSetting().get(SCHEMA_ID) == table.getId()) {
+                if (changedOptions > 0)
+                    changedOptions--;
+            } else if (mapperManager.getDefaultSetting().get(SCHEMA_ID) == previousValue) {
+                if (changedOptions < 6)
                     changedOptions++;
             }
         }
@@ -206,17 +256,33 @@ public class OutputDataMapTableView extends DataMapTableView {
             if (!mapperManager.getDefaultSetting().get(LOOK_UP_INNER_JOIN_REJECT).equals(outputTable.isRejectInnerJoin())) {
                 return true;
             }
+        } else if (SCHEMA_TYPE.equals(bean.getName())) {
+            if (!mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(outputTable.isRepository())) {
+                return true;
+            }
+        } else if (SCHEMA_ID.equals(bean.getName())) {
+            if (mapperManager.getDefaultSetting().get(SCHEMA_ID) != outputTable.getId()) {
+                return true;
+            }
         }
         return false;
     }
 
     protected void initCondensedItemImage() {
         if (!mapperManager.getDefaultSetting().get(OUTPUT_REJECT).equals(getOutputTable().isReject())) {
-            if (changedOptions < 2)
+            if (changedOptions < 4)
                 changedOptions++;
         }
         if (!mapperManager.getDefaultSetting().get(LOOK_UP_INNER_JOIN_REJECT).equals(getOutputTable().isRejectInnerJoin())) {
-            if (changedOptions < 2)
+            if (changedOptions < 4)
+                changedOptions++;
+        }
+        if (!mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(getOutputTable().isRepository())) {
+            if (changedOptions < 4)
+                changedOptions++;
+        }
+        if (mapperManager.getDefaultSetting().get(SCHEMA_ID) != getOutputTable().getId()) {
+            if (changedOptions < 4)
                 changedOptions++;
         }
 
@@ -416,8 +482,7 @@ public class OutputDataMapTableView extends DataMapTableView {
                 ISelection selection = event.getSelection();
                 selectThisDataMapTableView();
                 UIManager uiManager = mapperManager.getUiManager();
-                uiManager
-                        .selectLinks(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(selection), false, false);
+                uiManager.selectLinks(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(selection), false, false);
             }
 
         });
@@ -489,8 +554,8 @@ public class OutputDataMapTableView extends DataMapTableView {
              */
             @Override
             protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
-                ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean, extendedTableViewerForFilters
-                        .getExtendedTableModel());
+                ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
+                        extendedTableViewerForFilters.getExtendedTableModel());
                 mapperManager.removeTableEntry((ITableEntry) bean);
                 mapperManager.executeCommand(removeCommand);
                 tableViewerCreatorForFilters.getTableViewer().refresh();

@@ -15,7 +15,9 @@ package org.talend.designer.mapper.ui.visualmap.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -37,6 +39,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.runtime.image.EImage;
@@ -46,9 +49,9 @@ import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableRemov
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_ROW_SELECTION;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultHeaderColumnSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
@@ -74,6 +77,7 @@ import org.talend.designer.mapper.model.table.TMAP_LOOKUP_MODE;
 import org.talend.designer.mapper.model.table.TMAP_MATCHING_MODE;
 import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
+import org.talend.designer.mapper.ui.dialog.ListStringValueDialog;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
 import org.talend.designer.mapper.ui.footer.StatusBar.STATUS;
 import org.talend.designer.mapper.ui.image.ImageInfo;
@@ -150,10 +154,18 @@ public class InputDataMapTableView extends DataMapTableView {
         };
 
         if (tableMapSettingEntriesModel != null) {
-            tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, LOOKUP_MODEL_SETTING, null));
-            tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, MATCH_MODEL_SETTING, null));
-            tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, JOIN_MODEL_SETTING, null));
-            tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, PERSISTENCE_MODEL_SETTING, null));
+            if (!getInputTable().isMainConnection()) {
+                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, LOOKUP_MODEL_SETTING, null));
+                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, MATCH_MODEL_SETTING, null));
+                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, JOIN_MODEL_SETTING, null));
+                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, PERSISTENCE_MODEL_SETTING, null));
+                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_TYPE, null));
+            } else {
+                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_TYPE, null));
+            }
+            if (getInputTable().isRepository()) {
+                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_ID, null));
+            }
         }
 
         mapSettingViewerCreator = extendedTableViewerForMapSetting.getTableViewerCreator();
@@ -183,64 +195,96 @@ public class InputDataMapTableView extends DataMapTableView {
         });
     }
 
-    protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final ComboBoxCellEditor functComboBox) {
+    protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final CellEditor cellEditor) {
         return new IBeanPropertyAccessors<GlobalMapEntry, Object>() {
 
             public Object get(GlobalMapEntry bean) {
-                if (LOOKUP_MODEL_SETTING.equals(bean.getName())) {
-                    IUILookupMode[] availableJoins = { TMAP_LOOKUP_MODE.LOAD_ONCE, TMAP_LOOKUP_MODE.RELOAD,
-                            TMAP_LOOKUP_MODE.CACHE_OR_RELOAD };
-                    List<String> names = new ArrayList<String>();
-                    for (int i = 0; i < availableJoins.length; i++) {
-                        names.add(availableJoins[i].getLabel());
-                    }
-                    functComboBox.setItems(names.toArray(new String[names.size()]));
-                    IDataMapTable parent = bean.getParent();
-                    final IUILookupMode lookupMode = ((InputTable) parent).getLookupMode();
-                    if (lookupMode != null) {
-                        return lookupMode.getLabel();
-                    }
-                } else if (MATCH_MODEL_SETTING.equals(bean.getName())) {
-                    IUIMatchingMode[] matchModel = getMatchModel();
-                    List<String> names = new ArrayList<String>();
-                    for (int i = 0; i < matchModel.length; i++) {
-                        names.add(matchModel[i].getLabel());
-                    }
-                    functComboBox.setItems(names.toArray(new String[names.size()]));
-                    IDataMapTable parent = bean.getParent();
-                    IUIMatchingMode matchingMode = ((InputTable) parent).getMatchingMode();
-                    if (names.contains(matchingMode.getLabel())) {
-                        return matchingMode.getLabel();
-                    }
+                IDataMapTable parent = bean.getParent();
+                InputTable inputTable = (InputTable) parent;
+                if (cellEditor instanceof ComboBoxCellEditor) {
+                    ComboBoxCellEditor functComboBox = (ComboBoxCellEditor) cellEditor;
+                    if (LOOKUP_MODEL_SETTING.equals(bean.getName())) {
+                        IUILookupMode[] availableJoins = { TMAP_LOOKUP_MODE.LOAD_ONCE, TMAP_LOOKUP_MODE.RELOAD,
+                                TMAP_LOOKUP_MODE.CACHE_OR_RELOAD };
+                        List<String> names = new ArrayList<String>();
+                        for (int i = 0; i < availableJoins.length; i++) {
+                            names.add(availableJoins[i].getLabel());
+                        }
+                        functComboBox.setItems(names.toArray(new String[names.size()]));
+                        final IUILookupMode lookupMode = ((InputTable) parent).getLookupMode();
+                        if (lookupMode != null) {
+                            return lookupMode.getLabel();
+                        }
+                    } else if (MATCH_MODEL_SETTING.equals(bean.getName())) {
+                        IUIMatchingMode[] matchModel = getMatchModel();
+                        List<String> names = new ArrayList<String>();
+                        for (int i = 0; i < matchModel.length; i++) {
+                            names.add(matchModel[i].getLabel());
+                        }
+                        functComboBox.setItems(names.toArray(new String[names.size()]));
+                        IUIMatchingMode matchingMode = ((InputTable) parent).getMatchingMode();
+                        if (names.contains(matchingMode.getLabel())) {
+                            return matchingMode.getLabel();
+                        }
 
-                } else if (JOIN_MODEL_SETTING.equals(bean.getName())) {
-                    String[] items = new String[] { INNER_JOIN, LEFT_OUTER_JOIN };
-                    functComboBox.setItems(items);
-                    IDataMapTable parent = bean.getParent();
-                    boolean innerJoin = ((InputTable) parent).isInnerJoin();
-                    if (innerJoin) {
-                        return items[0];
+                    } else if (JOIN_MODEL_SETTING.equals(bean.getName())) {
+                        String[] items = new String[] { INNER_JOIN, LEFT_OUTER_JOIN };
+                        functComboBox.setItems(items);
+                        boolean innerJoin = ((InputTable) parent).isInnerJoin();
+                        if (innerJoin) {
+                            return items[0];
+                        }
+                        return items[1];
+                    } else if (PERSISTENCE_MODEL_SETTING.equals(bean.getName())) {
+                        functComboBox.setItems(new String[] { "true", "false" });
+                        boolean persistent = ((InputTable) parent).isPersistent();
+                        return String.valueOf(persistent);
                     }
-                    return items[1];
-                } else if (PERSISTENCE_MODEL_SETTING.equals(bean.getName())) {
-                    functComboBox.setItems(new String[] { "true", "false" });
-                    IDataMapTable parent = bean.getParent();
-                    boolean persistent = ((InputTable) parent).isPersistent();
-                    return String.valueOf(persistent);
+                } else if (cellEditor instanceof CustomDialogCellEditor) {
+                    CustomDialogCellEditor customDialogCellEditor = (CustomDialogCellEditor) cellEditor;
+                    if (LOOKUP_MODEL_SETTING.equals(bean.getName())) {
+                        customDialogCellEditor.setType(CellValueType.LOOKUP_MODEL);
+                        final IUILookupMode lookupMode = inputTable.getLookupMode();
+                        if (lookupMode != null) {
+                            return lookupMode.getLabel();
+                        }
+                    } else if (MATCH_MODEL_SETTING.equals(bean.getName())) {
+                        customDialogCellEditor.setType(CellValueType.MATCH_MODEL);
+                        IUIMatchingMode matchingMode = inputTable.getMatchingMode();
+                        if (matchingMode != null) {
+                            return matchingMode.getLabel();
+                        }
+                    } else if (JOIN_MODEL_SETTING.equals(bean.getName())) {
+                        customDialogCellEditor.setType(CellValueType.JOIN_MODEL);
+                        boolean innerJoin = inputTable.isInnerJoin();
+                        return innerJoin ? INNER_JOIN : LEFT_OUTER_JOIN;
+                    } else if (PERSISTENCE_MODEL_SETTING.equals(bean.getName())) {
+                        customDialogCellEditor.setType(CellValueType.BOOL);
+                        boolean persistent = inputTable.isPersistent();
+                        return String.valueOf(persistent);
+                    } else if (SCHEMA_TYPE.equals(bean.getName())) {
+                        customDialogCellEditor.setType(CellValueType.SCHEMA_TYPE);
+                        return inputTable.isRepository() ? REPOSITORY : BULIT_IN;
+                    } else if (SCHEMA_ID.equals(bean.getName())) {
+                        customDialogCellEditor.setType(CellValueType.SCHEMA_ID);
+                        return getSchemaDisplayName(inputTable.getId());
+                    }
                 }
+
                 return "";
             }
 
             public void set(GlobalMapEntry bean, Object value) {
-
+                IDataMapTable parent = bean.getParent();
+                InputTable inputTable = (InputTable) parent;
                 Object previousValue = null;
                 if (LOOKUP_MODEL_SETTING.equals(bean.getName())) {
-                    previousValue = ((InputTable) bean.getParent()).getLookupMode();
+                    previousValue = inputTable.getLookupMode();
                     IUILookupMode[] availableJoins = { TMAP_LOOKUP_MODE.LOAD_ONCE, TMAP_LOOKUP_MODE.RELOAD,
                             TMAP_LOOKUP_MODE.CACHE_OR_RELOAD };
                     for (final IUILookupMode lookupMode : availableJoins) {
                         if (value != null && value.equals(lookupMode.getLabel())) {
-                            ((InputTable) bean.getParent()).setLookupMode(lookupMode);
+                            inputTable.setLookupMode(lookupMode);
                             if (TMAP_LOOKUP_MODE.CACHE_OR_RELOAD == lookupMode) {
                                 persistentCheckEditable = false;
                             } else {
@@ -259,16 +303,15 @@ public class InputDataMapTableView extends DataMapTableView {
                     }
 
                 } else if (MATCH_MODEL_SETTING.equals(bean.getName())) {
-                    previousValue = ((InputTable) bean.getParent()).getMatchingMode();
+                    previousValue = inputTable.getMatchingMode();
                     for (IUIMatchingMode model : TMAP_MATCHING_MODE.values()) {
                         if (value != null && value.equals(model.getLabel())) {
-                            ((InputTable) bean.getParent()).setMatchingMode(model);
+                            inputTable.setMatchingMode(model);
                             previousMatchingModeSelected = model;
                         }
                     }
                 } else if (JOIN_MODEL_SETTING.equals(bean.getName())) {
-                    previousValue = ((InputTable) bean.getParent()).isInnerJoin();
-                    IDataMapTable parent = bean.getParent();
+                    previousValue = inputTable.isInnerJoin();
                     if (LEFT_OUTER_JOIN.equals(value)) {
                         ((InputTable) parent).setInnerJoin(false);
                         previousInnerJoinSelection = false;
@@ -277,12 +320,18 @@ public class InputDataMapTableView extends DataMapTableView {
                         previousInnerJoinSelection = true;
                     }
                 } else if (PERSISTENCE_MODEL_SETTING.equals(bean.getName())) {
-                    previousValue = ((InputTable) bean.getParent()).isPersistent();
-                    IDataMapTable parent = bean.getParent();
+                    previousValue = inputTable.isPersistent();
                     if ("true".equals(value) || "false".equals(value)) {
                         ((InputTable) parent).setPersistent(Boolean.valueOf(value.toString()));
                         previousValidPersistentMode = Boolean.valueOf(value.toString());
                     }
+                } else if (SCHEMA_TYPE.equals(bean.getName())) {
+                    previousValue = inputTable.isRepository();
+                    inputTable.setRepository(REPOSITORY.equals(value));
+                    showSchemaIDSetting(REPOSITORY.equals(value));
+                } else if (SCHEMA_ID.equals(bean.getName())) {
+                    previousValue = inputTable.getId();
+                    inputTable.setId(String.valueOf(value));
                 }
 
                 refreshCondensedImage((InputTable) bean.getParent(), bean.getName(), previousValue);
@@ -291,13 +340,14 @@ public class InputDataMapTableView extends DataMapTableView {
         };
     }
 
-    private void refreshCondensedImage(InputTable table, String option, Object previousValue) {
+    protected void refreshCondensedImage(AbstractInOutTable absTable, String option, Object previousValue) {
+        InputTable table = (InputTable) absTable;
         if (LOOKUP_MODEL_SETTING.equals(option)) {
             if (table.getLookupMode().equals(mapperManager.getDefaultSetting().get(LOOKUP_MODEL_SETTING))) {
                 if (changedOptions > 0)
                     changedOptions--;
             } else if (mapperManager.getDefaultSetting().get(LOOKUP_MODEL_SETTING).equals(previousValue)) {
-                if (changedOptions < 4)
+                if (changedOptions < 6)
                     changedOptions++;
             }
         } else if (MATCH_MODEL_SETTING.equals(option)) {
@@ -310,7 +360,7 @@ public class InputDataMapTableView extends DataMapTableView {
                         if (changedOptions > 0)
                             changedOptions--;
                     } else if (modes[0].equals(previousValue) || modes[1].equals(previousValue)) {
-                        if (changedOptions < 4)
+                        if (changedOptions < 6)
                             changedOptions++;
                     }
 
@@ -321,7 +371,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 if (changedOptions > 0)
                     changedOptions--;
             } else if (mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(previousValue)) {
-                if (changedOptions < 4)
+                if (changedOptions < 6)
                     changedOptions++;
             }
 
@@ -330,7 +380,23 @@ public class InputDataMapTableView extends DataMapTableView {
                 if (changedOptions > 0)
                     changedOptions--;
             } else if (mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(previousValue)) {
-                if (changedOptions < 4)
+                if (changedOptions < 6)
+                    changedOptions++;
+            }
+        } else if (SCHEMA_TYPE.equals(option)) {
+            if (mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(table.isRepository())) {
+                if (changedOptions > 0)
+                    changedOptions--;
+            } else if (mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(previousValue)) {
+                if (changedOptions < 6)
+                    changedOptions++;
+            }
+        } else if (SCHEMA_ID.equals(option)) {
+            if (mapperManager.getDefaultSetting().get(SCHEMA_ID) == table.getId()) {
+                if (changedOptions > 0)
+                    changedOptions--;
+            } else if (mapperManager.getDefaultSetting().get(SCHEMA_ID) == previousValue) {
+                if (changedOptions < 6)
                     changedOptions++;
             }
         }
@@ -365,13 +431,21 @@ public class InputDataMapTableView extends DataMapTableView {
             if (!mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(inputTable.isPersistent())) {
                 return true;
             }
+        } else if (SCHEMA_TYPE.equals(bean.getName())) {
+            if (!mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(inputTable.isRepository())) {
+                return true;
+            }
+        } else if (SCHEMA_ID.equals(bean.getName())) {
+            if (mapperManager.getDefaultSetting().get(SCHEMA_ID) != inputTable.getId()) {
+                return true;
+            }
         }
         return false;
     }
 
     protected void initCondensedItemImage() {
         if (!mapperManager.getDefaultSetting().get(LOOKUP_MODEL_SETTING).equals(getInputTable().getLookupMode())) {
-            if (changedOptions < 4)
+            if (changedOptions < 6)
                 changedOptions++;
         }
         Object object = mapperManager.getDefaultSetting().get(MATCH_MODEL_SETTING);
@@ -379,22 +453,30 @@ public class InputDataMapTableView extends DataMapTableView {
             IUIMatchingMode[] modes = (IUIMatchingMode[]) object;
             if (modes.length == 2) {
                 if (!modes[0].equals(getInputTable().getMatchingMode()) && !modes[1].equals(getInputTable().getMatchingMode())) {
-                    if (changedOptions < 4)
+                    if (changedOptions < 6)
                         changedOptions++;
                 }
 
             }
         }
         if (!mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(getInputTable().isInnerJoin())) {
-            if (changedOptions < 4)
+            if (changedOptions < 6)
                 changedOptions++;
         }
         if (!mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(getInputTable().isPersistent())) {
-            if (changedOptions < 4)
+            if (changedOptions < 6)
                 changedOptions++;
         }
-        condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
+        if (!mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(getInputTable().isRepository())) {
+            if (changedOptions < 6)
+                changedOptions++;
+        }
+        if (mapperManager.getDefaultSetting().get(SCHEMA_ID) != getInputTable().getId()) {
+            if (changedOptions < 6)
+                changedOptions++;
+        }
 
+        condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
     }
 
     /*
@@ -539,46 +621,47 @@ public class InputDataMapTableView extends DataMapTableView {
     @Override
     protected boolean addToolItems() {
 
-        if (!getInputTable().isMainConnection()) {
+        // TODO: unlock this tentatively.
+        // if (!getInputTable().isMainConnection()) {
 
-            final InputTable table = getInputTable();
-            // condensed Item
-            condensedItem = new ToolItem(toolBarActions, SWT.CHECK);
-            condensedItem.setEnabled(!mapperManager.componentIsReadOnly());
-            condensedItem.setSelection(table.isActivateCondensedTool());
-            condensedItem.setToolTipText("tMap settings");
-            initCondensedItemImage();
-            condensedItem.addSelectionListener(new SelectionAdapter() {
+        final InputTable table = getInputTable();
+        // condensed Item
+        condensedItem = new ToolItem(toolBarActions, SWT.CHECK);
+        condensedItem.setEnabled(!mapperManager.componentIsReadOnly());
+        condensedItem.setSelection(table.isActivateCondensedTool());
+        condensedItem.setToolTipText("tMap settings");
+        initCondensedItemImage();
+        condensedItem.addSelectionListener(new SelectionAdapter() {
 
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    table.setActivateCondensedTool(condensedItem.getSelection());
-                    showTableMapSetting(condensedItem.getSelection());
-                }
-
-            });
-
-            if (mapperManager.isPersistentMap()) {
-                TMAP_LOOKUP_MODE lookupMode = (TMAP_LOOKUP_MODE) table.getLookupMode();
-
-                switch (lookupMode) {
-                case LOAD_ONCE:
-                case LOAD_ONCE_AND_UPDATE:
-                case RELOAD:
-                    persistentCheckEditable = true;
-                    previousValidPersistentMode = table.isPersistent();
-                    break;
-                case CACHE_OR_RELOAD:
-                    persistentCheckEditable = false;
-                    getInputTable().setPersistent(false);
-
-                    break;
-                default:
-                    break;
-                }
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                table.setActivateCondensedTool(condensedItem.getSelection());
+                showTableMapSetting(condensedItem.getSelection());
             }
 
+        });
+
+        if (mapperManager.isPersistentMap()) {
+            TMAP_LOOKUP_MODE lookupMode = (TMAP_LOOKUP_MODE) table.getLookupMode();
+
+            switch (lookupMode) {
+            case LOAD_ONCE:
+            case LOAD_ONCE_AND_UPDATE:
+            case RELOAD:
+                persistentCheckEditable = true;
+                previousValidPersistentMode = table.isPersistent();
+                break;
+            case CACHE_OR_RELOAD:
+                persistentCheckEditable = false;
+                getInputTable().setPersistent(false);
+
+                break;
+            default:
+                break;
+            }
         }
+
+        // }
 
         createActivateFilterCheck();
 
@@ -939,8 +1022,8 @@ public class InputDataMapTableView extends DataMapTableView {
         column.setWidth(25);
         column.setMoveable(false);
         column.setResizable(true);
-        column.setImageHeader(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
-                .getImageDesc(EImage.ADD_ICON)));
+        column.setImageHeader(org.talend.commons.ui.runtime.image.ImageProvider
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.ADD_ICON)));
         column.setTableColumnSelectionListener(new DefaultHeaderColumnSelectionListener(column, tableViewerCreatorForGlobalMap) {
 
             /*
@@ -972,8 +1055,8 @@ public class InputDataMapTableView extends DataMapTableView {
 
                 ITableEntry tableEntry = (ITableEntry) bean;
 
-                boolean removeEntry = MessageDialog.openConfirm(getShell(), Messages
-                        .getString("InputDataMapTableView.removeGlobalMapVar.Title"), //$NON-NLS-1$
+                boolean removeEntry = MessageDialog.openConfirm(getShell(),
+                        Messages.getString("InputDataMapTableView.removeGlobalMapVar.Title"), //$NON-NLS-1$
                         Messages.getString("InputDataMapTableView.removeGlobalMapVar.Message", tableEntry.getName())); //$NON-NLS-1$
                 if (removeEntry) {
                     ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
@@ -1053,6 +1136,39 @@ public class InputDataMapTableView extends DataMapTableView {
                 break;
             }
         }
+    }
+
+    protected Object openCustomCellDialog(Shell shell, CellValueType type) {
+        if (type == CellValueType.LOOKUP_MODEL) {
+            IUILookupMode[] availableJoins = { TMAP_LOOKUP_MODE.LOAD_ONCE, TMAP_LOOKUP_MODE.RELOAD,
+                    TMAP_LOOKUP_MODE.CACHE_OR_RELOAD };
+            List<String> names = new ArrayList<String>();
+            for (int i = 0; i < availableJoins.length; i++) {
+                names.add(availableJoins[i].getLabel());
+            }
+            ListStringValueDialog<String> dialog = new ListStringValueDialog<String>(shell, names);
+            if (dialog.open() == IDialogConstants.OK_ID) {
+                return dialog.getSelectStr();
+            }
+        } else if (type == CellValueType.MATCH_MODEL) {
+            IUIMatchingMode[] matchModel = getMatchModel();
+            List<String> names = new ArrayList<String>();
+            for (int i = 0; i < matchModel.length; i++) {
+                names.add(matchModel[i].getLabel());
+            }
+            ListStringValueDialog<String> dialog = new ListStringValueDialog<String>(shell, names);
+            if (dialog.open() == IDialogConstants.OK_ID) {
+                return dialog.getSelectStr();
+            }
+        } else if (type == CellValueType.JOIN_MODEL) {
+            String[] items = new String[] { INNER_JOIN, LEFT_OUTER_JOIN };
+            ListStringValueDialog<String> dialog = new ListStringValueDialog<String>(shell, items);
+            if (dialog.open() == IDialogConstants.OK_ID) {
+                return dialog.getSelectStr();
+            }
+        }
+
+        return null;
     }
 
     /**

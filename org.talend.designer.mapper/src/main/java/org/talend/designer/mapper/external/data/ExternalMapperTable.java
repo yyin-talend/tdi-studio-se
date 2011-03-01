@@ -92,6 +92,11 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
      */
     private boolean persistent;
 
+    /**
+     * Used for saving the schema id of table.
+     */
+    private String id;
+
     public ExternalMapperTable() {
     }
 
@@ -307,6 +312,14 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
      */
     public void setSizeState(String tableSizeState) {
         this.sizeState = tableSizeState;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     /*

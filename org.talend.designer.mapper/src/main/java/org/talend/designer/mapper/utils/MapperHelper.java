@@ -100,6 +100,7 @@ public class MapperHelper {
                 persistentTable.setMatchingMode(table.getMatchingMode());
                 persistentTable.setInnerJoin(table.isInnerJoin());
                 persistentTable.setPersistent(table.isPersistent());
+                persistentTable.setId(table.getId());
                 if (table.getGlobalMapKeysValues() != null && !table.getGlobalMapKeysValues().isEmpty()) {
                     persistentTable.getGlobalMapKeysValues().addAll(getPersistentTableEntitys(table.getGlobalMapKeysValues()));
                 }
@@ -115,6 +116,7 @@ public class MapperHelper {
                 persistentTable.setRejectInnerJoin(table.isRejectInnerJoin());
                 persistentTable.setIsErrorRejectTable(table.isErrorRejectTable());
                 persistentTable.setIsJoinTableOf(table.getIsJoinTableOf());
+                persistentTable.setId(table.getId());
                 emfMapperData.getOutputTables().add(persistentTable);
             }
         }

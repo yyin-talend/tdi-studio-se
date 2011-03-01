@@ -18,6 +18,7 @@ package org.talend.designer.mapper.model.emf.mapper;
  *   <li>{@link org.talend.designer.mapper.model.emf.mapper.AbstractInOutTable#getExpressionFilter <em>Expression Filter</em>}</li>
  *   <li>{@link org.talend.designer.mapper.model.emf.mapper.AbstractInOutTable#isActivateExpressionFilter <em>Activate Expression Filter</em>}</li>
  *   <li>{@link org.talend.designer.mapper.model.emf.mapper.AbstractInOutTable#isActivateCondensedTool <em>Activate Condensed Tool</em>}</li>
+ *   <li>{@link org.talend.designer.mapper.model.emf.mapper.AbstractInOutTable#getId <em>Id</em>}</li>
  * </ul>
  * </p>
  *
@@ -103,5 +104,31 @@ public interface AbstractInOutTable extends AbstractDataMapTable {
      * @generated
      */
     void setActivateCondensedTool(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Id</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Id</em>' attribute.
+     * @see #setId(String)
+     * @see org.talend.designer.mapper.model.emf.mapper.MapperPackage#getAbstractInOutTable_Id()
+     * @model
+     * @generated
+     */
+    String getId();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.mapper.model.emf.mapper.AbstractInOutTable#getId <em>Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Id</em>' attribute.
+     * @see #getId()
+     * @generated
+     */
+    void setId(String value);
 
 } // AbstractInOutTable

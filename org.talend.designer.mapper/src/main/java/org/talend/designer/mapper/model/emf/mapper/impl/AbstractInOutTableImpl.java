@@ -25,6 +25,7 @@ import org.talend.designer.mapper.model.emf.mapper.MapperPackage;
  *   <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractInOutTableImpl#getExpressionFilter <em>Expression Filter</em>}</li>
  *   <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractInOutTableImpl#isActivateExpressionFilter <em>Activate Expression Filter</em>}</li>
  *   <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractInOutTableImpl#isActivateCondensedTool <em>Activate Condensed Tool</em>}</li>
+ *   <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractInOutTableImpl#getId <em>Id</em>}</li>
  * </ul>
  * </p>
  *
@@ -90,6 +91,26 @@ public abstract class AbstractInOutTableImpl extends AbstractDataMapTableImpl im
      * @ordered
      */
     protected boolean activateCondensedTool = ACTIVATE_CONDENSED_TOOL_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getId() <em>Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getId()
+     * @generated
+     * @ordered
+     */
+    protected static final String ID_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getId() <em>Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getId()
+     * @generated
+     * @ordered
+     */
+    protected String id = ID_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -178,6 +199,27 @@ public abstract class AbstractInOutTableImpl extends AbstractDataMapTableImpl im
      * <!-- end-user-doc -->
      * @generated
      */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setId(String newId) {
+        String oldId = id;
+        id = newId;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, MapperPackage.ABSTRACT_IN_OUT_TABLE__ID, oldId, id));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -187,6 +229,8 @@ public abstract class AbstractInOutTableImpl extends AbstractDataMapTableImpl im
                 return isActivateExpressionFilter();
             case MapperPackage.ABSTRACT_IN_OUT_TABLE__ACTIVATE_CONDENSED_TOOL:
                 return isActivateCondensedTool();
+            case MapperPackage.ABSTRACT_IN_OUT_TABLE__ID:
+                return getId();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -207,6 +251,9 @@ public abstract class AbstractInOutTableImpl extends AbstractDataMapTableImpl im
                 return;
             case MapperPackage.ABSTRACT_IN_OUT_TABLE__ACTIVATE_CONDENSED_TOOL:
                 setActivateCondensedTool((Boolean)newValue);
+                return;
+            case MapperPackage.ABSTRACT_IN_OUT_TABLE__ID:
+                setId((String)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -229,6 +276,9 @@ public abstract class AbstractInOutTableImpl extends AbstractDataMapTableImpl im
             case MapperPackage.ABSTRACT_IN_OUT_TABLE__ACTIVATE_CONDENSED_TOOL:
                 setActivateCondensedTool(ACTIVATE_CONDENSED_TOOL_EDEFAULT);
                 return;
+            case MapperPackage.ABSTRACT_IN_OUT_TABLE__ID:
+                setId(ID_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -247,6 +297,8 @@ public abstract class AbstractInOutTableImpl extends AbstractDataMapTableImpl im
                 return activateExpressionFilter != ACTIVATE_EXPRESSION_FILTER_EDEFAULT;
             case MapperPackage.ABSTRACT_IN_OUT_TABLE__ACTIVATE_CONDENSED_TOOL:
                 return activateCondensedTool != ACTIVATE_CONDENSED_TOOL_EDEFAULT;
+            case MapperPackage.ABSTRACT_IN_OUT_TABLE__ID:
+                return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
         }
         return super.eIsSet(featureID);
     }
@@ -267,6 +319,8 @@ public abstract class AbstractInOutTableImpl extends AbstractDataMapTableImpl im
         result.append(activateExpressionFilter);
         result.append(", activateCondensedTool: ");
         result.append(activateCondensedTool);
+        result.append(", id: ");
+        result.append(id);
         result.append(')');
         return result.toString();
     }

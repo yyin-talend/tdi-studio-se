@@ -20,6 +20,8 @@ import java.util.Map;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
@@ -44,11 +46,23 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
     private ExtendedTableModel<GlobalMapEntry> tableMapSettingEntriesModel;
 
+    private ExtendedTableModel<GlobalMapEntry> schemaSettingEntriesModel;
+
+    private ExtendedTableModel<GlobalMapEntry> schemaIDSettingEntriesModel;
+
     private boolean activateExpressionFilter;
 
     private boolean activateCondensedTool;
 
     protected List<GlobalMapEntry> mapSettingEntries = new ArrayList<GlobalMapEntry>();
+
+    protected List<GlobalMapEntry> schemaSettingEntries = new ArrayList<GlobalMapEntry>();
+
+    protected List<GlobalMapEntry> schemaIDSettingEntries = new ArrayList<GlobalMapEntry>();
+
+    private boolean isRepository;
+
+    private String id; // used for saving schema id of table.
 
     /**
      * 
@@ -93,12 +107,17 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         super.initFromExternalData(externalMapperTable);
         expressionFilterEntry = new ExpressionFilterEntry(this);
         tableMapSettingEntriesModel = new ExtendedTableModel<GlobalMapEntry>("Model for map setting", mapSettingEntries);
+        schemaSettingEntriesModel = new ExtendedTableModel<GlobalMapEntry>("Model for schema setting", schemaSettingEntries);
+        schemaIDSettingEntriesModel = new ExtendedTableModel<GlobalMapEntry>("Model for schema id setting",
+                schemaIDSettingEntries);
         if (externalMapperTable != null) {
             this.expressionFilterEntry.setExpression(externalMapperTable.getExpressionFilter());
             this.activateExpressionFilter = externalMapperTable.isActivateExpressionFilter();
             this.activateCondensedTool = externalMapperTable.isActivateCondensedTool();
+            this.id = externalMapperTable.getId();
+            this.isRepository = this.id == null ? false : true;
         }
-        List<IMetadataColumn> columns = this.metadataTable.getListColumns();
+        List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
         Map<String, ExternalMapperTableEntry> nameToPerTabEntry = new HashMap<String, ExternalMapperTableEntry>();
         if (externalMapperTable != null && externalMapperTable.getMetadataTableEntries() != null) {
             for (ExternalMapperTableEntry perTableEntry : externalMapperTable.getMetadataTableEntries()) {
@@ -106,6 +125,16 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
             }
         }
 
+        if (isRepository) {
+            this.metadataTable = MetadataTool.getMetadataFromRepository(id);
+        }
+        if (metadataTable != null) {
+            columns = this.metadataTable.getListColumns();
+        }
+        updateTableEntries(columns, nameToPerTabEntry);
+    }
+
+    private void updateTableEntries(List<IMetadataColumn> columns, Map<String, ExternalMapperTableEntry> nameToPerTabEntry) {
         for (IMetadataColumn column : columns) {
             AbstractInOutTableEntry columnEntry = getNewTableEntry(column);
             ExternalMapperTableEntry externalMapperTableEntry = nameToPerTabEntry.get(columnEntry.getMetadataColumn().getLabel());
@@ -147,6 +176,19 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         return this.tableMapSettingEntriesModel;
     }
 
+    public ExtendedTableModel<GlobalMapEntry> getSchemaSettingEntriesModel() {
+        return this.schemaSettingEntriesModel;
+    }
+
+    /**
+     * Getter for schemaIDSettingEntriesModel.
+     * 
+     * @return the schemaIDSettingEntriesModel
+     */
+    public ExtendedTableModel<GlobalMapEntry> getSchemaIDSettingEntriesModel() {
+        return this.schemaIDSettingEntriesModel;
+    }
+
     /**
      * Getter for activateExpressionFilter.
      * 
@@ -171,6 +213,42 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
     public void setActivateCondensedTool(boolean activatecondensedTool) {
         this.activateCondensedTool = activatecondensedTool;
+    }
+
+    /**
+     * Getter for id.
+     * 
+     * @return the id
+     */
+    public String getId() {
+        return this.id;
+    }
+
+    /**
+     * Sets the id.
+     * 
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * Getter for isRepository.
+     * 
+     * @return the isRepository
+     */
+    public boolean isRepository() {
+        return this.isRepository;
+    }
+
+    /**
+     * Sets the isRepository.
+     * 
+     * @param isRepository the isRepository to set
+     */
+    public void setRepository(boolean isRepository) {
+        this.isRepository = isRepository;
     }
 
 }

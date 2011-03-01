@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
@@ -25,6 +26,7 @@ import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.DialogCellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -32,7 +34,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -69,13 +70,16 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.ws.WindowSystem;
@@ -85,7 +89,6 @@ import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.ExtendedTextCellEditorWithProposal;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;
-import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -115,15 +118,23 @@ import org.talend.core.IService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
+import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.i18n.Messages;
@@ -139,6 +150,7 @@ import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
+import org.talend.designer.mapper.ui.dialog.ListStringValueDialog;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
 import org.talend.designer.mapper.ui.event.MousePositionAnalyser;
 import org.talend.designer.mapper.ui.event.ResizeHelper;
@@ -152,6 +164,10 @@ import org.talend.designer.mapper.ui.tabs.StyledTextHandler;
 import org.talend.designer.mapper.ui.visualmap.zone.InputsZone;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 import org.talend.expressionbuilder.IExpressionBuilderDialogService;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IProxyRepositoryService;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -160,6 +176,10 @@ import org.talend.expressionbuilder.IExpressionBuilderDialogService;
  * 
  */
 public abstract class DataMapTableView extends Composite implements PropertyChangeListener {
+
+    public static final String REPOSITORY = "Repository";
+
+    public static final String BULIT_IN = "Bulit-In";
 
     private final Point realToolbarSize = new Point(0, 0);
 
@@ -267,9 +287,19 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
 
     public static final String LOOK_UP_INNER_JOIN_REJECT = "Catch lookup inner join reject"; //$NON-NLS-1$
 
+    public static final String SCHEMA_TYPE = "Schema Type"; //$NON-NLS-1$
+
+    public static final String SCHEMA_ID = "Schema Id"; //$NON-NLS-1$
+
+    public static final String SCHEMA_SETTING_COLUMN = "Schema Setting Column"; //$NON-NLS-1$
+
+    public static final String SCHEMA_ID_SETTING_COLUMN = "Schema ID Setting Column"; //$NON-NLS-1$
+
     public static final String COLUMN_NAME = "Column"; //$NON-NLS-1$
 
     protected GridData tableForConstraintsGridData;
+
+    protected GridData tableForSchemaIDGridData;
 
     protected GridData tableForGlobalMapGridData;
 
@@ -318,6 +348,21 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
     protected Color previewColor = null;
 
     /**
+     * doc
+     */
+    enum CellValueType {
+
+        BOOL,
+        SCHEMA_TYPE,
+        SCHEMA_ID,
+        LOOKUP_MODEL,
+        MATCH_MODEL,
+        JOIN_MODEL,
+        PERSISTENCE_MODEL
+
+    }
+
+    /**
      * 
      * Call loaded() method after instanciate this class.
      * 
@@ -331,6 +376,10 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
         this.mapperManager = mapperManager;
         this.abstractDataMapTable = abstractDataMapTable;
         expressionColorProvider = new ExpressionColorProvider();
+
+        color = new Color(Display.getDefault(), 238, 238, 0);
+        previewColor = new Color(Display.getDefault(), 235, 0, 219);
+
         createComponents();
         addListeners();
         mapperManager.addTablePair(DataMapTableView.this, abstractDataMapTable);
@@ -347,9 +396,6 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
             }
         }
 
-        color = new Color(Display.getDefault(), 238, 238, 0);
-
-        previewColor = new Color(Display.getDefault(), 235, 0, 219);
     }
 
     private void createComponents() {
@@ -468,6 +514,11 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
         centerComposite.setLayout(centerLayout);
 
         createMapSettingTable();
+        // if (abstractDataMapTable instanceof InputTable || abstractDataMapTable instanceof OutputTable) {
+        // createSchemaSettingTable();
+        // createSchemaIDSettingTable();
+        // }
+
         if (mapperManager.isAdvancedMap() && this instanceof OutputDataMapTableView) {
             createExpressionFilter(DEFAULT_OUT_EXPRESSION_FILTER);
             initExtraTable();
@@ -500,11 +551,11 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
 
     protected abstract void createMapSettingTable();
 
-    protected void initMapSettingColumns(TableViewerCreator<GlobalMapEntry> tableViewerCreator) {
-
+    protected void initMapSettingColumns(final TableViewerCreator<GlobalMapEntry> tableViewerCreator) {
+        final Table table = tableViewerCreator.getTable();
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Property");
-        column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
+        column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
         column.setModifiable(true);
 
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<GlobalMapEntry, Object>() {
@@ -532,19 +583,32 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
             }
         });
 
-        column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Value");
-        column.setId(MAP_SETTING_COLUMN);
-        column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
-        CellEditorValueAdapter comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapterForComboCellEditor("String"); //$NON-NLS-1$
-        ComboBoxCellEditor cellEditor = new ComboBoxCellEditor();
-        cellEditor.create(tableViewerCreator.getTable());
-        CCombo functCombo = (CCombo) cellEditor.getControl();
-        functCombo.setEditable(false);
-        column.setCellEditor(cellEditor, comboValueAdapter);
-        column.setBeanPropertyAccessors(getMapSettingValueAccess(cellEditor));
-        column.setModifiable(true);
-        column.setColorProvider(new IColumnColorProvider<GlobalMapEntry>() {
+        final TableViewerCreatorColumn valueColumn = new TableViewerCreatorColumn(tableViewerCreator);
+        valueColumn.setTitle("Value");
+        valueColumn.setId(MAP_SETTING_COLUMN);
+        valueColumn.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+        //        CellEditorValueAdapter comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapterForComboCellEditor("String"); //$NON-NLS-1$
+        // cellEditor = new ComboBoxCellEditor();
+        // cellEditor.create(table);
+        // CCombo functCombo = (CCombo) cellEditor.getControl();
+        // functCombo.setEditable(false);
+        // valueColumn.setCellEditor(cellEditor, comboValueAdapter);
+
+        final CustomDialogCellEditor cellEditor = new CustomDialogCellEditor(CellValueType.SCHEMA_ID) {
+
+            protected Object openDialogBox(Control cellEditorWindow) {
+                Object obj = super.openDialogBox(cellEditorWindow);
+                if (obj == null) {
+                    return openCustomCellDialog(cellEditorWindow.getShell(), this.getType());
+                }
+                return obj;
+            };
+        };
+        cellEditor.create(table);
+        valueColumn.setCellEditor(cellEditor);
+        valueColumn.setBeanPropertyAccessors(getMapSettingValueAccess(cellEditor));
+        valueColumn.setModifiable(true);
+        valueColumn.setColorProvider(new IColumnColorProvider<GlobalMapEntry>() {
 
             public Color getBackgroundColor(GlobalMapEntry bean) {
                 if (needColumnBgColor(bean)) {
@@ -561,7 +625,52 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
 
     }
 
-    protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final ComboBoxCellEditor functComboBox) {
+    /**
+     * DOC ycbai Comment method "openCustomCellDialog".
+     * 
+     * @param shell
+     * @return
+     */
+    protected Object openCustomCellDialog(Shell shell, CellValueType type) {
+        return null;
+    }
+
+    /**
+     * DOC ycbai Comment method "getSchemaSettingValueAccess".
+     * 
+     * @param functComboBox
+     * @return
+     */
+    protected IBeanPropertyAccessors<GlobalMapEntry, Object> getSchemaSettingValueAccess(final ComboBoxCellEditor functComboBox) {
+        return new IBeanPropertyAccessors<GlobalMapEntry, Object>() {
+
+            public Object get(GlobalMapEntry bean) {
+                functComboBox.setItems(new String[] { BULIT_IN, REPOSITORY });
+                IDataMapTable parent = bean.getParent();
+                AbstractInOutTable table = (AbstractInOutTable) parent;
+                if (SCHEMA_TYPE.equals(bean.getName())) {
+                    if (bean.getExpression() == null) {
+                        return table.getId() == null ? BULIT_IN : REPOSITORY;
+                    }
+                    return bean.getExpression();
+                }
+
+                return "";
+            }
+
+            public void set(GlobalMapEntry bean, Object value) {
+                if (value == null) {
+                    return;
+                }
+                if (SCHEMA_TYPE.equals(bean.getName())) {
+                    bean.setExpression(String.valueOf(value));
+                    showSchemaIDSetting(REPOSITORY.equals(value));
+                }
+            }
+        };
+    }
+
+    protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final CellEditor cellEditor) {
         return null;
     }
 
@@ -584,6 +693,11 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
         case 3:
             return ImageInfo.CONDENSED_TOOL_ICON3;
         case 4:
+            return ImageInfo.CONDENSED_TOOL_ICON4;
+            // FIXME: need icon5, icon6
+        case 5:
+            return ImageInfo.CONDENSED_TOOL_ICON4;
+        case 6:
             return ImageInfo.CONDENSED_TOOL_ICON4;
         default:
             return null;
@@ -1156,6 +1270,50 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
         resizeAtExpandedSize();
     }
 
+    /**
+     * DOC ycbai Comment method "showSchemaIDSetting".
+     * 
+     * @param visible
+     */
+    public void showSchemaIDSetting(boolean visible) {
+        ExtendedTableModel<GlobalMapEntry> tableMapSettingEntriesModel = ((AbstractInOutTable) abstractDataMapTable)
+                .getTableMapSettingEntriesModel();
+        if (tableMapSettingEntriesModel != null && visible) {
+            tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_ID, null));
+        } else {
+            GlobalMapEntry schemaIDMapEntry = getGlobalMapEntryByNameFromList(tableMapSettingEntriesModel.getBeansList(),
+                    SCHEMA_ID);
+            if (schemaIDMapEntry != null) {
+                IDataMapTable parent = schemaIDMapEntry.getParent();
+                AbstractInOutTable table = (AbstractInOutTable) parent;
+                String previous = table.getId();
+                table.setId(null);
+                tableMapSettingEntriesModel.remove(schemaIDMapEntry);
+                refreshCondensedImage(table, schemaIDMapEntry.getName(), previous);
+            }
+        }
+        mapSettingViewerCreator.layout();
+        mapSettingViewerCreator.getTableViewer().refresh();
+    }
+
+    /**
+     * DOC ycbai Comment method "getGlobalMapEntryByNameFromList".
+     * 
+     * @param list
+     * @param name
+     * @return
+     */
+    private GlobalMapEntry getGlobalMapEntryByNameFromList(List<GlobalMapEntry> list, String name) {
+        if (list == null || name == null)
+            return null;
+        for (GlobalMapEntry mapEntry : list) {
+            if (name.equals(mapEntry.getName())) {
+                return mapEntry;
+            }
+        }
+        return null;
+    }
+
     protected void showTableMapSetting(boolean visible) {
         if (visible) {
             tableForMapSettingGridData.exclude = false;
@@ -1703,17 +1861,17 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
             @Override
             public void activate() {
 
-                UIManager uiManager = mapperManager.getUiManager();
-
-                ITableEntry currentModifiedBean = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
-                        .getCurrentModifiedBean();
-
-                ArrayList<ITableEntry> selectedTableEntry = new ArrayList<ITableEntry>(1);
-                selectedTableEntry.add(currentModifiedBean);
-
-                uiManager.selectLinks(DataMapTableView.this, selectedTableEntry, true, false);
-
-                uiManager.applyActivatedCellEditorsForAllTables(tableViewerCreator);
+                // UIManager uiManager = mapperManager.getUiManager();
+                //
+                // ITableEntry currentModifiedBean = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
+                // .getCurrentModifiedBean();
+                //
+                // ArrayList<ITableEntry> selectedTableEntry = new ArrayList<ITableEntry>(1);
+                // selectedTableEntry.add(currentModifiedBean);
+                //
+                // uiManager.selectLinks(DataMapTableView.this, selectedTableEntry, true, false);
+                //
+                // uiManager.applyActivatedCellEditorsForAllTables(tableViewerCreator);
 
                 super.activate();
             }
@@ -1857,6 +2015,187 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
 
         });
         return cellEditor;
+    }
+
+    protected ExtendedTextCellEditor createSchemaCellEditor(final TableViewerCreator tableViewerCreator,
+            TableViewerCreatorColumn column, final Zone[] zones, boolean isConstraintExpressionCellEditor) {
+        // CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
+        // RepositoryReviewDialog schemaDialog = new RepositoryReviewDialog(getShell(),
+        // ERepositoryObjectType.METADATA_CON_TABLE,
+        // null);
+        // behavior.setCellEditorDialog(schemaDialog);
+        // behavior.getExtendedTextCellEditor().getTextControl();
+
+        // IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
+        // IExpressionBuilderDialogService.class);
+        //
+        // CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
+
+        // final ExtendedTextCellEditorWithProposal cellEditor = new ExtendedTextCellEditorWithProposal(
+        // tableViewerCreator.getTable(), SWT.MULTI | SWT.BORDER, column, behavior) {
+        //
+        // @Override
+        // public void activate() {
+        //
+        // UIManager uiManager = mapperManager.getUiManager();
+        //
+        // ITableEntry currentModifiedBean = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
+        // .getCurrentModifiedBean();
+        //
+        // ArrayList<ITableEntry> selectedTableEntry = new ArrayList<ITableEntry>(1);
+        // selectedTableEntry.add(currentModifiedBean);
+        //
+        // uiManager.selectLinks(DataMapTableView.this, selectedTableEntry, true, false);
+        //
+        // uiManager.applyActivatedCellEditorsForAllTables(tableViewerCreator);
+        //
+        // super.activate();
+        // }
+        //
+        // };
+        //
+        // dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService).getExpressionBuilderInstance(
+        // tableViewerCreator.getCompositeParent(), cellEditor, mapperManager.getAbstractMapComponent());
+        //
+        // behavior.setCellEditorDialog(dialog);
+        //
+        // final Text expressionTextEditor = cellEditor.getTextControl();
+        //
+        // if (isConstraintExpressionCellEditor) {
+        // constraintExpressionTextEditor = expressionTextEditor;
+        // } else {
+        // columnExpressionTextEditor = expressionTextEditor;
+        // }
+        //
+        // cellEditor.addListener(new ICellEditorListener() {
+        //
+        // Text text = expressionTextEditor;
+        //
+        // public void applyEditorValue() {
+        // // System.out.println("applyEditorValue:text='" + text.getText() + "'");
+        // ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
+        // mapperManager.getUiManager().parseNewExpression(text.getText(),
+        // (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean(), true);
+        // }
+        //
+        // public void cancelEditor() {
+        // ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
+        // text.setText((String) modifiedObjectInfo.getOriginalPropertyBeanValue());
+        // ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ?
+        // modifiedObjectInfo
+        // .getCurrentModifiedBean() : modifiedObjectInfo.getPreviousModifiedBean());
+        // String originalExpression = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
+        // mapperManager.getUiManager().parseNewExpression(originalExpression, tableEntry, true);
+        // }
+        //
+        // public void editorValueChanged(boolean oldValidState, boolean newValidState) {
+        //
+        // if (expressionTextEditor.isFocusControl() || lastExpressionEditorTextWhichLostFocus == expressionTextEditor)
+        // {
+        // ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
+        // ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ?
+        // modifiedObjectInfo
+        // .getCurrentModifiedBean() : modifiedObjectInfo.getPreviousModifiedBean());
+        // mapperManager.getUiManager().parseNewExpression(text.getText(), tableEntry, false);
+        // resizeTextEditor(text, tableViewerCreator);
+        // }
+        // }
+        //
+        // });
+        // expressionTextEditor.addControlListener(new ControlListener() {
+        //
+        // ExecutionLimiterImproved executionLimiter = null;
+        //
+        // public void controlMoved(ControlEvent e) {
+        // }
+        //
+        // public void controlResized(ControlEvent e) {
+        // if (executionLimiter == null) {
+        // executionLimiter = new ExecutionLimiterImproved(50, true) {
+        //
+        // @Override
+        // public void execute(boolean isFinalExecution, Object data) {
+        //
+        // if (isFinalExecution) {
+        // expressionTextEditor.getDisplay().syncExec(new Runnable() {
+        //
+        // public void run() {
+        // if (expressionTextEditor.isDisposed()) {
+        // return;
+        // }
+        // resizeTextEditor(expressionTextEditor, tableViewerCreator);
+        // }
+        //
+        // });
+        // }
+        // }
+        //
+        // };
+        // }
+        // executionLimiter.startIfExecutable();
+        // }
+        //
+        // });
+        // expressionTextEditor.addFocusListener(new FocusListener() {
+        //
+        // public void focusGained(FocusEvent e) {
+        // // System.out.println("expressionTextEditor focusGained:Text.getText()='"+((Text) e.widget).getText() +
+        // // "'");
+        // ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
+        // .getCurrentModifiedBean();
+        //
+        // if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+        // if (currentModifiedEntry instanceof AbstractInOutTableEntry) {
+        // IMetadataColumn column = ((AbstractInOutTableEntry) currentModifiedEntry).getMetadataColumn();
+        // String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+        // cellEditor.setExpressionType(typeToGenerate);
+        // } else if (currentModifiedEntry instanceof VarTableEntry) {
+        // boolean nullable = ((VarTableEntry) currentModifiedEntry).isNullable();
+        // String talendType = ((VarTableEntry) currentModifiedEntry).getType();
+        // String typeToGenerate = JavaTypesManager.getTypeToGenerate(talendType, nullable);
+        // cellEditor.setExpressionType(typeToGenerate);
+        // }
+        // }
+        //
+        // initExpressionProposals(cellEditor, zones, tableViewerCreator, currentModifiedEntry);
+        // resizeTextEditor(expressionTextEditor, tableViewerCreator);
+        //
+        // StyledTextHandler styledTextHandler =
+        // mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
+        // if (styledTextHandler.getCurrentEntry() != currentModifiedEntry) {
+        // styledTextHandler.setCurrentEntry(currentModifiedEntry);
+        //                    styledTextHandler.setTextWithoutNotifyListeners(currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
+        // }
+        // }
+        //
+        // public void focusLost(FocusEvent e) {
+        // // System.out.println("focusLost:Text.getText()='"+((Text) e.widget).getText() + "'");
+        // expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
+        // lastExpressionEditorTextWhichLostFocus = expressionTextEditor;
+        // checkChangementsAfterEntryModifiedOrAdded(false);
+        // }
+        //
+        // });
+        // column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
+        //
+        // @Override
+        // public Object getCellEditorTypedValue(CellEditor cellEditor, Object originalTypedValue) {
+        // return super.getCellEditorTypedValue(cellEditor, originalTypedValue);
+        // }
+        //
+        // @Override
+        // public String getColumnText(CellEditor cellEditor, Object bean, Object cellEditorTypedValue) {
+        //                return super.getColumnText(cellEditor, bean, cellEditorTypedValue).replaceAll("[\r\n\t]+", " ... "); //$NON-NLS-1$ //$NON-NLS-2$
+        // }
+        //
+        // @Override
+        // public Object getOriginalTypedValue(CellEditor cellEditor, Object cellEditorTypedValue) {
+        // return super.getOriginalTypedValue(cellEditor, cellEditorTypedValue);
+        // }
+        //
+        // });
+        // return cellEditor;
+        return null;
     }
 
     private void resizeTextEditor(Text textEditor, TableViewerCreator tableViewerCreator) {
@@ -2649,7 +2988,6 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
 
             mapperManager.removeTableEntry(table.getExpressionFilter());
         }
-
         // updateGridDataHeightForTableConstraints();
         if (buttonPressed) {
             DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(false, true, false), true, true);
@@ -2865,6 +3203,85 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
         this.previousStateCheckFilter = previousStateCheckFilter;
     }
 
+    protected void refreshCondensedImage(AbstractInOutTable table, String option, Object previousValue) {
+    }
+
+    /**
+     * DOC ycbai DataMapTableView class global comment. Detailled comment
+     */
+    class CustomDialogCellEditor extends DialogCellEditor {
+
+        private CellValueType type;
+
+        public CustomDialogCellEditor() {
+            type = CellValueType.BOOL;
+        }
+
+        public CustomDialogCellEditor(CellValueType type) {
+            this.type = type;
+        }
+
+        protected Object openDialogBox(Control cellEditorWindow) {
+            Shell shell = cellEditorWindow.getShell();
+            if (type == CellValueType.BOOL) {
+                ListStringValueDialog<String> dialog = new ListStringValueDialog<String>(shell, new String[] { "true", "false" });
+                if (dialog.open() == IDialogConstants.OK_ID) {
+                    return dialog.getSelectStr();
+                }
+            } else if (type == CellValueType.SCHEMA_TYPE) {
+                ListStringValueDialog<String> dialog = new ListStringValueDialog<String>(shell, new String[] { BULIT_IN,
+                        REPOSITORY });
+                if (dialog.open() == IDialogConstants.OK_ID) {
+                    return dialog.getSelectStr();
+                }
+            } else if (type == CellValueType.SCHEMA_ID) {
+                RepositoryReviewDialog dialog = new RepositoryReviewDialog(shell, ERepositoryObjectType.METADATA_CON_TABLE);
+                if (dialog.open() == IDialogConstants.OK_ID) {
+                    RepositoryNode node = dialog.getResult();
+                    while (node.getObject().getProperty().getItem() == null
+                            || (!(node.getObject().getProperty().getItem() instanceof ConnectionItem))) {
+                        node = node.getParent();
+                    }
+                    String id = dialog.getResult().getObject().getProperty().getId();
+                    String name = dialog.getResult().getObject().getLabel();
+                    String value = id + " - " + name; //$NON-NLS-1$
+                    IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(value);
+                    List<IMetadataColumn> columns = repositoryMetadata.getListColumns();
+                    if (columns != null) {
+                        MetadataTableEditorView metadataEditorView = mapperManager.getUiManager()
+                                .getMetadataEditorView(getZone());
+                        ExtendedTableModel<IMetadataColumn> extendedTableModel = metadataEditorView.getExtendedTableModel();
+                        List<IMetadataColumn> copyedAllList = new ArrayList<IMetadataColumn>(extendedTableModel.getBeansList());
+                        extendedTableModel.removeAll(copyedAllList);
+                        extendedTableModel.addAll(columns);
+                        return value;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /**
+         * Sets the type.
+         * 
+         * @param type the type to set
+         */
+        public void setType(CellValueType type) {
+            this.type = type;
+        }
+
+        /**
+         * Getter for type.
+         * 
+         * @return the type
+         */
+        public CellValueType getType() {
+            return this.type;
+        }
+
+    }
+
     public abstract void notifyFocusLost();
 
     public void propertyChange(PropertyChangeEvent evt) {
@@ -2879,5 +3296,38 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
                 }
             }
         }
+    }
+
+    /**
+     * DOC ycbai Comment method "getSchemaDisplayName".
+     * 
+     * @param id
+     * @return
+     */
+    protected String getSchemaDisplayName(String id) {
+        if (id == null)
+            return null;
+        String[] values = id.split(" - ");
+        String itemId = values[0];
+        String name = values[1];
+
+        try {
+            IProxyRepositoryFactory factory = ((IProxyRepositoryService) GlobalServiceRegister.getDefault().getService(
+                    IProxyRepositoryService.class)).getProxyRepositoryFactory();
+            IRepositoryViewObject object = factory.getLastVersion(itemId);
+            if (object == null) {
+                return null;
+            }
+            Item item = object.getProperty().getItem();
+            if (item instanceof ConnectionItem) {
+                ConnectionItem lastItemUsed = (ConnectionItem) item;
+                return DesignerUtilities.getRepositoryAliasName(lastItemUsed) + ":" //$NON-NLS-1$
+                        + lastItemUsed.getProperty().getLabel() + " - " + name;
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+
+        return null;
     }
 }

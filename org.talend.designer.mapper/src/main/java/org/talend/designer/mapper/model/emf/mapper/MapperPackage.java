@@ -301,13 +301,22 @@ public interface MapperPackage extends EPackage {
     int ABSTRACT_IN_OUT_TABLE__ACTIVATE_CONDENSED_TOOL = ABSTRACT_DATA_MAP_TABLE_FEATURE_COUNT + 2;
 
     /**
+     * The feature id for the '<em><b>Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_IN_OUT_TABLE__ID = ABSTRACT_DATA_MAP_TABLE_FEATURE_COUNT + 3;
+
+    /**
      * The number of structural features of the '<em>Abstract In Out Table</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int ABSTRACT_IN_OUT_TABLE_FEATURE_COUNT = ABSTRACT_DATA_MAP_TABLE_FEATURE_COUNT + 3;
+    int ABSTRACT_IN_OUT_TABLE_FEATURE_COUNT = ABSTRACT_DATA_MAP_TABLE_FEATURE_COUNT + 4;
 
     /**
      * The meta object id for the '{@link org.talend.designer.mapper.model.emf.mapper.impl.UiPropertiesImpl <em>Ui Properties</em>}' class.
@@ -466,6 +475,15 @@ public interface MapperPackage extends EPackage {
     int OUTPUT_TABLE__ACTIVATE_CONDENSED_TOOL = ABSTRACT_IN_OUT_TABLE__ACTIVATE_CONDENSED_TOOL;
 
     /**
+     * The feature id for the '<em><b>Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TABLE__ID = ABSTRACT_IN_OUT_TABLE__ID;
+
+    /**
      * The feature id for the '<em><b>Reject</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -582,6 +600,15 @@ public interface MapperPackage extends EPackage {
      * @ordered
      */
     int INPUT_TABLE__ACTIVATE_CONDENSED_TOOL = ABSTRACT_IN_OUT_TABLE__ACTIVATE_CONDENSED_TOOL;
+
+    /**
+     * The feature id for the '<em><b>Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_TABLE__ID = ABSTRACT_IN_OUT_TABLE__ID;
 
     /**
      * The feature id for the '<em><b>Matching Mode</b></em>' attribute.
@@ -851,6 +878,17 @@ public interface MapperPackage extends EPackage {
      * @generated
      */
     EAttribute getAbstractInOutTable_ActivateCondensedTool();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.mapper.model.emf.mapper.AbstractInOutTable#getId <em>Id</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Id</em>'.
+     * @see org.talend.designer.mapper.model.emf.mapper.AbstractInOutTable#getId()
+     * @see #getAbstractInOutTable()
+     * @generated
+     */
+    EAttribute getAbstractInOutTable_Id();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.mapper.model.emf.mapper.UiProperties <em>Ui Properties</em>}'.
@@ -1193,6 +1231,14 @@ public interface MapperPackage extends EPackage {
          * @generated
          */
         EAttribute ABSTRACT_IN_OUT_TABLE__ACTIVATE_CONDENSED_TOOL = eINSTANCE.getAbstractInOutTable_ActivateCondensedTool();
+
+        /**
+         * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TABLE__ID = eINSTANCE.getAbstractInOutTable_Id();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.mapper.model.emf.mapper.impl.UiPropertiesImpl <em>Ui Properties</em>}' class.

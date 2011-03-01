@@ -57,6 +57,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -80,6 +81,7 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.service.IDesignerMapperService;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.core.ui.IJobletProviderService;
@@ -1064,6 +1066,15 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 schemaResults.addAll(resultForEBCDIC);
             }
         }
+
+        // check tMap schema...
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
+            List<UpdateResult> resultForTMap = checkNodeSchemaFromRepositoryForTMap(node, onlySimpleShow);
+            if (resultForTMap != null && resultForTMap.size() > 0) {
+                schemaResults.addAll(resultForTMap);
+            }
+        }
+
         // check the metadata from the repository to see if it's up to date.
         List<IElementParameter> schemaTypeParams = node.getElementParametersFromField(EParameterFieldType.SCHEMA_TYPE);
         // IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
@@ -1163,6 +1174,58 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 }
             }
         }
+        return schemaResults;
+    }
+
+    /**
+     * DOC ycbai Comment method "checkNodeSchemaFromRepositoryForTMap".
+     * 
+     * @param node
+     * @param onlySimpleShow
+     * @return
+     */
+    private List<UpdateResult> checkNodeSchemaFromRepositoryForTMap(final Node node, boolean onlySimpleShow) {
+        if (node == null || node.getExternalNode() == null || node.getExternalNode().getExternalData() == null) {
+            return Collections.emptyList();
+        }
+
+        IExternalData externalData = node.getExternalNode().getExternalData();
+        List<UpdateResult> schemaResults = new ArrayList<UpdateResult>();
+
+        IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault().getService(
+                IDesignerMapperService.class);
+        if (service != null) {
+            List<String> schemaIds = service.getRepositorySchemaIds(externalData);
+            if (schemaIds.size() > 0) {
+                for (String schemaId : schemaIds) {
+                    String[] names = UpdateManagerUtils.getSourceIdAndChildName(schemaId);
+                    ConnectionItem connectionItem = null;
+                    String schemaName = null;
+                    if (names != null && names.length > 1) {
+                        connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(names[0]);
+                        schemaName = names[1];
+                    }
+                    IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, schemaName);
+                    String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
+                    final IMetadataTable copyOfrepositoryMetadata = table.clone();
+
+                    if (table != null
+                            && (onlySimpleShow || !service.isSameMetadata(externalData, schemaId, copyOfrepositoryMetadata))) {
+                        List<Object> parameter = new ArrayList<Object>();
+                        parameter.add(copyOfrepositoryMetadata);
+                        parameter.add(schemaId);
+                        parameter.add("tMap"); //$NON-NLS-1$
+                        UpdateCheckResult result = new UpdateCheckResult(node);
+                        result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE, parameter, source);
+                        result.setContextModeConnectionItem(connectionItem);
+                        result.setJob(getProcess());
+                        setConfigrationForReadOnlyJob(result);
+                        schemaResults.add(result);
+                    }
+                }
+            }
+        }
+
         return schemaResults;
     }
 

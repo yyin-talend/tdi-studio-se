@@ -39,6 +39,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
@@ -51,6 +52,7 @@ import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.service.IDesignerMapperService;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.designer.core.model.components.EParameterName;
@@ -419,6 +421,27 @@ public class UpdateNodeParameterCommand extends Command {
                                 }
                             }
                         }
+
+                        // for tMap
+                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
+                            IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault()
+                                    .getService(IDesignerMapperService.class);
+                            if (service == null || node.getExternalNode() == null
+                                    || node.getExternalNode().getExternalData() == null)
+                                return;
+                            IExternalData externalData = node.getExternalNode().getExternalData();
+                            List<Object> parameter = (List<Object>) result.getParameter();
+                            if (parameter.size() == 3) {
+                                String type = (String) parameter.get(2);
+                                if ("tMap".equals(type)) { //$NON-NLS-1$
+                                    IMetadataTable newTable = (IMetadataTable) parameter.get(0);
+                                    String schemaId = (String) parameter.get(1);
+                                    service.updateMapperTableEntries(externalData, schemaId, newTable);
+                                }
+                            }
+                            return;
+                        }
+
                     } else if (result.getParameter() instanceof IMetadataTable) {
                         IMetadataTable newTable = (IMetadataTable) result.getParameter();
                         // node.getMetadataFromConnector(newTable.getAttachedConnector()).setListColumns(newTable.
