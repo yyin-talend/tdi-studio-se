@@ -108,80 +108,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
             IContext context, String launcher, int statisticPort, int tracePort, String... codeOptions) throws ProcessorException {
-
-        Set<String> neededLibraries = null;
-        for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = (ProcessItem) process[i].getItem();
-            String selectedJobVersion = processItem.getProperty().getVersion();
-            selectedJobVersion = preExportResource(process, i, selectedJobVersion);
-
-            IProcess jobProcess = null;
-
-            if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
-                neededLibraries = new HashSet<String>();
-                jobProcess = generateJobFiles(processItem, context, selectedJobVersion,
-                        statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
-                        isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
-                neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
-                        processItem.getProperty().getId(), selectedJobVersion));
-            } else {
-                LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId(),
-                        processItem.getProperty().getVersion(), neededLibraries);
-                LastGenerationInfo.getInstance().setLastMainJob(null);
-            }
-
-            List<URL> resources = new ArrayList<URL>();
-            String contextName = context.getName();
-            if (contextName != null) {
-                List<URL> childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort,
-                        tracePort, i, jobProcess, processItem, selectedJobVersion, resources, codeOptions);
-                resources.addAll(childrenList);
-            }
-            process[i].addResources(resources);
-
-            // Gets job designer resouce
-            // List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
-            // process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
-        }
-
-        // Exports the system libs
-        List<ExportFileResource> list = new ArrayList<ExportFileResource>(Arrays.asList(process));
-
-        // Add the java system libraries
-        ExportFileResource rootResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
-        list.add(rootResource);
-        // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(process, isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
-        rootResource.addResources(systemRoutineList);
-        // Gets user routines
-        List<URL> userRoutineList = getUserRoutine(process, isOptionChoosed(exportChoice, ExportChoice.needUserRoutine));
-        rootResource.addResources(userRoutineList);
-
-        // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries),
-                process, neededLibraries);
-        rootResource.addResources(talendLibraries);
-
-        if (PluginChecker.isRulesPluginLoaded()) {
-            // hywang add for 6484,add final drl files or xls files to exported job script
-            ExportFileResource ruleFileResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-N$ //$NON-NLS-1$
-            list.add(ruleFileResource);
-            try {
-                Map<String, List<URL>> map = initUrlForRulesFiles(process);
-                Object[] keys = map.keySet().toArray();
-                for (int i = 0; i < keys.length; i++) {
-                    List<URL> talendDrlFiles = map.get(keys[i].toString());
-                    ruleFileResource.addResources(keys[i].toString(), talendDrlFiles);
-                }
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            } catch (MalformedURLException e) {
-                ExceptionHandler.process(e);
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-        return list;
+        return getExportResources(process, exportChoice, null, context, launcher, statisticPort, tracePort, codeOptions);
     }
 
     /**
@@ -270,6 +197,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
             throws ProcessorException {
+        return getExportResources(process, exportChoice, contextName, null, launcher, statisticPort, tracePort, codeOptions);
+    }
+
+    protected List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
+            String contextName, IContext context, String launcher, int statisticPort, int tracePort, String... codeOptions)
+            throws ProcessorException {
 
         Set<String> neededLibraries = null;
         for (int i = 0; i < process.length; i++) {
@@ -280,10 +213,18 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             IProcess jobProcess = null;
 
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
-                neededLibraries = new HashSet<String>();
-                jobProcess = generateJobFiles(processItem, contextName, selectedJobVersion,
-                        statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
-                        isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
+                if (neededLibraries == null) {
+                    neededLibraries = new HashSet<String>();
+                }
+                if (contextName != null) {
+                    jobProcess = generateJobFiles(processItem, contextName, selectedJobVersion,
+                            statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
+                            isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
+                } else if (context != null) {
+                    jobProcess = generateJobFiles(processItem, context, selectedJobVersion,
+                            statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
+                            isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
+                }
                 neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                         processItem.getProperty().getId(), selectedJobVersion));
             } else {
@@ -292,6 +233,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 LastGenerationInfo.getInstance().setLastMainJob(null);
             }
             List<URL> resources = new ArrayList<URL>();
+            if (context != null) {
+                String contextName2 = context.getName();
+                if (contextName2 != null) {
+                    contextName = contextName2;
+                }
+            }
             List<URL> childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
                     jobProcess, processItem, selectedJobVersion, resources, codeOptions);
             resources.addAll(childrenList);
@@ -340,6 +287,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             }
         }
         return list;
+
     }
 
     /**
