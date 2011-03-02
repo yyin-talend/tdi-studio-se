@@ -67,6 +67,8 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
 
     private static final String CREATE_LABEL = Messages.getString("CreateProcess.createJob"); //$NON-NLS-1$
 
+    private static final String PERSPECTIVE_DI_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$
+
     public CreateProcess() {
         super();
         this.setText(CREATE_LABEL);
@@ -209,26 +211,33 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
     }
 
     private void selectRootObject(Properties params) {
-        try {
-            IViewPart findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(RepositoryView.ID);
-            if (findView == null) {
-                findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(RepositoryView.ID);
-            }
-            RepositoryView view = (RepositoryView) findView;
-
-            Object type = params.get("type");
-            if (ERepositoryObjectType.PROCESS.name().equals(type)) {
-                IRepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot()).getProcessNode();
-                if (processNode != null) {
-                    setWorkbenchPart(view);
-                    view.getViewer().expandToLevel(processNode, 1);
-                    view.getViewer().setSelection(new StructuredSelection(processNode));
+        // bug 16594
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        if (page != null) {
+            String perId = page.getPerspective().getId();
+            if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
+                IViewPart view = page.findView(RepositoryView.ID);
+                if (view == null) {
+                    try {
+                        view = page.showView(RepositoryView.ID);
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
                 }
+                if (view instanceof RepositoryView) {
+                    RepositoryView reView = (RepositoryView) view;
 
+                    Object type = params.get("type");
+                    if (ERepositoryObjectType.PROCESS.name().equals(type)) {
+                        IRepositoryNode processNode = ((ProjectRepositoryNode) reView.getRoot()).getProcessNode();
+                        if (processNode != null) {
+                            setWorkbenchPart(reView);
+                            reView.getViewer().expandToLevel(processNode, 1);
+                            reView.getViewer().setSelection(new StructuredSelection(processNode));
+                        }
+                    }
+                }
             }
-        } catch (PartInitException e) {
-            ExceptionHandler.process(e);
         }
-
     }
 }

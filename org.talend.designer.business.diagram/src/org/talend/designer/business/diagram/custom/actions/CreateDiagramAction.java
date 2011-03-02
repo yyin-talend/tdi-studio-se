@@ -11,7 +11,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
@@ -25,11 +25,11 @@ import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
@@ -43,6 +43,8 @@ import org.talend.repository.ui.views.RepositoryView;
 public class CreateDiagramAction extends AContextualAction implements IIntroAction {
 
     private RepositoryNode repositoryNode;
+
+    private static final String PERSPECTIVE_DI_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$
 
     public CreateDiagramAction() {
         super();
@@ -131,8 +133,8 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
     }
 
     public IRepositoryView getRepositoryView() {
-        IViewPart findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                IRepositoryView.VIEW_ID);
+        IViewPart findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .findView(IRepositoryView.VIEW_ID);
         return (IRepositoryView) findView;
     }
 
@@ -160,22 +162,30 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
     }
 
     private void setRepositoryNode(Properties params) {
+        // bug 16594
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        if (page != null) {
+            String perId = page.getPerspective().getId();
+            if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
+                IViewPart view = page.findView(RepositoryView.ID);
+                if (view == null) {
+                    try {
+                        view = page.showView(RepositoryView.ID);
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+                if (view instanceof RepositoryView) {
+                    RepositoryView reView = (RepositoryView) view;
 
-        try {
-            IViewPart findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(RepositoryView.ID);
-            if (findView == null) {
-                findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(RepositoryView.ID);
+                    Object type = params.get("type");
+                    if (ERepositoryObjectType.BUSINESS_PROCESS.name().equals(type)) {
+                        RepositoryNode processNode = ((ProjectRepositoryNode) reView.getRoot()).getProcessNode();
+                        reView.getViewer().expandToLevel(processNode, 1);
+                        this.repositoryNode = processNode;
+                    }
+                }
             }
-            RepositoryView view = (RepositoryView) findView;
-
-            Object type = params.get("type");
-            if (ERepositoryObjectType.BUSINESS_PROCESS.name().equals(type)) {
-                RepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot()).getProcessNode();
-                view.getViewer().expandToLevel(processNode, 1);
-                this.repositoryNode = processNode;
-            }
-        } catch (PartInitException e) {
-            ExceptionHandler.process(e);
         }
     }
 }

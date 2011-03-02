@@ -135,6 +135,8 @@ public class RepositoryService implements IRepositoryService {
 
     private GenericSchemaWizard genericSchemaWizard = null;
 
+    private static final String PERSPECTIVE_DI_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$
+
     /*
      * (non-Javadoc)
      * 
@@ -674,16 +676,20 @@ public class RepositoryService implements IRepositoryService {
     public TreeViewer getRepositoryTreeView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (page != null) {
-            IViewPart view = page.findView(RepositoryView.ID);
-            if (view == null) {
-                try {
-                    view = page.showView(RepositoryView.ID);
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
+            // bug 16594
+            String perId = page.getPerspective().getId();
+            if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
+                IViewPart view = page.findView(RepositoryView.ID);
+                if (view == null) {
+                    try {
+                        view = page.showView(RepositoryView.ID);
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
                 }
-            }
-            if (view instanceof RepositoryView) {
-                return ((RepositoryView) view).getViewer();
+                if (view instanceof RepositoryView) {
+                    return ((RepositoryView) view).getViewer();
+                }
             }
             return null;
         } else {
@@ -729,17 +735,22 @@ public class RepositoryService implements IRepositoryService {
     public Action getRepositoryViewDoubleClickAction() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (page != null) {
-            IViewPart view = page.findView(RepositoryView.ID);
-            if (view == null) {
-                try {
-                    view = page.showView(RepositoryView.ID);
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
-                }
-            }
-            RepositoryView repositoryView = (RepositoryView) view;
+            // bug 16594
+            String perId = page.getPerspective().getId();
+            if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
+                IViewPart view = page.findView(RepositoryView.ID);
+                if (view == null) {
+                    try {
+                        view = page.showView(RepositoryView.ID);
 
-            return repositoryView.getDoubleClickAction();
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+                RepositoryView repositoryView = (RepositoryView) view;
+
+                return repositoryView.getDoubleClickAction();
+            }
         }
         return null;
     }

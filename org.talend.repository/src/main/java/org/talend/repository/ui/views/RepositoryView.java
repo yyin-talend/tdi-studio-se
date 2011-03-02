@@ -73,6 +73,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -160,6 +161,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     public final static String ID = "org.talend.repository.views.repository"; //$NON-NLS-1$
 
+    private static final String PERSPECTIVE_DI_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$
+
     private static final String SEPARATOR = ":";
 
     private static Logger log = Logger.getLogger(RepositoryView.class);
@@ -228,24 +231,31 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     public static IRepositoryView show() {
-        IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(IRepositoryView.VIEW_ID);
-        if (part == null) {
-            try {
-                // MOD by zshen for 15750 todo 39 if the Perspective is DataProfilingPerspective refuse the
-                // RepositoryView be display by automatic
-                if (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective().getId()
-                        .equalsIgnoreCase("org.talend.dataprofiler.DataProfilingPerspective")) {//$NON-NLS-1$
-                    part = ((WorkbenchPage) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage())
-                            .getViewFactory().createView(IRepositoryView.VIEW_ID).getView(true);
-                } else {
-                    part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(IRepositoryView.VIEW_ID);
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        if (page != null) {
+            IViewPart part = page.findView(IRepositoryView.VIEW_ID);
+            if (part == null) {
+                try {
+                    // MOD by zshen for 15750 todo 39 if the Perspective is DataProfilingPerspective refuse the
+                    // RepositoryView be display by automatic
+                    if (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective().getId()
+                            .equalsIgnoreCase("org.talend.dataprofiler.DataProfilingPerspective")) {//$NON-NLS-1$
+                        part = ((WorkbenchPage) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage())
+                                .getViewFactory().createView(IRepositoryView.VIEW_ID).getView(true);
+                    } else {
+                        // bug 16594
+                        String perId = page.getPerspective().getId();
+                        if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
+                            part = page.showView(IRepositoryView.VIEW_ID);
+                        }
+                    }
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
                 }
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
             }
+            return (IRepositoryView) part;
         }
-
-        return (IRepositoryView) part;
+        return null;
     }
 
     protected TreeViewer createTreeViewer(Composite parent) {
@@ -318,16 +328,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             public void focusGained(FocusEvent e) {
                 log.trace("Repository gain focus"); //$NON-NLS-1$
-                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
-                        IContextService.class);
+                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
+                        .getAdapter(IContextService.class);
                 ca = contextService.activateContext("talend.repository"); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
                 log.trace("Repository lost focus"); //$NON-NLS-1$
                 if (ca != null) {
-                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
-                            IContextService.class);
+                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
+                            .getAdapter(IContextService.class);
                     contextService.deactivateContext(ca);
                 }
             }
@@ -1119,8 +1129,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             MessageBoxExceptionHandler.process(e);
             return;
         }
-        List<IProcess2> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(
-                RepositoryUpdateManager.getEditors());
+        List<IProcess2> openedProcessList = CorePlugin.getDefault().getDesignerCoreService()
+                .getOpenedProcess(RepositoryUpdateManager.getEditors());
         List<UpdateResult> updateAllResults = new ArrayList<UpdateResult>();
         IUpdateManager manager = null;
         for (IProcess2 proc : openedProcessList) {
