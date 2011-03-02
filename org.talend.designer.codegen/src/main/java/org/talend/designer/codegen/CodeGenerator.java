@@ -221,12 +221,10 @@ public class CodeGenerator implements ICodeGenerator {
                         
                         //Generate headers only one time, for each routes in the CamelContext.
                         if(generateHeaders) {
-                            if(subTree.getRootNode().isStart()) {
-                                componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER_ROUTE, subTree));
-                                componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_HEADER, subTree));
-                                componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
-                                        ETypeGen.CAMEL));
-                            }
+							componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER_ROUTE, subTree));
+							componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_HEADER, subTree));
+							componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
+									ETypeGen.CAMEL));
                             generateHeaders = false;
                         } else {
                             if(subTree.getRootNode().isStart()) {
