@@ -290,7 +290,10 @@ public class CodeGenerator implements ICodeGenerator {
             Vector footerArgument = new Vector(2);
             footerArgument.add(process);
             footerArgument.add(processTree.getRootNodes());
-            componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER, footerArgument));
+			if ("tcs".equals(service.getAcronym()))
+				componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER_ROUTE, footerArgument));
+			else
+				componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER, footerArgument));
             componentsCode.append(generateTypedComponentCode(EInternalTemplate.PROCESSINFO, componentsCode.length()));
             // ####
             return componentsCode.toString();
