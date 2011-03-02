@@ -108,11 +108,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
    						org.dom4j.Element <%=coluLabel%>Element=rootElement.addElement("<%=coluLabel%>");
 <%		
 						if(coluLabel.equals("link")){
+							if(atomMode){
 %>
-							//<%=coluLabel%>Element.addAttribute("href", <%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : <%=conn.getName() %>.<%=column.getLabel() %>);
+							<%=coluLabel%>Element.addAttribute("href", <%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : <%=conn.getName() %>.<%=column.getLabel() %>);
+						    
+							<% } else if(rssMode){%>
 
 							<%=coluLabel%>Element.setText(<%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : <%=conn.getName() %>.<%=column.getLabel() %>);
 <%
+				            }
     					}else if(javaType == JavaTypesManager.STRING ){
 %>	
  							<%=coluLabel%>Element.setText(<%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : <%=conn.getName() %>.<%=column.getLabel() %>);
