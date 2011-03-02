@@ -204,9 +204,12 @@ public class CodeGenerator implements ICodeGenerator {
 
             headerArgument.add(CodeGeneratorActivator.getDefault().getBundle().getHeaders()
                     .get(org.osgi.framework.Constants.BUNDLE_VERSION));
-            componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
-
             IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+            if ("tcs".equals(service.getAcronym()))
+                componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER_ROUTE, headerArgument));
+            else
+                componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
+
             if ("tcs".equals(service.getAcronym())) {
                 if ((processTree.getSubTrees() != null) && (processTree.getSubTrees().size() > 0)) {
 
