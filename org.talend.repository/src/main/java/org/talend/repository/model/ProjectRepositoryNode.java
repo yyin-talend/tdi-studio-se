@@ -106,7 +106,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
             metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode, metadataFTPConnectionNode,
             metadataEbcdicConnectionNode, metadataHL7ConnectionNode, metadataMDMConnectionNode, metadataRulesNode,
-            metadataHeaderFooterConnectionNode, jobscriptsNode, metadataBRMSConnectionNode, metadataValidationRulesNode;
+            metadataHeaderFooterConnectionNode, jobscriptsNode, beanNode, metadataBRMSConnectionNode,
+            metadataValidationRulesNode;
 
     private RepositoryNode jobletNode;
 
@@ -333,6 +334,17 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             routesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.ROUTES);
             routesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTES);
             nodes.add(routesNode);
+
+            codeNode = new StableRepositoryNode(this,
+                    Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON); //$NON-NLS-1$
+            codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
+            nodes.add(codeNode);
+
+            beanNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            beanNode.setProperties(EProperties.LABEL, ERepositoryObjectType.BEAN);
+            beanNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.BEAN);
+            codeNode.getChildren().add(beanNode);
+
         } else {
             // 1. Business process
             businessProcessNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
