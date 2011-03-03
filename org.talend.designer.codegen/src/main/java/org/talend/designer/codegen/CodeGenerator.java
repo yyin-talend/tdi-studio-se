@@ -243,8 +243,7 @@ public class CodeGenerator implements ICodeGenerator {
                             }
                         }
                     }
-                    componentsCode.append(";"); // Close the last route in the CamelContext
-                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_FOOTER, lastSubtree));
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_FOOTER, lastSubtree)); // Close the last route in the CamelContext
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER_ROUTE, lastSubtree));
                 }
 
