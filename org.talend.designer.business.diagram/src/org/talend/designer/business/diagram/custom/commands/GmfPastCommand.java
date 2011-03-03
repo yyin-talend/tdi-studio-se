@@ -119,7 +119,7 @@ public class GmfPastCommand extends AbstractTransactionalCommand {
             if (!addNew) {
                 newItem.setBusinessProcess(businessItem.getBusinessProcess());
             }
-            newItem.setHAlignment(businessItem.getVAlignment());
+            newItem.setHAlignment(businessItem.getHAlignment());
             newItem.setName(businessItem.getName());
             newItem.setVAlignment(businessItem.getVAlignment());
 
