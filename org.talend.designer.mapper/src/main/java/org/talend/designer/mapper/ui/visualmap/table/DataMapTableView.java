@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
@@ -95,6 +96,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
+import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnColorProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
@@ -147,6 +149,7 @@ import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
+import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
@@ -270,6 +273,8 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
     public static final String ID_NAME_COLUMN = "ID_NAME_COLUMN"; //$NON-NLS-1$
 
     public static final String PREVIEW_COLUMN = "PREVIEW_COLUMN"; //$NON-NLS-1$
+
+    public static final String ID_OPERATOR = "ID_OPERATOR"; //$NON-NLS-1$
 
     public static final String ID_EXPRESSION_COLUMN = "ID_EXPRESSION_COLUMN"; //$NON-NLS-1$
 
@@ -818,8 +823,8 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
         tableEntriesGridData.horizontalSpan = 2; // for 10690
         tableEntriesGridData.minimumHeight = tableForEntries.getHeaderHeight() + tableForEntries.getItemHeight();
         tableForEntries.setLayoutData(tableEntriesGridData);
+        tableViewerCreatorForColumns.setCellModifier(new TableCellModifier(tableViewerCreatorForColumns));
         addTableForColumnsListeners();
-
     }
 
     /**
@@ -2016,187 +2021,6 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
         return cellEditor;
     }
 
-    protected ExtendedTextCellEditor createSchemaCellEditor(final TableViewerCreator tableViewerCreator,
-            TableViewerCreatorColumn column, final Zone[] zones, boolean isConstraintExpressionCellEditor) {
-        // CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
-        // RepositoryReviewDialog schemaDialog = new RepositoryReviewDialog(getShell(),
-        // ERepositoryObjectType.METADATA_CON_TABLE,
-        // null);
-        // behavior.setCellEditorDialog(schemaDialog);
-        // behavior.getExtendedTextCellEditor().getTextControl();
-
-        // IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
-        // IExpressionBuilderDialogService.class);
-        //
-        // CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
-
-        // final ExtendedTextCellEditorWithProposal cellEditor = new ExtendedTextCellEditorWithProposal(
-        // tableViewerCreator.getTable(), SWT.MULTI | SWT.BORDER, column, behavior) {
-        //
-        // @Override
-        // public void activate() {
-        //
-        // UIManager uiManager = mapperManager.getUiManager();
-        //
-        // ITableEntry currentModifiedBean = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
-        // .getCurrentModifiedBean();
-        //
-        // ArrayList<ITableEntry> selectedTableEntry = new ArrayList<ITableEntry>(1);
-        // selectedTableEntry.add(currentModifiedBean);
-        //
-        // uiManager.selectLinks(DataMapTableView.this, selectedTableEntry, true, false);
-        //
-        // uiManager.applyActivatedCellEditorsForAllTables(tableViewerCreator);
-        //
-        // super.activate();
-        // }
-        //
-        // };
-        //
-        // dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService).getExpressionBuilderInstance(
-        // tableViewerCreator.getCompositeParent(), cellEditor, mapperManager.getAbstractMapComponent());
-        //
-        // behavior.setCellEditorDialog(dialog);
-        //
-        // final Text expressionTextEditor = cellEditor.getTextControl();
-        //
-        // if (isConstraintExpressionCellEditor) {
-        // constraintExpressionTextEditor = expressionTextEditor;
-        // } else {
-        // columnExpressionTextEditor = expressionTextEditor;
-        // }
-        //
-        // cellEditor.addListener(new ICellEditorListener() {
-        //
-        // Text text = expressionTextEditor;
-        //
-        // public void applyEditorValue() {
-        // // System.out.println("applyEditorValue:text='" + text.getText() + "'");
-        // ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
-        // mapperManager.getUiManager().parseNewExpression(text.getText(),
-        // (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean(), true);
-        // }
-        //
-        // public void cancelEditor() {
-        // ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
-        // text.setText((String) modifiedObjectInfo.getOriginalPropertyBeanValue());
-        // ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ?
-        // modifiedObjectInfo
-        // .getCurrentModifiedBean() : modifiedObjectInfo.getPreviousModifiedBean());
-        // String originalExpression = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
-        // mapperManager.getUiManager().parseNewExpression(originalExpression, tableEntry, true);
-        // }
-        //
-        // public void editorValueChanged(boolean oldValidState, boolean newValidState) {
-        //
-        // if (expressionTextEditor.isFocusControl() || lastExpressionEditorTextWhichLostFocus == expressionTextEditor)
-        // {
-        // ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
-        // ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ?
-        // modifiedObjectInfo
-        // .getCurrentModifiedBean() : modifiedObjectInfo.getPreviousModifiedBean());
-        // mapperManager.getUiManager().parseNewExpression(text.getText(), tableEntry, false);
-        // resizeTextEditor(text, tableViewerCreator);
-        // }
-        // }
-        //
-        // });
-        // expressionTextEditor.addControlListener(new ControlListener() {
-        //
-        // ExecutionLimiterImproved executionLimiter = null;
-        //
-        // public void controlMoved(ControlEvent e) {
-        // }
-        //
-        // public void controlResized(ControlEvent e) {
-        // if (executionLimiter == null) {
-        // executionLimiter = new ExecutionLimiterImproved(50, true) {
-        //
-        // @Override
-        // public void execute(boolean isFinalExecution, Object data) {
-        //
-        // if (isFinalExecution) {
-        // expressionTextEditor.getDisplay().syncExec(new Runnable() {
-        //
-        // public void run() {
-        // if (expressionTextEditor.isDisposed()) {
-        // return;
-        // }
-        // resizeTextEditor(expressionTextEditor, tableViewerCreator);
-        // }
-        //
-        // });
-        // }
-        // }
-        //
-        // };
-        // }
-        // executionLimiter.startIfExecutable();
-        // }
-        //
-        // });
-        // expressionTextEditor.addFocusListener(new FocusListener() {
-        //
-        // public void focusGained(FocusEvent e) {
-        // // System.out.println("expressionTextEditor focusGained:Text.getText()='"+((Text) e.widget).getText() +
-        // // "'");
-        // ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
-        // .getCurrentModifiedBean();
-        //
-        // if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-        // if (currentModifiedEntry instanceof AbstractInOutTableEntry) {
-        // IMetadataColumn column = ((AbstractInOutTableEntry) currentModifiedEntry).getMetadataColumn();
-        // String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-        // cellEditor.setExpressionType(typeToGenerate);
-        // } else if (currentModifiedEntry instanceof VarTableEntry) {
-        // boolean nullable = ((VarTableEntry) currentModifiedEntry).isNullable();
-        // String talendType = ((VarTableEntry) currentModifiedEntry).getType();
-        // String typeToGenerate = JavaTypesManager.getTypeToGenerate(talendType, nullable);
-        // cellEditor.setExpressionType(typeToGenerate);
-        // }
-        // }
-        //
-        // initExpressionProposals(cellEditor, zones, tableViewerCreator, currentModifiedEntry);
-        // resizeTextEditor(expressionTextEditor, tableViewerCreator);
-        //
-        // StyledTextHandler styledTextHandler =
-        // mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
-        // if (styledTextHandler.getCurrentEntry() != currentModifiedEntry) {
-        // styledTextHandler.setCurrentEntry(currentModifiedEntry);
-        //                    styledTextHandler.setTextWithoutNotifyListeners(currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
-        // }
-        // }
-        //
-        // public void focusLost(FocusEvent e) {
-        // // System.out.println("focusLost:Text.getText()='"+((Text) e.widget).getText() + "'");
-        // expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
-        // lastExpressionEditorTextWhichLostFocus = expressionTextEditor;
-        // checkChangementsAfterEntryModifiedOrAdded(false);
-        // }
-        //
-        // });
-        // column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
-        //
-        // @Override
-        // public Object getCellEditorTypedValue(CellEditor cellEditor, Object originalTypedValue) {
-        // return super.getCellEditorTypedValue(cellEditor, originalTypedValue);
-        // }
-        //
-        // @Override
-        // public String getColumnText(CellEditor cellEditor, Object bean, Object cellEditorTypedValue) {
-        //                return super.getColumnText(cellEditor, bean, cellEditorTypedValue).replaceAll("[\r\n\t]+", " ... "); //$NON-NLS-1$ //$NON-NLS-2$
-        // }
-        //
-        // @Override
-        // public Object getOriginalTypedValue(CellEditor cellEditor, Object cellEditorTypedValue) {
-        // return super.getOriginalTypedValue(cellEditor, cellEditorTypedValue);
-        // }
-        //
-        // });
-        // return cellEditor;
-        return null;
-    }
-
     private void resizeTextEditor(Text textEditor, TableViewerCreator tableViewerCreator) {
 
         Point currentSize = textEditor.getSize();
@@ -3328,5 +3152,44 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
         }
 
         return null;
+    }
+
+    /**
+     * DOC ycbai DataMapTableView class global comment. Detailled comment
+     */
+    class TableCellModifier extends DefaultCellModifier {
+
+        /**
+         * DOC talend TableCellModifier constructor comment.
+         * 
+         * @param tableViewerCreator
+         */
+        public TableCellModifier(TableViewerCreator tableViewerCreator) {
+            super(tableViewerCreator);
+        }
+
+        @Override
+        public boolean canModify(Object bean, String idColumn) {
+            if (bean instanceof InputColumnTableEntry) {
+                InputColumnTableEntry column = (InputColumnTableEntry) bean;
+                if (column.getParent() instanceof InputTable) {
+                    boolean isMainConnection = ((InputTable) getDataMapTable()).isMainConnection();
+                    if (!isMainConnection) {
+                        TableViewerCreator creator = getTableViewerCreator();
+                        TableViewerCreatorColumn operatorColumn = creator.getColumn(ID_OPERATOR);
+                        if (operatorColumn != null) {
+                            if (StringUtils.trimToNull(column.getExpression()) == null) {
+                                operatorColumn.setModifiable(false);
+                            } else {
+                                operatorColumn.setModifiable(true);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return super.canModify(bean, idColumn);
+        }
+
     }
 }

@@ -444,6 +444,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 externalEntity.setName(pEntity.getName());
                 externalEntity.setNullable(pEntity.isNullable());
                 externalEntity.setType(pEntity.getType());
+                externalEntity.setOperator(pEntity.getOperator());
                 entityList.add(externalEntity);
             }
             return entityList;

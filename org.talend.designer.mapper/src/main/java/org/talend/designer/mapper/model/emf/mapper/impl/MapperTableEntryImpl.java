@@ -27,6 +27,7 @@ import org.talend.designer.mapper.model.emf.mapper.MapperTableEntry;
  *   <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.MapperTableEntryImpl#getExpression <em>Expression</em>}</li>
  *   <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.MapperTableEntryImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.MapperTableEntryImpl#isNullable <em>Nullable</em>}</li>
+ *   <li>{@link org.talend.designer.mapper.model.emf.mapper.impl.MapperTableEntryImpl#getOperator <em>Operator</em>}</li>
  * </ul>
  * </p>
  *
@@ -112,6 +113,26 @@ public class MapperTableEntryImpl extends EObjectImpl implements MapperTableEntr
      * @ordered
      */
     protected boolean nullable = NULLABLE_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getOperator() <em>Operator</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getOperator()
+     * @generated
+     * @ordered
+     */
+    protected static final String OPERATOR_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getOperator() <em>Operator</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getOperator()
+     * @generated
+     * @ordered
+     */
+    protected String operator = OPERATOR_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -221,6 +242,27 @@ public class MapperTableEntryImpl extends EObjectImpl implements MapperTableEntr
      * <!-- end-user-doc -->
      * @generated
      */
+    public String getOperator() {
+        return operator;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setOperator(String newOperator) {
+        String oldOperator = operator;
+        operator = newOperator;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, MapperPackage.MAPPER_TABLE_ENTRY__OPERATOR, oldOperator, operator));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -232,6 +274,8 @@ public class MapperTableEntryImpl extends EObjectImpl implements MapperTableEntr
                 return getType();
             case MapperPackage.MAPPER_TABLE_ENTRY__NULLABLE:
                 return isNullable();
+            case MapperPackage.MAPPER_TABLE_ENTRY__OPERATOR:
+                return getOperator();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -255,6 +299,9 @@ public class MapperTableEntryImpl extends EObjectImpl implements MapperTableEntr
                 return;
             case MapperPackage.MAPPER_TABLE_ENTRY__NULLABLE:
                 setNullable((Boolean)newValue);
+                return;
+            case MapperPackage.MAPPER_TABLE_ENTRY__OPERATOR:
+                setOperator((String)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -280,6 +327,9 @@ public class MapperTableEntryImpl extends EObjectImpl implements MapperTableEntr
             case MapperPackage.MAPPER_TABLE_ENTRY__NULLABLE:
                 setNullable(NULLABLE_EDEFAULT);
                 return;
+            case MapperPackage.MAPPER_TABLE_ENTRY__OPERATOR:
+                setOperator(OPERATOR_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -300,6 +350,8 @@ public class MapperTableEntryImpl extends EObjectImpl implements MapperTableEntr
                 return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
             case MapperPackage.MAPPER_TABLE_ENTRY__NULLABLE:
                 return nullable != NULLABLE_EDEFAULT;
+            case MapperPackage.MAPPER_TABLE_ENTRY__OPERATOR:
+                return OPERATOR_EDEFAULT == null ? operator != null : !OPERATOR_EDEFAULT.equals(operator);
         }
         return super.eIsSet(featureID);
     }
@@ -322,6 +374,8 @@ public class MapperTableEntryImpl extends EObjectImpl implements MapperTableEntr
         result.append(type);
         result.append(", nullable: ");
         result.append(nullable);
+        result.append(", operator: ");
+        result.append(operator);
         result.append(')');
         return result.toString();
     }

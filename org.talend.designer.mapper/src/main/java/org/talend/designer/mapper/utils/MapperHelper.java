@@ -169,6 +169,7 @@ public class MapperHelper {
             emfMapperTableEntry.setName(entity.getName());
             emfMapperTableEntry.setNullable(entity.isNullable());
             emfMapperTableEntry.setType(entity.getType());
+            emfMapperTableEntry.setOperator(entity.getOperator());
             persistentEntities.add(emfMapperTableEntry);
         }
         return persistentEntities;

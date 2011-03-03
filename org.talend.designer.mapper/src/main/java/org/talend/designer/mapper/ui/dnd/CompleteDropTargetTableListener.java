@@ -34,6 +34,7 @@ import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
+import org.talend.designer.mapper.model.emf.mapper.Operator;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
@@ -376,6 +377,11 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
 
             } else if (currentEntryTarget != null && !insertionEntryMode) {
 
+                // set the default operator.
+                if (currentEntryTarget instanceof InputColumnTableEntry) {
+                    ((InputColumnTableEntry) currentEntryTarget).setOperator(Operator.EQUALS.getLiteral());
+                }
+
                 boolean overwrite = (lastEntryTarget != currentEntryTarget && analyzer.isOverwriteExpression());
                 modifyExistingExpression(currentLanguage, currentEntryTarget, tableEntrySource, overwrite, zoneSourceEntry);
                 uiManager.parseExpression(currentEntryTarget.getExpression(), currentEntryTarget, false, true, true);
@@ -385,8 +391,8 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
 
             } else {
                 String columnName = transferableEntry.getTableEntrySource().getName();
-                tableEntryLocationTarget = mapperManager.findUniqueLocation(tableEntryLocationTarget, columnsBeingAdded
-                        .toArray(new String[0]));
+                tableEntryLocationTarget = mapperManager.findUniqueLocation(tableEntryLocationTarget,
+                        columnsBeingAdded.toArray(new String[0]));
                 columnName = tableEntryLocationTarget.columnName;
                 if (currentEntryTarget == null && analyzer.isMapOneToOneMode()) {
                     currentIndex = tableViewerCreatorTarget.getInputList().size();

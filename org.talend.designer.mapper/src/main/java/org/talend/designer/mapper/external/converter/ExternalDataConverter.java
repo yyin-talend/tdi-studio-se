@@ -40,6 +40,7 @@ import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
+import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 
 /**
@@ -279,6 +280,7 @@ public class ExternalDataConverter {
             fillExternalTable(table, externalMapperTable);
             ArrayList<ExternalMapperTableEntry> perTableEntries = new ArrayList<ExternalMapperTableEntry>();
             boolean isVarTable = table instanceof VarsTable;
+            boolean isInputTable = table instanceof InputTable;
             for (ITableEntry dataMapTableEntry : table.getColumnEntries()) {
                 ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
                 externalMapperTableEntry.setExpression(dataMapTableEntry.getExpression());
@@ -291,6 +293,9 @@ public class ExternalDataConverter {
                             .getTalendType());
                     externalMapperTableEntry.setNullable(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn()
                             .isNullable());
+                }
+                if (isInputTable) {
+                    externalMapperTableEntry.setOperator(((InputColumnTableEntry) dataMapTableEntry).getOperator());
                 }
                 perTableEntries.add(externalMapperTableEntry);
             }

@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -408,8 +409,8 @@ public class UIManager extends AbstractUIManager {
                 metadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
 
                 dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(false);
-                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setSelection(
-                        dataMapTableViewer.getTable().getSelectionIndices());
+                metadataTableEditorView.getTableViewerCreator().getSelectionHelper()
+                        .setSelection(dataMapTableViewer.getTable().getSelectionIndices());
                 dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(true);
 
                 // disable highlight for other DataMapTableView and highlight selected DataMapTableView
@@ -572,8 +573,8 @@ public class UIManager extends AbstractUIManager {
             // metadataTVCreator.removeSelectionChangedListener(previousSelectionChangedListener);
             metadataTVCreator.getSelectionHelper().removeAfterSelectionListener(previousSelectionChangedListener);
             if (previousSelectedTableView != null) {
-                previousSelectedTableView.getTableViewerCreatorForColumns().getSelectionHelper().removeAfterSelectionListener(
-                        previousSelectionChangedListener);
+                previousSelectedTableView.getTableViewerCreatorForColumns().getSelectionHelper()
+                        .removeAfterSelectionListener(previousSelectionChangedListener);
             }
         }
 
@@ -590,8 +591,8 @@ public class UIManager extends AbstractUIManager {
         }
         // metadataTVCreator.addSelectionChangedListener(metadataEditorViewerSelectionChangedListener);
         metadataTVCreator.getSelectionHelper().addAfterSelectionListener(metadataEditorViewerSelectionChangedListener);
-        dataMapTableView.getTableViewerCreatorForColumns().getSelectionHelper().addAfterSelectionListener(
-                metadataEditorViewerSelectionChangedListener);
+        dataMapTableView.getTableViewerCreatorForColumns().getSelectionHelper()
+                .addAfterSelectionListener(metadataEditorViewerSelectionChangedListener);
         metadataTableEditor.addModifiedBeanListener(modifiedBeanListener);
 
         if (this.commonMetadataDisposeListener == null) {
@@ -741,8 +742,8 @@ public class UIManager extends AbstractUIManager {
         if ((response == SWT.OK || response == SWT.APPLICATION_MODAL)
                 && mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(false)) {
 
-            save = MessageDialog.openConfirm(getMapperContainer().getShell(), Messages
-                    .getString("UIManager.SaveDespiteErrors.Title"), //$NON-NLS-1$
+            save = MessageDialog.openConfirm(getMapperContainer().getShell(),
+                    Messages.getString("UIManager.SaveDespiteErrors.Title"), //$NON-NLS-1$
                     Messages.getString("UIManager.SaveDespiteErrors.Message")); //$NON-NLS-1$
         }
         if (save) {
@@ -935,8 +936,8 @@ public class UIManager extends AbstractUIManager {
         }
         if (metadataTableEditorView != null) {
             metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
-            metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(
-                    selectionIndices);
+            metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper()
+                    .setSelection(selectionIndices);
             metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
             metadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
 
@@ -1324,6 +1325,13 @@ public class UIManager extends AbstractUIManager {
     public ParseExpressionResult parseExpression(String expression, ITableEntry currentModifiedITableEntry,
             boolean linkMustHaveSelectedState, boolean checkInputKeyAutomatically, boolean inputExpressionAppliedOrCanceled) {
 
+        if (currentModifiedITableEntry instanceof InputColumnTableEntry) {
+            InputColumnTableEntry entry = (InputColumnTableEntry) currentModifiedITableEntry;
+            if (StringUtils.trimToNull(expression) == null) {
+                entry.setOperator(null);
+            }
+        }
+
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentModifiedITableEntry);
         boolean linkHasBeenAdded = false;
         boolean linkHasBeenRemoved = false;
@@ -1523,8 +1531,8 @@ public class UIManager extends AbstractUIManager {
                 public void run() {
 
                     TableViewerCreator tableViewerCreatorForColumns = dataMapTableView.getTableViewerCreatorForColumns();
-                    boolean propagate = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(), Messages
-                            .getString("UIManager.propagateTitle"), //$NON-NLS-1$
+                    boolean propagate = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(),
+                            Messages.getString("UIManager.propagateTitle"), //$NON-NLS-1$
                             Messages.getString("UIManager.propagateMessage")); //$NON-NLS-1$
                     if (propagate) {
                         TableEntryLocation previousLocation = new TableEntryLocation(currentModifiedITableEntry.getParentName(),
@@ -1681,11 +1689,10 @@ public class UIManager extends AbstractUIManager {
             public void run() {
 
                 if (hasInvalidInputExpressionKeys(inputDataMapTableView)) {
-                    if (MessageDialog
-                            .openConfirm(inputDataMapTableView.getShell(),
-                                    Messages.getString("UIManager.removeInvalidKeys"), //$NON-NLS-1$
-                                    Messages.getString("UIManager.comfirmToRemoveTableKeys") + inputDataMapTableView.getDataMapTable().getName() //$NON-NLS-1$
-                                            + "'")) { //$NON-NLS-1$
+                    if (MessageDialog.openConfirm(inputDataMapTableView.getShell(),
+                            Messages.getString("UIManager.removeInvalidKeys"), //$NON-NLS-1$
+                            Messages.getString("UIManager.comfirmToRemoveTableKeys") + inputDataMapTableView.getDataMapTable().getName() //$NON-NLS-1$
+                                    + "'")) { //$NON-NLS-1$
                         removeInvalidInputKeys(inputDataMapTableView);
                     }
                     refreshInOutTableAndMetaTable(inputDataMapTableView);

@@ -46,12 +46,15 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableRemoveCommand;
+import org.talend.commons.ui.swt.celleditor.ComboxCellEditorImproved;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_ROW_SELECTION;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn.ALIGNMENT;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultHeaderColumnSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
@@ -68,6 +71,7 @@ import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
+import org.talend.designer.mapper.model.emf.mapper.Operator;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.IUILookupMode;
 import org.talend.designer.mapper.model.table.IUIMatchingMode;
@@ -533,6 +537,39 @@ public class InputDataMapTableView extends DataMapTableView {
                 }
 
             });
+
+            final TableViewerCreatorColumn columnOperator = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
+            columnOperator.setTitle(Messages.getString("InputDataMapTableView.columnTitle.Operator"));
+            columnOperator.setId(DataMapTableView.ID_OPERATOR);
+            columnOperator.setToolTipHeader(Messages.getString("InputDataMapTableView.columnTitle.Operator"));
+            columnOperator.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, String>() {
+
+                public String get(InputColumnTableEntry bean) {
+                    return bean.getOperator();
+                }
+
+                public void set(InputColumnTableEntry bean, String value) {
+                    bean.setOperator(value);
+                    mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true);
+                }
+
+            });
+            columnOperator.setModifiable(true);
+            columnOperator.setWidth(80);
+
+            String[] operators = Operator.getLiterals().toArray(new String[0]);
+            String[] arrayOperators = new String[operators.length + 1];
+            arrayOperators[0] = ""; //$NON-NLS-1$
+            for (int i = 0; i < operators.length; i++) {
+                arrayOperators[i + 1] = operators[i];
+            }
+            final ComboxCellEditorImproved typeComboEditor = new ComboxCellEditorImproved(
+                    tableViewerCreatorForColumns.getTable(), arrayOperators, SWT.READ_ONLY);
+            // Combo typeCombo = (Combo) typeComboEditor.getControl();
+            // typeCombo.setEnabled(false);
+            columnOperator.setCellEditor(typeComboEditor,
+                    CellEditorValueAdapterFactory.getComboAdapterForComboCellEditorImproved());
+            columnOperator.setAlignment(ALIGNMENT.CENTER);
         }
 
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);

@@ -33,6 +33,8 @@ public class ExternalMapperTableEntry implements Serializable, Cloneable, IExter
 
     private String expression;
 
+    private String operator;
+
     /**
      * Talend types, used for var entries in all cases, and output entries for case : not connection attached.
      */
@@ -108,6 +110,24 @@ public class ExternalMapperTableEntry implements Serializable, Cloneable, IExter
      */
     public void setNullable(boolean nullable) {
         this.nullable = nullable;
+    }
+
+    /**
+     * Getter for operator.
+     * 
+     * @return the operator
+     */
+    public String getOperator() {
+        return this.operator;
+    }
+
+    /**
+     * Sets the operator.
+     * 
+     * @param operator the operator to set
+     */
+    public void setOperator(String operator) {
+        this.operator = operator;
     }
 
     /*

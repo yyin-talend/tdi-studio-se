@@ -12,6 +12,14 @@
       <genEnumLiterals ecoreEnumLiteral="mapper.ecore#//SizeState/INTERMEDIATE"/>
       <genEnumLiterals ecoreEnumLiteral="mapper.ecore#//SizeState/MAXIMIZED"/>
     </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="mapper.ecore#//Operator">
+      <genEnumLiterals ecoreEnumLiteral="mapper.ecore#//Operator/Equals"/>
+      <genEnumLiterals ecoreEnumLiteral="mapper.ecore#//Operator/Not_equals"/>
+      <genEnumLiterals ecoreEnumLiteral="mapper.ecore#//Operator/Lower"/>
+      <genEnumLiterals ecoreEnumLiteral="mapper.ecore#//Operator/Lower_or_equals"/>
+      <genEnumLiterals ecoreEnumLiteral="mapper.ecore#//Operator/Greater"/>
+      <genEnumLiterals ecoreEnumLiteral="mapper.ecore#//Operator/Greater_or_equals"/>
+    </genEnums>
     <genClasses ecoreClass="mapper.ecore#//MapperData">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mapper.ecore#//MapperData/uiProperties"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mapper.ecore#//MapperData/varTables"/>
@@ -23,6 +31,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mapper.ecore#//MapperTableEntry/expression"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mapper.ecore#//MapperTableEntry/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mapper.ecore#//MapperTableEntry/nullable"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mapper.ecore#//MapperTableEntry/operator"/>
     </genClasses>
     <genClasses image="false" ecoreClass="mapper.ecore#//AbstractDataMapTable">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mapper.ecore#//AbstractDataMapTable/sizeState"/>

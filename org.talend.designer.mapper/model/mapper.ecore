@@ -18,6 +18,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="expression" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="nullable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AbstractDataMapTable" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sizeState" eType="#//SizeState"
@@ -58,5 +59,13 @@
     <eLiterals name="MINIMIZED" literal="MINIMIZED"/>
     <eLiterals name="INTERMEDIATE" value="1" literal="INTERMEDIATE"/>
     <eLiterals name="MAXIMIZED" value="2" literal="MAXIMIZED"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Operator">
+    <eLiterals name="Equals" literal="="/>
+    <eLiterals name="Not_equals" value="1" literal="&lt;>"/>
+    <eLiterals name="Lower" value="2" literal="&lt;"/>
+    <eLiterals name="Lower_or_equals" value="3" literal="&lt;="/>
+    <eLiterals name="Greater" value="4" literal=">"/>
+    <eLiterals name="Greater_or_equals" value="5" literal=">="/>
   </eClassifiers>
 </ecore:EPackage>

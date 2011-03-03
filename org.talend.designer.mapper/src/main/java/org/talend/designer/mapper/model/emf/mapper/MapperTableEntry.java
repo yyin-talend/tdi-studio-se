@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.mapper.model.emf.mapper.MapperTableEntry#getExpression <em>Expression</em>}</li>
  *   <li>{@link org.talend.designer.mapper.model.emf.mapper.MapperTableEntry#getType <em>Type</em>}</li>
  *   <li>{@link org.talend.designer.mapper.model.emf.mapper.MapperTableEntry#isNullable <em>Nullable</em>}</li>
+ *   <li>{@link org.talend.designer.mapper.model.emf.mapper.MapperTableEntry#getOperator <em>Operator</em>}</li>
  * </ul>
  * </p>
  *
@@ -131,5 +132,31 @@ public interface MapperTableEntry extends EObject {
      * @generated
      */
     void setNullable(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Operator</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Operator</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Operator</em>' attribute.
+     * @see #setOperator(String)
+     * @see org.talend.designer.mapper.model.emf.mapper.MapperPackage#getMapperTableEntry_Operator()
+     * @model
+     * @generated
+     */
+    String getOperator();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.mapper.model.emf.mapper.MapperTableEntry#getOperator <em>Operator</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Operator</em>' attribute.
+     * @see #getOperator()
+     * @generated
+     */
+    void setOperator(String value);
 
 } // MapperTableEntry

@@ -23,12 +23,32 @@ import org.talend.designer.abstractmap.model.table.IDataMapTable;
  */
 public class InputColumnTableEntry extends AbstractInOutTableEntry {
 
+    private String operator;
+
     public InputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn, String expression) {
         super(abstractDataMapTable, metadataColumn, expression);
     }
 
     public InputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn) {
         super(abstractDataMapTable, metadataColumn);
+    }
+
+    /**
+     * Getter for operator.
+     * 
+     * @return the operator
+     */
+    public String getOperator() {
+        return this.operator;
+    }
+
+    /**
+     * Sets the operator.
+     * 
+     * @param operator the operator to set
+     */
+    public void setOperator(String operator) {
+        this.operator = operator;
     }
 
 }

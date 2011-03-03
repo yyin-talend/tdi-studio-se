@@ -82,6 +82,8 @@ public class MapperFactoryImpl extends EFactoryImpl implements MapperFactory {
         switch (eDataType.getClassifierID()) {
             case MapperPackage.SIZE_STATE:
                 return createSizeStateFromString(eDataType, initialValue);
+            case MapperPackage.OPERATOR:
+                return createOperatorFromString(eDataType, initialValue);
             default:
                 throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
         }
@@ -97,6 +99,8 @@ public class MapperFactoryImpl extends EFactoryImpl implements MapperFactory {
         switch (eDataType.getClassifierID()) {
             case MapperPackage.SIZE_STATE:
                 return convertSizeStateToString(eDataType, instanceValue);
+            case MapperPackage.OPERATOR:
+                return convertOperatorToString(eDataType, instanceValue);
             default:
                 throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
         }
@@ -179,6 +183,26 @@ public class MapperFactoryImpl extends EFactoryImpl implements MapperFactory {
      * @generated
      */
     public String convertSizeStateToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Operator createOperatorFromString(EDataType eDataType, String initialValue) {
+        Operator result = Operator.get(initialValue);
+        if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String convertOperatorToString(EDataType eDataType, Object instanceValue) {
         return instanceValue == null ? null : instanceValue.toString();
     }
 

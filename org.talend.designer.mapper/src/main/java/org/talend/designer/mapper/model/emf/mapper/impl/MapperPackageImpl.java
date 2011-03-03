@@ -23,6 +23,7 @@ import org.talend.designer.mapper.model.emf.mapper.MapperData;
 import org.talend.designer.mapper.model.emf.mapper.MapperFactory;
 import org.talend.designer.mapper.model.emf.mapper.MapperPackage;
 import org.talend.designer.mapper.model.emf.mapper.MapperTableEntry;
+import org.talend.designer.mapper.model.emf.mapper.Operator;
 import org.talend.designer.mapper.model.emf.mapper.OutputTable;
 import org.talend.designer.mapper.model.emf.mapper.SizeState;
 import org.talend.designer.mapper.model.emf.mapper.UiProperties;
@@ -97,6 +98,13 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
      * @generated
      */
     private EEnum sizeStateEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EEnum operatorEEnum = null;
 
     /**
      * Creates an instance of the model <b>Package</b>, registered with
@@ -250,6 +258,15 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
      */
     public EAttribute getMapperTableEntry_Nullable() {
         return (EAttribute)mapperTableEntryEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getMapperTableEntry_Operator() {
+        return (EAttribute)mapperTableEntryEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -482,6 +499,15 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EEnum getOperator() {
+        return operatorEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public MapperFactory getMapperFactory() {
         return (MapperFactory)getEFactoryInstance();
     }
@@ -516,6 +542,7 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
         createEAttribute(mapperTableEntryEClass, MAPPER_TABLE_ENTRY__EXPRESSION);
         createEAttribute(mapperTableEntryEClass, MAPPER_TABLE_ENTRY__TYPE);
         createEAttribute(mapperTableEntryEClass, MAPPER_TABLE_ENTRY__NULLABLE);
+        createEAttribute(mapperTableEntryEClass, MAPPER_TABLE_ENTRY__OPERATOR);
 
         abstractDataMapTableEClass = createEClass(ABSTRACT_DATA_MAP_TABLE);
         createEAttribute(abstractDataMapTableEClass, ABSTRACT_DATA_MAP_TABLE__SIZE_STATE);
@@ -549,6 +576,7 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
 
         // Create enums
         sizeStateEEnum = createEEnum(SIZE_STATE);
+        operatorEEnum = createEEnum(OPERATOR);
     }
 
     /**
@@ -600,6 +628,7 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
         initEAttribute(getMapperTableEntry_Expression(), ecorePackage.getEString(), "expression", null, 0, 1, MapperTableEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getMapperTableEntry_Type(), ecorePackage.getEString(), "type", null, 0, 1, MapperTableEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getMapperTableEntry_Nullable(), ecorePackage.getEBoolean(), "nullable", null, 0, 1, MapperTableEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMapperTableEntry_Operator(), ecorePackage.getEString(), "operator", null, 0, 1, MapperTableEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(abstractDataMapTableEClass, AbstractDataMapTable.class, "AbstractDataMapTable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getAbstractDataMapTable_SizeState(), this.getSizeState(), "sizeState", "", 0, 1, AbstractDataMapTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -636,6 +665,14 @@ public class MapperPackageImpl extends EPackageImpl implements MapperPackage {
         addEEnumLiteral(sizeStateEEnum, SizeState.MINIMIZED);
         addEEnumLiteral(sizeStateEEnum, SizeState.INTERMEDIATE);
         addEEnumLiteral(sizeStateEEnum, SizeState.MAXIMIZED);
+
+        initEEnum(operatorEEnum, Operator.class, "Operator");
+        addEEnumLiteral(operatorEEnum, Operator.EQUALS);
+        addEEnumLiteral(operatorEEnum, Operator.NOT_EQUALS);
+        addEEnumLiteral(operatorEEnum, Operator.LOWER);
+        addEEnumLiteral(operatorEEnum, Operator.LOWER_OR_EQUALS);
+        addEEnumLiteral(operatorEEnum, Operator.GREATER);
+        addEEnumLiteral(operatorEEnum, Operator.GREATER_OR_EQUALS);
 
         // Create resource
         createResource(eNS_URI);

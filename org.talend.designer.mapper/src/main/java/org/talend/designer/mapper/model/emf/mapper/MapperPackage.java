@@ -164,13 +164,22 @@ public interface MapperPackage extends EPackage {
     int MAPPER_TABLE_ENTRY__NULLABLE = 3;
 
     /**
+     * The feature id for the '<em><b>Operator</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int MAPPER_TABLE_ENTRY__OPERATOR = 4;
+
+    /**
      * The number of structural features of the '<em>Table Entry</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int MAPPER_TABLE_ENTRY_FEATURE_COUNT = 4;
+    int MAPPER_TABLE_ENTRY_FEATURE_COUNT = 5;
 
     /**
      * The meta object id for the '{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractDataMapTableImpl <em>Abstract Data Map Table</em>}' class.
@@ -675,6 +684,16 @@ public interface MapperPackage extends EPackage {
     int SIZE_STATE = 8;
 
     /**
+     * The meta object id for the '{@link org.talend.designer.mapper.model.emf.mapper.Operator <em>Operator</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.talend.designer.mapper.model.emf.mapper.Operator
+     * @see org.talend.designer.mapper.model.emf.mapper.impl.MapperPackageImpl#getOperator()
+     * @generated
+     */
+    int OPERATOR = 9;
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.mapper.model.emf.mapper.MapperData <em>Data</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -781,6 +800,17 @@ public interface MapperPackage extends EPackage {
      * @generated
      */
     EAttribute getMapperTableEntry_Nullable();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.mapper.model.emf.mapper.MapperTableEntry#getOperator <em>Operator</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Operator</em>'.
+     * @see org.talend.designer.mapper.model.emf.mapper.MapperTableEntry#getOperator()
+     * @see #getMapperTableEntry()
+     * @generated
+     */
+    EAttribute getMapperTableEntry_Operator();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.mapper.model.emf.mapper.AbstractDataMapTable <em>Abstract Data Map Table</em>}'.
@@ -1051,6 +1081,16 @@ public interface MapperPackage extends EPackage {
     EEnum getSizeState();
 
     /**
+     * Returns the meta object for enum '{@link org.talend.designer.mapper.model.emf.mapper.Operator <em>Operator</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for enum '<em>Operator</em>'.
+     * @see org.talend.designer.mapper.model.emf.mapper.Operator
+     * @generated
+     */
+    EEnum getOperator();
+
+    /**
      * Returns the factory that creates the instances of the model.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1155,6 +1195,14 @@ public interface MapperPackage extends EPackage {
          * @generated
          */
         EAttribute MAPPER_TABLE_ENTRY__NULLABLE = eINSTANCE.getMapperTableEntry_Nullable();
+
+        /**
+         * The meta object literal for the '<em><b>Operator</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute MAPPER_TABLE_ENTRY__OPERATOR = eINSTANCE.getMapperTableEntry_Operator();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.mapper.model.emf.mapper.impl.AbstractDataMapTableImpl <em>Abstract Data Map Table</em>}' class.
@@ -1369,6 +1417,16 @@ public interface MapperPackage extends EPackage {
          * @generated
          */
         EEnum SIZE_STATE = eINSTANCE.getSizeState();
+
+        /**
+         * The meta object literal for the '{@link org.talend.designer.mapper.model.emf.mapper.Operator <em>Operator</em>}' enum.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see org.talend.designer.mapper.model.emf.mapper.Operator
+         * @see org.talend.designer.mapper.model.emf.mapper.impl.MapperPackageImpl#getOperator()
+         * @generated
+         */
+        EEnum OPERATOR = eINSTANCE.getOperator();
 
     }
 
