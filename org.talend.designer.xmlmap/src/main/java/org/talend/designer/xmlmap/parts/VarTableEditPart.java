@@ -98,13 +98,5 @@ public class VarTableEditPart extends BaseEditPart {
             }
         }
     }
-    // @Override
-    // protected void refreshVisuals() {
-    // // super.refreshVisuals();
-    // // this.getFigure().validate();
-    // for (IFigure child : (List<IFigure>) this.getFigure().getChildren()) {
-    // child.validate();
-    // }
-    // }
 
 }

@@ -189,10 +189,6 @@ public class MapperMain {
     }
 
     private void prepareModelOutputs(List<IODataComponent> outputConn, List<IMetadataTable> outputMetadataTables) {
-        if (outputConn == null || outputConn.isEmpty()) {
-            copyOfMapData.getOutputTrees().clear();
-            return;
-        }
         for (IMetadataTable meatadataTable : outputMetadataTables) {
             String name = meatadataTable.getTableName();
             OutputXmlTree outputTree = null;

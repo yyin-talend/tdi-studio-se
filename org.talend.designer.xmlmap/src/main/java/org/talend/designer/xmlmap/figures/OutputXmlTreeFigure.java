@@ -80,7 +80,7 @@ public class OutputXmlTreeFigure extends GenericFigure {
 
         header.add(tableName);
 
-        imageButtonsFigure = new OutputTreeToolBarContainer(xmlTree);
+        imageButtonsFigure = new OutputTreeToolBarContainer(treePart);
 
         header.setOpaque(true);
         header.setBackgroundColor(ColorConstants.yellow);
@@ -114,6 +114,7 @@ public class OutputXmlTreeFigure extends GenericFigure {
     public void update(int type) {
         settingContainer.update(type);
         filterFigure.update(type);
+        imageButtonsFigure.updateMinSizeImage();
     }
 
     public IFigure getColumnContainer() {

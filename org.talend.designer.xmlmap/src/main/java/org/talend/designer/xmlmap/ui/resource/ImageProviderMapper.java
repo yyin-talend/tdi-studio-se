@@ -12,8 +12,10 @@
 // ============================================================================
 package org.talend.designer.xmlmap.ui.resource;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -29,6 +31,8 @@ import org.talend.designer.xmlmap.XmlMapPlugin;
 public class ImageProviderMapper {
 
     private static Map<ImageInfo, Image> imageCache = new HashMap<ImageInfo, Image>();
+
+    private static List<Image> disabledImageCache = new ArrayList<Image>();
 
     public static Image getImage(ImageDescriptor desc) {
         return desc.createImage();
@@ -48,6 +52,10 @@ public class ImageProviderMapper {
         return ImageDescriptor.createFromFile(XmlMapPlugin.class, image.getPath());
     }
 
+    public static void cacheDisabledImage(Image image) {
+        disabledImageCache.add(image);
+    }
+
     /**
      * You can continue to use the provider after call this method.
      */
@@ -59,6 +67,13 @@ public class ImageProviderMapper {
             }
         }
         imageCache.clear();
+
+        for (Image image : disabledImageCache) {
+            if (!image.isDisposed()) {
+                image.dispose();
+            }
+        }
+        disabledImageCache.clear();
     }
 
     public static void dispose(ImageInfo imageInfo) {

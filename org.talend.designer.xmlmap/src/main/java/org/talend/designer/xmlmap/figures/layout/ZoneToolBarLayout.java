@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2010 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2011 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -21,16 +21,15 @@ import org.eclipse.draw2d.geometry.Rectangle;
 /**
  * wchen class global comment. Detailled comment
  */
-public class TreeToolBarLayout extends EqualWidthLayout {
+public class ZoneToolBarLayout extends EqualWidthLayout {
 
     @Override
     public void layout(IFigure parent) {
         List children = parent.getChildren();
         int numChildren = children.size();
         Rectangle clientArea = transposer.t(parent.getClientArea());
-        int x = clientArea.x + clientArea.width;
-        int y = clientArea.y + 2;
-        int availableHeight = clientArea.height;
+        int x = clientArea.x + spacing;
+        int y = clientArea.y + spacing;
 
         Dimension prefSizes[] = new Dimension[numChildren];
         Dimension minSizes[] = new Dimension[numChildren];
@@ -61,8 +60,7 @@ public class TreeToolBarLayout extends EqualWidthLayout {
         totalMinHeight += (numChildren - 1) * spacing;
         prefMinSumHeight = totalHeight - totalMinHeight;
 
-        for (int i = numChildren - 1; i >= 0; i--) {
-            int amntShrinkCurrentHeight = 0;
+        for (int i = 0; i < numChildren; i++) {
             int prefHeight = prefSizes[i].height;
             int minHeight = minSizes[i].height;
             int prefWidth = prefSizes[i].width;
@@ -70,13 +68,9 @@ public class TreeToolBarLayout extends EqualWidthLayout {
 
             child = (IFigure) children.get(i);
 
-            newBounds.x = x - newBounds.width - spacing;
-
-            newBounds.height -= amntShrinkCurrentHeight;
             child.setBounds(transposer.t(newBounds));
+            x = x + newBounds.width + spacing;
 
-            prefMinSumHeight -= (prefHeight - minHeight);
-            x = newBounds.x - spacing;
         }
     }
 }

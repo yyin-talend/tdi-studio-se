@@ -76,7 +76,9 @@ public class OutputXmlTreeEditPart extends BaseEditPart {
             case XmlmapPackage.OUTPUT_XML_TREE__REJECT:
             case XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN:
             case XmlmapPackage.OUTPUT_XML_TREE__EXPRESSION_FILTER:
+            case XmlmapPackage.OUTPUT_XML_TREE__MINIMIZED:
                 ((OutputXmlTreeFigure) getFigure()).update(featureId);
+                break;
 
             }
         }

@@ -132,6 +132,10 @@ public class MapperManager implements ISelectionChangedListener {
         this.mapperUI = mapperUI;
     }
 
+    public MapperUI getMapperUI() {
+        return this.mapperUI;
+    }
+
     public void selectionChanged(SelectionChangedEvent event) {
         if (!event.getSelection().isEmpty() && event.getSelection() instanceof IStructuredSelection) {
             Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();

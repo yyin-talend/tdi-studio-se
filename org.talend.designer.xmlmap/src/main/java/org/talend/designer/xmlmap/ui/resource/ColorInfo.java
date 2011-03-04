@@ -39,6 +39,8 @@ public enum ColorInfo {
 
     COLOR_HIGHLIGHTED_TEXT_ROW(240, 240, 240), // light gray
 
+    ZONE_BACKGROUND_COLOR(241, 239, 226), // zone background color
+
     COLOR_BACKGROUND_ERROR_EXPRESSION_CELL(255, 0, 0), // red
 
     COLOR_DRAGGING_INSERTION_INDICATOR(0, 78, 152), // blue

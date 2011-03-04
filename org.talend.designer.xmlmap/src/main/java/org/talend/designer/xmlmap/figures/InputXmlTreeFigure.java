@@ -65,7 +65,7 @@ public class InputXmlTreeFigure extends GenericFigure {
         header.setLayoutManager(new EqualWidthLayout());
         Label tableName = new Label();
         // tableName.setBorder(new LineBorder(ColorConstants.black));
-        tableName.setText(xmlTree.isLookup() ? "lookup : " : "main :" + xmlTree.getName());
+        tableName.setText((xmlTree.isLookup() ? "lookup : " : "main :") + xmlTree.getName());
         tableName.setFont(FontProviderMapper.getFont(FontInfo.FONT_SYSTEM_BOLD));
         tableName.setLabelAlignment(PositionConstants.LEFT);
         tableName.setBorder(new MarginBorder(5, 10, 5, -1));

@@ -1,7 +1,13 @@
 package org.talend.designer.xmlmap.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -17,8 +23,13 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
+import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -27,12 +38,14 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.xmlmap.XmlMapComponent;
 import org.talend.designer.xmlmap.editor.XmlMapEditor;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
+import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.ui.tabs.TabFolderEditors;
 
@@ -88,7 +101,7 @@ public class MapperUI {
                     if (!closeWindow) {
                         e.doit = false;
                     } else {
-                        // mapperManager.getUiManager().prepareClosing(SWT.CANCEL);
+                        prepareClosing(SWT.CANCEL);
                     }
 
                 }
@@ -149,6 +162,7 @@ public class MapperUI {
             public void widgetDisposed(DisposeEvent e) {
                 ColorProviderMapper.releaseColors();
                 FontProviderMapper.releaseFonts();
+                ImageProviderMapper.releaseImages();
             }
 
         });
@@ -171,7 +185,9 @@ public class MapperUI {
 
     public void closeMapperDialog(int response) {
         mapperResponse = response;
+
         if (response == SWT.OK || response == SWT.APPLICATION_MODAL) {
+            prepareClosing(response);
             mapperComponent.setExternalEmfData(copyOfMapData);
             if (response == SWT.APPLICATION_MODAL) {
                 IExternalNode externalNode = mapperComponent;
@@ -196,6 +212,60 @@ public class MapperUI {
 
     }
 
+    public void prepareClosing(int response) {
+
+        List<IMetadataTable> newMetadatas = new ArrayList<IMetadataTable>();
+        // if press ok or apply , use copyOfMapData to check the metadata list
+        EList<OutputXmlTree> outputTrees = null;
+        if (response == SWT.OK || response == SWT.APPLICATION_MODAL) {
+            outputTrees = copyOfMapData.getOutputTrees();
+        } else {
+            outputTrees = ((XmlMapData) mapperComponent.getExternalEmfData()).getOutputTrees();
+        }
+
+        List<IMetadataTable> copyOfMetadata = new ArrayList<IMetadataTable>(mapperComponent.getMetadataList());
+
+        for (OutputXmlTree outputTree : outputTrees) {
+            IMetadataTable found = null;
+            for (IMetadataTable table : mapperComponent.getMetadataList()) {
+                if (outputTree.getName().equals(table.getTableName())) {
+                    found = table;
+                }
+            }
+            if (found != null) {
+                newMetadatas.add(found);
+            } else {
+                // create a new metadata if needed
+                MetadataTable metadataTable = new MetadataTable();
+                metadataTable.setTableName(outputTree.getName());
+                for (OutputTreeNode treeNode : outputTree.getNodes()) {
+                    MetadataColumn column = new MetadataColumn();
+                    column.setLabel(treeNode.getName());
+                    column.setKey(treeNode.isKey());
+                    column.setTalendType(treeNode.getType());
+                    column.setNullable(treeNode.isNullable());
+                    column.setPattern(treeNode.getPattern());
+                }
+                newMetadatas.add(metadataTable);
+            }
+        }
+        mapperComponent.setMetadataList(newMetadatas);
+        copyOfMetadata.removeAll(newMetadatas);
+
+        List<IODataComponent> outputs = mapperComponent.getIODataComponents().getOuputs();
+        List<String> connectionNames = new ArrayList<String>();
+        for (IODataComponent output : outputs) {
+            connectionNames.add(output.getUniqueName());
+        }
+
+        for (IMetadataTable leftTree : copyOfMetadata) {
+            if (!connectionNames.contains(leftTree.getTableName())) {
+                mapperComponent.getProcess().removeUniqueConnectionName(leftTree.getTableName());
+            }
+        }
+
+    }
+
     public int getMapperDialogResponse() {
         return mapperResponse;
     }
@@ -206,6 +276,26 @@ public class MapperUI {
 
     public TabFolderEditors getTabFolderEditors() {
         return tabFolderEditors;
+    }
+
+    public String openNewOutputCreationDialog() {
+        final IProcess process = mapperManager.getMapperComponent().getProcess();
+        String outputName = process.generateUniqueConnectionName("out"); //$NON-NLS-1$
+        InputDialog id = new InputDialog(mapperShell, "Add a output", "New Output :", outputName, new IInputValidator() {
+
+            public String isValid(String newText) {
+                if (!process.checkValidConnectionName(newText)) {
+                    return "Output is invalid.";
+                }
+                return null;
+            }
+
+        });
+        int response = id.open();
+        if (response == InputDialog.OK) {
+            return id.getValue();
+        }
+        return null;
     }
 
 }

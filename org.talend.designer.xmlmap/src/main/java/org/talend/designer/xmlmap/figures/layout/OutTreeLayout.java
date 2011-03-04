@@ -173,7 +173,6 @@ public class OutTreeLayout extends ToolbarLayout {
         int height = 0, width = 0;
         for (int i = 0; i < children.size(); i++) {
             child = (IFigure) children.get(i);
-
             if (outputTree != null) {
                 if (child instanceof OutputTreeSettingContainer) {
                     if (!outputTree.isActivateCondensedTool()) {
@@ -191,6 +190,11 @@ public class OutTreeLayout extends ToolbarLayout {
                     hHint));
             height += childSize.height;
             width = Math.max(width, childSize.width);
+
+            // header figure must be the first figure , or there will be problem here
+            if (outputTree.isMinimized()) {
+                break;
+            }
         }
         return new Dimension(width, height);
     }

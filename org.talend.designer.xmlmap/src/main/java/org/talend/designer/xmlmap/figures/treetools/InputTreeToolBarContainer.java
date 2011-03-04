@@ -50,7 +50,6 @@ public class InputTreeToolBarContainer extends Figure {
         this.setLayoutManager(manager);
         // this.setBorder(new MarginBorder(-1, -1, -1, 10));
         condensedButton = new CondensedButton(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
-        condensedButton.setStyle(Clickable.STYLE_TOGGLE);
         condensedButton.setSelected(inputTree.isActivateCondensedTool());
         GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.FILL_HORIZONTAL);
         data.horizontalSpan = 10;
@@ -62,8 +61,8 @@ public class InputTreeToolBarContainer extends Figure {
     public Map<String, Object> getDefaultSetting() {
         if (defaultSettingMap.isEmpty()) {
             defaultSettingMap.put(TreeSettingsManager.LOOKUP_MODEL_SETTING, XML_MAP_LOOKUP_MODE.LOAD_ONCE);
-            defaultSettingMap.put(TreeSettingsManager.MATCH_MODEL_SETTING, new IUIMatchingMode[] { XML_MAP_MATCHING_MODE.ALL_ROWS,
-                    XML_MAP_MATCHING_MODE.UNIQUE_MATCH });
+            defaultSettingMap.put(TreeSettingsManager.MATCH_MODEL_SETTING, new IUIMatchingMode[] {
+                    XML_MAP_MATCHING_MODE.ALL_ROWS, XML_MAP_MATCHING_MODE.UNIQUE_MATCH });
             defaultSettingMap.put(TreeSettingsManager.JOIN_MODEL_SETTING, false);
             defaultSettingMap.put(TreeSettingsManager.PERSISTENCE_MODEL_SETTING, false);
         }
@@ -74,12 +73,14 @@ public class InputTreeToolBarContainer extends Figure {
 
         public CondensedButton(Image image) {
             super(image);
+            setStyle(Clickable.STYLE_TOGGLE);
         }
 
         @Override
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
             inputTree.setActivateCondensedTool(this.isSelected());
+            revalidate();
         }
     }
 }

@@ -173,53 +173,6 @@ public class VarToolBarFigure extends Figure {
 
         });
 
-        move_up.addMouseListener(new MouseListener() {
-
-            public void mouseReleased(MouseEvent me) {
-
-            }
-
-            public void mousePressed(MouseEvent me) {
-                // VarNode selectionNode = (VarNode) me.getSource();
-                // EList<VarNode> children = parentTable.getNodes();
-                // int oldPosition = children.indexOf(children);
-                // int oldPrevPosition = oldPosition - 1;
-                // VarNode copiedNode = EcoreUtil.copy(selectionNode);
-                // VarNode copiedPrevNode = EcoreUtil.copy(children.get(oldPrevPosition));
-                // children.remove(oldPosition);
-                // children.remove(oldPrevPosition);
-                // children.add(oldPrevPosition, copiedNode);
-                // children.add(oldPosition, copiedPrevNode);
-            }
-
-            public void mouseDoubleClicked(MouseEvent me) {
-
-            }
-        });
-
-        move_down.addMouseListener(new MouseListener() {
-
-            public void mouseReleased(MouseEvent me) {
-
-            }
-
-            public void mousePressed(MouseEvent me) {
-                // VarNode selectionNode = (VarNode) me.getSource();
-                // EList<VarNode> children = parentTable.getNodes();
-                // int oldPosition = children.indexOf(children);
-                // int oldPrevPosition = oldPosition - 1;
-                // VarNode copiedNode = EcoreUtil.copy(selectionNode);
-                // VarNode copiedPrevNode = EcoreUtil.copy(children.get(oldPrevPosition));
-                // children.remove(oldPosition);
-                // children.remove(oldPrevPosition);
-                // children.add(oldPrevPosition, copiedNode);
-                // children.add(oldPosition, copiedPrevNode);
-            }
-
-            public void mouseDoubleClicked(MouseEvent me) {
-
-            }
-        });
     }
 
     private void setToolTips() {

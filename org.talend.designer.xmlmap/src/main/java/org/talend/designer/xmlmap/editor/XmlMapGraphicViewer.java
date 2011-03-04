@@ -18,11 +18,14 @@ import org.eclipse.draw2d.ExclusionSearch;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
+import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 
 /**
  * DOC XYuser class global comment. Detailled comment
  */
 public class XmlMapGraphicViewer extends GraphicalViewerImpl {
+
+    private MapperManager mapperManager;
 
     public IFigure findFigureAt(int x, int y, Collection exclude, final Conditional condition) {
         class ConditionalTreeSearch extends ExclusionSearch {
@@ -41,6 +44,14 @@ public class XmlMapGraphicViewer extends GraphicalViewerImpl {
             }
         }
         return getLightweightSystem().getRootFigure().findFigureAt(x, y, new ConditionalTreeSearch(exclude));
+    }
+
+    public MapperManager getMapperManager() {
+        return mapperManager;
+    }
+
+    public void setMapperManager(MapperManager mapperManager) {
+        this.mapperManager = mapperManager;
     }
 
 }

@@ -63,7 +63,8 @@ public class XmlMapEditor extends GraphicalEditor {
 
     protected void createGraphicalViewer(final Composite parent) {
         // rulerComp = new RulerComposite(parent, SWT.BORDER);
-        GraphicalViewer viewer = new XmlMapGraphicViewer();
+        XmlMapGraphicViewer viewer = new XmlMapGraphicViewer();
+        viewer.setMapperManager(mapperManager);
         viewer.createControl(parent);
         setGraphicalViewer(viewer);
         configureGraphicalViewer();
