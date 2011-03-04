@@ -3177,8 +3177,8 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
                 if (column.getParent() instanceof InputTable) {
                     boolean isMainConnection = ((InputTable) getDataMapTable()).isMainConnection();
                     if (!isMainConnection) {
-                        TableViewerCreator creator = getTableViewerCreator();
-                        TableViewerCreatorColumn operatorColumn = creator.getColumn(ID_OPERATOR);
+                        TableViewerCreatorNotModifiable creator = getTableViewerCreator();
+                        TableViewerCreatorColumnNotModifiable operatorColumn = creator.getColumn(ID_OPERATOR);
                         if (operatorColumn != null) {
                             if (StringUtils.trimToNull(column.getExpression()) == null) {
                                 operatorColumn.setModifiable(false);
