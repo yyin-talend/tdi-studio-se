@@ -4,21 +4,12 @@ Bundle-Name: Components local provider Plug-in
 Bundle-SymbolicName: org.talend.designer.components.localprovider;singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Bundle-Activator: org.talend.designer.components.ComponentsLocalProviderPlugin
-Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.talend.commons,
- org.talend.core.runtime,
- org.talend.designer.core,
- org.talend.core,
+Require-Bundle: org.talend.core,
  org.eclipse.gmf.runtime.common.ui,
- org.talend.commons.ui,
  org.talend.librariesmanager,
  org.talend.model,
- org.apache.log4j,
- org.eclipse.emf.ecore.xmi,
  org.talend.libraries.apache,
- org.apache.xerces
+ org.talend.commons
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
 Export-Package: ca.uhn.hl7v2,
@@ -118,4 +109,3 @@ Bundle-ClassPath: .,
  components/tHL7Input/hapi-structures-v25-1.0.1.jar,
  components/tHL7Input/hapi-structures-v251-1.0.1.jar,
  components/tHL7Input/hapi-structures-v26-1.0.1.jar
-Import-Package: org.talend.core.repository.utils

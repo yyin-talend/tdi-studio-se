@@ -93,8 +93,10 @@ import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
@@ -793,7 +795,7 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
                      * @return
                      */
                     private Image getColumnImageExecute(Object element, int columnIndex) {
-                        TableViewerCreatorColumn column = newTableViewerCreator.getColumns().get(columnIndex);
+                        TableViewerCreatorColumnNotModifiable column = newTableViewerCreator.getColumns().get(columnIndex);
                         if (getDataMapTable() instanceof AbstractInOutTable) {
                             AbstractInOutTableEntry entry = (AbstractInOutTableEntry) element;
                             if (column.getId().equals(ID_NAME_COLUMN)) {
@@ -2181,7 +2183,7 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
      * @param columnIndex
      * @return
      */
-    protected Color getBackgroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
+    protected Color getBackgroundCellColor(TableViewerCreatorNotModifiable tableViewerCreator, Object element, int columnIndex) {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
@@ -2199,7 +2201,7 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
      * @param columnIndex
      * @return
      */
-    protected Color getForegroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
+    protected Color getForegroundCellColor(TableViewerCreatorNotModifiable tableViewerCreator, Object element, int columnIndex) {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {

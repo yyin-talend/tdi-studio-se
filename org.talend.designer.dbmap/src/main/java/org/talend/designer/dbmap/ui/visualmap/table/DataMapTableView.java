@@ -71,7 +71,8 @@ import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
@@ -374,8 +375,8 @@ public abstract class DataMapTableView extends Composite {
      * @param parent
      */
     private void createTableForColumns(Composite parent) {
-        this.extendedTableViewerForColumns = new AbstractExtendedTableViewer<IColumnEntry>(abstractDataMapTable
-                .getTableColumnsEntriesModel(), parent) {
+        this.extendedTableViewerForColumns = new AbstractExtendedTableViewer<IColumnEntry>(
+                abstractDataMapTable.getTableColumnsEntriesModel(), parent) {
 
             @Override
             protected void createColumns(TableViewerCreator<IColumnEntry> tableViewerCreator, Table table) {
@@ -410,7 +411,9 @@ public abstract class DataMapTableView extends Composite {
             /*
              * (non-Javadoc)
              * 
-             * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
+             * @see
+             * org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions
+             * (org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
              */
             @Override
             protected void setTableViewerCreatorOptions(final TableViewerCreator<IColumnEntry> newTableViewerCreator) {
@@ -1381,8 +1384,7 @@ public abstract class DataMapTableView extends Composite {
                 if (expressionTextEditor.isFocusControl() || lastExpressionEditorTextWhichLostFocus == expressionTextEditor) {
                     ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
                     ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ? modifiedObjectInfo
-                            .getCurrentModifiedBean()
-                            : modifiedObjectInfo.getPreviousModifiedBean());
+                            .getCurrentModifiedBean() : modifiedObjectInfo.getPreviousModifiedBean());
                     mapperManager.getUiManager().parseNewExpression(text.getText(), tableEntry, false);
                     resizeTextEditor(text, tableViewerCreator);
                 }
@@ -1432,8 +1434,7 @@ public abstract class DataMapTableView extends Composite {
                 resizeTextEditor(expressionTextEditor, tableViewerCreator);
                 StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
                 styledTextHandler.setCurrentEntry(currentModifiedEntry);
-                styledTextHandler
-                        .setTextWithoutNotifyListeners(currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
+                styledTextHandler.setTextWithoutNotifyListeners(currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
@@ -1610,7 +1611,7 @@ public abstract class DataMapTableView extends Composite {
      * @param columnIndex
      * @return
      */
-    protected Color getBackgroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
+    protected Color getBackgroundCellColor(TableViewerCreatorNotModifiable tableViewerCreator, Object element, int columnIndex) {
         return getCellColor(tableViewerCreator, element, columnIndex, true);
     }
 
@@ -1623,7 +1624,8 @@ public abstract class DataMapTableView extends Composite {
      * @param isBackground TODO
      * @return
      */
-    protected Color getCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex, boolean isBackground) {
+    protected Color getCellColor(TableViewerCreatorNotModifiable tableViewerCreator, Object element, int columnIndex,
+            boolean isBackground) {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
@@ -1640,7 +1642,7 @@ public abstract class DataMapTableView extends Composite {
      * @param columnIndex
      * @return
      */
-    protected Color getForegroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
+    protected Color getForegroundCellColor(TableViewerCreatorNotModifiable tableViewerCreator, Object element, int columnIndex) {
         return getCellColor(tableViewerCreator, element, columnIndex, false);
     }
 

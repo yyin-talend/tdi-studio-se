@@ -52,7 +52,7 @@ import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButtonForE
 import org.talend.commons.ui.swt.advanced.dataeditor.button.SaveAsGenericSchemaPushButton;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
 import org.talend.core.ui.proposal.TalendProposalUtils;
@@ -92,8 +92,8 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
     private void initStrings() {
         items = new ArrayList<String>();
         ids = new ArrayList<String>();
-        List<TableViewerCreatorColumn> columns = genTableEditor2.getTableViewerCreator().getColumns();
-        for (TableViewerCreatorColumn column : columns) {
+        List<TableViewerCreatorColumnNotModifiable> columns = genTableEditor2.getTableViewerCreator().getColumns();
+        for (TableViewerCreatorColumnNotModifiable column : columns) {
             if ((column.getId() != null && !"".equals(column.getId())) //$NON-NLS-1$
                     && (column.getTitle() != null && !"".equals(column.getTitle()))) { //$NON-NLS-1$
                 ids.add(column.getId());
@@ -136,7 +136,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
 
     /**
      * 
-     *  yexiaowei Comment method "rowNumberWidth".
+     * yexiaowei Comment method "rowNumberWidth".
      * 
      * @return
      */

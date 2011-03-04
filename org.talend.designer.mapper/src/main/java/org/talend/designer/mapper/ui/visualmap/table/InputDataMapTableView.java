@@ -51,8 +51,9 @@ import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_ROW_SELECTION;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable.LAYOUT_MODE;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable.SHOW_ROW_SELECTION;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn.ALIGNMENT;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
@@ -1088,7 +1089,7 @@ public class InputDataMapTableView extends DataMapTableView {
              * .commons.ui.swt.tableviewer.TableViewerCreatorColumn, java.lang.Object)
              */
             @Override
-            protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
+            protected void selectionEvent(TableViewerCreatorColumnNotModifiable column, Object bean) {
 
                 ITableEntry tableEntry = (ITableEntry) bean;
 

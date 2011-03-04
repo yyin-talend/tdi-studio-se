@@ -38,7 +38,6 @@
    <vm>
    </vm>
 
-
    <plugins>
       <plugin id="com.ibm.icu"/>
       <plugin id="org.apache.lucene"/>
@@ -88,7 +87,7 @@
    </plugins>
 
    <features>
-      <feature id="org.talend.rcp.branding.tos_feature" version="2.2.0.qualifier"/>
+      <feature id="org.talend.rcp.branding.tos_feature"/>
    </features>
 
 

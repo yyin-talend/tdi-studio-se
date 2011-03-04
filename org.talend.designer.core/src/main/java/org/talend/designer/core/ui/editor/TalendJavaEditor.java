@@ -130,8 +130,8 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                         // }
                         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                             try {
-                                CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject().build(
-                                        IncrementalProjectBuilder.AUTO_BUILD, null);
+                                CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
+                                        .build(IncrementalProjectBuilder.AUTO_BUILD, null);
                             } catch (CoreException e) {
                                 ExceptionHandler.process(e);
                             }
@@ -143,7 +143,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                         property.getInformations().clear();
                         // add only the errors in the property, not the warnings
                         for (Information info : informations) {
-                            if (info.getLevel().equals(InformationLevel.ERROR_LITERAL)) {
+                            if (info.getLevel().equals(InformationLevel.ERROR)) {
                                 property.getInformations().add(info);
                             }
                         }
@@ -169,7 +169,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     private List<Information> collectOnlyErrors(List<Information> informations) {
         List<Information> errors = new ArrayList<Information>();
         for (Information info : informations) {
-            if (info.getLevel() == InformationLevel.ERROR_LITERAL) {
+            if (InformationLevel.ERROR_LITERAL.equals(info.getLevel())) {
                 errors.add(info);
             }
         }

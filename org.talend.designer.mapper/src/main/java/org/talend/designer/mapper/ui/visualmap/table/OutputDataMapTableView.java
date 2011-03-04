@@ -36,7 +36,8 @@ import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableRemov
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
@@ -553,7 +554,7 @@ public class OutputDataMapTableView extends DataMapTableView {
              * .commons.ui.swt.tableviewer.TableViewerCreatorColumn, java.lang.Object)
              */
             @Override
-            protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
+            protected void selectionEvent(TableViewerCreatorColumnNotModifiable column, Object bean) {
                 ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
                         extendedTableViewerForFilters.getExtendedTableModel());
                 mapperManager.removeTableEntry((ITableEntry) bean);

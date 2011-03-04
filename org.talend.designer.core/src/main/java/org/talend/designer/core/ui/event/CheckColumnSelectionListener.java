@@ -27,6 +27,8 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable;
 import org.talend.commons.ui.swt.tableviewer.selection.ITableColumnSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.sort.IColumnSortedListener;
 import org.talend.core.model.process.IElementParameter;
@@ -39,9 +41,9 @@ import org.talend.core.model.process.IElementParameter;
  */
 public class CheckColumnSelectionListener implements ITableColumnSelectionListener {
 
-    private TableViewerCreatorColumn tableViewerCreatorColumn;
+    private TableViewerCreatorColumnNotModifiable tableViewerCreatorColumn;
 
-    private TableViewerCreator tableViewerCreator;
+    private TableViewerCreatorNotModifiable tableViewerCreator;
 
     private IElementParameter param;
 
@@ -106,8 +108,7 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
      * .commons.ui.swt.tableviewer.TableViewerCreator)
      */
     public void setTableViewerCreator(TableViewerCreator tableViewerCreator) {
-        this.tableViewerCreator = tableViewerCreator;
-
+        setTableViewerCreator((TableViewerCreatorNotModifiable) tableViewerCreator);
     }
 
     /*
@@ -118,7 +119,7 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
      * .talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn)
      */
     public void setTableViewerCreatorColumn(TableViewerCreatorColumn tableViewerCreatorColumn) {
-        this.tableViewerCreatorColumn = tableViewerCreatorColumn;
+        setTableViewerCreatorColumn((TableViewerCreatorColumnNotModifiable) tableViewerCreatorColumn);
     }
 
     /*
@@ -169,5 +170,27 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.commons.ui.swt.tableviewer.selection.ITableColumnSelectionListener#setTableViewerCreatorColumn(org
+     * .talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable)
+     */
+    public void setTableViewerCreatorColumn(TableViewerCreatorColumnNotModifiable tableViewerCreatorColumn) {
+        this.tableViewerCreatorColumn = tableViewerCreatorColumn;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.commons.ui.swt.tableviewer.selection.ITableColumnSelectionListener#setTableViewerCreator(org.talend
+     * .commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable)
+     */
+    public void setTableViewerCreator(TableViewerCreatorNotModifiable tableViewerCreator) {
+        this.tableViewerCreator = tableViewerCreator;
     }
 }

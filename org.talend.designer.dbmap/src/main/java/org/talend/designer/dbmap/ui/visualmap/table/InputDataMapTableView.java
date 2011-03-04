@@ -34,7 +34,9 @@ import org.talend.commons.ui.swt.celleditor.ComboxCellEditorImproved;
 import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn.ALIGNMENT;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable.ALIGNMENT;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnColorProvider;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
@@ -42,8 +44,8 @@ import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorCont
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.i18n.Messages;
-import org.talend.designer.dbmap.language.IJoinType;
 import org.talend.designer.dbmap.language.AbstractDbLanguage.JOIN;
+import org.talend.designer.dbmap.language.IJoinType;
 import org.talend.designer.dbmap.language.operator.IDbOperator;
 import org.talend.designer.dbmap.language.operator.IDbOperatorManager;
 import org.talend.designer.dbmap.managers.MapperManager;
@@ -464,7 +466,8 @@ public class InputDataMapTableView extends DataMapTableView {
          */
         @Override
         public boolean canModify(Object element, String property) {
-            TableViewerCreatorColumn columnOperator = getTableViewerCreator().getColumn(DataMapTableView.ID_OPERATOR);
+            TableViewerCreatorColumnNotModifiable columnOperator = getTableViewerCreator()
+                    .getColumn(DataMapTableView.ID_OPERATOR);
             String operator = (String) columnOperator.getBeanPropertyAccessors().get(element);
             IDbOperatorManager operatorsManager = mapperManager.getCurrentLanguage().getOperatorsManager();
             IDbOperator operatorFromValue = operatorsManager.getOperatorFromValue(operator);
@@ -484,7 +487,7 @@ public class InputDataMapTableView extends DataMapTableView {
      * .tableviewer.TableViewerCreator, java.lang.Object, int)
      */
     @Override
-    protected Color getBackgroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
+    protected Color getBackgroundCellColor(TableViewerCreatorNotModifiable tableViewerCreator, Object element, int columnIndex) {
         return getCellColor(tableViewerCreator, element, columnIndex, true);
     }
 

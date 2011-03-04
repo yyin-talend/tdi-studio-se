@@ -41,10 +41,10 @@ import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
-import org.talend.commons.ui.swt.tableviewer.tableeditor.TableEditorContent;
+import org.talend.commons.ui.swt.tableviewer.tableeditor.TableEditorContentNotModifiable;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
@@ -664,7 +664,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
     public void updateHeader(String id, String currTitle, boolean isHide) {
         final TableViewerCreatorColumn funColumn = getTableViewerCreator().getColumn(id);
         if (isHide) {
-            final TableEditorContent tableEditorContent = funColumn.getTableEditorContent();
+            final TableEditorContentNotModifiable tableEditorContent = funColumn.getTableEditorContent();
             if (tableEditorContent != null && tableEditorContent instanceof CheckboxTableEditorContent) {
                 funColumn.setTableEditorContent(null);
             }
@@ -685,7 +685,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
             getTableViewerCreator().refreshTableEditorControls();
         } else {
 
-            final TableEditorContent tableEditorContent = funColumn.getTableEditorContent();
+            final TableEditorContentNotModifiable tableEditorContent = funColumn.getTableEditorContent();
             if (tableEditorContent == null
                     && (funColumn.getId().equals(ID_COLUMN_KEY) || funColumn.getId().equals(ID_COLUMN_NULLABLE))) {
                 final CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
