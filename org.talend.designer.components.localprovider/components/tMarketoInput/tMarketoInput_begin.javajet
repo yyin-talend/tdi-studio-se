@@ -21,6 +21,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 %>
 int nb_call_<%=cid%> = 0;
+globalMap.put("<%=cid %>_NB_CALL",0);  
 <%
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) { //1
@@ -106,12 +107,14 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 			com.marketo.www.mktows.LeadRecord[] records_<%=cid%> = null;
 			try{
 				leads_<%=cid%> = client_<%=cid%>.getLead("<%=leadKeyType%>",<%=leadKeyValue%>);
-				nb_call_<%=cid%>++;
+				
+				globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);  
+				
 				records_<%=cid%> = leads_<%=cid%>.getLeadRecordList();
 			}catch(org.apache.axis.AxisFault axisFault_<%=cid%>){
 				try{
 					if(!client_<%=cid%>.isSystemError(axisFault_<%=cid%>)){
-						nb_call_<%=cid%>++;		
+						globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);  
 					}
 					client_<%=cid%>.inputExceptionFilter(axisFault_<%=cid%>);
 				}catch(Exception ex_<%=cid%>){
@@ -159,11 +162,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
             	com.marketo.www.mktows.ResultGetMultipleLeads leads_<%=cid%> = null;
             	try{ 
             		leads_<%=cid%> = client_<%=cid%>.getMultipleLeads(includeAttributes_<%=cid%>, <%=batchSize%>, updatedAtCal_<%=cid%>, streamPosition_<%=cid%>);
-            		nb_call_<%=cid%>++;
+            		globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
             	}catch(Exception ex_<%=cid%>){
             		if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){
             			if(!client_<%=cid%>.isSystemError((org.apache.axis.AxisFault)ex_<%=cid%>)){
-							nb_call_<%=cid%>++;		
+							globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);		
 						}
             		}
 					<%
@@ -192,12 +195,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 				com.marketo.www.mktows.ActivityRecord[] activityRecords_<%=cid%> = null;
                 try{
 	                activities_<%=cid%> = client_<%=cid%>.getLeadActivity("<%=leadKeyType%>",<%=leadKeyValue%>, <%=batchSize%>, includeTypes_<%=cid%>, excludeTypes_<%=cid%>,streamPosition_<%=cid%>);
-	                nb_call_<%=cid%>++;	
+	                globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);	
 	                activityRecords_<%=cid%> = activities_<%=cid%>.getActivityRecordList();
 	            }catch(org.apache.axis.AxisFault axisFault_<%=cid%>){
 					try{
 						if(!client_<%=cid%>.isSystemError(axisFault_<%=cid%>)){
-							nb_call_<%=cid%>++;		
+							globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);		
 						}
 						client_<%=cid%>.inputExceptionFilter(axisFault_<%=cid%>);
 					}catch(Exception ex_<%=cid%>){
@@ -239,11 +242,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
                 com.marketo.www.mktows.ResultGetLeadChanges changes_<%=cid%> = null;
                 try{
                 	changes_<%=cid%> = client_<%=cid%>.getLeadChanges(<%=batchSize%>, includeTypes_<%=cid%>, excludeTypes_<%=cid%>, streamPosition_<%=cid%>);
-                	nb_call_<%=cid%>++;
+                	globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
                 }catch(Exception ex_<%=cid%>){
                 	if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){
             			if(!client_<%=cid%>.isSystemError((org.apache.axis.AxisFault)ex_<%=cid%>)){
-							nb_call_<%=cid%>++;		
+							globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);		
 						}
             		}
 					<%

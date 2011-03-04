@@ -18,6 +18,7 @@ imports="
 	String timeout = ElementParameterParser.getValue(node, "__TIMEOUT__");
 %>
 	int nb_call_<%=cid%> = 0;
+	globalMap.put("<%=cid %>_NB_CALL",0);
 	org.talend.marketo.Client client_<%=cid%> = new org.talend.marketo.Client(<%=endpoint%>,<%=secretKey%>,<%=clientAccessID%>);
 	client_<%=cid%>.setTimeout(<%=timeout%>);
 <%

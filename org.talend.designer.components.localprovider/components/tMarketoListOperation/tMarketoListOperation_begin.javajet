@@ -31,6 +31,7 @@
     List<IMetadataTable> metadatas = node.getMetadataList();
 %>
 int nb_call_<%=cid%> = 0;
+globalMap.put("<%=cid %>_NB_CALL",0);  
 <%
 if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     IMetadataTable metadata = metadatas.get(0);
