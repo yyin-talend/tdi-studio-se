@@ -553,20 +553,20 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 getOwner().translateToAbsolute(ref);
             }
 
-            if (containerFigure != null && ref != null) {
-                if (loctionRight) {
-                    int avialableX = containerFigure.getBounds().x + containerFigure.getBounds().width
-                            - XmlMapDataEditPart.IN_OUT_BORDER;
-                    if (ref.x > avialableX) {
-                        ref.x = avialableX;
-                    }
-                } else {
-                    int avialableX = containerFigure.getBounds().x + XmlMapDataEditPart.IN_OUT_BORDER;
-                    if (ref.x < avialableX) {
-                        ref.x = avialableX;
-                    }
-                }
-            }
+            // if (containerFigure != null && ref != null) {
+            // if (loctionRight) {
+            // int avialableX = containerFigure.getBounds().x + containerFigure.getBounds().width
+            // - XmlMapDataEditPart.IN_OUT_BORDER;
+            // if (ref.x > avialableX) {
+            // ref.x = avialableX;
+            // }
+            // } else {
+            // int avialableX = containerFigure.getBounds().x + XmlMapDataEditPart.IN_OUT_BORDER;
+            // if (ref.x < avialableX) {
+            // ref.x = avialableX;
+            // }
+            // }
+            // }
 
             if (connectionPart instanceof BaseConnectionEditPart && connectionPart.getFigure() instanceof PolylineConnection) {
                 BaseConnectionEditPart baseConnectionPart = (BaseConnectionEditPart) connectionPart;
