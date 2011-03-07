@@ -111,6 +111,7 @@ import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.MapperUI;
 import org.talend.designer.mapper.ui.commands.DataMapTableViewSelectedCommand;
 import org.talend.designer.mapper.ui.dialog.OutputAddDialog;
+import org.talend.designer.mapper.ui.dialog.PropertySetDialog;
 import org.talend.designer.mapper.ui.dnd.DraggingInfosPopup;
 import org.talend.designer.mapper.ui.dnd.DropTargetOperationListener;
 import org.talend.designer.mapper.ui.footer.StatusBar;
@@ -1821,6 +1822,10 @@ public class UIManager extends AbstractUIManager {
         }
         updateToolbarButtonsStates(zone);
         refreshBackground(true, false);
+    }
+
+    public void openPropertySetDialog() {
+        new PropertySetDialog(getShell(), mapperManager).open();
     }
 
     public boolean isTableViewMoveable(Zone zone, boolean moveUp) {

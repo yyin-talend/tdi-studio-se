@@ -47,7 +47,12 @@ public enum ImageInfo {
     CONDENSED_TOOL_ICON3("/icons/condensedToolItem3.png"),
     CONDENSED_TOOL_ICON4("/icons/condensedToolItem4.png"),
     CONDENSED_TOOL_ICON5("/icons/condensedToolItem5.png"),
-    CONDENSED_TOOL_ICON6("/icons/condensedToolItem6.png"), ;
+    CONDENSED_TOOL_ICON6("/icons/condensedToolItem6.png"),
+    PROPERTY_TOOL_ICON("/icons/property.png"),
+    PROPERTY_TOOL_ICON1("/icons/property1.png"),
+    PROPERTY_TOOL_ICON2("/icons/property2.png"),
+    PROPERTY_TOOL_ICON3("/icons/property3.png"),
+    PROPERTY_TOOL_ICON4("/icons/property4.png"), ;
 
     private String path;
 

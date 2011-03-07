@@ -65,6 +65,10 @@ public abstract class AbstractUIManager {
         return linkStyle;
     }
 
+    public void openPropertySetDialog() {
+        // do nothing.
+    }
+
     public abstract AbstractMapperManager getAbstractMapperManager();
 
     public abstract void refreshBackground(boolean forceRecalculate, boolean firstExecutionAfterTime);

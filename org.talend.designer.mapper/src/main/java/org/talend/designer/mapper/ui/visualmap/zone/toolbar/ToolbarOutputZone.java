@@ -43,7 +43,7 @@ public class ToolbarOutputZone extends ToolbarZone {
 
     private ToolItem guessItem;
 
-    private ToolItem dieOnError;
+    // private ToolItem dieOnError;
 
     public static final String MINIMIZE_TOOLTIP = Messages.getString("ToolbarOutputZone.minimizeTooltip"); //$NON-NLS-1$
 
@@ -75,13 +75,13 @@ public class ToolbarOutputZone extends ToolbarZone {
         addOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         addOutputItem.setEnabled(!getMapperManager().componentIsReadOnly());
         addOutputItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.addOutputTable")); //$NON-NLS-1$
-        addOutputItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
-                .getImageDesc(EImage.ADD_ICON)));
+        addOutputItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.ADD_ICON)));
 
         removeOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         removeOutputItem.setEnabled(false);
-        removeOutputItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
-                .getImageDesc(EImage.MINUS_ICON)));
+        removeOutputItem.setImage(org.talend.commons.ui.runtime.image.ImageProvider
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
         removeOutputItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.removeOutputTable")); //$NON-NLS-1$
 
         addCommonsComponents();
@@ -93,19 +93,19 @@ public class ToolbarOutputZone extends ToolbarZone {
         guessItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.mapInputAndOutput")); //$NON-NLS-1$
         guessItem.setText(Messages.getString("ToolbarOutputZone.widgetText.autoMap")); //$NON-NLS-1$
 
-        dieOnError = new ToolItem(getToolBarActions(), SWT.CHECK);
-        dieOnError.setEnabled(!getMapperManager().componentIsReadOnly());
-        dieOnError.setToolTipText("tmap die on error");
-        AbstractMapComponent component = getMapperManager().getAbstractMapComponent();
-        IElementParameter elementParameter = component.getElementParameter("DIE_ON_ERROR");
-        boolean isDieOnError = false;
-        if (elementParameter != null && elementParameter.getValue() != null) {
-            isDieOnError = Boolean.valueOf(elementParameter.getValue().toString());
-        }
-        dieOnError.setSelection(isDieOnError);
-        Image image = ImageProviderMapper.getImage(isDieOnError ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
-        dieOnError.setImage(image);
-        dieOnError.setText("Die on error");
+        // dieOnError = new ToolItem(getToolBarActions(), SWT.CHECK);
+        // dieOnError.setEnabled(!getMapperManager().componentIsReadOnly());
+        // dieOnError.setToolTipText("tmap die on error");
+        // AbstractMapComponent component = getMapperManager().getAbstractMapComponent();
+        // IElementParameter elementParameter = component.getElementParameter("DIE_ON_ERROR");
+        // boolean isDieOnError = false;
+        // if (elementParameter != null && elementParameter.getValue() != null) {
+        // isDieOnError = Boolean.valueOf(elementParameter.getValue().toString());
+        // }
+        // dieOnError.setSelection(isDieOnError);
+        // Image image = ImageProviderMapper.getImage(isDieOnError ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
+        // dieOnError.setImage(image);
+        // dieOnError.setText("Die on error");
 
     }
 
@@ -138,28 +138,28 @@ public class ToolbarOutputZone extends ToolbarZone {
 
         });
 
-        dieOnError.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-
-            public void widgetSelected(SelectionEvent e) {
-                Image image = null;
-                if (dieOnError.getSelection()) {
-                    image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
-                    getMapperManager().removeRejectOutput();
-                } else {
-                    image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
-                    if (!getMapperManager().hasRejectOutput(getMapperManager().getOutputTables())) {
-                        getMapperManager().addRejectOutput();
-                    }
-                }
-                dieOnError.setImage(image);
-                getMapperManager().setDieOnError(dieOnError.getSelection());
-                getMapperManager().setDieOnErrorValueChanged(true);
-            }
-
-        });
+        // dieOnError.addSelectionListener(new SelectionListener() {
+        //
+        // public void widgetDefaultSelected(SelectionEvent e) {
+        // }
+        //
+        // public void widgetSelected(SelectionEvent e) {
+        // Image image = null;
+        // if (dieOnError.getSelection()) {
+        // image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
+        // getMapperManager().removeRejectOutput();
+        // } else {
+        // image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
+        // if (!getMapperManager().hasRejectOutput(getMapperManager().getOutputTables())) {
+        // getMapperManager().addRejectOutput();
+        // }
+        // }
+        // dieOnError.setImage(image);
+        // getMapperManager().setDieOnError(dieOnError.getSelection());
+        // getMapperManager().setDieOnErrorValueChanged(true);
+        // }
+        //
+        // });
 
     }
 

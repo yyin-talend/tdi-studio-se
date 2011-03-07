@@ -111,10 +111,6 @@ public class MapperManager extends AbstractMapperManager {
 
     private ProblemsManager problemsManager;
 
-    private boolean isDieOnError;
-
-    private boolean isDieOnErrorValueChanged;
-
     private Map<String, Object> defaultSettingMap = new HashMap<String, Object>();
 
     public MapperManager(MapperComponent mapperComponent) {
@@ -1095,7 +1091,8 @@ public class MapperManager extends AbstractMapperManager {
             return true;
         }
 
-        return !originalExternalData.equals(currentExternalData) || isDieOnErrorValueChanged;
+        return !originalExternalData.equals(currentExternalData)
+                || MapperSettingsManager.getInstance(this).isMapperSettingChanged();
     }
 
     public Map<String, Object> getDefaultSetting() {
@@ -1109,6 +1106,11 @@ public class MapperManager extends AbstractMapperManager {
             defaultSettingMap.put(DataMapTableView.LOOK_UP_INNER_JOIN_REJECT, false);
             defaultSettingMap.put(DataMapTableView.SCHEMA_TYPE, false);
             defaultSettingMap.put(DataMapTableView.SCHEMA_ID, null);
+
+            defaultSettingMap.put(MapperSettingsManager.DIE_ON_ERROR, true);
+            defaultSettingMap.put(MapperSettingsManager.LOOKUP_IN_PARALLEL, true);
+            defaultSettingMap.put(MapperSettingsManager.TEMPORARY_DATA_DIRECTORY, "");
+            defaultSettingMap.put(MapperSettingsManager.ROWS_BUFFER_SIZE, 2000000);
         }
         return defaultSettingMap;
     }
@@ -1122,23 +1124,8 @@ public class MapperManager extends AbstractMapperManager {
         return preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK);
     }
 
-    public boolean isDieOnError() {
-        return this.isDieOnError;
-    }
-
-    public void setDieOnError(boolean isDieOnError) {
-        this.isDieOnError = isDieOnError;
-    }
-
-    public void setDieOnErrorValueChanged(boolean isDieOnErrorValueChanged) {
-        this.isDieOnErrorValueChanged = isDieOnErrorValueChanged;
-    }
-
-    public boolean isDieOnErrorValueChanged() {
-        return isDieOnErrorValueChanged;
-    }
-
     public boolean isTracesActive() {
         return DesignerPlugin.getDefault().getRunProcessService().enableTraceForActiveRunProcess();
     }
+
 }

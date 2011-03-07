@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.designer.mapper.managers.MapperManager;
+import org.talend.designer.mapper.managers.MapperSettingsManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.ui.image.ImageInfo;
 import org.talend.designer.mapper.ui.image.ImageProviderMapper;
@@ -40,15 +41,21 @@ public abstract class ToolbarZone {
 
     private MapperManager mapperManager;
 
+    private MapperSettingsManager settingManager;
+
     private ToolBar toolBarActions;
 
     private ToolItem upTableButton;
 
     private ToolItem downTableButton;
 
+    private ToolItem propertyButton;
+
     private ToolItem minimizeButton;
 
     protected boolean minimized;
+
+    protected int changedOptions = 0;
 
     /**
      * DOC amaumont MatadataToolbarEditor constructor comment.
@@ -81,16 +88,24 @@ public abstract class ToolbarZone {
         upTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         upTableButton.setEnabled(false);
         upTableButton.setToolTipText(getMoveUpTooltipText());
-        upTableButton.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
-                .getImageDesc(EImage.UP_ICON)));
+        upTableButton.setImage(org.talend.commons.ui.runtime.image.ImageProvider
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.UP_ICON)));
 
         downTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         downTableButton.setEnabled(false);
-        downTableButton.setImage(org.talend.commons.ui.runtime.image.ImageProvider.getImage(org.talend.commons.ui.runtime.image.ImageProvider
-                .getImageDesc(EImage.DOWN_ICON)));
+        downTableButton.setImage(org.talend.commons.ui.runtime.image.ImageProvider
+                .getImage(org.talend.commons.ui.runtime.image.ImageProvider.getImageDesc(EImage.DOWN_ICON)));
         downTableButton.setToolTipText(getMoveDownTooltipText());
 
         new ToolItem(getToolBarActions(), SWT.SEPARATOR);
+
+        if (this instanceof ToolbarInputZone) {
+            settingManager = MapperSettingsManager.getNewInstance(mapperManager);
+            propertyButton = new ToolItem(toolBarActions, SWT.PUSH);
+            propertyButton.setImage(ImageProviderMapper.getImage(getPropertyItemImage(settingManager.getChangeNumOfSettings())));
+            propertyButton.setToolTipText("Setup the configurations of tMap");
+            propertyButton.setEnabled(!getMapperManager().componentIsReadOnly());
+        }
 
         minimizeButton = new ToolItem(toolBarActions, SWT.PUSH);
         minimizeButton.setEnabled(false);
@@ -127,6 +142,20 @@ public abstract class ToolbarZone {
             }
 
         });
+
+        if (propertyButton != null) {
+            propertyButton.addListener(SWT.Selection, new Listener() {
+
+                public void handleEvent(Event event) {
+                    uiManager.openPropertySetDialog();
+                    if (settingManager != null) {
+                        propertyButton.setImage(ImageProviderMapper.getImage(getPropertyItemImage(settingManager
+                                .getChangeNumOfSettings())));
+                    }
+                }
+
+            });
+        }
 
     }
 
@@ -185,6 +214,23 @@ public abstract class ToolbarZone {
 
     public void setEnabledMinimizeTablesButton(boolean enabled) {
         minimizeButton.setEnabled(enabled);
+    }
+
+    protected ImageInfo getPropertyItemImage(int i) {
+        switch (i) {
+        case 0:
+            return ImageInfo.PROPERTY_TOOL_ICON;
+        case 1:
+            return ImageInfo.PROPERTY_TOOL_ICON1;
+        case 2:
+            return ImageInfo.PROPERTY_TOOL_ICON2;
+        case 3:
+            return ImageInfo.PROPERTY_TOOL_ICON3;
+        case 4:
+            return ImageInfo.PROPERTY_TOOL_ICON4;
+        default:
+            return null;
+        }
     }
 
 }
