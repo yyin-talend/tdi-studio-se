@@ -339,7 +339,7 @@ for(int i = 0; i < tag.length; i++){
 			break;
 		}
 	}
-%>out_<%=cid %>.write("<<%=tag[i][1]%>>"+<%
+%>out_<%=cid %>.write("<"+<%=tag[i][1]%>+">"+<%
 							if(isAdvancedSeparator){
 								if(isBigDecimal){
 								%>FormatterUtils.format_Number(String.valueOf(<%=precision == null? conn.getName() + "." + tag[i][0] : conn.getName() + "." + tag[i][0] + ".setScale(" + precision + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
@@ -359,7 +359,7 @@ for(int i = 0; i < tag.length; i++){
 									}else{
 									%><%if(needReplace){%>TalendString.checkCDATAForXML(<%}%><%=conn.getName() %>.<%=tag[i][0] %><%if(needReplace){%>)<%}%><%
 									}%>))<%
-							}%>+"</<%=tag[i][1]%>>");
+							}%>+"</"+<%=tag[i][1]%>+">");
 
 out_<%=cid %>.newLine();
 
