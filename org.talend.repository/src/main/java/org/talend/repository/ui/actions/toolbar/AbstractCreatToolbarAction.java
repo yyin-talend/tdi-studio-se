@@ -235,10 +235,6 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
             createRoutineAction.setWorkbenchPart(repositoryView);
             addToMenu(menu, createRoutineAction, -1);
         }
-        if (repositoryView.containsRepositoryType(ERepositoryObjectType.BEANS)) {
-            addToMenu(menu, CorePlugin.getDefault().getDesignerCoreService().getCreateBeanAction(true), -1);
-
-        }
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IConfigurationElement[] configurationElements = registry

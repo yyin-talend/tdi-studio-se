@@ -106,7 +106,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
             metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode, metadataFTPConnectionNode,
             metadataEbcdicConnectionNode, metadataHL7ConnectionNode, metadataMDMConnectionNode, metadataRulesNode,
-            metadataHeaderFooterConnectionNode, jobscriptsNode, beansNode, metadataBRMSConnectionNode,
+            metadataHeaderFooterConnectionNode, jobscriptsNode, beanNode, metadataBRMSConnectionNode,
             metadataValidationRulesNode;
 
     private RepositoryNode jobletNode;
@@ -340,10 +340,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
             nodes.add(codeNode);
 
-            beansNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            beansNode.setProperties(EProperties.LABEL, ERepositoryObjectType.BEANS);
-            beansNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.BEANS);
-            codeNode.getChildren().add(beansNode);
+            beanNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            beanNode.setProperties(EProperties.LABEL, ERepositoryObjectType.BEAN);
+            beanNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.BEAN);
+            codeNode.getChildren().add(beanNode);
 
         } else {
             // 1. Business process
@@ -637,9 +637,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 convert(newProject, factory.getJoblets(newProject, true), jobletNode, ERepositoryObjectType.JOBLET, recBinNode);
             } else if (parent == routineNode) {
                 convert(newProject, factory.getRoutine(newProject, true), routineNode, ERepositoryObjectType.ROUTINES, recBinNode);
-            } else if (parent == beansNode) {
-                convert(newProject, factory.getCamelCamelBean(newProject, true), beansNode, ERepositoryObjectType.BEANS,
-                        recBinNode);
             } else if (parent == jobscriptsNode) {
                 convert(newProject, factory.getJobScripts(newProject, true), jobscriptsNode, ERepositoryObjectType.JOB_SCRIPT,
                         recBinNode);
