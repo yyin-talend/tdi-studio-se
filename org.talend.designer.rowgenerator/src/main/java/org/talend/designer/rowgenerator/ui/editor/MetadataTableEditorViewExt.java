@@ -41,6 +41,7 @@ import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
@@ -447,7 +448,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
         };
         for (Iterator iter = getTableViewerCreator().getColumns().iterator(); iter.hasNext();) {
-            TableViewerCreatorColumn element = (TableViewerCreatorColumn) iter.next();
+            TableViewerCreatorColumnNotModifiable element = (TableViewerCreatorColumnNotModifiable) iter.next();
             element.getTableColumn().addControlListener(controlListener);
         }
     }
@@ -621,7 +622,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         int prewidth = 0;
         int w = 0;
         for (Iterator iter = getTableViewerCreator().getColumns().iterator(); iter.hasNext();) {
-            TableViewerCreatorColumn element = (TableViewerCreatorColumn) iter.next();
+            TableViewerCreatorColumnNotModifiable element = (TableViewerCreatorColumnNotModifiable) iter.next();
             w += element.getTableColumn().getWidth();
         }
         prewidth = w - getTableViewerCreator().getColumn(ID_COLUMN_PREVIEW).getTableColumn().getWidth();
@@ -646,7 +647,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         int prewidth = 0;
         int w = 0;
         for (Iterator iter = getTableViewerCreator().getColumns().iterator(); iter.hasNext();) {
-            TableViewerCreatorColumn element = (TableViewerCreatorColumn) iter.next();
+            TableViewerCreatorColumnNotModifiable element = (TableViewerCreatorColumnNotModifiable) iter.next();
             w += element.getTableColumn().getWidth();
         }
         prewidth = w - getTableViewerCreator().getColumn(ID_COLUMN_PREVIEW).getTableColumn().getWidth();

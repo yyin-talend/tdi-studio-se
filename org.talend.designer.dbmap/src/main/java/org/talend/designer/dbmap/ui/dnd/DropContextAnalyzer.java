@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
 import org.talend.designer.dbmap.model.table.InputTable;
@@ -227,8 +227,8 @@ public class DropContextAnalyzer {
             width += widthColumn;
         }
 
-        List<TableViewerCreatorColumn> viewerColumns = tableViewerCreatorForColumns.getColumns();
-        TableViewerCreatorColumn viewerColumn = viewerColumns.get(currentColumnIndex);
+        List<TableViewerCreatorColumnNotModifiable> viewerColumns = tableViewerCreatorForColumns.getColumns();
+        TableViewerCreatorColumnNotModifiable viewerColumn = viewerColumns.get(currentColumnIndex);
         if (DataMapTableView.ID_EXPRESSION_COLUMN.equals(viewerColumn.getId())) {
             isCursorOverExpressionCell = true;
         } else {

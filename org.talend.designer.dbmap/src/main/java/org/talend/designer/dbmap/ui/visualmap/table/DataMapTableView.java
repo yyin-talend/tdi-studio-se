@@ -71,6 +71,7 @@ import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
@@ -470,8 +471,8 @@ public abstract class DataMapTableView extends Composite {
                     private Image getColumnImageExecute(Object element, int columnIndex) {
                         if (getDataMapTable() instanceof AbstractInOutTable) {
                             AbstractInOutTableEntry entry = (AbstractInOutTableEntry) element;
-                            TableViewerCreatorColumn column = (TableViewerCreatorColumn) newTableViewerCreator.getColumns().get(
-                                    columnIndex);
+                            TableViewerCreatorColumnNotModifiable column = (TableViewerCreatorColumnNotModifiable) newTableViewerCreator
+                                    .getColumns().get(columnIndex);
                             if (column.getId().equals(ID_NAME_COLUMN)) {
                                 if (entry.getMetadataColumn().isKey()) {
                                     return imageKey;
@@ -1627,7 +1628,8 @@ public abstract class DataMapTableView extends Composite {
     protected Color getCellColor(TableViewerCreatorNotModifiable tableViewerCreator, Object element, int columnIndex,
             boolean isBackground) {
         ITableEntry entry = (ITableEntry) element;
-        TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
+        TableViewerCreatorColumnNotModifiable column = (TableViewerCreatorColumnNotModifiable) tableViewerCreator.getColumns()
+                .get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
             return expressionColorProvider.getColor(isBackground, entry.getProblems(),
                     ProblemsManager.KEY_INPUT_EXPRESSION_EMPTY, ProblemsManager.KEY_OUTPUT_EXPRESSION_EMPTY);

@@ -502,7 +502,8 @@ public class InputDataMapTableView extends DataMapTableView {
      */
     protected Color getCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex, boolean isBackground) {
         ITableEntry entry = (ITableEntry) element;
-        TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
+        TableViewerCreatorColumnNotModifiable column = (TableViewerCreatorColumnNotModifiable) tableViewerCreator.getColumns()
+                .get(columnIndex);
         if (column.getId().equals(ID_OPERATOR)) {
             return getExpressionColorProvider().getColor(isBackground, entry.getProblems(), ProblemsManager.KEY_OPERATOR_EMPTY);
         }

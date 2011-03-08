@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.advanced.dataeditor.control.ExtendedPushButton;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.CorePlugin;
@@ -379,7 +379,7 @@ public class TableController extends AbstractElementPropertySectionController {
                         if ((j + 1) >= colList.size()) {
                             break;
                         }
-                        TableViewerCreatorColumn column = (TableViewerCreatorColumn) colList.get(j + 1);
+                        TableViewerCreatorColumnNotModifiable column = (TableViewerCreatorColumnNotModifiable) colList.get(j + 1);
                         CellEditor cellEditor = column.getCellEditor();
                         String[] oldItems = null;
                         if (cellEditor instanceof ComboBoxCellEditor) {
@@ -438,7 +438,7 @@ public class TableController extends AbstractElementPropertySectionController {
                             tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
                         }
                         // j + 1 because first column is masked
-                        TableViewerCreatorColumn column = (TableViewerCreatorColumn) colList.get(j + 1);
+                        TableViewerCreatorColumnNotModifiable column = (TableViewerCreatorColumnNotModifiable) colList.get(j + 1);
 
                         CCombo combo = (CCombo) column.getCellEditor().getControl();
                         String[] oldItems = combo.getItems();
@@ -493,7 +493,7 @@ public class TableController extends AbstractElementPropertySectionController {
                             tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
                         }
                         // j + 1 because first column is masked
-                        TableViewerCreatorColumn column = (TableViewerCreatorColumn) colList.get(j + 1);
+                        TableViewerCreatorColumnNotModifiable column = (TableViewerCreatorColumnNotModifiable) colList.get(j + 1);
 
                         CCombo combo = (CCombo) column.getCellEditor().getControl();
                         String[] oldItems = combo.getItems();
@@ -585,7 +585,7 @@ public class TableController extends AbstractElementPropertySectionController {
                             tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
                         }
                         // j + 1 because first column is masked
-                        TableViewerCreatorColumn column = (TableViewerCreatorColumn) colList.get(j + 1);
+                        TableViewerCreatorColumnNotModifiable column = (TableViewerCreatorColumnNotModifiable) colList.get(j + 1);
 
                         CCombo combo = (CCombo) column.getCellEditor().getControl();
                         String[] oldItems = combo.getItems();
