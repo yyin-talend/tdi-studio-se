@@ -171,6 +171,7 @@ public class OutputDataMapTableView extends DataMapTableView {
                         return String.valueOf(outputTable.isRejectInnerJoin());
                     } else if (SCHEMA_TYPE.equals(bean.getName())) {
                         customDialogCellEditor.setType(CellValueType.SCHEMA_TYPE);
+                        enableDiaplayViewer(outputTable.isRepository());
                         return outputTable.isRepository() ? REPOSITORY : BULIT_IN;
                     } else if (SCHEMA_ID.equals(bean.getName())) {
                         customDialogCellEditor.setType(CellValueType.SCHEMA_ID);
@@ -198,6 +199,7 @@ public class OutputDataMapTableView extends DataMapTableView {
                     previous = outputTable.isRepository();
                     outputTable.setRepository(REPOSITORY.equals(value));
                     showSchemaIDSetting(REPOSITORY.equals(value));
+                    enableDiaplayViewer(REPOSITORY.equals(value));
                 } else if (SCHEMA_ID.equals(bean.getName())) {
                     previous = outputTable.getId();
                     outputTable.setId(String.valueOf(value));

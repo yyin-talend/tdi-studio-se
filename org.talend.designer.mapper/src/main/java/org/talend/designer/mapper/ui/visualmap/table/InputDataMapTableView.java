@@ -269,6 +269,7 @@ public class InputDataMapTableView extends DataMapTableView {
                         return String.valueOf(persistent);
                     } else if (SCHEMA_TYPE.equals(bean.getName())) {
                         customDialogCellEditor.setType(CellValueType.SCHEMA_TYPE);
+                        enableDiaplayViewer(inputTable.isRepository());
                         return inputTable.isRepository() ? REPOSITORY : BULIT_IN;
                     } else if (SCHEMA_ID.equals(bean.getName())) {
                         customDialogCellEditor.setType(CellValueType.SCHEMA_ID);
@@ -334,6 +335,7 @@ public class InputDataMapTableView extends DataMapTableView {
                     previousValue = inputTable.isRepository();
                     inputTable.setRepository(REPOSITORY.equals(value));
                     showSchemaIDSetting(REPOSITORY.equals(value));
+                    enableDiaplayViewer(REPOSITORY.equals(value));
                 } else if (SCHEMA_ID.equals(bean.getName())) {
                     previousValue = inputTable.getId();
                     inputTable.setId(String.valueOf(value));

@@ -435,6 +435,7 @@ public class UIManager extends AbstractUIManager {
                 }
             }
 
+            dataMapTableView.enableDiaplayViewer(abstractDataMapTable.isRepository());
         }
 
         if (selectAllEntries && currentZone == Zone.VARS) {

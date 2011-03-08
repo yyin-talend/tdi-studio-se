@@ -1277,6 +1277,16 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
     }
 
     /**
+     * DOC ycbai Comment method "enableDiaplayViewer".
+     * 
+     * @param enable
+     */
+    public void enableDiaplayViewer(boolean isRepository) {
+        MetadataTableEditorView metadataEditorView = mapperManager.getUiManager().getMetadataEditorView(getZone());
+        metadataEditorView.getMainComposite().setEnabled(!isRepository);
+    }
+
+    /**
      * DOC ycbai Comment method "showSchemaIDSetting".
      * 
      * @param visible
@@ -2185,7 +2195,8 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
      */
     protected Color getBackgroundCellColor(TableViewerCreatorNotModifiable tableViewerCreator, Object element, int columnIndex) {
         ITableEntry entry = (ITableEntry) element;
-        TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
+        TableViewerCreatorColumnNotModifiable column = (TableViewerCreatorColumnNotModifiable) tableViewerCreator.getColumns()
+                .get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
             return expressionColorProvider.getBackgroundColor(entry.getProblems() == null ? true : false);
         } else if (column.getId().equals(PREVIEW_COLUMN)) {
@@ -2203,7 +2214,8 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
      */
     protected Color getForegroundCellColor(TableViewerCreatorNotModifiable tableViewerCreator, Object element, int columnIndex) {
         ITableEntry entry = (ITableEntry) element;
-        TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
+        TableViewerCreatorColumnNotModifiable column = (TableViewerCreatorColumnNotModifiable) tableViewerCreator.getColumns()
+                .get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
             return expressionColorProvider.getForegroundColor(entry.getProblems() == null ? true : false);
         }

@@ -242,8 +242,8 @@ public class MapperUI {
 
             public void shellClosed(ShellEvent e) {
                 if (mapperManager.isDataChanged() && !mapperManager.getUiManager().isCloseWithoutPrompt()) {
-                    boolean closeWindow = MessageDialog.openConfirm(mapperShellFinal, Messages
-                            .getString("MapperUI.CancelWithoutSaveModifications.Title"), //$NON-NLS-1$
+                    boolean closeWindow = MessageDialog.openConfirm(mapperShellFinal,
+                            Messages.getString("MapperUI.CancelWithoutSaveModifications.Title"), //$NON-NLS-1$
                             Messages.getString("MapperUI.CancelWithoutSaveModifications.Message")); //$NON-NLS-1$
                     if (!closeWindow) {
                         e.doit = false;
@@ -419,10 +419,10 @@ public class MapperUI {
 
         // List<DataMapTableView> inputsTablesView = uiManager.getInputsTablesView();
         // for (DataMapTableView table : inputsTablesView) {
-        //            
+        //
         // table.showTableGlobalMap(false);
         // table.showTableGlobalMap(true);
-        //            
+        //
         // // table.updateGridDataHeightForTableGlobalMap();
         // // table.resizeAtExpandedSize();
         // }
