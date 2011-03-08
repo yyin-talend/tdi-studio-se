@@ -123,7 +123,7 @@ import org.talend.repository.model.ExternalNodesFactory;
  * Component manager that read each information in a xml file with Emf. <br/>
  * $Id$
  */
-public class EmfComponent implements IComponent {
+public class EmfComponent extends AbstractComponent {
 
     private static Logger log = Logger.getLogger(EmfComponent.class);
 
@@ -2695,38 +2695,6 @@ public class EmfComponent implements IComponent {
 
     public void setPathSource(String pathSource) {
         this.pathSource = pathSource;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((this.getName() == null) ? 0 : this.getName().hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof EmfComponent)) {
-            return false;
-        }
-        final IComponent other = (IComponent) obj;
-        String thisName = this.getName();
-        String otherName = other.getName();
-        if (thisName == null) {
-            if (otherName != null) {
-                return false;
-            }
-        } else if (!thisName.equals(otherName)) {
-            return false;
-        }
-        return true;
     }
 
     private ArrayList<ECodePart> createCodePartList() {

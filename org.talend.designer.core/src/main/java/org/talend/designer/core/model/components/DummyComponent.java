@@ -20,7 +20,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.EComponentType;
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.general.ModuleNeeded;
@@ -38,7 +37,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 /**
  * DOC talend class global comment. Detailled comment
  */
-public class DummyComponent implements IComponent {
+public class DummyComponent extends AbstractComponent {
 
     protected ImageDescriptor icon32;
 
