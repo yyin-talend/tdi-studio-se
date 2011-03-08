@@ -92,6 +92,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
 		boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
 		
+		String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
+		boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
+		
     	String fieldSeparator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
     	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
     	String removeEmptyRowFlag =  ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
@@ -259,7 +262,7 @@ if(temp_<%=cid %>.length() > 0) {
 %><%=firstConnName %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
 <%
 					}else if(javaType == JavaTypesManager.DATE) { 
-						if(checkNum){
+						if(checkNum || checkDate){
 %><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>, false);
 <%
 						}else{
@@ -419,6 +422,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
 		boolean checkNum = (checkNumStr!=null&&!("").equals(checkNumStr))?("true").equals(checkNumStr):false; 
+		
+		String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
+		boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
 		
 		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
 		boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
@@ -762,7 +768,7 @@ routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
 						if(row<%=cid %>[<%=i %>].length() > 0) {
 	<%
 							if(javaType == JavaTypesManager.DATE) {
-								if(checkNum){
+								if(checkNum || checkDate){
 	%>
 								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>, false);
 	<%
