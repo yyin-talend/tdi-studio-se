@@ -468,6 +468,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		needRoot_<%=sourceName%>_<%=cid%> = false;
 		root_<%=sourceName %>_<%=cid %> = 
 			(org.dom4j.Element)doc_<%=cid %>.selectSingleNode("<%=branchNode.path %>");
+		if(root_<%=sourceName %>_<%=cid %>==null) {
+			System.err.println("warn:::the pre input source content is empty!");
+			<%generateToolByDom4j.generateCode(root,"root","doc");%>
+			root_<%=sourceName %>_<%=cid %> = (org.dom4j.Element)doc_<%=cid %>.selectSingleNode("<%=branchNode.path %>");
+		}
 		subTreeRootParent_<%=cid%>= root_<%=sourceName%>_<%=cid %>;
 	}else{
 		subTreeRootParent_<%=cid%>= root_<%=sourceName%>_<%=cid %>;
