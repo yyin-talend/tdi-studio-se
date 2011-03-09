@@ -27,5 +27,7 @@
 	}
 );
 
-context.start();
-Thread.sleep(3000);
+		 ContextStopper.getInstance(context).setTimeOut(1000)
+		  .setDetectForNewExchangeInterval(1000)
+		  .shutDownWhenAllExchangeComplete();
+		  context.start();

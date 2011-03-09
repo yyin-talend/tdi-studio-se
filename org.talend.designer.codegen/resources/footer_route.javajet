@@ -33,7 +33,7 @@
     
         int exitCode = <%=process.getName() %>Class.runJobInTOS(args);
          
-        System.exit(exitCode);
+  //      System.exit(exitCode);
     }    
    
  
