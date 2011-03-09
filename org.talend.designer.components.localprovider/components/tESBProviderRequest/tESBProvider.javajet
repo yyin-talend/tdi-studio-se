@@ -204,12 +204,16 @@ class ESBProvider_<%=cid%> implements
 			operationName = "invoke",
 			action = "http://talend.org/esb/service/job/invoke"
 		)
+<% if (isOneWay) { %>
+	@javax.jws.Oneway()
+<% } else { %>
 	@javax.jws.WebResult(
 			name = "jobOutput",
 			targetNamespace = "http://talend.org/esb/service/job",
 			// targetNamespace = "",
 			partName = "response"
 		)
+<% } %>
 	public javax.xml.transform.Source invoke(
 			@javax.jws.WebParam(
 					name = "jobInput",
@@ -230,13 +234,15 @@ class ESBProvider_<%=cid%> implements
 				messageHandler.invoke(requestDoc);
 
 			try {
+<% if (isOneWay) { %>
+				return null;
+<% } else { %>
 				if (messageExchange.isFault()) {
 					String faultString = messageExchange.getFaultMessage();
 					// System.out.println("fault: " + faultString);
 					
 					if (messageExchange.isBusinessFault()) {
 						org.dom4j.Document faultDoc = messageExchange.getBusinessFaultDetails();
-	
 						javax.xml.soap.SOAPFactory soapFactory =
 							javax.xml.soap.SOAPFactory.newInstance();
 						javax.xml.soap.SOAPFault soapFault =
@@ -266,6 +272,7 @@ class ESBProvider_<%=cid%> implements
 
 					return new org.dom4j.io.DocumentSource(responseDoc);
 				}
+<% } %>
 			} finally {
 				messageExchange.completeQueuedProcessing();
 			}

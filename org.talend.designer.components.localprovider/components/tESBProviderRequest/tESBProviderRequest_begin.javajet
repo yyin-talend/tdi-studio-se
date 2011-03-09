@@ -9,6 +9,9 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+
+	boolean isOneWay = (node.getProcess().getNodesOfType("tESBProviderFault").isEmpty()
+		&& node.getProcess().getNodesOfType("tESBProviderResponse").isEmpty());
 %>
 //*** ESB context initialization
 	final String endpointUrl = <%=ElementParameterParser.getValue(node, "__ESB_ENDPOINT__")%>;

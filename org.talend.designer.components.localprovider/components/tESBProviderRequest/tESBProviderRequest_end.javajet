@@ -9,12 +9,16 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode) codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+
+	boolean isOneWay = (node.getProcess().getNodesOfType("tESBProviderFault").isEmpty()
+		&& node.getProcess().getNodesOfType("tESBProviderResponse").isEmpty());
 %>
 		} catch (Throwable e) {
 			messagesExchange_<%=cid%>.serveFault("Talend job execution error", e);
 		} finally {
+<% if (!isOneWay) { %>
 			messagesExchange_<%=cid%>.release();
-
+<% } %>
 			// Exit from this loop is made by the configuring "Keep listening"
 			// parameter to false. Then we will have a break before.
 			if ("false".equals("<%=ElementParameterParser.getValue(node, "__KEEPLISTENING__")%>")) {
