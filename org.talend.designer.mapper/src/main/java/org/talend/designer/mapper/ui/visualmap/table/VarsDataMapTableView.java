@@ -45,6 +45,7 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.ui.metadata.celleditor.JavaTypeComboValueAdapter;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
@@ -381,6 +382,9 @@ public class VarsDataMapTableView extends DataMapTableView {
                 String type = null;
                 if (currentLanguage.getCodeLanguage() == ECodeLanguage.JAVA) {
                     type = JavaTypesManager.STRING.getId();
+                } else {
+                    // fix bug 0018996 ,when add a var row,there is no default type,this bug exsit for long time
+                    type = PerlTypesManager.STRING;
                 }
 
                 mapperManager.addNewVarEntry(VarsDataMapTableView.this, varName, indexInsert, type); //$NON-NLS-1$
