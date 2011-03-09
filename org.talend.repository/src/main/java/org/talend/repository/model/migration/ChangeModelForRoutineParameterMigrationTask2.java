@@ -95,45 +95,36 @@ public class ChangeModelForRoutineParameterMigrationTask2 extends AbstractJobMig
             }
             List<RoutinesParameterType> oldList = Collections.EMPTY_LIST;
             ProcessType processType = getProcessType(item);
-            if (processType.getParameters().getRoutinesParameter() == null) {
-                ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
-                processType.setParameters(parameterType);
-                if (item instanceof ProcessItem) {
-                    routinesToAdd.addAll(possibleRoutines);
-                    possibleRoutines.clear();
-                }
-            } else {
-                oldList = new ArrayList<RoutinesParameterType>(processType.getParameters().getRoutinesParameter());
-                if (oldList.isEmpty() && item instanceof ProcessItem) {
-                    routinesToAdd.addAll(possibleRoutines);
-                    possibleRoutines.clear();
-                }
-                processType.getParameters().getRoutinesParameter().clear();
-            }
-            List<RoutinesParameterType> routinesDependencies = (List<RoutinesParameterType>) processType.getParameters()
-                    .getRoutinesParameter();
-
-            if (!possibleRoutines.isEmpty()) {
-                // only check the part below in case there is any user routine.
-                // check possible routines to setup in process
-                for (ElementParameterType param : (List<ElementParameterType>) processType.getParameters().getElementParameter()) {
-                    for (String routine : possibleRoutines) {
-                        if (!routinesToAdd.contains(routine) && param.getValue() != null
-                                && param.getValue().contains(routine + additionalString)) {
-                            routinesToAdd.add(routine);
-                        }
-                        for (ElementValueType elementValue : (List<ElementValueType>) param.getElementValue()) {
-                            if (!routinesToAdd.contains(routine) && elementValue.getValue() != null
-                                    && elementValue.getValue().contains(routine + additionalString)) {
-                                routinesToAdd.add(routine);
-                            }
-                        }
+            if (null != processType) {
+                if (processType.getParameters() != null && processType.getParameters().getRoutinesParameter() == null) {
+                    ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
+                    processType.setParameters(parameterType);
+                    if (item instanceof ProcessItem) {
+                        routinesToAdd.addAll(possibleRoutines);
+                        possibleRoutines.clear();
                     }
+                } else {
+                    if (processType.getParameters() == null) {
+                        processType.setParameters(TalendFileFactory.eINSTANCE.createParametersType());
+                    }
+                    oldList = new ArrayList<RoutinesParameterType>(processType.getParameters().getRoutinesParameter());
+                    if (oldList.isEmpty() && item instanceof ProcessItem) {
+                        routinesToAdd.addAll(possibleRoutines);
+                        possibleRoutines.clear();
+                    }
+                    processType.getParameters().getRoutinesParameter().clear();
                 }
+                if (processType.getRoutinesDependencies() != null && !processType.getRoutinesDependencies().isEmpty()) {
+                    processType.getRoutinesDependencies().clear();
+                }
+                List<RoutinesParameterType> routinesDependencies = (List<RoutinesParameterType>) processType.getParameters()
+                        .getRoutinesParameter();
 
-                // check possible routines to setup in nodes
-                for (NodeType node : ((List<NodeType>) processType.getNode())) {
-                    for (ElementParameterType param : (List<ElementParameterType>) node.getElementParameter()) {
+                if (!possibleRoutines.isEmpty()) {
+                    // only check the part below in case there is any user routine.
+                    // check possible routines to setup in process
+                    for (ElementParameterType param : (List<ElementParameterType>) processType.getParameters()
+                            .getElementParameter()) {
                         for (String routine : possibleRoutines) {
                             if (!routinesToAdd.contains(routine) && param.getValue() != null
                                     && param.getValue().contains(routine + additionalString)) {
@@ -147,44 +138,62 @@ public class ChangeModelForRoutineParameterMigrationTask2 extends AbstractJobMig
                             }
                         }
                     }
-                }
 
-                // check possible routines to setup in connections
-                for (ConnectionType connection : ((List<ConnectionType>) processType.getConnection())) {
-                    for (ElementParameterType param : (List<ElementParameterType>) connection.getElementParameter()) {
-                        for (String routine : possibleRoutines) {
-                            if (!routinesToAdd.contains(routine) && param.getValue() != null
-                                    && param.getValue().contains(routine + additionalString)) {
-                                routinesToAdd.add(routine);
-                            }
-                            for (ElementValueType elementValue : (List<ElementValueType>) param.getElementValue()) {
-                                if (!routinesToAdd.contains(routine) && elementValue.getValue() != null
-                                        && elementValue.getValue().contains(routine + additionalString)) {
+                    // check possible routines to setup in nodes
+                    for (NodeType node : ((List<NodeType>) processType.getNode())) {
+                        for (ElementParameterType param : (List<ElementParameterType>) node.getElementParameter()) {
+                            for (String routine : possibleRoutines) {
+                                if (!routinesToAdd.contains(routine) && param.getValue() != null
+                                        && param.getValue().contains(routine + additionalString)) {
                                     routinesToAdd.add(routine);
+                                }
+                                for (ElementValueType elementValue : (List<ElementValueType>) param.getElementValue()) {
+                                    if (!routinesToAdd.contains(routine) && elementValue.getValue() != null
+                                            && elementValue.getValue().contains(routine + additionalString)) {
+                                        routinesToAdd.add(routine);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // check possible routines to setup in connections
+                    for (ConnectionType connection : ((List<ConnectionType>) processType.getConnection())) {
+                        for (ElementParameterType param : (List<ElementParameterType>) connection.getElementParameter()) {
+                            for (String routine : possibleRoutines) {
+                                if (!routinesToAdd.contains(routine) && param.getValue() != null
+                                        && param.getValue().contains(routine + additionalString)) {
+                                    routinesToAdd.add(routine);
+                                }
+                                for (ElementValueType elementValue : (List<ElementValueType>) param.getElementValue()) {
+                                    if (!routinesToAdd.contains(routine) && elementValue.getValue() != null
+                                            && elementValue.getValue().contains(routine + additionalString)) {
+                                        routinesToAdd.add(routine);
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            // just in case some routine dependencies exist before but are lost... (migration from 4.1.1 or 4.1.2)
-            for (RoutinesParameterType routine : oldList) {
-                if (!routinesToAdd.contains(routine.getName())) {
-                    routinesDependencies.add(routine);
+                // just in case some routine dependencies exist before but are lost... (migration from 4.1.1 or 4.1.2)
+                for (RoutinesParameterType routine : oldList) {
+                    if (!routinesToAdd.contains(routine.getName())) {
+                        routinesDependencies.add(routine);
+                    }
                 }
-            }
 
-            for (IRepositoryViewObject object : routines) {
-                if (routinesToAdd.contains(object.getLabel())) {
-                    RoutinesParameterType routinesParameterType = TalendFileFactory.eINSTANCE.createRoutinesParameterType();
-                    routinesParameterType.setId(object.getId());
-                    routinesParameterType.setName(object.getLabel());
-                    routinesDependencies.add(routinesParameterType);
+                for (IRepositoryViewObject object : routines) {
+                    if (routinesToAdd.contains(object.getLabel())) {
+                        RoutinesParameterType routinesParameterType = TalendFileFactory.eINSTANCE.createRoutinesParameterType();
+                        routinesParameterType.setId(object.getId());
+                        routinesParameterType.setName(object.getLabel());
+                        routinesDependencies.add(routinesParameterType);
+                    }
                 }
-            }
 
-            factory.save(item, true);
+                factory.save(item, true);
+            }
             return ExecutionResult.SUCCESS_NO_ALERT;
 
         } catch (Exception e) {
