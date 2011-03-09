@@ -46,6 +46,9 @@
 	String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 	String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 	
+	String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
+	boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
+	
 	List<Map<String, String>> schemas_o = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
 	
 	List<Map<String, String>> schemas = new java.util.ArrayList<Map<String, String>>();
@@ -372,9 +375,16 @@ String key_<%=schema.get("SCHEMA") %>_<%=schema.get("PARENT_ROW") %>_<%=cid %> =
 					<%=conn.getName()%>.<%=column.getLabel()%> = <%=isKeyColumn ? "key_"+conn.getName()+"_"+parent+"_"+cid : "fields["+i+"]" %>;
 <%
 					} else if (javaType == JavaTypesManager.DATE) {
+						if(checkDate) {
+%>
+					<%=conn.getName()%>.<%=column.getLabel()%> = ParserUtils.parseTo_Date(<%=isKeyColumn ? "key_"+conn.getName()+"_"+parent+"_"+cid : "fields["+i+"]" %>, <%=datePattern%>,false);
+<%						
+						} else {
 %>
 					<%=conn.getName()%>.<%=column.getLabel()%> = ParserUtils.parseTo_Date(<%=isKeyColumn ? "key_"+conn.getName()+"_"+parent+"_"+cid : "fields["+i+"]" %>, <%=datePattern%>);
 <%
+						}
+
 					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {
 %>
 					<%=conn.getName()%>.<%=column.getLabel()%> = <%=isKeyColumn ? "key_"+conn.getName()+"_"+parent+"_"+cid : "fields["+i+"]" %>.getBytes(<%=encoding%>);
