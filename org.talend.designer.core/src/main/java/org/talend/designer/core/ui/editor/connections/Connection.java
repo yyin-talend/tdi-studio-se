@@ -1072,6 +1072,14 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     }
 
+    public String getRouteConnectionType() {
+        if (lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
+            return (String) getPropertyValue(EParameterName.ROUTETYPE.getName());
+        } else {
+            return null;
+        }
+    }
+
     public boolean isReadOnly() {
         return this.readOnly;
     }
