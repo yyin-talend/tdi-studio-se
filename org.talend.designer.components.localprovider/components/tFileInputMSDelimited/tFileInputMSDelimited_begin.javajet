@@ -67,6 +67,9 @@ boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true")
 		
 boolean trimAll = ("true").equals(ElementParameterParser.getValue(node,"__TRIMALL__"));
 
+String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
+boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
+
 boolean useMulSeprators = "true".equals(ElementParameterParser.getValue(node,"__USE_MULTISEPARATORS__"));
 
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
@@ -256,8 +259,14 @@ while (fid_<%=cid %>.nextRecord()) {
 			<%=connection %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
 <%
 					}else if(javaType == JavaTypesManager.DATE) { 
-%>			<%=connection %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+						if(checkDate) {
+%>			<%=connection %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>,false);
 <%
+						} else {
+%>
+			<%=connection %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+<%
+						}
 					} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 %>
 			<%=connection %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
@@ -627,8 +636,14 @@ if(useMulSeprators==false){
 			<%=connection %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
 <%
 					}else if(javaType == JavaTypesManager.DATE) { 
-%>			<%=connection %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+						if(checkDate) {
+%>			<%=connection %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>,false);
 <%
+						} else {
+%>
+			<%=connection %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+<%
+						}
 					} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 %>
 			<%=connection %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
