@@ -44,6 +44,9 @@ boolean ignoreOrder = (ignoreOrderStr!=null&&!("").equals(ignoreOrderStr))?("tru
 
 boolean trimAll = ("true").equals(ElementParameterParser.getValue(node,"__TRIMALL__"));
 
+String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
+boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
+
 List< ? extends IConnection> connections = node.getOutgoingSortedConnections();
 
 if(connections!=null && connections.size()>0){
@@ -480,9 +483,15 @@ looper_<%=cid%>.parse(<%=filename %>);
 		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>;
 <% 
 							} else if (javaType == JavaTypesManager.DATE) {
+								if(checkDate) {
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%=cid %>, <%= patternValue %>);
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%=cid %>, <%= patternValue %>,false);
 <%  
+								} else {
+%>			
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%=cid %>, <%= patternValue %>);
+<%
+								}
 							} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 %>							
 		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>.getBytes(<%=encoding %>);
