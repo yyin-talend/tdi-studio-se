@@ -749,11 +749,11 @@ boolean isNewElememt = false;
 <%
 
 OutputTreeNode loop = (OutputTreeNode)generateToolByDom4j.getLoopNode(root);
-if(loop==null){
-	System.out.println("Loop is empty");
-}else {
+//if(loop==null){
+//	System.out.println("Loop is empty");
+//}else {
 	generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
-}
+//}
 %>
 }
 	
