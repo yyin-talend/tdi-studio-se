@@ -30,6 +30,9 @@ String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__D
 
 boolean trim = ("true").equals(ElementParameterParser.getValue(node, "__TRIM__"));
 
+String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
+boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
+
 String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
 boolean checkNum = (checkNumStr!=null&&!("").equals(checkNumStr))?("true").equals(checkNumStr):false; 
 
@@ -151,7 +154,7 @@ IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 		<%=outConn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
 <%
 			}else if(javaType == JavaTypesManager.DATE) {
-				if(checkNum){
+				if(checkNum || checkDate){
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>, false);
 <%
