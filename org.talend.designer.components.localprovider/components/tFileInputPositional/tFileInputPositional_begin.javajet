@@ -73,6 +73,9 @@
     		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
     		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);    		  
 			
+			String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
+			boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
+			
 			boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
 			
     		if(("").equals(header)){
@@ -401,9 +404,15 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>.readRecord()) {
 	if(column_<%=cid %>.length() > 0) {
 <%
 						if(javaType == JavaTypesManager.DATE) {
+							if(checkDate) {
+%>
+		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(column_<%=cid %>, <%= patternValue %>,false);
+<%
+							} else {
 %>
 		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(column_<%=cid %>, <%= patternValue %>);
 <%
+							}
 						}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 %>
 		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(column_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
@@ -549,9 +558,15 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>.readRecord()) {
 	if(columnValue<%=cid %>[<%=valueN%>].length() > 0) {
 <%
 							if(javaType == JavaTypesManager.DATE) {
+								if(checkDate) {
 %>	
-		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(columnValue<%=cid %>[<%=valueN%>], <%= patternValue %>);
+		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(columnValue<%=cid %>[<%=valueN%>], <%= patternValue %>,false);
 <%
+								} else {
+%>
+		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(columnValue<%=cid %>[<%=valueN%>], <%= patternValue %>);	
+<%
+								}
 							}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 %>
 		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(columnValue<%=cid %>[<%=valueN%>], <%= thousandsSeparator %>, <%= decimalSeparator %>));
