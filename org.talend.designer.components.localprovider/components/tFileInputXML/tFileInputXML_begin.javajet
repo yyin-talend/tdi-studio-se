@@ -45,6 +45,9 @@ boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSe
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 
+String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
+boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
+
 String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
 %>
 int nb_line_<%=cid%> = 0;
@@ -827,9 +830,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>;
 <%
 								} else if (javaType == JavaTypesManager.DATE) {
+									if(checkDate) {
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%=cid %>, <%= patternValue %>,false);
+<%  
+									} else {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%=cid %>, <%= patternValue %>);
-<%  
+<%										
+									}
 								} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 %>							
 		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>.getBytes(<%=encoding %>);
