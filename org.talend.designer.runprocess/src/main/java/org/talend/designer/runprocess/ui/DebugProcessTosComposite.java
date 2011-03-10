@@ -557,7 +557,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             return;
         }
         menu.setVisible(false);
-        if (itemDropDown.getData().equals(ProcessView.PAUSE_ID) && isRuning) {
+        if (itemDropDown.getData().equals(ProcessView.PAUSE_ID)) {
             pause(ProcessView.PAUSE_ID);
         } else if (itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
             pause(ProcessView.RESUME_ID);
