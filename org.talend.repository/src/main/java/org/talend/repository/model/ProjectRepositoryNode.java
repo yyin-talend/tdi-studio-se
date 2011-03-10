@@ -180,6 +180,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             case ROUTINES:
                 this.routineNode = null;
                 break;
+            case BEANS:
+                this.beanNode = null;
+                break;
             case SNIPPETS:
                 this.snippetsNode = null;
                 break;
@@ -337,12 +340,12 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
             codeNode = new StableRepositoryNode(this,
                     Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON); //$NON-NLS-1$
-            codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
+            codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.BEANS);
             nodes.add(codeNode);
 
             beanNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            beanNode.setProperties(EProperties.LABEL, ERepositoryObjectType.BEAN);
-            beanNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.BEAN);
+            beanNode.setProperties(EProperties.LABEL, ERepositoryObjectType.BEANS);
+            beanNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.BEANS);
             codeNode.getChildren().add(beanNode);
 
         } else {
@@ -637,6 +640,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 convert(newProject, factory.getJoblets(newProject, true), jobletNode, ERepositoryObjectType.JOBLET, recBinNode);
             } else if (parent == routineNode) {
                 convert(newProject, factory.getRoutine(newProject, true), routineNode, ERepositoryObjectType.ROUTINES, recBinNode);
+            } else if (parent == beanNode) {
+                convert(newProject, factory.getBean(newProject, true), beanNode, ERepositoryObjectType.BEANS, recBinNode);
             } else if (parent == jobscriptsNode) {
                 convert(newProject, factory.getJobScripts(newProject, true), jobscriptsNode, ERepositoryObjectType.JOB_SCRIPT,
                         recBinNode);
@@ -1968,6 +1973,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             return this.contextNode;
         case ROUTINES:
             return this.routineNode;
+        case BEANS:
+            return this.beanNode;
         case JOB_SCRIPT:
             return this.jobscriptsNode;
         case SNIPPETS:

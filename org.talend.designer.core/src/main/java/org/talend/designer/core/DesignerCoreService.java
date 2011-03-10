@@ -91,6 +91,7 @@ import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.ui.actions.routines.CreateRoutineAction;
 
 /**
  * Detailled comment <br/>
@@ -304,6 +305,15 @@ public class DesignerCoreService implements IDesignerCoreService {
             return service.getCreateProcessAction(isToolbar);
         }
         return new CreateProcess(isToolbar);
+    }
+
+    public IAction getCreateBeanAction(boolean isToolbar) {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            return service.getCreateBeanAction(isToolbar);
+        }
+        return new CreateRoutineAction(isToolbar);
     }
 
     public List<PaletteEntry> createJobletEtnry() {

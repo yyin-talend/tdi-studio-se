@@ -160,8 +160,11 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     private void setName() {
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
-        setTitleImage(labelProvider.getImage(rEditorInput.getRepositoryNode().getObject()));
-        setPartName(labelProvider.getText(rEditorInput.getRepositoryNode().getObject()));
+        RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
+        if (repositoryNode != null) {
+            setTitleImage(labelProvider.getImage(repositoryNode.getObject()));
+            setPartName(labelProvider.getText(repositoryNode.getObject()));
+        }
     }
 
     /*
@@ -174,7 +177,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         if (item != null) {
             IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
             ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
-            return labelProvider.getImage(rEditorInput.getRepositoryNode().getObject());
+            RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
+            if (repositoryNode != null) {
+                return labelProvider.getImage(repositoryNode.getObject());
+            }
         }
         return super.getTitleImage();
     }

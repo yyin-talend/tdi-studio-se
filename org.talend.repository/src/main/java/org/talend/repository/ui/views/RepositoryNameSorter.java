@@ -60,6 +60,8 @@ public class RepositoryNameSorter extends ViewerSorter {
                 return 10;
             case ROUTINES:
                 return 15;
+            case BEANS:
+                return 16;
             case METADATA:
                 return 20;
             case METADATA_CONNECTIONS:

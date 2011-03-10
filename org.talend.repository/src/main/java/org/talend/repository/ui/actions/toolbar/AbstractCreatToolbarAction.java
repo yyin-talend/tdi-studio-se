@@ -231,6 +231,7 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
         addSeparator(menu);
 
         if (repositoryView.containsRepositoryType(ERepositoryObjectType.ROUTINES)) {
+            // addToMenu(menu, CorePlugin.getDefault().getDesignerCoreService().getCreateBeanAction(true), -1);
             final CreateRoutineAction createRoutineAction = new CreateRoutineAction(true);
             createRoutineAction.setWorkbenchPart(repositoryView);
             addToMenu(menu, createRoutineAction, -1);

@@ -37,6 +37,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.JobInfo;
+import org.talend.core.model.properties.BeanItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
@@ -89,6 +90,35 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
             // e.printStackTrace();
             ExceptionHandler.process(e);
         }
+    }
+
+    public void syncAllBeans() throws SystemException {
+        for (IRepositoryViewObject routine : getBeans()) {
+            BeanItem beanItem = (BeanItem) routine.getProperty().getItem();
+            // syncRoutine(routineItem, true);
+            syncBean(beanItem, true);
+        }
+
+        // try {
+        // ILibrariesService jms = CorePlugin.getDefault().getLibrariesService();
+        // List<URL> urls = jms.getTalendBeansFolder();
+        //
+        // for (URL systemModuleURL : urls) {
+        // if (systemModuleURL != null) {
+        // String fileName = systemModuleURL.getPath();
+        //                    if (fileName.startsWith("/")) { //$NON-NLS-1$
+        // fileName = fileName.substring(1);
+        // }
+        // File f = new File(systemModuleURL.getPath());
+        // if (f.isDirectory()) {
+        // syncModule(f.listFiles());
+        // }
+        // }
+        // }
+        // } catch (IOException e) {
+        // // e.printStackTrace();
+        // ExceptionHandler.process(e);
+        // }
     }
 
     /*
@@ -147,6 +177,60 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.codegen.IRoutineSynchronizer#syncRoutine(org.talend .core.model.properties.RoutineItem)
+     */
+    @Override
+    protected void doSyncBean(BeanItem beanItem, boolean copyToTemp) throws SystemException {
+        FileOutputStream fos = null;
+        try {
+            IFile file = getBeanFile(beanItem);
+            if (beanItem.getProperty().getModificationDate() != null) {
+                long modificationItemDate = beanItem.getProperty().getModificationDate().getTime();
+                long modificationFileDate = file.getModificationStamp();
+                if (modificationItemDate <= modificationFileDate) {
+                    return;
+                }
+            } else {
+                beanItem.getProperty().setModificationDate(new Date());
+            }
+
+            if (copyToTemp) {
+                String beanContent = new String(beanItem.getContent().getInnerContent());
+                // see 14713
+                String version = CodeGeneratorActivator.getDefault().getVersion();
+                if (beanContent.contains("%GENERATED_LICENSE%")) { //$NON-NLS-1$
+                    IService service = GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+                    if (service instanceof AbstractBrandingService) {
+                        String routineHeader = ((AbstractBrandingService) service).getRoutineLicenseHeader(version);
+                        beanContent = beanContent.replace("%GENERATED_LICENSE%", routineHeader); //$NON-NLS-1$
+                    }
+                }// end
+                String label = beanItem.getProperty().getLabel();
+                if (!label.equals(ITalendSynchronizer.BEAN_TEMPLATE) && beanContent != null) {
+                    beanContent = beanContent.replaceAll(ITalendSynchronizer.BEAN_TEMPLATE, label);
+                    File f = file.getLocation().toFile();
+                    fos = new FileOutputStream(f);
+                    fos.write(beanContent.getBytes());
+                    fos.close();
+                }
+            }
+            file.refreshLocal(1, null);
+        } catch (CoreException e) {
+            throw new SystemException(e);
+        } catch (IOException e) {
+            throw new SystemException(e);
+        } finally {
+            try {
+                fos.close();
+            } catch (Exception e) {
+                // ignore me even if i'm null
+            }
+        }
+    }
+
     /**
      * add project name in package declaration.
      * 
@@ -182,6 +266,25 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
             }
             IFile file = javaProject.getFile(routinesFolder + "/" //$NON-NLS-1$
                     + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
+            return file;
+        } catch (CoreException e) {
+            throw new SystemException(e);
+        }
+    }
+
+    private IFile getBeanFile(BeanItem beanItem) throws SystemException {
+        try {
+            IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
+            ProjectManager projectManager = ProjectManager.getInstance();
+            org.talend.core.model.properties.Project project = projectManager.getProject(beanItem);
+            initBeanFolder(javaProject, project);
+            String beansFolder = getBeansFolder(null);
+            // if (!beanItem.isBuiltIn()) {
+            beansFolder = getBeansFolder(project);
+            // }
+            IFile file = javaProject.getFile(beansFolder + "/" //$NON-NLS-1$
+                    + beanItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
             return file;
         } catch (CoreException e) {
             throw new SystemException(e);
@@ -243,6 +346,13 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         // }
     }
 
+    private void initBeanFolder(IProject javaProject, org.talend.core.model.properties.Project project) throws CoreException {
+        IFolder rep = javaProject.getFolder(getBeansFolder(null));
+        if (!rep.exists()) {
+            rep.create(true, true, null);
+        }
+    }
+
     private String getRoutinesFolder(org.talend.core.model.properties.Project project) {
         String routinesPath = JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
                 + JavaUtils.JAVA_ROUTINES_DIRECTORY;
@@ -250,6 +360,12 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         // // add project name in package path
         // routinesPath += "/" + project.getTechnicalLabel().toLowerCase();
         // }
+        return routinesPath;
+    }
+
+    private String getBeansFolder(org.talend.core.model.properties.Project project) {
+        String routinesPath = JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
+                + JavaUtils.JAVA_BEANS_DIRECTORY;
         return routinesPath;
     }
 
@@ -317,6 +433,8 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
             return getRoutineFile((RoutineItem) item);
         } else if (item instanceof ProcessItem) {
             return getProcessFile((ProcessItem) item);
+        } else if (item instanceof BeanItem) {
+            return getBeanFile((BeanItem) item);
         }
         return null;
     }
@@ -342,11 +460,48 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         routineItem.getContent().setInnerContent(routineContent.getBytes());
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * qli modified to fix the bug 5400 and 6185.
+     * 
+     * @seeorg.talend.designer.codegen.AbstractRoutineSynchronizer#renameRoutineClass(org.talend.core.model.properties.
+     * RoutineItem, java.lang.String)
+     */
+    @Override
+    public void renameBeanClass(BeanItem beanItem) {
+        if (beanItem == null) {
+            return;
+        }
+        String routineContent = new String(beanItem.getContent().getInnerContent());
+        String label = beanItem.getProperty().getLabel();
+        //
+        String regexp = "public(\\s)+class(\\s)+\\w+(\\s)+\\{";//$NON-NLS-1$
+        routineContent = routineContent.replaceFirst(regexp, "public class " + label + " {");//$NON-NLS-1$//$NON-NLS-2$
+        beanItem.getContent().setInnerContent(routineContent.getBytes());
+    }
+
     public void deleteRoutinefile(IRepositoryViewObject objToDelete) {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
             IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$ //$NON-NLS-2$
+                    + objToDelete.getLabel() + JavaUtils.JAVA_EXTENSION);
+            /*
+             * File f = file.getLocation().toFile(); f.delete();
+             */
+            file.delete(true, null);
+        } catch (CoreException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteBeanfile(IRepositoryViewObject objToDelete) {
+        try {
+            IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_BEANS_DIRECTORY + "/" //$NON-NLS-1$ //$NON-NLS-2$
                     + objToDelete.getLabel() + JavaUtils.JAVA_EXTENSION);
             /*
              * File f = file.getLocation().toFile(); f.delete();
