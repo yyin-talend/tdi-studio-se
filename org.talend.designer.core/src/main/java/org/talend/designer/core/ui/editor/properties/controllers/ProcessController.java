@@ -60,7 +60,10 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
+import org.talend.repository.ui.dialog.UseDynamicJobSelectionDialog;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -69,6 +72,10 @@ import org.talend.repository.ui.dialog.RepositoryReviewDialog;
  * 
  */
 public class ProcessController extends AbstractElementPropertySectionController {
+
+    private static final String COMMA = ";";
+
+    boolean isSelectUseDynamic = false;
 
     public ProcessController(IDynamicProperty dp) {
         super(dp);
@@ -100,6 +107,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
         if (elem instanceof Node) {
             labelText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
+
         addDragAndDropTarget(labelText);
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
@@ -166,14 +174,19 @@ public class ProcessController extends AbstractElementPropertySectionController 
         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
             addVersionCombo = PerlResourcesHelper.USE_VERSIONING;
         }
+        // feature 19312
+        isSelectUseDynamic = (Boolean) param.getElement().getElementParameter(EParameterName.USE_DYNAMIC_JOB.getName())
+                .getValue();
         Control lastControlUsed = btn;
         if (addVersionCombo) {
-            lastControlUsed = addJobVersionCombo(subComposite, param.getChildParameters().get(
-                    EParameterName.PROCESS_TYPE_VERSION.getName()), lastControlUsed, numInRow + 1, nbInRow, top);
+            lastControlUsed = addJobVersionCombo(subComposite,
+                    param.getChildParameters().get(EParameterName.PROCESS_TYPE_VERSION.getName()), lastControlUsed, numInRow + 1,
+                    nbInRow, top);
         }
-
-        addContextCombo(subComposite, param.getChildParameters().get(EParameterName.PROCESS_TYPE_CONTEXT.getName()),
-                lastControlUsed, numInRow + 1, nbInRow, top);
+        if (!isSelectUseDynamic) {
+            addContextCombo(subComposite, param.getChildParameters().get(EParameterName.PROCESS_TYPE_CONTEXT.getName()),
+                    lastControlUsed, numInRow + 1, nbInRow, top);
+        }
         dynamicProperty.setCurRowSize(Math.max(initialSize.y, btnSize.y) + ITabbedPropertyConstants.VSPACE);
         return btn;
     }
@@ -223,6 +236,10 @@ public class ProcessController extends AbstractElementPropertySectionController 
         combo.setData(PARAMETER_NAME, param.getName());
         if (elem instanceof Node) {
             combo.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
+            // feature 19312
+            if (isSelectUseDynamic) {
+                combo.setEnabled(false);
+            }
         }
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
@@ -415,21 +432,53 @@ public class ProcessController extends AbstractElementPropertySectionController 
             Node runJobNode = (Node) elem;
             procssId = runJobNode.getProcess().getId();
         }
-        RepositoryReviewDialog dialog = new RepositoryReviewDialog((button).getShell(), ERepositoryObjectType.PROCESS, procssId);
+        // feature 19312
+        boolean isSelectUseDynamic = (Boolean) elem.getElementParameter(EParameterName.USE_DYNAMIC_JOB.getName()).getValue();
+        if (isSelectUseDynamic) {
+            UseDynamicJobSelectionDialog usedialog = new UseDynamicJobSelectionDialog((button).getShell(),
+                    ERepositoryObjectType.PROCESS, procssId, isSelectUseDynamic);
+            // open the tree dialog and selected job if Checked
+            selectJobNodeIfChecked(button, usedialog);
 
-        // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to
-        // open it on previous selected job if exists
-        selectJobNodeIfExists(button, dialog);
+            if (usedialog.open() == UseDynamicJobSelectionDialog.OK) {
+                List<RepositoryNode> repositoryNodeList = usedialog.getRepositoryNodes();
+                StringBuffer ids = new StringBuffer();
+                String paramName = (String) button.getData(PARAMETER_NAME);
 
-        if (dialog.open() == RepositoryReviewDialog.OK) {
-            IRepositoryViewObject repositoryObject = dialog.getResult().getObject();
-            final Item item = repositoryObject.getProperty().getItem();
-            String id = item.getProperty().getId();
+                if (repositoryNodeList != null && repositoryNodeList.size() > 0) {
+                    for (int i = 0; i < repositoryNodeList.size(); i++) {
+                        RepositoryNode node = repositoryNodeList.get(i);
+                        IRepositoryViewObject repositoryViewObject = node.getObject();
+                        final Item item = repositoryViewObject.getProperty().getItem();
+                        String id = item.getProperty().getId();
+                        if (i > 0) {
+                            ids.append(ProcessController.COMMA);
+                        }
+                        ids.append(id);
+                    }
+                }
+                return new PropertyChangeCommand(elem, paramName, ids.toString());
+            }
+            return null;
+        } else {
+            RepositoryReviewDialog dialog = new RepositoryReviewDialog((button).getShell(), ERepositoryObjectType.PROCESS,
+                    procssId);
 
-            String paramName = (String) button.getData(PARAMETER_NAME);
-            return new PropertyChangeCommand(elem, paramName, id);
+            // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful
+            // to
+            // open it on previous selected job if exists
+            selectJobNodeIfExists(button, dialog);
+
+            if (dialog.open() == RepositoryReviewDialog.OK) {
+                IRepositoryViewObject repositoryObject = dialog.getResult().getObject();
+                final Item item = repositoryObject.getProperty().getItem();
+                String id = item.getProperty().getId();
+
+                String paramName = (String) button.getData(PARAMETER_NAME);
+                return new PropertyChangeCommand(elem, paramName, id);
+            }
+            return null;
         }
-        return null;
     }
 
     /**
@@ -451,6 +500,38 @@ public class ProcessController extends AbstractElementPropertySectionController 
                     String jobName = processItem.getProperty().getLabel();
                     // expand the tree node and reveal it
                     dialog.setSelectedNodeName(jobName);
+                }
+            }
+        } catch (Throwable e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    /**
+     * DOC yhch Comment method "selectJobNodeIfChecked".
+     * 
+     * @param button
+     * @param dialog
+     */
+    private void selectJobNodeIfChecked(Button button, UseDynamicJobSelectionDialog dialog) {
+        try {
+            if (elem != null && elem instanceof Node) {
+                Node runJobNode = (Node) elem;
+                String paramName = (String) button.getData(PARAMETER_NAME);
+                String jobIds = (String) runJobNode.getPropertyValue(paramName); // .getElementParameter(name).getValue();
+                if (StringUtils.isNotEmpty(jobIds)) {
+                    String[] jobsArr = jobIds.split(ProcessController.COMMA);
+                    List<RepositoryNode> repositoryNodeList = new ArrayList<RepositoryNode>();
+                    for (String id : jobsArr) {
+                        if (StringUtils.isNotEmpty(id)) {
+                            // if user have selected jobs
+                            RepositoryNode node = RepositoryNodeUtilities.getRepositoryNode(id);
+                            repositoryNodeList.add(node);
+                        }
+                    }
+                    if (repositoryNodeList != null || repositoryNodeList.size() != 0) {
+                        dialog.setRepositoryNodes(repositoryNodeList);
+                    }
                 }
             }
         } catch (Throwable e) {
@@ -596,39 +677,50 @@ public class ProcessController extends AbstractElementPropertySectionController 
 
         IElementParameter jobNameParam = processParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
 
-        final String jobId = (String) jobNameParam.getValue();
+        // feature 19312
         Item item = null;
+        StringBuffer labels = new StringBuffer("");
+        List<IRepositoryViewObject> allVersion = new ArrayList<IRepositoryViewObject>();
+        final String strJobId = (String) jobNameParam.getValue();
+        String[] strJobIds = strJobId.split(ProcessController.COMMA);
+        for (int i = 0; i < strJobIds.length; i++) {
+            String id = strJobIds[i];
+            if (StringUtils.isNotEmpty(id)) {
+                allVersion = ProcessorUtilities.getAllVersionObjectById(id);
 
-        List<IRepositoryViewObject> allVersion = ProcessorUtilities.getAllVersionObjectById(jobId);
-
-        // IRepositoryObject lastVersionObject = null;
-        String label = null;
-        if (allVersion != null) {
-            String oldVersion = null;
-            for (IRepositoryViewObject obj : allVersion) {
-                String version = obj.getVersion();
-                if (oldVersion == null) {
-                    oldVersion = version;
+                // IRepositoryObject lastVersionObject = null;
+                String label = null;
+                if (allVersion != null) {
+                    String oldVersion = null;
+                    for (IRepositoryViewObject obj : allVersion) {
+                        String version = obj.getVersion();
+                        if (oldVersion == null) {
+                            oldVersion = version;
+                        }
+                        if (VersionUtils.compareTo(version, oldVersion) >= 0) {
+                            item = obj.getProperty().getItem();
+                            // lastVersionObject = obj;
+                        }
+                        oldVersion = version;
+                        versionNameList.add(version);
+                        versionValueList.add(version);
+                    }
+                    label = item.getProperty().getLabel();
+                    if (i > 0) {
+                        labels.append(ProcessController.COMMA);
+                    }
+                    labels.append(label);
+                    // IPath path = RepositoryNodeUtilities.getPath(lastVersionObject);
+                    // if (path != null) {
+                    // label = path.toString() + IPath.SEPARATOR + label;
+                    // }
+                } else {
+                    final String parentName = processParam.getName() + ":"; //$NON-NLS-1$
+                    elem.setPropertyValue(parentName + jobNameParam.getName(), ""); //$NON-NLS-1$
                 }
-                if (VersionUtils.compareTo(version, oldVersion) >= 0) {
-                    item = obj.getProperty().getItem();
-                    // lastVersionObject = obj;
-                }
-                oldVersion = version;
-                versionNameList.add(version);
-                versionValueList.add(version);
             }
-
-            label = item.getProperty().getLabel();
-            // IPath path = RepositoryNodeUtilities.getPath(lastVersionObject);
-            // if (path != null) {
-            // label = path.toString() + IPath.SEPARATOR + label;
-            // }
-        } else {
-            final String parentName = processParam.getName() + ":"; //$NON-NLS-1$
-            elem.setPropertyValue(parentName + jobNameParam.getName(), ""); //$NON-NLS-1$
         }
-        jobNameParam.setLabelFromRepository(label);
+        jobNameParam.setLabelFromRepository(labels.toString());
         // set default context
         String defalutValue = null;
         if (item != null && item instanceof ProcessItem) {
@@ -642,11 +734,11 @@ public class ProcessController extends AbstractElementPropertySectionController 
             defalutValue = ((ProcessItem) item).getProcess().getDefaultContext();
         }
 
-        setProcessTypeRelatedValues(processParam, contextNameList, contextValueList, EParameterName.PROCESS_TYPE_CONTEXT
-                .getName(), defalutValue);
+        setProcessTypeRelatedValues(processParam, contextNameList, contextValueList,
+                EParameterName.PROCESS_TYPE_CONTEXT.getName(), defalutValue);
 
-        setProcessTypeRelatedValues(processParam, versionNameList, versionValueList, EParameterName.PROCESS_TYPE_VERSION
-                .getName(), null);
+        setProcessTypeRelatedValues(processParam, versionNameList, versionValueList,
+                EParameterName.PROCESS_TYPE_VERSION.getName(), null);
 
     }
 

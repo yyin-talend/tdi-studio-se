@@ -150,11 +150,40 @@ public class PropertyChangeCommand extends Command {
         oldValue = elem.getPropertyValue(propName);
         elem.setPropertyValue(propName, newValue);
 
+        // feature 19312
+        if (propName.contains(EParameterName.USE_DYNAMIC_JOB.getName()) && newValue.equals(false)) {
+            IElementParameter processParam = elem.getElementParameter(EParameterName.PROCESS.getName());
+            IElementParameter processTypeParameter = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName());
+            final String parentName = processParam.getName() + ":"; //$NON-NLS-1$
+            elem.setPropertyValue(parentName + processTypeParameter.getName(), ""); //$NON-NLS-1$
+            elem.setPropertyValue(processParam.getName(), ""); //$NON-NLS-1$
+        }
         if (propName.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
-            // newValue is the id of the job
-            ProcessItem processItem = ItemCacheManager.getProcessItem((String) newValue);
-            if (processItem != null) {
-                currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
+            boolean isSelectUseDynamic = (Boolean) elem.getElementParameter(EParameterName.USE_DYNAMIC_JOB.getName()).getValue();
+            if (isSelectUseDynamic) {
+                StringBuffer labels = new StringBuffer("");
+                if (newValue != null) {
+                    String[] strValues = newValue.toString().split(";");
+                    for (int i = 0; i < strValues.length; i++) {
+                        String strValue = strValues[i];
+                        // newValue is the id of the job
+                        ProcessItem processItem = ItemCacheManager.getProcessItem((String) strValue);
+                        if (processItem != null) {
+                            String label = processItem.getProperty().getLabel();
+                            if (i > 0) {
+                                labels.append(";");
+                            }
+                            labels.append(label);
+                        }
+                    }
+                }
+                currentParam.getParentParameter().setValue(labels.toString());
+            } else {
+                // newValue is the id of the job
+                ProcessItem processItem = ItemCacheManager.getProcessItem((String) newValue);
+                if (processItem != null) {
+                    currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
+                }
             }
         }
         if (propName.contains(EParameterName.PROCESS_TYPE_VERSION.getName())) {

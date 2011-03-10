@@ -63,6 +63,9 @@ public enum EParameterName {
     PROCESS_TYPE(Messages.getString("EParameterName.generateCode")), //$NON-NLS-1$
     PROCESS_TYPE_PROCESS(Messages.getString("EParameterName.process")), //$NON-NLS-1$
     PROCESS(Messages.getString("EParameterName.process")), //$NON-NLS-1$
+    // added by hcyi for feature 19312
+    USE_DYNAMIC_JOB(Messages.getString("EParameterName.Use.Dynamic.Job")), //$NON-NLS-1$
+    CONTEXT_JOB(Messages.getString("EParameterName.Context.Job")), //$NON-NLS-1$
     PROCESS_TYPE_VERSION(Messages.getString("EParameterName.Version")), //$NON-NLS-1$
     PROCESS_TYPE_CONTEXT(Messages.getString("EParameterName.context")), //$NON-NLS-1$
     PREVIEW(Messages.getString("EParameterName.preview")), //$NON-NLS-1$
