@@ -15,7 +15,7 @@
   </HEADER>
 
   <FAMILIES>
-    <FAMILY>ELT/PostgreSQL</FAMILY>
+    <FAMILY>ELT/Map/PostgreSQL</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>
