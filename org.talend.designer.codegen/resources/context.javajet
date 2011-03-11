@@ -7,6 +7,7 @@
 		java.util.Properties
 		java.io.ByteArrayOutputStream
 		org.talend.core.model.utils.TalendTextUtils
+		org.talend.core.model.metadata.types.JavaTypesManager
 	" 
 	class="Context" 
 %>
@@ -15,6 +16,9 @@
 	List<IContextParameter> parameterList = (List<IContextParameter>) codeGenArgument.getArgument();
 	Properties context = new Properties();
 	for (IContextParameter parameter : parameterList) {
+		if(JavaTypesManager.STRING.getId().equals(parameter.getType())  && (parameter.getValue()==null || parameter.getValue().equals("null"))) {
+			continue;
+		}
 		context.put(parameter.getName(), TalendTextUtils.trimParameter(parameter.getValue()));
 	}
 
