@@ -149,8 +149,6 @@ public class TreeNodeLayout extends EqualWidthLayout {
             prefSize = calculateChildrenSize(children, wHint, prefSize.width, true);
         }
 
-        prefSize.height += Math.max(0, children.size() - 1) * spacing;
-
         /*
          * add expression with ,because calculatePreferredSize of ExpressionLayout returns Dimension(0,0) , need modify
          * later

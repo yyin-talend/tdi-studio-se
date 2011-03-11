@@ -47,7 +47,11 @@ public enum ColorInfo {
 
     COLOR_TREE_BORDER(153, 186, 243),
 
-    COLOR_TMAP_PREVIEW(235, 234, 230);
+    COLOR_TMAP_PREVIEW(235, 234, 230),
+
+    COLOR_EXPREESION_DISABLE(240, 240, 240)
+
+    ;
 
     private int red;
 

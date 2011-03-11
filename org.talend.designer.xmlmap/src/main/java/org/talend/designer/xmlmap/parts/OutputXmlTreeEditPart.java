@@ -34,7 +34,7 @@ import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 /**
  * wchen class global comment. Detailled comment
  */
-public class OutputXmlTreeEditPart extends BaseEditPart {
+public class OutputXmlTreeEditPart extends AbstractInOutTreeEditPart {
 
     private OutputXmlTreeFigure figure;
 

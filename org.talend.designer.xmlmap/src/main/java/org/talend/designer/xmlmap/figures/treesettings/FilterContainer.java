@@ -31,7 +31,7 @@ import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogControlle
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.ui.resource.ImageInfo;
 import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
@@ -44,7 +44,7 @@ public class FilterContainer extends Figure {
 
     private static final int DEFAULT_HEIGHT = 40;
 
-    private OutputXmlTree outputTree;
+    private AbstractInOutTree abstractTree;
 
     private ImageFigure button;
 
@@ -52,8 +52,8 @@ public class FilterContainer extends Figure {
 
     private Composite parent;
 
-    public FilterContainer(OutputXmlTree outputTree, Composite parent) {
-        this.outputTree = outputTree;
+    public FilterContainer(AbstractInOutTree outputTree, Composite parent) {
+        this.abstractTree = outputTree;
         this.parent = parent;
         createContent();
     }
@@ -64,7 +64,7 @@ public class FilterContainer extends Figure {
         setLayoutManager(manager);
 
         textArea = new FilterTextArea();
-        textArea.setText(outputTree.getExpressionFilter());
+        textArea.setText(abstractTree.getExpressionFilter());
         this.add(textArea);
 
         textArea.setOpaque(true);
@@ -92,10 +92,10 @@ public class FilterContainer extends Figure {
             public void mousePressed(MouseEvent me) {
                 if (dialog instanceof TrayDialog) {
                     TrayDialog parentDialog = (TrayDialog) dialog;
-                    dialog.setDefaultExpression(outputTree.getExpressionFilter());
+                    dialog.setDefaultExpression(abstractTree.getExpressionFilter());
                     if (Window.OK == parentDialog.open()) {
                         String expressionForTable = dialog.getExpressionForTable();
-                        outputTree.setExpressionFilter(expressionForTable);
+                        abstractTree.setExpressionFilter(expressionForTable);
                     }
                 }
 
@@ -116,7 +116,7 @@ public class FilterContainer extends Figure {
 
     public void update(int type) {
         if (XmlmapPackage.OUTPUT_XML_TREE__EXPRESSION_FILTER == type) {
-            textArea.setText(outputTree.getExpressionFilter());
+            textArea.setText(abstractTree.getExpressionFilter());
         }
     }
 

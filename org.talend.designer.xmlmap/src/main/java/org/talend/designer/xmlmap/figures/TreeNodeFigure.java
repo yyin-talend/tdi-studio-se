@@ -26,6 +26,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
+import org.talend.designer.xmlmap.ui.resource.ColorInfo;
+import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -41,7 +43,7 @@ public class TreeNodeFigure extends Figure {
 
     protected Figure expressionContainer;
 
-    protected Label columnExpressionFigure;
+    protected ExpressionFigure columnExpressionFigure;
 
     private Label nameLabel;
 
@@ -92,6 +94,8 @@ public class TreeNodeFigure extends Figure {
                 expressionContainer.setLayoutManager(new ExpressionLayout());
                 this.add(expressionContainer);
                 expressionFigure = new ExpressionFigure();
+                expressionFigure.setOpaque(true);
+                expressionFigure.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_EXPREESION_DISABLE));
                 expressionContainer.add(expressionFigure, 0);
             }
 
@@ -123,7 +127,7 @@ public class TreeNodeFigure extends Figure {
         return this.expressionContainer;
     }
 
-    public Label getColumnExpressionFigure() {
+    public ExpressionFigure getColumnExpressionFigure() {
         return columnExpressionFigure;
     }
 

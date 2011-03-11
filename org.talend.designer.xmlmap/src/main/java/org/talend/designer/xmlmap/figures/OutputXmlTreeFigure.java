@@ -24,10 +24,10 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
-import org.talend.designer.xmlmap.figures.layout.OutTreeLayout;
+import org.talend.designer.xmlmap.figures.layout.TreeLayout;
 import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
 import org.talend.designer.xmlmap.figures.treesettings.OutputTreeSettingContainer;
-import org.talend.designer.xmlmap.figures.treetools.OutputTreeToolBarContainer;
+import org.talend.designer.xmlmap.figures.treetools.TreeToolBarContainer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
@@ -48,7 +48,7 @@ public class OutputXmlTreeFigure extends GenericFigure {
 
     private Figure header;
 
-    private OutputTreeToolBarContainer imageButtonsFigure;
+    private TreeToolBarContainer imageButtonsFigure;
 
     private OutputTreeSettingContainer settingContainer;
 
@@ -63,7 +63,7 @@ public class OutputXmlTreeFigure extends GenericFigure {
     }
 
     protected void createContents() {
-        setLayoutManager(new OutTreeLayout(xmlTree));
+        setLayoutManager(new TreeLayout(xmlTree));
         this.setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
 
         header = new Figure();
@@ -80,7 +80,7 @@ public class OutputXmlTreeFigure extends GenericFigure {
 
         header.add(tableName);
 
-        imageButtonsFigure = new OutputTreeToolBarContainer(treePart);
+        imageButtonsFigure = new TreeToolBarContainer(treePart);
 
         header.setOpaque(true);
         header.setBackgroundColor(ColorConstants.yellow);

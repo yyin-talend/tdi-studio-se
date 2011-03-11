@@ -22,12 +22,15 @@ import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.widgets.Composite;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.TreeLayout;
+import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
 import org.talend.designer.xmlmap.figures.treesettings.InputTreeSettingContainer;
-import org.talend.designer.xmlmap.figures.treetools.InputTreeToolBarContainer;
+import org.talend.designer.xmlmap.figures.treetools.TreeToolBarContainer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.ui.resource.FontInfo;
@@ -40,18 +43,23 @@ public class InputXmlTreeFigure extends GenericFigure {
 
     protected Figure columnContainer;
 
+    protected InputXmlTreeEditPart xmlTreePart;
+
     protected InputXmlTree xmlTree;
 
     protected Figure tableColumnstitle;
 
     private Figure header;
 
-    private InputTreeToolBarContainer imageButtonsFigure;
+    private TreeToolBarContainer imageButtonsFigure;
 
     private InputTreeSettingContainer settingContainer;
 
-    public InputXmlTreeFigure(InputXmlTree xmlTree) {
-        this.xmlTree = xmlTree;
+    private FilterContainer filterFigure;
+
+    public InputXmlTreeFigure(InputXmlTreeEditPart xmlTreePart) {
+        this.xmlTreePart = xmlTreePart;
+        this.xmlTree = (InputXmlTree) xmlTreePart.getModel();
         createContents();
     }
 
@@ -72,16 +80,19 @@ public class InputXmlTreeFigure extends GenericFigure {
         tableName.setBorder(new MarginBorder(5, 10, 5, -1));
 
         header.add(tableName);
-        imageButtonsFigure = new InputTreeToolBarContainer(xmlTree);
+        imageButtonsFigure = new TreeToolBarContainer(xmlTreePart);
 
         header.setOpaque(true);
         header.setBackgroundColor(ColorConstants.yellow);
         this.add(header);
 
+        header.add(imageButtonsFigure);
         if (xmlTree.isLookup()) {
-            header.add(imageButtonsFigure);
             settingContainer = new InputTreeSettingContainer(xmlTree);
             this.add(settingContainer);
+            filterFigure = new FilterContainer(xmlTree, (Composite) xmlTreePart.getViewer().getControl());
+            this.add(filterFigure);
+
         }
 
         tableColumnstitle = new ColumnTitleFigure();
@@ -113,7 +124,13 @@ public class InputXmlTreeFigure extends GenericFigure {
     }
 
     public void update(int type) {
-        settingContainer.update(type);
+        if (settingContainer != null) {
+            settingContainer.update(type);
+        }
+        if (filterFigure != null) {
+            filterFigure.update(type);
+        }
+        imageButtonsFigure.updateMinSizeImage();
 
     }
 

@@ -12,15 +12,19 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures;
 
+import java.util.List;
+
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
+import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
-import org.talend.designer.xmlmap.figures.treetools.ToolBarButtonImageFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 
 /**
@@ -28,7 +32,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
  */
 public class VariableContainerFigure extends Figure {
 
-    protected ToolBarButtonImageFigure checkImage;
+    protected ImageFigure checkImage;
 
     protected VarNodeTextLabel variableLabel;
 
@@ -43,17 +47,38 @@ public class VariableContainerFigure extends Figure {
      * DOC Administrator Comment method "createContents".
      */
     protected void createContents() {
-        this.setLayoutManager(new EqualWidthLayout());
+        ToolbarLayout manager = new ToolbarLayout() {
+
+            @Override
+            public void layout(IFigure parent) {
+                super.layout(parent);
+                List children = parent.getChildren();
+                if (children.size() == 2) {
+                    Figure checkImageFigure = (Figure) children.get(0);
+                    Figure variableFigure = (Figure) children.get(1);
+                    Rectangle varFigureBounds = variableFigure.getBounds().getCopy();
+                    int avialableWith = parent.getBounds().width - checkImageFigure.getBounds().width;
+                    if (avialableWith > varFigureBounds.width) {
+                        varFigureBounds.width = avialableWith;
+                    }
+                    variableFigure.setBounds(varFigureBounds);
+                }
+
+            }
+        };
+        manager.setVertical(false);
+        this.setLayoutManager(manager);
         // if(varNode.)
         Label nullableToolTip = new Label("Nullable");
         if (!varNode.isNullable()) {
-            checkImage = new ToolBarButtonImageFigure(ImageProvider.getImage(EImage.UNCHECKED_ICON));
+            checkImage = new ImageFigure(ImageProvider.getImage(EImage.UNCHECKED_ICON));
         } else if (varNode.isNullable()) {
-            checkImage = new ToolBarButtonImageFigure(ImageProvider.getImage(EImage.CHECKED_ICON));
+            checkImage = new ImageFigure(ImageProvider.getImage(EImage.CHECKED_ICON));
         }
         checkImage.setToolTip(nullableToolTip);
         variableLabel = new VarNodeTextLabel();
         variableLabel.setText(varNode.getName());
+
         this.add(checkImage);
         this.add(variableLabel);
         addCheckListener();
@@ -85,7 +110,7 @@ public class VariableContainerFigure extends Figure {
         return this.variableLabel;
     }
 
-    public ToolBarButtonImageFigure getCheckImage() {
+    public ImageFigure getCheckImage() {
         return this.checkImage;
     }
 

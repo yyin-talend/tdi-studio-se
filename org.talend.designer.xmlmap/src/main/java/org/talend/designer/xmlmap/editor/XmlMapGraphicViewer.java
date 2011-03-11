@@ -18,6 +18,8 @@ import org.eclipse.draw2d.ExclusionSearch;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
+import org.talend.designer.xmlmap.parts.VarTableEditPart;
+import org.talend.designer.xmlmap.parts.XmlMapDataEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 
 /**
@@ -52,6 +54,21 @@ public class XmlMapGraphicViewer extends GraphicalViewerImpl {
 
     public void setMapperManager(MapperManager mapperManager) {
         this.mapperManager = mapperManager;
+    }
+
+    public void select(EditPart editpart) {
+        if (editpart instanceof VarTableEditPart) {
+            return;
+        }
+
+        if (editpart instanceof XmlMapDataEditPart) {
+            return;
+        }
+
+        // set false to dispatch mouse release event
+        setRouteEventsToEditDomain(false);
+
+        super.select(editpart);
     }
 
 }

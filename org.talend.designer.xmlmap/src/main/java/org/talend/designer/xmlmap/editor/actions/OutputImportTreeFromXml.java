@@ -51,7 +51,7 @@ public class OutputImportTreeFromXml extends SelectionAction {
         super(part);
         this.shell = shell;
         setId(ID);
-        setText("Import Xml");
+        setText("Import From File");
     }
 
     @Override
@@ -89,7 +89,7 @@ public class OutputImportTreeFromXml extends SelectionAction {
                 createTreeNode.setNodeType(NodeType.NAME_SPACE);
             }
             createTreeNode.setXpath(XmlMapUtil.getXPath(xPath, createTreeNode.getName(), createTreeNode.getNodeType()));
-            if (foxNode.getDataType() != null) {
+            if (foxNode.getDataType() != null && "".equals(foxNode.getDataType())) {
                 createTreeNode.setType(foxNode.getDataType());
             } else {
                 createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);

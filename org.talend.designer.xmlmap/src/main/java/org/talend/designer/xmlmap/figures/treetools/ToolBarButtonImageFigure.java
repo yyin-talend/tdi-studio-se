@@ -13,6 +13,7 @@
 package org.talend.designer.xmlmap.figures.treetools;
 
 import org.eclipse.draw2d.AbstractBackground;
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Clickable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.CompoundBorder;
@@ -69,11 +70,12 @@ public class ToolBarButtonImageFigure extends ImageFigure {
         setOpaque(true);
         initlistener();
         setBorder(new MarginBorder(2));
+        if (image != null) {
+            this.enabledImage = image;
+            this.disabledImage = new Image(image.getDevice(), image, SWT.IMAGE_DISABLE);
+            ImageProviderMapper.cacheDisabledImage(disabledImage);
+        }
 
-    }
-
-    public ToolBarButtonImageFigure() {
-        this(null);
     }
 
     /**
@@ -138,14 +140,14 @@ public class ToolBarButtonImageFigure extends ImageFigure {
     private void addLineBorder() {
         if (getBorder() instanceof MarginBorder) {
             LineBorder outer = new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER));
-            CompoundBorder border = new CompoundBorder(outer, getBorder());
+            CustomCompoundBorder border = new CustomCompoundBorder(outer, getBorder());
             setBorder(border);
         }
     }
 
     private void removeLineBorder() {
-        if (getBorder() instanceof CompoundBorder) {
-            CompoundBorder compound = (CompoundBorder) getBorder();
+        if (getBorder() instanceof CustomCompoundBorder) {
+            CustomCompoundBorder compound = (CustomCompoundBorder) getBorder();
             setBorder(compound.getInnerBorder());
         }
     }
@@ -312,12 +314,6 @@ public class ToolBarButtonImageFigure extends ImageFigure {
      * @param image The Image to be displayed. It can be <code>null</code>.
      */
     public void setImage(Image image) {
-        if (image != null) {
-            this.enabledImage = image;
-            this.disabledImage = new Image(image.getDevice(), image, SWT.IMAGE_DISABLE);
-            ImageProviderMapper.cacheDisabledImage(disabledImage);
-        }
-
         if (img == image)
             return;
         img = image;
@@ -358,6 +354,24 @@ public class ToolBarButtonImageFigure extends ImageFigure {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    class CustomCompoundBorder extends CompoundBorder {
+
+        public CustomCompoundBorder(Border outer, Border inner) {
+            super(outer, inner);
+        }
+
+        public Insets getInsets(IFigure figure) {
+            Insets insets = null;
+            if (inner != null) {
+                insets = inner.getInsets(figure);
+            } else if (outer != null) {
+                Insets moreInsets = outer.getInsets(figure);
+                insets = insets.getAdded(moreInsets);
+            }
+            return insets;
+        }
     }
 
 }

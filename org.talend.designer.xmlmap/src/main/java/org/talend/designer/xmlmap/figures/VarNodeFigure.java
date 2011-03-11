@@ -12,19 +12,12 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures;
 
-import java.util.List;
-
-import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseListener;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
-import org.talend.designer.xmlmap.figures.borders.ColumnBorder;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
+import org.talend.designer.xmlmap.figures.borders.TableCellBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
@@ -53,24 +46,26 @@ public class VarNodeFigure extends Figure {
      * DOC Administrator Comment method "createComponents".
      */
     protected void createComponents() {
-        this.setLayoutManager(new EqualWidthLayout());
+        EqualWidthLayout manager = new EqualWidthLayout();
+        this.setLayoutManager(manager);
         expression = new ExpressionFigure();
         expression.setText(varNode.getExpression());
-        CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
-        expression.setBorder(compoundBorder);
+        // CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
+        // expression.setBorder(compoundBorder);
+        expression.setBorder(new TableCellBorder());
 
         type = new ComboCellLabel();
         type.setDirectEditType(DirectEditType.VAR_NODE_TYPE);
         type.setText(getTypeDisplayValue(varNode));
-        compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
-        type.setBorder(compoundBorder);
+        // CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
+        // type.setBorder(compoundBorder);
+        type.setBorder(new TableCellBorder());
 
         variable = new VariableContainerFigure(varNode);
         variable.setBorder(new RowBorder());
         this.add(expression);
         this.add(type);
         this.add(variable);
-        Addlistener();
 
     }
 
@@ -97,32 +92,32 @@ public class VarNodeFigure extends Figure {
     /**
      * DOC Administrator Comment method "Addlistener".
      */
-    private void Addlistener() {
-        this.addMouseListener(new MouseListener() {
-
-            public void mouseReleased(MouseEvent me) {
-            }
-
-            public void mousePressed(MouseEvent me) {
-                IFigure parent = VarNodeFigure.this.getParent();
-                for (IFigure child : (List<IFigure>) parent.getChildren()) {
-                    child.setBackgroundColor(ColorConstants.white);
-                }
-                VarNodeFigure.this.setBackgroundColor(ColorConstants.yellow);
-                CenterVarFigure tabelFigure = (CenterVarFigure) VarNodeFigure.this.getParent().getParent().getParent();
-                tabelFigure.imageButtonsFigure.getRemove().setEnabled(true);
-                tabelFigure.imageButtonsFigure.getMove_up().setEnabled(true);
-                tabelFigure.imageButtonsFigure.getMove_down().setEnabled(true);
-                tabelFigure.validate();
-                tabelFigure.getSelectionNodes().clear();
-                tabelFigure.getSelectionNodes().add(varNode);
-            }
-
-            public void mouseDoubleClicked(MouseEvent me) {
-
-            }
-        });
-    }
+    // private void Addlistener() {
+    // this.addMouseListener(new MouseListener() {
+    //
+    // public void mouseReleased(MouseEvent me) {
+    // }
+    //
+    // public void mousePressed(MouseEvent me) {
+    // IFigure parent = VarNodeFigure.this.getParent();
+    // for (IFigure child : (List<IFigure>) parent.getChildren()) {
+    // child.setBackgroundColor(ColorConstants.white);
+    // }
+    // VarNodeFigure.this.setBackgroundColor(ColorConstants.yellow);
+    // CenterVarFigure tabelFigure = (CenterVarFigure) VarNodeFigure.this.getParent().getParent().getParent();
+    // tabelFigure.imageButtonsFigure.getRemove().setEnabled(true);
+    // tabelFigure.imageButtonsFigure.getMove_up().setEnabled(true);
+    // tabelFigure.imageButtonsFigure.getMove_down().setEnabled(true);
+    // tabelFigure.validate();
+    // tabelFigure.getSelectionNodes().clear();
+    // tabelFigure.getSelectionNodes().add(varNode);
+    // }
+    //
+    // public void mouseDoubleClicked(MouseEvent me) {
+    //
+    // }
+    // });
+    // }
 
     public VarNode getVarNode() {
         return this.varNode;

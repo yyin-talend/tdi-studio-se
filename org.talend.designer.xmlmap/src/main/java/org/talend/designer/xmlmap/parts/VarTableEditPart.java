@@ -15,15 +15,15 @@ package org.talend.designer.xmlmap.parts;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.ImageFigure;
-import org.eclipse.draw2d.Label;
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.talend.designer.xmlmap.figures.CenterVarFigure;
+import org.talend.designer.xmlmap.figures.treetools.VarToolBarFigure;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
-import org.talend.designer.xmlmap.ui.resource.ImageInfo;
-import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -32,19 +32,13 @@ public class VarTableEditPart extends BaseEditPart {
 
     private CenterVarFigure centerVarFigure;
 
-    private Image restorImage = ImageProviderMapper.getImage(ImageInfo.RESTORE_ICON);
-
-    private Image miniImage = ImageProviderMapper.getImage(ImageInfo.MINIMIZE_ICON);
-
-    private static Label minitooltip = new Label("Minimize");
-
-    private static Label restoretooltip = new Label("Restore");
+    private ISelectionChangedListener selectionListener;
 
     @Override
     protected IFigure createFigure() {
         /* Center var figure */
         VarTable model = (VarTable) getModel();
-        centerVarFigure = new CenterVarFigure(model);
+        centerVarFigure = new CenterVarFigure(this);
         return centerVarFigure;
     }
 
@@ -83,20 +77,82 @@ public class VarTableEditPart extends BaseEditPart {
                 refreshChildren();
                 break;
             case XmlmapPackage.VAR_TABLE__MINIMIZED:
-                Boolean newStateIsMinimized = notification.getNewBooleanValue();
-                ImageFigure minisize = ((CenterVarFigure) getFigure()).getImageButtonsFigure().getMiniSize();
-                if (newStateIsMinimized) {
-                    minisize.setImage(restorImage);
-                    minisize.setToolTip(restoretooltip);
-                } else {
-                    minisize.setImage(miniImage);
-                    minisize.setToolTip(minitooltip);
-                }
+                // Boolean newStateIsMinimized = notification.getNewBooleanValue();
+                // ImageFigure minisize = ((CenterVarFigure) getFigure()).getImageButtonsFigure().getMiniSize();
+                // if (newStateIsMinimized) {
+                // minisize.setImage(restorImage);
+                // minisize.setToolTip(restoretooltip);
+                // } else {
+                // minisize.setImage(miniImage);
+                // minisize.setToolTip(minitooltip);
+                // }
                 // refreshChildren();
                 // refreshVisuals();
                 // refresh();
             }
         }
+    }
+
+    @Override
+    public void activate() {
+        super.activate();
+
+        selectionListener = new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                List selectedEditParts = getViewer().getSelectedEditParts();
+
+                boolean remove = false;
+                boolean moveUp = false;
+                boolean moveDown = false;
+
+                boolean disableMoveUp = false;
+                boolean disableMoveDown = false;
+
+                for (Object obj : selectedEditParts) {
+                    if (obj instanceof VarNodeEditPart) {
+                        remove = true;
+                        VarNode selectedNode = (VarNode) ((VarNodeEditPart) obj).getModel();
+                        EList<VarNode> nodes = ((VarTable) getModel()).getNodes();
+
+                        int indexOf = nodes.indexOf(selectedNode);
+
+                        if (!disableMoveUp) {
+                            if (indexOf != -1 && indexOf > 0) {
+                                moveUp = true;
+                            } else {
+                                moveUp = false;
+                                disableMoveUp = true;
+                            }
+                        }
+
+                        if (!disableMoveDown) {
+                            if (indexOf != -1 && indexOf < nodes.size() - 1) {
+                                moveDown = true;
+                            } else {
+                                moveDown = false;
+                                disableMoveDown = true;
+                            }
+                        }
+
+                    }
+                }
+                VarToolBarFigure toolBarFigure = ((CenterVarFigure) getFigure()).getToolBarFigure();
+                toolBarFigure.setRemoveEnable(remove);
+                toolBarFigure.setMoveUpEnable(moveUp);
+                toolBarFigure.setMoveDownEnable(moveDown);
+
+            }
+
+        };
+
+        getViewer().addSelectionChangedListener(selectionListener);
+    }
+
+    @Override
+    public void deactivate() {
+        super.deactivate();
+        getViewer().removeSelectionChangedListener(selectionListener);
     }
 
 }

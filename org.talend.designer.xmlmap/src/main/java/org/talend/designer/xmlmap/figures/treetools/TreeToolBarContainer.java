@@ -23,15 +23,16 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.Image;
 import org.talend.designer.xmlmap.figures.layout.TreeToolBarLayout;
 import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsManager;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
-import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.ui.resource.ImageInfo;
 import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class OutputTreeToolBarContainer extends Figure {
+public class TreeToolBarContainer extends Figure {
 
     private ToolBarButtonImageFigure condensedButton;
 
@@ -39,9 +40,9 @@ public class OutputTreeToolBarContainer extends Figure {
 
     private ToolBarButtonImageFigure min_size;
 
-    private OutputXmlTree outputTree;
+    private AbstractInOutTree abstractTree;
 
-    private OutputXmlTreeEditPart treePart;
+    private AbstractInOutTreeEditPart abstractTreePart;
 
     private Map<String, Object> defaultSettingMap = new HashMap<String, Object>();
 
@@ -49,9 +50,9 @@ public class OutputTreeToolBarContainer extends Figure {
 
     private Image miniImage = ImageProviderMapper.getImage(ImageInfo.MINIMIZE_ICON);
 
-    public OutputTreeToolBarContainer(OutputXmlTreeEditPart treePart) {
-        this.treePart = treePart;
-        this.outputTree = (OutputXmlTree) treePart.getModel();
+    public TreeToolBarContainer(AbstractInOutTreeEditPart treePart) {
+        this.abstractTreePart = treePart;
+        this.abstractTree = (AbstractInOutTree) treePart.getModel();
         createToolbar();
     }
 
@@ -59,21 +60,35 @@ public class OutputTreeToolBarContainer extends Figure {
         TreeToolBarLayout manager = new TreeToolBarLayout();
         manager.setSpacing(5);
         this.setLayoutManager(manager);
-        condensedButton = new CondensedButton(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
-        condensedButton.setSelected(outputTree.isActivateCondensedTool());
-        this.add(condensedButton);
 
-        expressionFilterButton = new ExpressionFilterButton(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_FILTER_ICON));
-        expressionFilterButton.setSelected(outputTree.isActivateExpressionFilter());
-        this.add(expressionFilterButton);
+        boolean isInputMain = false;
+        if (abstractTree instanceof InputXmlTree) {
+            isInputMain = !((InputXmlTree) abstractTree).isLookup();
+        }
 
-        min_size = new MinSizeButton();
+        if (!isInputMain) {
+            condensedButton = new CondensedButton(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
+            condensedButton.setSelected(abstractTree.isActivateCondensedTool());
+            this.add(condensedButton);
+
+            expressionFilterButton = new ExpressionFilterButton(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_FILTER_ICON));
+            expressionFilterButton.setSelected(abstractTree.isActivateExpressionFilter());
+            this.add(expressionFilterButton);
+        }
+
+        Image image = null;
+        if (abstractTree.isMinimized()) {
+            image = restorImage;
+        } else {
+            image = miniImage;
+        }
+        min_size = new MinSizeButton(image);
         this.add(min_size);
 
     }
 
     public void updateMinSizeImage() {
-        if (outputTree.isMinimized()) {
+        if (abstractTree.isMinimized()) {
             min_size.setImage(restorImage);
         } else {
             min_size.setImage(miniImage);
@@ -98,7 +113,7 @@ public class OutputTreeToolBarContainer extends Figure {
         @Override
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
-            outputTree.setActivateCondensedTool(this.isSelected());
+            abstractTree.setActivateCondensedTool(this.isSelected());
             revalidate();
         }
     }
@@ -113,30 +128,27 @@ public class OutputTreeToolBarContainer extends Figure {
         @Override
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
-            outputTree.setActivateExpressionFilter(this.isSelected());
+            abstractTree.setActivateExpressionFilter(this.isSelected());
             revalidate();
         }
     }
 
     class MinSizeButton extends ToolBarButtonImageFigure {
 
-        public MinSizeButton() {
-            if (outputTree.isMinimized()) {
-                setImage(restorImage);
-            } else {
-                setImage(miniImage);
-            }
+        public MinSizeButton(Image image) {
+            super(image);
         }
 
         @Override
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
-            CommandStack commandStack = treePart.getViewer().getEditDomain().getCommandStack();
+            CommandStack commandStack = abstractTreePart.getViewer().getEditDomain().getCommandStack();
             commandStack.execute(new Command() {
 
                 @Override
                 public void execute() {
-                    outputTree.setMinimized(!outputTree.isMinimized());
+                    abstractTree.setMinimized(!abstractTree.isMinimized());
+                    abstractTreePart.getViewer().deselectAll();
                 }
             });
 

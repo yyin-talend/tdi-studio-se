@@ -19,18 +19,20 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
 import org.talend.designer.xmlmap.figures.treesettings.InputTreeSettingContainer;
-import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.figures.treesettings.OutputTreeSettingContainer;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 
 /**
  * wchen class global comment. Detailled comment
  */
 public class TreeLayout extends ToolbarLayout {
 
-    private InputXmlTree inputTree;
+    private AbstractInOutTree abstractTree;
 
-    public TreeLayout(InputXmlTree inputTree) {
-        this.inputTree = inputTree;
+    public TreeLayout(AbstractInOutTree outputTree) {
+        this.abstractTree = outputTree;
     }
 
     @Override
@@ -99,10 +101,20 @@ public class TreeLayout extends ToolbarLayout {
             Rectangle newBounds = new Rectangle(x, y, prefWidth, prefHeight);
 
             child = (IFigure) children.get(i);
-            if (inputTree != null && !inputTree.isActivateCondensedTool()) {
-                if (child instanceof InputTreeSettingContainer) {
-                    child.setBounds(new Rectangle(x, y, 0, 0));
-                    continue;
+            if (abstractTree != null) {
+                if (child instanceof OutputTreeSettingContainer || child instanceof InputTreeSettingContainer) {
+                    if (!abstractTree.isActivateCondensedTool()) {
+                        child.setBounds(new Rectangle(x, y, 0, 0));
+                        continue;
+                    }
+
+                }
+
+                if (child instanceof FilterContainer) {
+                    if (!abstractTree.isActivateExpressionFilter()) {
+                        child.setBounds(new Rectangle(x, y, 0, 0));
+                        continue;
+                    }
                 }
             }
 
@@ -124,9 +136,9 @@ public class TreeLayout extends ToolbarLayout {
                 break;
             }
             newBounds.x += adjust;
-            newBounds.height -= amntShrinkCurrentHeight;
             child.setBounds(transposer.t(newBounds));
 
+            amntShrinkHeight -= amntShrinkCurrentHeight;
             prefMinSumHeight -= (prefHeight - minHeight);
             y += newBounds.height + spacing;
         }
@@ -163,17 +175,28 @@ public class TreeLayout extends ToolbarLayout {
         int height = 0, width = 0;
         for (int i = 0; i < children.size(); i++) {
             child = (IFigure) children.get(i);
+            if (abstractTree != null) {
+                if (child instanceof OutputTreeSettingContainer || child instanceof InputTreeSettingContainer) {
+                    if (!abstractTree.isActivateCondensedTool()) {
+                        continue;
+                    }
+                }
 
-            if (inputTree != null && !inputTree.isActivateCondensedTool()) {
-                if (child instanceof InputTreeSettingContainer) {
-                    continue;
+                if (child instanceof FilterContainer) {
+                    if (!abstractTree.isActivateExpressionFilter()) {
+                        continue;
+                    }
                 }
             }
-
             childSize = transposer.t(preferred ? getChildPreferredSize(child, wHint, hHint) : getChildMinimumSize(child, wHint,
                     hHint));
             height += childSize.height;
             width = Math.max(width, childSize.width);
+
+            // header figure must be the first figure , or there will be problem here
+            if (abstractTree.isMinimized()) {
+                break;
+            }
         }
         return new Dimension(width, height);
     }

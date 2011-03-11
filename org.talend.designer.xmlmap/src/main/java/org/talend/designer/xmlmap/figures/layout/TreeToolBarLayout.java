@@ -23,14 +23,17 @@ import org.eclipse.draw2d.geometry.Rectangle;
  */
 public class TreeToolBarLayout extends EqualWidthLayout {
 
+    private static final int marginTop = 2;
+
+    private static final int marginBottom = 2;
+
     @Override
     public void layout(IFigure parent) {
         List children = parent.getChildren();
         int numChildren = children.size();
         Rectangle clientArea = transposer.t(parent.getClientArea());
         int x = clientArea.x + clientArea.width;
-        int y = clientArea.y + 2;
-        int availableHeight = clientArea.height;
+        int y = clientArea.y + marginTop;
 
         Dimension prefSizes[] = new Dimension[numChildren];
         Dimension minSizes[] = new Dimension[numChildren];
@@ -46,7 +49,6 @@ public class TreeToolBarLayout extends EqualWidthLayout {
         IFigure child;
         int totalHeight = 0;
         int totalMinHeight = 0;
-        int prefMinSumHeight = 0;
 
         for (int i = 0; i < numChildren; i++) {
             child = (IFigure) children.get(i);
@@ -59,12 +61,9 @@ public class TreeToolBarLayout extends EqualWidthLayout {
         }
         totalHeight += (numChildren - 1) * spacing;
         totalMinHeight += (numChildren - 1) * spacing;
-        prefMinSumHeight = totalHeight - totalMinHeight;
 
         for (int i = numChildren - 1; i >= 0; i--) {
-            int amntShrinkCurrentHeight = 0;
             int prefHeight = prefSizes[i].height;
-            int minHeight = minSizes[i].height;
             int prefWidth = prefSizes[i].width;
             Rectangle newBounds = new Rectangle(x, y, prefWidth, prefHeight);
 
@@ -72,11 +71,16 @@ public class TreeToolBarLayout extends EqualWidthLayout {
 
             newBounds.x = x - newBounds.width - spacing;
 
-            newBounds.height -= amntShrinkCurrentHeight;
             child.setBounds(transposer.t(newBounds));
 
-            prefMinSumHeight -= (prefHeight - minHeight);
             x = newBounds.x - spacing;
         }
+    }
+
+    @Override
+    protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {
+        Dimension dimension = super.calculatePreferredSize(container, wHint, hHint);
+        dimension.height = dimension.height + marginBottom + marginTop;
+        return dimension;
     }
 }

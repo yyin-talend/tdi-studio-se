@@ -17,7 +17,10 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.gef.DragTracker;
+import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.talend.designer.xmlmap.editor.XmlSelectEditPartTracker;
 
 /**
  * wchen class global comment. Detailled comment
@@ -63,6 +66,11 @@ public class BaseEditPart extends AbstractGraphicalEditPart implements Adapter {
     public void deactivate() {
         super.deactivate();
         ((EObject) getModel()).eAdapters().remove(this);
+    }
+
+    @Override
+    public DragTracker getDragTracker(Request request) {
+        return new XmlSelectEditPartTracker(this);
     }
 
 }

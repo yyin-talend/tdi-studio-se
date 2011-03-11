@@ -37,7 +37,6 @@ public class EqualWidthLayout extends ToolbarLayout {
         Rectangle clientArea = transposer.t(parent.getClientArea());
         int x = clientArea.x;
         int y = clientArea.y;
-        int availableHeight = clientArea.height;
 
         Dimension prefSizes[] = new Dimension[numChildren];
         Dimension minSizes[] = new Dimension[numChildren];
@@ -49,18 +48,12 @@ public class EqualWidthLayout extends ToolbarLayout {
 
         int devideWidth = (wHint - (numChildren - 1) * spacing) / numChildren;
 
-        /*
-         * Calculate sum of preferred heights of all children(totalHeight). Calculate sum of minimum heights of all
-         * children(minHeight). Cache Preferred Sizes and Minimum Sizes of all children.
-         * 
-         * totalHeight is the sum of the preferred heights of all children totalMinHeight is the sum of the minimum
-         * heights of all children prefMinSumHeight is the sum of the difference between all children's preferred
-         * heights and minimum heights. (This is used as a ratio to calculate how much each child will shrink).
-         */
         IFigure child;
         int totalHeight = 0;
         int totalMinHeight = 0;
         int prefMinSumHeight = 0;
+
+        int maxHeightInRow = 0;
 
         for (int i = 0; i < numChildren; i++) {
             child = (IFigure) children.get(i);
@@ -68,36 +61,23 @@ public class EqualWidthLayout extends ToolbarLayout {
             prefSizes[i] = transposer.t(getChildPreferredSize(child, wHint, hHint));
             minSizes[i] = transposer.t(getChildMinimumSize(child, wHint, hHint));
 
+            maxHeightInRow = Math.max(maxHeightInRow, prefSizes[i].height);
+
             totalHeight += prefSizes[i].height;
             totalMinHeight += minSizes[i].height;
         }
         totalHeight += (numChildren - 1) * spacing;
         totalMinHeight += (numChildren - 1) * spacing;
         prefMinSumHeight = totalHeight - totalMinHeight;
-        /*
-         * The total amount that the children must be shrunk is the sum of the preferred Heights of the children minus
-         * Max(the available area and the sum of the minimum heights of the children).
-         * 
-         * amntShrinkHeight is the combined amount that the children must shrink amntShrinkCurrentHeight is the amount
-         * each child will shrink respectively
-         */
-        int amntShrinkHeight = totalHeight - Math.max(availableHeight, totalMinHeight);
-
-        if (amntShrinkHeight < 0) {
-            amntShrinkHeight = 0;
-        }
 
         for (int i = 0; i < numChildren; i++) {
             int amntShrinkCurrentHeight = 0;
             int prefHeight = prefSizes[i].height;
             int minHeight = minSizes[i].height;
             int prefWidth = prefSizes[i].width;
-            int minWidth = minSizes[i].width;
-            Rectangle newBounds = new Rectangle(x, y, prefWidth, prefHeight);
+            Rectangle newBounds = new Rectangle(x, y, prefWidth, maxHeightInRow);
 
             child = (IFigure) children.get(i);
-            if (prefMinSumHeight != 0)
-                amntShrinkCurrentHeight = (prefHeight - minHeight) * amntShrinkHeight / (prefMinSumHeight);
 
             int width = Math.min(prefWidth, transposer.t(child.getMaximumSize()).width);
             if (matchWidth)
@@ -121,7 +101,6 @@ public class EqualWidthLayout extends ToolbarLayout {
             newBounds.height -= amntShrinkCurrentHeight;
             child.setBounds(transposer.t(newBounds));
 
-            amntShrinkHeight -= amntShrinkCurrentHeight;
             prefMinSumHeight -= (prefHeight - minHeight);
 
             x = x + newBounds.width + spacing;
@@ -149,7 +128,10 @@ public class EqualWidthLayout extends ToolbarLayout {
             prefSize = calculateChildrenSize(children, wHint, prefSize.width, true);
         }
 
-        prefSize.height += Math.max(0, children.size() - 1) * spacing;
+        if (!isHorizontal()) {
+            prefSize.height += Math.max(0, children.size() - 1) * spacing;
+        }
+
         return transposer.t(prefSize).expand(insets.getWidth(), insets.getHeight()).union(getBorderPreferredSize(container));
     }
 

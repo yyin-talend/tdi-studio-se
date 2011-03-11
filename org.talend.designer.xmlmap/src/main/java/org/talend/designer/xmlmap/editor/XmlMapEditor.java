@@ -35,7 +35,9 @@ import org.talend.designer.xmlmap.dnd.XmlDropTargetListener;
 import org.talend.designer.xmlmap.editor.actions.CreateAttributeAction;
 import org.talend.designer.xmlmap.editor.actions.CreateElementAction;
 import org.talend.designer.xmlmap.editor.actions.DeleteTreeNodeAction;
+import org.talend.designer.xmlmap.editor.actions.ImportTreeFromRepository;
 import org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml;
+import org.talend.designer.xmlmap.editor.actions.OutputImportTreeFromRepository;
 import org.talend.designer.xmlmap.editor.actions.OutputImportTreeFromXml;
 import org.talend.designer.xmlmap.editor.actions.SetGroupAction;
 import org.talend.designer.xmlmap.editor.actions.SetLoopAction;
@@ -121,6 +123,17 @@ public class XmlMapEditor extends GraphicalEditor {
         getActionRegistry().registerAction(groupAction);
         getSelectionActions().add(groupAction.getId());
 
+        ImportTreeFromRepository importFromRepository = new ImportTreeFromRepository(this, getGraphicalViewer().getControl()
+                .getShell());
+        importFromRepository.setMapperManager(mapperManager);
+        getActionRegistry().registerAction(importFromRepository);
+        getSelectionActions().add(importFromRepository.getId());
+
+        OutputImportTreeFromRepository outputImportFromRepository = new OutputImportTreeFromRepository(this, getGraphicalViewer()
+                .getControl().getShell());
+        outputImportFromRepository.setMapperManager(mapperManager);
+        getActionRegistry().registerAction(outputImportFromRepository);
+        getSelectionActions().add(outputImportFromRepository.getId());
     }
 
     /**
@@ -230,61 +243,98 @@ public class XmlMapEditor extends GraphicalEditor {
                         OutputImportTreeFromXml importAction = (OutputImportTreeFromXml) getActionRegistry().getAction(
                                 OutputImportTreeFromXml.ID);
                         importAction.update();
-                        menu.add(importAction);
+                        if (importAction.isEnabled()) {
+                            menu.add(importAction);
+                        }
 
                         CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(
                                 CreateElementAction.ID);
                         createElement.update();
                         createElement.setInput(false);
-                        menu.add(createElement);
+                        if (createElement.isEnabled()) {
+                            menu.add(createElement);
+                        }
 
                         CreateAttributeAction createAttribute = (CreateAttributeAction) getActionRegistry().getAction(
                                 CreateAttributeAction.ID);
                         createAttribute.update();
                         createAttribute.setInput(false);
-                        menu.add(createAttribute);
+                        if (createAttribute.isEnabled()) {
+                            menu.add(createAttribute);
+                        }
 
                         DeleteTreeNodeAction action = (DeleteTreeNodeAction) getActionRegistry().getAction(
                                 DeleteTreeNodeAction.ID);
                         action.update();
                         action.setInput(false);
-                        menu.add(action);
+                        if (action.isEnabled()) {
+                            menu.add(action);
+                        }
 
                         SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
                         loopAction.update();
-                        menu.add(loopAction);
+                        if (loopAction.isEnabled()) {
+                            menu.add(loopAction);
+                        }
 
                         SetGroupAction grouptAction = (SetGroupAction) getActionRegistry().getAction(SetGroupAction.ID);
                         grouptAction.update();
-                        menu.add(grouptAction);
+                        if (grouptAction.isEnabled()) {
+                            menu.add(grouptAction);
+                        }
+
+                        OutputImportTreeFromRepository importFromRepository = (OutputImportTreeFromRepository) getActionRegistry()
+                                .getAction(OutputImportTreeFromRepository.ID);
+                        importFromRepository.update();
+                        if (importFromRepository.isEnabled()) {
+                            menu.add(importFromRepository);
+                        }
+
                     }
 
                 } else if (selectedEditParts.get(0) instanceof TreeNodeEditPart) {
                     ImportTreeFromXml importAction = (ImportTreeFromXml) getActionRegistry().getAction(ImportTreeFromXml.ID);
                     importAction.update();
-                    menu.add(importAction);
+                    if (importAction.isEnabled()) {
+                        menu.add(importAction);
+                    }
 
                     CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(
                             CreateElementAction.ID);
                     createElement.setInput(true);
                     createElement.update();
-                    menu.add(createElement);
+                    if (createElement.isEnabled()) {
+                        menu.add(createElement);
+                    }
 
                     CreateAttributeAction createAttribute = (CreateAttributeAction) getActionRegistry().getAction(
                             CreateAttributeAction.ID);
                     createAttribute.setInput(true);
                     createAttribute.update();
-                    menu.add(createAttribute);
+                    if (createAttribute.isEnabled()) {
+                        menu.add(createAttribute);
+                    }
 
                     DeleteTreeNodeAction deleteAction = (DeleteTreeNodeAction) getActionRegistry().getAction(
                             DeleteTreeNodeAction.ID);
                     deleteAction.setInput(true);
                     deleteAction.update();
-                    menu.add(deleteAction);
+                    if (deleteAction.isEnabled()) {
+                        menu.add(deleteAction);
+                    }
 
                     SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
                     loopAction.update();
-                    menu.add(loopAction);
+                    if (loopAction.isEnabled()) {
+                        menu.add(loopAction);
+                    }
+
+                    ImportTreeFromRepository importFromRepository = (ImportTreeFromRepository) getActionRegistry().getAction(
+                            ImportTreeFromRepository.ID);
+                    importFromRepository.update();
+                    if (importFromRepository.isEnabled()) {
+                        menu.add(importFromRepository);
+                    }
                 }
             }
 

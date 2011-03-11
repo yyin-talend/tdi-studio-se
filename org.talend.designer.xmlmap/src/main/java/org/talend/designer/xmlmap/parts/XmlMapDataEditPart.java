@@ -78,8 +78,6 @@ public class XmlMapDataEditPart extends BaseEditPart {
         inputZone.setLayoutManager(new InOutZoneLayout());
 
         inputToolBar = new InputZoneToolBar(this);
-        inputToolBar.setMoveUpEnable(false);
-        inputToolBar.setMoveDownEnable(false);
         inputZone.add(inputToolBar);
 
         inputScroll = new ScrollPane();
@@ -191,7 +189,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
     }
 
     @Override
-    protected List getModelChildren() {
+    public List getModelChildren() {
         List children = new ArrayList();
         children.addAll(((XmlMapData) getModel()).getInputTrees());
         children.addAll(((XmlMapData) getModel()).getOutputTrees());

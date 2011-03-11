@@ -12,21 +12,27 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.treetools;
 
-import org.eclipse.draw2d.ColorConstants;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseListener;
-import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.designer.xmlmap.figures.CenterVarFigure;
+import org.talend.designer.xmlmap.figures.layout.TreeToolBarLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.parts.VarNodeEditPart;
+import org.talend.designer.xmlmap.parts.VarTableEditPart;
 import org.talend.designer.xmlmap.ui.resource.ImageInfo;
 import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -36,9 +42,11 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
  */
 public class VarToolBarFigure extends Figure {
 
-    protected ImageFigure add, remove, move_up, move_down, miniSize;
+    protected ToolBarButtonImageFigure add, remove, move_up, move_down, miniSize;
 
     protected boolean newStateIsMinimized;
+
+    private VarTableEditPart tablePart;
 
     private VarTable parentTable;
 
@@ -50,8 +58,9 @@ public class VarToolBarFigure extends Figure {
 
     private static Label restoretooltip = new Label("Restore");
 
-    public VarToolBarFigure(VarTable parentTable) {
-        this.parentTable = parentTable;
+    public VarToolBarFigure(VarTableEditPart tablePart) {
+        this.tablePart = tablePart;
+        this.parentTable = (VarTable) tablePart.getModel();
         newStateIsMinimized = parentTable.isMinimized();
         createToolbar();
     }
@@ -60,20 +69,19 @@ public class VarToolBarFigure extends Figure {
      * DOC hywang Comment method "createToolbar".
      */
     protected void createToolbar() {
-        ToolbarLayout manager = new ToolbarLayout();
-        manager.setVertical(false);
+        TreeToolBarLayout manager = new TreeToolBarLayout();
         this.setLayoutManager(manager);
-        add = new ToolBarButtonImageFigure(ImageProvider.getImage(EImage.ADD_ICON));
-        remove = new ToolBarButtonImageFigure(ImageProvider.getImage(EImage.MINUS_ICON));
+        add = new AddButton();
+        remove = new RemoveButton();
         remove.setEnabled(false);
-        move_up = new ToolBarButtonImageFigure(ImageProvider.getImage(EImage.UP_ICON));
+        move_up = new MoveUpButton();
         move_up.setEnabled(false);
-        move_down = new ToolBarButtonImageFigure(ImageProvider.getImage(EImage.DOWN_ICON));
+        move_down = new MoveDownButton();
         move_down.setEnabled(false);
         if (newStateIsMinimized) {
-            miniSize = new ToolBarButtonImageFigure(restorImage);
+            miniSize = new MinSizeButton(restorImage);
         } else if (!newStateIsMinimized) {
-            miniSize = new ToolBarButtonImageFigure(miniImage);
+            miniSize = new MinSizeButton(miniImage);
         }
         setToolTips();
         this.add(add);
@@ -81,98 +89,211 @@ public class VarToolBarFigure extends Figure {
         this.add(move_up);
         this.add(move_down);
         this.add(miniSize);
-        addClickListeners();
     }
 
-    /**
-     * DOC Administrator Comment method "addClickListeners".
-     */
-    private void addClickListeners() {
-        add.addMouseListener(new MouseListener() {
+    class AddButton extends ToolBarButtonImageFigure {
 
-            public void mouseReleased(MouseEvent me) {
-                add.setBackgroundColor(ColorConstants.button);
+        public AddButton() {
+            super(ImageProvider.getImage(EImage.ADD_ICON));
+        }
+
+        @Override
+        public void toolBarButtonPressed(MouseEvent me) {
+            super.toolBarButtonPressed(me);
+            if (tablePart != null) {
+                CommandStack commandStack = tablePart.getViewer().getEditDomain().getCommandStack();
+                commandStack.execute(new Command() {
+
+                    @Override
+                    public void execute() {
+                        VarNode newNode = XmlmapFactory.eINSTANCE.createVarNode();
+                        newNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                        newNode.setName(XmlMapUtil.findUniqueVarColumnName("Var", parentTable));
+                        parentTable.getNodes().add(newNode);
+                        parentTable.setMinimized(false);
+
+                        EditPart toSelect = null;
+
+                        int index = parentTable.getNodes().indexOf(newNode);
+                        if (index < tablePart.getChildren().size()) {
+                            toSelect = (EditPart) tablePart.getChildren().get(index);
+                            tablePart.getViewer().select(toSelect);
+                        }
+
+                        if (!remove.isEnabled()) {
+                            remove.setEnabled(true);
+                        }
+
+                    }
+                });
             }
+        }
+    }
 
-            public void mousePressed(MouseEvent me) {
-                add.setBackgroundColor(ColorConstants.buttonDarkest);
-                VarNode newNode = XmlmapFactory.eINSTANCE.createVarNode();
-                newNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                newNode.setName(XmlMapUtil.findUniqueVarColumnName("Var", parentTable));
-                parentTable.getNodes().add(newNode);
-                parentTable.setMinimized(false);
-                // VarTableContainerFigure varTableContainerFigure = ((CenterVarFigure)
-                // ButtonsImageToolBarFigure.this.getParent()
-                // .getParent()).getVarTableContainerFigure();
-                // int tableContainerHeight = varTableContainerFigure.getPreferredSize().height;
-                // for (IFigure current : (List<IFigure>) varTableContainerFigure.getChildren()) {
-                // tableContainerHeight = tableContainerHeight + current.getPreferredSize().height;
-                // }
-                // varTableContainerFigure.setPreferredSize(width, tableContainerHeight);
-                // varTableContainerFigure.validate();
-                if (!remove.isEnabled()) {
-                    remove.setEnabled(true);
+    class RemoveButton extends ToolBarButtonImageFigure {
+
+        public RemoveButton() {
+            super(ImageProvider.getImage(EImage.MINUS_ICON));
+        }
+
+        @Override
+        public void toolBarButtonPressed(MouseEvent me) {
+            super.toolBarButtonPressed(me);
+            if (tablePart != null) {
+                CommandStack commandStack = tablePart.getViewer().getEditDomain().getCommandStack();
+                commandStack.execute(new Command() {
+
+                    @Override
+                    public void execute() {
+                        List selectedEditParts = tablePart.getViewer().getSelectedEditParts();
+                        final List<VarNode> toRemove = new ArrayList<VarNode>();
+                        for (Object obj : selectedEditParts) {
+                            if (obj instanceof VarNodeEditPart) {
+                                VarNode model = (VarNode) ((VarNodeEditPart) obj).getModel();
+                                toRemove.add(model);
+                                XmlMapUtil.detachConnectionsSouce(model, (XmlMapData) parentTable.eContainer());
+                                XmlMapUtil.detachConnectionsTarget(model, (XmlMapData) parentTable.eContainer());
+                            }
+                        }
+                        parentTable.getNodes().removeAll(toRemove);
+
+                        if (!tablePart.getChildren().isEmpty()) {
+                            tablePart.getViewer().select(
+                                    (EditPart) tablePart.getChildren().get(tablePart.getChildren().size() - 1));
+                        } else {
+                            remove.setEnabled(false);
+                        }
+
+                    }
+                });
+
+            }
+        }
+    }
+
+    class MoveUpButton extends ToolBarButtonImageFigure {
+
+        public MoveUpButton() {
+            super(ImageProvider.getImage(EImage.UP_ICON));
+        }
+
+        @Override
+        public void toolBarButtonPressed(MouseEvent me) {
+            super.toolBarButtonPressed(me);
+
+            CommandStack commandStack = tablePart.getViewer().getEditDomain().getCommandStack();
+            commandStack.execute(new Command() {
+
+                @Override
+                public void execute() {
+                    List selectedEditParts = tablePart.getViewer().getSelectedEditParts();
+                    List<Integer> indexToMove = new ArrayList<Integer>();
+                    EList<VarNode> nodes = parentTable.getNodes();
+                    for (int i = 0; i < selectedEditParts.size(); i++) {
+                        Object obj = selectedEditParts.get(i);
+                        if (obj instanceof VarNodeEditPart) {
+                            VarNode node = (VarNode) ((VarNodeEditPart) obj).getModel();
+                            int indexOf = nodes.indexOf(node);
+                            if (indexOf != -1 && indexOf > 0) {
+                                indexToMove.add(indexOf);
+                            }
+                        }
+                    }
+
+                    Collections.sort(indexToMove);
+
+                    for (int i = 0; i < indexToMove.size(); i++) {
+                        int index = indexToMove.get(i);
+                        VarNode temp = nodes.get(index);
+                        nodes.remove(temp);
+                        nodes.add(index - 1, temp);
+                    }
+
+                    for (int i = 0; i < indexToMove.size(); i++) {
+                        EditPart part = (EditPart) tablePart.getChildren().get(indexToMove.get(i) - 1);
+                        tablePart.getViewer().appendSelection(part);
+                    }
+
                 }
-            }
+            });
 
-            public void mouseDoubleClicked(MouseEvent me) {
-                // TODO Auto-generated method stub
+        }
+    }
 
-            }
-        });
+    class MoveDownButton extends ToolBarButtonImageFigure {
 
-        remove.addMouseListener(new MouseListener() {
+        public MoveDownButton() {
+            super(ImageProvider.getImage(EImage.DOWN_ICON));
+        }
 
-            public void mouseReleased(MouseEvent me) {
-                remove.setBackgroundColor(ColorConstants.button);
-            }
+        @Override
+        public void toolBarButtonPressed(MouseEvent me) {
+            super.toolBarButtonPressed(me);
 
-            public void mousePressed(MouseEvent me) {
-                remove.setBackgroundColor(ColorConstants.buttonDarkest);
-                CenterVarFigure centerVarFigure = (CenterVarFigure) remove.getParent().getParent().getParent();
-                Figure columnsContainer = centerVarFigure.getVarTableContainerFigure().getColumnsContainer();
-                for (VarNode nodeToDelete : centerVarFigure.getSelectionNodes()) {
-                    XmlMapUtil.detachConnectionsSouce(nodeToDelete, (XmlMapData) parentTable.eContainer());
-                    nodeToDelete.getIncomingConnections().clear();
-                    XmlMapUtil.detachConnectionsTarget(nodeToDelete, (XmlMapData) parentTable.eContainer());
-                    nodeToDelete.getOutgoingConnections().clear();
-                    parentTable.getNodes().remove(nodeToDelete);
+            CommandStack commandStack = tablePart.getViewer().getEditDomain().getCommandStack();
+            commandStack.execute(new Command() {
+
+                @Override
+                public void execute() {
+                    List selectedEditParts = tablePart.getViewer().getSelectedEditParts();
+                    List<Integer> indexToMove = new ArrayList<Integer>();
+                    EList<VarNode> nodes = parentTable.getNodes();
+                    for (int i = 0; i < selectedEditParts.size(); i++) {
+                        Object obj = selectedEditParts.get(i);
+                        if (obj instanceof VarNodeEditPart) {
+                            VarNode node = (VarNode) ((VarNodeEditPart) obj).getModel();
+                            int indexOf = nodes.indexOf(node);
+                            if (indexOf != -1 && indexOf < nodes.size() - 1) {
+                                indexToMove.add(indexOf);
+                            }
+                        }
+                    }
+                    Collections.sort(indexToMove);
+                    Collections.reverse(indexToMove);
+
+                    for (int i = 0; i < indexToMove.size(); i++) {
+                        int index = indexToMove.get(i);
+                        VarNode temp = nodes.get(index);
+                        nodes.remove(temp);
+                        nodes.add(index + 1, temp);
+                    }
+
+                    for (int i = 0; i < indexToMove.size(); i++) {
+                        EditPart part = (EditPart) tablePart.getChildren().get(indexToMove.get(i) + 1);
+                        tablePart.getViewer().appendSelection(part);
+                    }
                 }
-                if (columnsContainer.getChildren().isEmpty()) {
-                    remove.setEnabled(false);
+            });
+
+        }
+    }
+
+    class MinSizeButton extends ToolBarButtonImageFigure {
+
+        public MinSizeButton(Image image) {
+            super(image);
+        }
+
+        @Override
+        public void toolBarButtonPressed(MouseEvent me) {
+            super.toolBarButtonPressed(me);
+            CommandStack commandStack = tablePart.getViewer().getEditDomain().getCommandStack();
+            commandStack.execute(new Command() {
+
+                @Override
+                public void execute() {
+
+                    parentTable.setMinimized(!parentTable.isMinimized());
+                    if (parentTable.isMinimized()) {
+                        miniSize.setImage(restorImage);
+                    } else {
+                        miniSize.setImage(miniImage);
+                    }
+                    tablePart.getViewer().deselectAll();
                 }
-            }
+            });
 
-            public void mouseDoubleClicked(MouseEvent me) {
-
-            }
-        });
-
-        miniSize.addMouseListener(new MouseListener() {
-
-            public void mousePressed(MouseEvent me) {
-                boolean isMini = parentTable.isMinimized();
-                if (isMini) {
-                    parentTable.setMinimized(false);
-                    // miniSize.setImage(miniImage);
-                    // miniSize.setToolTip(minitooltip);
-                }
-                if (!isMini) {
-                    parentTable.setMinimized(true);
-                    // miniSize.setImage(restorImage);
-                    // miniSize.setToolTip(restoretooltip);
-                }
-            }
-
-            public void mouseReleased(MouseEvent me) {
-            }
-
-            public void mouseDoubleClicked(MouseEvent me) {
-
-            }
-
-        });
-
+        }
     }
 
     private void setToolTips() {
@@ -195,48 +316,16 @@ public class VarToolBarFigure extends Figure {
         }
     }
 
-    public ImageFigure getAdd() {
-        return this.add;
+    public void setRemoveEnable(boolean value) {
+        this.remove.setEnabled(value);
     }
 
-    public ImageFigure getRemove() {
-        return this.remove;
+    public void setMoveUpEnable(boolean value) {
+        this.move_up.setEnabled(value);
     }
 
-    public ImageFigure getMove_up() {
-        return this.move_up;
-    }
-
-    public ImageFigure getMove_down() {
-        return this.move_down;
-    }
-
-    public ImageFigure getMiniSize() {
-        return this.miniSize;
-    }
-
-    public boolean isNewStateIsMinimized() {
-        return this.newStateIsMinimized;
-    }
-
-    public VarTable getParentTable() {
-        return this.parentTable;
-    }
-
-    public Image getRestorImage() {
-        return this.restorImage;
-    }
-
-    public Image getMiniImage() {
-        return this.miniImage;
-    }
-
-    public static Label getMinitooltip() {
-        return minitooltip;
-    }
-
-    public static Label getRestoretooltip() {
-        return restoretooltip;
+    public void setMoveDownEnable(boolean value) {
+        this.move_down.setEnabled(value);
     }
 
 }

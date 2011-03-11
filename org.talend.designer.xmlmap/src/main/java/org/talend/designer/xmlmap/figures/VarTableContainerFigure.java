@@ -46,6 +46,7 @@ public class VarTableContainerFigure extends Figure {
      * DOC Administrator Comment method "createContents".
      */
     protected void createContents() {
+
         this.setLayoutManager(new ToolbarLayout() {
 
             @Override

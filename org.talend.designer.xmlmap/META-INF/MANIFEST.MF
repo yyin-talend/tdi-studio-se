@@ -22,5 +22,6 @@ Require-Bundle: org.eclipse.ui,
  org.talend.commons.ui,
  org.talend.metadata.managment.ui,
  org.talend.designer.codegen,
- org.talend.designer.components.localprovider
+ org.talend.designer.components.localprovider,
+ org.talend.repository
 Bundle-ActivationPolicy: lazy

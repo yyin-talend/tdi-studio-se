@@ -50,7 +50,7 @@ public class ImportTreeFromXml extends SelectionAction {
         super(part);
         this.shell = shell;
         setId(ID);
-        setText("Import Xml");
+        setText("Import From File");
     }
 
     @Override

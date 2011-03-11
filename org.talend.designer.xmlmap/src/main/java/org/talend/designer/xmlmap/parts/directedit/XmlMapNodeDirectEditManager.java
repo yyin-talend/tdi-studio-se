@@ -355,16 +355,6 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                             avilable.add(matchingMode);
                         }
                     }
-
-                    // if (matchingMode == XML_MAP_MATCHING_MODE.ALL_ROWS
-                    // && !inputTree.getMatchingMode().equals(XML_MAP_MATCHING_MODE.ALL_ROWS.toString())
-                    // || matchingMode != XML_MAP_MATCHING_MODE.ALL_ROWS
-                    // && !inputTree.getMatchingMode().equals(XML_MAP_MATCHING_MODE.ALL_ROWS.toString())) {
-                    // // avilable.add(matchingMode);
-                    // } else {
-                    // avilable.add(matchingMode);
-                    // }
-
                 }
             }
         }
@@ -372,4 +362,12 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
         return avilable.toArray(new IUIMatchingMode[avilable.size()]);
     }
 
+    @Override
+    public void commit() {
+        super.commit();
+    }
+
+    public void showFeedback() {
+        getEditPart().showSourceFeedback(getDirectEditRequest());
+    }
 }

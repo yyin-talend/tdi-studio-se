@@ -21,6 +21,10 @@ import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
  */
 public class VarNodeTextLabel extends Label implements ITextCell {
 
+    public VarNodeTextLabel() {
+        setDirectEditType(DirectEditType.NODE_NAME);
+    }
+
     private DirectEditType type;
 
     public void setDirectEditType(DirectEditType type) {

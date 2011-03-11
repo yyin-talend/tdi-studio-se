@@ -91,29 +91,6 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
     }
 
     @Override
-    protected void removeChildVisual(EditPart childEditPart) {
-        // remove expression label when remove a treenode
-        OutputTreeNodeEditPart childPart = (OutputTreeNodeEditPart) childEditPart;
-        OutputTreeNodeFigure rootOutputTreeNodeFigure = (OutputTreeNodeFigure) findRootTreeNodeFigure(childPart.getFigure());
-        if (rootOutputTreeNodeFigure != null) {
-            Figure rootOutputTreeNodeNameFigure = rootOutputTreeNodeFigure.getExpressionContainer();
-            if (rootOutputTreeNodeNameFigure.getChildren() != null) {
-                Figure expressionFigure = null;
-                for (Object figure : rootOutputTreeNodeNameFigure.getChildren()) {
-                    Object object = getViewer().getVisualPartMap().get(figure);
-                    if (object == childEditPart) {
-                        expressionFigure = (Figure) figure;
-                    }
-                }
-                rootOutputTreeNodeNameFigure.getChildren().remove(expressionFigure);
-                getViewer().getVisualPartMap().remove(expressionFigure);
-            }
-        }
-
-        super.removeChildVisual(childEditPart);
-    }
-
-    @Override
     public IFigure getContentPane() {
         if (getFigure() instanceof OutputTreeNodeFigure) {
             return ((OutputTreeNodeFigure) getFigure()).getContentPane();

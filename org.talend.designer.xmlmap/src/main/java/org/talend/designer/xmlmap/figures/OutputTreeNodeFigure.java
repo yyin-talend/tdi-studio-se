@@ -23,6 +23,8 @@ import org.talend.designer.xmlmap.figures.layout.ExpressionLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
+import org.talend.designer.xmlmap.ui.resource.ColorInfo;
+import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -69,6 +71,8 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
             expressionContainer.setLayoutManager(new ExpressionLayout());
             this.add(expressionContainer);
             ExpressionFigure figure = new ExpressionFigure();
+            figure.setOpaque(true);
+            figure.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_EXPREESION_DISABLE));
             expressionContainer.add(figure, 0);
 
             treeBranch = new XmlTreeRoot(new TreeBranchFigure(treeNode), XmlTreeBranch.STYLE_ROW_HANGING);
@@ -89,10 +93,6 @@ public class OutputTreeNodeFigure extends TreeNodeFigure {
         } else {
             return treeBranch.getContentsPane();
         }
-    }
-
-    public Label getColumnExpressionFigure() {
-        return columnExpressionFigure;
     }
 
     public XmlTreeBranch getTreeBranch() {

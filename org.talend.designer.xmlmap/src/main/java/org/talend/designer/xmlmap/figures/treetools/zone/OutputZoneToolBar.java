@@ -13,12 +13,15 @@
 package org.talend.designer.xmlmap.figures.treetools.zone;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.Image;
@@ -83,7 +86,14 @@ public class OutputZoneToolBar extends Figure {
                 minimized = false;
             }
         }
-        min_size = new MinSizeButton();
+
+        Image image = null;
+        if (minimized) {
+            image = restorImage;
+        } else {
+            image = miniImage;
+        }
+        min_size = new MinSizeButton(image);
         if (mapData.getOutputTrees().isEmpty()) {
             min_size.setEnabled(false);
         }
@@ -91,6 +101,9 @@ public class OutputZoneToolBar extends Figure {
 
         auto_map = new AutoMapButton();
         this.add(auto_map);
+        if (mapData.getOutputTrees().isEmpty()) {
+            min_size.setEnabled(false);
+        }
 
     }
 
@@ -137,6 +150,11 @@ public class OutputZoneToolBar extends Figure {
                             manager.getMapperComponent().getMetadataList().add(metadataTable);
                             manager.getMapperComponent().getProcess().addUniqueConnectionName(outputName);
                             mapDataPart.getViewer().setFocus(mapDataPart);
+
+                            if (!min_size.isEnabled()) {
+                                min_size.setEnabled(true);
+                            }
+
                         }
 
                     }
@@ -182,6 +200,9 @@ public class OutputZoneToolBar extends Figure {
                             mapData.getOutputTrees().removeAll(toRemove);
                         }
 
+                        if (mapData.getOutputTrees().isEmpty() && min_size.isEnabled()) {
+                            min_size.setEnabled(false);
+                        }
                     }
                 });
 
@@ -211,19 +232,28 @@ public class OutputZoneToolBar extends Figure {
                     }
                 }
             }
-
+            Arrays.sort(indexToChange);
             CommandStack commandStack = mapDataPart.getViewer().getEditDomain().getCommandStack();
             commandStack.execute(new Command() {
 
                 @Override
                 public void execute() {
                     List<OutputXmlTree> outputTrees = mapData.getOutputTrees();
+                    List<OutputXmlTree> movedObjects = new ArrayList<OutputXmlTree>();
                     for (int i = 0; i < indexToChange.length; i++) {
                         if (indexToChange[i] != null) {
                             int index = indexToChange[i];
                             OutputXmlTree temp = outputTrees.get(index);
+                            movedObjects.add(temp);
                             outputTrees.remove(temp);
                             outputTrees.add(index - 1, temp);
+                        }
+                    }
+
+                    for (OutputXmlTree tree : movedObjects) {
+                        int indexOf = mapDataPart.getModelChildren().indexOf(tree);
+                        if (indexOf != -1) {
+                            mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
                         }
                     }
                 }
@@ -242,31 +272,40 @@ public class OutputZoneToolBar extends Figure {
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
             List selectedEditParts = mapDataPart.getViewer().getSelectedEditParts();
-            final Integer[] indexToChange = new Integer[selectedEditParts.size()];
+            final List<Integer> indexToChange = new ArrayList<Integer>();
             for (int i = 0; i < selectedEditParts.size(); i++) {
                 Object selection = selectedEditParts.get(i);
                 if (selection instanceof OutputXmlTreeEditPart) {
                     OutputXmlTreeEditPart part = (OutputXmlTreeEditPart) selection;
                     final OutputXmlTree tree = (OutputXmlTree) part.getModel();
                     final int indexOf = mapData.getOutputTrees().indexOf(tree);
-                    if (indexOf != -1 && indexOf != 0) {
-                        indexToChange[i] = indexOf;
+                    if (indexOf != -1 && indexOf < mapData.getOutputTrees().size() - 1) {
+                        indexToChange.add(indexOf);
                     }
                 }
             }
 
+            Collections.sort(indexToChange);
+            Collections.reverse(indexToChange);
             CommandStack commandStack = mapDataPart.getViewer().getEditDomain().getCommandStack();
             commandStack.execute(new Command() {
 
                 @Override
                 public void execute() {
                     List<OutputXmlTree> outputTrees = mapData.getOutputTrees();
-                    for (int i = 0; i < indexToChange.length; i++) {
-                        if (indexToChange[i] != null) {
-                            int index = indexToChange[i];
-                            OutputXmlTree temp = outputTrees.get(index);
-                            outputTrees.remove(temp);
-                            outputTrees.add(index + 1, temp);
+                    List<OutputXmlTree> movedObjects = new ArrayList<OutputXmlTree>();
+                    for (int i = 0; i < indexToChange.size(); i++) {
+                        int index = indexToChange.get(i);
+                        OutputXmlTree temp = outputTrees.get(index);
+                        movedObjects.add(temp);
+                        outputTrees.remove(temp);
+                        outputTrees.add(index + 1, temp);
+                    }
+
+                    for (OutputXmlTree tree : movedObjects) {
+                        int indexOf = mapDataPart.getModelChildren().indexOf(tree);
+                        if (indexOf != -1) {
+                            mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
                         }
                     }
                 }
@@ -277,12 +316,8 @@ public class OutputZoneToolBar extends Figure {
 
     class MinSizeButton extends ToolBarButtonImageFigure {
 
-        public MinSizeButton() {
-            if (minimized) {
-                setImage(restorImage);
-            } else {
-                setImage(miniImage);
-            }
+        public MinSizeButton(Image image) {
+            super(image);
         }
 
         @Override
@@ -308,6 +343,7 @@ public class OutputZoneToolBar extends Figure {
             } else {
                 setImage(miniImage);
             }
+            mapDataPart.getViewer().deselectAll();
         }
     }
 

@@ -16,8 +16,6 @@ import java.util.List;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.EditPart;
@@ -38,7 +36,7 @@ import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 /**
  * wchen class global comment. Detailled comment
  */
-public class InputXmlTreeEditPart extends BaseEditPart {
+public class InputXmlTreeEditPart extends AbstractInOutTreeEditPart {
 
     private InputXmlTreeFigure figure;
 
@@ -48,8 +46,7 @@ public class InputXmlTreeEditPart extends BaseEditPart {
 
     @Override
     protected IFigure createFigure() {
-        figure = new InputXmlTreeFigure((InputXmlTree) getModel());
-        addFigureListener(figure);
+        figure = new InputXmlTreeFigure(this);
         return figure;
     }
 
@@ -93,6 +90,7 @@ public class InputXmlTreeEditPart extends BaseEditPart {
             case XmlmapPackage.INPUT_XML_TREE__MATCHING_MODE:
             case XmlmapPackage.INPUT_XML_TREE__INNER_JOIN:
             case XmlmapPackage.INPUT_XML_TREE__PERSISTENT:
+            case XmlmapPackage.INPUT_XML_TREE__MINIMIZED:
                 ((InputXmlTreeFigure) getFigure()).update(featureId);
             }
         }
@@ -119,30 +117,6 @@ public class InputXmlTreeEditPart extends BaseEditPart {
             }
         }
 
-    }
-
-    private void addFigureListener(final IFigure figure) {
-        figure.addMouseListener(new MouseListener() {
-
-            public void mousePressed(MouseEvent me) {
-                IFigure findFigureAt = figure.findFigureAt(me.x, me.y);
-                if (findFigureAt instanceof ExpressionFigure) {
-                    ExpressionFigure expressionFigure = (ExpressionFigure) findFigureAt;
-                    if (oldExpression == null) {
-
-                    }
-                } else {
-
-                }
-            }
-
-            public void mouseReleased(MouseEvent me) {
-            }
-
-            public void mouseDoubleClicked(MouseEvent me) {
-            }
-
-        });
     }
 
 }

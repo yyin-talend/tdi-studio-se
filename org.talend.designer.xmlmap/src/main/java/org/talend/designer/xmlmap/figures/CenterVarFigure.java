@@ -28,6 +28,9 @@ import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.treetools.VarToolBarFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
+import org.talend.designer.xmlmap.parts.VarTableEditPart;
+import org.talend.designer.xmlmap.ui.resource.ColorInfo;
+import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.ui.resource.FontInfo;
 import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
 
@@ -38,6 +41,8 @@ public class CenterVarFigure extends Figure {
 
     protected Figure header;
 
+    private VarTableEditPart tablePart;
+
     private VarTable table;
 
     protected VarTableContainerFigure VarTableContainerFigure;
@@ -46,8 +51,9 @@ public class CenterVarFigure extends Figure {
 
     private List<VarNode> selectionNodes = new ArrayList<VarNode>();
 
-    public CenterVarFigure(VarTable table) {
-        this.table = table;
+    public CenterVarFigure(VarTableEditPart tablePart) {
+        this.tablePart = tablePart;
+        this.table = (VarTable) tablePart.getModel();
         this.setOpaque(true);
         this.setBorder(new LineBorder());
         this.setBackgroundColor(ColorConstants.white);
@@ -63,7 +69,7 @@ public class CenterVarFigure extends Figure {
     protected void createComponents() {
         header = new Figure();
         header.setOpaque(true);
-        header.setBackgroundColor(ColorConstants.tooltipBackground);
+        header.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.ZONE_BACKGROUND_COLOR));
         header.setBorder(new RowBorder());
         header.setLayoutManager(new EqualWidthLayout());
         Label varText = new Label();
@@ -72,7 +78,8 @@ public class CenterVarFigure extends Figure {
         varText.setFont(erFont);
         varText.setLabelAlignment(PositionConstants.LEFT);
         varText.setBorder(new MarginBorder(5, 10, 5, -1));
-        imageButtonsFigure = new VarToolBarFigure(table);
+
+        imageButtonsFigure = new VarToolBarFigure(tablePart);
         header.add(varText);
         header.add(imageButtonsFigure);
         VarTableContainerFigure = new VarTableContainerFigure(table);
@@ -99,7 +106,7 @@ public class CenterVarFigure extends Figure {
         return this.selectionNodes;
     }
 
-    public VarToolBarFigure getImageButtonsFigure() {
+    public VarToolBarFigure getToolBarFigure() {
         return this.imageButtonsFigure;
     }
 
