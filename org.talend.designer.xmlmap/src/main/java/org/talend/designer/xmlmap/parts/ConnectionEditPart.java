@@ -17,11 +17,14 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.gef.EditPart;
+import org.talend.designer.xmlmap.figures.routers.CurveConnectionRouter;
 
 /**
  * wchen class global comment. Detailled comment
  */
 public class ConnectionEditPart extends BaseConnectionEditPart {
+
+    private CurveConnectionRouter curvrRouter;
 
     @Override
     public EditPart getSource() {
@@ -42,9 +45,10 @@ public class ConnectionEditPart extends BaseConnectionEditPart {
     protected IFigure createFigure() {
         PolylineConnection connection = new PolylineConnection();
         connection.setTargetDecoration(new PolygonDecoration());
-        // connection.setBackgroundColor(ColorConstants.yellow);
+        curvrRouter = new CurveConnectionRouter();
         connection.setForegroundColor(ColorConstants.gray);
-        connection.setLineWidth(1);
+        connection.setLineWidth(2);
+        connection.setConnectionRouter(curvrRouter);
         return connection;
     }
 

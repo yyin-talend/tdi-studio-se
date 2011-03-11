@@ -21,6 +21,7 @@ import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.TreeLayout;
@@ -102,6 +103,11 @@ public class InputXmlTreeFigure extends GenericFigure {
         this.add(scroll);
     }
 
+    @Override
+    public void setBounds(Rectangle rect) {
+        super.setBounds(rect);
+    }
+
     public IFigure getColumnContainer() {
         return this.columnContainer;
     }
@@ -109,6 +115,10 @@ public class InputXmlTreeFigure extends GenericFigure {
     public void update(int type) {
         settingContainer.update(type);
 
+    }
+
+    public InputXmlTree getInputXmlTree() {
+        return this.xmlTree;
     }
 
     class ColumnTitleFigure extends Figure {

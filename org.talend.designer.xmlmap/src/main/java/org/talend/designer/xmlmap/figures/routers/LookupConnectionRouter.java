@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.routers;
 
-import org.eclipse.draw2d.AbstractRouter;
 import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.ConnectionAnchor;
+import org.eclipse.draw2d.FanRouter;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
@@ -24,7 +24,7 @@ import org.eclipse.draw2d.geometry.Vector;
 /**
  * DOC talend class global comment. Detailled comment
  */
-public class LookupConnectionRouter extends AbstractRouter {
+public class LookupConnectionRouter extends FanRouter {
 
     private int offset;
 
@@ -62,9 +62,9 @@ public class LookupConnectionRouter extends AbstractRouter {
 
     private Point getReferrencedPoint(Point point) {
         Point refpoint = point.getCopy();
-        if (getOffset() < minOffset) {
-            setOffset(minOffset);
-        }
+        // if (getOffset() < minOffset) {
+        // setOffset(minOffset);
+        // }
         refpoint.x = refpoint.x + getOffset();
         return refpoint;
     }
@@ -100,9 +100,9 @@ public class LookupConnectionRouter extends AbstractRouter {
         ConnectionAnchor anchor = conn.getTargetAnchor();
         Point p = getEndPoint(conn);
         Rectangle rect;
-        if (anchor.getOwner() == null)
+        if (anchor.getOwner() == null) {
             rect = new Rectangle(p.x - 1, p.y - 1, 2, 2);
-        else {
+        } else {
             rect = conn.getTargetAnchor().getOwner().getBounds().getCopy();
             conn.getTargetAnchor().getOwner().translateToAbsolute(rect);
         }
