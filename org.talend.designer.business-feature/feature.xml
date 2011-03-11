@@ -116,7 +116,7 @@
       <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.emf.ui.properties" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.draw2d.ui" version="1.2.0" match="compatible"/>
-      <import plugin="org.apache.batik.ext.awt" version="1.6.0" match="equivalent"/>
+      <import plugin="org.apache.batik.ext.awt" version="1.6.0" match="greaterOrEqual"/>
       <import plugin="org.apache.batik.transcoder" version="1.6.0" match="equivalent"/>
       <import plugin="org.apache.batik.bridge" version="1.6.0" match="equivalent"/>
       <import plugin="org.apache.batik.dom" version="1.6.0" match="equivalent"/>
