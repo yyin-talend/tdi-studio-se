@@ -563,9 +563,12 @@ public class DataProcess {
                 if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                     if (multipleComponentManager.isSetConnector()) {
                         String parameterString = "SCHEMA_" + multipleComponentManager.getConnector() + ":CONNECTION"; //$NON-NLS-1$ //$NON-NLS-2$
-                        String tempLinkName = (String) previousNode.getElementParameter(parameterString).getValue();
-                        if (!connection.getName().equals(tempLinkName)) {
-                            continue;
+                        IElementParameter param = previousNode.getElementParameter(parameterString);
+                        if (param != null) {
+                            String tempLinkName = (String) param.getValue();
+                            if (!connection.getName().equals(tempLinkName)) {
+                                continue;
+                            }
                         }
                     }
                 }
@@ -775,9 +778,20 @@ public class DataProcess {
             if (multipleComponentManager.isSetConnector()) {
                 newMetadata = graphicalNode.getMetadataFromConnector(multipleComponentManager.getConnector()).clone();
             } else {
-                if (graphicalNode.getMetadataList() != null && graphicalNode.getMetadataList().size() > 0) {
-                    newMetadata = graphicalNode.getMetadataList().get(0).clone();
+                String sourceConnector = null;
+                for (IMultipleComponentParameter param : multipleComponentManager.getParamList()) {
+                    if (curItem.getName().equals(param.getTargetComponent())) {
+                        for (IElementParameter paramComp : graphicalNode.getElementParameters()) {
+                            if (param.getSourceValue().equals(paramComp.getName())) {
+                                sourceConnector = paramComp.getContext();
+                            }
+                        }
+                    }
                 }
+                if (sourceConnector == null) {
+                    sourceConnector = EConnectionType.FLOW_MAIN.getName();
+                }
+                newMetadata = graphicalNode.getMetadataFromConnector(sourceConnector).clone();
             }
             if (newMetadata == null) {
                 continue;
