@@ -91,7 +91,7 @@ import java.util.Comparator;
  * @version <%=version %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */                                
- public class <%=process.getName()%> {
+ public class <%=process.getName()%> implements TalendJob {
  	
  	public final Object obj = new Object();
  	
