@@ -41,6 +41,7 @@ public enum EInternalTemplate {
     CAMEL_HEADER("camel_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     CAMEL_FOOTER("camel_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     CAMEL_RUNIF("camel_run_if", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+	CAMEL_END_BLOCK("camel_end_block", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     
     HEADER_ADDITIONAL("header_additional", "0.0.1"); //$NON-NLS-1$ //$NON-NLS-2$
 

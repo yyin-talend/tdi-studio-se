@@ -233,6 +233,10 @@ public class CodeGenerator implements ICodeGenerator {
                                         ETypeGen.CAMEL)); // And generate the component par of code
                             } else {
                                 if(subTree.getRootNode().getIncomingConnections()!=null && subTree.getRootNode().getIncomingConnections().size()>0) {
+									if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE) && subTree.getRootNode().getIncomingConnections().get(0).getName().equals("EndBlock")) {
+                                        //If ROUTE ENBLOCK link, we generate the .end before generation the component part
+                                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_END_BLOCK, subTree));
+                                    }
                                     if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_WHEN) || subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_OTHER)) {
 										//If WHEN or OTHERWISE link, we generate the .when or the .otherwise before generation the component part
                                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_RUNIF, subTree));
