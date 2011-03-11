@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.abstractmap.ui;
+package org.talend.designer.abstractmap.ui.listener;
 
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseEvent;
@@ -25,7 +25,7 @@ import org.talend.designer.abstractmap.managers.AbstractUIManager;
 /**
  * cli class global comment. Detailled comment
  */
-public class MouseSrolledListener implements MouseWheelListener {
+public class MouseScrolledListener implements MouseWheelListener {
 
     private static final int INCREMENT = 20;
 
@@ -33,7 +33,7 @@ public class MouseSrolledListener implements MouseWheelListener {
 
     private AbstractUIManager uiManager;
 
-    public MouseSrolledListener(AbstractUIManager uiManager, ScrolledComposite scrolledComposite) {
+    public MouseScrolledListener(AbstractUIManager uiManager, ScrolledComposite scrolledComposite) {
         super();
         this.uiManager = uiManager;
         this.scrolledComposite = scrolledComposite;

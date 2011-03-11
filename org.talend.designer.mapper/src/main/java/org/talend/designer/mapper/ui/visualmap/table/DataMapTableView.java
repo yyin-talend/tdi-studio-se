@@ -136,6 +136,7 @@ import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.ui.IDataMapTableView;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
 import org.talend.designer.core.utils.DesignerUtilities;
@@ -180,7 +181,7 @@ import org.talend.repository.ui.dialog.RepositoryReviewDialog;
  * $Id$
  * 
  */
-public abstract class DataMapTableView extends Composite implements PropertyChangeListener {
+public abstract class DataMapTableView extends Composite implements IDataMapTableView, PropertyChangeListener {
 
     public static final String REPOSITORY = "Repository";
 

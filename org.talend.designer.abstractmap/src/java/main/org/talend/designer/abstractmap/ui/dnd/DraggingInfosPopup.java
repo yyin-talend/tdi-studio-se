@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.mapper.ui.dnd;
+package org.talend.designer.abstractmap.ui.dnd;
 
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.swt.SWT;
@@ -24,12 +24,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.ws.WindowSystem;
-import org.talend.designer.mapper.i18n.Messages;
+import org.talend.designer.abstractmap.i18n.Messages;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
- * $Id$
+ * $Id: DraggingInfosPopup.java 54939 2011-02-11 01:34:57Z mhirt $
  * 
  */
 public final class DraggingInfosPopup {
@@ -59,7 +59,7 @@ public final class DraggingInfosPopup {
      * 
      * DOC amaumont DraggingInfosPopup class global comment. Detailled comment <br/>
      * 
-     * $Id$
+     * $Id: DraggingInfosPopup.java 54939 2011-02-11 01:34:57Z mhirt $
      * 
      */
     private class Popup extends PopupDialog {
@@ -150,8 +150,7 @@ public final class DraggingInfosPopup {
             if (isVisible != isVisible) {
                 setVisible(isVisible);
             } else {
-                mapperShell.redraw(boundsToRedraw.x, boundsToRedraw.y, boundsToRedraw.width, boundsToRedraw.height,
-                        false);
+                mapperShell.redraw(boundsToRedraw.x, boundsToRedraw.y, boundsToRedraw.width, boundsToRedraw.height, false);
             }
         }
 
@@ -341,14 +340,12 @@ public final class DraggingInfosPopup {
                     mode = Messages
                             .getString("DraggingInfosPopup.allSourceEntriesExpressionToASingleOneTargetExpressionShiftKey"); //$NON-NLS-1$
                 } else {
-                    mode = Messages
-                            .getString("DraggingInfosPopup.allSourceEntriesExpressionToASingleOneTargetExpression"); //$NON-NLS-1$
+                    mode = Messages.getString("DraggingInfosPopup.allSourceEntriesExpressionToASingleOneTargetExpression"); //$NON-NLS-1$
                 }
 
             } else {
                 if (mapOneToOneAuthorized && !WindowSystem.isGTK()) {
-                    mode = Messages
-                            .getString("DraggingInfosPopup.allSourceEntriesToASingleOneTargetExpressionShiftKey"); //$NON-NLS-1$
+                    mode = Messages.getString("DraggingInfosPopup.allSourceEntriesToASingleOneTargetExpressionShiftKey"); //$NON-NLS-1$
                 } else {
                     mode = Messages.getString("DraggingInfosPopup.allSourceEntriesToASingleOneTargetExpression"); //$NON-NLS-1$
                 }

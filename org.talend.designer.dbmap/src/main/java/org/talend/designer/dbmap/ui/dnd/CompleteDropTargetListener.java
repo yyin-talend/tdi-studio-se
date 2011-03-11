@@ -28,8 +28,14 @@ import org.talend.commons.ui.utils.TableUtils;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
+import org.talend.designer.abstractmap.managers.AbstractUIManager;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.ui.dnd.DraggedData;
+import org.talend.designer.abstractmap.ui.dnd.DraggingInfosPopup;
+import org.talend.designer.abstractmap.ui.dnd.TableEntriesTransfer;
+import org.talend.designer.abstractmap.ui.dnd.TransferableEntry;
+import org.talend.designer.abstractmap.ui.listener.DefaultDropTargetListener;
 import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
@@ -64,6 +70,16 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         this.draggableTable = draggableTable;
     }
 
+    @Override
+    protected MapperManager getMapperManager() {
+        return (MapperManager) super.getMapperManager();
+    }
+
+    @Override
+    public UIManager getUiManager() {
+        return (UIManager) super.getUiManager();
+    }
+
     public void dragEnter(DropTargetEvent event) {
         super.dragEnter(event);
         draggableTable.setFocus();
@@ -72,7 +88,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
     public void dragOver(DropTargetEvent event) {
 
         super.dragOver(event);
-        UIManager uiManager = mapperManager.getUiManager();
+        UIManager uiManager = getUiManager();
         DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
 
         // System.out.println("\n>>dragOver");
@@ -141,7 +157,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
     }
 
     private void configurePopupInfos(DropContextAnalyzer analyzer) {
-        UIManager uiManager = mapperManager.getUiManager();
+        AbstractUIManager uiManager = getUiManager();
         DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
 
         if (analyzer.isDropValid()) {
@@ -183,7 +199,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
     }
 
     private DropContextAnalyzer analyzeDropTarget(DropTargetEvent event, DraggedData draggedData) {
-        DropContextAnalyzer analyzer = new DropContextAnalyzer(draggedData, event, mapperManager);
+        DropContextAnalyzer analyzer = new DropContextAnalyzer(draggedData, event, getMapperManager());
         return analyzer;
     }
 
@@ -200,7 +216,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      * @return true if droppable
      */
     private void updateInsertionIndicator(DropTargetEvent event) {
-        UIManager uiManager = mapperManager.getUiManager();
+        UIManager uiManager = getUiManager();
         DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
 
         // ////////////////////////////////
@@ -240,8 +256,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
     }
 
     private InsertionIndicator retrieveInsertionIndicator() {
-        DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTable);
-        TablesZoneView targetTablesZoneView = mapperManager.getUiManager().getTablesZoneView(dataMapTableViewTarget);
+        DataMapTableView dataMapTableViewTarget = getMapperManager().retrieveDataMapTableView(draggableTable);
+        TablesZoneView targetTablesZoneView = getUiManager().getTablesZoneView(dataMapTableViewTarget);
         InsertionIndicator insertionIndicator = targetTablesZoneView.getInsertionIndicator();
         return insertionIndicator;
     }
@@ -254,7 +270,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         DraggedData draggedData = TableEntriesTransfer.getInstance().getDraggedData();
         DropContextAnalyzer analyzer = analyzeDropTarget(event, draggedData);
 
-        UIManager uiManager = mapperManager.getUiManager();
+        UIManager uiManager = getUiManager();
         if (!analyzer.isTableSourceAndTargetAreSame()) {
             draggableTable.deselectAll();
         }
@@ -275,12 +291,12 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
         configurePopupInfos(analyzer);
 
-        UIManager uiManager = mapperManager.getUiManager();
+        UIManager uiManager = getUiManager();
         DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
         draggingInfosPopup.updateVisibleLabels();
 
         fillEvent(event, analyzer);
-        mapperManager.getUiManager().setCurrentDragDetail(event.detail);
+        getUiManager().setCurrentDragDetail(event.detail);
     }
 
     // private void showInfos(DropTargetEvent event) {
@@ -302,7 +318,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
         retrieveInsertionIndicator().setVisible(false);
 
-        UIManager uiManager = mapperManager.getUiManager();
+        UIManager uiManager = getUiManager();
 
         DraggedData draggedData = TableEntriesTransfer.getInstance().getDraggedData();
         DropContextAnalyzer analyzer = analyzeDropTarget(event, draggedData);
@@ -312,13 +328,12 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         Point cursorPosition = new Point(event.x, event.y);
         // int startInsertAtThisIndex = getItemIndexWhereInsertFromPosition(cursorPosition);
         int startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(draggableTable, cursorPosition);
-        IDbLanguage currentLanguage = mapperManager.getCurrentLanguage();
-        DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTable);
+        IDbLanguage currentLanguage = getMapperManager().getCurrentLanguage();
+        DataMapTableView dataMapTableViewTarget = getMapperManager().retrieveDataMapTableView(draggableTable);
         Zone zoneTarget = dataMapTableViewTarget.getZone();
 
         uiManager.selectDataMapTableView(dataMapTableViewTarget, true, false);
-        MetadataTableEditorView metadataEditorView = mapperManager.getUiManager().getMetadataEditorView(
-                dataMapTableViewTarget.getZone());
+        MetadataTableEditorView metadataEditorView = getUiManager().getMetadataEditorView(dataMapTableViewTarget.getZone());
         List<TransferableEntry> transferableEntryList = draggedData.getTransferableEntryList();
         int currentIndex = startInsertAtThisIndex;
         uiManager.clearLastCreatedInOutColumnEntries();
@@ -352,7 +367,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         for (TransferableEntry transferableEntry : transferableEntryList) {
             ITableEntry tableEntrySource = transferableEntry.getTableEntrySource();
             IMetadataColumn metadataColumnDragged = transferableEntry.getMetadataColumn();
-            Zone zoneSourceEntry = transferableEntry.getZoneSourceEntry();
+            Zone zoneSourceEntry = (Zone) transferableEntry.getZoneSourceEntry();
 
             TableEntryLocation tableEntryLocationTarget = new TableEntryLocation(dataMapTableViewTarget.getDataMapTable()
                     .getName(), tableEntrySource.getName());
@@ -369,7 +384,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
             } else {
                 String columnName = transferableEntry.getTableEntrySource().getName();
-                tableEntryLocationTarget = mapperManager.findUniqueLocation(tableEntryLocationTarget,
+                tableEntryLocationTarget = getMapperManager().findUniqueLocation(tableEntryLocationTarget,
                         columnsBeingAdded.toArray(new String[0]));
                 columnName = tableEntryLocationTarget.columnName;
                 if (currentEntryTarget == null && analyzer.isMapOneToOneMode()) {
@@ -434,9 +449,9 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         uiManager.unselectAllInputMetaDataEntries();
 
         uiManager.parseAllExpressionsForAllTables();
-        mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
+        getMapperManager().getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
 
-        mapperManager.getUiManager().refreshSqlExpression();
+        getUiManager().refreshSqlExpression();
 
         uiManager.selectLinks(dataMapTableViewTarget, selectedEntries, targetTableIsFiltersTable, true);
         tableViewerCreatorTarget.getTable().setFocus();
@@ -492,7 +507,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             TableViewerCreator tableViewerCreatorTarget, ArrayList<IMetadataColumn> metadataColumnsBeingAdded
     // , MetadataEditorEvent metadataEditorEvent
     ) {
-        UIManager uiManager = mapperManager.getUiManager();
+        UIManager uiManager = getUiManager();
 
         if (metadataEditorView != null && !targetTableIsConstraintsTable) {
             metadataEditorView.getMetadataTableEditor().addAll(currentIndex, metadataColumnsBeingAdded);
@@ -502,7 +517,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             // metadataEditorEvent);
             // action.run(metadataEditorEvent);
 
-            Zone zoneTarget = mapperManager.retrieveDataMapTableView(tableViewerCreatorTarget.getTable()).getZone();
+            Zone zoneTarget = getMapperManager().retrieveDataMapTableView(tableViewerCreatorTarget.getTable()).getZone();
 
             List<IColumnEntry> lastCreatedTableEntries = uiManager.getLastCreatedInOutColumnEntries();
             for (int i = 0; i < lastCreatedTableEntries.size(); i++) {
@@ -511,7 +526,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                 if (zoneTarget == Zone.INPUTS) {
                     setDefaultOperator((InputColumnTableEntry) dataMapTableEntry);
                 }
-                DataMapTableView dataMapTableView = mapperManager.retrieveIDataMapTableView(tableEntrySource.getParent());
+                DataMapTableView dataMapTableView = getMapperManager().retrieveIDataMapTableView(tableEntrySource.getParent());
                 Zone zoneSource = dataMapTableView.getZone();
                 String location = null;
                 if (zoneSource == Zone.OUTPUTS) {
@@ -542,7 +557,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      */
     private void setDefaultOperator(InputColumnTableEntry inputEntry) {
         if (inputEntry.getOperator() == null || inputEntry.getOperator().equals("")) { //$NON-NLS-1$
-            inputEntry.setOperator(mapperManager.getCurrentLanguage().getOperatorsManager().getDefaultEqualOperator()
+            inputEntry.setOperator(getMapperManager().getCurrentLanguage().getOperatorsManager().getDefaultEqualOperator()
                     .getOperator());
         }
     }

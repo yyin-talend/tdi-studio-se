@@ -24,6 +24,8 @@ import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
+import org.talend.designer.abstractmap.ui.dnd.DraggedData;
+import org.talend.designer.abstractmap.ui.dnd.TableEntriesTransfer;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
 import org.talend.designer.dbmap.model.table.InputTable;
@@ -97,7 +99,7 @@ public class DropContextAnalyzer {
         dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(currentTableTarget);
         zoneTarget = dataMapTableViewTarget.getZone();
         draggedData = TableEntriesTransfer.getInstance().getDraggedData();
-        dataMapTableViewSource = draggedData.getDataMapTableViewSource();
+        dataMapTableViewSource = (DataMapTableView) draggedData.getDataMapTableViewSource();
         tableItemSource = draggedData.getTableItemSource();
         zoneSource = dataMapTableViewSource.getZone();
 

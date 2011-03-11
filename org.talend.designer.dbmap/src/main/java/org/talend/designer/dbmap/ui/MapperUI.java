@@ -46,7 +46,9 @@ import org.talend.commons.ui.swt.linking.BgDrawableComposite;
 import org.talend.commons.ui.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
-import org.talend.designer.abstractmap.ui.MouseSrolledListener;
+import org.talend.designer.abstractmap.ui.dnd.DraggingInfosPopup;
+import org.talend.designer.abstractmap.ui.listener.DropTargetOperationListener;
+import org.talend.designer.abstractmap.ui.listener.MouseScrolledListener;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.dbmap.external.data.ExternalDbMapUiProperties;
 import org.talend.designer.dbmap.managers.MapperManager;
@@ -56,8 +58,6 @@ import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.ui.color.ColorInfo;
 import org.talend.designer.dbmap.ui.color.ColorProviderMapper;
-import org.talend.designer.dbmap.ui.dnd.DraggingInfosPopup;
-import org.talend.designer.dbmap.ui.dnd.DropTargetOperationListener;
 import org.talend.designer.dbmap.ui.event.MouseMoveScrollZoneHelper;
 import org.talend.designer.dbmap.ui.font.FontProviderMapper;
 import org.talend.designer.dbmap.ui.footer.FooterComposite;
@@ -100,11 +100,11 @@ public class MapperUI {
 
     private ScrolledComposite sc3;
 
-    private MouseSrolledListener sc1MSListener;
+    private MouseScrolledListener sc1MSListener;
 
-    private MouseSrolledListener sc2MSListener;
+    private MouseScrolledListener sc2MSListener;
 
-    private MouseSrolledListener sc3MSListener;
+    private MouseScrolledListener sc3MSListener;
 
     private SashForm mainSashForm;
 
@@ -516,7 +516,7 @@ public class MapperUI {
         sc1.setExpandHorizontal(true);
 
         sc1.setContent(inputTablesZoneView);
-        sc1MSListener = new MouseSrolledListener(mapperManager.getUiManager(), sc1);
+        sc1MSListener = new MouseScrolledListener(mapperManager.getUiManager(), sc1);
         inputTablesZoneView.initInsertionIndicator();
 
         Control previousControl = null;
@@ -593,7 +593,7 @@ public class MapperUI {
             }
 
         });
-        sc2MSListener = new MouseSrolledListener(mapperManager.getUiManager(), sc2);
+        sc2MSListener = new MouseScrolledListener(mapperManager.getUiManager(), sc2);
         // varsTableZoneView.initInsertionIndicator();
         //
         // // final Composite finalTablesZoneViewVars = tablesZoneViewVars;
@@ -652,7 +652,7 @@ public class MapperUI {
 
         sc3.setExpandHorizontal(true);
         sc3.setContent(outputTablesZoneView);
-        sc3MSListener = new MouseSrolledListener(mapperManager.getUiManager(), sc3);
+        sc3MSListener = new MouseScrolledListener(mapperManager.getUiManager(), sc3);
         outputTablesZoneView.initInsertionIndicator();
 
         previousControl = null;
@@ -673,15 +673,15 @@ public class MapperUI {
 
     }
 
-    public MouseSrolledListener getInputMouseSrolledListener() {
+    public MouseScrolledListener getInputMouseSrolledListener() {
         return this.sc1MSListener;
     }
 
-    public MouseSrolledListener getVarMouseSrolledListener() {
+    public MouseScrolledListener getVarMouseSrolledListener() {
         return this.sc2MSListener;
     }
 
-    public MouseSrolledListener getOutputMouseSrolledListener() {
+    public MouseScrolledListener getOutputMouseSrolledListener() {
         return this.sc3MSListener;
     }
 

@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.dbmap.ui.dnd;
+package org.talend.designer.abstractmap.ui.dnd;
 
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -18,7 +18,7 @@ import org.eclipse.swt.dnd.TransferData;
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
- * $Id: TableEntriesTransfer.java 1782 2007-02-03 07:57:38Z bqian $
+ * $Id: TableEntriesTransfer.java 54939 2011-02-11 01:34:57Z mhirt $
  * 
  */
 public class TableEntriesTransfer extends ByteArrayTransfer {
@@ -66,11 +66,11 @@ public class TableEntriesTransfer extends ByteArrayTransfer {
         return new byte[0];
     }
 
-    protected DraggedData getDraggedData() {
+    public DraggedData getDraggedData() {
         return draggedData;
     }
 
-    protected void setDraggedData(DraggedData draggedData) {
+    public void setDraggedData(DraggedData draggedData) {
         this.draggedData = draggedData;
     }
 

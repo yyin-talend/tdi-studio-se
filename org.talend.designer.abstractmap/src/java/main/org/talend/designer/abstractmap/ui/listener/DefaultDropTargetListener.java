@@ -10,16 +10,23 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.dbmap.ui.dnd;
+package org.talend.designer.abstractmap.ui.listener;
 
 import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.talend.commons.ui.swt.dnd.DNDKeyAnalyzer;
-import org.talend.designer.dbmap.managers.MapperManager;
-import org.talend.designer.dbmap.managers.UIManager;
+import org.talend.designer.abstractmap.managers.AbstractMapperManager;
+import org.talend.designer.abstractmap.managers.AbstractUIManager;
+import org.talend.designer.abstractmap.ui.dnd.DraggingInfosPopup;
+import org.talend.designer.abstractmap.ui.dnd.TableEntriesTransfer;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -29,13 +36,21 @@ import org.talend.designer.dbmap.managers.UIManager;
  */
 public class DefaultDropTargetListener implements TransferDropTargetListener {
 
-    protected MapperManager mapperManager;
+    protected AbstractMapperManager mapperManager;
 
     private Point lastCursorPosition;
 
-    public DefaultDropTargetListener(MapperManager mapperManager) {
+    public DefaultDropTargetListener(AbstractMapperManager mapperManager) {
         super();
         this.mapperManager = mapperManager;
+    }
+
+    protected AbstractMapperManager getMapperManager() {
+        return this.mapperManager;
+    }
+
+    protected AbstractUIManager getUiManager() {
+        return mapperManager.getUiManager();
     }
 
     public void dragEnter(DropTargetEvent event) {
@@ -56,7 +71,7 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
     }
 
     private void setPopupVisible(boolean visible) {
-        UIManager uiManager = mapperManager.getUiManager();
+        AbstractUIManager uiManager = mapperManager.getUiManager();
         DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
         draggingInfosPopup.setVisible(visible);
     }
@@ -64,7 +79,7 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
     public void dragOperationChanged(DropTargetEvent event) {
         updatePopupPosition(event);
         detectPressedKeys(event);
-        UIManager uiManager = mapperManager.getUiManager();
+        AbstractUIManager uiManager = mapperManager.getUiManager();
 
         DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
         if (uiManager.isCtrlPressed()) {
@@ -103,7 +118,7 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
      */
     protected void detectPressedKeys(DropTargetEvent event) {
         DNDKeyAnalyzer keyAnalyzer = new DNDKeyAnalyzer(event);
-        UIManager uiManager = mapperManager.getUiManager();
+        AbstractUIManager uiManager = mapperManager.getUiManager();
         uiManager.setCtrlPressed(keyAnalyzer.isCtrlPressed());
         uiManager.setShiftPressed(keyAnalyzer.isShiftPressed());
 
@@ -112,6 +127,7 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
     public void dragOver(DropTargetEvent event) {
         // System.out.println(((DropTarget)event.widget).getControl());
         event.detail = DND.DROP_NONE;
+        autoScroll(event);
         updatePopupPosition(event);
         setPopupVisible(true);
     }
@@ -120,11 +136,73 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
 
         Point cursorPosition = new Point(event.x, event.y);
         if (!cursorPosition.equals(lastCursorPosition)) {
-            UIManager uiManager = mapperManager.getUiManager();
+            AbstractUIManager uiManager = mapperManager.getUiManager();
             DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
             draggingInfosPopup.setCursorPosition(event.x, event.y);
         }
         lastCursorPosition = cursorPosition;
+    }
+
+    private void autoScroll(DropTargetEvent event) {
+        if (lastCursorPosition == null || lastCursorPosition.y == event.y) {
+            return;
+        }
+        Composite currentComposite = null;
+        Object source = event.getSource();
+        if (source instanceof DropTarget) {
+            Control control = ((DropTarget) source).getControl();
+            if (control instanceof Composite) {
+                currentComposite = (Composite) control;
+            }
+        }
+        if (currentComposite == null) {
+            return;
+        }
+
+        ScrolledComposite parentScrolledComposite = getParentScrolledComposite(currentComposite);
+        if (parentScrolledComposite == null) {
+            return;
+        }
+        ScrollBar vBar = parentScrolledComposite.getVerticalBar();
+        int increment = event.y - lastCursorPosition.y;
+        if (increment > 0) {
+            increment = increment + 3;
+        } else {
+            increment = increment - 3;
+        }
+        Control content = parentScrolledComposite.getContent();
+        if (content != null) {
+            Point location = content.getLocation();
+            int vSelection = vBar.getSelection();
+            if (vSelection >= 0 && vSelection + increment > 0 && vSelection + increment < vBar.getMaximum()) {
+                vBar.setSelection(vSelection + increment);
+            }
+            content.setLocation(location.x, -vSelection);
+            mapperManager.getUiManager().refreshBackground(true, false);
+        }
+
+        // Event e = new Event();
+        // e.data = event.data;
+        // e.x = event.x;
+        // e.y = event.y;
+        // e.detail = event.detail;
+        // e.item = event.item;
+        // e.count = event.y > lastCursorPosition.y ? 1 : 0;
+        // e.display = event.display;
+        // e.widget = event.widget;
+        // if (parentScrolledComposite != null) {
+        // parentScrolledComposite.notifyListeners(SWT.MouseWheel, e);
+        // }
+    }
+
+    private ScrolledComposite getParentScrolledComposite(Composite composite) {
+        if (composite == null) {
+            return null;
+        }
+        if (composite instanceof ScrolledComposite) {
+            return (ScrolledComposite) composite;
+        }
+        return getParentScrolledComposite(composite.getParent());
     }
 
     public void drop(DropTargetEvent event) {

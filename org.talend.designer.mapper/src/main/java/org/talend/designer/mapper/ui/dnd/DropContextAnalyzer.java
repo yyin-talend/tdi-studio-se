@@ -27,6 +27,8 @@ import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.ui.dnd.DraggedData;
+import org.talend.designer.abstractmap.ui.dnd.TableEntriesTransfer;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
@@ -111,7 +113,7 @@ public class DropContextAnalyzer {
         }
         zoneTarget = dataMapTableViewTarget.getZone();
         draggedData = TableEntriesTransfer.getInstance().getDraggedData();
-        dataMapTableViewSource = draggedData.getDataMapTableViewSource();
+        dataMapTableViewSource = (DataMapTableView) draggedData.getDataMapTableViewSource();
         tableItemSource = draggedData.getTableItemSource();
         zoneSource = dataMapTableViewSource.getZone();
 

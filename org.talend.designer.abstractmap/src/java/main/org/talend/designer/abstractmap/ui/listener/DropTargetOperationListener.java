@@ -10,14 +10,15 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.dbmap.ui.dnd;
+package org.talend.designer.abstractmap.ui.listener;
 
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Control;
-import org.talend.designer.dbmap.managers.MapperManager;
+import org.talend.designer.abstractmap.managers.AbstractMapperManager;
+import org.talend.designer.abstractmap.ui.dnd.TableEntriesTransfer;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -33,7 +34,7 @@ public class DropTargetOperationListener {
 
     private DropTargetListener dropTargetListener;
 
-    public DropTargetOperationListener(final MapperManager mapperManager) {
+    public DropTargetOperationListener(final AbstractMapperManager mapperManager) {
         super();
         dropTargetListener = new DefaultDropTargetListener(mapperManager);
     }

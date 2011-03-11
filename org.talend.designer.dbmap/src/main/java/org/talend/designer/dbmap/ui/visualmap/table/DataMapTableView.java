@@ -91,6 +91,7 @@ import org.talend.core.model.process.Problem;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.ui.IDataMapTableView;
 import org.talend.designer.dbmap.MapperMain;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.managers.MapperManager;
@@ -122,7 +123,7 @@ import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
  * $Id: DataMapTableView.java 2010 2007-02-12 13:18:38Z amaumont $
  * 
  */
-public abstract class DataMapTableView extends Composite {
+public abstract class DataMapTableView extends Composite implements IDataMapTableView {
 
     private final Point realToolbarSize = new Point(0, 0);
 

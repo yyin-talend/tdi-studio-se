@@ -82,4 +82,5 @@ public abstract class AbstractMapperManager {
         return this.data;
     }
 
+    public abstract AbstractUIManager getUiManager();
 }

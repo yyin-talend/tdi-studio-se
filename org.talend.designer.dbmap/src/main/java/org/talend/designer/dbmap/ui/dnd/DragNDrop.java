@@ -26,6 +26,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.ui.dnd.DraggedData;
+import org.talend.designer.abstractmap.ui.dnd.DraggingInfosPopup;
+import org.talend.designer.abstractmap.ui.dnd.TableEntriesTransfer;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
 import org.talend.designer.dbmap.model.tableentry.AbstractInOutTableEntry;
@@ -68,8 +71,7 @@ public class DragNDrop {
      * @param canBeSourceOfDragging
      * @param canBeTargetOfDragging
      */
-    public DragNDrop(MapperManager mapperManager, Table draggedTable, boolean canBeSourceOfDragging,
-            boolean canBeTargetOfDragging) {
+    public DragNDrop(MapperManager mapperManager, Table draggedTable, boolean canBeSourceOfDragging, boolean canBeTargetOfDragging) {
         super();
         this.mapperManager = mapperManager;
         this.draggableTable = draggedTable;
@@ -87,8 +89,7 @@ public class DragNDrop {
             createDragSource(dragSourceListener);
         }
         if (canBeTargetOfDragging) {
-            CompleteDropTargetListener completeDropTargetListener = new CompleteDropTargetListener(mapperManager,
-                    draggedTable);
+            CompleteDropTargetListener completeDropTargetListener = new CompleteDropTargetListener(mapperManager, draggedTable);
             createDropTarget(completeDropTargetListener);
         }
 
@@ -132,8 +133,9 @@ public class DragNDrop {
                             TableItem item = tableItems[i];
                             ITableEntry dataMapTableEntry = (ITableEntry) item.getData();
                             if (dataMapTableEntry instanceof AbstractInOutTableEntry) {
-                                draggedData.addEntry(dataMapTableEntry, ((AbstractInOutTableEntry) dataMapTableEntry)
-                                        .getMetadataColumn(), dataMapTableView.getZone());
+                                draggedData.addEntry(dataMapTableEntry,
+                                        ((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn(),
+                                        dataMapTableView.getZone());
                             } else {
                                 draggedData.addEntry(dataMapTableEntry, null, dataMapTableView.getZone());
                             }

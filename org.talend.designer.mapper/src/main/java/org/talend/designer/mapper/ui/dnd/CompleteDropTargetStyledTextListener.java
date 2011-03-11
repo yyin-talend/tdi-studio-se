@@ -20,6 +20,11 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.graphics.Point;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.ui.dnd.DraggedData;
+import org.talend.designer.abstractmap.ui.dnd.DraggingInfosPopup;
+import org.talend.designer.abstractmap.ui.dnd.TableEntriesTransfer;
+import org.talend.designer.abstractmap.ui.dnd.TransferableEntry;
+import org.talend.designer.abstractmap.ui.listener.DefaultDropTargetListener;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -53,6 +58,16 @@ public class CompleteDropTargetStyledTextListener extends DefaultDropTargetListe
         this.draggableTargetControl = text;
     }
 
+    @Override
+    protected MapperManager getMapperManager() {
+        return (MapperManager) super.getMapperManager();
+    }
+
+    @Override
+    protected UIManager getUiManager() {
+        return (UIManager) super.getUiManager();
+    }
+
     public void dragEnter(DropTargetEvent event) {
         super.dragEnter(event);
         draggableTargetControl.setFocus();
@@ -61,7 +76,7 @@ public class CompleteDropTargetStyledTextListener extends DefaultDropTargetListe
     public void dragOver(DropTargetEvent event) {
 
         super.dragOver(event);
-        UIManager uiManager = mapperManager.getUiManager();
+        UIManager uiManager = getUiManager();
         DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
 
         // System.out.println("\n>>dragOver");
@@ -83,7 +98,7 @@ public class CompleteDropTargetStyledTextListener extends DefaultDropTargetListe
     }
 
     private void configurePopupInfos(DropContextAnalyzer analyzer) {
-        UIManager uiManager = mapperManager.getUiManager();
+        UIManager uiManager = getUiManager();
         DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
 
         if (analyzer.isDropValid()) {
@@ -125,7 +140,7 @@ public class CompleteDropTargetStyledTextListener extends DefaultDropTargetListe
     }
 
     private DropContextAnalyzer analyzeDropTarget(DropTargetEvent event, DraggedData draggedData) {
-        DropContextAnalyzer analyzer = new DropContextAnalyzer(draggedData, event, mapperManager);
+        DropContextAnalyzer analyzer = new DropContextAnalyzer(draggedData, event, getMapperManager());
         return analyzer;
     }
 
@@ -139,7 +154,7 @@ public class CompleteDropTargetStyledTextListener extends DefaultDropTargetListe
         // System.out.println(event);
         super.dragLeave(event);
 
-        UIManager uiManager = mapperManager.getUiManager();
+        UIManager uiManager = getUiManager();
         DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
         draggingInfosPopup.setExpressionContext(false);
         draggingInfosPopup.setInsertionEntryContext(false);
@@ -156,12 +171,12 @@ public class CompleteDropTargetStyledTextListener extends DefaultDropTargetListe
 
         configurePopupInfos(analyzer);
 
-        UIManager uiManager = mapperManager.getUiManager();
+        UIManager uiManager = getUiManager();
         DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
         draggingInfosPopup.updateVisibleLabels();
 
         fillEvent(event, analyzer);
-        mapperManager.getUiManager().setCurrentDragDetail(event.detail);
+        getUiManager().setCurrentDragDetail(event.detail);
     }
 
     // private void showInfos(DropTargetEvent event) {
@@ -181,7 +196,7 @@ public class CompleteDropTargetStyledTextListener extends DefaultDropTargetListe
 
         super.drop(event);
 
-        UIManager uiManager = mapperManager.getUiManager();
+        UIManager uiManager = getUiManager();
 
         DraggedData draggedData = TableEntriesTransfer.getInstance().getDraggedData();
         DropContextAnalyzer analyzer = analyzeDropTarget(event, draggedData);
@@ -189,13 +204,12 @@ public class CompleteDropTargetStyledTextListener extends DefaultDropTargetListe
         // System.out.println("\n>>drop");
         // System.out.println(event);
         ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
-        DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTargetControl);
+        DataMapTableView dataMapTableViewTarget = getMapperManager().retrieveDataMapTableView(draggableTargetControl);
 
         uiManager.selectDataMapTableView(dataMapTableViewTarget, true, false);
         List<TransferableEntry> transferableEntryList = draggedData.getTransferableEntryList();
 
-        ITableEntry currentEntryTarget = ((AbstractInOutTable) dataMapTableViewTarget.getDataMapTable())
-                .getExpressionFilter();
+        ITableEntry currentEntryTarget = ((AbstractInOutTable) dataMapTableViewTarget.getDataMapTable()).getExpressionFilter();
 
         boolean overwrite = false;
         if (analyzer.isOverwriteExpression()) {
@@ -203,7 +217,7 @@ public class CompleteDropTargetStyledTextListener extends DefaultDropTargetListe
         }
         for (TransferableEntry transferableEntry : transferableEntryList) {
             ITableEntry tableEntrySource = transferableEntry.getTableEntrySource();
-            Zone zoneSourceEntry = transferableEntry.getZoneSourceEntry();
+            Zone zoneSourceEntry = (Zone) transferableEntry.getZoneSourceEntry();
 
             modifyExistingExpression(currentLanguage, currentEntryTarget, tableEntrySource, overwrite, zoneSourceEntry);
 
@@ -217,15 +231,15 @@ public class CompleteDropTargetStyledTextListener extends DefaultDropTargetListe
         uiManager.unselectAllInputMetaDataEntries();
 
         // uiManager.parseAllExpressionsForAllTables();
-        mapperManager.getProblemsManager().checkProblemsForTableEntry(currentEntryTarget, true);
+        getMapperManager().getProblemsManager().checkProblemsForTableEntry(currentEntryTarget, true);
 
         uiManager.selectLinks(dataMapTableViewTarget, Arrays.<ITableEntry> asList(currentEntryTarget), true, false);
 
         uiManager.setDragging(false);
     }
 
-    private void modifyExistingExpression(ILanguage currentLanguage, ITableEntry entryTarget,
-            ITableEntry tableEntrySource, boolean overwriteExpression, Zone zoneSourceEntry) {
+    private void modifyExistingExpression(ILanguage currentLanguage, ITableEntry entryTarget, ITableEntry tableEntrySource,
+            boolean overwriteExpression, Zone zoneSourceEntry) {
         String expression = null;
         if (zoneSourceEntry == Zone.OUTPUTS) {
             expression = tableEntrySource.getExpression();

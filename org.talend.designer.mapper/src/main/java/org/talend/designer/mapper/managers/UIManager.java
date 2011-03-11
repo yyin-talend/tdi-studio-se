@@ -83,6 +83,8 @@ import org.talend.designer.abstractmap.managers.AbstractUIManager;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.ui.dnd.DraggingInfosPopup;
+import org.talend.designer.abstractmap.ui.listener.DropTargetOperationListener;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
 import org.talend.designer.abstractmap.ui.visualmap.link.PointLinkDescriptor;
@@ -112,8 +114,6 @@ import org.talend.designer.mapper.ui.MapperUI;
 import org.talend.designer.mapper.ui.commands.DataMapTableViewSelectedCommand;
 import org.talend.designer.mapper.ui.dialog.OutputAddDialog;
 import org.talend.designer.mapper.ui.dialog.PropertySetDialog;
-import org.talend.designer.mapper.ui.dnd.DraggingInfosPopup;
-import org.talend.designer.mapper.ui.dnd.DropTargetOperationListener;
 import org.talend.designer.mapper.ui.footer.StatusBar;
 import org.talend.designer.mapper.ui.footer.StatusBar.STATUS;
 import org.talend.designer.mapper.ui.tabs.TabFolderEditors;
@@ -147,10 +147,6 @@ public class UIManager extends AbstractUIManager {
 
     private Composite refComposite;
 
-    private boolean shiftPressed;
-
-    private boolean ctrlPressed;
-
     private int mapperResponse = SWT.NONE;
 
     private final TableManager tableManager;
@@ -172,10 +168,6 @@ public class UIManager extends AbstractUIManager {
     private boolean previousSelectedTableIsConstraint;
 
     private boolean previousSelectedTableIsGlobalMap;
-
-    int currentDragDetail;
-
-    private boolean dragging;
 
     private DisposeListener commonMetadataDisposeListener;
 
@@ -692,22 +684,6 @@ public class UIManager extends AbstractUIManager {
         default:
             throw new RuntimeException("The zone " + zone + " does'nt exist !"); //$NON-NLS-1$ //$NON-NLS-2$
         }
-    }
-
-    public boolean isShiftPressed() {
-        return shiftPressed;
-    }
-
-    public boolean isCtrlPressed() {
-        return ctrlPressed;
-    }
-
-    public void setCtrlPressed(boolean ctrlPressed) {
-        this.ctrlPressed = ctrlPressed;
-    }
-
-    public void setShiftPressed(boolean shiftPressed) {
-        this.shiftPressed = shiftPressed;
     }
 
     /**
@@ -1743,14 +1719,6 @@ public class UIManager extends AbstractUIManager {
         return this.mapperUI.getDropTargetOperationListener();
     }
 
-    public int getCurrentDragDetail() {
-        return this.currentDragDetail;
-    }
-
-    public void setCurrentDragDetail(int currentDragDetail) {
-        this.currentDragDetail = currentDragDetail;
-    }
-
     public DraggingInfosPopup getDraggingInfosPopup() {
         return this.mapperUI.getDraggingInfosPopup();
     }
@@ -2026,19 +1994,6 @@ public class UIManager extends AbstractUIManager {
             tablesZoneView = getTablesZoneViewVars();
         }
         tablesZoneView.setSize(tablesZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-    }
-
-    /**
-     * DOC amaumont Comment method "setDragging".
-     * 
-     * @param b
-     */
-    public void setDragging(boolean dragging) {
-        this.dragging = dragging;
-    }
-
-    public boolean isDragging() {
-        return this.dragging;
     }
 
     /**

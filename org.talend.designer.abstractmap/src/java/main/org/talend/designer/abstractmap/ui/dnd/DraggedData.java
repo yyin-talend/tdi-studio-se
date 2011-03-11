@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.mapper.ui.dnd;
+package org.talend.designer.abstractmap.ui.dnd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,20 +18,20 @@ import java.util.List;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
-import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
-import org.talend.designer.mapper.ui.visualmap.zone.Zone;
+import org.talend.designer.abstractmap.ui.IDataMapTableView;
+import org.talend.designer.abstractmap.ui.visualmap.zone.IMapZone;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
- * $Id$
+ * $Id: DraggedData.java 898 2006-12-07 11:06:17Z amaumont $
  * 
  */
 public class DraggedData {
 
     private List<TransferableEntry> transferableEntryList = new ArrayList<TransferableEntry>();
 
-    private DataMapTableView dataMapTableViewSource;
+    private IDataMapTableView dataMapTableViewSource;
 
     private TableItem tableItemSource;
 
@@ -42,7 +42,7 @@ public class DraggedData {
     /**
      * DOC amaumont Comment method "addEntry".
      */
-    public void addEntry(ITableEntry tableEntry, IMetadataColumn metadataColumn, Zone zoneSourceEntry) {
+    public void addEntry(ITableEntry tableEntry, IMetadataColumn metadataColumn, IMapZone zoneSourceEntry) {
         transferableEntryList.add(new TransferableEntry(tableEntry, metadataColumn, zoneSourceEntry));
     }
 
@@ -55,11 +55,11 @@ public class DraggedData {
      * 
      * @param dataMapTableViewSource
      */
-    public void setDataMapTableViewSource(DataMapTableView dataMapTableViewSource) {
+    public void setDataMapTableViewSource(IDataMapTableView dataMapTableViewSource) {
         this.dataMapTableViewSource = dataMapTableViewSource;
     }
 
-    public DataMapTableView getDataMapTableViewSource() {
+    public IDataMapTableView getDataMapTableViewSource() {
         return this.dataMapTableViewSource;
     }
 

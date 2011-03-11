@@ -10,16 +10,16 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.mapper.ui.dnd;
+package org.talend.designer.abstractmap.ui.dnd;
 
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
-import org.talend.designer.mapper.ui.visualmap.zone.Zone;
+import org.talend.designer.abstractmap.ui.visualmap.zone.IMapZone;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
- * $Id$
+ * $Id: TransferableEntry.java 898 2006-12-07 11:06:17Z amaumont $
  * 
  */
 public class TransferableEntry {
@@ -28,9 +28,9 @@ public class TransferableEntry {
 
     private ITableEntry tableEntrySource;
 
-    private Zone zoneSourceEntry;
+    private IMapZone zoneSourceEntry;
 
-    public TransferableEntry(ITableEntry tableEntryLocation, IMetadataColumn metadataColumn, Zone zoneSourceEntry) {
+    public TransferableEntry(ITableEntry tableEntryLocation, IMetadataColumn metadataColumn, IMapZone zoneSourceEntry) {
         super();
         this.tableEntrySource = tableEntryLocation;
         this.metadataColumn = metadataColumn;
@@ -53,11 +53,11 @@ public class TransferableEntry {
         this.metadataColumn = metadataColumn;
     }
 
-    public Zone getZoneSourceEntry() {
+    public IMapZone getZoneSourceEntry() {
         return this.zoneSourceEntry;
     }
 
-    public void setZoneSourceEntry(Zone zone) {
+    public void setZoneSourceEntry(IMapZone zone) {
         this.zoneSourceEntry = zone;
     }
 

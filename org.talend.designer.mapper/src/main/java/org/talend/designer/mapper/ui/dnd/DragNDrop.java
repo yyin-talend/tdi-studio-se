@@ -29,6 +29,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.ui.dnd.DraggedData;
+import org.talend.designer.abstractmap.ui.dnd.DraggingInfosPopup;
+import org.talend.designer.abstractmap.ui.dnd.TableEntriesTransfer;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
@@ -92,8 +95,7 @@ public class DragNDrop {
         if (canBeTargetOfDragging) {
             TransferDropTargetListener completeDropTargetListener = null;
             if (draggableControl instanceof Table) {
-                completeDropTargetListener = new CompleteDropTargetTableListener(mapperManager,
-                        (Table) draggableControl);
+                completeDropTargetListener = new CompleteDropTargetTableListener(mapperManager, (Table) draggableControl);
             } else if (draggableControl instanceof StyledText) {
                 completeDropTargetListener = new CompleteDropTargetStyledTextListener(mapperManager,
                         (StyledText) draggableControl);
