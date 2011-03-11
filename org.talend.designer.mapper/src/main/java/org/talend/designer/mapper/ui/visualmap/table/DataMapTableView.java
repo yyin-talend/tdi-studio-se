@@ -3061,7 +3061,7 @@ public abstract class DataMapTableView extends Composite implements PropertyChan
         protected Object openDialogBox(Control cellEditorWindow) {
             Shell shell = cellEditorWindow.getShell();
             if (type == CellValueType.BOOL) {
-                ListStringValueDialog<String> dialog = new ListStringValueDialog<String>(shell, new String[] { "true", "false" });
+                ListStringValueDialog<String> dialog = new ListStringValueDialog<String>(shell, new String[] { "true", "false" }); //$NON-NLS-1$ //$NON-NLS-2$
                 if (dialog.open() == IDialogConstants.OK_ID) {
                     return dialog.getSelectStr();
                 }

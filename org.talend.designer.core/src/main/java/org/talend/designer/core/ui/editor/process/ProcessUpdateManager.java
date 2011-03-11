@@ -1207,20 +1207,20 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
                     IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, schemaName);
                     String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
-                    final IMetadataTable copyOfrepositoryMetadata = table.clone();
-
-                    if (table != null
-                            && (onlySimpleShow || !service.isSameMetadata(externalData, schemaId, copyOfrepositoryMetadata))) {
-                        List<Object> parameter = new ArrayList<Object>();
-                        parameter.add(copyOfrepositoryMetadata);
-                        parameter.add(schemaId);
-                        parameter.add("tMap"); //$NON-NLS-1$
-                        UpdateCheckResult result = new UpdateCheckResult(node);
-                        result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE, parameter, source);
-                        result.setContextModeConnectionItem(connectionItem);
-                        result.setJob(getProcess());
-                        setConfigrationForReadOnlyJob(result);
-                        schemaResults.add(result);
+                    if (table != null) {
+                        final IMetadataTable copyOfrepositoryMetadata = table.clone();
+                        if (onlySimpleShow || !service.isSameMetadata(externalData, schemaId, copyOfrepositoryMetadata)) {
+                            List<Object> parameter = new ArrayList<Object>();
+                            parameter.add(copyOfrepositoryMetadata);
+                            parameter.add(schemaId);
+                            parameter.add("tMap"); //$NON-NLS-1$
+                            UpdateCheckResult result = new UpdateCheckResult(node);
+                            result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE, parameter, source);
+                            result.setContextModeConnectionItem(connectionItem);
+                            result.setJob(getProcess());
+                            setConfigrationForReadOnlyJob(result);
+                            schemaResults.add(result);
+                        }
                     }
                 }
             }

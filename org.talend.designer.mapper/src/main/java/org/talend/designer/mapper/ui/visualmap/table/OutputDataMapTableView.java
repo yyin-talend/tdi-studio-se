@@ -142,6 +142,14 @@ public class OutputDataMapTableView extends DataMapTableView {
             }
         });
 
+        final TableViewer mapSettingTableViewer = mapSettingViewerCreator.getTableViewer();
+        mapSettingTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                selectThisDataMapTableView();
+            }
+
+        });
     }
 
     protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final CellEditor cellEditor) {

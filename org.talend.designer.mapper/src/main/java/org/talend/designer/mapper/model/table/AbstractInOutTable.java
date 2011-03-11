@@ -120,8 +120,12 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         }
 
         if (isRepository) {
-            this.metadataTable = MetadataTool.getMetadataFromRepository(id);
-            if (originalTableName != null) {
+            IMetadataTable table = MetadataTool.getMetadataFromRepository(id);
+            if (table == null || this.metadataTable != null && !this.metadataTable.sameMetadataAs(table)) {
+                this.id = null;
+                this.isRepository = false;
+            } else {
+                this.metadataTable = table;
                 this.metadataTable.setTableName(originalTableName);
             }
         }
@@ -129,6 +133,7 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         if (metadataTable != null) {
             columns = this.metadataTable.getListColumns();
         }
+
         updateTableEntries(columns, nameToPerTabEntry);
     }
 
