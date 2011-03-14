@@ -316,6 +316,7 @@ public class DataProcess {
                 dataConnec.setUniqueName(uniqueName2);
                 dataConnec.setSource(dataNode);
                 dataConnec.setCondition(connection.getCondition());
+                dataConnec.setRouteConnectionType(connection.getRouteConnectionType());
                 dataConnec.setConnectorName(connection.getConnectorName());
                 dataConnec.setInputId(connection.getInputId());
                 dataConnec.setOutputId(connection.getOutputId());
