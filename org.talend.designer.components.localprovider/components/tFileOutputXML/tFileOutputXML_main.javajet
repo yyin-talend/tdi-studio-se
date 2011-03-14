@@ -10,6 +10,7 @@ imports="
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.process.IConnection
+    org.talend.core.utils.TalendQuoteUtils
 "
 %>
 
@@ -71,6 +72,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		if(groupby[j][0].equals(col)){
     			if(("true").equals(map.get("SCHEMA_COLUMN_NAME"))){
     				groupby[j][2] = col;
+    				groupby[j][2] = TalendQuoteUtils.addQuotes(groupby[j][2]);
     			}else{
     				groupby[j][2] = map.get("LABEL");
     			}
@@ -99,6 +101,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	if(("true").equals(map.get("AS_ATTRIBUTE"))){
     		if(("true").equals(map.get("SCHEMA_COLUMN_NAME"))){
     			attribute[ia][1] = col;
+    			attribute[ia][1] = TalendQuoteUtils.addQuotes(attribute[ia][1]);
     		}else{
     			attribute[ia][1] = map.get("LABEL");
     		}
@@ -106,6 +109,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	}else{
     		if(("true").equals(map.get("SCHEMA_COLUMN_NAME"))){
     			tag[it][1] = col;
+    			tag[it][1] = TalendQuoteUtils.addQuotes(tag[it][1]);
     		}else{
     			tag[it][1] = map.get("LABEL");
     		}
@@ -161,7 +165,7 @@ groupby_new_<%=cid %> = 0;
 					break;
 				}
 			}
-%>tempSt_<%=cid %> = "<<%=groupby[i][2] %> <%=groupby[i][1] %>=\""+<%
+%>tempSt_<%=cid %> = "<"+<%=groupby[i][2] %>+" "+<%=groupby[i][1] %>+"=\""+<%
 							if(isAdvancedSeparator){
 								if(isBigDecimal){
 								%>FormatterUtils.format_Number(String.valueOf(<%=precision == null? conn.getName() + "." + groupby[i][0] : conn.getName() + "." + groupby[i][0] + ".setScale(" + precision + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
@@ -266,7 +270,7 @@ for(int i = 0; i < attribute.length; i++){
 			break;
 		}
 	}
-%>tempRes_<%=cid %>.append(" <%=attribute[i][1] %>=\""+<%
+%>tempRes_<%=cid %>.append(" "+<%=attribute[i][1] %>+"=\""+<%
 							if(isAdvancedSeparator){
 								if(isBigDecimal){
 								%>FormatterUtils.format_Number(String.valueOf(<%=precision == null? conn.getName() + "." + attribute[i][0] : conn.getName() + "." + attribute[i][0] + ".setScale(" + precision + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
