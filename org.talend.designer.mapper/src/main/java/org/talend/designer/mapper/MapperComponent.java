@@ -63,6 +63,7 @@ import org.talend.designer.mapper.model.emf.mapper.MapperData;
 import org.talend.designer.mapper.model.emf.mapper.MapperFactory;
 import org.talend.designer.mapper.model.emf.mapper.MapperTableEntry;
 import org.talend.designer.mapper.model.emf.mapper.OutputTable;
+import org.talend.designer.mapper.model.emf.mapper.UiProperties;
 import org.talend.designer.mapper.model.emf.mapper.VarTable;
 import org.talend.designer.mapper.model.table.LOOKUP_MODE;
 import org.talend.designer.mapper.model.table.TMAP_LOOKUP_MODE;
@@ -417,8 +418,10 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
             }
             externalData.setVarsTables(externalTables);
             ExternalMapperUiProperties uiProperties = new ExternalMapperUiProperties();
-            uiProperties.setShellMaximized(mapperData.getUiProperties().isShellMaximized());
-
+            UiProperties uiPro = mapperData.getUiProperties();
+            if (uiPro != null) {
+                uiProperties.setShellMaximized(uiPro.isShellMaximized());
+            }
         }
         this.setExternalData(externalData);
     }
