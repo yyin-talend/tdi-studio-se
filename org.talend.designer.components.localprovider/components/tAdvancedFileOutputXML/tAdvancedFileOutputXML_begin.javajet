@@ -66,6 +66,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				boolean	needRoot_<%=cid%> = true;
 			<%}%>
 			String fileName_<%=cid%> = <%=fileName%>;
+			Boolean alreadyExistsFile_<%=cid%> = new java.io.File(fileName_<%=cid %>).exists();
 			fileName_<%=cid%> = new java.io.File(fileName_<%=cid%>).getAbsolutePath().replace("\\", "/");
 			String file_<%=cid%> = "";
 			

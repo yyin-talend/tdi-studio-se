@@ -332,8 +332,7 @@ globalMap.put("<%=cid_original %>_NB_LINE",nb_line_<%=cid %>);
 %>
 
 <%if(!useStream && isDeleteEmptyFile){%>
-		java.io.File _file<%=cid%> = new java.io.File(<%=filename %>);
-		if(_file<%=cid%>.exists() && _file<%=cid%>.length()==0) {
-			_file<%=cid%>.delete();
-		}
+ 	if((nb_line_<%=cid %> == 0) && !alreadyExistsFile_<%=cid%>){
+   		new java.io.File(<%=filename %>).delete();
+ 	}
 <%}%>
