@@ -1162,10 +1162,14 @@ public class StatusCode implements org.apache.axis2.databinding.ADBBean {
             StatusCode enumeration = (StatusCode)
 
             _table_.get(value);
-
+            /*
+             * adapt all status code, support or unsupport, code by bchen
+             */
             if (enumeration == null)
-                throw new java.lang.IllegalArgumentException();
+                enumeration = new StatusCode(value, true);
+            // throw new java.lang.IllegalArgumentException();
             return enumeration;
+            // return new StatusCode(value, true);
         }
 
         public static StatusCode fromString(java.lang.String value, java.lang.String namespaceURI)

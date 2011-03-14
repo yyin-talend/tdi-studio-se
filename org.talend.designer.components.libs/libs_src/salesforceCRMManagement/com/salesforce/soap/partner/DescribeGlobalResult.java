@@ -634,6 +634,20 @@ public class DescribeGlobalResult implements org.apache.axis2.databinding.ADBBea
                 } // End of if for expected property start element
 
                 else {
+                    // code by bchen
+                    if (reader.isStartElement()
+                            && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "types").equals(reader.getName())) {
+                        while (!reader.isEndElement()) {
+                            DescribeGlobalSObjectResult dgsr = new DescribeGlobalSObjectResult();
+                            dgsr.setName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(reader.getElementText()));
+                            reader.next();
+                            list3.add(dgsr);
+                        }
+                        object.setSobjects((com.salesforce.soap.partner.DescribeGlobalSObjectResult[]) org.apache.axis2.databinding.utils.ConverterUtil
+                                .convertToArray(com.salesforce.soap.partner.DescribeGlobalSObjectResult.class, list3));
+                    }
+
+                    // end code by bchen
 
                 }
 
@@ -650,7 +664,6 @@ public class DescribeGlobalResult implements org.apache.axis2.databinding.ADBBea
 
             return object;
         }
-
     }// end of factory class
 
 }

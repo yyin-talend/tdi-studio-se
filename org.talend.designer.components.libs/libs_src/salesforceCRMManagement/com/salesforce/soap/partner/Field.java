@@ -31,76 +31,16 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localAutoNumber;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getAutoNumber() {
-        return localAutoNumber;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param AutoNumber
-     */
-    public void setAutoNumber(boolean param) {
-
-        this.localAutoNumber = param;
-
-    }
-
-    /**
      * field for ByteLength
      */
 
     protected int localByteLength;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return int
-     */
-    public int getByteLength() {
-        return localByteLength;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param ByteLength
-     */
-    public void setByteLength(int param) {
-
-        this.localByteLength = param;
-
-    }
-
-    /**
      * field for Calculated
      */
 
     protected boolean localCalculated;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getCalculated() {
-        return localCalculated;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param Calculated
-     */
-    public void setCalculated(boolean param) {
-
-        this.localCalculated = param;
-
-    }
 
     /**
      * field for CalculatedFormula
@@ -115,58 +55,10 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localCalculatedFormulaTracker = false;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return java.lang.String
-     */
-    public java.lang.String getCalculatedFormula() {
-        return localCalculatedFormula;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param CalculatedFormula
-     */
-    public void setCalculatedFormula(java.lang.String param) {
-
-        if (param != null) {
-            // update the setting tracker
-            localCalculatedFormulaTracker = true;
-        } else {
-            localCalculatedFormulaTracker = false;
-
-        }
-
-        this.localCalculatedFormula = param;
-
-    }
-
-    /**
      * field for CaseSensitive
      */
 
     protected boolean localCaseSensitive;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getCaseSensitive() {
-        return localCaseSensitive;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param CaseSensitive
-     */
-    public void setCaseSensitive(boolean param) {
-
-        this.localCaseSensitive = param;
-
-    }
 
     /**
      * field for ControllerName
@@ -181,84 +73,16 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localControllerNameTracker = false;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return java.lang.String
-     */
-    public java.lang.String getControllerName() {
-        return localControllerName;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param ControllerName
-     */
-    public void setControllerName(java.lang.String param) {
-
-        if (param != null) {
-            // update the setting tracker
-            localControllerNameTracker = true;
-        } else {
-            localControllerNameTracker = false;
-
-        }
-
-        this.localControllerName = param;
-
-    }
-
-    /**
      * field for Createable
      */
 
     protected boolean localCreateable;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getCreateable() {
-        return localCreateable;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param Createable
-     */
-    public void setCreateable(boolean param) {
-
-        this.localCreateable = param;
-
-    }
-
-    /**
      * field for Custom
      */
 
     protected boolean localCustom;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getCustom() {
-        return localCustom;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param Custom
-     */
-    public void setCustom(boolean param) {
-
-        this.localCustom = param;
-
-    }
 
     /**
      * field for DefaultValueFormula
@@ -307,26 +131,6 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localDefaultedOnCreate;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getDefaultedOnCreate() {
-        return localDefaultedOnCreate;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param DefaultedOnCreate
-     */
-    public void setDefaultedOnCreate(boolean param) {
-
-        this.localDefaultedOnCreate = param;
-
-    }
-
-    /**
      * field for DependentPicklist
      */
 
@@ -339,85 +143,16 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localDependentPicklistTracker = false;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getDependentPicklist() {
-        return localDependentPicklist;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param DependentPicklist
-     */
-    public void setDependentPicklist(boolean param) {
-
-        // setting primitive attribute tracker to true
-
-        if (false) {
-            localDependentPicklistTracker = false;
-
-        } else {
-            localDependentPicklistTracker = true;
-        }
-
-        this.localDependentPicklist = param;
-
-    }
-
-    /**
      * field for DeprecatedAndHidden
      */
 
     protected boolean localDeprecatedAndHidden;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getDeprecatedAndHidden() {
-        return localDeprecatedAndHidden;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param DeprecatedAndHidden
-     */
-    public void setDeprecatedAndHidden(boolean param) {
-
-        this.localDeprecatedAndHidden = param;
-
-    }
-
-    /**
      * field for Digits
      */
 
     protected int localDigits;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return int
-     */
-    public int getDigits() {
-        return localDigits;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param Digits
-     */
-    public void setDigits(int param) {
-
-        this.localDigits = param;
-
-    }
 
     /**
      * field for ExternalId
@@ -432,85 +167,16 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localExternalIdTracker = false;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getExternalId() {
-        return localExternalId;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param ExternalId
-     */
-    public void setExternalId(boolean param) {
-
-        // setting primitive attribute tracker to true
-
-        if (false) {
-            localExternalIdTracker = false;
-
-        } else {
-            localExternalIdTracker = true;
-        }
-
-        this.localExternalId = param;
-
-    }
-
-    /**
      * field for Filterable
      */
 
     protected boolean localFilterable;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getFilterable() {
-        return localFilterable;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param Filterable
-     */
-    public void setFilterable(boolean param) {
-
-        this.localFilterable = param;
-
-    }
-
-    /**
      * field for Groupable
      */
 
     protected boolean localGroupable;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getGroupable() {
-        return localGroupable;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param Groupable
-     */
-    public void setGroupable(boolean param) {
-
-        this.localGroupable = param;
-
-    }
 
     /**
      * field for HtmlFormatted
@@ -525,59 +191,10 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localHtmlFormattedTracker = false;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getHtmlFormatted() {
-        return localHtmlFormatted;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param HtmlFormatted
-     */
-    public void setHtmlFormatted(boolean param) {
-
-        // setting primitive attribute tracker to true
-
-        if (false) {
-            localHtmlFormattedTracker = false;
-
-        } else {
-            localHtmlFormattedTracker = true;
-        }
-
-        this.localHtmlFormatted = param;
-
-    }
-
-    /**
      * field for IdLookup
      */
 
     protected boolean localIdLookup;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getIdLookup() {
-        return localIdLookup;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param IdLookup
-     */
-    public void setIdLookup(boolean param) {
-
-        this.localIdLookup = param;
-
-    }
 
     /**
      * field for InlineHelpText
@@ -592,58 +209,10 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localInlineHelpTextTracker = false;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return java.lang.String
-     */
-    public java.lang.String getInlineHelpText() {
-        return localInlineHelpText;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param InlineHelpText
-     */
-    public void setInlineHelpText(java.lang.String param) {
-
-        if (param != null) {
-            // update the setting tracker
-            localInlineHelpTextTracker = true;
-        } else {
-            localInlineHelpTextTracker = false;
-
-        }
-
-        this.localInlineHelpText = param;
-
-    }
-
-    /**
      * field for Label
      */
 
     protected java.lang.String localLabel;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return java.lang.String
-     */
-    public java.lang.String getLabel() {
-        return localLabel;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param Label
-     */
-    public void setLabel(java.lang.String param) {
-
-        this.localLabel = param;
-
-    }
 
     /**
      * field for Length
@@ -704,26 +273,6 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localNameField;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getNameField() {
-        return localNameField;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param NameField
-     */
-    public void setNameField(boolean param) {
-
-        this.localNameField = param;
-
-    }
-
-    /**
      * field for NamePointing
      */
 
@@ -734,35 +283,6 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
      * used to determine whether to include this field in the serialized XML
      */
     protected boolean localNamePointingTracker = false;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getNamePointing() {
-        return localNamePointing;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param NamePointing
-     */
-    public void setNamePointing(boolean param) {
-
-        // setting primitive attribute tracker to true
-
-        if (false) {
-            localNamePointingTracker = false;
-
-        } else {
-            localNamePointingTracker = true;
-        }
-
-        this.localNamePointing = param;
-
-    }
 
     /**
      * field for Nillable
@@ -803,58 +323,9 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localPicklistValuesTracker = false;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return com.salesforce.soap.partner.PicklistEntry[]
-     */
-    public com.salesforce.soap.partner.PicklistEntry[] getPicklistValues() {
-        return localPicklistValues;
-    }
-
-    /**
      * validate the array for PicklistValues
      */
     protected void validatePicklistValues(com.salesforce.soap.partner.PicklistEntry[] param) {
-
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param PicklistValues
-     */
-    public void setPicklistValues(com.salesforce.soap.partner.PicklistEntry[] param) {
-
-        validatePicklistValues(param);
-
-        if (param != null) {
-            // update the setting tracker
-            localPicklistValuesTracker = true;
-        } else {
-            localPicklistValuesTracker = true;
-
-        }
-
-        this.localPicklistValues = param;
-    }
-
-    /**
-     * Auto generated add method for the array for convenience
-     * 
-     * @param param com.salesforce.soap.partner.PicklistEntry
-     */
-    public void addPicklistValues(com.salesforce.soap.partner.PicklistEntry param) {
-        if (localPicklistValues == null) {
-            localPicklistValues = new com.salesforce.soap.partner.PicklistEntry[] {};
-        }
-
-        // update the setting tracker
-        localPicklistValuesTracker = true;
-
-        java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localPicklistValues);
-        list.add(param);
-        this.localPicklistValues = (com.salesforce.soap.partner.PicklistEntry[]) list
-                .toArray(new com.salesforce.soap.partner.PicklistEntry[list.size()]);
 
     }
 
@@ -897,57 +368,9 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localReferenceToTracker = false;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return java.lang.String[]
-     */
-    public java.lang.String[] getReferenceTo() {
-        return localReferenceTo;
-    }
-
-    /**
      * validate the array for ReferenceTo
      */
     protected void validateReferenceTo(java.lang.String[] param) {
-
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param ReferenceTo
-     */
-    public void setReferenceTo(java.lang.String[] param) {
-
-        validateReferenceTo(param);
-
-        if (param != null) {
-            // update the setting tracker
-            localReferenceToTracker = true;
-        } else {
-            localReferenceToTracker = true;
-
-        }
-
-        this.localReferenceTo = param;
-    }
-
-    /**
-     * Auto generated add method for the array for convenience
-     * 
-     * @param param java.lang.String
-     */
-    public void addReferenceTo(java.lang.String param) {
-        if (localReferenceTo == null) {
-            localReferenceTo = new java.lang.String[] {};
-        }
-
-        // update the setting tracker
-        localReferenceToTracker = true;
-
-        java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localReferenceTo);
-        list.add(param);
-        this.localReferenceTo = (java.lang.String[]) list.toArray(new java.lang.String[list.size()]);
 
     }
 
@@ -964,34 +387,6 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localRelationshipNameTracker = false;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return java.lang.String
-     */
-    public java.lang.String getRelationshipName() {
-        return localRelationshipName;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param RelationshipName
-     */
-    public void setRelationshipName(java.lang.String param) {
-
-        if (param != null) {
-            // update the setting tracker
-            localRelationshipNameTracker = true;
-        } else {
-            localRelationshipNameTracker = false;
-
-        }
-
-        this.localRelationshipName = param;
-
-    }
-
-    /**
      * field for RelationshipOrder
      */
 
@@ -1004,59 +399,10 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localRelationshipOrderTracker = false;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return int
-     */
-    public int getRelationshipOrder() {
-        return localRelationshipOrder;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param RelationshipOrder
-     */
-    public void setRelationshipOrder(int param) {
-
-        // setting primitive attribute tracker to true
-
-        if (param == java.lang.Integer.MIN_VALUE) {
-            localRelationshipOrderTracker = false;
-
-        } else {
-            localRelationshipOrderTracker = true;
-        }
-
-        this.localRelationshipOrder = param;
-
-    }
-
-    /**
      * field for RestrictedPicklist
      */
 
     protected boolean localRestrictedPicklist;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getRestrictedPicklist() {
-        return localRestrictedPicklist;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param RestrictedPicklist
-     */
-    public void setRestrictedPicklist(boolean param) {
-
-        this.localRestrictedPicklist = param;
-
-    }
 
     /**
      * field for Scale
@@ -1065,50 +411,10 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected int localScale;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return int
-     */
-    public int getScale() {
-        return localScale;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param Scale
-     */
-    public void setScale(int param) {
-
-        this.localScale = param;
-
-    }
-
-    /**
      * field for SoapType
      */
 
     protected com.salesforce.soap.partner.SoapType localSoapType;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return com.salesforce.soap.partner.SoapType
-     */
-    public com.salesforce.soap.partner.SoapType getSoapType() {
-        return localSoapType;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param SoapType
-     */
-    public void setSoapType(com.salesforce.soap.partner.SoapType param) {
-
-        this.localSoapType = param;
-
-    }
 
     /**
      * field for Sortable
@@ -1121,35 +427,6 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
      * used to determine whether to include this field in the serialized XML
      */
     protected boolean localSortableTracker = false;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getSortable() {
-        return localSortable;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param Sortable
-     */
-    public void setSortable(boolean param) {
-
-        // setting primitive attribute tracker to true
-
-        if (false) {
-            localSortableTracker = false;
-
-        } else {
-            localSortableTracker = true;
-        }
-
-        this.localSortable = param;
-
-    }
 
     /**
      * field for Type
@@ -1184,50 +461,10 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
     protected boolean localUnique;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getUnique() {
-        return localUnique;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param Unique
-     */
-    public void setUnique(boolean param) {
-
-        this.localUnique = param;
-
-    }
-
-    /**
      * field for Updateable
      */
 
     protected boolean localUpdateable;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getUpdateable() {
-        return localUpdateable;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param Updateable
-     */
-    public void setUpdateable(boolean param) {
-
-        this.localUpdateable = param;
-
-    }
 
     /**
      * field for WriteRequiresMasterRead
@@ -1240,35 +477,6 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
      * used to determine whether to include this field in the serialized XML
      */
     protected boolean localWriteRequiresMasterReadTracker = false;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getWriteRequiresMasterRead() {
-        return localWriteRequiresMasterRead;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param WriteRequiresMasterRead
-     */
-    public void setWriteRequiresMasterRead(boolean param) {
-
-        // setting primitive attribute tracker to true
-
-        if (false) {
-            localWriteRequiresMasterReadTracker = false;
-
-        } else {
-            localWriteRequiresMasterReadTracker = true;
-        }
-
-        this.localWriteRequiresMasterRead = param;
-
-    }
 
     /**
      * isReaderMTOMAware
@@ -2960,801 +2168,916 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
 
                 java.util.ArrayList list28 = new java.util.ArrayList();
 
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "autoNumber").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setAutoNumber(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "byteLength").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setByteLength(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "calculated").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setCalculated(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "calculatedFormula").equals(reader
-                                .getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setCalculatedFormula(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "caseSensitive").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setCaseSensitive(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "controllerName")
-                                .equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setControllerName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "createable").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setCreateable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "custom").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setCustom(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "defaultValueFormula").equals(reader
-                                .getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setDefaultValueFormula(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "defaultedOnCreate").equals(reader
-                                .getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setDefaultedOnCreate(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "dependentPicklist").equals(reader
-                                .getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setDependentPicklist(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "deprecatedAndHidden").equals(reader
-                                .getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setDeprecatedAndHidden(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "digits").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setDigits(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "externalId").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setExternalId(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "filterable").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setFilterable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "groupable").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setGroupable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "htmlFormatted").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setHtmlFormatted(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "idLookup").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setIdLookup(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "inlineHelpText")
-                                .equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setInlineHelpText(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "label").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setLabel(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "length").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setLength(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "name").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "nameField").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setNameField(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "namePointing").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setNamePointing(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "nillable").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setNillable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "picklistValues")
-                                .equals(reader.getName())) {
-
-                    // Process the array and step past its final element's end.
-
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
-                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
-                        list26.add(null);
+                // code by bchen
+                while (!reader.isEndElement()
+                        || !new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "fields").equals(reader.getName())) {
+                    while (!reader.isStartElement() && !reader.isEndElement())
                         reader.next();
-                    } else {
-                        list26.add(com.salesforce.soap.partner.PicklistEntry.Factory.parse(reader));
-                    }
-                    // loop until we find a start element that is not part of this array
-                    boolean loopDone26 = false;
-                    while (!loopDone26) {
-                        // We should be at the end element, but make sure
-                        while (!reader.isEndElement())
-                            reader.next();
-                        // Step out of this element
+
+                    if (reader.isStartElement()
+                            && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "name").equals(reader.getName())) {
+
+                        java.lang.String content = reader.getElementText();
+
+                        object.setName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+
                         reader.next();
-                        // Step to next element event.
-                        while (!reader.isStartElement() && !reader.isEndElement())
-                            reader.next();
-                        if (reader.isEndElement()) {
-                            // two continuous end elements means we are exiting the xml structure
-                            loopDone26 = true;
-                        } else {
-                            if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "picklistValues").equals(reader
+
+                    } // End of if for expected property start element
+                    else if (reader.isStartElement()
+                            && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "type").equals(reader.getName())) {
+
+                        object.setType(com.salesforce.soap.partner.FieldType.Factory.parse(reader));
+
+                        reader.next();
+
+                    } // End of if for expected property start element
+                    else if (reader.isStartElement()
+                            && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "precision").equals(reader.getName())) {
+
+                        java.lang.String content = reader.getElementText();
+
+                        object.setPrecision(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+
+                        reader.next();
+
+                    } // End of if for expected property start element
+                    else if (reader.isStartElement()
+                            && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "nillable").equals(reader.getName())) {
+
+                        java.lang.String content = reader.getElementText();
+
+                        object.setNillable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+
+                        reader.next();
+
+                    } // End of if for expected property start element
+                    else if (reader.isStartElement()
+                            && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "length").equals(reader.getName())) {
+
+                        java.lang.String content = reader.getElementText();
+
+                        object.setLength(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+
+                        reader.next();
+
+                    } // End of if for expected property start element
+                    else if (reader.isStartElement()
+                            && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "defaultValueFormula").equals(reader
                                     .getName())) {
 
-                                nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
-                                if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
-                                    list26.add(null);
-                                    reader.next();
-                                } else {
-                                    list26.add(com.salesforce.soap.partner.PicklistEntry.Factory.parse(reader));
-                                }
-                            } else {
-                                loopDone26 = true;
-                            }
-                        }
-                    }
-                    // call the converter utility to convert and set the array
+                        java.lang.String content = reader.getElementText();
 
-                    object.setPicklistValues((com.salesforce.soap.partner.PicklistEntry[]) org.apache.axis2.databinding.utils.ConverterUtil
-                            .convertToArray(com.salesforce.soap.partner.PicklistEntry.class, list26));
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "precision").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setPrecision(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "referenceTo").equals(reader.getName())) {
-
-                    // Process the array and step past its final element's end.
-
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
-                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
-                        list28.add(null);
+                        object.setDefaultValueFormula(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
 
                         reader.next();
-                    } else {
-                        list28.add(reader.getElementText());
-                    }
-                    // loop until we find a start element that is not part of this array
-                    boolean loopDone28 = false;
-                    while (!loopDone28) {
-                        // Ensure we are at the EndElement
-                        while (!reader.isEndElement()) {
-                            reader.next();
-                        }
-                        // Step out of this element
+
+                    } // End of if for expected property start element
+                    else {
                         reader.next();
-                        // Step to next element event.
-                        while (!reader.isStartElement() && !reader.isEndElement())
-                            reader.next();
-                        if (reader.isEndElement()) {
-                            // two continuous end elements means we are exiting the xml structure
-                            loopDone28 = true;
-                        } else {
-                            if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "referenceTo").equals(reader
-                                    .getName())) {
-
-                                nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
-                                if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
-                                    list28.add(null);
-
-                                    reader.next();
-                                } else {
-                                    list28.add(reader.getElementText());
-                                }
-                            } else {
-                                loopDone28 = true;
-                            }
-                        }
                     }
-                    // call the converter utility to convert and set the array
-
-                    object.setReferenceTo((java.lang.String[]) list28.toArray(new java.lang.String[list28.size()]));
-
-                } // End of if for expected property start element
-
-                else {
-
                 }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "relationshipName").equals(reader
-                                .getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setRelationshipName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "relationshipOrder").equals(reader
-                                .getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setRelationshipOrder(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                    object.setRelationshipOrder(java.lang.Integer.MIN_VALUE);
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "restrictedPicklist").equals(reader
-                                .getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setRestrictedPicklist(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "scale").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setScale(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "soapType").equals(reader.getName())) {
-
-                    object.setSoapType(com.salesforce.soap.partner.SoapType.Factory.parse(reader));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sortable").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setSortable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "type").equals(reader.getName())) {
-
-                    object.setType(com.salesforce.soap.partner.FieldType.Factory.parse(reader));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "unique").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setUnique(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "updateable").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setUpdateable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "writeRequiresMasterRead").equals(reader
-                                .getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setWriteRequiresMasterRead(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
+                // end code by bchen
+
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "autoNumber").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setAutoNumber(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "byteLength").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setByteLength(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "calculated").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setCalculated(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "calculatedFormula").equals(reader
+                // .getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setCalculatedFormula(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "caseSensitive").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setCaseSensitive(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "controllerName")
+                // .equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setControllerName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "createable").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setCreateable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "custom").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setCustom(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "defaultValueFormula").equals(reader
+                // .getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setDefaultValueFormula(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "defaultedOnCreate").equals(reader
+                // .getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setDefaultedOnCreate(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "dependentPicklist").equals(reader
+                // .getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setDependentPicklist(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "deprecatedAndHidden").equals(reader
+                // .getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setDeprecatedAndHidden(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "digits").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setDigits(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "externalId").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setExternalId(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "filterable").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setFilterable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "groupable").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setGroupable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "htmlFormatted").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setHtmlFormatted(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "idLookup").equals(reader.getName()))
+                // {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setIdLookup(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "inlineHelpText")
+                // .equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setInlineHelpText(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "label").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setLabel(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "length").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setLength(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "name").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "nameField").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setNameField(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "namePointing").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setNamePointing(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "nillable").equals(reader.getName()))
+                // {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setNillable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "picklistValues")
+                // .equals(reader.getName())) {
+                //
+                // // Process the array and step past its final element's end.
+                //
+                // nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                // if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                // list26.add(null);
+                // reader.next();
+                // } else {
+                // list26.add(com.salesforce.soap.partner.PicklistEntry.Factory.parse(reader));
+                // }
+                // // loop until we find a start element that is not part of this array
+                // boolean loopDone26 = false;
+                // while (!loopDone26) {
+                // // We should be at the end element, but make sure
+                // while (!reader.isEndElement())
+                // reader.next();
+                // // Step out of this element
+                // reader.next();
+                // // Step to next element event.
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                // if (reader.isEndElement()) {
+                // // two continuous end elements means we are exiting the xml structure
+                // loopDone26 = true;
+                // } else {
+                // if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "picklistValues").equals(reader
+                // .getName())) {
+                //
+                // nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                // if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                // list26.add(null);
+                // reader.next();
+                // } else {
+                // list26.add(com.salesforce.soap.partner.PicklistEntry.Factory.parse(reader));
+                // }
+                // } else {
+                // loopDone26 = true;
+                // }
+                // }
+                // }
+                // // call the converter utility to convert and set the array
+                //
+                // object.setPicklistValues((com.salesforce.soap.partner.PicklistEntry[])
+                // org.apache.axis2.databinding.utils.ConverterUtil
+                // .convertToArray(com.salesforce.soap.partner.PicklistEntry.class, list26));
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "precision").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setPrecision(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "referenceTo").equals(reader.getName())) {
+                //
+                // // Process the array and step past its final element's end.
+                //
+                // nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                // if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                // list28.add(null);
+                //
+                // reader.next();
+                // } else {
+                // list28.add(reader.getElementText());
+                // }
+                // // loop until we find a start element that is not part of this array
+                // boolean loopDone28 = false;
+                // while (!loopDone28) {
+                // // Ensure we are at the EndElement
+                // while (!reader.isEndElement()) {
+                // reader.next();
+                // }
+                // // Step out of this element
+                // reader.next();
+                // // Step to next element event.
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                // if (reader.isEndElement()) {
+                // // two continuous end elements means we are exiting the xml structure
+                // loopDone28 = true;
+                // } else {
+                // if (new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "referenceTo").equals(reader
+                // .getName())) {
+                //
+                // nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                // if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                // list28.add(null);
+                //
+                // reader.next();
+                // } else {
+                // list28.add(reader.getElementText());
+                // }
+                // } else {
+                // loopDone28 = true;
+                // }
+                // }
+                // }
+                // // call the converter utility to convert and set the array
+                //
+                // object.setReferenceTo((java.lang.String[]) list28.toArray(new java.lang.String[list28.size()]));
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "relationshipName").equals(reader
+                // .getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setRelationshipName(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "relationshipOrder").equals(reader
+                // .getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setRelationshipOrder(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // object.setRelationshipOrder(java.lang.Integer.MIN_VALUE);
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "restrictedPicklist").equals(reader
+                // .getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setRestrictedPicklist(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "scale").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setScale(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "soapType").equals(reader.getName()))
+                // {
+                //
+                // object.setSoapType(com.salesforce.soap.partner.SoapType.Factory.parse(reader));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sortable").equals(reader.getName()))
+                // {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setSortable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "type").equals(reader.getName())) {
+                //
+                // object.setType(com.salesforce.soap.partner.FieldType.Factory.parse(reader));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "unique").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setUnique(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "updateable").equals(reader.getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setUpdateable(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "writeRequiresMasterRead").equals(reader
+                // .getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setWriteRequiresMasterRead(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
 
                 while (!reader.isStartElement() && !reader.isEndElement())
                     reader.next();
@@ -3769,7 +3092,6 @@ public class Field implements org.apache.axis2.databinding.ADBBean {
 
             return object;
         }
-
     }// end of factory class
 
 }

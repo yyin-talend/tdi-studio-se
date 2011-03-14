@@ -24,31 +24,14 @@ public class LoginResult implements org.apache.axis2.databinding.ADBBean {
         return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
     }
 
+    /*
+     * delete set & get methods of localMetadataServerUrl.... code by bchen
+     */
     /**
      * field for MetadataServerUrl
      */
 
     protected java.lang.String localMetadataServerUrl;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return java.lang.String
-     */
-    public java.lang.String getMetadataServerUrl() {
-        return localMetadataServerUrl;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param MetadataServerUrl
-     */
-    public void setMetadataServerUrl(java.lang.String param) {
-
-        this.localMetadataServerUrl = param;
-
-    }
 
     /**
      * field for PasswordExpired
@@ -57,50 +40,10 @@ public class LoginResult implements org.apache.axis2.databinding.ADBBean {
     protected boolean localPasswordExpired;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getPasswordExpired() {
-        return localPasswordExpired;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param PasswordExpired
-     */
-    public void setPasswordExpired(boolean param) {
-
-        this.localPasswordExpired = param;
-
-    }
-
-    /**
      * field for Sandbox
      */
 
     protected boolean localSandbox;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return boolean
-     */
-    public boolean getSandbox() {
-        return localSandbox;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param Sandbox
-     */
-    public void setSandbox(boolean param) {
-
-        this.localSandbox = param;
-
-    }
 
     /**
      * field for ServerUrl
@@ -161,26 +104,6 @@ public class LoginResult implements org.apache.axis2.databinding.ADBBean {
     protected com.salesforce.soap.partner.ID localUserId;
 
     /**
-     * Auto generated getter method
-     * 
-     * @return com.salesforce.soap.partner.ID
-     */
-    public com.salesforce.soap.partner.ID getUserId() {
-        return localUserId;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param UserId
-     */
-    public void setUserId(com.salesforce.soap.partner.ID param) {
-
-        this.localUserId = param;
-
-    }
-
-    /**
      * field for UserInfo
      */
 
@@ -191,34 +114,6 @@ public class LoginResult implements org.apache.axis2.databinding.ADBBean {
      * used to determine whether to include this field in the serialized XML
      */
     protected boolean localUserInfoTracker = false;
-
-    /**
-     * Auto generated getter method
-     * 
-     * @return com.salesforce.soap.partner.GetUserInfoResult
-     */
-    public com.salesforce.soap.partner.GetUserInfoResult getUserInfo() {
-        return localUserInfo;
-    }
-
-    /**
-     * Auto generated setter method
-     * 
-     * @param param UserInfo
-     */
-    public void setUserInfo(com.salesforce.soap.partner.GetUserInfoResult param) {
-
-        if (param != null) {
-            // update the setting tracker
-            localUserInfoTracker = true;
-        } else {
-            localUserInfoTracker = false;
-
-        }
-
-        this.localUserInfo = param;
-
-    }
 
     /**
      * isReaderMTOMAware
@@ -736,168 +631,213 @@ public class LoginResult implements org.apache.axis2.databinding.ADBBean {
 
                 reader.next();
 
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "metadataServerUrl").equals(reader
-                                .getName())) {
-
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
-                    if (!"true".equals(nillableValue) && !"1".equals(nillableValue)) {
-
-                        java.lang.String content = reader.getElementText();
-
-                        object.setMetadataServerUrl(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-
-                    } else {
-
-                        reader.getElementText(); // throw away text nodes if any.
-                    }
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "passwordExpired").equals(reader
-                                .getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setPasswordExpired(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sandbox").equals(reader.getName())) {
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setSandbox(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "serverUrl").equals(reader.getName())) {
-
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
-                    if (!"true".equals(nillableValue) && !"1".equals(nillableValue)) {
-
-                        java.lang.String content = reader.getElementText();
-
-                        object.setServerUrl(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-
-                    } else {
-
-                        reader.getElementText(); // throw away text nodes if any.
-                    }
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sessionId").equals(reader.getName())) {
-
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
-                    if (!"true".equals(nillableValue) && !"1".equals(nillableValue)) {
-
-                        java.lang.String content = reader.getElementText();
-
-                        object.setSessionId(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-
-                    } else {
-
-                        reader.getElementText(); // throw away text nodes if any.
-                    }
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "userId").equals(reader.getName())) {
-
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
-                    if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
-                        object.setUserId(null);
+                // code by bchen
+                while (!reader.isEndElement()
+                        || !new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "result").equals(reader.getName())) {
+                    while (!reader.isStartElement() && !reader.isEndElement())
                         reader.next();
-
+                    if (reader.isStartElement()
+                            && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "serverUrl").equals(reader.getName())) {
+                        nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                        if (!"true".equals(nillableValue) && !"1".equals(nillableValue)) {
+                            java.lang.String content = reader.getElementText();
+                            object.setServerUrl(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                        } else {
+                            reader.getElementText(); // throw away text nodes if any.
+                        }
                         reader.next();
+                    } // End of if for expected property start element
 
-                    } else {
+                    else if (reader.isStartElement()
+                            && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sessionId").equals(reader.getName())) {
+                        nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                        if (!"true".equals(nillableValue) && !"1".equals(nillableValue)) {
+                            java.lang.String content = reader.getElementText();
+                            object.setSessionId(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                        } else {
+                            reader.getElementText(); // throw away text nodes if any.
+                        }
+                        reader.next();
+                    } // End of if for expected property start element
 
-                        object.setUserId(com.salesforce.soap.partner.ID.Factory.parse(reader));
-
+                    else {
                         reader.next();
                     }
-                } // End of if for expected property start element
-
-                else {
-                    // A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
                 }
+                // end code by bchen
 
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if (reader.isStartElement()
-                        && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "userInfo").equals(reader.getName())) {
-
-                    object.setUserInfo(com.salesforce.soap.partner.GetUserInfoResult.Factory.parse(reader));
-
-                    reader.next();
-
-                } // End of if for expected property start element
-
-                else {
-
-                }
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "metadataServerUrl").equals(reader
+                // .getName())) {
+                //
+                // nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                // if (!"true".equals(nillableValue) && !"1".equals(nillableValue)) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setMetadataServerUrl(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                //
+                // } else {
+                //
+                // reader.getElementText(); // throw away text nodes if any.
+                // }
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "passwordExpired").equals(reader
+                // .getName())) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setPasswordExpired(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "sandbox").equals(reader.getName()))
+                // {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setSandbox(org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "serverUrl").equals(reader.getName())) {
+                //
+                // nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                // if (!"true".equals(nillableValue) && !"1".equals(nillableValue)) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setServerUrl(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                //
+                // } else {
+                //
+                // reader.getElementText(); // throw away text nodes if any.
+                // }
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
+                // "sessionId").equals(reader.getName())) {
+                //
+                // nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                // if (!"true".equals(nillableValue) && !"1".equals(nillableValue)) {
+                //
+                // java.lang.String content = reader.getElementText();
+                //
+                // object.setSessionId(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                //
+                // } else {
+                //
+                // reader.getElementText(); // throw away text nodes if any.
+                // }
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "userId").equals(reader.getName())) {
+                //
+                // nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "nil");
+                // if ("true".equals(nillableValue) || "1".equals(nillableValue)) {
+                // object.setUserId(null);
+                // reader.next();
+                //
+                // reader.next();
+                //
+                // } else {
+                //
+                // object.setUserId(com.salesforce.soap.partner.ID.Factory.parse(reader));
+                //
+                // reader.next();
+                // }
+                // } // End of if for expected property start element
+                //
+                // else {
+                // // A start element we are not expecting indicates an invalid parameter was passed
+                // throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " +
+                // reader.getLocalName());
+                // }
+                //
+                // while (!reader.isStartElement() && !reader.isEndElement())
+                // reader.next();
+                //
+                // if (reader.isStartElement()
+                // && new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "userInfo").equals(reader.getName()))
+                // {
+                //
+                // object.setUserInfo(com.salesforce.soap.partner.GetUserInfoResult.Factory.parse(reader));
+                //
+                // reader.next();
+                //
+                // } // End of if for expected property start element
+                //
+                // else {
+                //
+                // }
 
                 while (!reader.isStartElement() && !reader.isEndElement())
                     reader.next();
@@ -912,7 +852,6 @@ public class LoginResult implements org.apache.axis2.databinding.ADBBean {
 
             return object;
         }
-
     }// end of factory class
 
 }
