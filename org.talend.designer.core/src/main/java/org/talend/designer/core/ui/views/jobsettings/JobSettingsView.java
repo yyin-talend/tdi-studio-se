@@ -589,13 +589,11 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 if (obj != null) {
                     type = obj.toString();
                     if (obj instanceof ERepositoryObjectType) {
-                        switch ((ERepositoryObjectType) obj) {
-                        case PROCESS:
+                        ERepositoryObjectType objType = (ERepositoryObjectType) obj;
+                        if (objType == ERepositoryObjectType.PROCESS) {
                             type = getViewNameLable();
-                            break;
-                        case JOBLET:
+                        } else if (objType == ERepositoryObjectType.JOBLET) {
                             type = VIEW_NAME_JOBLET;
-                            break;
                         }
                     }
 

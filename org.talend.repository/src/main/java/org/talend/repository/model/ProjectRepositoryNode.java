@@ -19,6 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -26,6 +30,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -84,6 +89,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.model.repository.SVNConstant;
+import org.talend.core.repository.IExtendRepositoryNode;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.ui.ICDCProviderService;
@@ -167,114 +173,74 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         // this.getChildren().removeAll(hiddens);
         for (IRepositoryNode node : hiddens) {
             removeNode(this, node);
-            switch (node.getContentType()) {
-            case BUSINESS_PROCESS:
+            ERepositoryObjectType contentType = node.getContentType();
+
+            if (contentType == ERepositoryObjectType.BUSINESS_PROCESS) {
                 this.businessProcessNode = null;
-                break;
-            case PROCESS:
+            } else if (contentType == ERepositoryObjectType.PROCESS) {
                 this.processNode = null;
-                break;
-            case CONTEXT:
+            } else if (contentType == ERepositoryObjectType.CONTEXT) {
                 this.contextNode = null;
-                break;
-            case ROUTINES:
+            } else if (contentType == ERepositoryObjectType.ROUTINES) {
                 this.routineNode = null;
-                break;
-            case BEANS:
-                this.beanNode = null;
-                break;
-            case SNIPPETS:
+            } else if (contentType == ERepositoryObjectType.SNIPPETS) {
                 this.snippetsNode = null;
-                break;
-            case GENERATED:
-            case JOBS:
-            case JOB_DOC:
-            case JOBLETS:
-            case JOBLET_DOC:
-            case DOCUMENTATION:
+            } else if (contentType == ERepositoryObjectType.GENERATED || contentType == ERepositoryObjectType.JOBS
+                    || contentType == ERepositoryObjectType.JOB_DOC || contentType == ERepositoryObjectType.JOBLETS
+                    || contentType == ERepositoryObjectType.JOBLET_DOC || contentType == ERepositoryObjectType.DOCUMENTATION) {
                 this.docNode = null;
-                break;
-            // case METADATA_CON_TABLE:
-            case METADATA:
+            } else if (contentType == ERepositoryObjectType.METADATA) {
                 this.metadataNode = null;
-                break;
-            case METADATA_CON_VIEW:
-            case METADATA_CON_SYNONYM:
-            case METADATA_CON_QUERY:
-            case METADATA_CON_CDC:
-            case METADATA_CONNECTIONS:
+            } else if (contentType == ERepositoryObjectType.METADATA_CON_VIEW
+                    || contentType == ERepositoryObjectType.METADATA_CON_SYNONYM
+                    || contentType == ERepositoryObjectType.METADATA_CON_QUERY
+                    || contentType == ERepositoryObjectType.METADATA_CON_CDC
+                    || contentType == ERepositoryObjectType.METADATA_CONNECTIONS) {
                 this.metadataConNode = null;
-                break;
-            case METADATA_SAPCONNECTIONS:
+            } else if (contentType == ERepositoryObjectType.METADATA_SAPCONNECTIONS) {
                 this.metadataSAPConnectionNode = null;
-                break;
-            case METADATA_HEADER_FOOTER:
+            } else if (contentType == ERepositoryObjectType.METADATA_HEADER_FOOTER) {
                 this.metadataHeaderFooterConnectionNode = null;
-                break;
-            // case METADATA_SAP_FUNCTION:
-            // this.metadataSAPFunctionNode = null;
-            // break;
-            case SQLPATTERNS:
+            } else if (contentType == ERepositoryObjectType.SQLPATTERNS) {
                 this.sqlPatternNode = null;
-                break;
-            case METADATA_FILE_DELIMITED:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_DELIMITED) {
                 this.metadataFileNode = null;
-                break;
-            case METADATA_FILE_POSITIONAL:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_POSITIONAL) {
                 this.metadataFilePositionalNode = null;
-                break;
-            case METADATA_FILE_REGEXP:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_REGEXP) {
                 this.metadataFileRegexpNode = null;
-                break;
-            case METADATA_FILE_XML:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_XML) {
                 this.metadataFileXmlNode = null;
-                break;
-            case METADATA_FILE_HL7:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_HL7) {
                 this.metadataHL7ConnectionNode = null;
-                break;
-            case METADATA_FILE_FTP:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_FTP) {
                 this.metadataFTPConnectionNode = null;
-                break;
-            case METADATA_FILE_BRMS:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_BRMS) {
                 this.metadataBRMSConnectionNode = null;
-                break;
-            case METADATA_FILE_LDIF:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_LDIF) {
                 this.metadataFileLdifNode = null;
-                break;
-            case METADATA_FILE_EXCEL:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_EXCEL) {
                 this.metadataFileExcelNode = null;
-                break;
-            case METADATA_FILE_EBCDIC:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
                 this.metadataEbcdicConnectionNode = null;
-                break;
-            case METADATA_MDMCONNECTION:
+            } else if (contentType == ERepositoryObjectType.METADATA_MDMCONNECTION) {
                 this.metadataMDMConnectionNode = null;
-                break;
-            case METADATA_SALESFORCE_SCHEMA:
+            } else if (contentType == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
                 this.metadataSalesforceSchemaNode = null;
-                break;
-            case METADATA_GENERIC_SCHEMA:
+            } else if (contentType == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
                 this.metadataGenericSchemaNode = null;
-                break;
-            case METADATA_LDAP_SCHEMA:
+            } else if (contentType == ERepositoryObjectType.METADATA_LDAP_SCHEMA) {
                 this.metadataLDAPSchemaNode = null;
-                break;
-            case METADATA_WSDL_SCHEMA:
+            } else if (contentType == ERepositoryObjectType.METADATA_WSDL_SCHEMA) {
                 this.metadataWSDLSchemaNode = null;
-                break;
-            case METADATA_FILE_RULES:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_RULES) {
                 this.metadataRulesNode = null;
-                break;
-            case METADATA_VALIDATION_RULES:
+            } else if (contentType == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
                 this.metadataValidationRulesNode = null;
-                break;
-            case REFERENCED_PROJECTS:
+            } else if (contentType == ERepositoryObjectType.REFERENCED_PROJECTS) {
                 this.refProject = null;
-                break;
-            case JOBLET:
+            } else if (contentType == ERepositoryObjectType.JOBLET) {
                 this.jobletNode = null;
-                break;
-            default:
             }
         }
     }
@@ -340,7 +306,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
             codeNode = new StableRepositoryNode(this,
                     Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON); //$NON-NLS-1$
-            codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.BEANS);
+            codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
             nodes.add(codeNode);
 
             beanNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
@@ -360,7 +326,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             processNode.setProperties(EProperties.LABEL, ERepositoryObjectType.PROCESS);
             processNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.PROCESS);
             nodes.add(processNode);
-
+            // *init the repository node from extension
+            initExtensionRepositoryNodes(nodes);
             if (PluginChecker.isJobLetPluginLoaded()) {
                 // 2.1 Joblet
                 jobletNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
@@ -587,6 +554,34 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         hideHiddenNodes();
     }
 
+    private void initExtensionRepositoryNodes(List<IRepositoryNode> nodes) {
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IConfigurationElement[] configurationElements = registry
+                .getConfigurationElementsFor("org.talend.core.repository.repository_node_provider"); //$NON-NLS-1$
+        try {
+            for (int i = 0; i < configurationElements.length; i++) {
+                IConfigurationElement element = configurationElements[i];
+                Object extensionNode = element.createExecutableExtension("class");
+                if (extensionNode instanceof IExtendRepositoryNode) {
+                    IExtendRepositoryNode diyNode = (IExtendRepositoryNode) extensionNode;
+                    String label = diyNode.getNodeLabel();
+                    IImage icon = diyNode.getNodeImage();
+                    RepositoryNode dynamicNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                    ERepositoryObjectType repositoryNodeType = (ERepositoryObjectType) ERepositoryObjectType.valueOf(
+                            ERepositoryObjectType.class, label);
+                    if (repositoryNodeType != null) {
+                        dynamicNode.setProperties(EProperties.LABEL, repositoryNodeType);
+                        dynamicNode.setProperties(EProperties.CONTENT_TYPE, repositoryNodeType);
+                    }
+                    dynamicNode.setIcon(icon);
+                    nodes.add(dynamicNode);
+                }
+            }
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
     /**
      * DOC nrousseau Comment method "initializeChildren".
      * 
@@ -744,7 +739,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             }
             return getFolderContentType((FolderItem) folderItem.getParent());
         }
-        for (ERepositoryObjectType objectType : ERepositoryObjectType.values()) {
+        for (ERepositoryObjectType objectType : (ERepositoryObjectType[]) ERepositoryObjectType.values()) {
             String folderName;
             try {
                 folderName = ERepositoryObjectType.getFolderName(objectType);
@@ -1961,93 +1956,82 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         if (type == null) {
             return null;
         }
-
-        switch (type) {
-        case BUSINESS_PROCESS:
+        if (type == ERepositoryObjectType.BUSINESS_PROCESS) {
             return this.businessProcessNode;
-        case PROCESS:
+        } else if (type == ERepositoryObjectType.PROCESS) {
             return this.processNode;
-        case ROUTES:
+        } else if (type == ERepositoryObjectType.ROUTES) {
             return this.routesNode;
-        case CONTEXT:
+        } else if (type == ERepositoryObjectType.CONTEXT) {
             return this.contextNode;
-        case ROUTINES:
-            return this.routineNode;
-        case BEANS:
+        } else if (type == ERepositoryObjectType.BEANS) {
             return this.beanNode;
-        case JOB_SCRIPT:
+        } else if (type == ERepositoryObjectType.ROUTINES) {
+            return this.routineNode;
+        } else if (type == ERepositoryObjectType.JOB_SCRIPT) {
             return this.jobscriptsNode;
-        case SNIPPETS:
+        } else if (type == ERepositoryObjectType.SNIPPETS) {
             return this.snippetsNode;
-        case GENERATED:
-        case JOBS:
-        case JOB_DOC:
-        case JOBLETS:
-        case JOBLET_DOC:
-        case DOCUMENTATION:
+        } else if (type == ERepositoryObjectType.GENERATED || type == ERepositoryObjectType.JOBS
+                || type == ERepositoryObjectType.JOB_DOC || type == ERepositoryObjectType.JOBLETS
+                || type == ERepositoryObjectType.JOBLET_DOC || type == ERepositoryObjectType.DOCUMENTATION) {
             return this.docNode;
-            // case METADATA_CON_TABLE:
-        case METADATA:
-            return this.metadataNode; // maybe, there are some problems to process some fuctions.
-        case METADATA_CON_VIEW:
-        case METADATA_CON_SYNONYM:
-        case METADATA_CON_QUERY:
-        case METADATA_CON_CDC:
-        case METADATA_CONNECTIONS:
+        } else if (type == ERepositoryObjectType.METADATA) {
+            return this.metadataNode;
+        } else if (type == ERepositoryObjectType.METADATA_CON_VIEW || type == ERepositoryObjectType.METADATA_CON_SYNONYM
+                || type == ERepositoryObjectType.METADATA_CON_QUERY || type == ERepositoryObjectType.METADATA_CON_CDC
+                || type == ERepositoryObjectType.METADATA_CONNECTIONS) {
             return this.metadataConNode;
-        case METADATA_SAPCONNECTIONS:
+        } else if (type == ERepositoryObjectType.METADATA_SAPCONNECTIONS) {
             return this.metadataSAPConnectionNode;
-        case METADATA_SAP_FUNCTION:
+        } else if (type == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
             return this.metadataSAPConnectionNode;
-        case METADATA_SAP_IDOC:
+        } else if (type == ERepositoryObjectType.METADATA_SAP_IDOC) {
             return this.metadataSAPConnectionNode;
-        case METADATA_HEADER_FOOTER:
+        } else if (type == ERepositoryObjectType.METADATA_HEADER_FOOTER) {
             return this.metadataHeaderFooterConnectionNode;
-        case SQLPATTERNS:
+        } else if (type == ERepositoryObjectType.SQLPATTERNS) {
             return this.sqlPatternNode;
-        case METADATA_FILE_DELIMITED:
+        } else if (type == ERepositoryObjectType.METADATA_FILE_DELIMITED) {
             return this.metadataFileNode;
-        case METADATA_FILE_POSITIONAL:
+        } else if (type == ERepositoryObjectType.METADATA_FILE_POSITIONAL) {
             return this.metadataFilePositionalNode;
-        case METADATA_FILE_REGEXP:
+        } else if (type == ERepositoryObjectType.METADATA_FILE_REGEXP) {
             return this.metadataFileRegexpNode;
-        case METADATA_FILE_XML:
+        } else if (type == ERepositoryObjectType.METADATA_FILE_XML) {
             return this.metadataFileXmlNode;
-        case METADATA_FILE_LDIF:
+        } else if (type == ERepositoryObjectType.METADATA_FILE_LDIF) {
             return this.metadataFileLdifNode;
-        case METADATA_FILE_EXCEL:
+        } else if (type == ERepositoryObjectType.METADATA_FILE_EXCEL) {
             return this.metadataFileExcelNode;
-        case METADATA_FILE_EBCDIC:
+        } else if (type == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
             return this.metadataEbcdicConnectionNode;
-        case METADATA_FILE_HL7:
+        } else if (type == ERepositoryObjectType.METADATA_FILE_HL7) {
             return this.metadataHL7ConnectionNode;
-        case METADATA_FILE_FTP:
+        } else if (type == ERepositoryObjectType.METADATA_FILE_FTP) {
             return this.metadataFTPConnectionNode;
-        case METADATA_FILE_BRMS:
+        } else if (type == ERepositoryObjectType.METADATA_FILE_BRMS) {
             return this.metadataBRMSConnectionNode;
-        case METADATA_MDMCONNECTION:
-        case MDM_CONCEPT:
+        } else if (type == ERepositoryObjectType.METADATA_MDMCONNECTION || type == ERepositoryObjectType.MDM_CONCEPT) {
             return this.metadataMDMConnectionNode;
-        case METADATA_SALESFORCE_SCHEMA:
+        } else if (type == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
             return this.metadataSalesforceSchemaNode;
-        case METADATA_GENERIC_SCHEMA:
+        } else if (type == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
             return this.metadataGenericSchemaNode;
-        case METADATA_LDAP_SCHEMA:
+        } else if (type == ERepositoryObjectType.METADATA_LDAP_SCHEMA) {
             return this.metadataLDAPSchemaNode;
-        case METADATA_WSDL_SCHEMA:
+        } else if (type == ERepositoryObjectType.METADATA_WSDL_SCHEMA) {
             return this.metadataWSDLSchemaNode;
-        case METADATA_FILE_RULES:
-        case METADATA_FILE_LINKRULES:
+        } else if (type == ERepositoryObjectType.METADATA_FILE_RULES || type == ERepositoryObjectType.METADATA_FILE_LINKRULES) {
             return this.metadataRulesNode;
-        case METADATA_VALIDATION_RULES:
+        } else if (type == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
             return this.metadataValidationRulesNode;
-        case REFERENCED_PROJECTS:
+        } else if (type == ERepositoryObjectType.REFERENCED_PROJECTS) {
             return this.refProject;
-        case JOBLET:
+        } else if (type == ERepositoryObjectType.JOBLET) {
             return this.jobletNode;
-        case SVN_ROOT:
+        } else if (type == ERepositoryObjectType.SVN_ROOT) {
             return this.svnRootNode;
-        default:
         }
         return null;
     }

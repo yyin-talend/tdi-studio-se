@@ -77,10 +77,10 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ItemVersionObject;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
 import org.talend.repository.ui.views.RepositoryCheckBoxView;
@@ -258,9 +258,8 @@ public class VersionManagementDialog extends Dialog {
             // TODO
 
             ERepositoryObjectType objectType = node.getObjectType();
-            switch (objectType) {
-            case SQLPATTERNS:
-            case ROUTINES:
+
+            if (objectType == ERepositoryObjectType.SQLPATTERNS || objectType == ERepositoryObjectType.ROUTINES) {
                 RepositoryNode systemNode = node.getParent();
                 if (systemNode != null) {
                     // for system folder
@@ -269,24 +268,19 @@ public class VersionManagementDialog extends Dialog {
                         return false;
                     }
                 }
-            default:
             }
         }
         ERepositoryObjectType contentType = node.getContentType();
         if (contentType != null) {
-            switch (contentType) {
-            case REFERENCED_PROJECTS: // referenced project.
-            case GENERATED: // generated documentation
-                return false;
-            case SQLPATTERNS:
-            case ROUTINES:
 
+            if (contentType == ERepositoryObjectType.REFERENCED_PROJECTS || contentType == ERepositoryObjectType.GENERATED) {
+                return false;
+            } else if (contentType == ERepositoryObjectType.SQLPATTERNS || contentType == ERepositoryObjectType.ROUTINES) {
                 // for system folder
                 if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER
                         && node.getLabel().equalsIgnoreCase(RepositoryConstants.SYSTEM_DIRECTORY)) {
                     return false;
                 }
-            default:
             }
         }
 

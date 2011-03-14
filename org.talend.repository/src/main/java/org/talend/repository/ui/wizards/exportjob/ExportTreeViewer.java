@@ -263,14 +263,13 @@ public class ExportTreeViewer {
 
         ERepositoryObjectType contentType = node.getContentType();
         if (contentType != null) {
-            switch (contentType) {
-            case PROCESS: // referenced project.
+            if (contentType == ERepositoryObjectType.PROCESS) {
                 return true;
-            case SVN_ROOT:
+            } else if (contentType == ERepositoryObjectType.SVN_ROOT) {
                 return true;
-            case REFERENCED_PROJECTS:
+            } else if (contentType == ERepositoryObjectType.REFERENCED_PROJECTS) {
                 return true;
-            default:
+            } else {
                 return false;
             }
         } else {

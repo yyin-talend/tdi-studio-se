@@ -255,15 +255,12 @@ class ExportItemWizardPage extends WizardPage {
         ERepositoryObjectType objectType = node.getObjectType();
         Property property = null;
         if (objectType != null) {
-            switch (objectType) {
-            case METADATA_CON_TABLE:
-            case METADATA_CON_VIEW:
-            case METADATA_CON_SYNONYM:
-            case METADATA_CON_QUERY:
+            if (objectType == ERepositoryObjectType.METADATA_CON_TABLE || objectType == ERepositoryObjectType.METADATA_CON_VIEW
+                    || objectType == ERepositoryObjectType.METADATA_CON_SYNONYM
+                    || objectType == ERepositoryObjectType.METADATA_CON_QUERY) {
                 if (node.getObject() != null) {
                     property = node.getObject().getProperty();
                 }
-                break;
             }
 
         }
@@ -308,55 +305,43 @@ class ExportItemWizardPage extends WizardPage {
         }
 
         if (objectType != null) {
-            switch (objectType) {
-            case METADATA_CON_TABLE:
-            case METADATA_CON_VIEW:
-            case METADATA_CON_SYNONYM:
-            case METADATA_CON_QUERY:
-            case METADATA_CONNECTIONS:
-            case METADATA_FILE_DELIMITED:
-            case METADATA_FILE_POSITIONAL:
-            case METADATA_FILE_REGEXP:
-            case METADATA_FILE_XML:
-            case METADATA_FILE_LDIF:
-            case METADATA_FILE_EXCEL:
-            case METADATA_GENERIC_SCHEMA:
-            case METADATA_LDAP_SCHEMA:
-            case METADATA_SALESFORCE_SCHEMA:
-            case METADATA_WSDL_SCHEMA:
-            case METADATA_FILE_EBCDIC:
-            case METADATA_FILE_HL7:
-            case METADATA_MDMCONNECTION:
-            case METADATA_FILE_RULES:
-            case METADATA_SAPCONNECTIONS:
-            case METADATA_SAP_FUNCTION:
-            case METADATA_SAP_IDOC:
-            case METADATA_HEADER_FOOTER:
+            if (objectType == ERepositoryObjectType.METADATA_CON_TABLE || objectType == ERepositoryObjectType.METADATA_CON_VIEW
+                    || objectType == ERepositoryObjectType.METADATA_CON_SYNONYM
+                    || objectType == ERepositoryObjectType.METADATA_CON_QUERY
+                    || objectType == ERepositoryObjectType.METADATA_CONNECTIONS
+                    || objectType == ERepositoryObjectType.METADATA_FILE_DELIMITED
+                    || objectType == ERepositoryObjectType.METADATA_FILE_POSITIONAL
+                    || objectType == ERepositoryObjectType.METADATA_FILE_REGEXP
+                    || objectType == ERepositoryObjectType.METADATA_FILE_XML
+                    || objectType == ERepositoryObjectType.METADATA_FILE_LDIF
+                    || objectType == ERepositoryObjectType.METADATA_FILE_EXCEL
+                    || objectType == ERepositoryObjectType.METADATA_GENERIC_SCHEMA
+                    || objectType == ERepositoryObjectType.METADATA_LDAP_SCHEMA
+                    || objectType == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA
+                    || objectType == ERepositoryObjectType.METADATA_WSDL_SCHEMA
+                    || objectType == ERepositoryObjectType.METADATA_FILE_EBCDIC
+                    || objectType == ERepositoryObjectType.METADATA_FILE_HL7
+                    || objectType == ERepositoryObjectType.METADATA_MDMCONNECTION
+                    || objectType == ERepositoryObjectType.METADATA_FILE_RULES
+                    || objectType == ERepositoryObjectType.METADATA_SAPCONNECTIONS
+                    || objectType == ERepositoryObjectType.METADATA_SAP_FUNCTION
+                    || objectType == ERepositoryObjectType.METADATA_SAP_IDOC
+                    || objectType == ERepositoryObjectType.METADATA_HEADER_FOOTER) {
                 objectType = ERepositoryObjectType.METADATA;
-                break;
-            case ROUTINES:
-            case SNIPPETS:
+            } else if (objectType == ERepositoryObjectType.ROUTINES || objectType == ERepositoryObjectType.SNIPPETS) {
                 objectType = ERepositoryObjectType.ROUTINES;
-                break;
-            case DOCUMENTATION:
-            case JOB_DOC:
-            case JOBLET_DOC:
+            } else if (objectType == ERepositoryObjectType.DOCUMENTATION || objectType == ERepositoryObjectType.JOB_DOC
+                    || objectType == ERepositoryObjectType.JOBLET_DOC) {
                 objectType = ERepositoryObjectType.DOCUMENTATION;
-                break;
-            default:
             }
         }
         if (objectType != null) {
-            switch (objectType) {
-            case METADATA:
+            if (objectType == ERepositoryObjectType.METADATA) {
                 viewer.expandToLevel(((ProjectRepositoryNode) exportItemsTreeViewer.getRoot()).getMetadataNode(), 2);
-                break;
-            case ROUTINES:
+            } else if (objectType == ERepositoryObjectType.ROUTINES) {
                 viewer.expandToLevel(((ProjectRepositoryNode) exportItemsTreeViewer.getRoot()).getCodeNode(), 2);
-                break;
-            case DOCUMENTATION:
+            } else if (objectType == ERepositoryObjectType.DOCUMENTATION) {
                 viewer.expandToLevel(((ProjectRepositoryNode) exportItemsTreeViewer.getRoot()).getDocNode(), 2);
-                break;
             }
 
         }
@@ -990,19 +975,19 @@ class ExportItemWizardPage extends WizardPage {
         @Override
         public Object[] getChildren(Object parent) {
             RepositoryNode repositoryNode = ((RepositoryNode) parent);
-            if (repositoryNode.getObjectType() != null) {
-                switch (repositoryNode.getObjectType()) {
-                case METADATA_CONNECTIONS:
-                case METADATA_FILE_BRMS:
-                case METADATA_FILE_DELIMITED:
-                case METADATA_FILE_EBCDIC:
-                case METADATA_FILE_EXCEL:
-                case METADATA_FILE_FTP:
-                case METADATA_FILE_HL7:
-                case METADATA_FILE_LDIF:
-                case METADATA_FILE_POSITIONAL:
-                case METADATA_FILE_REGEXP:
-                case METADATA_FILE_XML:
+            ERepositoryObjectType objectType = repositoryNode.getObjectType();
+            if (objectType != null) {
+                if (objectType == ERepositoryObjectType.METADATA_CONNECTIONS
+                        || objectType == ERepositoryObjectType.METADATA_FILE_BRMS
+                        || objectType == ERepositoryObjectType.METADATA_FILE_DELIMITED
+                        || objectType == ERepositoryObjectType.METADATA_FILE_EBCDIC
+                        || objectType == ERepositoryObjectType.METADATA_FILE_EXCEL
+                        || objectType == ERepositoryObjectType.METADATA_FILE_FTP
+                        || objectType == ERepositoryObjectType.METADATA_FILE_HL7
+                        || objectType == ERepositoryObjectType.METADATA_FILE_LDIF
+                        || objectType == ERepositoryObjectType.METADATA_FILE_POSITIONAL
+                        || objectType == ERepositoryObjectType.METADATA_FILE_REGEXP
+                        || objectType == ERepositoryObjectType.METADATA_FILE_XML) {
                     return new Object[0];
                 }
             }

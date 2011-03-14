@@ -28,6 +28,7 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.repository.model.ISubRepositoryObject;
@@ -37,6 +38,7 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -88,10 +90,11 @@ public class DetecteViewImpactAction extends AContextualAction {
             } else {
                 Object o = selection.getFirstElement();
                 RepositoryNode node = (RepositoryNode) o;
-                switch (node.getType()) {
+                ENodeType nodeType = node.getType();
+                switch (nodeType) {
                 case REPOSITORY_ELEMENT:
-                    switch (node.getObjectType()) {
-                    case METADATA_CON_TABLE:
+                    ERepositoryObjectType objectType = node.getObjectType();
+                    if (objectType == ERepositoryObjectType.METADATA_CON_TABLE) {
                         IRepositoryViewObject repositoryObject = node.getObject();
                         if (repositoryObject != null) {
                             Item item2 = repositoryObject.getProperty().getItem();
@@ -110,31 +113,24 @@ public class DetecteViewImpactAction extends AContextualAction {
                             }
                         }
                         canWork = true;
-                        break;
-                    case METADATA_CON_QUERY:
-
-                    case METADATA_CONNECTIONS:
-                    case METADATA_FILE_DELIMITED:
-                    case METADATA_FILE_POSITIONAL:
-                    case METADATA_FILE_REGEXP:
-                    case METADATA_FILE_XML:
-                    case METADATA_FILE_LDIF:
-                    case METADATA_FILE_EXCEL:
-                    case METADATA_SAPCONNECTIONS:
-                    case METADATA_FILE_EBCDIC:
-                    case METADATA_FILE_HL7:
-                    case METADATA_VALIDATION_RULES:
-                    case METADATA_FILE_FTP:
-                    case METADATA_FILE_BRMS:
-                    case METADATA_MDMCONNECTION:
-                        // case METADATA_SALESFORCE_SCHEMA:
-                        // case METADATA_LDAP_SCHEMA:
-                        // case METADATA_WSDL_SCHEMA:
-                    case CONTEXT:
-                    case JOBLET:
+                    } else if (objectType == ERepositoryObjectType.METADATA_CON_QUERY
+                            || objectType == ERepositoryObjectType.METADATA_CONNECTIONS
+                            || objectType == ERepositoryObjectType.METADATA_FILE_DELIMITED
+                            || objectType == ERepositoryObjectType.METADATA_FILE_POSITIONAL
+                            || objectType == ERepositoryObjectType.METADATA_FILE_REGEXP
+                            || objectType == ERepositoryObjectType.METADATA_FILE_XML
+                            || objectType == ERepositoryObjectType.METADATA_FILE_LDIF
+                            || objectType == ERepositoryObjectType.METADATA_FILE_EXCEL
+                            || objectType == ERepositoryObjectType.METADATA_SAPCONNECTIONS
+                            || objectType == ERepositoryObjectType.METADATA_FILE_EBCDIC
+                            || objectType == ERepositoryObjectType.METADATA_FILE_HL7
+                            || objectType == ERepositoryObjectType.METADATA_VALIDATION_RULES
+                            || objectType == ERepositoryObjectType.METADATA_FILE_FTP
+                            || objectType == ERepositoryObjectType.METADATA_FILE_BRMS
+                            || objectType == ERepositoryObjectType.METADATA_MDMCONNECTION
+                            || objectType == ERepositoryObjectType.CONTEXT || objectType == ERepositoryObjectType.JOBLET) {
                         canWork = true;
-                        break;
-                    default:
+                    } else {
                         canWork = false;
                     }
                     break;

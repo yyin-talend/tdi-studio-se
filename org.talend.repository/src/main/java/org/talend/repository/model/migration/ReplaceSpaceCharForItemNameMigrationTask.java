@@ -95,31 +95,23 @@ public class ReplaceSpaceCharForItemNameMigrationTask extends AbstractItemMigrat
      */
     private void fakeFunction(Item item) {
         ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
-        switch (itemType) {
-        case CONTEXT:
+        if (itemType == ERepositoryObjectType.CONTEXT) {
             EList context = ((ContextItem) item).getContext();
             if (context != null) {
                 context.get(0);
             }
-            break;
-        case METADATA_CONNECTIONS:
-        case METADATA_FILE_DELIMITED:
-        case METADATA_FILE_POSITIONAL:
-        case METADATA_FILE_REGEXP:
-        case METADATA_FILE_XML:
-        case METADATA_FILE_EXCEL:
-        case METADATA_FILE_LDIF:
-        case METADATA_GENERIC_SCHEMA:
-        case METADATA_LDAP_SCHEMA:
-        case METADATA_SALESFORCE_SCHEMA:
-        case METADATA_WSDL_SCHEMA:
+        } else if (itemType == ERepositoryObjectType.METADATA_CONNECTIONS
+                || itemType == ERepositoryObjectType.METADATA_FILE_DELIMITED
+                || itemType == ERepositoryObjectType.METADATA_FILE_POSITIONAL
+                || itemType == ERepositoryObjectType.METADATA_FILE_REGEXP || itemType == ERepositoryObjectType.METADATA_FILE_XML
+                || itemType == ERepositoryObjectType.METADATA_FILE_EXCEL || itemType == ERepositoryObjectType.METADATA_FILE_LDIF
+                || itemType == ERepositoryObjectType.METADATA_GENERIC_SCHEMA
+                || itemType == ERepositoryObjectType.METADATA_LDAP_SCHEMA
+                || itemType == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA
+                || itemType == ERepositoryObjectType.METADATA_WSDL_SCHEMA) {
             ((ConnectionItem) item).getConnection();
-            break;
-        case DOCUMENTATION:
+        } else if (itemType == ERepositoryObjectType.DOCUMENTATION) {
             ((FileItem) item).getContent();
-            break;
-        default:
-            break;
         }
     }
 

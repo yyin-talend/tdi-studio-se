@@ -46,67 +46,67 @@ public class RepositoryNameSorter extends ViewerSorter {
             if (contentType == null) {
                 return 199;
             }
-
-            switch (contentType) {
-            case BUSINESS_PROCESS:
+            if (contentType == ERepositoryObjectType.BUSINESS_PROCESS) {
                 return 0;
-            case PROCESS:
+            } else if (contentType == ERepositoryObjectType.PROCESS) {
                 return 5;
-            case ROUTES:
-                return 5;
-            case JOBLET:
-                return 6;
-            case CONTEXT:
-                return 10;
-            case ROUTINES:
-                return 15;
-            case BEANS:
+            } else if (contentType == ERepositoryObjectType.BEANS) {
                 return 16;
-            case METADATA:
+            } else if (contentType == ERepositoryObjectType.ROUTES) {
+                return 5;
+            } else if (contentType == ERepositoryObjectType.JOBLET) {
+                return 6;
+            } else if (contentType == ERepositoryObjectType.CONTEXT) {
+                return 10;
+            } else if (contentType == ERepositoryObjectType.ROUTINES) {
+                return 15;
+            } else if (contentType == ERepositoryObjectType.METADATA) {
                 return 20;
-            case METADATA_CONNECTIONS:
+            } else if (contentType == ERepositoryObjectType.METADATA_CONNECTIONS) {
                 return 25;
-            case METADATA_SAPCONNECTIONS:
+            } else if (contentType == ERepositoryObjectType.METADATA_SAPCONNECTIONS) {
                 return 28;
-            case SQLPATTERNS:
+            } else if (contentType == ERepositoryObjectType.SQLPATTERNS) {
                 return 19;
-            case METADATA_FILE_DELIMITED:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_DELIMITED) {
                 return 30;
-            case METADATA_FILE_POSITIONAL:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_POSITIONAL) {
                 return 35;
-            case METADATA_FILE_REGEXP:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_REGEXP) {
                 return 40;
-            case METADATA_FILE_XML:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_XML) {
                 return 45;
-            case METADATA_FILE_EXCEL:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_EXCEL) {
                 return 46;
-            case METADATA_FILE_LDIF:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_LDIF) {
                 return 50;
-            case METADATA_LDAP_SCHEMA:
+            } else if (contentType == ERepositoryObjectType.METADATA_LDAP_SCHEMA) {
                 return 55;
-            case METADATA_SALESFORCE_SCHEMA:
+            } else if (contentType == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
                 return 56;
-            case METADATA_GENERIC_SCHEMA:
+            } else if (contentType == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
                 return 58;
-            case METADATA_MDMCONNECTION:
+            } else if (contentType == ERepositoryObjectType.METADATA_MDMCONNECTION) {
                 return 59;
-            case METADATA_RULES_MANAGEMENT:
+            } else if (contentType == ERepositoryObjectType.METADATA_RULES_MANAGEMENT) {
                 return 60;
-            case METADATA_HEADER_FOOTER:
+            } else if (contentType == ERepositoryObjectType.METADATA_HEADER_FOOTER) {
                 return 61;
-            case METADATA_FILE_EBCDIC:
+            } else if (contentType == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
                 return 62;
-            case METADATA_WSDL_SCHEMA:
+            } else if (contentType == ERepositoryObjectType.METADATA_WSDL_SCHEMA) {
                 return 63;
-            case METADATA_VALIDATION_RULES:
+            } else if (contentType == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
                 return 64;
-            case DOCUMENTATION:
+            } else if (contentType == ERepositoryObjectType.DOCUMENTATION) {
                 return 65;
-            case JOBS:
+            } else if (contentType == ERepositoryObjectType.JOBS) {
                 return 70;
-            case JOBLETS:
+            } else if (contentType == ERepositoryObjectType.JOBLETS) {
                 return 75;
-            default:
+            } else if (!contentType.isStaticNode()) {
+                return contentType.ordinal();
+            } else {
                 return 199;
             }
         } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
@@ -117,12 +117,11 @@ public class RepositoryNameSorter extends ViewerSorter {
             if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
                 ERepositoryObjectType contentType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                 if (contentType != null) {
-                    switch (contentType) {
-                    case METADATA_CON_CDC:
+                    if (contentType == ERepositoryObjectType.METADATA_CON_CDC) {
                         return 120;
-                    case METADATA_CON_TABLE:
+                    } else if (contentType == ERepositoryObjectType.METADATA_CON_TABLE) {
                         return 125;
-                    default:
+                    } else {
                         return 130;
                     }
                 }

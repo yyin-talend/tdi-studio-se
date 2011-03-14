@@ -78,27 +78,20 @@ public class ConvertOldPerlTypesMigrationTask extends AbstractItemMigrationTask 
 
     private void convertItem(Item item) throws PersistenceException {
         ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
-        switch (itemType) {
-        case PROCESS:
+
+        if (itemType == ERepositoryObjectType.PROCESS) {
             convertJobs((ProcessItem) item);
-            break;
-        case CONTEXT:
+        } else if (itemType == ERepositoryObjectType.CONTEXT) {
             convertContext((ContextItem) item);
-            break;
-        case ROUTINES:
+        } else if (itemType == ERepositoryObjectType.ROUTINES) {
             convertRoutines((RoutineItem) item);
-            break;
-        case METADATA_CONNECTIONS:
-        case METADATA_FILE_DELIMITED:
-        case METADATA_FILE_POSITIONAL:
-        case METADATA_FILE_REGEXP:
-        case METADATA_FILE_XML:
-        case METADATA_FILE_EXCEL:
-        case METADATA_FILE_LDIF:
-        case METADATA_GENERIC_SCHEMA:
+        } else if (itemType == ERepositoryObjectType.METADATA_CONNECTIONS
+                || itemType == ERepositoryObjectType.METADATA_FILE_DELIMITED
+                || itemType == ERepositoryObjectType.METADATA_FILE_POSITIONAL
+                || itemType == ERepositoryObjectType.METADATA_FILE_REGEXP || itemType == ERepositoryObjectType.METADATA_FILE_XML
+                || itemType == ERepositoryObjectType.METADATA_FILE_EXCEL || itemType == ERepositoryObjectType.METADATA_FILE_LDIF
+                || itemType == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
             changeMetadataConnections((ConnectionItem) item);
-        default:
-            break;
         }
     }
 

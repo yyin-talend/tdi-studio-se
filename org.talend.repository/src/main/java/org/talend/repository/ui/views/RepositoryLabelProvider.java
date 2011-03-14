@@ -126,16 +126,16 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                     .getEmfProject();
             String projectLabel = object.getProjectLabel();
 
-            switch (object.getRepositoryObjectType()) {
-            case METADATA_CON_QUERY:
-            case SNIPPETS:
-            case METADATA_CON_SYNONYM:
-            case METADATA_CON_TABLE:
-            case METADATA_CON_VIEW:
-            case METADATA_CON_CDC:
-            case METADATA_SAP_IDOC:
-            case METADATA_SAP_FUNCTION:
-            case METADATA_CON_COLUMN:
+            ERepositoryObjectType repositoryObjectType = object.getRepositoryObjectType();
+            if (repositoryObjectType == ERepositoryObjectType.METADATA_CON_QUERY
+                    || repositoryObjectType == ERepositoryObjectType.SNIPPETS
+                    || repositoryObjectType == ERepositoryObjectType.METADATA_CON_SYNONYM
+                    || repositoryObjectType == ERepositoryObjectType.METADATA_CON_TABLE
+                    || repositoryObjectType == ERepositoryObjectType.METADATA_CON_VIEW
+                    || repositoryObjectType == ERepositoryObjectType.METADATA_CON_CDC
+                    || repositoryObjectType == ERepositoryObjectType.METADATA_SAP_IDOC
+                    || repositoryObjectType == ERepositoryObjectType.METADATA_SAP_FUNCTION
+                    || repositoryObjectType == ERepositoryObjectType.METADATA_CON_COLUMN) {
                 String label = object.getLabel();
                 if (!mainProject.getLabel().equals(projectLabel) && PluginChecker.isRefProjectLoaded()) {
 
@@ -147,8 +147,6 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
                 }
                 return label;
-            default:
-                break;
             }
             String label = getText(object);
             if (!mainProject.getLabel().equals(projectLabel) && PluginChecker.isRefProjectLoaded()) {
@@ -246,15 +244,15 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 return ImageProvider.getImage(node.getIcon());
             }
 
-            switch (node.getObject().getRepositoryObjectType()) {
-            case METADATA_CON_QUERY:
-            case SNIPPETS:
-            case METADATA_CON_SYNONYM:
-            case METADATA_CON_VIEW:
-            case JOB_DOC:
-            case JOBLET_DOC:
+            ERepositoryObjectType repositoryObjectType = node.getObject().getRepositoryObjectType();
+            if (repositoryObjectType == ERepositoryObjectType.METADATA_CON_QUERY
+                    || repositoryObjectType == ERepositoryObjectType.SNIPPETS
+                    || repositoryObjectType == ERepositoryObjectType.METADATA_CON_SYNONYM
+                    || repositoryObjectType == ERepositoryObjectType.METADATA_CON_VIEW
+                    || repositoryObjectType == ERepositoryObjectType.JOB_DOC
+                    || repositoryObjectType == ERepositoryObjectType.JOBLET_DOC) {
                 return ImageProvider.getImage(node.getIcon());
-            case METADATA_CON_TABLE:
+            } else if (repositoryObjectType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 Image tableImage = ImageProvider.getImage(node.getIcon());
                 Item item = node.getObject().getProperty().getItem();
                 if (item != null && item instanceof DatabaseConnectionItem) {
@@ -282,14 +280,11 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                     }
                 }
                 return tableImage;
-            case METADATA_CON_CDC:
+            } else if (repositoryObjectType == ERepositoryObjectType.METADATA_CON_CDC) {
                 ImageDescriptor idf = RepositoryPlugin.imageDescriptorFromPlugin(RepositoryPlugin.PLUGIN_ID,
                         "icons/subscriber.jpg"); //$NON-NLS-1$
                 return idf.createImage();
-            default:
-                break;
             }
-
             return getImage(node.getObject());
         }
     }

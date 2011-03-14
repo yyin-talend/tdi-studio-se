@@ -269,9 +269,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
             // TODO
 
             ERepositoryObjectType objectType = node.getObjectType();
-            switch (objectType) {
-            case SQLPATTERNS:
-            case ROUTINES:
+            if (objectType == ERepositoryObjectType.SQLPATTERNS || objectType == ERepositoryObjectType.ROUTINES) {
                 RepositoryNode systemNode = node.getParent();
                 if (systemNode != null) {
                     // for system folder
@@ -280,27 +278,22 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                         return false;
                     }
                 }
-            default:
             }
+
             if (node.getObject().isDeleted()) {
                 return false;
             }
         }
         ERepositoryObjectType contentType = node.getContentType();
         if (contentType != null) {
-            switch (contentType) {
-            case REFERENCED_PROJECTS: // referenced project.
-            case GENERATED: // generated documentation
+            if (contentType == ERepositoryObjectType.REFERENCED_PROJECTS || contentType == ERepositoryObjectType.GENERATED) {
                 return false;
-            case SQLPATTERNS:
-            case ROUTINES:
-
+            } else if (contentType == ERepositoryObjectType.SQLPATTERNS || contentType == ERepositoryObjectType.ROUTINES) {
                 // for system folder
                 if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER
                         && node.getLabel().equalsIgnoreCase(RepositoryConstants.SYSTEM_DIRECTORY)) {
                     return false;
                 }
-            default:
             }
         }
 

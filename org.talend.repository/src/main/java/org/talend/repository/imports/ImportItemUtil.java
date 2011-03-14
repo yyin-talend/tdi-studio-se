@@ -157,21 +157,15 @@ public class ImportItemUtil {
         if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER) {
             String prefix = ""; //$NON-NLS-1$
             ERepositoryObjectType type = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-            switch (type) {
-            case METADATA_FILE_DELIMITED:
-            case METADATA_FILE_POSITIONAL:
-            case METADATA_FILE_REGEXP:
-            case METADATA_FILE_XML:
-            case METADATA_FILE_LDIF:
-            case METADATA_FILE_EXCEL:
-            case METADATA_SALESFORCE_SCHEMA:
-            case METADATA_GENERIC_SCHEMA:
-            case METADATA_LDAP_SCHEMA:
-            case METADATA_CONNECTIONS:
-            case METADATA_SAPCONNECTIONS:
-            case METADATA_HEADER_FOOTER:
+            if (type == ERepositoryObjectType.METADATA_FILE_DELIMITED || type == ERepositoryObjectType.METADATA_FILE_POSITIONAL
+                    || type == ERepositoryObjectType.METADATA_FILE_REGEXP || type == ERepositoryObjectType.METADATA_FILE_XML
+                    || type == ERepositoryObjectType.METADATA_FILE_LDIF || type == ERepositoryObjectType.METADATA_FILE_EXCEL
+                    || type == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA
+                    || type == ERepositoryObjectType.METADATA_GENERIC_SCHEMA
+                    || type == ERepositoryObjectType.METADATA_LDAP_SCHEMA || type == ERepositoryObjectType.METADATA_CONNECTIONS
+                    || type == ERepositoryObjectType.METADATA_SAPCONNECTIONS
+                    || type == ERepositoryObjectType.METADATA_HEADER_FOOTER) {
                 prefix = ERepositoryObjectType.METADATA.toString();
-
             }
             return new Path(prefix).append(node.getLabel());
         }

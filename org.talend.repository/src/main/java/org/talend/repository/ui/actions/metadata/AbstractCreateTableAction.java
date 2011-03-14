@@ -216,14 +216,13 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             String tableLabel = (String) node.getProperties(EProperties.LABEL);
 
             PositionalFileConnectionItem item = null;
-            switch (nodeType) {
-            case METADATA_CON_TABLE:
+
+            if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 item = (PositionalFileConnectionItem) node.getParent().getObject().getProperty().getItem();
                 connection = (PositionalFileConnection) item.getConnection();
                 metadataTable = TableHelper.findByLabel(connection, tableLabel);
                 creation = false;
-                break;
-            case METADATA_FILE_POSITIONAL:
+            } else if (nodeType == ERepositoryObjectType.METADATA_FILE_POSITIONAL) {
                 item = (PositionalFileConnectionItem) node.getObject().getProperty().getItem();
                 connection = (PositionalFileConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
@@ -243,10 +242,10 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     PackageHelper.addMetadataTable(metadataTable, newrecord);
                 }
                 creation = true;
-                break;
-            default:
+            } else {
                 return;
             }
+
             initContextMode(item);
             FilePositionalTableWizard filePositionalTableWizard = new FilePositionalTableWizard(PlatformUI.getWorkbench(),
                     creation, item, metadataTable, forceReadOnly);
@@ -274,14 +273,13 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             String tableLabel = (String) node.getProperties(EProperties.LABEL);
 
             RegExFileConnectionItem item = null;
-            switch (nodeType) {
-            case METADATA_CON_TABLE:
+
+            if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 item = (RegExFileConnectionItem) node.getParent().getObject().getProperty().getItem();
                 connection = (RegexpFileConnection) item.getConnection();
                 metadataTable = TableHelper.findByLabel(connection, tableLabel);
                 creation = false;
-                break;
-            case METADATA_FILE_REGEXP:
+            } else if (nodeType == ERepositoryObjectType.METADATA_FILE_REGEXP) {
                 item = (RegExFileConnectionItem) node.getObject().getProperty().getItem();
                 connection = (RegexpFileConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
@@ -298,8 +296,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     PackageHelper.addMetadataTable(metadataTable, newrecord);
                 }
                 creation = true;
-                break;
-            default:
+            } else {
                 return;
             }
             initContextMode(item);
@@ -330,14 +327,13 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             String tableLabel = (String) node.getProperties(EProperties.LABEL);
 
             XmlFileConnectionItem item = null;
-            switch (nodeType) {
-            case METADATA_CON_TABLE:
+
+            if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 item = (XmlFileConnectionItem) node.getParent().getObject().getProperty().getItem();
                 connection = (XmlFileConnection) item.getConnection();
                 metadataTable = TableHelper.findByLabel(connection, tableLabel);
                 creation = false;
-                break;
-            case METADATA_FILE_XML:
+            } else if (nodeType == ERepositoryObjectType.METADATA_FILE_XML) {
                 item = (XmlFileConnectionItem) node.getObject().getProperty().getItem();
                 connection = (XmlFileConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
@@ -354,8 +350,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     PackageHelper.addMetadataTable(metadataTable, newrecord);
                 }
                 creation = true;
-                break;
-            default:
+            } else {
                 return;
             }
             initContextMode(item);
@@ -386,14 +381,12 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             String tableLabel = (String) node.getProperties(EProperties.LABEL);
 
             DelimitedFileConnectionItem item = null;
-            switch (nodeType) {
-            case METADATA_CON_TABLE:
+            if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 item = (DelimitedFileConnectionItem) node.getParent().getObject().getProperty().getItem();
                 connection = (DelimitedFileConnection) item.getConnection();
                 metadataTable = TableHelper.findByLabel(connection, tableLabel);
                 creation = false;
-                break;
-            case METADATA_FILE_DELIMITED:
+            } else if (nodeType == ERepositoryObjectType.METADATA_FILE_DELIMITED) {
                 item = (DelimitedFileConnectionItem) node.getObject().getProperty().getItem();
                 connection = (DelimitedFileConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
@@ -410,8 +403,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     PackageHelper.addMetadataTable(metadataTable, newrecord);
                 }
                 creation = true;
-                break;
-            default:
+            } else {
                 return;
             }
             initContextMode(item);
@@ -442,14 +434,12 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             String tableLabel = (String) node.getProperties(EProperties.LABEL);
 
             LdifFileConnectionItem item = null;
-            switch (nodeType) {
-            case METADATA_CON_TABLE:
+            if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 item = (LdifFileConnectionItem) node.getParent().getObject().getProperty().getItem();
                 connection = (LdifFileConnection) item.getConnection();
                 metadataTable = TableHelper.findByLabel(connection, tableLabel);
                 creation = false;
-                break;
-            case METADATA_FILE_LDIF:
+            } else if (nodeType == ERepositoryObjectType.METADATA_FILE_LDIF) {
                 item = (LdifFileConnectionItem) node.getObject().getProperty().getItem();
                 connection = (LdifFileConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
@@ -466,8 +456,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     PackageHelper.addMetadataTable(metadataTable, newrecord);
                 }
                 creation = true;
-                break;
-            default:
+            } else {
                 return;
             }
             initContextMode(item);
@@ -499,14 +488,12 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             String tableLabel = (String) node.getProperties(EProperties.LABEL);
 
             ExcelFileConnectionItem item = null;
-            switch (nodeType) {
-            case METADATA_CON_TABLE:
+            if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 item = (ExcelFileConnectionItem) node.getParent().getObject().getProperty().getItem();
                 connection = (FileExcelConnection) item.getConnection();
                 metadataTable = TableHelper.findByLabel(connection, tableLabel);
                 creation = false;
-                break;
-            case METADATA_FILE_EXCEL:
+            } else if (nodeType == ERepositoryObjectType.METADATA_FILE_EXCEL) {
                 item = (ExcelFileConnectionItem) node.getObject().getProperty().getItem();
                 connection = (FileExcelConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
@@ -523,8 +510,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     PackageHelper.addMetadataTable(metadataTable, newrecord);
                 }
                 creation = true;
-                break;
-            default:
+            } else {
                 return;
             }
             initContextMode(item);
@@ -548,14 +534,13 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             String tableLabel = (String) node.getProperties(EProperties.LABEL);
 
             GenericSchemaConnectionItem item = null;
-            switch (nodeType) {
-            case METADATA_CON_TABLE:
+
+            if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 item = (GenericSchemaConnectionItem) node.getParent().getObject().getProperty().getItem();
                 connection = (GenericSchemaConnection) item.getConnection();
                 metadataTable = TableHelper.findByLabel(connection, tableLabel);
                 creation = false;
-                break;
-            case METADATA_GENERIC_SCHEMA:
+            } else if (nodeType == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
                 item = (GenericSchemaConnectionItem) node.getObject().getProperty().getItem();
                 connection = (GenericSchemaConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
@@ -572,8 +557,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     ConnectionHelper.addPackage(gpkg, connection);
                 }
                 creation = true;
-                break;
-            default:
+            } else {
                 return;
             }
             initContextMode(item);
@@ -603,14 +587,13 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             String tableLabel = (String) node.getProperties(EProperties.LABEL);
 
             LDAPSchemaConnectionItem item = null;
-            switch (nodeType) {
-            case METADATA_CON_TABLE:
+
+            if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 item = (LDAPSchemaConnectionItem) node.getParent().getObject().getProperty().getItem();
                 connection = (LDAPSchemaConnection) item.getConnection();
                 metadataTable = TableHelper.findByLabel(connection, tableLabel);
                 creation = false;
-                break;
-            case METADATA_LDAP_SCHEMA:
+            } else if (nodeType == ERepositoryObjectType.METADATA_LDAP_SCHEMA) {
                 item = (LDAPSchemaConnectionItem) node.getObject().getProperty().getItem();
                 connection = (LDAPSchemaConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
@@ -628,8 +611,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
                 }
                 creation = true;
-                break;
-            default:
+            } else {
                 return;
             }
             initContextMode(item);
@@ -661,14 +643,12 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             String tableLabel = (String) node.getProperties(EProperties.LABEL);
 
             SalesforceSchemaConnectionItem item = null;
-            switch (nodeType) {
-            case METADATA_CON_TABLE:
+            if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 item = (SalesforceSchemaConnectionItem) node.getParent().getObject().getProperty().getItem();
                 connection = (SalesforceSchemaConnection) item.getConnection();
                 metadataTable = TableHelper.findByLabel(connection, tableLabel);
                 creation = false;
-                break;
-            case METADATA_SALESFORCE_SCHEMA:
+            } else if (nodeType == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
                 item = (SalesforceSchemaConnectionItem) node.getObject().getProperty().getItem();
                 connection = (SalesforceSchemaConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
@@ -686,8 +666,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
                 }
                 creation = true;
-                break;
-            default:
+            } else {
                 return;
             }
             initContextMode(item);
@@ -717,14 +696,12 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             String tableLabel = (String) node.getProperties(EProperties.LABEL);
 
             WSDLSchemaConnectionItem item = null;
-            switch (nodeType) {
-            case METADATA_CON_TABLE:
+            if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 item = (WSDLSchemaConnectionItem) node.getParent().getObject().getProperty().getItem();
                 connection = (WSDLSchemaConnection) item.getConnection();
                 metadataTable = TableHelper.findByLabel(connection, tableLabel);
                 creation = false;
-                break;
-            case METADATA_WSDL_SCHEMA:
+            } else if (nodeType == ERepositoryObjectType.METADATA_WSDL_SCHEMA) {
                 item = (WSDLSchemaConnectionItem) node.getObject().getProperty().getItem();
                 connection = (WSDLSchemaConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
@@ -742,8 +719,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
                 }
                 creation = true;
-                break;
-            default:
+            } else {
                 return;
             }
             initContextMode(item);
@@ -777,21 +753,19 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             String metadataTableLabel = (String) node.getProperties(EProperties.LABEL);
 
             DatabaseConnectionItem item = null;
-            switch (nodeType) {
-            case METADATA_CON_TABLE:
+            if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 item = (DatabaseConnectionItem) node.getObject().getProperty().getItem();
                 connection = (DatabaseConnection) item.getConnection();
                 metadataTable = TableHelper.findByLabel(connection, metadataTableLabel);
                 creation = false;
-                break;
-            case METADATA_CONNECTIONS:
+            } else if (nodeType == ERepositoryObjectType.METADATA_CONNECTIONS) {
                 item = (DatabaseConnectionItem) node.getObject().getProperty().getItem();
                 connection = (DatabaseConnection) item.getConnection();
                 creation = true;
-                break;
-            default:
-                break;
+            } else {
+                return;
             }
+
             initContextMode(item);
             openDatabaseTableWizard(item, metadataTable, forceReadOnly, node, creation);
         }

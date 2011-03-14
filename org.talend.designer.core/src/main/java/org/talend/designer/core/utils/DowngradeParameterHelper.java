@@ -265,11 +265,9 @@ public final class DowngradeParameterHelper {
 
         try {
             ERepositoryObjectType repositoryConnectionsNeeded;
-            switch (type) {
-            case METADATA_CON_QUERY:
+            if (type == ERepositoryObjectType.METADATA_CON_QUERY) {
                 repositoryConnectionsNeeded = ERepositoryObjectType.METADATA_CONNECTIONS;
-                break;
-            default:
+            } else {
                 repositoryConnectionsNeeded = ERepositoryObjectType.METADATA;
             }
 
@@ -278,8 +276,7 @@ public final class DowngradeParameterHelper {
             for (IRepositoryViewObject object : objects) {
                 connectionItem = (ConnectionItem) object.getProperty().getItem();
 
-                switch (type) {
-                case METADATA_CON_QUERY:
+                if (type == ERepositoryObjectType.METADATA_CON_QUERY) {
                     QueriesConnection queries = connectionItem.getConnection().getQueries();
                     if (queries == null) {
                         continue;
@@ -289,15 +286,12 @@ public final class DowngradeParameterHelper {
                             return connectionItem.getProperty().getId() + SEPARATOR + query.getLabel();
                         }
                     }
-                    break;
-                case METADATA_CON_TABLE:
+                } else if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
                     for (MetadataTable table : (Set<MetadataTable>) ConnectionHelper.getTables(connectionItem.getConnection())) {
                         if (table.getId().equals(id)) {
                             return connectionItem.getProperty().getId() + SEPARATOR + table.getLabel();
                         }
                     }
-                    break;
-                default:
                 }
 
             }

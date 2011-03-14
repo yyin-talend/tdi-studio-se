@@ -80,25 +80,22 @@ public class CopyToGenericSchemaAction extends AContextualAction {
             return;
         }
 
-        switch (nodeType) {
-        case METADATA_CON_TABLE:
-        case METADATA_CON_VIEW:
-        case METADATA_CON_SYNONYM:
-        case METADATA_FILE_DELIMITED:
-        case METADATA_FILE_POSITIONAL:
-        case METADATA_FILE_REGEXP:
-        case METADATA_FILE_XML:
-        case METADATA_FILE_EXCEL:
-        case METADATA_LDAP_SCHEMA:
-        case METADATA_SALESFORCE_SCHEMA:
-        case METADATA_FILE_LDIF:
-            break;
-        default:
+        if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE || nodeType == ERepositoryObjectType.METADATA_CON_VIEW
+                || nodeType == ERepositoryObjectType.METADATA_CON_SYNONYM
+                || nodeType == ERepositoryObjectType.METADATA_FILE_DELIMITED
+                || nodeType == ERepositoryObjectType.METADATA_FILE_POSITIONAL
+                || nodeType == ERepositoryObjectType.METADATA_FILE_REGEXP || nodeType == ERepositoryObjectType.METADATA_FILE_XML
+                || nodeType == ERepositoryObjectType.METADATA_FILE_EXCEL
+                || nodeType == ERepositoryObjectType.METADATA_LDAP_SCHEMA
+                || nodeType == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA
+                || nodeType == ERepositoryObjectType.METADATA_FILE_LDIF) {
+
+        } else {
             return;
         }
 
-        RepositoryNode genericNode = (RepositoryNode) CorePlugin.getDefault().getRepositoryService().getRootRepositoryNode(
-                ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
+        RepositoryNode genericNode = (RepositoryNode) CorePlugin.getDefault().getRepositoryService()
+                .getRootRepositoryNode(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         if (genericNode == null) {
             return;
         }
@@ -119,8 +116,8 @@ public class CopyToGenericSchemaAction extends AContextualAction {
         if (isAllowedRepositoryElement) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
-                CopyToGenericSchemaHelper.copyToGenericSchema(factory, (MetadataTableRepositoryObject) this.sourceNode
-                        .getObject(), new Path("")); //$NON-NLS-1$
+                CopyToGenericSchemaHelper.copyToGenericSchema(factory,
+                        (MetadataTableRepositoryObject) this.sourceNode.getObject(), new Path("")); //$NON-NLS-1$
                 RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
             } catch (PersistenceException e) {
                 // e.printStackTrace();
