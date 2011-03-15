@@ -275,7 +275,7 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
             IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
                     IExpressionBuilderDialogService.class);
             CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
-            cellEditor = new ExpressionCellEditor(composite, behavior);
+            cellEditor = new ExpressionCellEditor(composite, behavior, source);
             ((ExpressionCellEditor) cellEditor).setOwnerId(((AbstractNode) model).getExpression());
             IExpressionBuilderDialogController dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService)
                     .getExpressionBuilderInstance(parent, (ExpressionCellEditor) cellEditor, null);

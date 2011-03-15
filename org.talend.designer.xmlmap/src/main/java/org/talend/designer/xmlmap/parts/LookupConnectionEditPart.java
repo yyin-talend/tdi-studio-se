@@ -15,7 +15,6 @@ package org.talend.designer.xmlmap.parts;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
@@ -26,6 +25,8 @@ import org.talend.designer.xmlmap.figures.routers.LookupConnectionRouter;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.ui.resource.ColorInfo;
+import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -55,7 +56,7 @@ public class LookupConnectionEditPart extends BaseConnectionEditPart {
         PolylineConnection connection = new PolylineConnection();
         connection.setTargetDecoration(new PolygonDecoration());
         // connection.setBackgroundColor(ColorConstants.yellow);
-        connection.setForegroundColor(ColorConstants.gray);
+        connection.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_LOOKUP_LINKS));
         connection.setLineWidth(2);
         cr = new LookupConnectionRouter();
         connection.setConnectionRouter(cr);
@@ -94,6 +95,14 @@ public class LookupConnectionEditPart extends BaseConnectionEditPart {
             cr.setOffset(calculateConnOffset());
         }
         return figure;
+    }
+
+    public void updateForegroundColor(boolean selected) {
+        if (selected) {
+            getFigure().setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTED_LOOKUP_LINKS));
+        } else {
+            getFigure().setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_LOOKUP_LINKS));
+        }
     }
 
 }

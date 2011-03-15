@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.Figure;
@@ -24,7 +25,6 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
-import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.figures.InputXmlTreeFigure;
 import org.talend.designer.xmlmap.figures.cells.IWidgetCell;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
@@ -39,8 +39,6 @@ import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 public class InputXmlTreeEditPart extends AbstractInOutTreeEditPart {
 
     private InputXmlTreeFigure figure;
-
-    private ExpressionFigure oldExpression;
 
     private XmlMapNodeDirectEditManager directEditManager;
 
@@ -117,6 +115,60 @@ public class InputXmlTreeEditPart extends AbstractInOutTreeEditPart {
             }
         }
 
+    }
+
+    public void updateChildrenConnections(List treeNodeParts, InputXmlTreeEditPart selectedTree) {
+        boolean selected = selectedTree == this;
+        for (Object obj : treeNodeParts) {
+            if (obj instanceof TreeNodeEditPart) {
+                List connections = new ArrayList();
+                TreeNodeEditPart treeNodePart = (TreeNodeEditPart) obj;
+                connections.addAll(treeNodePart.getSourceConnections());
+                connections.addAll(treeNodePart.getTargetConnections());
+                for (Object connObj : connections) {
+                    if (connObj instanceof ConnectionEditPart) {
+                        ((ConnectionEditPart) connObj).updateForegroundColor(selected);
+                    } else if (connObj instanceof LookupConnectionEditPart) {
+                        LookupConnectionEditPart lookupConnPart = (LookupConnectionEditPart) connObj;
+                        if (selected) {
+                            lookupConnPart.updateForegroundColor(selected);
+                        } else {
+
+                            /*
+                             * whether the source or target is selected , look up should be highlight. source is not
+                             * selected , check target
+                             */
+                            if (treeNodePart == lookupConnPart.getSource()) {
+                                if (lookupConnPart.getTarget() instanceof TreeNodeEditPart) {
+                                    AbstractInOutTreeEditPart inOutTreeEditPart = ((TreeNodeEditPart) lookupConnPart.getTarget())
+                                            .getInOutTreeEditPart(lookupConnPart.getTarget());
+                                    if (inOutTreeEditPart == selectedTree) {
+                                        lookupConnPart.updateForegroundColor(true);
+                                    } else {
+                                        lookupConnPart.updateForegroundColor(false);
+                                    }
+                                }
+
+                            } else if (treeNodePart == lookupConnPart.getTarget()) {
+                                if (lookupConnPart.getSource() instanceof TreeNodeEditPart) {
+                                    AbstractInOutTreeEditPart inOutTreeEditPart = ((TreeNodeEditPart) lookupConnPart.getSource())
+                                            .getInOutTreeEditPart(lookupConnPart.getSource());
+                                    if (inOutTreeEditPart == selectedTree) {
+                                        lookupConnPart.updateForegroundColor(true);
+                                    } else {
+                                        lookupConnPart.updateForegroundColor(false);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+                if (!treeNodePart.getChildren().isEmpty()) {
+                    updateChildrenConnections(treeNodePart.getChildren(), selectedTree);
+                }
+            }
+        }
     }
 
 }

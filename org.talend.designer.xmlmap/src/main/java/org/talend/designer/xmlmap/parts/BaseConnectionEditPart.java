@@ -40,4 +40,7 @@ public abstract class BaseConnectionEditPart extends AbstractConnectionEditPart 
     public void setTargetContained(boolean targetContained) {
         this.targetContained = targetContained;
     }
+
+    public abstract void updateForegroundColor(boolean selected);
+
 }

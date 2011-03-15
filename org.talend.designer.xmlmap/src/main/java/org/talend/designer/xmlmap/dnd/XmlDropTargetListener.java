@@ -141,10 +141,11 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
                     event.detail = DND.DROP_NONE;
                 }
 
-                if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())) {
+                if ((NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType()))
+                        && !(targetFigure instanceof ExpressionFigure)) {
                     event.detail = DND.DROP_NONE;
                 }
-                if (!model.getChildren().isEmpty() && targetFigure instanceof ExpressionFigure) {
+                if (!model.getChildren().isEmpty()) {
                     event.detail = DND.DROP_NONE;
                 }
             } else if (getTargetEditPart() instanceof TreeNodeEditPart) {
@@ -158,7 +159,7 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
                     event.detail = DND.DROP_NONE;
                 }
 
-                if (!model.getChildren().isEmpty() && targetFigure instanceof ExpressionFigure) {
+                if (!model.getChildren().isEmpty()) {
                     event.detail = DND.DROP_NONE;
                 }
             }

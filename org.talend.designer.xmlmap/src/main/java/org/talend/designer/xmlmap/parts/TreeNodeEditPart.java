@@ -21,6 +21,7 @@ import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPart;
@@ -30,6 +31,7 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
+import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.swt.SWT;
 import org.talend.commons.ui.swt.geftree.figure.TreeBranch;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
@@ -39,6 +41,7 @@ import org.talend.designer.xmlmap.figures.TreeNodeFigure;
 import org.talend.designer.xmlmap.figures.XmlTreeBranch;
 import org.talend.designer.xmlmap.figures.anchors.ConnectionColumnAnchor;
 import org.talend.designer.xmlmap.figures.anchors.LookupColumnAnchor;
+import org.talend.designer.xmlmap.figures.cells.IWidgetCell;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -431,6 +434,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                         ((TreeNodeFigure) figure).refreshChildren();
                     }
                 }
+                break;
             case XmlmapPackage.TREE_NODE__EXPRESSION:
                 if (getModel() instanceof TreeNode && !(getModel() instanceof OutputTreeNode)) {
                     TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) getModel());
@@ -466,9 +470,13 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                     }
                 }
                 break;
-
+            case XmlmapPackage.INPUT_XML_TREE__MINIMIZED:
+                refreshSourceConnections();
+                refreshTargetConnections();
+                break;
             }
             break;
+
         case Notification.ADD:
         case Notification.ADD_MANY:
             switch (featureId) {
@@ -525,21 +533,25 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
     @Override
     public void performRequest(Request req) {
         if (RequestConstants.REQ_DIRECT_EDIT.equals(req.getType())) {
+            Figure figure = null;
+            if (getFigure() instanceof TreeNodeFigure) {
+                figure = ((TreeNodeFigure) getFigure()).getColumnExpressionFigure();
+            } else if (getFigure() instanceof XmlTreeBranch) {
+                figure = ((XmlTreeBranch) getFigure()).getExpressionFigure();
+            }
             if (directEditManager == null) {
-                Figure figure = null;
-                if (getFigure() instanceof TreeNodeFigure) {
-                    figure = ((TreeNodeFigure) getFigure()).getColumnExpressionFigure();
-                } else if (getFigure() instanceof XmlTreeBranch) {
-                    figure = ((XmlTreeBranch) getFigure()).getExpressionFigure();
-                }
-                if (figure != null) {
+                if (figure instanceof IWidgetCell) {
                     directEditManager = new XmlMapNodeDirectEditManager(this, new XmlMapNodeCellEditorLocator(figure));
                 }
             }
             if (directEditManager != null) {
                 TreeNode outputTreeNode = (TreeNode) getModel();
                 if (outputTreeNode.getChildren().isEmpty()) {
-                    directEditManager.show();
+                    DirectEditRequest drequest = (DirectEditRequest) req;
+                    Point location = drequest.getLocation();
+                    if (figure.containsPoint(location)) {
+                        directEditManager.show();
+                    }
                 }
             }
         }
@@ -551,6 +563,16 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         if (children2.size() == 1 && children2.get(0) instanceof XmlMapDataEditPart) {
             return (XmlMapDataEditPart) children2.get(0);
         }
+        return null;
+    }
+
+    public AbstractInOutTreeEditPart getInOutTreeEditPart(EditPart part) {
+        if (part.getParent() instanceof AbstractInOutTreeEditPart) {
+            return (AbstractInOutTreeEditPart) part.getParent();
+        } else if (part.getParent() instanceof TreeNodeEditPart) {
+            return getInOutTreeEditPart(part.getParent());
+        }
+
         return null;
     }
 

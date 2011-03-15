@@ -26,8 +26,6 @@ import org.eclipse.gef.ui.parts.GraphicalEditor;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.talend.designer.xmlmap.dnd.XmlDragSourceListener;
@@ -158,35 +156,14 @@ public class XmlMapEditor extends GraphicalEditor {
 
         getGraphicalViewer().addDropTargetListener(new XmlDropTargetListener(getGraphicalViewer()));
 
-        this.getGraphicalViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-
-            public void selectionChanged(SelectionChangedEvent event) {
-                getGraphicalViewer().getSelectedEditParts();
-                // XmlMapEditor.this.selectionChanged(XmlMapEditor.this, getGraphicalViewer().getSelection());
-            }
-
-        });
         getGraphicalViewer().addSelectionChangedListener(mapperManager);
         getGraphicalViewer().setContextMenu(new MenueProvider(getGraphicalViewer()));
         initializeActionRegistry();
     }
 
-    public void setMapperManager(MapperManager listener) {
-        this.mapperManager = listener;
-        if (listener != null) {
-            this.getGraphicalViewer().addSelectionChangedListener(listener);
-        }
-    }
-
     public MapperManager getMapperManager() {
         return this.mapperManager;
     }
-
-    //
-    // @Override
-    // public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-    // updateActions(getSelectionActions());
-    // }
 
     public void setContent(Object content) {
         getGraphicalViewer().setContents(content);

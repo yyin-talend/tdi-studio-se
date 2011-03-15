@@ -260,6 +260,8 @@ public class MapperManager implements ISelectionChangedListener {
                                 if (treeNode != null) {
 
                                     XmlMapUtil.detachConnectionsTarget(treeNode, copyOfMapData);
+                                    XmlMapUtil.detachLookupSource(treeNode, copyOfMapData);
+                                    XmlMapUtil.detachLookupTarget(treeNode, copyOfMapData);
                                     treeNode.getChildren().clear();
                                     treeNode.setType((String) event.newValue);
 

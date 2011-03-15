@@ -63,16 +63,4 @@ public class ExpressionFigure extends Label implements IExpressionBuilderCell {
         return DirectEditType.EXPRESSION;
     }
 
-    // @Override
-    // public Dimension getPreferredSize(int wHint, int hHint) {
-    // Dimension preferredSize = super.getPreferredSize(wHint, hHint);
-    // return new Dimension(DEFAULT_SIZE, preferredSize.height);
-    // }
-    //
-    // @Override
-    // public Dimension getMinimumSize(int w, int h) {
-    // Dimension minimumSize = super.getMinimumSize(w, h);
-    // return new Dimension(DEFAULT_SIZE, minimumSize.height);
-    // }
-
 }

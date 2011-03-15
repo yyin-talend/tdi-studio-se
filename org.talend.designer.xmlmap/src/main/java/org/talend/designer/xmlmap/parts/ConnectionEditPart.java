@@ -52,4 +52,12 @@ public class ConnectionEditPart extends BaseConnectionEditPart {
         return connection;
     }
 
+    public void updateForegroundColor(boolean selected) {
+        if (selected) {
+            getFigure().setForegroundColor(ColorConstants.yellow);
+        } else {
+            getFigure().setForegroundColor(ColorConstants.gray);
+        }
+    }
+
 }

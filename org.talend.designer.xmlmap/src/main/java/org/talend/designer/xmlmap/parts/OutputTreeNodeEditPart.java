@@ -26,6 +26,8 @@ import org.talend.designer.xmlmap.figures.XmlTreeBranch;
 import org.talend.designer.xmlmap.figures.layout.TreeNodeLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.ui.resource.ColorInfo;
+import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -79,6 +81,13 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
             XmlTreeBranch treeBranch = (XmlTreeBranch) childPart.getFigure();
             expressionFigure.setTreeBranch(treeBranch);
             expressionFigure.setTreeNodePart(childPart);
+
+            if (!((TreeNode) childEditPart.getModel()).getChildren().isEmpty()) {
+                expressionFigure.setOpaque(true);
+                expressionFigure.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_EXPREESION_DISABLE));
+            } else {
+                expressionFigure.setOpaque(false);
+            }
 
             treeBranch.setExpressionFigure(expressionFigure);
             Map<TreeNode, Integer> nodeAndIndex = new HashMap<TreeNode, Integer>();

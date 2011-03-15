@@ -64,7 +64,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
 
     private ISelectionChangedListener selectionListener;
 
-    public static int IN_OUT_BORDER = 20;
+    private static int IN_OUT_BORDER = 20;
 
     @Override
     protected IFigure createFigure() {
