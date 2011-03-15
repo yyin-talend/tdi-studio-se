@@ -792,7 +792,12 @@ public class DataProcess {
                 if (sourceConnector == null) {
                     sourceConnector = EConnectionType.FLOW_MAIN.getName();
                 }
-                newMetadata = graphicalNode.getMetadataFromConnector(sourceConnector).clone();
+                IMetadataTable metadataTable = graphicalNode.getMetadataFromConnector(sourceConnector);
+                if (metadataTable != null) {
+                    newMetadata = metadataTable.clone();
+                } else {
+                    newMetadata = graphicalNode.getMetadataList().get(0).clone();
+                }
             }
             if (newMetadata == null) {
                 continue;
