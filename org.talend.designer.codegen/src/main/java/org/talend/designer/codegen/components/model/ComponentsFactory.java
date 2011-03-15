@@ -414,7 +414,7 @@ public class ComponentsFactory implements IComponentsFactory {
     private boolean hasComponentFile(String installLocation) {
         String filePath = ComponentsFactory.TALEND_COMPONENT_CACHE
                 + LanguageManager.getCurrentLanguage().toString().toLowerCase() + ComponentsFactory.TALEND_FILE_NAME;
-        File file = file = new File(new Path(installLocation).append(filePath).toString());
+        File file = new File(new Path(installLocation).append(filePath).toString());
         return file.exists();
     }
 
