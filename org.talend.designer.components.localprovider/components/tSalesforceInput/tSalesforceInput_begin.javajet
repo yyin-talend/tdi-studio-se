@@ -118,13 +118,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 %>					
 					
-				StringBuilder sql = new StringBuilder(<%=sql%>);
+				StringBuilder sql_<%=cid%> = new StringBuilder(<%=sql%>);
 <%
 				if(!("".equals(condition))) {
 %>
-					String condition = <%=condition %>;
-					if (condition !=null && !("".equals(condition))){
-						sql.append(" where ").append(condition);
+					String condition_<%=cid%> = <%=condition %>;
+					if (condition_<%=cid%> !=null && !("".equals(condition_<%=cid%>))){
+						sql_<%=cid%>.append(" where ").append(condition_<%=cid%>);
 					}
 <%
 				}
@@ -133,11 +133,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 <%
 			if(queryAll){
 %>
-				qr_<%=cid %> = sfMgr_<%=cid%>.queryAll(sql.toString(),new Integer(<%=batchSize%>));
+				qr_<%=cid %> = sfMgr_<%=cid%>.queryAll(sql_<%=cid%>.toString(),new Integer(<%=batchSize%>));
 <%			
 			}else{
 %>
-				qr_<%=cid %> = sfMgr_<%=cid%>.query(sql.toString(),new Integer(<%=batchSize%>));
+				qr_<%=cid %> = sfMgr_<%=cid%>.query(sql_<%=cid%>.toString(),new Integer(<%=batchSize%>));
 <%
 			}
 %>
