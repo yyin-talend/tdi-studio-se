@@ -16,7 +16,10 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +40,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -61,6 +65,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -70,6 +75,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
+import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.progress.IProgressService;
@@ -82,7 +88,10 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.JobInfo;
+import org.talend.core.model.process.ProcessUtils;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -102,10 +111,15 @@ import org.talend.repository.documentation.FileSystemExporterFullPath;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.utils.ZipToFile;
+import org.talend.repository.ui.views.RepositoryContentProvider;
+import org.talend.repository.ui.views.RepositoryView;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJobJavaScriptsManager;
@@ -190,6 +204,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     private static final int DIALOG_WIDTH = 600;
 
     private static final int DIALOG_HEIGHT = 480;
+
+    Collection<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
+
+    Set<RepositoryNode> checkedNodes = new HashSet<RepositoryNode>();
+
+    Set<RepositoryNode> allNode = new HashSet<RepositoryNode>();
 
     private String getInitDestinationFilePath() {
         return this.initDestinationFilePath;
@@ -613,6 +633,15 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
         });
         exportDependencies.setLayoutData(gd);
+        // feature 19312
+        exportDependencies.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                refreshExportDependNodes();
+                exportDependenciesSelected();
+            }
+        });
 
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         contextButton.setText(Messages.getString("JobScriptsExportWizardPage.contextPerlScripts")); //$NON-NLS-1$
@@ -688,6 +717,192 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
         }
         return null;
+    }
+
+    /**
+     * 
+     * DOC yhch Comment method "exportDependenciesSelected".
+     */
+    private void exportDependenciesSelected() {
+        final Collection<Item> selectedItems = getSelectedItems();
+
+        IRunnableWithProgress runnable = new IRunnableWithProgress() {
+
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                monitor.beginTask("Dependencies", 100);//$NON-NLS-1$
+                monitor.setCanceled(false);
+                //
+                final List<IRepositoryViewObject> repositoryObjects = new ArrayList<IRepositoryViewObject>();
+
+                ProcessUtils.clearFakeProcesses();
+
+                // dependencies All
+                Display.getDefault().syncExec(new Runnable() {
+
+                    public void run() {
+                        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+                        RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
+                        for (Item item : selectedItems) {
+                            if (item == null) {
+                                continue;
+                            }
+                            List<RelationshipItemBuilder.Relation> relations = builder.getItemsRelatedTo(item.getProperty()
+                                    .getId(), item.getProperty().getVersion(), RelationshipItemBuilder.JOB_RELATION);
+                            for (RelationshipItemBuilder.Relation relation : relations) {
+                                try {
+                                    IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
+                                    if (obj != null) {
+                                        RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(obj, false);
+                                        if (repositoryNode != null) {
+                                            if (!repositoryObjects.contains(obj)) {
+                                                repositoryObjects.add(obj);
+                                            }
+                                        }
+                                    }
+                                } catch (PersistenceException et) {
+                                    ExceptionHandler.process(et);
+                                }
+                            }
+
+                        }
+
+                    }
+                });
+                monitor.worked(60);
+                Display.getDefault().syncExec(new Runnable() {
+
+                    public void run() {
+                        if (exportDependencies.getSelection()) {
+                            for (IRepositoryViewObject repositoryObject : repositoryObjects) {
+                                RepositoryNode repositoryNode = RepositoryNodeUtilities
+                                        .getRepositoryNode(repositoryObject, false);
+                                if (repositoryNode != null && !repositoryNodes.contains(repositoryNode)) {
+                                    repositoryNodes.add(repositoryNode);
+                                    checkedNodes.add(repositoryNode);
+                                }
+
+                            }
+                        } else {
+                            for (IRepositoryViewObject repositoryObject : repositoryObjects) {
+                                RepositoryNode repositoryNode = RepositoryNodeUtilities
+                                        .getRepositoryNode(repositoryObject, false);
+                                if (repositoryNode != null && repositoryNodes.contains(repositoryNode)) {
+                                    repositoryNodes.remove(repositoryNode);
+                                    checkedNodes.remove(repositoryNode);
+                                }
+                            }
+                        }
+                    }
+                });
+                monitor.worked(90);
+                // selection
+                Display.getDefault().syncExec(new Runnable() {
+
+                    public void run() {
+                        CheckboxTreeViewer viewer = (CheckboxTreeViewer) treeViewer.getExportItemsTreeViewer().getViewer();
+                        Set<RepositoryNode> nodes = new HashSet<RepositoryNode>();
+                        nodes.addAll(repositoryNodes);
+                        nodes.addAll(checkedNodes);
+                        viewer.setCheckedElements(nodes.toArray());
+
+                    }
+                });
+                ProcessUtils.clearFakeProcesses();
+                monitor.done();
+            }
+
+        };
+        final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(getShell());
+        try {
+            dialog.run(true, false, runnable);
+        } catch (InvocationTargetException e) {
+            //
+        } catch (InterruptedException e) {
+            //
+        }
+
+    }
+
+    /**
+     * Get all selected items to export.
+     * 
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private Collection<Item> getSelectedItems() {
+        // add this if user use filter
+        Set checkedElements = new HashSet();
+        for (Object obj : treeViewer.getFilteredCheckboxTree().getCheckedLeafNodes()) {
+            checkedElements.add(obj);
+        }
+
+        // add this if user does not use filter
+        for (Object obj : treeViewer.getFilteredCheckboxTree().getViewer().getCheckedElements()) {
+            RepositoryNode repositoryNode = (RepositoryNode) obj;
+            if (!isRepositoryFolder(repositoryNode) && !(repositoryNode instanceof ProjectRepositoryNode)) {
+                checkedElements.add(obj);
+            }
+        }
+
+        Object[] elements = checkedElements.toArray();
+
+        Map<String, Item> items = new HashMap<String, Item>();
+        collectNodes(items, elements);
+        return items.values();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void collectNodes(Map<String, Item> items, Object[] objects) {
+        for (int i = 0; i < objects.length; i++) {
+            RepositoryNode repositoryNode = (RepositoryNode) objects[i];
+            collectNodes(items, repositoryNode);
+        }
+    }
+
+    private void collectNodes(Map<String, Item> items, RepositoryNode repositoryNode) {
+        IRepositoryViewObject repositoryObject = repositoryNode.getObject();
+        if (repositoryObject != null) {
+            if (repositoryObject.getRepositoryObjectType().isResourceItem()) {
+                Item item = repositoryObject.getProperty().getItem();
+                items.put(item.getProperty().getId(), item);
+            }
+        } else {
+            if (repositoryNode.getParent() != null && repositoryNode.getParent().getObject() != null) {
+                Item item = repositoryNode.getParent().getObject().getProperty().getItem();
+                items.put(item.getProperty().getId(), item);
+            }
+        }
+        RepositoryContentProvider repositoryContentProvider = (RepositoryContentProvider) RepositoryView.show().getViewer()
+                .getContentProvider();
+        collectNodes(items, repositoryContentProvider.getChildren(repositoryNode));
+    }
+
+    private static boolean isRepositoryFolder(RepositoryNode node) {
+        final ENodeType type = node.getType();
+        if (type == ENodeType.SIMPLE_FOLDER || type == ENodeType.STABLE_SYSTEM_FOLDER || type == ENodeType.SYSTEM_FOLDER) {
+            return true;
+        }
+        return false;
+    }
+
+    private void refreshExportDependNodes() {
+        checkedNodes.clear();
+        if (nodes.length <= 0) {
+            return;
+        }
+        for (int i = 0; i < nodes.length; i++) {
+            if (nodes[i] instanceof RepositoryNode) {
+                RepositoryNode checkedNode = (RepositoryNode) nodes[i];
+                if (checkedNode != null && !RepositoryNode.NO_ID.equals(checkedNode.getId())) {
+                    if (checkedNode.getChildren().isEmpty()) {
+                        checkedNodes.add(checkedNode);
+                    }
+                }
+            }
+        }
+        allNode.clear();
+        allNode.addAll(repositoryNodes);
+        allNode.addAll(checkedNodes);
     }
 
     /**

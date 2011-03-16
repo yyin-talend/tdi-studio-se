@@ -40,6 +40,8 @@ import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -140,6 +142,10 @@ public class UseDynamicJobSelectionDialog extends Dialog {
         repositoryNodes.clear();
         for (RepositoryNode repositoryObject : repositoryObjects) {
             repositoryNodes.add(repositoryObject);
+            //
+            ProcessItem processItem = (ProcessItem) repositoryObject.getObject().getProperty().getItem();
+            RelationshipItemBuilder relationshipItemBuilder = new RelationshipItemBuilder();
+            relationshipItemBuilder.addOrUpdateItem(processItem);
         }
         super.okPressed();
     }
@@ -234,6 +240,12 @@ public class UseDynamicJobSelectionDialog extends Dialog {
         ERepositoryObjectType contentType = node.getContentType();
         if (contentType != null) {
             if (contentType == ERepositoryObjectType.PROCESS) {
+                String id = node.getId();
+                if (repositoryType != null && !repositoryType.equals("") && id != null && !id.equals("")) {
+                    if (id.equals(repositoryType)) {
+                        return false;
+                    }
+                }
                 return true;
             } else if (contentType == ERepositoryObjectType.SVN_ROOT) {
                 return true;

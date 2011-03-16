@@ -188,6 +188,14 @@ public class ExportTreeViewer {
         }
     }
 
+    public FilteredCheckboxTree getFilteredCheckboxTree() {
+        return this.filteredCheckboxTree;
+    }
+
+    public CheckboxRepositoryView getExportItemsTreeViewer() {
+        return this.exportItemsTreeViewer;
+    }
+
     public RepositoryNode[] getCheckNodes() {
         CheckboxTreeViewer viewer = (CheckboxTreeViewer) exportItemsTreeViewer.getViewer();
         List<RepositoryNode> ret = new ArrayList<RepositoryNode>();
