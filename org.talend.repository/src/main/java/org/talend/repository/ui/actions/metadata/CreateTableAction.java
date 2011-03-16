@@ -25,6 +25,7 @@ import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.properties.BRMSConnectionItem;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.EDIFACTConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.HL7ConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -216,6 +217,11 @@ public class CreateTableAction extends AbstractCreateTableAction {
                         }
 
                         if (item2 instanceof MDMConnectionItem) {
+                            setEnabled(false);
+                            return;
+                        }
+
+                        if (item2 instanceof EDIFACTConnectionItem) {
                             setEnabled(false);
                             return;
                         }

@@ -44,6 +44,7 @@ import org.talend.core.model.metadata.builder.connection.BRMSConnection;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.EDIFACTConnection;
 import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
 import org.talend.core.model.metadata.builder.connection.FTPConnection;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
@@ -113,7 +114,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode, metadataFTPConnectionNode,
             metadataEbcdicConnectionNode, metadataHL7ConnectionNode, metadataMDMConnectionNode, metadataRulesNode,
             metadataHeaderFooterConnectionNode, jobscriptsNode, beanNode, metadataBRMSConnectionNode,
-            metadataValidationRulesNode;
+            metadataValidationRulesNode, metadataEDIFactConnectionNode;
 
     private RepositoryNode jobletNode;
 
@@ -237,6 +238,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 this.metadataRulesNode = null;
             } else if (contentType == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
                 this.metadataValidationRulesNode = null;
+            } else if (contentType == ERepositoryObjectType.METADATA_EDIFACT) {
+                this.metadataEDIFactConnectionNode = null;
             } else if (contentType == ERepositoryObjectType.REFERENCED_PROJECTS) {
                 this.refProject = null;
             } else if (contentType == ERepositoryObjectType.JOBLET) {
@@ -509,6 +512,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 metadataMDMConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_MDMCONNECTION);
                 metadataNode.getChildren().add(metadataMDMConnectionNode);
             }
+
             // 7.17 Rules and BRMS
             if (PluginChecker.isRulesPluginLoaded() || PluginChecker.isBRMSPluginLoaded()) {
                 StableRepositoryNode baseRulesNode = new StableRepositoryNode(this,
@@ -539,7 +543,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         ERepositoryObjectType.METADATA_VALIDATION_RULES);
                 metadataNode.getChildren().add(metadataValidationRulesNode);
             }
-
+            // 7.19 Edifact schemas
+            if (PluginChecker.isEDIFACTPluginLoaded()) {
+                metadataEDIFactConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                metadataEDIFactConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_EDIFACT);
+                metadataEDIFactConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_EDIFACT);
+                metadataNode.getChildren().add(metadataEDIFactConnectionNode);
+            }
             // Reference Projects
             if (PluginChecker.isTIS() && getParent() != this && !getMergeRefProject() && project != null
                     && project.getEmfProject().getReferencedProjects().size() > 0) {
@@ -714,6 +724,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == metadataValidationRulesNode) {
                 convert(newProject, factory.getMetadataValidationRules(newProject, true), metadataValidationRulesNode,
                         ERepositoryObjectType.METADATA_VALIDATION_RULES, recBinNode);
+            } else if (parent == metadataEDIFactConnectionNode) {
+                convert(newProject, factory.getMetadataEDIFACT(newProject, true), metadataEDIFactConnectionNode,
+                        ERepositoryObjectType.METADATA_EDIFACT, recBinNode);
             } else if (parent == refProject) {
                 if (!getMergeRefProject()) {
                     handleReferenced(refProject);
@@ -1271,6 +1284,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             MDMConnection mdmConnection = (MDMConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
                     .getConnection();
             createTables(recBinNode, node, repositoryObject, mdmConnection);
+        }
+        if (type == ERepositoryObjectType.METADATA_EDIFACT) {
+            EDIFACTConnection edifactConnection = (EDIFACTConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
+                    .getConnection();
+            createTables(recBinNode, node, repositoryObject, edifactConnection);
         }
     }
 
@@ -2026,6 +2044,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             return this.metadataRulesNode;
         } else if (type == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
             return this.metadataValidationRulesNode;
+        } else if (type == ERepositoryObjectType.METADATA_EDIFACT) {
+            return this.metadataEDIFactConnectionNode;
         } else if (type == ERepositoryObjectType.REFERENCED_PROJECTS) {
             return this.refProject;
         } else if (type == ERepositoryObjectType.JOBLET) {

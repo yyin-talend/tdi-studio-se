@@ -31,6 +31,7 @@ import org.talend.core.model.metadata.MetadataColumnRepositoryObject;
 import org.talend.core.model.metadata.builder.connection.BRMSConnection;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.EDIFACTConnection;
 import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
 import org.talend.core.model.metadata.builder.connection.HL7Connection;
 import org.talend.core.model.metadata.builder.connection.MDMConnection;
@@ -224,6 +225,24 @@ public class RepositoryDoubleClickAction extends Action {
         return false;
     }
 
+    private boolean isEDIFACTTable(RepositoryNode node) {
+        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
+            node = node.getParent();
+            nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (nodeType == ERepositoryObjectType.METADATA_EDIFACT) {
+                return true;
+            }
+        } else if (nodeType == ERepositoryObjectType.METADATA_CON_COLUMN) {
+            node = node.getParent().getParent().getParent();
+            nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (nodeType == ERepositoryObjectType.METADATA_EDIFACT) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean isBRMSTable(RepositoryNode node) {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
         if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
@@ -268,6 +287,10 @@ public class RepositoryDoubleClickAction extends Action {
                 }
 
                 if (isHL7Table(obj) && current.getClassForDoubleClick().equals(HL7Connection.class)) {
+                    return current;
+                }
+
+                if (isEDIFACTTable(obj) && current.getClassForDoubleClick().equals(EDIFACTConnection.class)) {
                     return current;
                 }
 

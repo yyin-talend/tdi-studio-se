@@ -18,6 +18,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.BRMSConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
+import org.talend.core.model.properties.EDIFACTConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.ExcelFileConnectionItem;
 import org.talend.core.model.properties.FTPConnectionItem;
@@ -123,7 +124,7 @@ public enum EDatabaseComponentName {
 
     FILEEBCDIC(EbcdicConnectionItem.class, "tFileInputEBCDIC", "tFileOutputEBCDIC", "EBCDIC"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     FILEHL7(HL7ConnectionItem.class, "tHL7Input", null, "HL7"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
+    EDIFACT(EDIFACTConnectionItem.class, "tUN/EDIFACT", null, "UN/EDIFACT"),
     FILEMDM(MDMConnectionItem.class, "tMDMInput", "tMDMOutput", "MDM"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     FTP(FTPConnectionItem.class, "", null, "FTP"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -145,7 +146,7 @@ public enum EDatabaseComponentName {
     // DBMSODBC("Microsoft SQL (Odbc driver)", "Microsoft SQL Server (Odbc driver)", new Boolean(false), "MSODBC"),
     // DBIBMDB2("IBM DB2", "IBM DB2", new Boolean(false), "IBMDB2"),
     // DBSYBASEASE("SybaseASE", "Sybase ASE", new Boolean(false), "SYBASE"),
-    //       
+    //
     // // this Sybase IQ not used.
     // DBSYBASEIQ("Sybase IQ", "Sybase IQ", new Boolean(false), "SYBASE"),
     // DBMSSQL("MSSQL", "Microsoft SQL Server", new Boolean(false), "MSODBC"),
@@ -238,7 +239,7 @@ public enum EDatabaseComponentName {
     }
 
     // TODO need to be removed after implementing this feature
-    // 
+    //
     EDatabaseComponentName(Class clazz, String inputComponentName, String outPutComponentName) {
         this.clazz = clazz;
         this.inputComponentName = inputComponentName;
