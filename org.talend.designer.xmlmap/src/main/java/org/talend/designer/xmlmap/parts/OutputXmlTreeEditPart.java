@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.Figure;
@@ -106,25 +105,6 @@ public class OutputXmlTreeEditPart extends AbstractInOutTreeEditPart {
             }
         }
 
-    }
-
-    public void updateChildrenConnections(List treeNodeParts, boolean selected) {
-        for (Object obj : treeNodeParts) {
-            if (obj instanceof TreeNodeEditPart) {
-                List connections = new ArrayList();
-                TreeNodeEditPart treeNodePart = (TreeNodeEditPart) obj;
-                connections.addAll(treeNodePart.getSourceConnections());
-                connections.addAll(treeNodePart.getTargetConnections());
-                for (Object connObj : connections) {
-                    if (connObj instanceof ConnectionEditPart) {
-                        ((ConnectionEditPart) connObj).updateForegroundColor(selected);
-                    }
-                }
-                if (!treeNodePart.getChildren().isEmpty()) {
-                    updateChildrenConnections(treeNodePart.getChildren(), selected);
-                }
-            }
-        }
     }
 
 }

@@ -13,6 +13,7 @@
 package org.talend.designer.xmlmap.ui.tabs;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
@@ -34,6 +35,7 @@ import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.xmlmap.XmlMapComponent;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -45,6 +47,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.AbstractNodePart;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
+import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.MapperUI;
 import org.talend.designer.xmlmap.ui.tabs.table.TreeSchemaTableEntry;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -63,8 +66,6 @@ public class MapperManager implements ISelectionChangedListener {
     private InputXmlTree selectedInputTree;
 
     private OutputXmlTree oldSelectedOut;
-
-    private AbstractNode selectedNode;
 
     public MapperManager(XmlMapComponent mapperComponent, XmlMapData copyOfMapData) {
         this.mapperComponent = mapperComponent;
@@ -141,18 +142,20 @@ public class MapperManager implements ISelectionChangedListener {
             Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
             if (firstElement instanceof AbstractNodePart) {
                 AbstractNode model = (AbstractNode) ((AbstractNodePart) firstElement).getModel();
-                selectedNode = model;
                 boolean isInputMain = false;
                 if (model instanceof OutputTreeNode) {
                     OutputTreeNode outputTreeNodeRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) model);
                     if (outputTreeNodeRoot != null && outputTreeNodeRoot.eContainer() instanceof OutputXmlTree) {
                         selectOutputXmlTree((OutputXmlTree) outputTreeNodeRoot.eContainer());
+
+                        onSelectedEntries((IStructuredSelection) event.getSelection(), oldSelectedOut);
                     }
                 } else if (model instanceof TreeNode) {
                     TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) model);
                     if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
                         selectInputXmlTree((InputXmlTree) inputTreeNodeRoot.eContainer());
                         isInputMain = !((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
+                        onSelectedEntries((IStructuredSelection) event.getSelection(), selectedInputTree);
                     }
                 }
                 if (!isInputMain) {
@@ -178,6 +181,42 @@ public class MapperManager implements ISelectionChangedListener {
             }
             refreshStyledTextEditor(null);
         }
+
+    }
+
+    private void onSelectedEntries(IStructuredSelection selection, AbstractInOutTree selectedTree) {
+        // do selection in metadata schema editor
+        EList<? extends TreeNode> nodes = null;
+        if (selectedTree instanceof InputXmlTree) {
+            nodes = ((InputXmlTree) selectedTree).getNodes();
+        } else {
+            nodes = ((OutputXmlTree) selectedTree).getNodes();
+        }
+        List<Integer> selectionIndices = new ArrayList<Integer>();
+
+        Iterator iterator = selection.iterator();
+        while (iterator.hasNext()) {
+            Object obj = iterator.next();
+            if (obj instanceof TreeNodeEditPart) {
+                TreeNode model = (TreeNode) ((TreeNodeEditPart) obj).getModel();
+                if (model.eContainer() == selectedTree) {
+                    selectionIndices.add(nodes.indexOf(model));
+                }
+            }
+        }
+
+        int selections[] = new int[selectionIndices.size()];
+        for (int i = 0; i < selectionIndices.size(); i++) {
+            selections[i] = selectionIndices.get(i);
+        }
+
+        MetadataTableEditorView metaEditorView = null;
+        if (selectedTree instanceof InputXmlTree) {
+            metaEditorView = mapperUI.getTabFolderEditors().getInputMetaEditorView();
+        } else {
+            metaEditorView = mapperUI.getTabFolderEditors().getOutputMetaEditorView();
+        }
+        metaEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selections);
 
     }
 

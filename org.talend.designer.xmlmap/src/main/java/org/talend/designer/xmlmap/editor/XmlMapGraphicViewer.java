@@ -13,19 +13,33 @@
 package org.talend.designer.xmlmap.editor;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.draw2d.ExclusionSearch;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
+import org.talend.designer.xmlmap.figures.manager.FiguresManager;
+import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
+import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
+import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
+import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarTableEditPart;
 import org.talend.designer.xmlmap.parts.XmlMapDataEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * DOC XYuser class global comment. Detailled comment
  */
 public class XmlMapGraphicViewer extends GraphicalViewerImpl {
+
+    private FiguresManager listener;
+
+    public XmlMapGraphicViewer() {
+        listener = new FiguresManager(this);
+        this.addSelectionChangedListener(listener);
+    }
 
     private MapperManager mapperManager;
 
@@ -48,14 +62,6 @@ public class XmlMapGraphicViewer extends GraphicalViewerImpl {
         return getLightweightSystem().getRootFigure().findFigureAt(x, y, new ConditionalTreeSearch(exclude));
     }
 
-    public MapperManager getMapperManager() {
-        return mapperManager;
-    }
-
-    public void setMapperManager(MapperManager mapperManager) {
-        this.mapperManager = mapperManager;
-    }
-
     public void select(EditPart editpart) {
         if (editpart instanceof VarTableEditPart) {
             return;
@@ -65,10 +71,61 @@ public class XmlMapGraphicViewer extends GraphicalViewerImpl {
             return;
         }
 
-        // set false to dispatch mouse release event
-        setRouteEventsToEditDomain(false);
+        // set false to dispatch mouse release event ??? need or not mouseListeners is executed before selection change
+        // setRouteEventsToEditDomain(false);
 
-        super.select(editpart);
+        if ((getSelectedEditParts().size() == 1) && (getSelectedEditParts().get(0) == editpart))
+            return;
+
+        primDeselectAll(editpart);
+        appendSelection(editpart); // fireSelectionChanged() is called here
+    }
+
+    /*
+     * if partToAppend is inputTree , don't clean all outputTree in selection list , leave the first one by default . if
+     * partToAppend is outputTree , do the same for inputTree selections
+     */
+    private void primDeselectAll(EditPart eidtPart) {
+        EditPart partToAppend = eidtPart;
+        List list = primGetSelectedEditParts();
+
+        if (partToAppend instanceof TreeNodeEditPart) {
+            partToAppend = XmlMapUtil.findTreePart((TreeNodeEditPart) partToAppend);
+        }
+
+        EditPart part;
+        AbstractInOutTreeEditPart abstractTreePart = null;
+        for (int i = 0; i < list.size(); i++) {
+            part = (EditPart) list.get(i);
+            if (partToAppend instanceof InputXmlTreeEditPart) {
+                if (abstractTreePart == null && part instanceof OutputXmlTreeEditPart) {
+                    abstractTreePart = (OutputXmlTreeEditPart) part;
+                    continue;
+                }
+            } else if (partToAppend instanceof OutputXmlTreeEditPart) {
+                if (abstractTreePart == null && part instanceof InputXmlTreeEditPart) {
+                    abstractTreePart = (InputXmlTreeEditPart) part;
+                    continue;
+                }
+            }
+            part.setSelected(EditPart.SELECTED_NONE);
+        }
+        list.clear();
+        if (abstractTreePart != null) {
+            list.add(abstractTreePart);
+        }
+    }
+
+    public MapperManager getMapperManager() {
+        return mapperManager;
+    }
+
+    public void setMapperManager(MapperManager mapperManager) {
+        this.mapperManager = mapperManager;
+    }
+
+    public FiguresManager getFiguresManager() {
+        return this.listener;
     }
 
 }

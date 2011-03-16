@@ -12,9 +12,6 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.treetools.zone;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.draw2d.Figure;
@@ -56,6 +53,8 @@ public class OutputZoneToolBar extends Figure {
 
     private XmlMapDataEditPart mapDataPart;
 
+    private XmlMapGraphicViewer graphicViewer;
+
     private Image restorImage = ImageProviderMapper.getImage(ImageInfo.RESTORE_ICON);
 
     private Image miniImage = ImageProviderMapper.getImage(ImageInfo.MINIMIZE_ICON);
@@ -66,6 +65,10 @@ public class OutputZoneToolBar extends Figure {
         this.mapDataPart = mapDataPart;
         this.mapData = (XmlMapData) mapDataPart.getModel();
 
+        if (mapDataPart.getViewer() instanceof XmlMapGraphicViewer) {
+            this.graphicViewer = (XmlMapGraphicViewer) mapDataPart.getViewer();
+        }
+
         ZoneToolBarLayout manager = new ZoneToolBarLayout();
         manager.setSpacing(8);
         setLayoutManager(manager);
@@ -74,10 +77,13 @@ public class OutputZoneToolBar extends Figure {
         add_btn = new AddButton();
         this.add(add_btn);
         remove_btn = new RemoveButton();
+        remove_btn.setEnabled(false);
         this.add(remove_btn);
         move_up = new MoveUpButton();
+        move_up.setEnabled(false);
         this.add(move_up);
         move_down = new MoveDownButton();
+        move_down.setEnabled(false);
         this.add(move_down);
         add(new Label(" "));
 
@@ -128,7 +134,7 @@ public class OutputZoneToolBar extends Figure {
         @Override
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
-            if (mapData != null) {
+            if (graphicViewer != null) {
                 final OutputXmlTree createOutputXmlTree = XmlmapFactory.eINSTANCE.createOutputXmlTree();
                 CommandStack commandStack = mapDataPart.getViewer().getEditDomain().getCommandStack();
                 commandStack.execute(new Command() {
@@ -149,7 +155,13 @@ public class OutputZoneToolBar extends Figure {
                             metadataTable.setTableName(outputName);
                             manager.getMapperComponent().getMetadataList().add(metadataTable);
                             manager.getMapperComponent().getProcess().addUniqueConnectionName(outputName);
-                            mapDataPart.getViewer().setFocus(mapDataPart);
+
+                            int indexOf = mapDataPart.getModelChildren().indexOf(createOutputXmlTree);
+                            if (indexOf != -1) {
+                                mapDataPart.getViewer().select((EditPart) mapDataPart.getChildren().get(indexOf));
+                            }
+
+                            // need set focus back to canvas
 
                             if (!min_size.isEnabled()) {
                                 min_size.setEnabled(true);
@@ -172,34 +184,25 @@ public class OutputZoneToolBar extends Figure {
         @Override
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
-            if (mapData != null) {
-                List selectedEditParts = mapDataPart.getViewer().getSelectedEditParts();
-                final List<OutputXmlTree> toRemove = new ArrayList<OutputXmlTree>();
-                for (Object selection : selectedEditParts) {
-                    if (selection instanceof OutputXmlTreeEditPart) {
-                        OutputXmlTreeEditPart part = (OutputXmlTreeEditPart) selection;
-                        toRemove.add((OutputXmlTree) part.getModel());
-                    }
-                }
-
-                CommandStack commandStack = mapDataPart.getViewer().getEditDomain().getCommandStack();
+            if (graphicViewer != null) {
+                CommandStack commandStack = graphicViewer.getEditDomain().getCommandStack();
                 commandStack.execute(new Command() {
 
                     @Override
                     public void execute() {
-                        if (mapDataPart.getViewer() instanceof XmlMapGraphicViewer) {
-                            XmlMapGraphicViewer viewer = (XmlMapGraphicViewer) mapDataPart.getViewer();
-                            MapperManager manager = viewer.getMapperManager();
+                        MapperManager manager = graphicViewer.getMapperManager();
+                        OutputXmlTreeEditPart currentSelectedOutputXmlTree = graphicViewer.getFiguresManager()
+                                .getCurrentSelectedOutputXmlTree();
+                        if (currentSelectedOutputXmlTree != null) {
+                            OutputXmlTree outputTree = (OutputXmlTree) currentSelectedOutputXmlTree.getModel();
                             XmlMapComponent mapperComponent = manager.getMapperComponent();
-                            for (OutputXmlTree outputTree : toRemove) {
-                                mapperComponent.getProcess().removeUniqueConnectionName(outputTree.getName());
-                                for (OutputTreeNode treeNode : outputTree.getNodes()) {
-                                    XmlMapUtil.detachConnectionsSouce(treeNode, mapData);
-                                }
-                            }
-                            mapData.getOutputTrees().removeAll(toRemove);
-                        }
 
+                            mapperComponent.getProcess().removeUniqueConnectionName(outputTree.getName());
+                            for (OutputTreeNode treeNode : outputTree.getNodes()) {
+                                XmlMapUtil.detachConnectionsSouce(treeNode, mapData);
+                            }
+                            mapData.getOutputTrees().remove(outputTree);
+                        }
                         if (mapData.getOutputTrees().isEmpty() && min_size.isEnabled()) {
                             min_size.setEnabled(false);
                         }
@@ -219,45 +222,33 @@ public class OutputZoneToolBar extends Figure {
         @Override
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
-            List selectedEditParts = mapDataPart.getViewer().getSelectedEditParts();
-            final Integer[] indexToChange = new Integer[selectedEditParts.size()];
-            for (int i = 0; i < selectedEditParts.size(); i++) {
-                Object selection = selectedEditParts.get(i);
-                if (selection instanceof OutputXmlTreeEditPart) {
-                    OutputXmlTreeEditPart part = (OutputXmlTreeEditPart) selection;
-                    final OutputXmlTree tree = (OutputXmlTree) part.getModel();
-                    final int indexOf = mapData.getOutputTrees().indexOf(tree);
-                    if (indexOf != -1 && indexOf != 0) {
-                        indexToChange[i] = indexOf;
+            if (graphicViewer != null) {
+                CommandStack commandStack = graphicViewer.getEditDomain().getCommandStack();
+                commandStack.execute(new Command() {
+
+                    @Override
+                    public void execute() {
+                        List<OutputXmlTree> outputTrees = mapData.getOutputTrees();
+                        OutputXmlTreeEditPart currentSelectedOutputXmlTree = graphicViewer.getFiguresManager()
+                                .getCurrentSelectedOutputXmlTree();
+                        if (currentSelectedOutputXmlTree != null) {
+                            OutputXmlTree selectedTree = (OutputXmlTree) currentSelectedOutputXmlTree.getModel();
+
+                            int index = outputTrees.indexOf(selectedTree);
+                            if (index != -1 && index - 1 >= 0) {
+                                outputTrees.remove(selectedTree);
+                                outputTrees.add(index - 1, selectedTree);
+
+                                // index of modelchildren is different from index of tree
+                                int indexOf = mapDataPart.getModelChildren().indexOf(selectedTree);
+                                if (indexOf != -1) {
+                                    mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
+                                }
+                            }
+                        }
                     }
-                }
+                });
             }
-            Arrays.sort(indexToChange);
-            CommandStack commandStack = mapDataPart.getViewer().getEditDomain().getCommandStack();
-            commandStack.execute(new Command() {
-
-                @Override
-                public void execute() {
-                    List<OutputXmlTree> outputTrees = mapData.getOutputTrees();
-                    List<OutputXmlTree> movedObjects = new ArrayList<OutputXmlTree>();
-                    for (int i = 0; i < indexToChange.length; i++) {
-                        if (indexToChange[i] != null) {
-                            int index = indexToChange[i];
-                            OutputXmlTree temp = outputTrees.get(index);
-                            movedObjects.add(temp);
-                            outputTrees.remove(temp);
-                            outputTrees.add(index - 1, temp);
-                        }
-                    }
-
-                    for (OutputXmlTree tree : movedObjects) {
-                        int indexOf = mapDataPart.getModelChildren().indexOf(tree);
-                        if (indexOf != -1) {
-                            mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
-                        }
-                    }
-                }
-            });
 
         }
     }
@@ -271,45 +262,33 @@ public class OutputZoneToolBar extends Figure {
         @Override
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
-            List selectedEditParts = mapDataPart.getViewer().getSelectedEditParts();
-            final List<Integer> indexToChange = new ArrayList<Integer>();
-            for (int i = 0; i < selectedEditParts.size(); i++) {
-                Object selection = selectedEditParts.get(i);
-                if (selection instanceof OutputXmlTreeEditPart) {
-                    OutputXmlTreeEditPart part = (OutputXmlTreeEditPart) selection;
-                    final OutputXmlTree tree = (OutputXmlTree) part.getModel();
-                    final int indexOf = mapData.getOutputTrees().indexOf(tree);
-                    if (indexOf != -1 && indexOf < mapData.getOutputTrees().size() - 1) {
-                        indexToChange.add(indexOf);
-                    }
-                }
-            }
+            if (graphicViewer != null) {
+                CommandStack commandStack = graphicViewer.getEditDomain().getCommandStack();
+                commandStack.execute(new Command() {
 
-            Collections.sort(indexToChange);
-            Collections.reverse(indexToChange);
-            CommandStack commandStack = mapDataPart.getViewer().getEditDomain().getCommandStack();
-            commandStack.execute(new Command() {
+                    @Override
+                    public void execute() {
+                        List<OutputXmlTree> outputTrees = mapData.getOutputTrees();
+                        OutputXmlTreeEditPart currentSelectedOutputXmlTree = graphicViewer.getFiguresManager()
+                                .getCurrentSelectedOutputXmlTree();
+                        if (currentSelectedOutputXmlTree != null) {
+                            OutputXmlTree selectedTree = (OutputXmlTree) currentSelectedOutputXmlTree.getModel();
 
-                @Override
-                public void execute() {
-                    List<OutputXmlTree> outputTrees = mapData.getOutputTrees();
-                    List<OutputXmlTree> movedObjects = new ArrayList<OutputXmlTree>();
-                    for (int i = 0; i < indexToChange.size(); i++) {
-                        int index = indexToChange.get(i);
-                        OutputXmlTree temp = outputTrees.get(index);
-                        movedObjects.add(temp);
-                        outputTrees.remove(temp);
-                        outputTrees.add(index + 1, temp);
-                    }
+                            int index = outputTrees.indexOf(selectedTree);
+                            if (index != -1 && index + 1 < outputTrees.size()) {
+                                outputTrees.remove(selectedTree);
+                                outputTrees.add(index + 1, selectedTree);
 
-                    for (OutputXmlTree tree : movedObjects) {
-                        int indexOf = mapDataPart.getModelChildren().indexOf(tree);
-                        if (indexOf != -1) {
-                            mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
+                                // index of modelchildren is different from index of tree
+                                int indexOf = mapDataPart.getModelChildren().indexOf(selectedTree);
+                                if (indexOf != -1) {
+                                    mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
+                                }
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
 
         }
     }

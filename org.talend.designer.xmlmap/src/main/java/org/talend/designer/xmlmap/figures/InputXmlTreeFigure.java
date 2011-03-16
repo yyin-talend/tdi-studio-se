@@ -12,16 +12,12 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures;
 
-import java.util.List;
-
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MarginBorder;
-import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
@@ -35,7 +31,6 @@ import org.talend.designer.xmlmap.figures.treesettings.InputTreeSettingContainer
 import org.talend.designer.xmlmap.figures.treetools.TreeToolBarContainer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
-import org.talend.designer.xmlmap.parts.XmlMapDataEditPart;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.ui.resource.FontInfo;
@@ -44,7 +39,7 @@ import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
 /**
  * wchen class global comment. Detailled comment
  */
-public class InputXmlTreeFigure extends GenericFigure {
+public class InputXmlTreeFigure extends AbstractInputTreeFigure {
 
     protected Figure columnContainer;
 
@@ -54,10 +49,6 @@ public class InputXmlTreeFigure extends GenericFigure {
 
     protected Figure tableColumnstitle;
 
-    private Figure header;
-
-    private TreeToolBarContainer imageButtonsFigure;
-
     private InputTreeSettingContainer settingContainer;
 
     private FilterContainer filterFigure;
@@ -66,7 +57,7 @@ public class InputXmlTreeFigure extends GenericFigure {
         this.xmlTreePart = xmlTreePart;
         this.xmlTree = (InputXmlTree) xmlTreePart.getModel();
         createContents();
-        addListeners();
+        // addListeners();
 
     }
 
@@ -145,42 +136,38 @@ public class InputXmlTreeFigure extends GenericFigure {
         return this.xmlTree;
     }
 
-    private void addListeners() {
-        this.addMouseListener(new MouseListener() {
-
-            public void mousePressed(MouseEvent me) {
-                if (InputXmlTreeFigure.this.containsPoint(me.x, me.y)) {
-                    header.setBackgroundColor(ColorConstants.yellow);
-                    xmlTreePart.updateChildrenConnections(xmlTreePart.getChildren(), xmlTreePart);
-                    if (xmlTreePart.getParent() instanceof XmlMapDataEditPart) {
-                        List children = ((XmlMapDataEditPart) xmlTreePart.getParent()).getChildren();
-                        for (Object obj : children) {
-                            if (obj == xmlTreePart) {
-                                continue;
-                            }
-                            if (obj instanceof InputXmlTreeEditPart) {
-                                InputXmlTreeEditPart otherTreePart = (InputXmlTreeEditPart) obj;
-                                ((InputXmlTreeFigure) otherTreePart.getFigure()).resetHeaderColor();
-                                otherTreePart.updateChildrenConnections(otherTreePart.getChildren(), xmlTreePart);
-                            }
-                        }
-                    }
-
-                }
-            }
-
-            public void mouseReleased(MouseEvent me) {
-            }
-
-            public void mouseDoubleClicked(MouseEvent me) {
-            }
-
-        });
-    }
-
-    public void resetHeaderColor() {
-        header.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.ZONE_BACKGROUND_COLOR));
-    }
+    // private void addListeners() {
+    // this.addMouseListener(new MouseListener() {
+    //
+    // public void mousePressed(MouseEvent me) {
+    // if (InputXmlTreeFigure.this.containsPoint(me.x, me.y)) {
+    // header.setBackgroundColor(ColorConstants.yellow);
+    // xmlTreePart.updateChildrenConnections(xmlTreePart.getChildren(), xmlTreePart);
+    // if (xmlTreePart.getParent() instanceof XmlMapDataEditPart) {
+    // List children = ((XmlMapDataEditPart) xmlTreePart.getParent()).getChildren();
+    // for (Object obj : children) {
+    // if (obj == xmlTreePart) {
+    // continue;
+    // }
+    // if (obj instanceof InputXmlTreeEditPart) {
+    // InputXmlTreeEditPart otherTreePart = (InputXmlTreeEditPart) obj;
+    // ((InputXmlTreeFigure) otherTreePart.getFigure()).highLightHeader(false);
+    // otherTreePart.updateChildrenConnections(otherTreePart.getChildren(), xmlTreePart);
+    // }
+    // }
+    // }
+    //
+    // }
+    // }
+    //
+    // public void mouseReleased(MouseEvent me) {
+    // }
+    //
+    // public void mouseDoubleClicked(MouseEvent me) {
+    // }
+    //
+    // });
+    // }
 
     class ColumnTitleFigure extends Figure {
 

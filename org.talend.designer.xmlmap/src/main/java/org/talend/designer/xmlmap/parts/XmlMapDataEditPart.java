@@ -25,18 +25,14 @@ import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.TreeContainerLayout;
 import org.talend.designer.xmlmap.figures.layout.XmlMapDataLayout;
 import org.talend.designer.xmlmap.figures.treetools.zone.InputZoneToolBar;
 import org.talend.designer.xmlmap.figures.treetools.zone.OutputZoneToolBar;
-import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
@@ -91,6 +87,8 @@ public class XmlMapDataEditPart extends BaseEditPart {
         leftFigure.setLayoutManager(subManager);
         leftFigure.setBorder(new MarginBorder(IN_OUT_BORDER));
         inputScroll.getViewport().setContents(leftFigure);
+        inputScroll.getViewport().setContentsTracksWidth(true);
+
         inputZone.add(inputScroll);
         mainFigure.add(inputZone);
 
@@ -113,9 +111,6 @@ public class XmlMapDataEditPart extends BaseEditPart {
         outputZone.setLayoutManager(new InOutZoneLayout());
 
         outputToolBar = new OutputZoneToolBar(this);
-        if (!((XmlMapData) getModel()).getOutputTrees().isEmpty()) {
-            outputToolBar.setRemoveButtonEnable(true);
-        }
         outputZone.add(outputToolBar);
         outputScroll = new ScrollPane();
         outputScroll.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
@@ -129,6 +124,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
         rightFigure.setLayoutManager(subManager);
         rightFigure.setBorder(new MarginBorder(IN_OUT_BORDER));
         outputScroll.getViewport().setContents(rightFigure);
+        outputScroll.getViewport().setContentsTracksWidth(true);
         outputZone.add(outputScroll);
         mainFigure.add(outputZone);
 
@@ -197,113 +193,12 @@ public class XmlMapDataEditPart extends BaseEditPart {
         return children;
     }
 
-    public IFigure getLeftFigure() {
-        return this.inputScroll;
+    public OutputZoneToolBar getOutputZoneToolBar() {
+        return this.outputToolBar;
     }
 
-    public IFigure getCenterFigure() {
-        return this.varScroll;
-    }
-
-    public IFigure getRightFigure() {
-        return this.outputScroll;
-    }
-
-    @Override
-    public void activate() {
-        super.activate();
-
-        selectionListener = new ISelectionChangedListener() {
-
-            public void selectionChanged(SelectionChangedEvent event) {
-                List selectedEditParts = getViewer().getSelectedEditParts();
-                boolean outputRemoveEnable = false;
-                boolean outputMoveUp = false;
-                boolean outputMoveDown = false;
-                boolean inputMoveUp = false;
-                boolean inputMoveDown = false;
-                EList<OutputXmlTree> outputTrees = ((XmlMapData) getModel()).getOutputTrees();
-                EList<InputXmlTree> inputTrees = ((XmlMapData) getModel()).getInputTrees();
-
-                /*
-                 * if there is one can't be moved in selectedEditParts ,force disable and no need to check the left
-                 */
-                boolean forceDisableOutputMoveup = false;
-                boolean forceDisableOutputMoveDown = false;
-
-                boolean forceDisableInputMoveup = false;
-                boolean forceDisableInputMoveDown = false;
-
-                for (Object obj : selectedEditParts) {
-                    if (obj instanceof OutputXmlTreeEditPart) {
-                        outputRemoveEnable = true;
-                        int index = outputTrees.indexOf(((OutputXmlTreeEditPart) obj).getModel());
-                        if (!forceDisableOutputMoveup) {
-                            if (index != -1 && index != 0) {
-                                outputMoveUp = true;
-                            } else {
-                                forceDisableOutputMoveup = true;
-                                outputMoveUp = false;
-                            }
-                        }
-                        if (!forceDisableOutputMoveDown) {
-                            if (index != -1 && index != outputTrees.size() - 1) {
-                                outputMoveDown = true;
-                            } else {
-                                forceDisableOutputMoveDown = true;
-                                outputMoveDown = false;
-                            }
-                        }
-                    } else if (obj instanceof InputXmlTreeEditPart) {
-                        InputXmlTree tree = (InputXmlTree) ((InputXmlTreeEditPart) obj).getModel();
-
-                        if (!tree.isLookup()) {
-                            forceDisableInputMoveup = true;
-                            forceDisableInputMoveDown = true;
-                            inputMoveUp = false;
-                            inputMoveDown = false;
-                        }
-
-                        if (tree.isLookup()) {
-                            int indexOf = inputTrees.indexOf(tree);
-                            if (!forceDisableInputMoveup) {
-                                if (indexOf != -1 && indexOf > 1) {
-                                    inputMoveUp = true;
-                                } else {
-                                    forceDisableInputMoveup = true;
-                                    inputMoveUp = false;
-                                }
-                            }
-                            if (!forceDisableInputMoveDown) {
-                                if (indexOf > 0 && indexOf != inputTrees.size() - 1) {
-                                    inputMoveDown = true;
-                                } else {
-                                    forceDisableInputMoveDown = true;
-                                    inputMoveDown = false;
-                                }
-                            }
-
-                        }
-
-                    }
-                }
-                outputToolBar.setRemoveButtonEnable(outputRemoveEnable);
-                outputToolBar.setMoveUpEnable(outputMoveUp);
-                outputToolBar.setMoveDownEnable(outputMoveDown);
-
-                inputToolBar.setMoveDownEnable(inputMoveDown);
-                inputToolBar.setMoveUpEnable(inputMoveUp);
-
-            }
-
-        };
-        getViewer().addSelectionChangedListener(selectionListener);
-    }
-
-    @Override
-    public void deactivate() {
-        super.deactivate();
-        getViewer().removeSelectionChangedListener(selectionListener);
+    public InputZoneToolBar getInputZoneToolBar() {
+        return this.inputToolBar;
     }
 
     @Override

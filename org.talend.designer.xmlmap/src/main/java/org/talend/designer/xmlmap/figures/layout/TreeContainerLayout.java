@@ -93,12 +93,6 @@ public class TreeContainerLayout extends ToolbarLayout {
         totalMinHeight += (numChildren - 1) * spacing;
         prefMinSumHeight = totalHeight - totalMinHeight;
 
-        int amntShrinkHeight = totalHeight - Math.max(availableHeight, totalMinHeight);
-
-        if (amntShrinkHeight < 0) {
-            amntShrinkHeight = 0;
-        }
-
         for (int i = 0; i < numChildren; i++) {
             int amntShrinkCurrentHeight = 0;
             int prefHeight = prefSizes[i].height;
@@ -121,18 +115,20 @@ public class TreeContainerLayout extends ToolbarLayout {
                 }
             }
 
-            if (prefMinSumHeight != 0)
-                amntShrinkCurrentHeight = (prefHeight - minHeight) * amntShrinkHeight / (prefMinSumHeight);
-
             newBounds.height -= amntShrinkCurrentHeight;
 
             child.setBounds(transposer.t(newBounds));
 
-            amntShrinkHeight -= amntShrinkCurrentHeight;
             prefMinSumHeight -= (prefHeight - minHeight);
             y += newBounds.height + spacing;
         }
 
+    }
+
+    @Override
+    protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {
+        // TODO Auto-generated method stub
+        return super.calculatePreferredSize(container, wHint, hHint);
     }
 
 }

@@ -147,19 +147,27 @@ public class VarToolBarFigure extends Figure {
                     public void execute() {
                         List selectedEditParts = tablePart.getViewer().getSelectedEditParts();
                         final List<VarNode> toRemove = new ArrayList<VarNode>();
+
+                        int minIndex = parentTable.getNodes().size() - 1;
                         for (Object obj : selectedEditParts) {
                             if (obj instanceof VarNodeEditPart) {
                                 VarNode model = (VarNode) ((VarNodeEditPart) obj).getModel();
                                 toRemove.add(model);
                                 XmlMapUtil.detachConnectionsSouce(model, (XmlMapData) parentTable.eContainer());
                                 XmlMapUtil.detachConnectionsTarget(model, (XmlMapData) parentTable.eContainer());
+                                int index = parentTable.getNodes().indexOf(model);
+                                if (index < minIndex) {
+                                    minIndex = index;
+                                }
                             }
                         }
                         parentTable.getNodes().removeAll(toRemove);
 
                         if (!tablePart.getChildren().isEmpty()) {
-                            tablePart.getViewer().select(
-                                    (EditPart) tablePart.getChildren().get(tablePart.getChildren().size() - 1));
+                            if (minIndex > tablePart.getChildren().size() - 1) {
+                                minIndex = tablePart.getChildren().size() - 1;
+                            }
+                            tablePart.getViewer().select((EditPart) tablePart.getChildren().get(minIndex));
                         } else {
                             remove.setEnabled(false);
                         }

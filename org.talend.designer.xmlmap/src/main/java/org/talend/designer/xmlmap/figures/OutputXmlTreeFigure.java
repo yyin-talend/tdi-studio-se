@@ -12,16 +12,12 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures;
 
-import java.util.List;
-
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MarginBorder;
-import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
@@ -34,7 +30,6 @@ import org.talend.designer.xmlmap.figures.treesettings.OutputTreeSettingContaine
 import org.talend.designer.xmlmap.figures.treetools.TreeToolBarContainer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
-import org.talend.designer.xmlmap.parts.XmlMapDataEditPart;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.ui.resource.FontInfo;
@@ -43,17 +38,13 @@ import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
 /**
  * wchen class global comment. Detailled comment
  */
-public class OutputXmlTreeFigure extends GenericFigure {
+public class OutputXmlTreeFigure extends AbstractInputTreeFigure {
 
     protected Figure columnContainer;
 
     protected OutputXmlTree xmlTree;
 
     protected Figure tableColumnstitle;
-
-    private Figure header;
-
-    private TreeToolBarContainer imageButtonsFigure;
 
     private OutputTreeSettingContainer settingContainer;
 
@@ -65,7 +56,7 @@ public class OutputXmlTreeFigure extends GenericFigure {
         this.treePart = treePart;
         this.xmlTree = (OutputXmlTree) treePart.getModel();
         createContents();
-        addListeners();
+        // addListeners();
     }
 
     protected void createContents() {
@@ -117,38 +108,38 @@ public class OutputXmlTreeFigure extends GenericFigure {
         this.add(scroll);
     }
 
-    private void addListeners() {
-        header.addMouseListener(new MouseListener() {
-
-            public void mousePressed(MouseEvent me) {
-                if (header.containsPoint(me.x, me.y)) {
-                    header.setBackgroundColor(ColorConstants.yellow);
-                    treePart.updateChildrenConnections(treePart.getChildren(), true);
-                    if (treePart.getParent() instanceof XmlMapDataEditPart) {
-                        List children = ((XmlMapDataEditPart) treePart.getParent()).getChildren();
-                        for (Object obj : children) {
-                            if (obj == treePart) {
-                                continue;
-                            }
-                            if (obj instanceof OutputXmlTreeEditPart) {
-                                OutputXmlTreeEditPart otherTreePart = (OutputXmlTreeEditPart) obj;
-                                ((OutputXmlTreeFigure) otherTreePart.getFigure()).resetHeaderColor();
-                                otherTreePart.updateChildrenConnections(otherTreePart.getChildren(), false);
-                            }
-                        }
-                    }
-
-                }
-            }
-
-            public void mouseReleased(MouseEvent me) {
-            }
-
-            public void mouseDoubleClicked(MouseEvent me) {
-            }
-
-        });
-    }
+    // private void addListeners() {
+    // this.addMouseListener(new MouseListener() {
+    //
+    // public void mousePressed(MouseEvent me) {
+    // if (OutputXmlTreeFigure.this.containsPoint(me.x, me.y)) {
+    // header.setBackgroundColor(ColorConstants.yellow);
+    // treePart.updateChildrenConnections(treePart.getChildren(), treePart);
+    // if (treePart.getParent() instanceof XmlMapDataEditPart) {
+    // List children = ((XmlMapDataEditPart) treePart.getParent()).getChildren();
+    // for (Object obj : children) {
+    // if (obj == treePart) {
+    // continue;
+    // }
+    // if (obj instanceof OutputXmlTreeEditPart) {
+    // OutputXmlTreeEditPart otherTreePart = (OutputXmlTreeEditPart) obj;
+    // ((OutputXmlTreeFigure) otherTreePart.getFigure()).resetHeaderColor();
+    // otherTreePart.updateChildrenConnections(otherTreePart.getChildren(), treePart);
+    // }
+    // }
+    // }
+    //
+    // }
+    // }
+    //
+    // public void mouseReleased(MouseEvent me) {
+    // }
+    //
+    // public void mouseDoubleClicked(MouseEvent me) {
+    // }
+    //
+    // });
+    // }
 
     public void resetHeaderColor() {
         header.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.ZONE_BACKGROUND_COLOR));

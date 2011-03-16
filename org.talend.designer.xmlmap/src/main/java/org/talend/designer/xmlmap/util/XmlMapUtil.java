@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.gef.EditPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
@@ -27,6 +28,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
+import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
+import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 
 /**
  * wchen class global comment. Detailled comment
@@ -253,6 +256,16 @@ public class XmlMapUtil {
         }
         if (rootNode != null && rootNode.eContainer() != null && rootNode.eContainer().eContainer() instanceof XmlMapData) {
             return (XmlMapData) rootNode.eContainer().eContainer();
+        }
+        return null;
+    }
+
+    public static AbstractInOutTreeEditPart findTreePart(TreeNodeEditPart treeNodePart) {
+        EditPart parent = treeNodePart.getParent();
+        if (parent instanceof AbstractInOutTreeEditPart) {
+            return (AbstractInOutTreeEditPart) parent;
+        } else if (parent instanceof TreeNodeEditPart) {
+            return findTreePart((TreeNodeEditPart) parent);
         }
         return null;
     }

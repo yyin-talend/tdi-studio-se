@@ -12,9 +12,6 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.treetools.zone;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
@@ -28,6 +25,7 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.layout.ZoneToolBarLayout;
 import org.talend.designer.xmlmap.figures.treetools.ToolBarButtonImageFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
@@ -50,6 +48,8 @@ public class InputZoneToolBar extends Figure {
 
     private XmlMapDataEditPart mapDataPart;
 
+    private XmlMapGraphicViewer graphicViewer;
+
     private boolean minimized = true;
 
     private Image restorImage = ImageProviderMapper.getImage(ImageInfo.RESTORE_ICON);
@@ -59,6 +59,9 @@ public class InputZoneToolBar extends Figure {
     public InputZoneToolBar(XmlMapDataEditPart mapDataPart) {
         this.mapDataPart = mapDataPart;
         this.mapData = (XmlMapData) mapDataPart.getModel();
+        if (mapDataPart.getViewer() instanceof XmlMapGraphicViewer) {
+            this.graphicViewer = (XmlMapGraphicViewer) mapDataPart.getViewer();
+        }
 
         ZoneToolBarLayout manager = new ZoneToolBarLayout();
         manager.setSpacing(8);
@@ -113,46 +116,33 @@ public class InputZoneToolBar extends Figure {
         @Override
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
-            List selectedEditParts = mapDataPart.getViewer().getSelectedEditParts();
-            final Integer[] indexToChange = new Integer[selectedEditParts.size()];
-            for (int i = 0; i < selectedEditParts.size(); i++) {
-                Object selection = selectedEditParts.get(i);
-                if (selection instanceof InputXmlTreeEditPart) {
-                    InputXmlTreeEditPart part = (InputXmlTreeEditPart) selection;
-                    final InputXmlTree tree = (InputXmlTree) part.getModel();
-                    final int indexOf = mapData.getInputTrees().indexOf(tree);
-                    if (indexOf != -1 && indexOf != 0) {
-                        indexToChange[i] = indexOf;
+            if (graphicViewer != null) {
+                CommandStack commandStack = graphicViewer.getEditDomain().getCommandStack();
+                commandStack.execute(new Command() {
+
+                    @Override
+                    public void execute() {
+                        List<InputXmlTree> inputTrees = mapData.getInputTrees();
+                        InputXmlTreeEditPart currentSelectedInputXmlTree = graphicViewer.getFiguresManager()
+                                .getCurrentSelectedInputXmlTree();
+                        if (currentSelectedInputXmlTree != null) {
+                            InputXmlTree selectedTree = (InputXmlTree) currentSelectedInputXmlTree.getModel();
+
+                            int index = inputTrees.indexOf(selectedTree);
+                            if (index != -1 && index - 1 >= 0) {
+                                inputTrees.remove(selectedTree);
+                                inputTrees.add(index - 1, selectedTree);
+
+                                // index of modelchildren is different from index of tree
+                                int indexOf = mapDataPart.getModelChildren().indexOf(selectedTree);
+                                if (indexOf != -1) {
+                                    mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
+                                }
+                            }
+                        }
                     }
-                }
+                });
             }
-            Arrays.sort(indexToChange);
-            CommandStack commandStack = mapDataPart.getViewer().getEditDomain().getCommandStack();
-            commandStack.execute(new Command() {
-
-                @Override
-                public void execute() {
-                    List<InputXmlTree> inputTrees = mapData.getInputTrees();
-
-                    List<InputXmlTree> movedObjects = new ArrayList<InputXmlTree>();
-                    for (int i = 0; i < indexToChange.length; i++) {
-                        if (indexToChange[i] != null) {
-                            int index = indexToChange[i];
-                            InputXmlTree temp = inputTrees.get(index);
-                            movedObjects.add(temp);
-                            inputTrees.remove(temp);
-                            inputTrees.add(index - 1, temp);
-                        }
-                    }
-
-                    for (InputXmlTree tree : movedObjects) {
-                        int indexOf = mapDataPart.getModelChildren().indexOf(tree);
-                        if (indexOf != -1) {
-                            mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
-                        }
-                    }
-                }
-            });
 
         }
     }
@@ -166,49 +156,35 @@ public class InputZoneToolBar extends Figure {
         @Override
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
-            List selectedEditParts = mapDataPart.getViewer().getSelectedEditParts();
-            final List<Integer> indexToChange = new ArrayList<Integer>();
-            for (int i = 0; i < selectedEditParts.size(); i++) {
-                Object selection = selectedEditParts.get(i);
-                if (selection instanceof InputXmlTreeEditPart) {
-                    InputXmlTreeEditPart part = (InputXmlTreeEditPart) selection;
-                    final InputXmlTree tree = (InputXmlTree) part.getModel();
-                    final int indexOf = mapData.getInputTrees().indexOf(tree);
-                    if (indexOf != -1 && indexOf < mapData.getInputTrees().size() - 1) {
-                        indexToChange.add(indexOf);
-                    }
-                }
-            }
+            if (graphicViewer != null) {
 
-            Collections.sort(indexToChange);
-            Collections.reverse(indexToChange);
+                CommandStack commandStack = graphicViewer.getEditDomain().getCommandStack();
+                commandStack.execute(new Command() {
 
-            CommandStack commandStack = mapDataPart.getViewer().getEditDomain().getCommandStack();
-            commandStack.execute(new Command() {
+                    @Override
+                    public void execute() {
+                        List<InputXmlTree> inputTrees = mapData.getInputTrees();
+                        InputXmlTreeEditPart currentSelectedInputXmlTree = graphicViewer.getFiguresManager()
+                                .getCurrentSelectedInputXmlTree();
+                        if (currentSelectedInputXmlTree != null) {
+                            InputXmlTree selectedTree = (InputXmlTree) currentSelectedInputXmlTree.getModel();
 
-                @Override
-                public void execute() {
-                    List<InputXmlTree> inputTrees = mapData.getInputTrees();
-                    List<InputXmlTree> movedObjects = new ArrayList<InputXmlTree>();
-                    for (int i = 0; i < indexToChange.size(); i++) {
-                        int index = indexToChange.get(i);
-                        InputXmlTree temp = inputTrees.get(index);
-                        movedObjects.add(temp);
-                        inputTrees.remove(temp);
-                        inputTrees.add(index + 1, temp);
-                    }
+                            int index = inputTrees.indexOf(selectedTree);
+                            if (index != -1 && index + 1 < inputTrees.size()) {
+                                inputTrees.remove(selectedTree);
+                                inputTrees.add(index + 1, selectedTree);
 
-                    for (int i = 0; i < movedObjects.size(); i++) {
-                        InputXmlTree tree = movedObjects.get(i);
-                        int indexOf = mapDataPart.getModelChildren().indexOf(tree);
-                        if (indexOf != -1) {
-                            mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
-
+                                // index of modelchildren is different from index of tree
+                                int indexOf = mapDataPart.getModelChildren().indexOf(selectedTree);
+                                if (indexOf != -1) {
+                                    mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
+                                }
+                            }
                         }
                     }
-                }
-            });
+                });
 
+            }
         }
     }
 

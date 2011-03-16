@@ -157,6 +157,7 @@ public class XmlMapEditor extends GraphicalEditor {
         getGraphicalViewer().addDropTargetListener(new XmlDropTargetListener(getGraphicalViewer()));
 
         getGraphicalViewer().addSelectionChangedListener(mapperManager);
+
         getGraphicalViewer().setContextMenu(new MenueProvider(getGraphicalViewer()));
         initializeActionRegistry();
     }

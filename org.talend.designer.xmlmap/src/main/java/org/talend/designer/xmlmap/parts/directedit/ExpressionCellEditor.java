@@ -170,7 +170,8 @@ public class ExpressionCellEditor extends ExtendedTextCellEditor {
                 UnnotifiableColorStyledText mapperColorStyledText = (UnnotifiableColorStyledText) textTarget.getStyledText();
                 if (e.character == '\r' || e.character == '\u001b') {
                     // e.doit = false;
-                    String text = ((AbstractNode) source.getModel()).getExpression();
+                    String expression = ((AbstractNode) source.getModel()).getExpression();
+                    String text = expression == null ? "" : expression;
                     if (!textWidget.isDisposed()) {
                         text = ControlUtils.getText(textWidget);
                     }

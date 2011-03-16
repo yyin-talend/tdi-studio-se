@@ -20,6 +20,7 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.talend.designer.xmlmap.figures.layout.TreeToolBarLayout;
 import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsManager;
@@ -93,6 +94,21 @@ public class TreeToolBarContainer extends Figure {
         } else {
             min_size.setImage(miniImage);
         }
+    }
+
+    public void updateButtonsColor(Color color) {
+        if (condensedButton != null) {
+            if (!condensedButton.isSelected()) {
+                condensedButton.setBackgroundColor(color);
+            }
+        }
+        if (expressionFilterButton != null) {
+            if (!expressionFilterButton.isSelected()) {
+                expressionFilterButton.setBackgroundColor(color);
+            }
+        }
+        min_size.setBackgroundColor(color);
+
     }
 
     public Map<String, Object> getDefaultSetting() {

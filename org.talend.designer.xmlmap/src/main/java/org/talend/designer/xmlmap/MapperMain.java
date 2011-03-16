@@ -88,6 +88,8 @@ public class MapperMain {
                 if (!found) {
                     for (TreeNode treeNode : inputTree.getNodes()) {
                         XmlMapUtil.detachConnectionsTarget(treeNode, copyOfMapData);
+                        XmlMapUtil.detachLookupSource(treeNode, copyOfMapData);
+                        XmlMapUtil.detachLookupTarget(treeNode, copyOfMapData);
                     }
                     treesToRemove.add(inputTree);
                 }
