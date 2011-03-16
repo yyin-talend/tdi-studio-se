@@ -1278,6 +1278,13 @@
       </projecttask>
       <projecttask
             beforeLogon="false"
+            class="org.talend.repository.model.migration.RenametELTMigrationTask"
+            description="rename tELTXXX to tSQLTemplateXXX"
+            id="org.talend.repository.model.migration.RenametELTMigrationTask"
+            name="Rename tELTXXX to tSQLTemplateXXX">
+      </projecttask>     
+      <projecttask
+            beforeLogon="false"
             class="org.talend.repository.model.migration.ChangeModelForRoutineParameterMigrationTask2"
             id="org.talend.repository.model.migration.ChangeModelForRoutineParameterMigrationTask2"
             name="Change Routines Parameter">
