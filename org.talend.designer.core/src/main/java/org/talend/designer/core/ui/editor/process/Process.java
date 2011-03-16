@@ -3612,13 +3612,40 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 }
             }
         }
+
+        // verify to remove non-existing routines from the list, just in case some have been deleted.
+        List<IRepositoryViewObject> routines;
+        try {
+            routines = ProxyRepositoryFactory.getInstance().getAll(ProjectManager.getInstance().getCurrentProject(),
+                    ERepositoryObjectType.ROUTINES);
+            // always add the system, others must be checked
+            Set<String> nonExistingRoutines = new HashSet<String>();
+
+            for (String routine : listRoutines) {
+                boolean found = false;
+                for (IRepositoryViewObject object : routines) {
+                    if (routine.equals(object.getLabel())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    nonExistingRoutines.add(routine);
+                }
+            }
+            listRoutines.removeAll(nonExistingRoutines);
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
         return listRoutines;
     }
 
     private Set<String> getJobletRoutines(ProcessType processType) {
         Set<String> listRoutines = new HashSet<String>();
         for (RoutinesParameterType routine : (List<RoutinesParameterType>) processType.getParameters().getRoutinesParameter()) {
-            listRoutines.add(routine.getName());
+            if (!StringUtils.isEmpty(routine.getId()) && !StringUtils.isEmpty(routine.getName())) {
+                listRoutines.add(routine.getName());
+            }
         }
 
         IJobletProviderService jobletService = null;
