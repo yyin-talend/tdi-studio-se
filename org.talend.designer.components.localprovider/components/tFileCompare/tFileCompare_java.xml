@@ -63,9 +63,7 @@
 
 		<PARAMETER NAME="NO_DIFFER_MESSAGE" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="40">
-			<DEFAULT>
-				"[job " + jobName + "] Files are identical"
-			</DEFAULT>
+			<DEFAULT>"[job " + jobName + "] Files are identical"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="PRINT" FIELD="CHECK" REQUIRED="true"
