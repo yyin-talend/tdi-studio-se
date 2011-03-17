@@ -60,7 +60,6 @@ public class CreateAttributeAction extends SelectionAction {
             }
         } else {
             treeNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
-            OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
             EList<Connection> incomingConnections = parent.getIncomingConnections();
             if (!incomingConnections.isEmpty()) {
                 needWarning = true;

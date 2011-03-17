@@ -54,9 +54,11 @@ public class XmlMapUtil {
 
     public static final String XPATH_ATTRIBUTE = "@";
 
-    public static final String XPATH_NAMESPACE = "xmlns";
+    public static final String XPATH_NAMESPACE = "xmlns:";
 
     public static final int DEFAULT_OFFSET = 5;
+
+    public static final String DEFAULT_NAME_SPACE_PREFIX = "(default)";
 
     /**
      * 

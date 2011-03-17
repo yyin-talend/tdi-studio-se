@@ -36,11 +36,13 @@ public class TreeBranchFigure extends Figure implements ITreeAction {
 
     protected Label statusFigure;
 
+    protected Label defaultValue;
+
     private TreeNode node;
 
     public TreeBranchFigure(TreeNode node) {
         this.node = node;
-        GridLayout manager = new GridLayout(2, false);
+        GridLayout manager = new GridLayout(4, false);
         manager.horizontalSpacing = 5;
         manager.verticalSpacing = 1;
         manager.marginHeight = 1;
@@ -53,10 +55,27 @@ public class TreeBranchFigure extends Figure implements ITreeAction {
         statusFigure.setForegroundColor(ColorConstants.red);
         statusFigure.setText(getStatus(node));
 
+        defaultValue = new Label();
+        defaultValue.setForegroundColor(ColorConstants.blue);
+        defaultValue.setText(getDefaultValue(node));
+
         setOpaque(true);
 
         this.add(nameFigure);
         this.add(statusFigure);
+        this.add(defaultValue);
+    }
+
+    private String getDefaultValue(TreeNode node) {
+        if (node instanceof OutputTreeNode && NodeType.NAME_SPACE.equals(node.getNodeType())) {
+            String defaultValue2 = ((OutputTreeNode) node).getDefaultValue();
+            if (defaultValue2 == null || "".equals(defaultValue2)) {
+                return "";
+            }
+            return "(Default Value :" + defaultValue2 + ")";
+        } else {
+            return "";
+        }
     }
 
     private String getStatus(TreeNode node) {
@@ -74,9 +93,10 @@ public class TreeBranchFigure extends Figure implements ITreeAction {
 
     private String getTreeBranchName(TreeNode model) {
         String name = "";
-        if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())) {
-            name = model.getXpath().substring(model.getXpath().lastIndexOf(XmlMapUtil.XPATH_SEPARATOR) + 1,
-                    model.getXpath().length());
+        if (NodeType.ATTRIBUT.equals(model.getNodeType())) {
+            name = XmlMapUtil.XPATH_ATTRIBUTE + model.getName();
+        } else if (NodeType.NAME_SPACE.equals(model.getNodeType())) {
+            name = XmlMapUtil.XPATH_NAMESPACE + model.getName();
         } else {
             name = model.getName();
         }
@@ -166,5 +186,9 @@ public class TreeBranchFigure extends Figure implements ITreeAction {
 
     public void updataNameFigure() {
         nameFigure.setText(getTreeBranchName(node));
+    }
+
+    public void updateDefaultValueFigure() {
+        defaultValue.setText(getDefaultValue(node));
     }
 }

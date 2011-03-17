@@ -28,6 +28,8 @@ import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.ui.proposal.JavaSimpleDateFormatProposalProvider;
+import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -60,18 +62,7 @@ public class OutputXmlTreeSchemaTableView extends AbstractExtendedTableViewer<Tr
             public void set(TreeSchemaTableEntry bean, Object value) {
                 if (isValidName) {
                     bean.setName((String) value);
-                    // String xPath = bean.getXPath();
-                    // xPath = xPath.substring(0, xPath.lastIndexOf(XmlMapUtil.XPATH_SEPARATOR) + 1);
-                    // NodeType nodeType = bean.getTreeNode().getNodeType();
-                    // String typedValue = null;
-                    // if (NodeType.ATTRIBUT.equals(nodeType)) {
-                    // typedValue = xPath + XmlMapUtil.XPATH_ATTRIBUTE + bean.getName();
-                    // } else if (NodeType.NAME_SPACE.equals(nodeType)) {
-                    // typedValue = xPath + XmlMapUtil.XPATH_NAMESPACE + bean.getName();
-                    // } else {
-                    // typedValue = xPath + bean.getName();
-                    // }
-                    // bean.setXPath(typedValue);
+
                     XmlMapData mapperData = XmlMapUtil.getXmlMapData(bean.getTreeNode());
                     XmlMapUtil.updateXPathAndExpression(mapperData, bean.getTreeNode(), bean.getName(),
                             XmlMapUtil.getXPathLength(bean.getXPath()), true);
@@ -101,7 +92,14 @@ public class OutputXmlTreeSchemaTableView extends AbstractExtendedTableViewer<Tr
             @Override
             public Object getValue(Object bean) {
                 TreeSchemaTableEntry entry = (TreeSchemaTableEntry) bean;
-                return entry.getName();
+                String name = entry.getName();
+                if (name == null || "".equals(name)) {
+                    TreeNode treeNode = entry.getTreeNode();
+                    if (NodeType.NAME_SPACE.equals(treeNode.getNodeType())) {
+                        name = XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX;
+                    }
+                }
+                return name;
             }
 
             @Override
@@ -161,6 +159,13 @@ public class OutputXmlTreeSchemaTableView extends AbstractExtendedTableViewer<Tr
             isValidName = false;
             return "Name can't be null";
         }
+
+        if ((newValue.indexOf("(") != -1 || newValue.indexOf(")") != -1)
+                && !newValue.equals(XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX)) {
+            isValidName = false;
+            return "Namespace Prefix is invalid";
+        }
+
         TreeSchemaTableEntry bean = getExtendedTableModel().getBeansList().get(beanPosition);
 
         int xPathLength = XmlMapUtil.getXPathLength(bean.getXPath());

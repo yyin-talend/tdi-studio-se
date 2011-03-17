@@ -297,5 +297,12 @@ public class CreateNodeAndConnectionCommand extends Command {
                 }
             }
         }
+        if (targetEditPart instanceof OutputTreeNodeEditPart) {
+            OutputTreeNode model = (OutputTreeNode) targetEditPart.getModel();
+            if (NodeType.NAME_SPACE.equals(model.getNodeType()) && model.getExpression() != null
+                    && !"".equals(model.getExpression())) {
+                model.setDefaultValue("");
+            }
+        }
     }
 }

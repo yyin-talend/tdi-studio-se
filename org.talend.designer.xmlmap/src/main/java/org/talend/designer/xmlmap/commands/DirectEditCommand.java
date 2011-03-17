@@ -27,6 +27,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
@@ -155,6 +156,14 @@ public class DirectEditCommand extends Command {
                         }
                         ((TreeNode) model).getLookupIncomingConnections().removeAll(copyOfConnections);
 
+                    }
+
+                    if (model instanceof OutputTreeNode) {
+                        OutputTreeNode outModel = (OutputTreeNode) model;
+                        if (NodeType.NAME_SPACE.equals(outModel.getNodeType()) && outModel.getExpression() != null
+                                && !"".equals(model.getExpression())) {
+                            outModel.setDefaultValue("");
+                        }
                     }
 
                 } else if (DirectEditType.VAR_NODE_TYPE.equals(type)) {

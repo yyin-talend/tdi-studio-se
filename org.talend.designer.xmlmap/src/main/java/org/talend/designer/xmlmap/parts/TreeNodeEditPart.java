@@ -427,6 +427,14 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                     ((TreeNodeFigure) getFigure()).updateNameFigure();
                 }
                 break;
+            case XmlmapPackage.OUTPUT_TREE_NODE__DEFAULT_VALUE:
+                if (getFigure() instanceof TreeBranch) {
+                    if (((XmlTreeBranch) getFigure()).getElement() instanceof TreeBranchFigure) {
+                        TreeBranchFigure branchFigure = (TreeBranchFigure) ((XmlTreeBranch) getFigure()).getElement();
+                        branchFigure.updateDefaultValueFigure();
+                    }
+                }
+                break;
             case XmlmapPackage.TREE_NODE__TYPE:
                 TreeNode treeNode = (TreeNode) getModel();
                 if (treeNode.eContainer() instanceof InputXmlTree || treeNode.eContainer() instanceof OutputXmlTree) {

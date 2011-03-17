@@ -32,7 +32,9 @@ import org.talend.designer.xmlmap.dnd.XmlDragSourceListener;
 import org.talend.designer.xmlmap.dnd.XmlDropTargetListener;
 import org.talend.designer.xmlmap.editor.actions.CreateAttributeAction;
 import org.talend.designer.xmlmap.editor.actions.CreateElementAction;
+import org.talend.designer.xmlmap.editor.actions.CreateNameSpaceAction;
 import org.talend.designer.xmlmap.editor.actions.DeleteTreeNodeAction;
+import org.talend.designer.xmlmap.editor.actions.FixValueAction;
 import org.talend.designer.xmlmap.editor.actions.ImportTreeFromRepository;
 import org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml;
 import org.talend.designer.xmlmap.editor.actions.OutputImportTreeFromRepository;
@@ -132,6 +134,15 @@ public class XmlMapEditor extends GraphicalEditor {
         outputImportFromRepository.setMapperManager(mapperManager);
         getActionRegistry().registerAction(outputImportFromRepository);
         getSelectionActions().add(outputImportFromRepository.getId());
+
+        CreateNameSpaceAction createNameSpace = new CreateNameSpaceAction(this);
+        createNameSpace.setMapperManager(mapperManager);
+        getActionRegistry().registerAction(createNameSpace);
+        getSelectionActions().add(createNameSpace.getId());
+
+        FixValueAction fixValueAction = new FixValueAction(this);
+        getActionRegistry().registerAction(fixValueAction);
+        getSelectionActions().add(fixValueAction.getId());
     }
 
     /**
@@ -239,6 +250,19 @@ public class XmlMapEditor extends GraphicalEditor {
                         createAttribute.setInput(false);
                         if (createAttribute.isEnabled()) {
                             menu.add(createAttribute);
+                        }
+
+                        CreateNameSpaceAction createNameSpace = (CreateNameSpaceAction) getActionRegistry().getAction(
+                                CreateNameSpaceAction.ID);
+                        createNameSpace.update();
+                        if (createNameSpace.isEnabled()) {
+                            menu.add(createNameSpace);
+                        }
+
+                        FixValueAction fixValueAction = (FixValueAction) getActionRegistry().getAction(FixValueAction.ID);
+                        fixValueAction.update();
+                        if (fixValueAction.isEnabled()) {
+                            menu.add(fixValueAction);
                         }
 
                         DeleteTreeNodeAction action = (DeleteTreeNodeAction) getActionRegistry().getAction(
