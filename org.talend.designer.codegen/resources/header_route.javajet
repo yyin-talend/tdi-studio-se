@@ -91,10 +91,31 @@ import java.util.Comparator;
  * @version <%=version %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */                                
- public class <%=process.getName()%> {
+ public class <%=process.getName()%> extends ThreadGroup{
  		
 	private final String jobVersion = "<%=process.getVersion() %>";
 	private final String jobName = "<%=codeGenArgument.getJobName() %>";
 	private final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
 	public Integer errorCode = null;
 	private String currentComponent = "";
+	private    <%=process.getName()%>() {
+		super("<%=process.getName()%>");
+	}
+	  @Override
+	public void uncaughtException(Thread t, Throwable e) {
+		e.printStackTrace();
+		System.exit(1);
+	}
+	
+	class  <%=process.getName()%>InnerThread implements Runnable
+		{
+        public void run() {
+         try {
+             Route();
+            }catch (Exception e)
+            {
+                throw new RuntimeException(e);
+            }
+         
+           
+        }
