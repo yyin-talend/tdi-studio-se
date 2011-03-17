@@ -676,8 +676,15 @@ public abstract class DbGenerationManager {
     private String initExpression(DbMapComponent component, ExternalDbMapEntry dbMapEntry) {
         String expression = dbMapEntry.getExpression();
         if (expression != null) {
-            MapExpressionParser mapParser = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
-            List<Map<String, String>> itemNameList = mapParser.parseInTableEntryLocations(expression);
+            List<Map<String, String>> itemNameList = null;
+            MapExpressionParser mapParser1 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
+            itemNameList = mapParser1.parseInTableEntryLocations(expression);
+
+            if (itemNameList == null || itemNameList.isEmpty()) {
+                MapExpressionParser mapParser2 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
+                itemNameList = mapParser2.parseInTableEntryLocations(expression);
+            }
+
             for (Map<String, String> itemNamemap : itemNameList) {
                 Set<Entry<String, String>> set = itemNamemap.entrySet();
                 Iterator<Entry<String, String>> ite = set.iterator();
@@ -697,8 +704,10 @@ public abstract class DbGenerationManager {
                             List<IMetadataColumn> lColumn = metadataTable.getListColumns();
                             for (IMetadataColumn co : lColumn) {
                                 if (columnValue.equals(co.getLabel())) {
-                                    expression = expression = expression.replaceFirst("." + co.getLabel(), //$NON-NLS-1$
-                                            "." + co.getOriginalDbColumnName()); //$NON-NLS-1$
+                                    String oriName = co.getOriginalDbColumnName();
+                                    oriName = oriName.replaceAll("\\$", "\\\\\\$");
+                                    expression = expression.replaceFirst("." + co.getLabel(), //$NON-NLS-1$
+                                            "." + oriName); //$NON-NLS-1$
                                 }
                             }
 

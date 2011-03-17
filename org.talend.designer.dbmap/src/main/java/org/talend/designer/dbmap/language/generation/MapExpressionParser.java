@@ -47,8 +47,12 @@ public class MapExpressionParser {
             while (matcher.contains(patternMatcherInput, pattern)) {
                 MatchResult matchResult = matcher.getMatch();
                 Map<String, String> map = new HashMap<String, String>();
+                if (matchResult.group(3) != null && !"".equals(matchResult.group(3))) {
+                    map.put(matchResult.group(3), matchResult.group(1) + "." + matchResult.group(2));
+                } else {
+                    map.put(matchResult.group(2), matchResult.group(1));
+                }
 
-                map.put(matchResult.group(2), matchResult.group(1));
                 result.add(map);
             }
         }
