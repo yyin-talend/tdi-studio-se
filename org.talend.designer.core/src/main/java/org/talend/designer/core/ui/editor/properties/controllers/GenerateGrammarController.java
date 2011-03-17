@@ -196,9 +196,9 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
      * 
      * DOC tychu GenerateGramarController class global comment. Detailled comment
      */
-    class UserGrammarEngine extends org.talend.dataquality.parser.util.GrammarEngine{
-        
-    }
+//    class UserGrammarEngine extends org.talend.dataquality.parser.util.GrammarEngine{
+//        
+//    }
     
     /**
      * Generate java source file
@@ -218,20 +218,20 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
             return;
         }
         // create an instance of UserGrammarEngine
-        UserGrammarEngine gEngine = new UserGrammarEngine();
+        //UserGrammarEngine gEngine = new UserGrammarEngine();
         
         for (Map<String, String> rule : rules) {
-            gEngine.addMatchRule(rule.get("RULE_NAME"), org.talend.dataquality.parser.match.Matcher.MatchType.get(rule.get("RULE_TYPE")), rule.get("RULE_VALUE"));
+           // gEngine.addMatchRule(rule.get("RULE_NAME"), org.talend.dataquality.parser.match.Matcher.MatchType.get(rule.get("RULE_TYPE")), rule.get("RULE_VALUE"));
         }
         // active rules
         String sGrammarFolder = getTemporaryFolder();
-        gEngine.preprocess();
-        gEngine.prepareGrammarFiles(sGrammarFolder);
-        gEngine.generateGrammarCode(sGrammarFolder, sGrammarFolder);
+//        gEngine.preprocess();
+//        gEngine.prepareGrammarFiles(sGrammarFolder);
+//        gEngine.generateGrammarCode(sGrammarFolder, sGrammarFolder);
         
         // add java source to routine
         IPath path = new Path(jobId);
-        gEngine.writeRoutineCode("Engine_" + cid, sGrammarFolder, sGrammarFolder);
+        //gEngine.writeRoutineCode("Engine_" + cid, sGrammarFolder, sGrammarFolder);
         
         try {
             RoutineItem returnItem = createRoutine(path, cid, new File(sGrammarFolder + SEPARATOR + cid + ".java"), jobId);
@@ -390,13 +390,6 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         type2.setREQUIRED(true);
         type2.setNAME(routineItem.getProperty().getLabel());
         wsdlNeedImport.add(type2);
-        
-        IMPORTType type3 = ComponentFactory.eINSTANCE.createIMPORTType();
-        type3.setMODULE("org.talend.dataquality.parser.jar");
-        type3.setUrlPath(javaLabPath + "org.talend.dataquality.parser.jar");
-        type3.setREQUIRED(true);
-        type3.setNAME(routineItem.getProperty().getLabel());
-        wsdlNeedImport.add(type3);
         
         routineItem.getImports().addAll(wsdlNeedImport);
     
