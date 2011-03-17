@@ -368,6 +368,7 @@ public class ToolBarButtonImageFigure extends ImageFigure {
                 insets = inner.getInsets(figure);
             } else if (outer != null) {
                 Insets moreInsets = outer.getInsets(figure);
+                insets = new Insets();
                 insets = insets.getAdded(moreInsets);
             }
             return insets;
