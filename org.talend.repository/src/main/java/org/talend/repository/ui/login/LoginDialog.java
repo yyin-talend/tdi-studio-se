@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -165,7 +166,7 @@ public class LoginDialog extends TrayDialog {
      */
     @Override
     protected void okPressed() {
-        if (LoginComposite.isRestart == true) {
+        if (LoginComposite.isRestart) {
             super.okPressed();
         } else {
             logIn(loginComposite.getProject());
@@ -183,7 +184,7 @@ public class LoginDialog extends TrayDialog {
      * @throws Exception
      */
     protected void logIn(final Project project) {
-
+        final ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         ConnectionBean connBean = loginComposite.getConnection();
         if (connBean == null || project == null || project.getLabel() == null) {
             return;
@@ -192,7 +193,7 @@ public class LoginDialog extends TrayDialog {
         // Save last used parameters
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         prefManipulator.setLastConnection(connBean.getName());
-        prefManipulator.setLastProject(project.getLabel());
+        prefManipulator.setLastProject(project.getTechnicalLabel());
         saveLastConnBean(connBean);
         if (project.getLanguage().equals(ECodeLanguage.PERL)) {
             IPreferenceStore store = CorePlugin.getDefault().getPreferenceStore();
@@ -213,7 +214,8 @@ public class LoginDialog extends TrayDialog {
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 // monitorWrap = new EventLoopProgressMonitor(monitor);
                 try {
-                    ProxyRepositoryFactory.getInstance().logOnProject(project, monitor);
+
+                    factory.logOnProject(project, monitor);
                 } catch (LoginException e) {
                     throw new InvocationTargetException(e);
                 } catch (PersistenceException e) {
@@ -225,7 +227,18 @@ public class LoginDialog extends TrayDialog {
                 monitor.done();
             }
         };
-
+        try {
+            final boolean validProject = factory.validProject(project);
+            if (!validProject) {
+                LoginComposite.isRestart = true;
+                super.okPressed();
+                return;
+            }
+        } catch (PersistenceException e) {
+            loginComposite.populateProjectList();
+            MessageDialog.openError(getShell(), getShell().getText(), e.getMessage());
+            return;
+        }
         try {
 
             dialog.run(true, true, runnable);

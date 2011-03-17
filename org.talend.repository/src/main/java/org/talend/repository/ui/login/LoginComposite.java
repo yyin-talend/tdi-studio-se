@@ -372,41 +372,41 @@ public class LoginComposite extends Composite {
             }
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.newProject.desc")) { //$NON-NLS-1$
 
-                        @Override
-                        public void run() {
-                            createNewProject();
-                        }
+                @Override
+                public void run() {
+                    createNewProject();
+                }
 
-                    });
+            });
 
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.importProject.desc")) { //$NON-NLS-1$
 
-                        @Override
-                        public void run() {
-                            importProjects();
-                        }
+                @Override
+                public void run() {
+                    importProjects();
+                }
 
-                    });
+            });
         }
         // delete project for Tos and Tis_Remote
         toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.deleteProject.desc")) { //$NON-NLS-1$
 
-                    @Override
-                    public void run() {
-                        deleteProject();
-                    }
+            @Override
+            public void run() {
+                deleteProject();
+            }
 
-                });
+        });
 
         if (tis) { // Sendbox for Tis_Remote
             toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.createSandboxProject.desc")) { //$NON-NLS-1$
 
-                        @Override
-                        public void run() {
-                            createSendboxProject();
-                        }
+                @Override
+                public void run() {
+                    createSendboxProject();
+                }
 
-                    });
+            });
         }
         return toReturn.toArray(new ManageItem[] {});
     }
@@ -443,8 +443,8 @@ public class LoginComposite extends Composite {
         formData2.right = new FormAttachment(50, 0);
         connectionsViewer.getControl().setLayoutData(formData2);
 
-        repositoryHyperlink = toolkit.createHyperlink(repositoryComposite, Messages
-                .getString("LoginComposite.sharedRepositoryMessage"), SWT.NONE); //$NON-NLS-1$
+        repositoryHyperlink = toolkit.createHyperlink(repositoryComposite,
+                Messages.getString("LoginComposite.sharedRepositoryMessage"), SWT.NONE); //$NON-NLS-1$
         repositoryHyperlink.setBackground(repositoryComposite.getBackground());
         formData2 = new FormData();
         formData2.top = new FormAttachment(0, HORIZONTAL_THREE_SPACE);
@@ -723,7 +723,7 @@ public class LoginComposite extends Composite {
 
         // tis e-mail
         Label emailLabel = toolkit.createLabel(group, null);
-        emailLabel.setBackground(tisRepositoryComposite.getBackground());// 
+        emailLabel.setBackground(tisRepositoryComposite.getBackground());//
         emailLabel.setText(Messages.getString("LoginComposite.emailTitle")); //$NON-NLS-1$
         formData = new FormData();
         formData.top = new FormAttachment(connectionLabel, HORIZONTAL_TWO_SPACE);
@@ -752,7 +752,7 @@ public class LoginComposite extends Composite {
         passwordLabel.setText(Messages.getString("LoginComposite.passwordTitle")); //$NON-NLS-1$
         formData = new FormData();
         formData.top = new FormAttachment(passwordComposite, 3, SWT.TOP);
-        formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE - 5);// 
+        formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE - 5);//
         formData.right = new FormAttachment(0, LEFTSPACE - 5);// - 5
         formData.bottom = new FormAttachment(100, 0);
         passwordLabel.setLayoutData(formData);
@@ -1578,7 +1578,7 @@ public class LoginComposite extends Composite {
         if (lastProject != null) {
             Project goodProject = null;
             for (int i = 0; goodProject == null && i < projects.length; i++) {
-                if (lastProject.equals(projects[i].getLabel())) {
+                if (lastProject.equals(projects[i].getTechnicalLabel()) || lastProject.equals(projects[i].getLabel())) {
                     goodProject = projects[i];
                 }
             }

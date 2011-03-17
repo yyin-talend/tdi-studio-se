@@ -74,6 +74,7 @@ import org.talend.core.model.properties.impl.PropertiesFactoryImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.SVNConstant;
+import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.repository.model.ResourceModelUtils;
@@ -105,6 +106,7 @@ import org.talend.repository.ui.actions.sqlpattern.CreateSqlpatternAction;
 import org.talend.repository.ui.actions.sqlpattern.EditSqlpatternAction;
 import org.talend.repository.ui.dialog.ContextRepositoryReviewDialog;
 import org.talend.repository.ui.login.LoginDialog;
+import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.DBConnectionContextUtils;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -325,7 +327,22 @@ public class RepositoryService implements IRepositoryService {
     }
 
     private boolean isloginDialogDisabled() {
-        if (ArrayUtils.contains(Platform.getApplicationArgs(), "--disableLoginDialog")) {
+        boolean startable = Boolean.parseBoolean(System.getProperty("talend.project.Startable")); //$NON-NLS-1$
+        PreferenceManipulator preferenceManipulator = new PreferenceManipulator();
+        ConnectionBean lastBean = null;
+        if (startable) {
+            final ConnectionUserPerReader instance = ConnectionUserPerReader.getInstance();
+            instance.forceReadConnections();
+            final String lastConncetion = ConnectionUserPerReader.getInstance().readLastConncetion();
+            for (ConnectionBean bean : instance.readConnections()) {
+                if (bean.getName().equals(lastConncetion)) {
+                    lastBean = bean;
+                    break;
+                }
+            }
+        }
+
+        if (ArrayUtils.contains(Platform.getApplicationArgs(), "--disableLoginDialog") || startable) {
             boolean deleteProjectIfExist = ArrayUtils.contains(Platform.getApplicationArgs(), "--deleteProjectIfExist");
             IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                     IBrandingService.class);
@@ -364,6 +381,27 @@ public class RepositoryService implements IRepositoryService {
                 }
             }
 
+            String branch = null;
+
+            if (startable && lastBean != null) {
+                final String lastProject = preferenceManipulator.getLastProject();
+                if (lastProject != null) {
+                    projectName = lastProject;
+                }
+                final String lastSVNBranch = preferenceManipulator.getLastSVNBranch();
+                if (lastSVNBranch != null) {
+                    branch = lastSVNBranch;
+                }
+                final String lastUser = lastBean.getUser();
+                if (lastUser != null) {
+                    login = lastUser;
+                }
+                final String lastPass = lastBean.getPassword();
+                if (lastPass != null) {
+                    password = lastPass;
+                }
+
+            }
             User userInfo = PropertiesFactoryImpl.eINSTANCE.createUser();
             userInfo.setLogin(login);
             try {
@@ -374,41 +412,43 @@ public class RepositoryService implements IRepositoryService {
 
             try {
                 ConnectionBean bean = ConnectionBean.getDefaultConnectionBean();
-                repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(bean
-                        .getRepositoryId()));
-                Project project = null;
-                for (Project p : repositoryFactory.readProject()) {
-                    if (p.getLabel().equals(projectName)) {
-                        project = p;
-                        break;
-                    }
-                }
-                if (deleteProjectIfExist && project != null) {
-                    ResourceModelUtils.getProject(project).delete(true, new NullProgressMonitor());
-                }
-                if (project == null || deleteProjectIfExist) {
-                    Project projectInfor = ProjectHelper.createProject(projectName, "", //$NON-NLS-1$
-                            language, userInfo);
-                    project = repositoryFactory.createProject(projectInfor);
+                if (startable && lastBean != null) {
+                    bean = lastBean;
                 }
                 Context ctx = CorePlugin.getContext();
                 RepositoryContext repositoryContext = new RepositoryContext();
                 repositoryContext.setUser(userInfo);
                 repositoryContext.setClearPassword(password);
-                repositoryContext.setProject(project);
                 repositoryContext.setFields(bean.getDynamicFields());
-                String branch = null;
-                if (project != null) {
-                    String branchKey = IProxyRepositoryFactory.BRANCH_SELECTION + SVNConstant.UNDER_LINE_CHAR
-                            + project.getTechnicalLabel();
-                    if (branch != null) {
-                        repositoryContext.getFields().put(branchKey, branch);
-                    } else {
-                        repositoryContext.getFields().put(branchKey, SVNConstant.EMPTY);
-                    }
+                String branchKey = IProxyRepositoryFactory.BRANCH_SELECTION + SVNConstant.UNDER_LINE_CHAR + projectName;
+                if (branch != null) {
+                    repositoryContext.getFields().put(branchKey, branch);
+                } else {
+                    repositoryContext.getFields().put(branchKey, SVNConstant.EMPTY);
                 }
 
                 ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
+
+                repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(bean
+                        .getRepositoryId()));
+                Project project = null;
+                for (Project p : repositoryFactory.readProject()) {
+                    if (p.getLabel().equals(projectName) || p.getTechnicalLabel().equals(projectName)) {
+                        project = p;
+                        break;
+                    }
+                }
+                if (!startable) {
+                    if (deleteProjectIfExist && project != null) {
+                        ResourceModelUtils.getProject(project).delete(true, new NullProgressMonitor());
+                    }
+                    if (project == null || deleteProjectIfExist) {
+                        Project projectInfor = ProjectHelper.createProject(projectName, "", //$NON-NLS-1$
+                                language, userInfo);
+                        project = repositoryFactory.createProject(projectInfor);
+                    }
+                }
+                repositoryContext.setProject(project);
 
                 repositoryFactory.logOnProject(project, new NullProgressMonitor());
             } catch (PersistenceException e) {
