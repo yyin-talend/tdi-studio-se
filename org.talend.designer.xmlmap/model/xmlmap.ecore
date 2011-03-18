@@ -54,6 +54,8 @@
         eType="#//Connection"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="incomingConnections" upperBound="-1"
         eType="#//Connection"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="filterOutGoingConnections"
+        upperBound="-1" eType="#//FilterConnection"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TreeNode" eSuperTypes="#//AbstractNode">
     <eStructuralFeatures xsi:type="ecore:EReference" name="children" upperBound="-1"
@@ -69,8 +71,6 @@
         upperBound="-1" eType="#//LookupConnection"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lookupIncomingConnections"
         upperBound="-1" eType="#//LookupConnection"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="filterOutGoingConnections"
-        upperBound="-1" eType="#//FilterConnection"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OutputTreeNode" eSuperTypes="#//TreeNode">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -90,7 +90,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="Connection" eSuperTypes="#//INodeConnection"/>
   <eClassifiers xsi:type="ecore:EClass" name="LookupConnection" eSuperTypes="#//INodeConnection"/>
   <eClassifiers xsi:type="ecore:EClass" name="FilterConnection" eSuperTypes="#//IConnection">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="source" eType="#//TreeNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" eType="#//AbstractNode"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//AbstractInOutTree"/>
   </eClassifiers>
 </ecore:EPackage>

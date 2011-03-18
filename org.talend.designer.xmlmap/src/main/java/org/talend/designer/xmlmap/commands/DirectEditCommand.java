@@ -44,11 +44,15 @@ public class DirectEditCommand extends Command {
 
     private AbstractNode model;
 
-    private final String XPRESSION_PATTERN = "(\\[\\s*\\w+\\.\\w+\\s*:\\s*(/\\w+)+(/@\\w+)*\\s*\\])|((?!\\[)\\s*\\w+\\.\\w+(?!\\]))";
+    protected final String XPRESSION_PATTERN = "(\\[\\s*\\w+\\.\\w+\\s*:\\s*(/\\w+)+(/@\\w+)*\\s*\\])|((?!\\[)\\s*\\w+\\.\\w+(?!\\]))";
 
     private Object newValue;
 
     private DirectEditType type;
+
+    public DirectEditCommand() {
+
+    }
 
     public DirectEditCommand(AbstractNode model, DirectEditType type, Object newValue) {
         this.model = (AbstractNode) model;
@@ -79,7 +83,7 @@ public class DirectEditCommand extends Command {
 
                     List usefullConnections = new ArrayList();
 
-                    XmlMapData mapperData = getMapperData(model);
+                    XmlMapData mapperData = XmlMapUtil.getXmlMapData(model);
                     if (!matched.isEmpty()) {
                         for (int i = 0; i < matched.size(); i++) {
                             String convertToXpath = XmlMapUtil.convertToXpath(matched.get(i));
@@ -183,22 +187,7 @@ public class DirectEditCommand extends Command {
         }
     }
 
-    private XmlMapData getMapperData(AbstractNode treeNode) {
-        AbstractNode rootNode = null;
-        if (treeNode instanceof OutputTreeNode) {
-            rootNode = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) treeNode);
-        } else if (treeNode instanceof TreeNode) {
-            rootNode = XmlMapUtil.getInputTreeNodeRoot((TreeNode) treeNode);
-        } else if (treeNode instanceof VarNode) {
-            return (XmlMapData) treeNode.eContainer().eContainer();
-        }
-        if (rootNode != null && rootNode.eContainer() != null && rootNode.eContainer().eContainer() instanceof XmlMapData) {
-            return (XmlMapData) rootNode.eContainer().eContainer();
-        }
-        return null;
-    }
-
-    private AbstractNode findConnectionSource(XmlMapData mapperData, String xpath, boolean findFromVar) {
+    protected AbstractNode findConnectionSource(XmlMapData mapperData, String xpath, boolean findFromVar) {
         if (xpath == null || mapperData == null) {
             return null;
         }

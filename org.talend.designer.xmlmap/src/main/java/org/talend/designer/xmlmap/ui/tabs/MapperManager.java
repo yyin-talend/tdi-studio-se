@@ -298,9 +298,7 @@ public class MapperManager implements ISelectionChangedListener {
                                 TreeNode treeNode = selectedInputTree.getNodes().get(event.index);
                                 if (treeNode != null) {
 
-                                    XmlMapUtil.detachConnectionsTarget(treeNode, copyOfMapData);
-                                    XmlMapUtil.detachLookupSource(treeNode, copyOfMapData);
-                                    XmlMapUtil.detachLookupTarget(treeNode, copyOfMapData);
+                                    XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
                                     treeNode.getChildren().clear();
                                     treeNode.setType((String) event.newValue);
 
@@ -366,9 +364,7 @@ public class MapperManager implements ISelectionChangedListener {
                             for (IMetadataColumn column : metadataColumns) {
                                 for (TreeNode node : selectedInputTree.getNodes()) {
                                     if (node.getName() != null && node.getName().equals(column.getLabel())) {
-                                        XmlMapUtil.detachConnectionsTarget(node, copyOfMapData);
-                                        XmlMapUtil.detachLookupSource(node, copyOfMapData);
-                                        XmlMapUtil.detachLookupTarget(node, copyOfMapData);
+                                        XmlMapUtil.detachNodeConnections(node, copyOfMapData, true);
                                         treeNodeToRemove.add(node);
                                     }
                                 }
@@ -444,8 +440,7 @@ public class MapperManager implements ISelectionChangedListener {
                             if (event.index < oldSelectedOut.getNodes().size()) {
                                 TreeNode treeNode = oldSelectedOut.getNodes().get(event.index);
                                 if (treeNode != null) {
-
-                                    XmlMapUtil.detachConnectionsSouce(treeNode, copyOfMapData);
+                                    XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
                                     treeNode.getChildren().clear();
                                     treeNode.setType((String) event.newValue);
 
@@ -512,7 +507,7 @@ public class MapperManager implements ISelectionChangedListener {
                             for (IMetadataColumn column : metadataColumns) {
                                 for (TreeNode node : oldSelectedOut.getNodes()) {
                                     if (node.getName() != null && node.getName().equals(column.getLabel())) {
-                                        XmlMapUtil.detachConnectionsSouce(node, copyOfMapData);
+                                        XmlMapUtil.detachNodeConnections(node, copyOfMapData, true);
                                         treeNodeToRemove.add(node);
                                     }
                                 }

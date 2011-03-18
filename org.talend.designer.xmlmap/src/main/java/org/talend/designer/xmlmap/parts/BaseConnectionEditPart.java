@@ -43,4 +43,9 @@ public abstract class BaseConnectionEditPart extends AbstractConnectionEditPart 
 
     public abstract void updateForegroundColor(boolean selected);
 
+    @Override
+    protected void createEditPolicies() {
+
+    }
+
 }

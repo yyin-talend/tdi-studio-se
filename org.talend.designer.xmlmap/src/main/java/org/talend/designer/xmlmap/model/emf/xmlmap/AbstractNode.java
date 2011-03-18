@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#isNullable <em>Nullable</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getOutgoingConnections <em>Outgoing Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getIncomingConnections <em>Incoming Connections</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getFilterOutGoingConnections <em>Filter Out Going Connections</em>}</li>
  * </ul>
  * </p>
  *
@@ -166,5 +167,21 @@ public interface AbstractNode extends EObject {
      * @generated
      */
     EList<Connection> getIncomingConnections();
+
+    /**
+     * Returns the value of the '<em><b>Filter Out Going Connections</b></em>' reference list.
+     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection}.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Filter Out Going Connections</em>' reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Filter Out Going Connections</em>' reference list.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getAbstractNode_FilterOutGoingConnections()
+     * @model
+     * @generated
+     */
+    EList<FilterConnection> getFilterOutGoingConnections();
 
 } // AbstractNode

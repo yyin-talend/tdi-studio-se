@@ -15,6 +15,7 @@ package org.talend.designer.xmlmap.editor;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -24,6 +25,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.parts.ConnectionEditPart;
+import org.talend.designer.xmlmap.parts.FilterConnectionEditPart;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.LookupConnectionEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
@@ -58,6 +60,8 @@ public class XmlMapPartFactory implements EditPartFactory {
             part = new ConnectionEditPart();
         } else if (model instanceof LookupConnection) {
             part = new LookupConnectionEditPart();
+        } else if (model instanceof FilterConnection) {
+            part = new FilterConnectionEditPart();
         }
         if (part != null) {
             part.setModel(model);

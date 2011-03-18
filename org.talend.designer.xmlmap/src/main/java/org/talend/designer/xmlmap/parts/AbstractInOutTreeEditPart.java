@@ -15,10 +15,21 @@ package org.talend.designer.xmlmap.parts;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.ConnectionAnchor;
+import org.eclipse.gef.ConnectionEditPart;
+import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.NodeEditPart;
+import org.eclipse.gef.Request;
+import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
+import org.talend.designer.xmlmap.figures.anchors.FilterConnectionAnchor;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.policy.DragAndDropEditPolicy;
+import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
+
 /**
  * DOC talend class global comment. Detailled comment
  */
-public class AbstractInOutTreeEditPart extends BaseEditPart {
+public class AbstractInOutTreeEditPart extends BaseEditPart implements NodeEditPart {
 
     private boolean treeOrChildSelected = false;
 
@@ -47,6 +58,40 @@ public class AbstractInOutTreeEditPart extends BaseEditPart {
                 }
             }
         }
+    }
+
+    public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
+        if (connection instanceof FilterConnectionEditPart) {
+            return new FilterConnectionAnchor(getFigure(), connection, this);
+        }
+        return null;
+    }
+
+    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public ConnectionAnchor getTargetConnectionAnchor(Request request) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected void createEditPolicies() {
+        installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
+        installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
+        installEditPolicy("Drag and Drop", new DragAndDropEditPolicy());
+    }
+
+    @Override
+    protected List getModelTargetConnections() {
+        return ((AbstractInOutTree) getModel()).getFilterIncomingConnections();
     }
 
 }

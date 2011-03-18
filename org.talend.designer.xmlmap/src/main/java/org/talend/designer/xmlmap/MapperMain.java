@@ -87,9 +87,7 @@ public class MapperMain {
                 }
                 if (!found) {
                     for (TreeNode treeNode : inputTree.getNodes()) {
-                        XmlMapUtil.detachConnectionsTarget(treeNode, copyOfMapData);
-                        XmlMapUtil.detachLookupSource(treeNode, copyOfMapData);
-                        XmlMapUtil.detachLookupTarget(treeNode, copyOfMapData);
+                        XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
                     }
                     treesToRemove.add(inputTree);
                 }
@@ -255,7 +253,8 @@ public class MapperMain {
                     else {
                         EList<TreeNode> children = found.getChildren();
                         if (!children.isEmpty()) {
-                            XmlMapUtil.detachConnectionsSouce(found, copyOfMapData);
+
+                            XmlMapUtil.detachNodeConnections(found, copyOfMapData, true);
                             found.getChildren().clear();
                         }
                     }

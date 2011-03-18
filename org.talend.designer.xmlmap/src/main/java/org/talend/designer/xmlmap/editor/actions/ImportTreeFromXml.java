@@ -62,9 +62,7 @@ public class ImportTreeFromXml extends SelectionAction {
             list = TreeUtil.getFoxTreeNodes(file);
             TreeNode treeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(parentNode);
 
-            XmlMapUtil.detachConnectionsTarget(treeNodeRoot, mapperManager.getCopyOfMapData());
-            XmlMapUtil.detachLookupTarget(treeNodeRoot, mapperManager.getCopyOfMapData());
-            XmlMapUtil.detachLookupSource(treeNodeRoot, mapperManager.getCopyOfMapData());
+            XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
             parentNode.getChildren().clear();
             prepareEmfTreeNode(list, parentNode);
             if (mapperManager != null && parentNode.eContainer() instanceof InputXmlTree) {

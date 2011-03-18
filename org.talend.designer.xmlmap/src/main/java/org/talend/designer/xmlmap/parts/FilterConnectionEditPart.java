@@ -12,47 +12,37 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.gef.EditPart;
 import org.talend.designer.xmlmap.figures.routers.CurveConnectionRouter;
+import org.talend.designer.xmlmap.ui.resource.ColorInfo;
+import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class ConnectionEditPart extends BaseConnectionEditPart {
+public class FilterConnectionEditPart extends BaseConnectionEditPart {
 
     private CurveConnectionRouter curvrRouter;
-
-    @Override
-    public EditPart getSource() {
-        return super.getSource();
-    }
-
-    @Override
-    public EditPart getTarget() {
-        return super.getTarget();
-    }
 
     @Override
     protected IFigure createFigure() {
         PolylineConnection connection = new PolylineConnection();
         connection.setTargetDecoration(new PolygonDecoration());
         curvrRouter = new CurveConnectionRouter();
-        connection.setForegroundColor(ColorConstants.gray);
+        connection.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_FILTER_LINK));
         connection.setLineWidth(2);
         connection.setConnectionRouter(curvrRouter);
         return connection;
     }
 
+    @Override
     public void updateForegroundColor(boolean selected) {
         if (selected) {
-            getFigure().setForegroundColor(ColorConstants.yellow);
+            getFigure().setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTED_FILTER_LINK));
         } else {
-            getFigure().setForegroundColor(ColorConstants.gray);
+            getFigure().setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_FILTER_LINK));
         }
     }
-
 }

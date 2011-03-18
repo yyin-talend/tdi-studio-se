@@ -153,8 +153,7 @@ public class VarToolBarFigure extends Figure {
                             if (obj instanceof VarNodeEditPart) {
                                 VarNode model = (VarNode) ((VarNodeEditPart) obj).getModel();
                                 toRemove.add(model);
-                                XmlMapUtil.detachConnectionsSouce(model, (XmlMapData) parentTable.eContainer());
-                                XmlMapUtil.detachConnectionsTarget(model, (XmlMapData) parentTable.eContainer());
+                                XmlMapUtil.detachNodeConnections(model, (XmlMapData) parentTable.eContainer(), true);
                                 int index = parentTable.getNodes().indexOf(model);
                                 if (index < minIndex) {
                                     minIndex = index;

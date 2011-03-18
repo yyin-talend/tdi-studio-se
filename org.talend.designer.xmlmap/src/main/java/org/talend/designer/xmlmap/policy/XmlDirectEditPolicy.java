@@ -5,6 +5,7 @@ import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.talend.designer.xmlmap.commands.DirectEditCommand;
 import org.talend.designer.xmlmap.commands.TreeSettingDirectEditCommand;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
@@ -28,7 +29,7 @@ public class XmlDirectEditPolicy extends DirectEditPolicy {
                     command = new DirectEditCommand(model, type, request.getCellEditor().getValue());
                     break;
                 case VAR_NODE_TYPE:
-                    if ((editor instanceof ComboBoxCellEditor)) {
+                    if (editor instanceof ComboBoxCellEditor) {
                         ComboBoxCellEditor combo = (ComboBoxCellEditor) editor;
                         int selectIndex = (Integer) combo.getValue();
                         command = new DirectEditCommand(model, type, combo.getItems()[selectIndex]);
@@ -38,15 +39,18 @@ public class XmlDirectEditPolicy extends DirectEditPolicy {
                 case MATCH_MODEL:
                 case JOIN_MODEL:
                 case PERSISTENT_MODEL:
-                case EXPRESSION_FILTER:
                 case OUTPUT_REJECT:
                 case LOOK_UP_INNER_JOIN_REJECT:
-                    if ((editor instanceof ComboBoxCellEditor)) {
+                    if (editor instanceof ComboBoxCellEditor) {
                         ComboBoxCellEditor combo = (ComboBoxCellEditor) editor;
                         int selectIndex = (Integer) combo.getValue();
                         command = new TreeSettingDirectEditCommand(model, type, combo.getItems()[selectIndex]);
                     }
-
+                    break;
+                case EXPRESSION_FILTER:
+                    if (editor instanceof TextCellEditor) {
+                        command = new TreeSettingDirectEditCommand(model, type, request.getCellEditor().getValue());
+                    }
                 default:
                     break;
                 }

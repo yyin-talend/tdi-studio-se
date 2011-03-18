@@ -202,6 +202,7 @@ public class OutputZoneToolBar extends Figure {
                                 XmlMapUtil.detachConnectionsSouce(treeNode, mapData);
                             }
                             mapData.getOutputTrees().remove(outputTree);
+                            XmlMapUtil.detachFilterSource(outputTree, mapData);
                         }
                         if (mapData.getOutputTrees().isEmpty() && min_size.isEnabled()) {
                             min_size.setEnabled(false);

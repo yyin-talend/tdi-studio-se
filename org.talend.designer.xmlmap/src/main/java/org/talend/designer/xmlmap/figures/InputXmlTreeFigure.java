@@ -39,7 +39,7 @@ import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
 /**
  * wchen class global comment. Detailled comment
  */
-public class InputXmlTreeFigure extends AbstractInputTreeFigure {
+public class InputXmlTreeFigure extends AbstractInOutTreeFigure {
 
     protected Figure columnContainer;
 
@@ -50,8 +50,6 @@ public class InputXmlTreeFigure extends AbstractInputTreeFigure {
     protected Figure tableColumnstitle;
 
     private InputTreeSettingContainer settingContainer;
-
-    private FilterContainer filterFigure;
 
     public InputXmlTreeFigure(InputXmlTreeEditPart xmlTreePart) {
         this.xmlTreePart = xmlTreePart;
@@ -135,39 +133,6 @@ public class InputXmlTreeFigure extends AbstractInputTreeFigure {
     public InputXmlTree getInputXmlTree() {
         return this.xmlTree;
     }
-
-    // private void addListeners() {
-    // this.addMouseListener(new MouseListener() {
-    //
-    // public void mousePressed(MouseEvent me) {
-    // if (InputXmlTreeFigure.this.containsPoint(me.x, me.y)) {
-    // header.setBackgroundColor(ColorConstants.yellow);
-    // xmlTreePart.updateChildrenConnections(xmlTreePart.getChildren(), xmlTreePart);
-    // if (xmlTreePart.getParent() instanceof XmlMapDataEditPart) {
-    // List children = ((XmlMapDataEditPart) xmlTreePart.getParent()).getChildren();
-    // for (Object obj : children) {
-    // if (obj == xmlTreePart) {
-    // continue;
-    // }
-    // if (obj instanceof InputXmlTreeEditPart) {
-    // InputXmlTreeEditPart otherTreePart = (InputXmlTreeEditPart) obj;
-    // ((InputXmlTreeFigure) otherTreePart.getFigure()).highLightHeader(false);
-    // otherTreePart.updateChildrenConnections(otherTreePart.getChildren(), xmlTreePart);
-    // }
-    // }
-    // }
-    //
-    // }
-    // }
-    //
-    // public void mouseReleased(MouseEvent me) {
-    // }
-    //
-    // public void mouseDoubleClicked(MouseEvent me) {
-    // }
-    //
-    // });
-    // }
 
     class ColumnTitleFigure extends Figure {
 

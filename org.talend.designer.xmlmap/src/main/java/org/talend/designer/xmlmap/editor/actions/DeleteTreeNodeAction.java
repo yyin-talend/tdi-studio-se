@@ -89,20 +89,11 @@ public class DeleteTreeNodeAction extends SelectionAction {
                         if (docRoot == null) {
                             docRoot = XmlMapUtil.getInputTreeNodeRoot(parent);
                         }
-                        XmlMapUtil.detachConnectionsTarget(treeNode, mapperManager.getCopyOfMapData());
                     } else {
                         docRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) parent);
-                        XmlMapUtil.detachConnectionsSouce(treeNode, mapperManager.getCopyOfMapData());
                     }
-                    // if (treeNode.isLoop() && treeNode instanceof OutputTreeNode) {
-                    // OutputTreeNode selectedLoopOuputNode = (OutputTreeNode) treeNode;
-                    // XmlMapUtil.findParentsForLoopNode(selectedLoopOuputNode, nodesNeedToChangeMainStatus);
-                    // if (!nodesNeedToChangeMainStatus.isEmpty()) {
-                    // for (TreeNode mainNode : nodesNeedToChangeMainStatus) {
-                    // mainNode.setMainNode(false);
-                    // }
-                    // }
-                    // }
+                    XmlMapUtil.detachNodeConnections(treeNode, mapperManager.getCopyOfMapData(), true);
+
                     parent.getChildren().remove(treeNode);
                 }
 

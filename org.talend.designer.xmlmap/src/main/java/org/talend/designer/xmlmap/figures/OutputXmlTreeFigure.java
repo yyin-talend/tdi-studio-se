@@ -38,7 +38,7 @@ import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
 /**
  * wchen class global comment. Detailled comment
  */
-public class OutputXmlTreeFigure extends AbstractInputTreeFigure {
+public class OutputXmlTreeFigure extends AbstractInOutTreeFigure {
 
     protected Figure columnContainer;
 
@@ -48,15 +48,12 @@ public class OutputXmlTreeFigure extends AbstractInputTreeFigure {
 
     private OutputTreeSettingContainer settingContainer;
 
-    private FilterContainer filterFigure;
-
     private OutputXmlTreeEditPart treePart;
 
     public OutputXmlTreeFigure(OutputXmlTreeEditPart treePart) {
         this.treePart = treePart;
         this.xmlTree = (OutputXmlTree) treePart.getModel();
         createContents();
-        // addListeners();
     }
 
     protected void createContents() {
@@ -107,39 +104,6 @@ public class OutputXmlTreeFigure extends AbstractInputTreeFigure {
         // this.add(columnContainer);
         this.add(scroll);
     }
-
-    // private void addListeners() {
-    // this.addMouseListener(new MouseListener() {
-    //
-    // public void mousePressed(MouseEvent me) {
-    // if (OutputXmlTreeFigure.this.containsPoint(me.x, me.y)) {
-    // header.setBackgroundColor(ColorConstants.yellow);
-    // treePart.updateChildrenConnections(treePart.getChildren(), treePart);
-    // if (treePart.getParent() instanceof XmlMapDataEditPart) {
-    // List children = ((XmlMapDataEditPart) treePart.getParent()).getChildren();
-    // for (Object obj : children) {
-    // if (obj == treePart) {
-    // continue;
-    // }
-    // if (obj instanceof OutputXmlTreeEditPart) {
-    // OutputXmlTreeEditPart otherTreePart = (OutputXmlTreeEditPart) obj;
-    // ((OutputXmlTreeFigure) otherTreePart.getFigure()).resetHeaderColor();
-    // otherTreePart.updateChildrenConnections(otherTreePart.getChildren(), treePart);
-    // }
-    // }
-    // }
-    //
-    // }
-    // }
-    //
-    // public void mouseReleased(MouseEvent me) {
-    // }
-    //
-    // public void mouseDoubleClicked(MouseEvent me) {
-    // }
-    //
-    // });
-    // }
 
     public void resetHeaderColor() {
         header.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.ZONE_BACKGROUND_COLOR));

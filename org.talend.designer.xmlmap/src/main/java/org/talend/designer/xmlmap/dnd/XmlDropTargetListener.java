@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.designer.xmlmap.dnd;
 
-import java.util.List;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
@@ -26,11 +24,15 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
+import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
+import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
+import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -54,7 +56,7 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
     @Override
     protected Request createTargetRequest() {
         CreateNodeConnectionRequest request = new CreateNodeConnectionRequest(getTargetEditPart());
-        if (targetFigure instanceof ExpressionFigure) {
+        if (targetFigure instanceof ExpressionFigure || targetFigure instanceof FilterContainer) {
             request.setDropType(CreateNodeConnectionRequest.DROP_EXPRESSION);
         }
         request.setFactory(new NewNodeCreationFactory(TemplateTransfer.getInstance().getObject()));
@@ -91,77 +93,108 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
     @Override
     public void dragOver(DropTargetEvent event) {
         super.dragOver(event);
-        Object transferedObj = TemplateTransfer.getInstance().getObject();
-        if (transferedObj == null) {
-            event.detail = DND.DROP_NONE;
-        } else {
-            boolean isLookup = false;
-            if (getTargetEditPart() instanceof TreeNodeEditPart && !(getTargetEditPart() instanceof OutputTreeNodeEditPart)) {
-                TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) getTargetEditPart().getModel());
-                InputXmlTree targetTree = null;
-                if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
-                    isLookup = ((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
-                    targetTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
-                }
+        Object object = TemplateTransfer.getInstance().getObject();
 
-                // can't drag and drop in the same lookup , can't drop if sources are from different trees
-                InputXmlTree inputTree = null;
-                if (isLookup && transferedObj instanceof List) {
-                    List dragedObject = (List) transferedObj;
-                    for (Object obj : dragedObject) {
-                        if (obj instanceof TreeNodeEditPart) {
-                            inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) ((TreeNodeEditPart) obj).getModel());
-                            if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
-                                InputXmlTree sourceTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
-                                if (targetTree == sourceTree) {
-                                    event.detail = DND.DROP_NONE;
-                                    return;
-                                }
-                                if (inputTree == null) {
-                                    inputTree = sourceTree;
-                                } else if (inputTree != sourceTree) {
+        if (!(object instanceof TransferedObject)) {
+            event.detail = DND.DROP_NONE;
+            return;
+        }
+        TransferedObject transferedObj = (TransferedObject) object;
+        if (transferedObj.getToTransfer() == null || transferedObj.getToTransfer().isEmpty() || transferedObj.getType() == null) {
+            event.detail = DND.DROP_NONE;
+            return;
+        }
+
+        if (getTargetEditPart() instanceof OutputTreeNodeEditPart) {
+            if (transferedObj.getType() == TransferdType.OUTPUT) {
+                event.detail = DND.DROP_NONE;
+                return;
+            }
+
+            OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getTargetEditPart();
+            OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
+            if (XmlMapUtil.DOCUMENT.equals(model.getType())) {
+                event.detail = DND.DROP_NONE;
+            }
+
+            if ((NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType()))
+                    && !(targetFigure instanceof ExpressionFigure)) {
+                event.detail = DND.DROP_NONE;
+            }
+
+        } else if (getTargetEditPart() instanceof TreeNodeEditPart) {
+            if (transferedObj.getType() == TransferdType.OUTPUT || transferedObj.getType() == TransferdType.VAR) {
+                event.detail = DND.DROP_NONE;
+                return;
+            }
+            boolean isLookup = false;
+            TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) getTargetEditPart().getModel());
+            InputXmlTree targetTree = null;
+            if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
+                isLookup = ((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
+                targetTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
+            }
+
+            // can't drag and drop in the same lookup , can't drop if sources are from different trees
+            InputXmlTree inputTree = null;
+            if (isLookup) {
+                for (Object obj : transferedObj.getToTransfer()) {
+                    if (obj instanceof TreeNodeEditPart) {
+                        inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) ((TreeNodeEditPart) obj).getModel());
+                        if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
+                            InputXmlTree sourceTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
+                            if (targetTree == sourceTree) {
+                                event.detail = DND.DROP_NONE;
+                                return;
+                            }
+                            if (inputTree == null) {
+                                inputTree = sourceTree;
+                            } else if (inputTree != sourceTree) {
+                                event.detail = DND.DROP_NONE;
+                                return;
+                            }
+
+                            if (sourceTree.eContainer() instanceof XmlMapData) {
+                                XmlMapData xmlMapData = (XmlMapData) sourceTree.eContainer();
+                                int sourceIndex = xmlMapData.getInputTrees().indexOf(sourceTree);
+                                int targetIndex = xmlMapData.getInputTrees().indexOf(targetTree);
+                                if (sourceIndex > targetIndex) {
                                     event.detail = DND.DROP_NONE;
                                     return;
                                 }
                             }
+
                         }
                     }
-
                 }
 
             }
 
-            if (!(getTargetEditPart() instanceof OutputTreeNodeEditPart) && !(getTargetEditPart() instanceof VarNodeEditPart)
-                    && !isLookup) {
+            if (!isLookup) {
                 event.detail = DND.DROP_NONE;
-            } else if (getTargetEditPart() instanceof OutputTreeNodeEditPart) {
-                OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getTargetEditPart();
-                OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
-                if (XmlMapUtil.DOCUMENT.equals(model.getType())) {
-                    event.detail = DND.DROP_NONE;
-                }
+            }
+            TreeNodeEditPart nodePart = (TreeNodeEditPart) getTargetEditPart();
+            TreeNode model = (TreeNode) nodePart.getModel();
 
-                if ((NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType()))
-                        && !(targetFigure instanceof ExpressionFigure)) {
-                    event.detail = DND.DROP_NONE;
-                }
-                if (!model.getChildren().isEmpty()) {
-                    event.detail = DND.DROP_NONE;
-                }
-            } else if (getTargetEditPart() instanceof TreeNodeEditPart) {
-                if (!isLookup) {
-                    event.detail = DND.DROP_NONE;
-                }
-                TreeNodeEditPart nodePart = (TreeNodeEditPart) getTargetEditPart();
-                TreeNode model = (TreeNode) nodePart.getModel();
+            if (XmlMapUtil.DOCUMENT.equals(model.getType())) {
+                event.detail = DND.DROP_NONE;
+            }
 
-                if (XmlMapUtil.DOCUMENT.equals(model.getType())) {
-                    event.detail = DND.DROP_NONE;
-                }
+            if (!model.getChildren().isEmpty()) {
+                event.detail = DND.DROP_NONE;
+            }
+        } else if (getTargetEditPart() instanceof VarNodeEditPart) {
+            if (transferedObj.getType() == TransferdType.OUTPUT || transferedObj.getType() == TransferdType.VAR) {
+                event.detail = DND.DROP_NONE;
+            }
+        } else if (getTargetEditPart() instanceof InputXmlTreeEditPart) {
+            if (transferedObj.getType() != TransferdType.INPUT || !(targetFigure instanceof FilterContainer)) {
+                event.detail = DND.DROP_NONE;
+            }
 
-                if (!model.getChildren().isEmpty()) {
-                    event.detail = DND.DROP_NONE;
-                }
+        } else if (getTargetEditPart() instanceof OutputXmlTreeEditPart) {
+            if (transferedObj.getType() == TransferdType.OUTPUT) {
+                event.detail = DND.DROP_NONE;
             }
         }
     }

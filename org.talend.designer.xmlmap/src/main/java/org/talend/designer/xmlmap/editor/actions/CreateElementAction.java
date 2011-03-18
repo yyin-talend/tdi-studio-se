@@ -78,13 +78,7 @@ public class CreateElementAction extends SelectionAction {
             InputDialog dialog = new InputDialog(null, "Create New Element", "Input the new element's valid label", "", null);
             int open = dialog.open();
             if (open == Window.OK) {
-                if (input) {
-                    XmlMapUtil.detachConnectionsTarget(parent, mapperManager.getCopyOfMapData(), false);
-                    XmlMapUtil.detachLookupSource(parent, mapperManager.getCopyOfMapData(), false);
-                    XmlMapUtil.detachLookupTarget(parent, mapperManager.getCopyOfMapData(), false);
-                } else {
-                    XmlMapUtil.detachConnectionsSouce(parent, mapperManager.getCopyOfMapData(), false);
-                }
+                XmlMapUtil.detachNodeConnections(parent, mapperManager.getCopyOfMapData(), false);
                 treeNode.setName(dialog.getValue());
                 treeNode.setNodeType(NodeType.ELEMENT);
                 treeNode.setXpath(XmlMapUtil.getXPath(this.parent.getXpath(), treeNode.getName(), treeNode.getNodeType()));

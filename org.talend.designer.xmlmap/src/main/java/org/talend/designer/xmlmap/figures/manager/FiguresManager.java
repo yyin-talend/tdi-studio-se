@@ -19,7 +19,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
-import org.talend.designer.xmlmap.figures.AbstractInputTreeFigure;
+import org.talend.designer.xmlmap.figures.AbstractInOutTreeFigure;
 import org.talend.designer.xmlmap.figures.treetools.zone.InputZoneToolBar;
 import org.talend.designer.xmlmap.figures.treetools.zone.OutputZoneToolBar;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
@@ -159,12 +159,12 @@ public class FiguresManager implements ISelectionChangedListener {
                 abstractPart = (OutputXmlTreeEditPart) obj;
             }
             if (abstractPart != null) {
-                ((AbstractInputTreeFigure) abstractPart.getFigure()).highLightHeader(false);
+                ((AbstractInOutTreeFigure) abstractPart.getFigure()).highLightHeader(false);
                 abstractPart.updateChildrenConnections(abstractPart.getChildren(), false);
             }
         }
 
-        AbstractInputTreeFigure treeFigure = (AbstractInputTreeFigure) selectedTreePart.getFigure();
+        AbstractInOutTreeFigure treeFigure = (AbstractInOutTreeFigure) selectedTreePart.getFigure();
         treeFigure.highLightHeader(true);
         selectedTreePart.updateChildrenConnections(nodes, true);
 

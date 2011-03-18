@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 
 /**
@@ -37,6 +38,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#isNullable <em>Nullable</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#getOutgoingConnections <em>Outgoing Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#getIncomingConnections <em>Incoming Connections</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl#getFilterOutGoingConnections <em>Filter Out Going Connections</em>}</li>
  * </ul>
  * </p>
  *
@@ -142,6 +144,16 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
      * @ordered
      */
     protected EList<Connection> incomingConnections;
+
+    /**
+     * The cached value of the '{@link #getFilterOutGoingConnections() <em>Filter Out Going Connections</em>}' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getFilterOutGoingConnections()
+     * @generated
+     * @ordered
+     */
+    protected EList<FilterConnection> filterOutGoingConnections;
 
     /**
      * <!-- begin-user-doc -->
@@ -275,6 +287,18 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EList<FilterConnection> getFilterOutGoingConnections() {
+        if (filterOutGoingConnections == null) {
+            filterOutGoingConnections = new EObjectResolvingEList<FilterConnection>(FilterConnection.class, this, XmlmapPackage.ABSTRACT_NODE__FILTER_OUT_GOING_CONNECTIONS);
+        }
+        return filterOutGoingConnections;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -290,6 +314,8 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
                 return getOutgoingConnections();
             case XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS:
                 return getIncomingConnections();
+            case XmlmapPackage.ABSTRACT_NODE__FILTER_OUT_GOING_CONNECTIONS:
+                return getFilterOutGoingConnections();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -323,6 +349,10 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
                 getIncomingConnections().clear();
                 getIncomingConnections().addAll((Collection<? extends Connection>)newValue);
                 return;
+            case XmlmapPackage.ABSTRACT_NODE__FILTER_OUT_GOING_CONNECTIONS:
+                getFilterOutGoingConnections().clear();
+                getFilterOutGoingConnections().addAll((Collection<? extends FilterConnection>)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -353,6 +383,9 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
             case XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS:
                 getIncomingConnections().clear();
                 return;
+            case XmlmapPackage.ABSTRACT_NODE__FILTER_OUT_GOING_CONNECTIONS:
+                getFilterOutGoingConnections().clear();
+                return;
         }
         super.eUnset(featureID);
     }
@@ -377,6 +410,8 @@ public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
                 return outgoingConnections != null && !outgoingConnections.isEmpty();
             case XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS:
                 return incomingConnections != null && !incomingConnections.isEmpty();
+            case XmlmapPackage.ABSTRACT_NODE__FILTER_OUT_GOING_CONNECTIONS:
+                return filterOutGoingConnections != null && !filterOutGoingConnections.isEmpty();
         }
         return super.eIsSet(featureID);
     }

@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
@@ -42,7 +43,7 @@ public class FilterConnectionImpl extends EObjectImpl implements FilterConnectio
      * @generated
      * @ordered
      */
-    protected TreeNode source;
+    protected AbstractNode source;
 
     /**
      * The cached value of the '{@link #getTarget() <em>Target</em>}' reference.
@@ -78,10 +79,10 @@ public class FilterConnectionImpl extends EObjectImpl implements FilterConnectio
      * <!-- end-user-doc -->
      * @generated
      */
-    public TreeNode getSource() {
+    public AbstractNode getSource() {
         if (source != null && source.eIsProxy()) {
             InternalEObject oldSource = (InternalEObject)source;
-            source = (TreeNode)eResolveProxy(oldSource);
+            source = (AbstractNode)eResolveProxy(oldSource);
             if (source != oldSource) {
                 if (eNotificationRequired())
                     eNotify(new ENotificationImpl(this, Notification.RESOLVE, XmlmapPackage.FILTER_CONNECTION__SOURCE, oldSource, source));
@@ -95,7 +96,7 @@ public class FilterConnectionImpl extends EObjectImpl implements FilterConnectio
      * <!-- end-user-doc -->
      * @generated
      */
-    public TreeNode basicGetSource() {
+    public AbstractNode basicGetSource() {
         return source;
     }
 
@@ -104,8 +105,8 @@ public class FilterConnectionImpl extends EObjectImpl implements FilterConnectio
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setSource(TreeNode newSource) {
-        TreeNode oldSource = source;
+    public void setSource(AbstractNode newSource) {
+        AbstractNode oldSource = source;
         source = newSource;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.FILTER_CONNECTION__SOURCE, oldSource, source));
@@ -176,7 +177,7 @@ public class FilterConnectionImpl extends EObjectImpl implements FilterConnectio
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
             case XmlmapPackage.FILTER_CONNECTION__SOURCE:
-                setSource((TreeNode)newValue);
+                setSource((AbstractNode)newValue);
                 return;
             case XmlmapPackage.FILTER_CONNECTION__TARGET:
                 setTarget((AbstractInOutTree)newValue);
@@ -194,7 +195,7 @@ public class FilterConnectionImpl extends EObjectImpl implements FilterConnectio
     public void eUnset(int featureID) {
         switch (featureID) {
             case XmlmapPackage.FILTER_CONNECTION__SOURCE:
-                setSource((TreeNode)null);
+                setSource((AbstractNode)null);
                 return;
             case XmlmapPackage.FILTER_CONNECTION__TARGET:
                 setTarget((AbstractInOutTree)null);

@@ -17,8 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.gef.EditPart;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -192,10 +194,11 @@ public class XmlMapUtil {
             if (mapperData == null) {
                 return;
             }
-            XmlMapUtil.detachConnectionsTarget(treeNode, mapperData, false);
-            XmlMapUtil.detachLookupTarget(treeNode, mapperData);
-            treeNode.getOutgoingConnections().clear();
-            treeNode.getLookupOutgoingConnections().clear();
+            XmlMapUtil.detachNodeConnections(treeNode, mapperData, true);
+            // XmlMapUtil.detachConnectionsTarget(treeNode, mapperData, false);
+            // XmlMapUtil.detachLookupTarget(treeNode, mapperData);
+            // treeNode.getOutgoingConnections().clear();
+            // treeNode.getLookupOutgoingConnections().clear();
         }
         if (!treeNode.getChildren().isEmpty()) {
             for (TreeNode child : treeNode.getChildren()) {
@@ -249,12 +252,14 @@ public class XmlMapUtil {
         return null;
     }
 
-    public static XmlMapData getXmlMapData(TreeNode treeNode) {
-        TreeNode rootNode = null;
+    public static XmlMapData getXmlMapData(AbstractNode treeNode) {
+        AbstractNode rootNode = null;
         if (treeNode instanceof OutputTreeNode) {
-            rootNode = getOutputTreeNodeRoot((OutputTreeNode) treeNode);
-        } else {
-            rootNode = getInputTreeNodeRoot(treeNode);
+            rootNode = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) treeNode);
+        } else if (treeNode instanceof TreeNode) {
+            rootNode = XmlMapUtil.getInputTreeNodeRoot((TreeNode) treeNode);
+        } else if (treeNode instanceof VarNode) {
+            return (XmlMapData) treeNode.eContainer().eContainer();
         }
         if (rootNode != null && rootNode.eContainer() != null && rootNode.eContainer().eContainer() instanceof XmlMapData) {
             return (XmlMapData) rootNode.eContainer().eContainer();
@@ -383,6 +388,54 @@ public class XmlMapUtil {
                 }
             }
         }
+    }
+
+    public static void detachFilterSource(AbstractInOutTree tree, XmlMapData mapData) {
+        for (FilterConnection connection : tree.getFilterIncomingConnections()) {
+            if (connection.getSource() != null) {
+                if (connection.getSource().getFilterOutGoingConnections().contains(connection)) {
+                    connection.getSource().getFilterOutGoingConnections().remove(connection);
+                    mapData.getConnections().remove(connection);
+                }
+            }
+        }
+        tree.getFilterIncomingConnections().clear();
+    }
+
+    public static void detachFilterTarget(AbstractNode abstractNode, XmlMapData mapData, boolean detachChildren) {
+        for (FilterConnection connection : abstractNode.getFilterOutGoingConnections()) {
+            AbstractInOutTree target = connection.getTarget();
+            if (target.getFilterIncomingConnections().contains(connection)) {
+                target.getFilterIncomingConnections().remove(connection);
+                mapData.getConnections().remove(connection);
+            }
+        }
+        abstractNode.getFilterOutGoingConnections().clear();
+
+        if (detachChildren && abstractNode instanceof TreeNode) {
+            TreeNode treeNode = (TreeNode) abstractNode;
+            if (!treeNode.getChildren().isEmpty()) {
+                for (TreeNode child : treeNode.getChildren()) {
+                    detachFilterTarget(child, mapData, detachChildren);
+                }
+            }
+        }
+
+    }
+
+    public static void detachFilterTarget(AbstractNode abstractNode, XmlMapData mapData) {
+        detachFilterTarget(abstractNode, mapData, true);
+    }
+
+    public static void detachNodeConnections(AbstractNode abstractNode, XmlMapData mapData, boolean detachChildren) {
+        detachConnectionsSouce(abstractNode, mapData, detachChildren);
+        detachConnectionsTarget(abstractNode, mapData, detachChildren);
+        detachFilterTarget(abstractNode, mapData, detachChildren);
+        if (abstractNode instanceof TreeNode) {
+            detachLookupSource((TreeNode) abstractNode, mapData, detachChildren);
+            detachLookupTarget((TreeNode) abstractNode, mapData, detachChildren);
+        }
+
     }
 
     public static void findParentsForLoopNode(TreeNode loopNode, List list) {

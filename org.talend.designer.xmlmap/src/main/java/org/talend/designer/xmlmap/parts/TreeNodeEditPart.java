@@ -121,6 +121,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         List list = new ArrayList();
         list.addAll(model.getOutgoingConnections());
         list.addAll(model.getLookupOutgoingConnections());
+        list.addAll(model.getFilterOutGoingConnections());
         return list;
     }
 
@@ -175,26 +176,11 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
     }
 
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
-        IFigure figure = null;
-        if (getRootAnchor() != null) {
-            figure = getRootAnchor();
-        } else {
-            figure = getFigure();
-        }
-
-        return new LookupColumnAnchor(figure, null, this);
-        // return new ChopboxAnchor(getFigure());
+        return null;
     }
 
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
-        IFigure figure = null;
-        if (getRootAnchor() != null) {
-            figure = getRootAnchor();
-        } else {
-            figure = getFigure();
-        }
-        return new LookupColumnAnchor(figure, null, this);
-        // return new ChopboxAnchor(getFigure());
+        return null;
     }
 
     @Override
@@ -502,6 +488,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 break;
             case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
             case XmlmapPackage.TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS:
+            case XmlmapPackage.TREE_NODE__FILTER_OUT_GOING_CONNECTIONS:
                 refreshSourceConnections();
                 break;
             case XmlmapPackage.OUTPUT_TREE_NODE__INCOMING_CONNECTIONS:
@@ -526,6 +513,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 }
             case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
             case XmlmapPackage.TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS:
+            case XmlmapPackage.TREE_NODE__FILTER_OUT_GOING_CONNECTIONS:
                 refreshSourceConnections();
                 break;
             case XmlmapPackage.OUTPUT_TREE_NODE__INCOMING_CONNECTIONS:

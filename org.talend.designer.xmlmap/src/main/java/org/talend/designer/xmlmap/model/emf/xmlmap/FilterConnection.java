@@ -34,12 +34,12 @@ public interface FilterConnection extends IConnection {
      * </p>
      * <!-- end-user-doc -->
      * @return the value of the '<em>Source</em>' reference.
-     * @see #setSource(TreeNode)
+     * @see #setSource(AbstractNode)
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getFilterConnection_Source()
      * @model
      * @generated
      */
-    TreeNode getSource();
+    AbstractNode getSource();
 
     /**
      * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getSource <em>Source</em>}' reference.
@@ -49,7 +49,7 @@ public interface FilterConnection extends IConnection {
      * @see #getSource()
      * @generated
      */
-    void setSource(TreeNode value);
+    void setSource(AbstractNode value);
 
     /**
      * Returns the value of the '<em><b>Target</b></em>' reference.

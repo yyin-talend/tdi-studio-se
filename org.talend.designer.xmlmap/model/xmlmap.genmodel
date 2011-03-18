@@ -51,6 +51,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//AbstractNode/nullable"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//AbstractNode/outgoingConnections"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//AbstractNode/incomingConnections"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//AbstractNode/filterOutGoingConnections"/>
     </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//TreeNode">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//TreeNode/children"/>
@@ -63,7 +64,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/main"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//TreeNode/lookupOutgoingConnections"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//TreeNode/lookupIncomingConnections"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//TreeNode/filterOutGoingConnections"/>
     </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//OutputTreeNode">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputTreeNode/defaultValue"/>

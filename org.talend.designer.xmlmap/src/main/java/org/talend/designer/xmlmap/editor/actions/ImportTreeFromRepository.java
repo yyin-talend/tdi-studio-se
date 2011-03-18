@@ -70,9 +70,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         if (reviewDialog.open() == Window.OK) {
             TreeNode treeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(parentNode);
 
-            XmlMapUtil.detachConnectionsTarget(treeNodeRoot, mapperManager.getCopyOfMapData());
-            XmlMapUtil.detachLookupTarget(treeNodeRoot, mapperManager.getCopyOfMapData());
-            XmlMapUtil.detachLookupSource(treeNodeRoot, mapperManager.getCopyOfMapData());
+            XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
             parentNode.getChildren().clear();
             RepositoryNode repositoryNode = reviewDialog.getResult();
             XmlFileConnectionItem item = (XmlFileConnectionItem) repositoryNode.getObject().getProperty().getItem();

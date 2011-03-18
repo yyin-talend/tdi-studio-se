@@ -18,10 +18,8 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
-import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
 import org.talend.designer.xmlmap.figures.cells.IWidgetCell;
@@ -29,7 +27,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
-import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 
 /**
  * wchen class global comment. Detailled comment
@@ -68,7 +65,11 @@ public class OutputXmlTreeEditPart extends AbstractInOutTreeEditPart {
             case XmlmapPackage.OUTPUT_XML_TREE__NODES:
                 refreshChildren();
                 break;
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS:
+                refreshTargetConnections();
+                break;
             }
+            break;
         case Notification.SET:
             switch (featureId) {
             case XmlmapPackage.OUTPUT_XML_TREE__NODES:
@@ -82,13 +83,6 @@ public class OutputXmlTreeEditPart extends AbstractInOutTreeEditPart {
 
             }
         }
-    }
-
-    @Override
-    protected void createEditPolicies() {
-        super.createEditPolicies();
-        installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
-        installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
     }
 
     @Override

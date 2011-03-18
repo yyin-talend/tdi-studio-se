@@ -70,7 +70,7 @@ public class OutputImportTreeFromRepository extends SelectionAction {
         RepositoryReviewDialog reviewDialog = new RepositoryReviewDialog(shell, ERepositoryObjectType.METADATA, "XML");
         if (reviewDialog.open() == Window.OK) {
             TreeNode treeNodeRoot = XmlMapUtil.getOutputTreeNodeRoot(parentNode);
-            XmlMapUtil.detachConnectionsSouce(treeNodeRoot, mapperManager.getCopyOfMapData());
+            XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
             parentNode.getChildren().clear();
             RepositoryNode repositoryNode = reviewDialog.getResult();
             XmlFileConnectionItem item = (XmlFileConnectionItem) repositoryNode.getObject().getProperty().getItem();

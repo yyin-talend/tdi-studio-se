@@ -14,6 +14,7 @@ package org.talend.designer.xmlmap.figures;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
+import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
 import org.talend.designer.xmlmap.figures.treetools.TreeToolBarContainer;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
@@ -21,11 +22,13 @@ import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 /**
  * DOC talend class global comment. Detailled comment
  */
-public class AbstractInputTreeFigure extends GenericFigure {
+public class AbstractInOutTreeFigure extends GenericFigure {
 
     protected Figure header;
 
     protected TreeToolBarContainer imageButtonsFigure;
+
+    protected FilterContainer filterFigure;
 
     public void highLightHeader(boolean highight) {
         if (header == null || imageButtonsFigure == null) {
@@ -38,5 +41,9 @@ public class AbstractInputTreeFigure extends GenericFigure {
             header.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.ZONE_BACKGROUND_COLOR));
             imageButtonsFigure.updateButtonsColor(ColorProviderMapper.getColor(ColorInfo.ZONE_BACKGROUND_COLOR));
         }
+    }
+
+    public FilterContainer getFilterContainer() {
+        return this.filterFigure;
     }
 }

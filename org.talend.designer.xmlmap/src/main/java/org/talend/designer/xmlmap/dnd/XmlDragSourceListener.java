@@ -20,7 +20,9 @@ import org.eclipse.gef.dnd.AbstractTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransfer;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
+import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
+import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 
@@ -35,38 +37,73 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
 
     public void dragStart(DragSourceEvent event) {
         Object template = getTemplate();
-        if (template == null)
-            event.doit = false;
         TemplateTransfer.getInstance().setTemplate(template);
     }
 
-    protected List getTemplate() {
+    protected TransferedObject getTemplate() {
         List selection = getViewer().getSelectedEditParts();
-        if (selection == null) {
+        if (selection == null || selection.isEmpty()) {
             return null;
         }
+        TransferedObject object = null;
+
+        Object lastSelection = getViewer().getSelectedEditParts().get(getViewer().getSelectedEditParts().size() - 1);
+
+        TransferdType type = null;
+
         List toTransfer = new ArrayList();
         for (Object o : selection) {
-            if (o instanceof TreeNodeEditPart && !(o instanceof OutputTreeNodeEditPart)) {
-                TreeNodeEditPart nodePart = ((TreeNodeEditPart) o);
-                if (nodePart.getModelChildren().isEmpty()) {
-                    toTransfer.add(nodePart);
-                } else {
-                    return null;
+            // all selected parts in the same zone should be in the same tree , or clean toTransfer list can't drag
+            if (lastSelection instanceof OutputTreeNodeEditPart) {
+                type = TransferdType.OUTPUT;
+                // can't drag if there is a tree selection in the same zone
+                if (o instanceof OutputXmlTreeEditPart) {
+                    toTransfer.clear();
+                    break;
                 }
-            } else if (o instanceof VarNodeEditPart && !(o instanceof OutputTreeNodeEditPart)) {
-                VarNodeEditPart nodePart = ((VarNodeEditPart) o);
-                if (nodePart != null) {
-                    toTransfer.add(nodePart);
-                } else {
-                    return null;
+                if (o instanceof OutputTreeNodeEditPart) {
+                    OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) o;
+                    if (nodePart.getModelChildren().isEmpty()) {
+                        toTransfer.add(o);
+                    } else {
+                        toTransfer.clear();
+                        break;
+                    }
                 }
-            } else {
-                return null;
+
+            } else if (lastSelection instanceof TreeNodeEditPart) {
+                type = TransferdType.INPUT;
+                if (o instanceof InputXmlTreeEditPart) {
+                    toTransfer.clear();
+                    break;
+                }
+                if (o instanceof TreeNodeEditPart) {
+                    TreeNodeEditPart nodePart = (TreeNodeEditPart) o;
+                    if (nodePart.getModelChildren().isEmpty()) {
+                        toTransfer.add(o);
+                    } else {
+                        toTransfer.clear();
+                        break;
+                    }
+                }
+
+            } else if (lastSelection instanceof VarNodeEditPart) {
+                type = TransferdType.VAR;
+                if (o instanceof VarNodeEditPart) {
+                    toTransfer.add(o);
+                }
+
             }
+
         }
 
-        return toTransfer;
+        if (toTransfer.isEmpty()) {
+            object = new TransferedObject(null, null);
+        } else {
+            object = new TransferedObject(toTransfer, type);
+        }
+
+        return object;
     }
 
     public void dragSetData(DragSourceEvent event) {
