@@ -880,8 +880,7 @@ public class ImportItemUtil {
                                 }
                             } else {
                                 ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(itemRecord.getItem());
-                                if (itemType != ERepositoryObjectType.TDQ_ELEMENT
-                                        && itemType.getParent() != ERepositoryObjectType.TDQ_ELEMENT) {
+                                if (itemType.isDIItemType()) {
                                     itemRecord.addError(Messages.getString("RepositoryUtil.ProjectNotFound")); //$NON-NLS-1$
                                 }
                             }
