@@ -198,6 +198,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
 
     private Text lineLimitText;
 
+    private Button wrapButton;
+
     // private SashForm sash;
     private Button run;
 
@@ -587,7 +589,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         formData.height = 30;
         clearTracePerfBtn.setLayoutData(formData);
 
-        consoleText = new StyledText(execContent, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
+        consoleText = new StyledText(execContent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY);
+        consoleText.setWordWrap(true);
         data = new GridData(GridData.FILL_BOTH);
         data.horizontalSpan = 2;
         data.minimumHeight = MINIMUM_HEIGHT;
@@ -724,6 +727,24 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             count = "100"; //$NON-NLS-1$
         }
         lineLimitText.setText(count);
+
+        wrapButton = new Button(composite, SWT.CHECK);
+        formData = new FormData();
+        formData.left = new FormAttachment(lineLimitText, 15, SWT.RIGHT);
+        wrapButton.setLayoutData(formData);
+        wrapButton.setText(Messages.getString("ProcessComposite.wrapbutton"));
+        wrapButton.setSelection(true);
+        wrapButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (wrapButton.getSelection()) {
+                    consoleText.setWordWrap(true);
+                } else {
+                    consoleText.setWordWrap(false);
+                }
+            }
+        });
     }
 
     private int getConsoleRowLimit() {
