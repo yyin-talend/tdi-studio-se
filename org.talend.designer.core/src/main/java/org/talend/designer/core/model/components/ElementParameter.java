@@ -348,9 +348,6 @@ public class ElementParameter implements IElementParameter {
     }
 
     public void setReadOnly(final boolean readOnly) {
-        if (getName() != null && getName().equals("HOST")) {
-            System.out.println(getName());
-        }
         this.readOnly = readOnly;
     }
 
