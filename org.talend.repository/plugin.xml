@@ -1289,6 +1289,13 @@
             id="org.talend.repository.model.migration.ChangeModelForRoutineParameterMigrationTask2"
             name="Change Routines Parameter">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ReplacetFileOutputXMLParameterMigrationTask"
+            description="change the tFileOutputXML parameter value for the context,add quote to value"
+            id="org.talend.repository.model.migration.ReplacetFileOutputXMLParameterMigrationTask"
+            name="Change the tFileOutputXML parameter value for the context,add quote to value">
+      </projecttask>
    </extension>
    
    <extension
