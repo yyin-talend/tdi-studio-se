@@ -26,6 +26,7 @@ import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
+import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
@@ -53,8 +54,23 @@ public class RenametELTMigrationTask extends AbstractJobMigrationTask {
                 IComponentConversion changeNodeNameConversion = new IComponentConversion() {
 
                     public void transform(NodeType node) {
-
+                       
                         ProcessType item = (ProcessType) node.eContainer();
+                        for (Object o : item.getConnection()) {
+                            ConnectionType connection = (ConnectionType) o;
+                            if ("RUN_IF".equals(connection.getConnectorName())) {
+                                for (Object obj : connection.getElementParameter()) {
+                                    ElementParameterType type = (ElementParameterType) obj;
+                                    if ("CONDITION".equals(type.getName())) {
+                                        if (type.getValue() != null && type.getValue().contains(source[j])) {
+                                            String replaceAll = type.getValue().replaceAll(source[j], target[j]);
+                                            type.setValue(replaceAll);
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                         for (Object o : item.getNode()) {
                             NodeType nt = (NodeType) o;
                             for (Object o1 : nt.getElementParameter()) {
