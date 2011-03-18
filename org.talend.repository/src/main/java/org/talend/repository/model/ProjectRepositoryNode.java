@@ -329,8 +329,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             processNode.setProperties(EProperties.LABEL, ERepositoryObjectType.PROCESS);
             processNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.PROCESS);
             nodes.add(processNode);
-            // *init the repository node from extension
-            initExtensionRepositoryNodes(nodes);
+
             if (PluginChecker.isJobLetPluginLoaded()) {
                 // 2.1 Joblet
                 jobletNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
@@ -558,6 +557,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 refProject.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
                 nodes.add(refProject);
             }
+            // *init the repository node from extension
+            initExtensionRepositoryNodes(nodes);
         }
 
         // hide hidden nodes;
@@ -571,12 +572,23 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         try {
             for (int i = 0; i < configurationElements.length; i++) {
                 IConfigurationElement element = configurationElements[i];
-                Object extensionNode = element.createExecutableExtension("class");
+                Object extensionNode = element.createExecutableExtension("class"); //$NON-NLS-N$
+                String label = element.getAttribute("label"); //$NON-NLS-N$
+                String parentNodeLabel = element.getAttribute("parentLabel"); //$NON-NLS-N$
                 if (extensionNode instanceof IExtendRepositoryNode) {
                     IExtendRepositoryNode diyNode = (IExtendRepositoryNode) extensionNode;
-                    String label = diyNode.getNodeLabel();
                     IImage icon = diyNode.getNodeImage();
+
                     RepositoryNode dynamicNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                    @SuppressWarnings("unchecked")
+                    RepositoryNode[] children = (RepositoryNode[]) diyNode.getChildren();
+                    if (children != null && (children.length > 0)) {
+                        for (RepositoryNode nodeToAdd : children) {
+                            dynamicNode.getChildren().add(nodeToAdd);
+                            nodeToAdd.setParent(dynamicNode);
+                            nodeToAdd.setRoot(this);
+                        }
+                    }
                     ERepositoryObjectType repositoryNodeType = (ERepositoryObjectType) ERepositoryObjectType.valueOf(
                             ERepositoryObjectType.class, label);
                     if (repositoryNodeType != null) {
@@ -584,12 +596,33 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         dynamicNode.setProperties(EProperties.CONTENT_TYPE, repositoryNodeType);
                     }
                     dynamicNode.setIcon(icon);
-                    nodes.add(dynamicNode);
+                    IRepositoryNode parentNode = findParentNodeByLabel(nodes, parentNodeLabel);
+                    if (parentNode != null) {
+                        parentNode.getChildren().add(dynamicNode);
+                        dynamicNode.setParent((RepositoryNode) parentNode);
+                    } else {
+                        nodes.add(dynamicNode);
+                    }
                 }
             }
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
+    }
+
+    private IRepositoryNode findParentNodeByLabel(List<IRepositoryNode> nodes, String parentNodeLabel) {
+        for (IRepositoryNode inode : nodes) {
+            ERepositoryObjectType contentType = inode.getContentType();
+            if (contentType != null && contentType.toString().equals(parentNodeLabel)) {
+                return inode;
+            }
+            IRepositoryNode node = findParentNodeByLabel(inode.getChildren(), parentNodeLabel);
+            if (node != null) {
+                return node;
+            } else
+                continue;
+        }
+        return null;
     }
 
     /**
@@ -634,99 +667,104 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     public void initializeChildren(org.talend.core.model.general.Project newProject, Object parent) {
         try {
             if (parent == businessProcessNode) {
-                convert(newProject, factory.getBusinessProcess(newProject, true), businessProcessNode,
-                        ERepositoryObjectType.BUSINESS_PROCESS, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.BUSINESS_PROCESS, true),
+                        businessProcessNode, ERepositoryObjectType.BUSINESS_PROCESS, recBinNode);
             } else if (parent == processNode) {
-                convert(newProject, factory.getProcess(newProject, true), processNode, ERepositoryObjectType.PROCESS, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.PROCESS, true), processNode,
+                        ERepositoryObjectType.PROCESS, recBinNode);
             } else if (parent == routesNode) {
-                convert(newProject, factory.getCamelProcess(newProject, true), routesNode, ERepositoryObjectType.ROUTES,
-                        recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.ROUTES, true), routesNode,
+                        ERepositoryObjectType.ROUTES, recBinNode);
             } else if (parent == jobletNode) {
-                convert(newProject, factory.getJoblets(newProject, true), jobletNode, ERepositoryObjectType.JOBLET, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.JOBLET, true), jobletNode,
+                        ERepositoryObjectType.JOBLET, recBinNode);
             } else if (parent == routineNode) {
-                convert(newProject, factory.getRoutine(newProject, true), routineNode, ERepositoryObjectType.ROUTINES, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.ROUTINES, true), routineNode,
+                        ERepositoryObjectType.ROUTINES, recBinNode);
             } else if (parent == beanNode) {
-                convert(newProject, factory.getBean(newProject, true), beanNode, ERepositoryObjectType.BEANS, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.BEANS, true), beanNode,
+                        ERepositoryObjectType.BEANS, recBinNode);
             } else if (parent == jobscriptsNode) {
-                convert(newProject, factory.getJobScripts(newProject, true), jobscriptsNode, ERepositoryObjectType.JOB_SCRIPT,
-                        recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.JOB_SCRIPT, true), jobscriptsNode,
+                        ERepositoryObjectType.JOB_SCRIPT, recBinNode);
             } else if (parent == snippetsNode) {
-                convert(newProject, factory.getSnippets(newProject, true), snippetsNode, ERepositoryObjectType.SNIPPETS,
-                        recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.SNIPPETS, true), snippetsNode,
+                        ERepositoryObjectType.SNIPPETS, recBinNode);
             } else if (parent == contextNode) {
-                convert(newProject, factory.getContext(newProject, true), contextNode, ERepositoryObjectType.CONTEXT, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.CONTEXT, true), contextNode,
+                        ERepositoryObjectType.CONTEXT, recBinNode);
             } else if (parent == docNode) {
                 // convertDocumentation(factory.getDocumentation(), docNode, ERepositoryObjectType.DOCUMENTATION,
                 // recBinNode);
 
-                convert(newProject, factory.getDocumentation(newProject, true), docNode, ERepositoryObjectType.DOCUMENTATION,
-                        recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.DOCUMENTATION, true), docNode,
+                        ERepositoryObjectType.DOCUMENTATION, recBinNode);
             } else if (parent == metadataConNode) {
-                convert(newProject, factory.getMetadataConnection(newProject, true), metadataConNode,
-                        ERepositoryObjectType.METADATA_CONNECTIONS, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_CONNECTIONS, true),
+                        metadataConNode, ERepositoryObjectType.METADATA_CONNECTIONS, recBinNode);
             } else if (parent == metadataSAPConnectionNode) {
-                convert(newProject, factory.getMetadataSAPConnection(newProject, true), metadataSAPConnectionNode,
-                        ERepositoryObjectType.METADATA_SAPCONNECTIONS, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_SAPCONNECTIONS, true),
+                        metadataSAPConnectionNode, ERepositoryObjectType.METADATA_SAPCONNECTIONS, recBinNode);
             } else if (parent == metadataMDMConnectionNode) {
-                convert(newProject, factory.getMetadataMDM(newProject, true), metadataMDMConnectionNode,
-                        ERepositoryObjectType.METADATA_MDMCONNECTION, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_MDMCONNECTION, true),
+                        metadataMDMConnectionNode, ERepositoryObjectType.METADATA_MDMCONNECTION, recBinNode);
             } else if (parent == metadataEbcdicConnectionNode) {
-                convert(newProject, factory.getMetadataEBCDIC(newProject, true), metadataEbcdicConnectionNode,
-                        ERepositoryObjectType.METADATA_FILE_EBCDIC, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_EBCDIC, true),
+                        metadataEbcdicConnectionNode, ERepositoryObjectType.METADATA_FILE_EBCDIC, recBinNode);
             } else if (parent == metadataHL7ConnectionNode) {
-                convert(newProject, factory.getMetadataHL7(newProject, true), metadataHL7ConnectionNode,
-                        ERepositoryObjectType.METADATA_FILE_HL7, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_HL7, true),
+                        metadataHL7ConnectionNode, ERepositoryObjectType.METADATA_FILE_HL7, recBinNode);
             } else if (parent == metadataFTPConnectionNode) {
-                convert(newProject, factory.getMetadataFTP(newProject, true), metadataFTPConnectionNode,
-                        ERepositoryObjectType.METADATA_FILE_FTP, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_FTP, true),
+                        metadataFTPConnectionNode, ERepositoryObjectType.METADATA_FILE_FTP, recBinNode);
             } else if (parent == metadataBRMSConnectionNode) {
-                convert(newProject, factory.getMetadataBRMS(newProject, true), metadataBRMSConnectionNode,
-                        ERepositoryObjectType.METADATA_FILE_BRMS, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_BRMS, true),
+                        metadataBRMSConnectionNode, ERepositoryObjectType.METADATA_FILE_BRMS, recBinNode);
             } else if (parent == sqlPatternNode) {
-                convert(newProject, factory.getMetadataSQLPattern(newProject, true), sqlPatternNode,
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.SQLPATTERNS, true), sqlPatternNode,
                         ERepositoryObjectType.SQLPATTERNS, recBinNode);
             } else if (parent == metadataFileNode) {
-                convert(newProject, factory.getMetadataFileDelimited(newProject, true), metadataFileNode,
-                        ERepositoryObjectType.METADATA_FILE_DELIMITED, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_DELIMITED, true),
+                        metadataFileNode, ERepositoryObjectType.METADATA_FILE_DELIMITED, recBinNode);
             } else if (parent == metadataFilePositionalNode) {
-                convert(newProject, factory.getMetadataFilePositional(newProject, true), metadataFilePositionalNode,
-                        ERepositoryObjectType.METADATA_FILE_POSITIONAL, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_POSITIONAL, true),
+                        metadataFilePositionalNode, ERepositoryObjectType.METADATA_FILE_POSITIONAL, recBinNode);
             } else if (parent == metadataFileRegexpNode) {
-                convert(newProject, factory.getMetadataFileRegexp(newProject, true), metadataFileRegexpNode,
-                        ERepositoryObjectType.METADATA_FILE_REGEXP, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_REGEXP, true),
+                        metadataFileRegexpNode, ERepositoryObjectType.METADATA_FILE_REGEXP, recBinNode);
             } else if (parent == metadataFileXmlNode) {
-                convert(newProject, factory.getMetadataFileXml(newProject, true), metadataFileXmlNode,
-                        ERepositoryObjectType.METADATA_FILE_XML, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_XML, true),
+                        metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML, recBinNode);
             } else if (parent == metadataFileLdifNode) {
-                convert(newProject, factory.getMetadataFileLdif(newProject, true), metadataFileLdifNode,
-                        ERepositoryObjectType.METADATA_FILE_LDIF, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_LDIF, true),
+                        metadataFileLdifNode, ERepositoryObjectType.METADATA_FILE_LDIF, recBinNode);
             } else if (parent == metadataFileExcelNode) {
-                convert(newProject, factory.getMetadataFileExcel(newProject, true), metadataFileExcelNode,
-                        ERepositoryObjectType.METADATA_FILE_EXCEL, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_EXCEL, true),
+                        metadataFileExcelNode, ERepositoryObjectType.METADATA_FILE_EXCEL, recBinNode);
             } else if (parent == metadataSalesforceSchemaNode) {
-                convert(newProject, factory.getMetadataSalesforceSchema(newProject, true), metadataSalesforceSchemaNode,
-                        ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, true),
+                        metadataSalesforceSchemaNode, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, recBinNode);
             } else if (parent == metadataLDAPSchemaNode) {
-                convert(newProject, factory.getMetadataLDAPSchema(newProject, true), metadataLDAPSchemaNode,
-                        ERepositoryObjectType.METADATA_LDAP_SCHEMA, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_LDAP_SCHEMA, true),
+                        metadataLDAPSchemaNode, ERepositoryObjectType.METADATA_LDAP_SCHEMA, recBinNode);
             } else if (parent == metadataGenericSchemaNode) {
-                convert(newProject, factory.getMetadataGenericSchema(newProject, true), metadataGenericSchemaNode,
-                        ERepositoryObjectType.METADATA_GENERIC_SCHEMA, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_GENERIC_SCHEMA, true),
+                        metadataGenericSchemaNode, ERepositoryObjectType.METADATA_GENERIC_SCHEMA, recBinNode);
             } else if (parent == metadataWSDLSchemaNode) {
-                convert(newProject, factory.getMetadataWSDLSchema(newProject, true), metadataWSDLSchemaNode,
-                        ERepositoryObjectType.METADATA_WSDL_SCHEMA, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_WSDL_SCHEMA, true),
+                        metadataWSDLSchemaNode, ERepositoryObjectType.METADATA_WSDL_SCHEMA, recBinNode);
             } else if (parent == metadataRulesNode) { // feature 6484 added
-                convert(newProject, factory.getMetadataRules(newProject, true), metadataRulesNode,
-                        ERepositoryObjectType.METADATA_FILE_RULES, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_RULES, true),
+                        metadataRulesNode, ERepositoryObjectType.METADATA_FILE_RULES, recBinNode);
             } else if (parent == metadataHeaderFooterConnectionNode) { // feature 6484 added
-                convert(newProject, factory.getMetadataHeaderFooter(newProject, true), metadataHeaderFooterConnectionNode,
-                        ERepositoryObjectType.METADATA_HEADER_FOOTER, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_HEADER_FOOTER, true),
+                        metadataHeaderFooterConnectionNode, ERepositoryObjectType.METADATA_HEADER_FOOTER, recBinNode);
             } else if (parent == metadataValidationRulesNode) {
-                convert(newProject, factory.getMetadataValidationRules(newProject, true), metadataValidationRulesNode,
-                        ERepositoryObjectType.METADATA_VALIDATION_RULES, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_VALIDATION_RULES, true),
+                        metadataValidationRulesNode, ERepositoryObjectType.METADATA_VALIDATION_RULES, recBinNode);
             } else if (parent == metadataEDIFactConnectionNode) {
-                convert(newProject, factory.getMetadataEDIFACT(newProject, true), metadataEDIFactConnectionNode,
-                        ERepositoryObjectType.METADATA_EDIFACT, recBinNode);
+                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_EDIFACT, true),
+                        metadataEDIFactConnectionNode, ERepositoryObjectType.METADATA_EDIFACT, recBinNode);
             } else if (parent == refProject) {
                 if (!getMergeRefProject()) {
                     handleReferenced(refProject);
@@ -1412,7 +1450,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private List<IRepositoryViewObject> getValidationRuleObjsFromSchema(String schema) {
         List<IRepositoryViewObject> objs = new ArrayList<IRepositoryViewObject>();
         try {
-            List<IRepositoryViewObject> members = factory.getMetadataValidationRules().getMembers();
+            List<IRepositoryViewObject> members = factory.getMetadata(ERepositoryObjectType.METADATA_VALIDATION_RULES)
+                    .getMembers();
             if (members != null) {
                 for (IRepositoryViewObject member : members) {
                     if (member != null && member.getProperty() != null) {

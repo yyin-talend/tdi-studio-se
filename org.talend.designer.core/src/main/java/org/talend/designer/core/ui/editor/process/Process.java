@@ -2853,7 +2853,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
 
         try {
-            IRepositoryViewObject repositoryObject = factory.getProcess().getMember(getProject().getMasterJobId());
+            IRepositoryViewObject repositoryObject = factory.getMetadata(ERepositoryObjectType.PROCESS).getMember(
+                    getProject().getMasterJobId());
             if (repositoryObject.getRepositoryObjectType() == ERepositoryObjectType.PROCESS) {
                 item = (ProcessItem) repositoryObject.getProperty().getItem();
             }

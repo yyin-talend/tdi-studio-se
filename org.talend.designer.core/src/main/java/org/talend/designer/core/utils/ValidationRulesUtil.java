@@ -87,7 +87,8 @@ public class ValidationRulesUtil {
         if (schemaId != null) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
-                RootContainer<String, IRepositoryViewObject> validationRoot = factory.getMetadataValidationRules();
+                RootContainer<String, IRepositoryViewObject> validationRoot = factory
+                        .getMetadata(ERepositoryObjectType.METADATA_VALIDATION_RULES);
                 Set<String> set = validationRoot.absoluteKeySet();
                 for (String key : set) {
                     IRepositoryViewObject obj = validationRoot.getAbsoluteMember(key);

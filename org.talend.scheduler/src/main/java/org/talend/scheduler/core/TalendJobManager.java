@@ -29,6 +29,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -76,7 +77,7 @@ public class TalendJobManager {
 
             factory = ProxyRepositoryFactory.getInstance();
 
-            processContainer = factory.getProcess();
+            processContainer = factory.getMetadata(ERepositoryObjectType.PROCESS);
 
             processAbsoluteMembers = processContainer.getAbsoluteMembers();
 

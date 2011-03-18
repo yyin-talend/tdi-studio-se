@@ -201,7 +201,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         try {
-            RootContainer<String, IRepositoryViewObject> processContainer = factory.getProcess();
+            RootContainer<String, IRepositoryViewObject> processContainer = factory.getMetadata(ERepositoryObjectType.PROCESS);
             ContentList<String, IRepositoryViewObject> processAbsoluteMembers = processContainer.getAbsoluteMembers();
 
             String currentProcess = part.getTalendEditor().getProcess().getLabel();
@@ -475,9 +475,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                     List<String> list2 = queriesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryQueryNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), getDefaultRepository(elem
-                                .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), false,
-                                repositoryConnectionValueList[0]));
+                        elem.setPropertyValue(
+                                EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
+                                getDefaultRepository(elem.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), false,
+                                        repositoryConnectionValueList[0]));
                     }
                 }
             }
@@ -765,8 +766,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                 if (curParam.getCategory() == section) {
                     if (curParam.getFieldType() != EParameterFieldType.TECHNICAL) {
                         if (curParam.isShow(listParam)) {
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
-                                    this);
+                            AbstractElementPropertySectionController controller = generator.getController(
+                                    curParam.getFieldType(), this);
 
                             if (controller == null) {
                                 continue;
@@ -810,8 +811,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                             // System.out.println("show:" + curParam.getName()+
                             // " field:"+curParam.getField());
                             numInRow++;
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
-                                    this);
+                            AbstractElementPropertySectionController controller = generator.getController(
+                                    curParam.getFieldType(), this);
 
                             if (controller == null) {
                                 continue;
@@ -824,8 +825,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                                     lastControl);
                             lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent()) - lastTime; //$NON-NLS-1$
                             if ((DynamicTabbedPropertySection.DEBUG_TIME) && !getCurrentComponent().equals("Job")) { //$NON-NLS-1$
-                                System.out.println("DTP;create:" + curParam.getFieldType().getName() + ";" + getCurrentComponent() //$NON-NLS-1$ //$NON-NLS-2$
-                                        + ";" + lastTime); //$NON-NLS-1$
+                                System.out
+                                        .println("DTP;create:" + curParam.getFieldType().getName() + ";" + getCurrentComponent() //$NON-NLS-1$ //$NON-NLS-2$
+                                                + ";" + lastTime); //$NON-NLS-1$
                             }
 
                             // System.out.println("param:" + curParam.getName()
@@ -872,8 +874,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                         if (curParam.isShow(listParam)) {
                             // System.out.println("show:" + curParam.getName()+
                             // " field:"+curParam.getField());
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getFieldType(),
-                                    this);
+                            AbstractElementPropertySectionController controller = generator.getController(
+                                    curParam.getFieldType(), this);
 
                             if (controller == null) {
                                 break;
@@ -994,8 +996,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         for (int i = 0; i < listParam.size(); i++) {
             if (listParam.get(i).getCategory() == section) {
                 if (listParam.get(i).isShow(listParam)) {
-                    AbstractElementPropertySectionController controller = generator.getController(listParam.get(i).getFieldType(),
-                            this);
+                    AbstractElementPropertySectionController controller = generator.getController(
+                            listParam.get(i).getFieldType(), this);
                     if (controller != null) {
                         controller.refresh(listParam.get(i), checkErrorsWhenViewRefreshed);
                     }
@@ -1248,7 +1250,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                     if (lastPropertyUsed != null) {
                         if ((lastPropertyUsed.getElement() instanceof org.talend.designer.core.ui.editor.connections.Connection)
                                 && (event.getCommand() instanceof ChangeMetadataCommand)
-                                && (0 != (detail & CommandStack.POST_EXECUTE) || 0 != (detail & CommandStack.POST_REDO) // 
+                                && (0 != (detail & CommandStack.POST_EXECUTE) || 0 != (detail & CommandStack.POST_REDO) //
                                 || 0 != (detail & CommandStack.POST_REDO))) {
                             lastPropertyUsed.addComponents(true);
                             lastPropertyUsed.refresh();

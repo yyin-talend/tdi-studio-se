@@ -52,9 +52,9 @@ import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.TableHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.RepositoryNodeExt;
@@ -245,10 +245,10 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         ProjectManager pManager = ProjectManager.getInstance();
         Container container = null;
         try {
-            container = factory.getMetadataConnection(pManager.getCurrentProject());
+            container = factory.getMetadata(pManager.getCurrentProject(), ERepositoryObjectType.METADATA_CONNECTIONS);
             pManager.retrieveReferencedProjects();
             for (Project p : pManager.getAllReferencedProjects()) {
-                RootContainer rContainer = factory.getMetadataConnection(p);
+                RootContainer rContainer = factory.getMetadata(p, ERepositoryObjectType.METADATA_CONNECTIONS);
                 if (container == null) {
                     container = rContainer;
                 } else if (rContainer != null) {
