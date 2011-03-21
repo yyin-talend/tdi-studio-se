@@ -12,15 +12,18 @@
 // ============================================================================
 package org.talend.designer.xmlmap.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -59,6 +62,8 @@ public class XmlMapUtil {
     public static final String XPATH_NAMESPACE = "xmlns:";
 
     public static final int DEFAULT_OFFSET = 5;
+
+    public static final int DEFAULT_OFFSET_FILTER = 7;
 
     public static final String DEFAULT_NAME_SPACE_PREFIX = "(default)";
 
@@ -438,12 +443,25 @@ public class XmlMapUtil {
 
     }
 
-    public static void findParentsForLoopNode(TreeNode loopNode, List list) {
-        Object container = loopNode.eContainer();
-        if (container instanceof TreeNode) {
-            TreeNode parent = (TreeNode) container;
-            list.add(parent);
-            findParentsForLoopNode(parent, list);
+    public static List<IConnection> getAllNodeLookConnections(AbstractInOutTree abstractTree) {
+        List<? extends TreeNode> nodesList = null;
+        if (abstractTree instanceof InputXmlTree) {
+            nodesList = ((InputXmlTree) abstractTree).getNodes();
+        } else if (abstractTree instanceof OutputXmlTree) {
+            nodesList = ((OutputXmlTree) abstractTree).getNodes();
+        }
+        List<IConnection> connections = new ArrayList<IConnection>();
+        getChildLookupConnections(connections, nodesList);
+        return connections;
+    }
+
+    private static void getChildLookupConnections(List<IConnection> connections, List<? extends TreeNode> nodesList) {
+        for (TreeNode node : nodesList) {
+            EList<LookupConnection> outgoingConnections = node.getLookupOutgoingConnections();
+            connections.addAll(outgoingConnections);
+            if (!node.getChildren().isEmpty()) {
+                getChildLookupConnections(connections, node.getChildren());
+            }
         }
     }
 

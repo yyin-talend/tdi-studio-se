@@ -36,6 +36,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#getNodes <em>Nodes</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#isReject <em>Reject</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#isRejectInnerJoin <em>Reject Inner Join</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#isErrorReject <em>Error Reject</em>}</li>
  * </ul>
  * </p>
  *
@@ -91,6 +92,26 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
      * @ordered
      */
     protected boolean rejectInnerJoin = REJECT_INNER_JOIN_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #isErrorReject() <em>Error Reject</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isErrorReject()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean ERROR_REJECT_EDEFAULT = false;
+
+    /**
+     * The cached value of the '{@link #isErrorReject() <em>Error Reject</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isErrorReject()
+     * @generated
+     * @ordered
+     */
+    protected boolean errorReject = ERROR_REJECT_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -170,6 +191,27 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
      * <!-- end-user-doc -->
      * @generated
      */
+    public boolean isErrorReject() {
+        return errorReject;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setErrorReject(boolean newErrorReject) {
+        boolean oldErrorReject = errorReject;
+        errorReject = newErrorReject;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.OUTPUT_XML_TREE__ERROR_REJECT, oldErrorReject, errorReject));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -193,6 +235,8 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
                 return isReject();
             case XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN:
                 return isRejectInnerJoin();
+            case XmlmapPackage.OUTPUT_XML_TREE__ERROR_REJECT:
+                return isErrorReject();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -216,6 +260,9 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
             case XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN:
                 setRejectInnerJoin((Boolean)newValue);
                 return;
+            case XmlmapPackage.OUTPUT_XML_TREE__ERROR_REJECT:
+                setErrorReject((Boolean)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -237,6 +284,9 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
             case XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN:
                 setRejectInnerJoin(REJECT_INNER_JOIN_EDEFAULT);
                 return;
+            case XmlmapPackage.OUTPUT_XML_TREE__ERROR_REJECT:
+                setErrorReject(ERROR_REJECT_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -255,6 +305,8 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
                 return reject != REJECT_EDEFAULT;
             case XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN:
                 return rejectInnerJoin != REJECT_INNER_JOIN_EDEFAULT;
+            case XmlmapPackage.OUTPUT_XML_TREE__ERROR_REJECT:
+                return errorReject != ERROR_REJECT_EDEFAULT;
         }
         return super.eIsSet(featureID);
     }
@@ -273,6 +325,8 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
         result.append(reject);
         result.append(", rejectInnerJoin: ");
         result.append(rejectInnerJoin);
+        result.append(", errorReject: ");
+        result.append(errorReject);
         result.append(')');
         return result.toString();
     }

@@ -32,6 +32,7 @@ import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
+import org.talend.core.ui.metadata.dialog.CustomTableManager;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.xmlmap.XmlMapComponent;
@@ -66,6 +67,14 @@ public class MapperManager implements ISelectionChangedListener {
     private InputXmlTree selectedInputTree;
 
     private OutputXmlTree oldSelectedOut;
+
+    private boolean isDieOnError;
+
+    public static final String ERROR_REJECT = "ErrorReject";//$NON-NLS-1$
+
+    public static final String ERROR_REJECT_MESSAGE = "errorMessage";
+
+    public static final String ERROR_REJECT_STACK_TRACE = "errorStackTrace";
 
     public MapperManager(XmlMapComponent mapperComponent, XmlMapData copyOfMapData) {
         this.mapperComponent = mapperComponent;
@@ -421,6 +430,16 @@ public class MapperManager implements ISelectionChangedListener {
                     break;
                 }
             }
+            if (outputTree.isErrorReject()) {
+                for (IMetadataColumn column : table.getListColumns()) {
+                    if (ERROR_REJECT_MESSAGE.equals(column.getLabel()) || ERROR_REJECT_STACK_TRACE.equals(column.getLabel())) {
+                        column.setCustom(true);
+                    }
+                }
+
+                CustomTableManager.addCustomManagementToTable(mapperUI.getTabFolderEditors().getOutputMetaEditorView(), true);
+            }
+
             if (table != null) {
                 MetadataTableEditor editor = new MetadataTableEditor(table, table.getLabel());
                 outputMetaEditorView.setMetadataTableEditor(editor);
@@ -536,5 +555,13 @@ public class MapperManager implements ISelectionChangedListener {
             refreshOutputTreeSchemaEditor(outputTree);
         }
 
+    }
+
+    public boolean isDieOnError() {
+        return isDieOnError;
+    }
+
+    public void setDieOnError(boolean isDieOnError) {
+        this.isDieOnError = isDieOnError;
     }
 }

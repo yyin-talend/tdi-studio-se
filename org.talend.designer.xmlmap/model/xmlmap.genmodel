@@ -38,6 +38,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference xmlmap.ecore#//OutputXmlTree/nodes"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputXmlTree/reject"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputXmlTree/rejectInnerJoin"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputXmlTree/errorReject"/>
     </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//VarTable">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//VarTable/name"/>

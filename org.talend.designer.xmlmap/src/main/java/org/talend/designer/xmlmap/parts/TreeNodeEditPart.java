@@ -154,7 +154,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         } else {
             figure = getFigure();
         }
-        if (connection instanceof LookupConnectionEditPart) {
+        if (connection instanceof LookupConnectionEditPart || connection instanceof FilterConnectionEditPart) {
             return new LookupColumnAnchor(figure, connection, this);
         }
         return new ConnectionColumnAnchor(figure, connection, this);

@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#getNodes <em>Nodes</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isReject <em>Reject</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isRejectInnerJoin <em>Reject Inner Join</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isErrorReject <em>Error Reject</em>}</li>
  * </ul>
  * </p>
  *
@@ -96,5 +97,31 @@ public interface OutputXmlTree extends AbstractInOutTree {
      * @generated
      */
     void setRejectInnerJoin(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Error Reject</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Error Reject</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Error Reject</em>' attribute.
+     * @see #setErrorReject(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getOutputXmlTree_ErrorReject()
+     * @model
+     * @generated
+     */
+    boolean isErrorReject();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isErrorReject <em>Error Reject</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Error Reject</em>' attribute.
+     * @see #isErrorReject()
+     * @generated
+     */
+    void setErrorReject(boolean value);
 
 } // OutputXmlTree

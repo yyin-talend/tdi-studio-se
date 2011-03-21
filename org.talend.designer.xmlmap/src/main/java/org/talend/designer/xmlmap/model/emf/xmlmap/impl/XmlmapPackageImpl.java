@@ -361,6 +361,15 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getOutputXmlTree_ErrorReject() {
+        return (EAttribute)outputXmlTreeEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getVarTable() {
         return varTableEClass;
     }
@@ -797,6 +806,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEReference(outputXmlTreeEClass, OUTPUT_XML_TREE__NODES);
         createEAttribute(outputXmlTreeEClass, OUTPUT_XML_TREE__REJECT);
         createEAttribute(outputXmlTreeEClass, OUTPUT_XML_TREE__REJECT_INNER_JOIN);
+        createEAttribute(outputXmlTreeEClass, OUTPUT_XML_TREE__ERROR_REJECT);
 
         varTableEClass = createEClass(VAR_TABLE);
         createEAttribute(varTableEClass, VAR_TABLE__NAME);
@@ -916,6 +926,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEReference(getOutputXmlTree_Nodes(), this.getOutputTreeNode(), null, "nodes", null, 0, -1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getOutputXmlTree_Reject(), ecorePackage.getEBoolean(), "reject", null, 0, 1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getOutputXmlTree_RejectInnerJoin(), ecorePackage.getEBoolean(), "rejectInnerJoin", null, 0, 1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getOutputXmlTree_ErrorReject(), ecorePackage.getEBoolean(), "errorReject", null, 0, 1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(varTableEClass, VarTable.class, "VarTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getVarTable_Name(), ecorePackage.getEString(), "name", null, 0, 1, VarTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

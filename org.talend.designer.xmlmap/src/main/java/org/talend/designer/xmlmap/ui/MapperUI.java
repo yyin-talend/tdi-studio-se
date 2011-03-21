@@ -36,9 +36,11 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -217,6 +219,11 @@ public class MapperUI {
                     }
                 }
             }
+
+            IElementParameter elementParameter = mapperComponent.getElementParameter("DIE_ON_ERROR");
+            if (elementParameter != null) {
+                elementParameter.setValue(mapperManager.isDieOnError());
+            }
         }
         if (response == SWT.OK) {
             closeWithoutPrompt = true;
@@ -230,11 +237,12 @@ public class MapperUI {
     public void prepareClosing(int response) {
 
         List<IMetadataTable> newMetadatas = new ArrayList<IMetadataTable>();
-        // if press ok or apply , use copyOfMapData to check the metadata list
         EList<OutputXmlTree> outputTrees = null;
         if (response == SWT.OK || response == SWT.APPLICATION_MODAL) {
+            // if press ok or apply , use copyOfMapData to check the metadata list
             outputTrees = copyOfMapData.getOutputTrees();
         } else {
+            // if press cancel , use the original mapData
             outputTrees = ((XmlMapData) mapperComponent.getExternalEmfData()).getOutputTrees();
         }
 
@@ -253,6 +261,8 @@ public class MapperUI {
                 // create a new metadata if needed
                 MetadataTable metadataTable = new MetadataTable();
                 metadataTable.setTableName(outputTree.getName());
+                mapperComponent.getProcess().addUniqueConnectionName(outputTree.getName());
+                List<IMetadataColumn> listColumns = new ArrayList<IMetadataColumn>();
                 for (OutputTreeNode treeNode : outputTree.getNodes()) {
                     MetadataColumn column = new MetadataColumn();
                     column.setLabel(treeNode.getName());
@@ -260,7 +270,9 @@ public class MapperUI {
                     column.setTalendType(treeNode.getType());
                     column.setNullable(treeNode.isNullable());
                     column.setPattern(treeNode.getPattern());
+                    listColumns.add(column);
                 }
+                metadataTable.setListColumns(listColumns);
                 newMetadatas.add(metadataTable);
             }
         }

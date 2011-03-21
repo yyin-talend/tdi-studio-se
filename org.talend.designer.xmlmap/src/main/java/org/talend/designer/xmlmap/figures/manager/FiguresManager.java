@@ -110,14 +110,20 @@ public class FiguresManager implements ISelectionChangedListener {
         }
 
         if (currentSelectedOutputTree != null) {
-
-            outputRemoveEnable = true;
-            int index = outputTrees.indexOf(((OutputXmlTreeEditPart) currentSelectedOutputTree).getModel());
+            OutputXmlTree model = (OutputXmlTree) ((OutputXmlTreeEditPart) currentSelectedOutputTree).getModel();
+            if (!model.isErrorReject()) {
+                outputRemoveEnable = true;
+            }
+            int index = outputTrees.indexOf(model);
             if (index != -1 && index != 0) {
-                outputMoveUp = true;
+                if (index != 1 || !outputTrees.get(0).isErrorReject()) {
+                    outputMoveUp = true;
+                }
             }
             if (index != -1 && index != outputTrees.size() - 1) {
-                outputMoveDown = true;
+                if (!model.isErrorReject()) {
+                    outputMoveDown = true;
+                }
             }
         }
         outputToolBar.setRemoveButtonEnable(outputRemoveEnable);

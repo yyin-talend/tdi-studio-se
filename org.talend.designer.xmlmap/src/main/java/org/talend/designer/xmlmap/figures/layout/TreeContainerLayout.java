@@ -24,9 +24,10 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
 import org.talend.designer.xmlmap.figures.InputXmlTreeFigure;
+import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
-import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * DOC talend class global comment. Detailled comment
@@ -78,11 +79,8 @@ public class TreeContainerLayout extends ToolbarLayout {
             if (child instanceof InputXmlTreeFigure) {
                 InputXmlTree inputModel = ((InputXmlTreeFigure) child).getInputXmlTree();
                 EList<TreeNode> nodeList = inputModel.getNodes();
-                List<LookupConnection> outConns = new ArrayList<LookupConnection>();
-                for (TreeNode node : nodeList) {
-                    EList<LookupConnection> outgoingConnections = node.getLookupOutgoingConnections();
-                    outConns.addAll(outgoingConnections);
-                }
+                List<IConnection> outConns = new ArrayList<IConnection>();
+                outConns.addAll(XmlMapUtil.getAllNodeLookConnections(inputModel));
                 if (connSize < outConns.size()) {
                     connSize = outConns.size();
                 }

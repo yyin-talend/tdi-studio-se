@@ -26,6 +26,7 @@ import org.talend.designer.xmlmap.figures.layout.TreeToolBarLayout;
 import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsManager;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.ui.resource.ImageInfo;
 import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
@@ -75,6 +76,15 @@ public class TreeToolBarContainer extends Figure {
             expressionFilterButton = new ExpressionFilterButton(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_FILTER_ICON));
             expressionFilterButton.setSelected(abstractTree.isActivateExpressionFilter());
             this.add(expressionFilterButton);
+
+            boolean isErrorReject = false;
+            if (abstractTree instanceof OutputXmlTree) {
+                isErrorReject = ((OutputXmlTree) abstractTree).isErrorReject();
+            }
+            if (isErrorReject) {
+                condensedButton.setEnabled(false);
+                expressionFilterButton.setEnabled(false);
+            }
         }
 
         Image image = null;

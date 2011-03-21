@@ -23,6 +23,7 @@ import org.talend.designer.xmlmap.dnd.TransferedObject;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -245,9 +246,22 @@ public class CreateNodeAndConnectionCommand extends Command {
                 }
             }
 
-        } else if (targetEditPart instanceof InputXmlTreeEditPart) {
+        } else if (targetEditPart instanceof InputXmlTreeEditPart || targetEditPart instanceof OutputXmlTreeEditPart) {
+            AbstractInOutTree treeModel = (AbstractInOutTree) targetEditPart.getModel();
+            String expression = treeModel.getExpressionFilter();
+            if (expression == null) {
+                expression = XmlMapUtil.convertToExpression(((TreeNode) sourceNode).getXpath());
+            } else {
+                expression = expression + " " + XmlMapUtil.convertToExpression(((TreeNode) sourceNode).getXpath());
+            }
+            treeModel.setExpressionFilter(expression);
+            FilterConnection connection = XmlmapFactory.eINSTANCE.createFilterConnection();
+            sourceNode.getFilterOutGoingConnections().add(connection);
+            treeModel.getFilterIncomingConnections().add(connection);
 
-        } else if (targetEditPart instanceof OutputXmlTreeEditPart) {
+            connection.setSource(sourceNode);
+            connection.setTarget(treeModel);
+            xmlMapData.getConnections().add(connection);
 
         }
 

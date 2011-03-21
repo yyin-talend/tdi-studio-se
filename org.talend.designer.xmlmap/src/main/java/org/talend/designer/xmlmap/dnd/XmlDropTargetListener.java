@@ -24,7 +24,7 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
-import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
+import org.talend.designer.xmlmap.figures.treesettings.FilterTextArea;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -56,9 +56,10 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
     @Override
     protected Request createTargetRequest() {
         CreateNodeConnectionRequest request = new CreateNodeConnectionRequest(getTargetEditPart());
-        if (targetFigure instanceof ExpressionFigure || targetFigure instanceof FilterContainer) {
+        if (targetFigure instanceof ExpressionFigure || targetFigure instanceof FilterTextArea) {
             request.setDropType(CreateNodeConnectionRequest.DROP_EXPRESSION);
         }
+
         request.setFactory(new NewNodeCreationFactory(TemplateTransfer.getInstance().getObject()));
         return request;
     }
@@ -188,8 +189,27 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
                 event.detail = DND.DROP_NONE;
             }
         } else if (getTargetEditPart() instanceof InputXmlTreeEditPart) {
-            if (transferedObj.getType() != TransferdType.INPUT || !(targetFigure instanceof FilterContainer)) {
+            if (transferedObj.getType() != TransferdType.INPUT || !(targetFigure instanceof FilterTextArea)) {
                 event.detail = DND.DROP_NONE;
+                return;
+            }
+            InputXmlTree targetTree = (InputXmlTree) ((InputXmlTreeEditPart) getTargetEditPart()).getModel();
+            for (Object obj : transferedObj.getToTransfer()) {
+                if (obj instanceof TreeNodeEditPart) {
+                    TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) ((TreeNodeEditPart) obj).getModel());
+                    if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
+                        InputXmlTree sourceTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
+                        if (sourceTree.eContainer() instanceof XmlMapData) {
+                            XmlMapData xmlMapData = (XmlMapData) sourceTree.eContainer();
+                            int sourceIndex = xmlMapData.getInputTrees().indexOf(sourceTree);
+                            int targetIndex = xmlMapData.getInputTrees().indexOf(targetTree);
+                            if (sourceIndex > targetIndex) {
+                                event.detail = DND.DROP_NONE;
+                                return;
+                            }
+                        }
+                    }
+                }
             }
 
         } else if (getTargetEditPart() instanceof OutputXmlTreeEditPart) {

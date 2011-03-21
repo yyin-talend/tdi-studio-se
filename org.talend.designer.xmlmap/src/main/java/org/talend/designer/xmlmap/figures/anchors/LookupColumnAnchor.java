@@ -10,12 +10,10 @@ import org.eclipse.swt.SWT;
 import org.talend.designer.xmlmap.figures.TreeNodeFigure;
 import org.talend.designer.xmlmap.figures.XmlTreeBranch;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
-import org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.parts.BaseConnectionEditPart;
 import org.talend.designer.xmlmap.parts.LookupConnectionEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
-import org.talend.designer.xmlmap.parts.XmlMapDataEditPart;
 
 public class LookupColumnAnchor extends ChopboxAnchor {
 
@@ -37,12 +35,8 @@ public class LookupColumnAnchor extends ChopboxAnchor {
         if (connectionPart == null) {
             return getOwner().getBounds().getLeft();
         }
-        XmlMapDataEditPart mapDataEditPart = treeNodePart.getMapDataEditPart();
 
         AbstractInOutTreeEditPart inOutTreeEditPart = treeNodePart.getInOutTreeEditPart(treeNodePart);
-
-        Object model = treeNodePart.getModel();
-        INodeConnection connection = (INodeConnection) connectionPart.getModel();
 
         Point ref = null;
         if (inOutTreeEditPart != null && ((AbstractInOutTree) inOutTreeEditPart.getModel()).isMinimized()) {

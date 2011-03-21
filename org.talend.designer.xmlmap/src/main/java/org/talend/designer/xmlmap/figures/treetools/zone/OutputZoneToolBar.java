@@ -14,6 +14,7 @@ package org.talend.designer.xmlmap.figures.treetools.zone;
 
 import java.util.List;
 
+import org.eclipse.draw2d.Clickable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
@@ -24,7 +25,14 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.designer.xmlmap.XmlMapComponent;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.layout.ZoneToolBarLayout;
@@ -55,11 +63,15 @@ public class OutputZoneToolBar extends Figure {
 
     private XmlMapGraphicViewer graphicViewer;
 
+    private XmlMapComponent mapperComponent;
+
     private Image restorImage = ImageProviderMapper.getImage(ImageInfo.RESTORE_ICON);
 
     private Image miniImage = ImageProviderMapper.getImage(ImageInfo.MINIMIZE_ICON);
 
     private boolean minimized = true;
+
+    private boolean isDieOnError = false;
 
     public OutputZoneToolBar(XmlMapDataEditPart mapDataPart) {
         this.mapDataPart = mapDataPart;
@@ -67,6 +79,7 @@ public class OutputZoneToolBar extends Figure {
 
         if (mapDataPart.getViewer() instanceof XmlMapGraphicViewer) {
             this.graphicViewer = (XmlMapGraphicViewer) mapDataPart.getViewer();
+            mapperComponent = this.graphicViewer.getMapperManager().getMapperComponent();
         }
 
         ZoneToolBarLayout manager = new ZoneToolBarLayout();
@@ -111,6 +124,43 @@ public class OutputZoneToolBar extends Figure {
             min_size.setEnabled(false);
         }
 
+        if (mapperComponent != null) {
+            IElementParameter elementParameter = mapperComponent.getElementParameter("DIE_ON_ERROR");
+            if (elementParameter != null && elementParameter.getValue() != null) {
+                isDieOnError = Boolean.valueOf(elementParameter.getValue().toString());
+            }
+            // /////////////////////////////// test
+            isDieOnError = true;
+            // ///////////////////////////////
+            graphicViewer.getMapperManager().setDieOnError(isDieOnError);
+        }
+
+        if (isDieOnError) {
+            image = ImageProvider.getImage(EImage.CHECKED_ICON);
+        } else {
+            image = ImageProvider.getImage(EImage.UNCHECKED_ICON);
+        }
+        die_on_error = new DieOnErrorButton(image);
+        this.add(die_on_error);
+
+    }
+
+    private void removeMetadataTableByName(String name) {
+        if (name == null) {
+            return;
+        }
+        IMetadataTable found = null;
+        if (mapperComponent != null && mapperComponent.getMetadataList() != null) {
+            for (IMetadataTable table : mapperComponent.getMetadataList()) {
+                if (name.equals(table.getTableName())) {
+                    found = table;
+                    break;
+                }
+            }
+            if (found != null) {
+                mapperComponent.getMetadataList().remove(found);
+            }
+        }
     }
 
     public void setRemoveButtonEnable(boolean enable) {
@@ -153,8 +203,8 @@ public class OutputZoneToolBar extends Figure {
                             MetadataTable metadataTable = new MetadataTable();
                             metadataTable.setLabel(outputName);
                             metadataTable.setTableName(outputName);
-                            manager.getMapperComponent().getMetadataList().add(metadataTable);
-                            manager.getMapperComponent().getProcess().addUniqueConnectionName(outputName);
+                            mapperComponent.getMetadataList().add(metadataTable);
+                            mapperComponent.getProcess().addUniqueConnectionName(outputName);
 
                             int indexOf = mapDataPart.getModelChildren().indexOf(createOutputXmlTree);
                             if (indexOf != -1) {
@@ -198,6 +248,7 @@ public class OutputZoneToolBar extends Figure {
                             XmlMapComponent mapperComponent = manager.getMapperComponent();
 
                             mapperComponent.getProcess().removeUniqueConnectionName(outputTree.getName());
+                            removeMetadataTableByName(outputTree.getName());
                             for (OutputTreeNode treeNode : outputTree.getNodes()) {
                                 XmlMapUtil.detachConnectionsSouce(treeNode, mapData);
                             }
@@ -346,11 +397,115 @@ public class OutputZoneToolBar extends Figure {
 
         public DieOnErrorButton(Image image) {
             super(image);
+            setText("Die on Error");
+            setStyle(Clickable.STYLE_TOGGLE);
         }
 
         @Override
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
+            if (graphicViewer != null) {
+                CommandStack commandStack = mapDataPart.getViewer().getEditDomain().getCommandStack();
+                commandStack.execute(new Command() {
+
+                    @Override
+                    public void execute() {
+                        isDieOnError = !isDieOnError;
+                        graphicViewer.getMapperManager().setDieOnError(isDieOnError);
+                        Image image = null;
+                        if (isDieOnError) {
+                            image = ImageProvider.getImage(EImage.CHECKED_ICON);
+                            if (!mapData.getOutputTrees().isEmpty()) {
+                                OutputXmlTree outputTree = mapData.getOutputTrees().get(0);
+                                if (outputTree.isErrorReject()) {
+                                    // mapperComponent.getMetadataList().add(metadataTable);
+                                    mapData.getOutputTrees().remove(0);
+                                    mapperComponent.getProcess().removeUniqueConnectionName(outputTree.getName());
+                                    removeMetadataTableByName(outputTree.getName());
+                                }
+                            }
+                        } else {
+                            image = ImageProvider.getImage(EImage.UNCHECKED_ICON);
+                            boolean hasRejectTable = false;
+                            if (!mapData.getOutputTrees().isEmpty()) {
+                                OutputXmlTree outputTree = mapData.getOutputTrees().get(0);
+                                if (outputTree.isErrorReject()) {
+                                    hasRejectTable = true;
+                                }
+                            }
+                            if (!hasRejectTable) {
+                                String baseName = MapperManager.ERROR_REJECT;
+
+                                IProcess process = mapperComponent.getProcess();
+                                String tableName = baseName;
+                                if (!process.checkValidConnectionName(baseName) && process instanceof IProcess2) {
+                                    final String uniqueName = ((IProcess2) process).generateUniqueConnectionName("row", baseName);
+                                    tableName = uniqueName;
+                                    ((IProcess2) process).addUniqueConnectionName(uniqueName);
+                                } else if (process instanceof IProcess2) {
+                                    tableName = baseName;
+                                    ((IProcess2) process).addUniqueConnectionName(baseName);
+                                }
+                                OutputXmlTree outputXmlTree = XmlmapFactory.eINSTANCE.createOutputXmlTree();
+                                outputXmlTree.setErrorReject(true);
+                                outputXmlTree.setName(tableName);
+                                mapData.getOutputTrees().add(0, outputXmlTree);
+
+                                MetadataTable metadataTable = new MetadataTable();
+                                metadataTable.setLabel(tableName);
+                                metadataTable.setTableName(tableName);
+
+                                MetadataColumn errorMessageCol = new MetadataColumn();
+                                errorMessageCol.setLabel(MapperManager.ERROR_REJECT_MESSAGE);
+                                errorMessageCol.setTalendType(CorePlugin.getDefault().getPreferenceStore()
+                                        .getString(MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
+                                errorMessageCol.setNullable(true);
+                                errorMessageCol.setOriginalDbColumnName(MapperManager.ERROR_REJECT_MESSAGE);
+                                errorMessageCol.setReadOnly(true);
+                                errorMessageCol.setCustom(true);
+                                metadataTable.getListColumns().add(errorMessageCol);
+
+                                MetadataColumn errorStackTrace = new MetadataColumn();
+                                errorStackTrace.setLabel(MapperManager.ERROR_REJECT_STACK_TRACE);
+                                errorStackTrace.setTalendType(CorePlugin.getDefault().getPreferenceStore()
+                                        .getString(MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
+                                errorStackTrace.setNullable(true);
+                                errorStackTrace.setOriginalDbColumnName(MapperManager.ERROR_REJECT_STACK_TRACE);
+                                errorStackTrace.setReadOnly(true);
+                                errorStackTrace.setCustom(true);
+                                metadataTable.getListColumns().add(errorStackTrace);
+                                mapperComponent.getMetadataList().add(metadataTable);
+
+                                OutputTreeNode errorMessageNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                                errorMessageNode.setName(MapperManager.ERROR_REJECT_MESSAGE);
+                                errorMessageNode.setType(errorMessageCol.getTalendType());
+                                errorMessageNode.setNullable(true);
+                                outputXmlTree.getNodes().add(errorMessageNode);
+
+                                OutputTreeNode errorStackTraceNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                                errorStackTraceNode.setName(MapperManager.ERROR_REJECT_STACK_TRACE);
+                                errorStackTraceNode.setType(errorStackTrace.getTalendType());
+                                errorStackTraceNode.setNullable(true);
+                                outputXmlTree.getNodes().add(errorStackTraceNode);
+
+                                int indexOf = mapDataPart.getModelChildren().indexOf(outputXmlTree);
+                                if (indexOf != -1) {
+                                    mapDataPart.getViewer().select((EditPart) mapDataPart.getChildren().get(indexOf));
+                                }
+
+                                move_down.setEnabled(false);
+                                remove_btn.setEnabled(false);
+
+                                if (!min_size.isEnabled()) {
+                                    min_size.setEnabled(true);
+                                }
+                            }
+                        }
+
+                        setImage(image);
+                    }
+                });
+            }
         }
     }
 }

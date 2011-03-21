@@ -90,6 +90,7 @@ public class MapperMain {
                         XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
                     }
                     treesToRemove.add(inputTree);
+                    XmlMapUtil.detachFilterSource(inputTree, copyOfMapData);
                 }
             }
 

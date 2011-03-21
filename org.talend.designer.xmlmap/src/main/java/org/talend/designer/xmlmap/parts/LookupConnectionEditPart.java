@@ -18,10 +18,9 @@ import java.util.List;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.EditPart;
 import org.talend.designer.xmlmap.figures.routers.LookupConnectionRouter;
+import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -70,17 +69,12 @@ public class LookupConnectionEditPart extends BaseConnectionEditPart {
             return 0;
         }
         TreeNode sourceTreeNode = (TreeNode) model.getSource();
-        List<LookupConnection> outConns = new ArrayList<LookupConnection>();
-        EObject eobj = sourceTreeNode.eContainer();
-        if (eobj instanceof InputXmlTree) {
-            InputXmlTree inputTree = (InputXmlTree) eobj;
-            EList<TreeNode> nodeList = inputTree.getNodes();
-            for (TreeNode node : nodeList) {
-                EList<LookupConnection> outgoingConnections = node.getLookupOutgoingConnections();
-                outConns.addAll(outgoingConnections);
-            }
+        List<IConnection> outConns = new ArrayList<IConnection>();
+        TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(sourceTreeNode);
+        if (inputTreeNodeRoot != null) {
+            InputXmlTree inputTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
+            outConns.addAll(XmlMapUtil.getAllNodeLookConnections(inputTree));
         }
-        // EList<LookupConnection> outgoingConnections = sourceTreeNode.getLookupOutgoingConnections();
         int indexOf = outConns.indexOf(model);
         if (indexOf != -1) {
             return -(indexOf + 1) * XmlMapUtil.DEFAULT_OFFSET;

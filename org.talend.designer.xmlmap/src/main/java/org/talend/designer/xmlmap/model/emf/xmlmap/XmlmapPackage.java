@@ -409,13 +409,22 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_XML_TREE__REJECT_INNER_JOIN = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 2;
 
     /**
+     * The feature id for the '<em><b>Error Reject</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_XML_TREE__ERROR_REJECT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 3;
+
+    /**
      * The number of structural features of the '<em>Output Xml Tree</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int OUTPUT_XML_TREE_FEATURE_COUNT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 3;
+    int OUTPUT_XML_TREE_FEATURE_COUNT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 4;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarTableImpl <em>Var Table</em>}' class.
@@ -1332,6 +1341,17 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getOutputXmlTree_RejectInnerJoin();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isErrorReject <em>Error Reject</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Error Reject</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isErrorReject()
+     * @see #getOutputXmlTree()
+     * @generated
+     */
+    EAttribute getOutputXmlTree_ErrorReject();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarTable <em>Var Table</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1947,6 +1967,14 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EAttribute OUTPUT_XML_TREE__REJECT_INNER_JOIN = eINSTANCE.getOutputXmlTree_RejectInnerJoin();
+
+        /**
+         * The meta object literal for the '<em><b>Error Reject</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute OUTPUT_XML_TREE__ERROR_REJECT = eINSTANCE.getOutputXmlTree_ErrorReject();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarTableImpl <em>Var Table</em>}' class.

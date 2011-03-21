@@ -23,7 +23,6 @@ import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.parts.BaseConnectionEditPart;
-import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.LookupConnectionEditPart;
 
 /**
@@ -42,19 +41,10 @@ public class FilterConnectionAnchor extends ChopboxAnchor {
     }
 
     public Point getReferencePoint() {
-        boolean loctionRight = false;
-        if (treePart instanceof InputXmlTreeEditPart) {
-            loctionRight = true;
-        }
-
         Point ref = null;
 
         if (((AbstractInOutTree) treePart.getModel()).isMinimized()) {
-            if (loctionRight) {
-                ref = treePart.getFigure().getBounds().getRight();
-            } else {
-                ref = treePart.getFigure().getBounds().getLeft();
-            }
+            ref = treePart.getFigure().getBounds().getLeft();
 
         } else {
             if (getOwner() == null) {
@@ -63,27 +53,16 @@ public class FilterConnectionAnchor extends ChopboxAnchor {
                 AbstractInOutTreeFigure treeFigure = (AbstractInOutTreeFigure) getOwner();
                 FilterContainer filterContainer = treeFigure.getFilterContainer();
                 if (filterContainer != null) {
-                    if (loctionRight) {
-                        ref = filterContainer.getBounds().getRight();
-                    } else {
-                        ref = filterContainer.getBounds().getLeft();
-                    }
+                    ref = filterContainer.getBounds().getLeft();
                 }
             }
 
         }
         if (ref != null) {
             IFigure treeFigure = treePart.getFigure();
-            if (loctionRight) {
-                int avialableX = treeFigure.getBounds().getRight().x;
-                if (ref.x > avialableX) {
-                    ref.x = avialableX;
-                }
-            } else {
-                int avialableX = treeFigure.getBounds().x;
-                if (ref.x < avialableX) {
-                    ref.x = avialableX;
-                }
+            int avialableX = treeFigure.getBounds().x;
+            if (ref.x < avialableX) {
+                ref.x = avialableX;
             }
         }
 
@@ -98,11 +77,7 @@ public class FilterConnectionAnchor extends ChopboxAnchor {
                     if (!(baseConnectionPart instanceof LookupConnectionEditPart)) {
                         ref.y = 0;
                     }
-                    if (loctionRight) {
-                        baseConnectionPart.setSourceConcained(false);
-                    } else {
-                        baseConnectionPart.setTargetContained(false);
-                    }
+                    baseConnectionPart.setTargetContained(false);
                     if (baseConnectionPart.isDOTStyle()) {
                         connFigure.setLineStyle(SWT.LINE_DASHDOTDOT);
                     } else {
@@ -112,22 +87,14 @@ public class FilterConnectionAnchor extends ChopboxAnchor {
                     if (!(baseConnectionPart instanceof LookupConnectionEditPart)) {
                         ref.y = avilableSize.y;
                     }
-                    if (loctionRight) {
-                        baseConnectionPart.setSourceConcained(false);
-                    } else {
-                        baseConnectionPart.setTargetContained(false);
-                    }
+                    baseConnectionPart.setTargetContained(false);
                     if (baseConnectionPart.isDOTStyle()) {
                         connFigure.setLineStyle(SWT.LINE_DASHDOTDOT);
                     } else {
                         connFigure.setLineStyle(SWT.LINE_SOLID);
                     }
                 } else {
-                    if (loctionRight) {
-                        baseConnectionPart.setSourceConcained(true);
-                    } else {
-                        baseConnectionPart.setTargetContained(true);
-                    }
+                    baseConnectionPart.setTargetContained(true);
                     if (!baseConnectionPart.isDOTStyle()) {
                         connFigure.setLineStyle(SWT.LINE_SOLID);
                     }
