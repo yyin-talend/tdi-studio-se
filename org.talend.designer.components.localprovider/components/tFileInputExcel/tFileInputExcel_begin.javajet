@@ -258,7 +258,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				  if (<%=bReadRealValue%> && jxl.CellType.NUMBER == cell_<%=cid%>.getType()){				   
 				  	temp_row_<%= cid %>[i] = String.valueOf(((jxl.NumberCell)cell_<%=cid%>).getValue());
 					String content = cell_<%=cid%>.getContents();
-					if(content!=null && content.indexOf(".")==-1 && (temp_row_<%= cid %>[i].indexOf("E")==-1)) {
+<%
+String currentLanguage = System.getProperty("user.language");
+String decimalSep = ".";
+if("FR".equalsIgnoreCase(currentLanguage)) {
+	decimalSep = ",";
+}		
+%>
+					if(content!=null && content.indexOf("<%=decimalSep%>")==-1 && (temp_row_<%= cid %>[i].indexOf("E")==-1)) {
 						temp_row_<%=cid%>[i] = content;
 					} else {
     					String literal = temp_row_<%=cid%>[i];
