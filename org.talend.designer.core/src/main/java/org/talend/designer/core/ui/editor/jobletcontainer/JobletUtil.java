@@ -208,7 +208,14 @@ public class JobletUtil {
         for (IElementParameter elementPara : elementParas) {
             if (elementPara.getName() != null && !elementPara.getName().equals("UNIQUE_NAME")) {
                 IElementParameter cloneElement = cloneNode.getElementParameter(elementPara.getName());
-                cloneElement.setValue(elementPara.getValue());
+                Object paValue = elementPara.getValue();
+                if (paValue instanceof List) {
+                    List list = new ArrayList();
+                    list.addAll((List) paValue);
+                    cloneElement.setValue(list);
+                } else {
+                    cloneElement.setValue(elementPara.getValue());
+                }
 
                 if (lock == null) {
                     cloneElement.setReadOnly(true);
