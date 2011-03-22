@@ -1051,6 +1051,9 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             enableLineLimitButton.setEnabled(runnable);
         if (lineLimitText != null && !lineLimitText.isDisposed())
             lineLimitText.setEnabled(runnable);
+        if (wrapButton != null && !wrapButton.isDisposed()) {
+            wrapButton.setEnabled(runnable);
+        }
 
     }
 
