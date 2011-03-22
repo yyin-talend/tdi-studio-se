@@ -839,7 +839,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         if (item instanceof FolderItem) {
             itemType = getFolderContentType((FolderItem) item);
             // MOD qiongli 2011-1-21 filter TDQ root folder.
-            if (itemType != null && itemType.isDQItemType()) {
+            if (itemType != null && itemType.isDQItemType() && !itemType.isSharedType()) {
                 return;
             }// ~
             if (item.getState().isDeleted()) {

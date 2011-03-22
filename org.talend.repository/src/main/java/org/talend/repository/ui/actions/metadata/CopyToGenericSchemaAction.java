@@ -26,6 +26,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.repository.ui.actions.metadata.CopyToGenericSchemaHelper;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
@@ -99,7 +100,9 @@ public class CopyToGenericSchemaAction extends AContextualAction {
         if (genericNode == null) {
             return;
         }
-
+        if (ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
+            return;
+        }
         switch (node.getType()) {
         case REPOSITORY_ELEMENT:
             isAllowedRepositoryElement = true;

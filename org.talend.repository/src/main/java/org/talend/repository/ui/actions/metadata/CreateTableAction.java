@@ -174,6 +174,11 @@ public class CreateTableAction extends AbstractCreateTableAction {
                     setEnabled(false);
                     return;
                 }
+                if ((factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED)
+                        || (factory.getStatus(node.getObject()) == ERepositoryStatus.LOCK_BY_OTHER)) {
+                    setEnabled(false);
+                    return;
+                }
 
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                 if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)
