@@ -88,7 +88,7 @@ try{
 								continue;
 							}
 						} catch(com.jcraft.jsch.SftpException se_noSuchFile) {
-							if(!(se_noSuchFile.id == 2)) {
+							if(se_noSuchFile.id != 2) {
 								throw se_noSuchFile;
 							}
 						}
