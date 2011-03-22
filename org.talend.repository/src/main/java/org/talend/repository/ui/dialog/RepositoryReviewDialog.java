@@ -1752,12 +1752,19 @@ class DatabaseTypeFilter extends ViewerFilter {
      */
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
+        return isSupportNode((RepositoryNode) element, filterItems);
+    }
+
+    private boolean isSupportNode(IRepositoryNode node, String[] items) {
         if (filterItems == null) {
             return true;
         }
-        List<String> asList = Arrays.asList(filterItems);
-        RepositoryNode node = (RepositoryNode) element;
-        if (node.getObject() != null) {
+        List<String> asList = Arrays.asList(items);
+        if (node.getObject() == null) {
+            if (node.getType() == ENodeType.REFERENCED_PROJECT || node.getType() == ENodeType.SYSTEM_FOLDER) {
+                return true;
+            }
+        } else {
             Item item = node.getObject().getProperty().getItem();
             if (item instanceof DatabaseConnectionItem) {
                 DatabaseConnectionItem connItem = (DatabaseConnectionItem) item;
@@ -1784,7 +1791,6 @@ class DatabaseTypeFilter extends ViewerFilter {
                 return true;
             }
         }
-
         return false;
     }
 
