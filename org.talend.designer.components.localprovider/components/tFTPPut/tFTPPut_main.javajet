@@ -80,19 +80,20 @@ try{
 						<%}else if(("resume").equals(sftpoverwrite)){%>
 						int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.RESUME;
 						<%}%>
-						try{
-							<%if(("overwrite").equals(sftpoverwrite) || ("append").equals(sftpoverwrite)){%> 
-							try {
-								if((c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null) && (c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getUId() == 0)){
-									System.err.println("File permission denied: "+<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName());
-									continue;
-								}
-							} catch(com.jcraft.jsch.SftpException se_noSuchFile) {
-								if(!(se_noSuchFile.id == 2)) {
-									throw se_noSuchFile;
-								}
+						
+						<%if(("overwrite").equals(sftpoverwrite) || ("append").equals(sftpoverwrite)){%> 
+						try {
+							if((c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null) && (c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getUId() == 0)){
+								System.err.println("File permission denied: "+<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName());
+								continue;
 							}
-							<%}%>
+						} catch(com.jcraft.jsch.SftpException se_noSuchFile) {
+							if(!(se_noSuchFile.id == 2)) {
+								throw se_noSuchFile;
+							}
+						}
+						<%}%>
+						try{
 		    				c_<%=cid%>.put(listings<%=cid %>[m<%=cid %>].getAbsolutePath(), <%=remotedir%>, monitor<%=cid%>, mode<%=cid%>);
 		    				 
 		    				// add info to list will return
