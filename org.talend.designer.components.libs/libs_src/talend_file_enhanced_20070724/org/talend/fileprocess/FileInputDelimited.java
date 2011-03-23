@@ -93,7 +93,8 @@ public class FileInputDelimited {
             footer = 0;
         }
         if (random != 0 && limit != 0) {
-            this.delimitedDataReader = new TOSDelimitedReader(is, encoding, fieldSeparator, rowSeparator, skipEmptyRow);
+            CopyInputStreamUtil util = new CopyInputStreamUtil(is);
+            this.delimitedDataReader = new TOSDelimitedReader(util.getCopy(), encoding, fieldSeparator, rowSeparator, skipEmptyRow);
             this.delimitedDataReader.setSplitRecord(splitRecord);
 
             this.delimitedDataReader.skipHeaders(header);
@@ -107,7 +108,7 @@ public class FileInputDelimited {
             } else {
                 int count = (int) this.delimitedDataReader.getAvailableRowCount(footer);
                 this.delimitedDataReader.close();
-                this.delimitedDataReader = new TOSDelimitedReader(is, encoding, fieldSeparator, rowSeparator, skipEmptyRow);
+                this.delimitedDataReader = new TOSDelimitedReader(util.getCopy(), encoding, fieldSeparator, rowSeparator, skipEmptyRow);
                 this.delimitedDataReader.setSplitRecord(splitRecord);
 
                 this.delimitedDataReader.skipHeaders(header);
