@@ -288,8 +288,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         IViewSite viewSite = getViewSite();
         viewer.setInput(viewSite);
         getSite().setSelectionProvider(viewer);
-
         addFilters();
+        /*need to expand so that all folderItem will be created*/
+        viewer.expandAll();
+        viewer.collapseAll();
+        refresh();
 
         // This only tree listener aim is to change open/close icons on folders :
         viewer.addTreeListener(new ITreeViewerListener() {
