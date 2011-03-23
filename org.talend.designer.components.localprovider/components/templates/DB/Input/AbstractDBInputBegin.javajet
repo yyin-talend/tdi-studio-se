@@ -78,6 +78,9 @@ imports="
 		    for(int i_<%=cid %>=1; i_<%=cid %><<%=metadata.getListColumns().size()%>; i_<%=cid %>++) {
 		    	listSchema_<%=cid%>.add(rsmd_<%=cid%>.getColumnName(i_<%=cid %>).toUpperCase());
 			}
+			
+			int fixedColumnCount_<%=cid%> = 0;
+			
             for (int i = <%=metadata.getListColumns().size()%>; i <= rsmd_<%=cid%>.getColumnCount(); i++) {
                 if (!(listSchema_<%=cid%>.contains(rsmd_<%=cid%>.getColumnName(i).toUpperCase()) )) {
                 	routines.system.DynamicMetadata dcm_<%=cid%>=new routines.system.DynamicMetadata();
@@ -92,7 +95,9 @@ imports="
                 	dcm_<%=cid%>.setSourceType(DynamicMetadata.sourceTypes.database);
                 	dcm_<%=cid%>.setColumnPosition(i);
                 	dcg_<%=cid%>.metadatas.add(dcm_<%=cid%>);
-                }
+                } else {
+					fixedColumnCount_<%=cid%>++;
+				}
             }
 <%
 		    }
@@ -156,7 +161,7 @@ imports="
 								} else if(("Dynamic").equals(typeToGenerate)) {
 %>
                                   <%=firstConnName%>.<%=column.getLabel()%>=dcg_<%=cid%>;
-                                  routines.system.DynamicUtils.readColumnsFromDatabase(<%=firstConnName%>.<%=column.getLabel()%>, rs_<%=cid%>);
+                                  routines.system.DynamicUtils.readColumnsFromDatabase(<%=firstConnName%>.<%=column.getLabel()%>, rs_<%=cid%>, fixedColumnCount_<%=cid%>);
 <%
 								} else if(typeToGenerate.equals("Geometry")) {
 %>
