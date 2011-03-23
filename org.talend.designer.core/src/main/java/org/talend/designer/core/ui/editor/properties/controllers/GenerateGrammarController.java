@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -30,7 +30,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionEvent;
@@ -42,10 +41,8 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -53,10 +50,11 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ITDQItemService;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -71,24 +69,17 @@ import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * Generate grammar java source files and store them to routines for tStandardizeRow. see feature 18851
  * 
- * DOC tychu  class global comment. Detailled comment
+ * DOC ytao class global comment. Detailled comment
  */
 public class GenerateGrammarController extends AbstractElementPropertySectionController {
     
-    private static final String GRAMMARFOLDER = "grammar";
-    
-    // private static final String PACK = "routines";
-    
-    private static final String TMPDIR = System.getProperty("java.io.tmpdir");
-    
-    private static final String SEPARATOR = System.getProperty("file.separator");
-
     public GenerateGrammarController(IDynamicProperty dp) {
         super(dp);
     }
@@ -129,7 +120,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
     }
 
     /**
-     * create a button and add a listener
+     * create a button and a listener
      */
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, 
@@ -192,80 +183,59 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
 
     
     /**
-     * create an instance of GrammerEngine
-     * 
-     * DOC tychu GenerateGramarController class global comment. Detailled comment
-     */
-//    class UserGrammarEngine extends org.talend.dataquality.parser.util.GrammarEngine{
-//        
-//    }
-    
-    /**
      * Generate java source file
      * 
-     * DOC tychu Comment method "generateJavaFile".
+     * DOC ytao Comment method "generateJavaFile".
      */
     private void generateJavaFile(){
         Node node = (Node) elem;
         
-        String jobId = node.getProcess().getName();
-        String cid = node.getUniqueName();
+        final String PROJECT_NAME = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel().toLowerCase();
+        final String JOB_NAME =  node.getProcess().getName().toLowerCase();
+        final String COMPONENT_NAME = node.getUniqueName().toLowerCase();
         
-        List<Map<String, String>> rules = (List<Map<String, String>>) node.getPropertyValue("RULE_TABLE");
+        String javaClassName = StringUtils.capitalize(PROJECT_NAME) + StringUtils.capitalize(JOB_NAME) + StringUtils.capitalize(COMPONENT_NAME);
+        ITDQItemService service = (ITDQItemService) GlobalServiceRegister.getDefault().getService(ITDQItemService.class);
+        File fileCreated = service.fileCreatedInRoutines(node, javaClassName);
         
-        if (rules == null || rules.isEmpty()) {
-            MessageDialog.openError(Display.getDefault().getActiveShell(), "a", "b");
-            return;
-        }
-        // create an instance of UserGrammarEngine
-        //UserGrammarEngine gEngine = new UserGrammarEngine();
-        
-        for (Map<String, String> rule : rules) {
-           // gEngine.addMatchRule(rule.get("RULE_NAME"), org.talend.dataquality.parser.match.Matcher.MatchType.get(rule.get("RULE_TYPE")), rule.get("RULE_VALUE"));
-        }
-        // active rules
-        String sGrammarFolder = getTemporaryFolder();
-//        gEngine.preprocess();
-//        gEngine.prepareGrammarFiles(sGrammarFolder);
-//        gEngine.generateGrammarCode(sGrammarFolder, sGrammarFolder);
-        
-        // add java source to routine
-        IPath path = new Path(jobId);
-        //gEngine.writeRoutineCode("Engine_" + cid, sGrammarFolder, sGrammarFolder);
+        if (fileCreated == null) 
+               return;
         
         try {
-            RoutineItem returnItem = createRoutine(path, cid, new File(sGrammarFolder + SEPARATOR + cid + ".java"), jobId);
-            syncRoutine(returnItem, true, jobId);
+            RoutineItem returnItem = persistInRoutine(new Path(JOB_NAME), fileCreated, javaClassName);
+            addReferenceJavaFile(returnItem, true);
             refreshProject();
-        } catch (IllegalArgumentException e) {
-            // nothing need to do for the duplicate label, there don't overwrite it.
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
         
         // remove temporary files of grammar
-        FilesUtils.removeFolder(new File(sGrammarFolder), true);
+        FilesUtils.removeFolder(new File(fileCreated.getParent()), true);
     }
     
     /**
-     * create java file in routines
+     * Persist item in routines
      * 
-     * DOC tychu Comment method "createRoutine".
+     * DOC ytao Comment method "persistInRoutine".
      * @param path, sub folder named with job id
      * @param label, java file name without suffix
      * @param initFile, File handler
      * @param name, job id as package name
      * @return
      */
-    private RoutineItem createRoutine(IPath subFolder, String label, File initFile, String name) {
+    private RoutineItem persistInRoutine(IPath inFolder, File fileToFill, String label) {
+        
         // item property to be set
         Property property = PropertiesFactory.eINSTANCE.createProperty();
         property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
         property.setVersion(VersionUtils.DEFAULT_VERSION);
-        property.setStatusCode(""); //$NON-NLS-1$
+        property.setStatusCode("");        
+        // Label must match pattern ^[a-zA-Z\_]+[a-zA-Z0-9\_]*$
+        // Must be composed with JAVA_PORJECT_NAME + JOB NAME + COMPONENT NAME,
+        // since all projects share with the same routines
         property.setLabel(label);
         
-        // add property to item
+        // add properties to item
         RoutineItem routineItem = PropertiesFactory.eINSTANCE.createRoutineItem();
         routineItem.setProperty(property);
         
@@ -274,7 +244,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         InputStream stream = null;
         
         try {
-            stream = new FileInputStream(initFile);
+            stream = new FileInputStream(fileToFill);
             byte[] bytes = new byte[stream.available()];
             stream.read(bytes);
             byteArray.setInnerContent(bytes);
@@ -285,24 +255,26 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
                 try {
                     stream.close();
                 } catch (IOException e) {
-                    //
+                    e.printStackTrace();
                 }
             }
         }
+        routineItem.setContent(byteArray);
         
         // persist item in routines
-        routineItem.setContent(byteArray);
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
 
         try {
             property.setId(repositoryFactory.getNextId());
-            repositoryFactory.createParentFoldersRecursively(ERepositoryObjectType.getItemType(routineItem), subFolder);
-            repositoryFactory.create(routineItem, subFolder);
-        } catch (PersistenceException e) {
+            // create folder with name job id: routines/JOBID (seems from TOS)
+            repositoryFactory.createParentFoldersRecursively(ERepositoryObjectType.getItemType(routineItem), inFolder);
+            // add the item
+            repositoryFactory.create(routineItem, inFolder);
+        } catch (Exception e){
             ExceptionHandler.process(e);
         }
         
-        // add required jar used to complie java file
+        // add required jar packages used to compile java file
         if (routineItem.eResource() != null) {
             addRequiredLib(routineItem);
         }
@@ -310,22 +282,28 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         return routineItem;
     }
     
-    private IFile syncRoutine(RoutineItem routineItem, boolean copyToTemp, String name) throws SystemException {
+    /**
+     * Store file to file system. Actually, it locates src/routines/xx
+     * DOC ytao Comment method "addReferenceJavaFile".
+     * @param routineItem
+     * @param copyToTemp
+     * @return
+     * @throws SystemException
+     */
+    private IFile addReferenceJavaFile(RoutineItem routineItem, boolean copyToTemp) throws SystemException {
         FileOutputStream fos = null;
         
         try {
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                    .getProject();
-
+            String label = routineItem.getProperty().getLabel();
+            
             IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$ //$NON-NLS-2$
-                    + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
+                    + label + JavaUtils.JAVA_EXTENSION);
 
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
-                routineContent = chanageRoutinesPackage(routineContent, name);
-                String label = routineItem.getProperty().getLabel();
+                
                 if (!label.equals(ITalendSynchronizer.TEMPLATE)) {
                     routineContent = routineContent.replaceAll(ITalendSynchronizer.TEMPLATE, label);
                     File f = file.getLocation().toFile();
@@ -338,9 +316,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
                 file.refreshLocal(1, null);
             }
             return file;
-        } catch (CoreException e) {
-            throw new SystemException(e);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SystemException(e);
         } finally {
             try {
@@ -355,7 +331,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
     /**
      * refresh the project
      * 
-     * DOC tychu Comment method "refreshProject".
+     * DOC ytao Comment method "refreshProject".
      */
     private void refreshProject() {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -370,11 +346,11 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
     /**
      * add required libraries to class path
      * 
-     * DOC tychu Comment method "addRequiredLib".
+     * DOC ytao Comment method "addRequiredLib".
      * @param routineItem
      */
     private void addRequiredLib(RoutineItem routineItem){
-        List<IMPORTType> wsdlNeedImport = new ArrayList<IMPORTType>();
+        List<IMPORTType> listRequiredJar = new ArrayList<IMPORTType>();
         String javaLabPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath() + "/";
         
         IMPORTType type1 = ComponentFactory.eINSTANCE.createIMPORTType();
@@ -382,16 +358,16 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         type1.setUrlPath(javaLabPath + "antlr-3.3.jar");
         type1.setREQUIRED(true);
         type1.setNAME(routineItem.getProperty().getLabel());
-        wsdlNeedImport.add(type1);
+        listRequiredJar.add(type1);
         
         IMPORTType type2 = ComponentFactory.eINSTANCE.createIMPORTType();
         type2.setMODULE("org.talend.dataquality.parser.jar");
         type2.setUrlPath(javaLabPath + "org.talend.dataquality.parser.jar");
         type2.setREQUIRED(true);
         type2.setNAME(routineItem.getProperty().getLabel());
-        wsdlNeedImport.add(type2);
+        listRequiredJar.add(type2);
         
-        routineItem.getImports().addAll(wsdlNeedImport);
+        routineItem.getImports().addAll(listRequiredJar);
     
         try {
             File url1 = new File(javaLabPath + "antlr-3.3.jar");
@@ -400,38 +376,9 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
             CorePlugin.getDefault().getLibrariesService().deployLibrary(url1.toURL());
             CorePlugin.getDefault().getLibrariesService().deployLibrary(url2.toURL());
             CorePlugin.getDefault().getProxyRepositoryFactory().save(routineItem);
-            
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
         CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
     }
-
-    private String chanageRoutinesPackage(String routineContent, String name) {
-        if (!name.equals("")) {
-            String oldPackage = JavaUtils.JAVA_ROUTINES_DIRECTORY + "." + name;
-            String newPackage = JavaUtils.JAVA_ROUTINES_DIRECTORY;
-            routineContent = routineContent.replaceAll(oldPackage.trim(), newPackage.trim());
-        }
-        return routineContent;
-    }
-    
-   
-    /**
-     * Get the path (if not existing, create it) to store 
-     * temporary grammar rule files and grammar java files
-     *  
-     * DOC tychu Comment method "getTemporaryFolder".
-     * @return
-     */
-    private String getTemporaryFolder(){
-        String grammarfolder = TMPDIR + SEPARATOR + GRAMMARFOLDER;
-        File file = new File(grammarfolder);
-        
-        if (!file.exists())
-            file.mkdirs();
-        
-        return grammarfolder;
-    }
-
 }
