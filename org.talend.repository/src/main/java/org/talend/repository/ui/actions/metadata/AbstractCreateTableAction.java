@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.actions.metadata;
 
+import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -20,6 +22,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
@@ -32,6 +36,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.database.conn.DatabaseConnStrUtil;
 import org.talend.core.database.conn.template.EDatabaseConnTemplate;
 import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.MetadataFillFactory;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -49,6 +54,8 @@ import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnect
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
+import org.talend.core.model.metadata.builder.util.MetadataConnectionUtils;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
@@ -88,8 +95,11 @@ import org.talend.repository.ui.wizards.metadata.table.files.FileLdifTableWizard
 import org.talend.repository.ui.wizards.metadata.table.files.FilePositionalTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileRegexpTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileXmlTableWizard;
+import orgomg.cwm.objectmodel.core.Package;
 import orgomg.cwm.resource.record.RecordFactory;
 import orgomg.cwm.resource.record.RecordFile;
+import orgomg.cwm.resource.relational.Catalog;
+import orgomg.cwm.resource.relational.Schema;
 
 /**
  * DOC smallet class global comment. Detailed comment <br/>
@@ -804,53 +814,59 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                             }
 
                             if (creation) {
-                                boolean check = managerConnection.check(metadataConnection);
-                                List<String> itemTableName = null;
-                                // modified by nma, open schema editor even failed to connect
-                                boolean noTableExistInDB = false;
-                                boolean skipStep = true;
-                                try {
-                                    if (check != false) {
-                                        itemTableName = ExtractMetaDataFromDataBase
-                                                .returnTablesFormConnection(metadataConnection);
-                                    }
-                                    noTableExistInDB = noTableExistInDB(check, itemTableName);
-                                } catch (Exception e) {
-                                    ExceptionHandler.process(e);
-                                    skipStep = false;
-                                }
+                                managerConnection.check(metadataConnection);
 
-                                if (noTableExistInDB) {
-                                    MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                                            Messages.getString("AbstractCreateTableAction.retrieveForbidden"),
-                                            Messages.getString("AbstractCreateTableAction.retrieveForbidden.Message"));
-                                } else {
-                                    if (skipStep) {
-                                        skipStep = checkConnectStatus(check, itemTableName);
-                                    }
-                                    DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(),
-                                            creation, node.getObject(), metadataTable, getExistingNames(), forceReadOnly,
-                                            managerConnection, metadataConnection);
-                                    databaseTableWizard.setSkipStep(skipStep);
-                                    UIJob uijob = new UIJob("") { //$NON-NLS-1$
+                                // fill catalog/schema to connection
+                                List<Catalog> catalogList = ConnectionHelper.getCatalogs(connection);
+                                List<Schema> schemaList = ConnectionHelper.getSchema(connection);
+                                if (catalogList.isEmpty() && schemaList.isEmpty()) {
+                                    IMetadataConnection newMetadataConn = MetadataFillFactory.getDBInstance().fillUIParams(
+                                            connection);
+                                    connection = (DatabaseConnection) MetadataFillFactory.getDBInstance().fillUIConnParams(
+                                            newMetadataConn, connection);
+                                    java.sql.Connection sqlConn = (java.sql.Connection) MetadataConnectionUtils.checkConnection(
+                                            newMetadataConn).getObject();
 
-                                        // modified by wzhang. when connection failed,error message display.
-                                        public IStatus runInUIThread(IProgressMonitor monitor) {
-                                            if (!managerConnection.getIsValide()) {
-                                                MessageDialog.openError(null,
-                                                        Messages.getString("AbstractCreateTableAction.connError"), //$NON-NLS-1$
-                                                        Messages.getString("AbstractCreateTableAction.errorMessage")); //$NON-NLS-1$
-                                            }
-                                            return Status.OK_STATUS;
+                                    if (sqlConn != null) {
+                                        try {
+                                            MetadataFillFactory.getDBInstance().fillCatalogs(connection, sqlConn.getMetaData(),
+                                                    MetadataConnectionUtils.getPackageFilter(connection, sqlConn.getMetaData()));
+                                            MetadataFillFactory.getDBInstance().fillSchemas(connection, sqlConn.getMetaData(),
+                                                    MetadataConnectionUtils.getPackageFilter(connection, sqlConn.getMetaData()));
+                                        } catch (SQLException e) {
+                                            ExceptionHandler.process(e);
                                         }
-
-                                    };
-                                    WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench()
-                                            .getActiveWorkbenchWindow().getShell(), databaseTableWizard);
-                                    wizardDialog.setBlockOnOpen(true);
-                                    uijob.schedule(1300);
-                                    handleWizard(node, wizardDialog);
+                                    }
                                 }
+                                EList<Package> dp = connection.getDataPackage();
+                                Collection<Package> newDataPackage = EcoreUtil.copyAll(dp);
+                                ConnectionHelper.addPackages(newDataPackage,
+                                        (DatabaseConnection) metadataConnection.getCurrentConnection());
+
+                                ExtractMetaDataUtils.metadataCon = metadataConnection;
+                                // when open,set use synonyms false.
+                                ExtractMetaDataUtils.setUseAllSynonyms(false);
+                                DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(),
+                                        creation, node.getObject(), metadataTable, getExistingNames(), forceReadOnly,
+                                        managerConnection, metadataConnection);
+                                UIJob uijob = new UIJob("") { //$NON-NLS-1$
+
+                                    // modified by wzhang. when connection failed,error message display.
+                                    public IStatus runInUIThread(IProgressMonitor monitor) {
+                                        if (!managerConnection.getIsValide()) {
+                                            MessageDialog.openError(null,
+                                                    Messages.getString("AbstractCreateTableAction.connError"), //$NON-NLS-1$
+                                                    Messages.getString("AbstractCreateTableAction.errorMessage")); //$NON-NLS-1$
+                                        }
+                                        return Status.OK_STATUS;
+                                    }
+
+                                };
+                                WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                        .getShell(), databaseTableWizard);
+                                wizardDialog.setBlockOnOpen(true);
+                                uijob.schedule(1300);
+                                handleWizard(node, wizardDialog);
                             } else {
                                 // added for bug 16595
                                 // no need connect to database when double click one schema.
@@ -863,8 +879,8 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                                 WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                                         .getShell(), databaseTableWizard);
                                 handleWizard(node, wizardDialog);
-
                             }
+
                         }
                     }
                 };
