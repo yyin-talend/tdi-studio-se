@@ -53,7 +53,10 @@ String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+r
 String[] commandLineWindows = new String[] {"<command>"};
 String[] commandLineUnix = new String[] {"<command>"};
 String[] commandLine = new String[] {"<command>"};
-String childJob = ElementParameterParser.getValue(node,"__PROCESS__");;
+String childJob = ElementParameterParser.getValue(node,"__PROCESS__");
+// feature 19312
+java.util.List<String> jobList = new java.util.ArrayList<String>();
+String jobStr;
 %>  
 java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
 <%
@@ -68,8 +71,17 @@ try {
       commandLine = tmp;
     }
   }else{
-    commandLine = ProcessorUtilities.getMainCommand(process,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);  
-  }
+ 	  // feature 19312
+ 	  if(process!=null && !process.equals("")){
+	      String[] childJobss = process.split(";");
+	      jobList.clear();
+	      for (int i=0;i<childJobss.length;i++) {
+		      String childJoba = childJobss[i];
+		      commandLine = ProcessorUtilities.getMainCommand(childJoba ,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+		      jobList.add(commandLine[0]);
+            }
+        } 
+   }
 } catch (ProcessorException e) {
 }
 
@@ -165,33 +177,38 @@ for (int i=0; i<contextParams.size(); i++) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 if (!useIndependentProcess){//AAAAAAAAAAAA
+// feature 19312
+for(int i=0;i<jobList.size();i++){
+   	 childJob = jobList.get(i);
+     jobStr = childJob.toString().replace('.', '_');
 %>
-  <%=childJob %> childJob_<%=cid %> = new <%=childJob %>();
+  <%=childJob %> childJob_<%=jobStr %>_<%=cid %> = new <%=childJob %>();
 <%if(originalContext){%>  
-  childJob_<%=cid %>.parentContextMap = parentContextMap_<%=cid %>;
+  childJob_<%=jobStr %>_<%=cid %>.parentContextMap = parentContextMap_<%=cid %>;
 <%}%>  
-  String[][] childReturn_<%=cid %> = childJob_<%=cid %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
+  String[][] childReturn_<%=jobStr %>_<%=cid %> = childJob_<%=jobStr %>_<%=cid %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
   <%
   if (childJob != null) {
     if (isRunInMultiThread ){
     %>
-      ((java.util.Map)threadLocal.get()).put("errorCode", childJob_<%=cid %>.getErrorCode());
+      ((java.util.Map)threadLocal.get()).put("errorCode", childJob_<%=jobStr %>_<%=cid %>.getErrorCode());
     <%}else {%>
-      errorCode = childJob_<%=cid %>.getErrorCode();
+      errorCode = childJob_<%=jobStr %>_<%=cid %>.getErrorCode();
     <%}%>
             
-    if(childJob_<%=cid %>.getErrorCode() == null){
-      globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getStatus() != null && ("failure").equals(childJob_<%=cid %>.getStatus()) ? 1 : 0);
+    if(childJob_<%=jobStr %>_<%=cid %>.getErrorCode() == null){
+      globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=jobStr %>_<%=cid %>.getStatus() != null && ("failure").equals(childJob_<%=jobStr %>_<%=cid %>.getStatus()) ? 1 : 0);
     }else{
-      globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getErrorCode());
+      globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=jobStr %>_<%=cid %>.getErrorCode());
     }  
-    globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE", childJob_<%=cid %>.getExceptionStackTrace());
+    globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE", childJob_<%=jobStr %>_<%=cid %>.getExceptionStackTrace());
   
     <%if (dieOnError) { %> 
-      if (childJob_<%=cid %>.getErrorCode() != null || ("failure").equals(childJob_<%=cid %>.getStatus())) {
+      if (childJob_<%=jobStr %>_<%=cid %>.getErrorCode() != null || ("failure").equals(childJob_<%=jobStr %>_<%=cid %>.getStatus())) {
         throw new RuntimeException("Child job running failed");
       }
     <%}
+    }
   }%>
   <%
   String firstConnName = null; 
@@ -237,7 +254,6 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
       {
     <%
     }
-    
   }//b  
   
 } else { //AAAAAAAAAAAA
