@@ -116,10 +116,16 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
             OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
             if (XmlMapUtil.DOCUMENT.equals(model.getType())) {
                 event.detail = DND.DROP_NONE;
+                return;
             }
 
             if ((NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType()))
                     && !(targetFigure instanceof ExpressionFigure)) {
+                event.detail = DND.DROP_NONE;
+                return;
+            }
+
+            if (targetFigure instanceof ExpressionFigure && !model.getChildren().isEmpty()) {
                 event.detail = DND.DROP_NONE;
             }
 
@@ -179,10 +185,12 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
 
             if (XmlMapUtil.DOCUMENT.equals(model.getType())) {
                 event.detail = DND.DROP_NONE;
+                return;
             }
 
             if (!model.getChildren().isEmpty()) {
                 event.detail = DND.DROP_NONE;
+                return;
             }
         } else if (getTargetEditPart() instanceof VarNodeEditPart) {
             if (transferedObj.getType() == TransferdType.OUTPUT || transferedObj.getType() == TransferdType.VAR) {
