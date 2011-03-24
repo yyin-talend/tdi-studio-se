@@ -117,6 +117,9 @@ java.io.File originalFile_<%=cid %> = new java.io.File(originalFileName_<%=cid %
 
 String fileName_<%=cid %> = originalFileName_<%=cid %>;
 java.io.File file_<%=cid %> = new java.io.File(fileName_<%=cid %>); 
+if(!file_<%=cid %>.isAbsolute()) {
+	file_<%=cid %> = file_<%=cid %>.getCanonicalFile();
+}
 
 <%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
 //create directory only if not exists
