@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.ProcessUtils;
@@ -57,6 +58,7 @@ import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
+import org.talend.repository.model.ResourceModelUtils;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -201,7 +203,15 @@ public abstract class JobScriptsManager {
     }
 
     private String getTmpFolderPath() {
+        Project project = ProjectManager.getInstance().getCurrentProject();
+        IProject physProject;
         String tmpFolder = System.getProperty("user.dir"); //$NON-NLS-1$
+        try {
+            physProject = ResourceModelUtils.getProject(project);
+            tmpFolder = physProject.getFolder("temp").getLocation().toPortableString(); //$NON-NLS-1$
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
         tmpFolder = tmpFolder + "/talendExporter"; //$NON-NLS-1$
         return tmpFolder;
     }
