@@ -479,6 +479,7 @@ public class ComboController extends AbstractElementPropertySectionController {
     @Override
     public void refresh(IElementParameter param, boolean check) {
         String paramName = param.getName();
+        boolean isPatternList = StringUtils.equals(paramName, "PATTERN_LIST");
         CCombo combo = (CCombo) hashCurControls.get(paramName);
 
         if (combo == null || combo.isDisposed()) {
@@ -501,7 +502,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                 if (propertyParam != null) {
                     dbtype = propertyParam.getValue().toString();
                 }
-                if (StringUtils.equals(paramName, "PATTERN_LIST")) { //$NON-NLS-1$
+                if (isPatternList) { //$NON-NLS-1$
                     String[][][] tdqPatterns = service.retrieveTDQPatterns();
                     if (tdqPatterns != null) {
                         Map<String, String> patternMap = retrievePattern(dbtype, tdqPatterns);
@@ -533,7 +534,12 @@ public class ComboController extends AbstractElementPropertySectionController {
             if (!Arrays.equals(paramItems, comboItems)) {
                 combo.setItems(paramItems);
             }
-            combo.setText(strValue);
+            // bug 19837
+            if (isPatternList) { 
+            	combo.setText("".equals(strValue) ? (String)value : strValue);
+            } else {
+                combo.setText(strValue);
+            }
             combo.setVisible(true);
         }
 
