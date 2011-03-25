@@ -72,8 +72,7 @@ public class ProjectSettingDialog {
             String category = node.getCategory();
             if (category == null) {
                 if (node.getPage() instanceof CustomComponentSettingPage) {
-                    if (PluginChecker.isTIS() && PluginChecker.isSVNProviderPluginLoaded()
-                            && !ProjectManager.getInstance().getCurrentProject().isLocal()) {
+                    if (PluginChecker.isSVNProviderPluginLoaded() && !ProjectManager.getInstance().getCurrentProject().isLocal()) {
                         manager.addToRoot(node);
                     } else {
                         continue;

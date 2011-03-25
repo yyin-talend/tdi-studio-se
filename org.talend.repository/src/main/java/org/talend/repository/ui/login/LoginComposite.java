@@ -247,7 +247,7 @@ public class LoginComposite extends Composite {
         createLayout.marginHeight = 0;
         createLayout.marginWidth = 0;
         formBody.setLayout(createLayout);
-        if (!PluginChecker.isTIS()) {
+        if (!PluginChecker.isSVNProviderPluginLoaded()) {
             createTosRepositoryArea(formBody);
             createSeparator(formBody);
             createTosActionArea(formBody);
@@ -272,7 +272,7 @@ public class LoginComposite extends Composite {
             // warningLabel.setVisible(true);
             restartBut.setVisible(false);
         }
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
             manageViewer.getControl().setEnabled(true);
             manageProjectsButton.setEnabled(true);
         }
@@ -285,7 +285,7 @@ public class LoginComposite extends Composite {
     }
 
     private void displayPasswordComposite() {
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
             if (getConnection() != null) {
                 boolean local = RepositoryConstants.REPOSITORY_LOCAL_ID.equals(getConnection().getRepositoryId());
                 if (local) {
@@ -352,15 +352,15 @@ public class LoginComposite extends Composite {
     }
 
     private ManageItem[] getManageElements() {
-        boolean tis = PluginChecker.isTIS();
-        boolean isTisRemote = isTisRemote();
+        boolean tis = PluginChecker.isSVNProviderPluginLoaded();
+        boolean isSVNProviderPluginLoadedRemote = isSVNProviderPluginLoadedRemote();
         boolean hasConnection = (getConnection() != null);
         List<ManageItem> toReturn = new ArrayList<ManageItem>();
 
         IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
         boolean usesDemoProjects = service.getBrandingConfiguration().isUseDemoProjects();
 
-        if (hasConnection && (!tis || !isTisRemote)) { // demo for Tos and Tis_Local
+        if (hasConnection && (!tis || !isSVNProviderPluginLoadedRemote)) { // demo for Tos and Tis_Local
             if (usesDemoProjects) {
                 toReturn.add(new ManageItem(ImportDemoProjectAction.getInstance().getToolTipText()) {
 
@@ -581,7 +581,7 @@ public class LoginComposite extends Composite {
         projectViewer.setLabelProvider(new ProjectLabelProvider());
 
         FormData data = new FormData();
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
             data.top = new FormAttachment(0, 12);
         } else {
             data.top = new FormAttachment(0, 10);
@@ -608,7 +608,7 @@ public class LoginComposite extends Composite {
 
         // open button
         data = new FormData();
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
             data.top = new FormAttachment(projectViewer.getControl(), HORIZONTAL_SPACE);
 
         } else {
@@ -849,9 +849,9 @@ public class LoginComposite extends Composite {
         super.dispose();
     }
 
-    private boolean isTisRemote() {
+    private boolean isSVNProviderPluginLoadedRemote() {
         boolean isRemote = false;
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
             StructuredSelection selection = (StructuredSelection) connectionsViewer.getSelection();
             Object firstElement = selection.getFirstElement();
             if (firstElement instanceof ConnectionBean) {
@@ -873,7 +873,7 @@ public class LoginComposite extends Composite {
 
         if (getConnection() != null) {
             final boolean localConn = getConnection().getRepositoryId().equals(RepositoryConstants.REPOSITORY_LOCAL_ID);
-            boolean visible = PluginChecker.isTIS() && !localConn;
+            boolean visible = PluginChecker.isSVNProviderPluginLoaded() && !localConn;
             if (passwordLabel != null) {
                 passwordLabel.setVisible(visible);
             }
@@ -1018,7 +1018,7 @@ public class LoginComposite extends Composite {
             }
             setRepositoryContextInContext();
         }
-        boolean tisRemote = isTisRemote();
+        boolean tisRemote = isSVNProviderPluginLoadedRemote();
         svnBranchLabel.setVisible(tisRemote);
         branchesViewer.getControl().setVisible(tisRemote);
         // updateButtons();
@@ -1108,7 +1108,7 @@ public class LoginComposite extends Composite {
                 }
             });
         }
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
 
             ModifyListener modifyListener = new ModifyListener() {
 
@@ -1397,7 +1397,7 @@ public class LoginComposite extends Composite {
             if (fillProjectsBtn != null) {
                 fillProjectsBtn.setEnabled(true);
             }
-            if (PluginChecker.isTIS() && branchesViewer != null) {
+            if (PluginChecker.isSVNProviderPluginLoaded() && branchesViewer != null) {
                 branchesViewer.getControl().setEnabled(true);
             }
             // fillProjectsBtn.setEnabled(true);
@@ -1405,7 +1405,7 @@ public class LoginComposite extends Composite {
             // warningLabel.setVisible(false);
             restartBut.setVisible(false);
         }
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
             manageViewer.getControl().setEnabled(true);
             manageProjectsButton.setEnabled(true);
         }

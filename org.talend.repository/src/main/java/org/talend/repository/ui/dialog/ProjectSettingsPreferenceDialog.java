@@ -221,7 +221,7 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
     private void unloadProject() {
         Project currentProject = ProjectManager.getInstance().getCurrentProject();
         final ProxyRepositoryFactory instance = ProxyRepositoryFactory.getInstance();
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
             try {
                 if (!instance.isLocalConnectionProvider()) {
                     instance.getRepositoryFactoryFromProvider().reloadProject(currentProject);

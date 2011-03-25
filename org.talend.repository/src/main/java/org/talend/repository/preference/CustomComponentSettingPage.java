@@ -366,8 +366,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
         }
         IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
 
-        if (PluginChecker.isTIS() && PluginChecker.isSVNProviderPluginLoaded()
-                && (!sharedAdded.isEmpty() || !backAdded.isEmpty())) {
+        if (PluginChecker.isSVNProviderPluginLoaded() && (!sharedAdded.isEmpty() || !backAdded.isEmpty())) {
             ISVNProviderService service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(
                     ISVNProviderService.class);
             String projectLabel = pro.getTechnicalLabel();

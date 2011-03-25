@@ -329,7 +329,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             // see feature 5027
             action = new ParallelExecutionAction(part);
             ((SelectionAction) action).update();
-            if (PluginChecker.isTIS() && action.isEnabled()) {
+            if (PluginChecker.isTeamEdition() && action.isEnabled()) {
                 menu.appendToGroup(GROUP_OTHER, action);
             }
 

@@ -32,8 +32,7 @@ public class JobHierarchyLabelProvider extends LabelProvider {
     public JobHierarchyLabelProvider(JobHierarchyLifeCycle lifeCycle) {
         super();
         fHierarchy = lifeCycle;
-        isTIS = PluginChecker.isTIS();
-
+        isTIS = PluginChecker.isRefProjectLoaded();
     }
 
     @Override

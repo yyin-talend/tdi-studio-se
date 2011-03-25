@@ -73,7 +73,7 @@ public class ShowBreakpointAction extends SelectionAction {
             for (Object part : childParts) {
                 if (part != null && part instanceof ConnectionTraceEditPart) {
                     connection = (Connection) connPart.getModel();
-                    return connection.enableTraces() && PluginChecker.isTIS();
+                    return connection.enableTraces() && PluginChecker.isTraceDebugPluginLoaded();
                 }
             }
         }
@@ -84,7 +84,7 @@ public class ShowBreakpointAction extends SelectionAction {
             for (Object part : childParts) {
                 if (part != null && part instanceof ConnectionTraceEditPart) {
                     connection = (Connection) connPart.getModel();
-                    return connection.enableTraces() && PluginChecker.isTIS();
+                    return connection.enableTraces() && PluginChecker.isTraceDebugPluginLoaded();
                 }
             }
         }
@@ -93,7 +93,7 @@ public class ShowBreakpointAction extends SelectionAction {
             if (connTrace.getParent() instanceof ConnectionPart) {
                 ConnectionPart connPart = (ConnectionPart) connTrace.getParent();
                 connection = (Connection) connPart.getModel();
-                return connection.enableTraces() && PluginChecker.isTIS();
+                return connection.enableTraces() && PluginChecker.isTraceDebugPluginLoaded();
             }
         }
         return false;

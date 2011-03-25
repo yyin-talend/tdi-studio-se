@@ -1,11 +1,9 @@
 package org.talend.designer.business.model.business.diagram.part;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.DelegatingLayout;
 import org.eclipse.draw2d.FreeformLayer;
@@ -13,7 +11,6 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LayeredPane;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.LayerConstants;
@@ -45,16 +42,10 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.PluginChecker;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.BusinessProcessItem;
-import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
-import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.properties.SVGBusinessProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -66,7 +57,6 @@ import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTarget
 import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
 import org.talend.designer.business.diagram.custom.figures.BusinessItemShapeFigure;
-import org.talend.designer.business.diagram.custom.util.SVGImageExporter;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessEditPartFactory;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.diagram.providers.BusinessDiagramActionProvider;
@@ -192,51 +182,51 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         }
     }
 
-    private void saveSVG(BusinessProcessItem businessProcessItem) {
-        if (PluginChecker.isTIS()) {
-            EList businessItems = businessProcessItem.getSemantic().getBusinessItems();
-            // OutputStream outputStream = new FileOutputStream("d:\\businessModelDemo.svg");
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            SVGImageExporter.export(this.getDiagramGraphicalViewer(), outputStream, businessItems);
-            byte[] svgbyteArray = outputStream.toByteArray();
-            ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
-            byteArray.setInnerContent(svgbyteArray);
-
-            SVGBusinessProcessItem svgBusinessProcessItem = businessProcessItem.getSvgBusinessProcessItem();
-            boolean serialized = true;
-            if (svgBusinessProcessItem == null) {
-                serialized = false;
-                svgBusinessProcessItem = PropertiesFactory.eINSTANCE.createSVGBusinessProcessItem();
-            }
-            svgBusinessProcessItem.eResource();
-            if (svgBusinessProcessItem.getProperty() == null) {
-                Property property = PropertiesFactory.eINSTANCE.createProperty();
-                property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                        .getUser());
-                property.setVersion(VersionUtils.DEFAULT_VERSION);
-                property.setStatusCode(""); //$NON-NLS-1$
-                property.setLabel(businessProcessItem.getProperty().getLabel() + "_svg");
-                property.setId("svg_" + businessProcessItem.getProperty().getId());
-                svgBusinessProcessItem.setProperty(property);
-            }
-            svgBusinessProcessItem.setBusinessProcessItem(businessProcessItem);
-            svgBusinessProcessItem.setName(businessProcessItem.getProperty().getLabel() + "_svg");
-            svgBusinessProcessItem.setContent(byteArray);
-
-            businessProcessItem.setSvgBusinessProcessItem(svgBusinessProcessItem);
-
-            try {
-                if (!serialized || svgBusinessProcessItem.eResource() == null) {
-                    ProxyRepositoryFactory.getInstance().create(svgBusinessProcessItem,
-                            new Path(businessProcessItem.getState().getPath()));
-                } else {
-                    ProxyRepositoryFactory.getInstance().save(svgBusinessProcessItem);
-                }
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
-        }
-    }
+    // private void saveSVG(BusinessProcessItem businessProcessItem) {
+    // if (PluginChecker.isTIS()) {
+    // EList businessItems = businessProcessItem.getSemantic().getBusinessItems();
+    // // OutputStream outputStream = new FileOutputStream("d:\\businessModelDemo.svg");
+    // ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    // SVGImageExporter.export(this.getDiagramGraphicalViewer(), outputStream, businessItems);
+    // byte[] svgbyteArray = outputStream.toByteArray();
+    // ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
+    // byteArray.setInnerContent(svgbyteArray);
+    //
+    // SVGBusinessProcessItem svgBusinessProcessItem = businessProcessItem.getSvgBusinessProcessItem();
+    // boolean serialized = true;
+    // if (svgBusinessProcessItem == null) {
+    // serialized = false;
+    // svgBusinessProcessItem = PropertiesFactory.eINSTANCE.createSVGBusinessProcessItem();
+    // }
+    // svgBusinessProcessItem.eResource();
+    // if (svgBusinessProcessItem.getProperty() == null) {
+    // Property property = PropertiesFactory.eINSTANCE.createProperty();
+    // property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+    // .getUser());
+    // property.setVersion(VersionUtils.DEFAULT_VERSION);
+    //                property.setStatusCode(""); //$NON-NLS-1$
+    // property.setLabel(businessProcessItem.getProperty().getLabel() + "_svg");
+    // property.setId("svg_" + businessProcessItem.getProperty().getId());
+    // svgBusinessProcessItem.setProperty(property);
+    // }
+    // svgBusinessProcessItem.setBusinessProcessItem(businessProcessItem);
+    // svgBusinessProcessItem.setName(businessProcessItem.getProperty().getLabel() + "_svg");
+    // svgBusinessProcessItem.setContent(byteArray);
+    //
+    // businessProcessItem.setSvgBusinessProcessItem(svgBusinessProcessItem);
+    //
+    // try {
+    // if (!serialized || svgBusinessProcessItem.eResource() == null) {
+    // ProxyRepositoryFactory.getInstance().create(svgBusinessProcessItem,
+    // new Path(businessProcessItem.getState().getPath()));
+    // } else {
+    // ProxyRepositoryFactory.getInstance().save(svgBusinessProcessItem);
+    // }
+    // } catch (PersistenceException e) {
+    // ExceptionHandler.process(e);
+    // }
+    // }
+    // }
 
     public boolean isEditable() {
         if (repositoryEditorInput != null) {

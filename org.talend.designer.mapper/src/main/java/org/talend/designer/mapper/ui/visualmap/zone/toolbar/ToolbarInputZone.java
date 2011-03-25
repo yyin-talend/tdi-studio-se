@@ -117,7 +117,7 @@ public class ToolbarInputZone extends ToolbarZone {
     }
 
     private void addPreviewToolItems() {
-        if (PluginChecker.isTIS() && getMapperManager().isTracesActive()) {
+        if (PluginChecker.isTraceDebugPluginLoaded() && getMapperManager().isTracesActive()) {
             final RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager()
                     .getActiveContext();
 

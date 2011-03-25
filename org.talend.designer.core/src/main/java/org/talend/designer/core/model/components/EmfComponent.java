@@ -1075,7 +1075,7 @@ public class EmfComponent extends AbstractComponent {
         listParam.add(param);
 
         // These parameters is only work when TIS is loaded
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isTeamEdition()) {
             boolean defaultParalelize = new Boolean(compType.getHEADER().isPARALLELIZE());
             param = new ElementParameter(node);
             param.setReadOnly(!defaultParalelize);

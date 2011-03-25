@@ -600,7 +600,7 @@ public class InputDataMapTableView extends DataMapTableView {
         });
         column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
 
-        if (isMainConnection && PluginChecker.isTIS() && mapperManager.isTracesActive()) {
+        if (isMainConnection && PluginChecker.isTraceDebugPluginLoaded() && mapperManager.isTracesActive()) {
             column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
             column.setTitle("Preview");
             column.setId(DataMapTableView.PREVIEW_COLUMN);

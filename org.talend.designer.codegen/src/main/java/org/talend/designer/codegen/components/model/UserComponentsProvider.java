@@ -15,8 +15,6 @@ package org.talend.designer.codegen.components.model;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Path;
@@ -87,7 +85,7 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
         };
 
         // synchroniz shared custom component
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
             Project currentProject = ProjectManager.getInstance().getCurrentProject();
             String projectLabel = currentProject.getTechnicalLabel();
             String sourcePath = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath()

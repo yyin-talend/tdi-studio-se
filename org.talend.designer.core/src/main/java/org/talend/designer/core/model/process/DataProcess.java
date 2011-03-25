@@ -356,7 +356,7 @@ public class DataProcess {
                     param.setNumRow(1);
                     ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
                 }
-                if (PluginChecker.isTIS()) {
+                if (PluginChecker.isTeamEdition()) {
 
                     if ((connection.getLineStyle() == EConnectionType.ON_SUBJOB_OK
                             || connection.getLineStyle() == EConnectionType.ON_SUBJOB_ERROR

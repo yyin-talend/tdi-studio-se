@@ -253,7 +253,7 @@ public class JobSettingsManager {
         param.setShowIf("(MULTI_THREAD_EXECATION=='true' or MULTI_THREAD_EXECATION=='false')"); //$NON-NLS-1$
         paramList.add(param);
 
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isTeamEdition()) {
             param = new ElementParameter(process);
             param.setName(EParameterName.PARALLELIZE_UNIT_SIZE.getName());
             param.setValue("25000"); //$NON-NLS-1$
@@ -363,8 +363,7 @@ public class JobSettingsManager {
         String condition = JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
                 + " and " //$NON-NLS-1$ 
                 + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG
-                        .getName())
-                        + " == 'true'"); //$NON-NLS-1$
+                        .getName()) + " == 'true'"); //$NON-NLS-1$
 
         param.setShowIf(condition);
         paramList.add(param);
@@ -384,8 +383,7 @@ public class JobSettingsManager {
         condition = JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
                 + " and " //$NON-NLS-1$ 
                 + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG
-                        .getName())
-                        + " == 'true'"); //$NON-NLS-1$
+                        .getName()) + " == 'true'"); //$NON-NLS-1$
 
         param.setShowIf(condition);
         paramList.add(param);
@@ -485,9 +483,8 @@ public class JobSettingsManager {
             param.setNumRow(42);
             param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
             param.setRequired(true);
-            param
-                    .setShowIf(dbCondition
-                            + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " == 'OCLE_OCI' or " + dbTypeName + " =='ACCESS' or " + dbTypeName + " =='MYSQL') "); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$//$NON-NLS-5$   
+            param.setShowIf(dbCondition
+                    + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " == 'OCLE_OCI' or " + dbTypeName + " =='ACCESS' or " + dbTypeName + " =='MYSQL') "); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$//$NON-NLS-5$   
             param.setGroup(IMPLICIT_GROUP);
             paramList.add(param);
         }

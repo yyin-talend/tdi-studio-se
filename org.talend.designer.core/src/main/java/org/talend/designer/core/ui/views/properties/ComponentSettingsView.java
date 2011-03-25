@@ -531,7 +531,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         if (elem instanceof Connection) {
 
             EComponentCategory[] categories = EElementType.CONNECTION.getCategories();
-            if (PluginChecker.isTIS()) {
+            if (PluginChecker.isTeamEdition()) {
 
                 Object propertyValue = elem.getPropertyValue(Connection.LINESTYLE_PROP);
                 if (propertyValue instanceof EConnectionType

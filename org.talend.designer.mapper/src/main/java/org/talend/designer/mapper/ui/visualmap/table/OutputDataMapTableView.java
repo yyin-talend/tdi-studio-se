@@ -36,9 +36,9 @@ import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableRemov
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable.LAYOUT_MODE;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
@@ -354,7 +354,7 @@ public class OutputDataMapTableView extends DataMapTableView {
         });
         column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
 
-        if (PluginChecker.isTIS() && mapperManager.isTracesActive() && connection != null) {
+        if (PluginChecker.isTraceDebugPluginLoaded() && mapperManager.isTracesActive() && connection != null) {
             column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
             column.setTitle("Preview");
             column.setId(DataMapTableView.PREVIEW_COLUMN);

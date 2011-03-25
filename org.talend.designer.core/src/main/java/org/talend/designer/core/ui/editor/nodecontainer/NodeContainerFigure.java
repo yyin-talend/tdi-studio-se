@@ -137,7 +137,7 @@ public class NodeContainerFigure extends Figure {
         markFigure.setImage(errorMarkImage);
         this.add(markFigure, null, 0);
 
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isTeamEdition()) {
             addParallelFigure();
         }
 
@@ -264,7 +264,7 @@ public class NodeContainerFigure extends Figure {
      */
     private void updateParallelFigure(int status) {
 
-        if (!PluginChecker.isTIS() || parallelFigure == null) {
+        if (!PluginChecker.isTeamEdition() || parallelFigure == null) {
             return;
         }
 

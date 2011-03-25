@@ -327,7 +327,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             initTraceParamters();
         }
 
-        if (PluginChecker.isTIS()) {
+        if (PluginChecker.isTeamEdition()) {
             boolean isLocalRepository = (ProxyRepositoryFactory.getInstance().getRepositoryFactoryFromProvider() instanceof ILocalRepositoryFactory);
             param = new ElementParameter(this);
             param.setName(EParameterName.RESUMING_CHECKPOINT.getName());
@@ -966,7 +966,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         }
         if ((EParameterName.TRACES_SHOW_ENABLE.getName().equals(id) || EParameterName.ACTIVEBREAKPOINT.getName().equals(id))
                 && value instanceof Boolean) {
-            if (PluginChecker.isTIS()
+            if (PluginChecker.isTraceDebugPluginLoaded()
                     && (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW) || lineStyle
                             .hasConnectionCategory(IConnectionCategory.MERGE))) {
                 if (EParameterName.ACTIVEBREAKPOINT.getName().equals(id))
