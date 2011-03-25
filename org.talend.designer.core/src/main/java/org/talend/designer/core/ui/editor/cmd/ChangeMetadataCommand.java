@@ -99,7 +99,9 @@ public class ChangeMetadataCommand extends Command {
         if (schemaParam == null) {
             currentConnector = EConnectionType.FLOW_MAIN.getName();
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
+                if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || param.getFieldType().equals(
+                        EParameterFieldType.DCSCHEMA))
+                        && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
                 }
             }

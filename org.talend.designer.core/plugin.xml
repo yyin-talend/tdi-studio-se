@@ -525,7 +525,11 @@
            mapping="GENERATEGRAMMARCONTROLLER"
            name="GenerateGrammarController launcher">
      </generator>     
-	 
+	 <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.DCSchemaGenerator"
+           mapping="DCSCHEMA"
+           name="DCSchema">
+     </generator>   
    </extension>
    <extension
          point="org.talend.core.runtime.service">

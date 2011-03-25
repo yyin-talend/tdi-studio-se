@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -88,6 +89,10 @@ public class MetadataEmfFactory {
                 colType.setSourceType(metaCol.getType());
                 colType.setPattern(metaCol.getPattern());
                 colType.setDefaultValue(metaCol.getDefault());
+                if (PluginChecker.isDatacertPluginLoaded()) {
+                    colType.setRelatedEntity(metaCol.getRelatedEntity());
+                    colType.setRelationshipType(metaCol.getRelationshipType());
+                }
                 listColType.add(colType);
             }
         }
@@ -143,6 +148,9 @@ public class MetadataEmfFactory {
             metaCol.setType(colType.getSourceType());
             metaCol.setPattern(colType.getPattern());
             metaCol.setDefault(colType.getDefaultValue());
+
+            metaCol.setRelatedEntity(colType.getRelatedEntity());
+            metaCol.setRelationshipType(colType.getRelationshipType());
             if (colType.getOriginalDbColumnName() == null) {
                 metaCol.setOriginalDbColumnName(colType.getName());
             } else {

@@ -368,7 +368,8 @@ public class Node extends Element implements IGraphicalNode {
         // if (hasMetadata) {
         boolean hasSchemaType = false;
         for (IElementParameter param : getElementParameters()) {
-            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    || param.getFieldType().equals(EParameterFieldType.DCSCHEMA)) {
                 IMetadataTable table = new MetadataTable();
                 table.setAttachedConnector(param.getContext());
                 metadataList.add(table);
@@ -419,8 +420,9 @@ public class Node extends Element implements IGraphicalNode {
                 if (param.getFieldType().equals(EParameterFieldType.MAPPING_TYPE)) {
                     table.setDbms((String) param.getValue());
                 }
-                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext() != null
-                        && param.getContext().equals(table.getAttachedConnector())) {
+                if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || param.getFieldType().equals(
+                        EParameterFieldType.DCSCHEMA))
+                        && param.getContext() != null && param.getContext().equals(table.getAttachedConnector())) {
                     if (param.getValue() instanceof IMetadataTable) {
                         IMetadataTable paramTable = (IMetadataTable) param.getValue();
                         table.getListColumns().addAll(paramTable.getListColumns());
@@ -2186,6 +2188,13 @@ public class Node extends Element implements IGraphicalNode {
                 case RADIO:
                     break;
                 case SCHEMA_TYPE:
+                    break;
+                case DCSCHEMA:
+                    // IMetadataTable metadataTable = getMetadataTable(getUniqueName());
+                    // if(metadataTable == null || !(metadataTable.getListColumns().size() > 0)) {
+                    //                  String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
+                    // Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    // }
                     break;
                 case MEMO_SQL:
                     String errMessage = Messages.getString("Node.schemaDifferent", param.getDisplayName()); //$NON-NLS-1$

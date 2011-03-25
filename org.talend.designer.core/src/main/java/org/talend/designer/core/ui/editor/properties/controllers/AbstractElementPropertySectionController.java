@@ -1352,6 +1352,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String port = getValueFromRepositoryName(element, EConnectionParameterName.PORT.getName());
         connParameters.setPort(port);
 
+        boolean https = Boolean.parseBoolean(getValueFromRepositoryName(element, EConnectionParameterName.HTTPS.getName()));
+        connParameters.setHttps(https);
+
         boolean isOracleOCI = type.equals(EDatabaseTypeName.ORACLE_OCI.getXmlName())
                 || type.equals(EDatabaseTypeName.ORACLE_OCI.getDisplayName());
         if (isOracleOCI) {
@@ -1460,6 +1463,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setHost(getParameterValueWithContext(element, EConnectionParameterName.SERVER_NAME.getName(), context));
         connParameters.setUserName(getParameterValueWithContext(element, EConnectionParameterName.USERNAME.getName(), context));
         connParameters.setDirectory(getParameterValueWithContext(element, EConnectionParameterName.DIRECTORY.getName(), context));
+        connParameters.setHttps(Boolean.parseBoolean(getParameterValueWithContext(element,
+                EConnectionParameterName.HTTPS.getName(), context)));
         // TODO here maybe need url,driver class, driver jar parameters setting.
         connParameters.setUrl(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
                 EConnectionParameterName.URL.getName(), context)));

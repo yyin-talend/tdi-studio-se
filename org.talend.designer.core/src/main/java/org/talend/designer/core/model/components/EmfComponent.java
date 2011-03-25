@@ -352,7 +352,8 @@ public class EmfComponent extends AbstractComponent {
 
         boolean hasSchemaType = false;
         for (ElementParameter param : listParam) {
-            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    || param.getFieldType().equals(EParameterFieldType.DCSCHEMA)) {
                 hasSchemaType = true;
                 break;
             }
@@ -1360,7 +1361,7 @@ public class EmfComponent extends AbstractComponent {
             xmlParam = (PARAMETERType) listXmlParam.get(i);
             EParameterFieldType type = EParameterFieldType.getFieldTypeByName(xmlParam.getFIELD());
 
-            if (type.equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (type.equals(EParameterFieldType.SCHEMA_TYPE) || type.equals(EParameterFieldType.DCSCHEMA)) {
                 if (!autoSwitchAdded) {
                     param = new ElementParameter(node);
                     param.setCategory(EComponentCategory.TECHNICAL);
@@ -1431,6 +1432,7 @@ public class EmfComponent extends AbstractComponent {
                 param.setValue(new ArrayList<Map<String, Object>>());
                 break;
             case SCHEMA_TYPE:
+            case DCSCHEMA:
                 if (param.getContext() == null) {
                     // by default the schema will be set to the "FLOW"
                     // connector.
@@ -1745,7 +1747,8 @@ public class EmfComponent extends AbstractComponent {
      */
     private void initializePropertyParametersForSchema(List<ElementParameter> listParam) {
         for (ElementParameter param : listParam) {
-            if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    || !param.getFieldType().equals(EParameterFieldType.DCSCHEMA)) {
                 continue;
             }
             if (param.getDefaultValues().size() > 0) {
