@@ -92,4 +92,8 @@ public class ShadowFilePreview implements IPreview {
         return res;
     }
 
+    public boolean isTopPreview() {
+        return false;
+    }
+
 }
