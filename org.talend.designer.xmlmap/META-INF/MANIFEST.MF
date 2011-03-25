@@ -10,7 +10,8 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.talend.designer.xmlmap.editor,
  org.talend.designer.xmlmap.model.emf.xmlmap,
  org.talend.designer.xmlmap.model.emf.xmlmap.impl,
- org.talend.designer.xmlmap.model.emf.xmlmap.util
+ org.talend.designer.xmlmap.model.emf.xmlmap.util,
+ org.talend.designer.xmlmap.model.tree
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
