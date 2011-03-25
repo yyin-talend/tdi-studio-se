@@ -52,80 +52,115 @@ String version = ElementParameterParser.getValue(node,"__PROCESS_TYPE_VERSION__"
 String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid", "\"--father_node="+ cid + "\""};
 String[] commandLineWindows = new String[] {"<command>"};
 String[] commandLineUnix = new String[] {"<command>"};
-String[] commandLine = new String[] {"<command>"};
+//String[] commandLine = new String[] {"<command>"};
 String childJob = ElementParameterParser.getValue(node,"__PROCESS__");
-// feature 19312
-java.util.List<String> jobList = new java.util.ArrayList<String>();
-String jobStr;
+
+boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
+String dynamicJobName = ElementParameterParser.getValue(node,"__CONTEXT_JOB__");
+java.util.List<String> childJobNameList = new java.util.ArrayList<String>();
+java.util.List<String[]> commandLineList = new java.util.ArrayList<String[]>();
 %>  
+int dynamicJobPosition_<%=cid%> = 0;
+String dynamicJobName_<%=cid%>;
 java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
 <%
 try {
-  if(useIndependentProcess){ 
-    commandLine = ProcessorUtilities.getCommandLine(true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
-    // remove the frontal 2 lines
-    if (commandLine.length > 0 && ProcessorUtilities.isExportConfig()){
-      int tmpSize = commandLine.length - 2;
-      String[] tmp = new String[tmpSize];
-      System.arraycopy(commandLine, 2, tmp, 0, tmpSize);
-      commandLine = tmp;
-    }
-  }else{
- 	  // feature 19312
- 	  if(process!=null && !process.equals("")){
-	      String[] childJobss = process.split(";");
-	      jobList.clear();
-	      for (int i=0;i<childJobss.length;i++) {
-		      String childJoba = childJobss[i];
-		      commandLine = ProcessorUtilities.getMainCommand(childJoba ,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
-		      jobList.add(commandLine[0]);
-            }
-        } 
-   }
+	if(process!=null && !process.equals("")){
+		String[] commandLine = new String[] {"<command>"};
+		String[] childJobIds = process.split(";");
+	    childJobNameList.clear();
+	    for (int i=0;i<childJobIds.length;i++) {
+	    	String childJobId = childJobIds[i];
+		  	if(useIndependentProcess){ 
+			    commandLine = ProcessorUtilities.getCommandLine(true, childJobId, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+			    // remove the frontal 2 lines
+			    if (commandLine.length > 0 && ProcessorUtilities.isExportConfig()){
+					int tmpSize = commandLine.length - 2;
+					String[] tmp = new String[tmpSize];
+					System.arraycopy(commandLine, 2, tmp, 0, tmpSize);
+					commandLine = tmp;
+			    }
+			   	childJobNameList.add(commandLine[5]);
+		 	}else{
+		        commandLine = ProcessorUtilities.getMainCommand(childJobId ,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+		        childJobNameList.add(commandLine[0]);
+		    }
+		    commandLineList.add(commandLine);
+	    }
+	}
 } catch (ProcessorException e) {
 }
-
-for (int i = 0; i < commandLine.length; i++) {
-  // commandLine[i] = commandLine[i].replace("\n", "");
-  if (i == 0 && useIndependentProcess){
-    %>
-    paraList_<%=cid %>.add("<%=commandLine[i]%>");
-    <%
-  } else if (i == 0 && !useIndependentProcess){
-    childJob = commandLine[0];
-  } else if (i > 0){
-    if (commandLine[i].indexOf("\"") >= 0){
-      %>
-      paraList_<%=cid %>.add(<%=commandLine[i] %>);
-    <%}else{%>
-      paraList_<%=cid %>.add("<%=commandLine[i] %>");
-    <%}
-  }
+if(useDynamicJob){
+	int position = 0;
+	for(String childJobName:childJobNameList){
+		String simpleName = childJobName.substring(childJobName.lastIndexOf(".")+1);
+%>
+		if("<%=simpleName%>".equals(<%=dynamicJobName%>)){
+			dynamicJobPosition_<%=cid%> = <%=position%>;
+			dynamicJobName_<%=cid%> = <%=dynamicJobName%>;
+		}
+<%
+		position++;
+	}
+}else{
+%>
+	dynamicJobPosition_<%=cid%> = 0;
+<%
 }
 %>
+	//System.out.println(dynamicJobPosition_<%=cid%>);
+<%
+int position = 0;
+for(String[] commandLine : commandLineList){
+%>
+	if(dynamicJobPosition_<%=cid%> == <%=position%>){
+		<%
+		for (int i = 0; i < commandLine.length; i++) {
+			// commandLine[i] = commandLine[i].replace("\n", "");
+			if (i == 0 && useIndependentProcess){
+			%>
+			  paraList_<%=cid %>.add("<%=commandLine[i]%>");
+			<%
+			} else if (i == 0 && !useIndependentProcess){
+			    childJob = commandLine[0];
+			} else if (i > 0){
+			    if (commandLine[i].indexOf("\"") >= 0){
+			    %>
+			        paraList_<%=cid %>.add(<%=commandLine[i] %>);
+			    <%}else{%>
+					paraList_<%=cid %>.add("<%=commandLine[i] %>");
+			    <%}
+			}
+		}	
+		%>
+	}
+<%
+	position++;
+}
+%>
+
 //for feature:10589
 <%if(useIndependentProcess){%>
-paraList_<%=cid %>.add("--stat_port=" + null);
+	paraList_<%=cid %>.add("--stat_port=" + null);
 <%}else{%>
-paraList_<%=cid %>.add("--stat_port=" + portStats);
-<%}%>
+	paraList_<%=cid %>.add("--stat_port=" + portStats);
+<%}%>		
 <%
 if (useIndependentProcess && ProcessorUtilities.isExportConfig()){
 %>
-  // exchange characters if this job runs on OS is different from exported base on
-  for(int i_<%=cid%> = 0; i_<%=cid%> < paraList_<%=cid %>.size(); i_<%=cid%>++){
-    String osName_<%=cid %> = System.getProperty("os.name");
-    if (osName_<%=cid %> != null && osName_<%=cid %>.toLowerCase().startsWith("win")){    
-      paraList_<%=cid %>.set(i_<%=cid%>, paraList_<%=cid %>.get(i_<%=cid%>).replace(":", ";").replace("$", "%"));
-    }else{
-      paraList_<%=cid %>.set(i_<%=cid%>, paraList_<%=cid %>.get(i_<%=cid%>).replace(";", ":").replace("%", "$"));
-    }
-  }
+    // exchange characters if this job runs on OS is different from exported base on
+    for(int i_<%=cid%> = 0; i_<%=cid%> < paraList_<%=cid %>.size(); i_<%=cid%>++){
+    	String osName_<%=cid %> = System.getProperty("os.name");
+    	if (osName_<%=cid %> != null && osName_<%=cid %>.toLowerCase().startsWith("win")){    
+      		paraList_<%=cid %>.set(i_<%=cid%>, paraList_<%=cid %>.get(i_<%=cid%>).replace(":", ";").replace("$", "%"));
+    	}else{
+      		paraList_<%=cid %>.set(i_<%=cid%>, paraList_<%=cid %>.get(i_<%=cid%>).replace(";", ":").replace("%", "$"));
+    	}
+  	}
 <%
 }%>
-
 if(resuming_logs_dir_path != null){
-  paraList_<%=cid %>.add("--resuming_logs_dir_path=" + resuming_logs_dir_path);
+    paraList_<%=cid %>.add("--resuming_logs_dir_path=" + resuming_logs_dir_path);
 }
 String childResumePath_<%=cid %> = ResumeUtil.getChildJobCheckPointPath(resuming_checkpoint_path);
 String tRunJobName_<%=cid %> = ResumeUtil.getRighttRunJob(resuming_checkpoint_path);
@@ -135,26 +170,23 @@ if("<%=cid %>".equals(tRunJobName_<%=cid %>) && childResumePath_<%=cid %> != nul
 paraList_<%=cid %>.add("--parent_part_launcher=JOB:" + jobName + "/NODE:<%=cid %>");
 
 java.util.Map<String, Object> parentContextMap_<%=cid %> = new java.util.HashMap<String, Object>();
-
 <%
 if(transmitWholeContext){//111111
 %> 
-  context.synchronizeContext();
-  java.util.Enumeration<?> propertyNames_<%=cid %> = context.propertyNames();
-  while (propertyNames_<%=cid %>.hasMoreElements()) {
-    String key_<%=cid %> = (String) propertyNames_<%=cid %>.nextElement();
-    Object value_<%=cid %> = (Object) context.get(key_<%=cid %>);       
-    paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
-  }
-  
+	context.synchronizeContext();
+	java.util.Enumeration<?> propertyNames_<%=cid %> = context.propertyNames();
+	while (propertyNames_<%=cid %>.hasMoreElements()) {
+		String key_<%=cid %> = (String) propertyNames_<%=cid %>.nextElement();
+		Object value_<%=cid %> = (Object) context.get(key_<%=cid %>);       
+		paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
+	}
 <%
- List<IContextParameter> params = currentProcess.getContextManager().getDefaultContext().getContextParameterList();
+List<IContextParameter> params = currentProcess.getContextManager().getDefaultContext().getContextParameterList();
     for (IContextParameter ctxParam :params){
     	String ctxParamName = ctxParam.getName();
- %>  
-		    parentContextMap_<%=cid %>.put("<%=ctxParamName %>", context.<%=ctxParamName %>);
- <%}
-
+%>  
+	    parentContextMap_<%=cid %>.put("<%=ctxParamName %>", context.<%=ctxParamName %>);
+<%}
 }//111111
 %>
 
@@ -171,45 +203,78 @@ for (int i=0; i<contextParams.size(); i++) {
   parentContextMap_<%=cid %>.put("<%=name %>", obj_<%=cid%>);
 <%}%>
 <%if(printParameter){%>
-  System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%=childJob %> with:\n\n" + paraList_<%=cid %> + "\n");
+  System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%if(useDynamicJob){%>dynamicJobName_<%=cid%><%}else{%><%=childJob %><%}%> with:\n\n" + paraList_<%=cid %> + "\n");
 <%}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 if (!useIndependentProcess){//AAAAAAAAAAAA
-// feature 19312
-for(int i=0;i<jobList.size();i++){
-   	 childJob = jobList.get(i);
-     jobStr = childJob.toString().replace('.', '_');
 %>
-  <%=childJob %> childJob_<%=jobStr %>_<%=cid %> = new <%=childJob %>();
-<%if(originalContext){%>  
-  childJob_<%=jobStr %>_<%=cid %>.parentContextMap = parentContextMap_<%=cid %>;
-<%}%>  
-  String[][] childReturn_<%=jobStr %>_<%=cid %> = childJob_<%=jobStr %>_<%=cid %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
-  <%
-  if (childJob != null) {
-    if (isRunInMultiThread ){
-    %>
-      ((java.util.Map)threadLocal.get()).put("errorCode", childJob_<%=jobStr %>_<%=cid %>.getErrorCode());
-    <%}else {%>
-      errorCode = childJob_<%=jobStr %>_<%=cid %>.getErrorCode();
-    <%}%>
-            
-    if(childJob_<%=jobStr %>_<%=cid %>.getErrorCode() == null){
-      globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=jobStr %>_<%=cid %>.getStatus() != null && ("failure").equals(childJob_<%=jobStr %>_<%=cid %>.getStatus()) ? 1 : 0);
-    }else{
-      globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=jobStr %>_<%=cid %>.getErrorCode());
-    }  
-    globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE", childJob_<%=jobStr %>_<%=cid %>.getExceptionStackTrace());
-  
-    <%if (dieOnError) { %> 
-      if (childJob_<%=jobStr %>_<%=cid %>.getErrorCode() != null || ("failure").equals(childJob_<%=jobStr %>_<%=cid %>.getStatus())) {
-        throw new RuntimeException("Child job running failed");
-      }
-    <%}
-    }
-  }%>
+	String[][] childReturn_<%=cid %> = new String[][]{};
+  <%if(useDynamicJob){%>
+	<%for(String childJobName:childJobNameList){
+		String simpleName = childJobName.substring(childJobName.lastIndexOf(".")+1);
+		%>
+		if("<%=simpleName%>".equals(<%=dynamicJobName%>)){
+			<%=childJobName%> childJob_<%=cid %> = new <%=childJobName%>();
+			<%if(originalContext){%>  
+			  childJob_<%=cid %>.parentContextMap = parentContextMap_<%=cid %>;
+			<%}%>  
+			  childReturn_<%=cid %> = childJob_<%=cid %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
+			  <%
+			  if (childJobName != null) {
+			    if (isRunInMultiThread ){
+			    %>
+			      ((java.util.Map)threadLocal.get()).put("errorCode", childJob_<%=cid %>.getErrorCode());
+			    <%}else {%>
+			      errorCode = childJob_<%=cid %>.getErrorCode();
+			    <%}%>
+			            
+			    if(childJob_<%=cid %>.getErrorCode() == null){
+			      globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getStatus() != null && ("failure").equals(childJob_<%=cid %>.getStatus()) ? 1 : 0);
+			    }else{
+			      globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getErrorCode());
+			    }  
+			    globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE", childJob_<%=cid %>.getExceptionStackTrace());
+			  
+			    <%if (dieOnError) { %> 
+			      if (childJob_<%=cid %>.getErrorCode() != null || ("failure").equals(childJob_<%=cid %>.getStatus())) {
+			        throw new RuntimeException("Child job running failed");
+			      }
+			    <%}
+			  }%>
+		}
+	<%}%>  	
+  <%}else{%>
+  	<%=childJob %> childJob_<%=cid %> = new <%=childJob %>();
+  	<%if(originalContext){%>  
+	  childJob_<%=cid %>.parentContextMap = parentContextMap_<%=cid %>;
+	<%}%>  
+	  childReturn_<%=cid %> = childJob_<%=cid %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
+	  <%
+	  if (childJob != null) {
+	    if (isRunInMultiThread ){
+	    %>
+	      ((java.util.Map)threadLocal.get()).put("errorCode", childJob_<%=cid %>.getErrorCode());
+	    <%}else {%>
+	      errorCode = childJob_<%=cid %>.getErrorCode();
+	    <%}%>
+	            
+	    if(childJob_<%=cid %>.getErrorCode() == null){
+	      globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getStatus() != null && ("failure").equals(childJob_<%=cid %>.getStatus()) ? 1 : 0);
+	    }else{
+	      globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getErrorCode());
+	    }  
+	    globalMap.put("<%=cid %>_CHILD_EXCEPTION_STACKTRACE", childJob_<%=cid %>.getExceptionStackTrace());
+	  
+	    <%if (dieOnError) { %> 
+	      if (childJob_<%=cid %>.getErrorCode() != null || ("failure").equals(childJob_<%=cid %>.getStatus())) {
+	        throw new RuntimeException("Child job running failed");
+	      }
+	    <%}
+	  }%>
+  <%}%>
+
   <%
   String firstConnName = null; 
   if(outConns != null && outConns.size() > 0) {
@@ -254,6 +319,7 @@ for(int i=0;i<jobList.size();i++){
       {
     <%
     }
+    
   }//b  
   
 } else { //AAAAAAAAAAAA
