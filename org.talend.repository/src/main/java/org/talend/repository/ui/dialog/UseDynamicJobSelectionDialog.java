@@ -49,9 +49,6 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNodeUtilities;
 
 /**
  * DOC yhch class global comment. Detailled comment <br/>
@@ -61,7 +58,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
  */
 public class UseDynamicJobSelectionDialog extends Dialog {
 
-    List<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
+    List<IRepositoryViewObject> repositoryNodes = new ArrayList<IRepositoryViewObject>();
 
     ERepositoryObjectType type;
 
@@ -73,7 +70,7 @@ public class UseDynamicJobSelectionDialog extends Dialog {
 
     private Button downBtn;
 
-    List<RepositoryNode> allJobNodes = new ArrayList<RepositoryNode>();
+    List<IRepositoryViewObject> allJobNodes = new ArrayList<IRepositoryViewObject>();
 
     private CheckboxTableViewer checkboxTableViewer;
 
@@ -85,12 +82,12 @@ public class UseDynamicJobSelectionDialog extends Dialog {
     class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
 
         public String getColumnText(final Object element, final int columnIndex) {
-            if (element instanceof RepositoryNode) {
-                final RepositoryNode contributor = (RepositoryNode) element;
+            if (element instanceof IRepositoryViewObject) {
+                final IRepositoryViewObject contributor = (IRepositoryViewObject) element;
                 StringBuffer strB = new StringBuffer();
-                contributor.getObject().getVersion();
-                strB.append(contributor.getObject().getLabel());
-                strB.append(" " + contributor.getObject().getVersion()); //$NON-NLS-1$
+                contributor.getVersion();
+                strB.append(contributor.getLabel());
+                strB.append(" " + contributor.getVersion()); //$NON-NLS-1$
                 return strB.toString();
             }
             return element.toString();
@@ -173,17 +170,14 @@ public class UseDynamicJobSelectionDialog extends Dialog {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         List<IRepositoryViewObject> list = new ArrayList<IRepositoryViewObject>();
         Project project = ProjectManager.getInstance().getCurrentProject();
+        allJobNodes.clear();
         try {
-            list.addAll(factory.getAll(project, ERepositoryObjectType.PROCESS, true, false));
+            list.addAll(factory.getAll(project, ERepositoryObjectType.PROCESS, false, false));
             for (IRepositoryViewObject object : list) {
-                String jobId = object.getId();
-                RepositoryNode node = RepositoryNodeUtilities.getRepositoryNode(jobId);
-                if (node != null) {
-                    String id = node.getId();
-                    if (repositoryType != null && !repositoryType.equals("") && id != null && !id.equals("")) {
-                        if (!id.equals(repositoryType)) {
-                            allJobNodes.add(node);
-                        }
+                String jobId = object.getProperty().getId();
+                if (repositoryType != null && !repositoryType.equals("") && jobId != null && !jobId.equals("")) {
+                    if (!jobId.equals(repositoryType)) {
+                        allJobNodes.add(object);
                     }
                 }
             }
@@ -200,40 +194,43 @@ public class UseDynamicJobSelectionDialog extends Dialog {
     @Override
     protected void okPressed() {
 
-        RepositoryNode[] repositoryObjects = getCheckNodes();
+        IRepositoryViewObject[] repositoryObjects = getCheckNodes();
         repositoryNodes.clear();
-        for (RepositoryNode repositoryObject : repositoryObjects) {
+        for (IRepositoryViewObject repositoryObject : repositoryObjects) {
             repositoryNodes.add(repositoryObject);
             //
-            ProcessItem processItem = (ProcessItem) repositoryObject.getObject().getProperty().getItem();
+            ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
             RelationshipItemBuilder relationshipItemBuilder = new RelationshipItemBuilder();
             relationshipItemBuilder.addOrUpdateItem(processItem);
         }
         super.okPressed();
     }
 
-    public List<RepositoryNode> getRepositoryNodes() {
+    public List<IRepositoryViewObject> getRepositoryNodes() {
         return this.repositoryNodes;
     }
 
-    public void setRepositoryNodes(List<RepositoryNode> repositoryNodes) {
+    public void setRepositoryNodes(List<IRepositoryViewObject> repositoryNodes) {
         this.repositoryNodes = repositoryNodes;
     }
 
-    public RepositoryNode[] getCheckNodes() {
-        List<RepositoryNode> ret = new ArrayList<RepositoryNode>();
+    public IRepositoryViewObject[] getCheckNodes() {
+        List<IRepositoryViewObject> ret = new ArrayList<IRepositoryViewObject>();
         for (int i = 0; i < checkboxTableViewer.getCheckedElements().length; i++) {
-            RepositoryNode node = (RepositoryNode) checkboxTableViewer.getCheckedElements()[i];
-            if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                ret.add(node);
-            }
+            IRepositoryViewObject node = (IRepositoryViewObject) checkboxTableViewer.getCheckedElements()[i];
+            // if (node. == ENodeType.REPOSITORY_ELEMENT) {
+            ret.add(node);
+            // }
         }
-        return (RepositoryNode[]) ret.toArray(new RepositoryNode[0]);
+        return (IRepositoryViewObject[]) ret.toArray(new IRepositoryViewObject[0]);
     }
 
     public void setCheckedNodes() {
         if (repositoryNodes != null || repositoryNodes.size() != 0) {
-            checkboxTableViewer.setCheckedElements(repositoryNodes.toArray());
+            for (IRepositoryViewObject object : repositoryNodes) {
+                checkboxTableViewer.setChecked(object, true);
+            }
+            // checkboxTableViewer.setCheckedElements(repositoryNodes.toArray());
         }
     }
 
@@ -283,8 +280,8 @@ public class UseDynamicJobSelectionDialog extends Dialog {
                 if (selection instanceof IStructuredSelection) {
                     IStructuredSelection structuredSelection = (IStructuredSelection) selection;
                     Object firstElement = structuredSelection.getFirstElement();
-                    if (firstElement instanceof RepositoryNode) {
-                        RepositoryNode contributor = (RepositoryNode) firstElement;
+                    if (firstElement instanceof IRepositoryViewObject) {
+                        IRepositoryViewObject contributor = (IRepositoryViewObject) firstElement;
                         int index = allJobNodes.indexOf(contributor);
                         allJobNodes.remove(contributor);
                         allJobNodes.add(index - 1, contributor);
@@ -308,8 +305,8 @@ public class UseDynamicJobSelectionDialog extends Dialog {
                 if (selection instanceof IStructuredSelection) {
                     IStructuredSelection structuredSelection = (IStructuredSelection) selection;
                     Object firstElement = structuredSelection.getFirstElement();
-                    if (firstElement instanceof RepositoryNode) {
-                        RepositoryNode contributor = (RepositoryNode) firstElement;
+                    if (firstElement instanceof IRepositoryViewObject) {
+                        IRepositoryViewObject contributor = (IRepositoryViewObject) firstElement;
                         int index = allJobNodes.indexOf(contributor);
                         allJobNodes.remove(contributor);
                         allJobNodes.add(index + 1, contributor);

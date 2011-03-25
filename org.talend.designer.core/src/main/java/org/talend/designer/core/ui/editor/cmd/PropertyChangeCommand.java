@@ -159,7 +159,14 @@ public class PropertyChangeCommand extends Command {
             elem.setPropertyValue(processParam.getName(), ""); //$NON-NLS-1$
         }
         if (propName.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
-            boolean isSelectUseDynamic = (Boolean) elem.getElementParameter(EParameterName.USE_DYNAMIC_JOB.getName()).getValue();
+            boolean isSelectUseDynamic = false;
+            IElementParameter useDynamicJobParameter = elem.getElementParameter(EParameterName.USE_DYNAMIC_JOB.getName());
+            if (useDynamicJobParameter != null && useDynamicJobParameter instanceof IElementParameter) {
+                Object useDynamicJobValue = (Object) useDynamicJobParameter.getValue();
+                if (useDynamicJobValue != null && useDynamicJobValue instanceof Boolean) {
+                    isSelectUseDynamic = (Boolean) useDynamicJobValue;
+                }
+            }
             if (isSelectUseDynamic) {
                 StringBuffer labels = new StringBuffer("");
                 if (newValue != null) {

@@ -52,6 +52,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -60,8 +61,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.ProcessorUtilities;
-import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 import org.talend.repository.ui.dialog.UseDynamicJobSelectionDialog;
 
@@ -175,8 +175,14 @@ public class ProcessController extends AbstractElementPropertySectionController 
             addVersionCombo = PerlResourcesHelper.USE_VERSIONING;
         }
         // feature 19312
-        isSelectUseDynamic = (Boolean) param.getElement().getElementParameter(EParameterName.USE_DYNAMIC_JOB.getName())
-                .getValue();
+        IElementParameter useDynamicJobParameter = param.getElement().getElementParameter(
+                EParameterName.USE_DYNAMIC_JOB.getName());
+        if (useDynamicJobParameter != null && useDynamicJobParameter instanceof IElementParameter) {
+            Object useDynamicJobValue = (Object) useDynamicJobParameter.getValue();
+            if (useDynamicJobValue != null && useDynamicJobValue instanceof Boolean) {
+                isSelectUseDynamic = (Boolean) useDynamicJobValue;
+            }
+        }
         Control lastControlUsed = btn;
         if (addVersionCombo) {
             lastControlUsed = addJobVersionCombo(subComposite,
@@ -433,7 +439,14 @@ public class ProcessController extends AbstractElementPropertySectionController 
             procssId = runJobNode.getProcess().getId();
         }
         // feature 19312
-        boolean isSelectUseDynamic = (Boolean) elem.getElementParameter(EParameterName.USE_DYNAMIC_JOB.getName()).getValue();
+        boolean isSelectUseDynamic = false;
+        IElementParameter useDynamicJobParameter = elem.getElementParameter(EParameterName.USE_DYNAMIC_JOB.getName());
+        if (useDynamicJobParameter != null && useDynamicJobParameter instanceof IElementParameter) {
+            Object useDynamicJobValue = (Object) useDynamicJobParameter.getValue();
+            if (useDynamicJobValue != null && useDynamicJobValue instanceof Boolean) {
+                isSelectUseDynamic = (Boolean) useDynamicJobValue;
+            }
+        }
         if (isSelectUseDynamic) {
             UseDynamicJobSelectionDialog usedialog = new UseDynamicJobSelectionDialog((button).getShell(),
                     ERepositoryObjectType.PROCESS, procssId, isSelectUseDynamic);
@@ -441,14 +454,13 @@ public class ProcessController extends AbstractElementPropertySectionController 
             selectJobNodeIfChecked(button, usedialog);
 
             if (usedialog.open() == UseDynamicJobSelectionDialog.OK) {
-                List<RepositoryNode> repositoryNodeList = usedialog.getRepositoryNodes();
+                List<IRepositoryViewObject> repositoryNodeList = usedialog.getRepositoryNodes();
                 StringBuffer ids = new StringBuffer();
                 String paramName = (String) button.getData(PARAMETER_NAME);
 
                 if (repositoryNodeList != null && repositoryNodeList.size() > 0) {
                     for (int i = 0; i < repositoryNodeList.size(); i++) {
-                        RepositoryNode node = repositoryNodeList.get(i);
-                        IRepositoryViewObject repositoryViewObject = node.getObject();
+                        IRepositoryViewObject repositoryViewObject = repositoryNodeList.get(i);
                         final Item item = repositoryViewObject.getProperty().getItem();
                         String id = item.getProperty().getId();
                         if (i > 0) {
@@ -521,11 +533,12 @@ public class ProcessController extends AbstractElementPropertySectionController 
                 String jobIds = (String) runJobNode.getPropertyValue(paramName); // .getElementParameter(name).getValue();
                 if (StringUtils.isNotEmpty(jobIds)) {
                     String[] jobsArr = jobIds.split(ProcessController.COMMA);
-                    List<RepositoryNode> repositoryNodeList = new ArrayList<RepositoryNode>();
+                    List<IRepositoryViewObject> repositoryNodeList = new ArrayList<IRepositoryViewObject>();
                     for (String id : jobsArr) {
                         if (StringUtils.isNotEmpty(id)) {
                             // if user have selected jobs
-                            RepositoryNode node = RepositoryNodeUtilities.getRepositoryNode(id);
+                            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                            IRepositoryViewObject node = factory.getLastVersion(id);
                             repositoryNodeList.add(node);
                         }
                     }
