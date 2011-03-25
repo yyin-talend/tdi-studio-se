@@ -122,6 +122,7 @@ import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptOSGIForESBManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJobJavaScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsTemporaryOptionsKeeper;
 import org.talend.repository.utils.JobVersionUtils;
@@ -324,8 +325,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + getOutputSuffix()); //$NON-NLS-1$
             } else if (length > 1) {
                 // i changed here ..
-                path = path.append(this.getDefaultFileName().get(0)
-                        + "_" + this.getDefaultFileName().get(1) + this.outputFileSuffix); //$NON-NLS-1$
+                path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + getOutputSuffix()); //$NON-NLS-1$
             }
         } else {
             // path = new Path(destinationFile);
@@ -333,8 +333,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             if (store.getBoolean(IRepositoryPrefConstants.USE_EXPORT_SAVE)) {
                 path = new Path(destinationFile);
             } else {
-                path = path.append(this.getDefaultFileName().get(0)
-                        + "_" + this.getDefaultFileName().get(1) + this.outputFileSuffix); //$NON-NLS-1$
+                path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + getOutputSuffix()); //$NON-NLS-1$
             }
         }
         setInitDestinationFilePath(path.toOSString());
@@ -1509,6 +1508,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         }
         if (manager instanceof PetalsJobJavaScriptsManager) {
             setTopFolderForPetals();
+        } else if (manager instanceof JobJavaScriptOSGIForESBManager) {
+            // do nothing.
         } else {
             if (isNotFirstTime) {
                 setTopFolder(resourcesToExport, this.originalRootFolderName);

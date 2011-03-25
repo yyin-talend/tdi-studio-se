@@ -16,6 +16,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptESBManager;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptOSGIForESBManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJobJavaScriptsManager;
 
 /**
@@ -59,6 +60,8 @@ public class JobScriptsManagerFactory {
                 manager = new JobJavaScriptESBManager();
             } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_PETALSESB)) {
                 manager = new PetalsJobJavaScriptsManager();
+            } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_OSGI)) {
+                manager = new JobJavaScriptOSGIForESBManager();
             } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_ROUTE)) {
                 manager = new JobJavaScriptsManager();
             }

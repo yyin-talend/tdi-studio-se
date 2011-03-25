@@ -170,7 +170,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param selectedJobVersion
      * @return
      */
-    private String preExportResource(ExportFileResource[] process, int i, String selectedJobVersion) {
+    protected String preExportResource(ExportFileResource[] process, int i, String selectedJobVersion) {
         if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
             selectedJobVersion = this.getSelectedJobVersion();
         }
@@ -572,7 +572,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return path + LIBRARY_FOLDER_NAME;
     }
 
-    private List<URL> addChildrenResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
+    protected List<URL> addChildrenResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
             ExportFileResource resource, Map<ExportChoice, Object> exportChoice, String... selectedJobVersion) {
         List<JobInfo> list = new ArrayList<JobInfo>();
         String projectName = getCorrespondingProjectName(process);
@@ -799,6 +799,54 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             ExceptionHandler.process(e);
         }
         return list;
+    }
+
+    /**
+     * DOC ycbai Comment method "getJobScriptsUncompressed".
+     * 
+     * @param resource
+     * @param process
+     */
+    protected void getJobScriptsUncompressed(ExportFileResource resource, ProcessItem process) {
+        String projectName = getCorrespondingProjectName(process);
+        List<String> jobFolderNames = getRelatedJobFolderNames(process);
+        try {
+            for (String jobFolderName : jobFolderNames) {
+                String classRoot = getClassRootLocation() + projectName + File.separator + jobFolderName;
+                String targetPath = getTmpFolder() + File.separator + projectName + File.separator + jobFolderName;
+                File sourceFile = new File(classRoot);
+                File targetFile = new File(targetPath);
+                FilesUtils.copyFolder(sourceFile, targetFile, true, null, null, true, false);
+                List<URL> fileURLs = FilesUtils.getFileURLs(targetFile);
+                for (URL url : fileURLs) {
+                    String path = url.getPath();
+                    String relPath = path.replace("/", "\\").replace(getTmpFolder(), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    relPath = relPath.substring(0, relPath.lastIndexOf("\\")); //$NON-NLS-1$
+                    resource.addResource(relPath, url);
+                }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    protected List<String> getRelatedJobFolderNames(ProcessItem process) {
+        return this.getRelatedJobFolderNames(process, true);
+    }
+
+    protected List<String> getRelatedJobFolderNames(ProcessItem process, boolean includeSelf) {
+        List<String> jobFolderNames = new ArrayList<String>();
+        if (includeSelf) {
+            String jobName = process.getProperty().getLabel();
+            String jobVersion = process.getProperty().getVersion();
+            String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
+            jobFolderNames.add(jobFolderName);
+        }
+        Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
+        for (JobInfo subjobInfo : subjobInfos) {
+            jobFolderNames.addAll(getRelatedJobFolderNames(subjobInfo.getProcessItem(), true));
+        }
+        return jobFolderNames;
     }
 
     /**

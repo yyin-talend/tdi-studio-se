@@ -95,6 +95,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     public static final String EXPORTTYPE_PETALSESB = "Petals ESB"; //$NON-NLS-1$
 
+    public static final String EXPORTTYPE_OSGI = "OSGI Bundle For ESB"; //$NON-NLS-1$
+
     protected Combo exportTypeCombo;
 
     protected Combo esbTypeCombo;
@@ -258,6 +260,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         exportTypeCombo.add(EXPORTTYPE_WSZIP);
         exportTypeCombo.add(EXPORTTYPE_JBOSSESB);
         exportTypeCombo.add(EXPORTTYPE_PETALSESB);
+        exportTypeCombo.add(EXPORTTYPE_OSGI);
         // exportTypeCombo.add("JBI (JSR 208)");
 
         exportTypeCombo.setText(getCurrentExportType());
@@ -269,7 +272,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         chkButton = new Button(left, SWT.CHECK);
         chkButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.extractZipFile")); //$NON-NLS-1$
-        if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR) || exportTypeCombo.getText().equals(EXPORTTYPE_PETALSESB)) {
+        if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR) || exportTypeCombo.getText().equals(EXPORTTYPE_PETALSESB)
+                || exportTypeCombo.getText().equals(EXPORTTYPE_OSGI)) {
             chkButton.setVisible(false);
             zipOption = null;
         } else {
@@ -305,7 +309,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 createOptionsGroupButtons(pageComposite);
 
                 pageComposite.layout();
-                if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR)) {
+                if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR) || exportTypeCombo.getText().equals(EXPORTTYPE_OSGI)) {
                     chkButton.setVisible(false);
                     zipOption = null;
                 } else {
@@ -335,6 +339,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             return ".war"; //$NON-NLS-1$
         } else if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
             return ".esb"; //$NON-NLS-1$ 
+        } else if (getCurrentExportType().equals(EXPORTTYPE_OSGI)) {
+            return ".jar"; //$NON-NLS-1$ 
         } else {
             return ".zip"; //$NON-NLS-1$
         }
@@ -354,10 +360,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             dialog.setFilterExtensions(new String[] { "*.war", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
             dialog.setFilterExtensions(new String[] { "*.esb", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (getCurrentExportType().equals(EXPORTTYPE_OSGI)) {
+            dialog.setFilterExtensions(new String[] { "*.jar", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (getCurrentExportType().equals(EXPORTTYPE_PETALSESB)) {
-
             dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
-
         } else {
             dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -540,6 +546,23 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
     }
 
+    protected void restoreWidgetValuesForOSGI() {
+        IDialogSettings settings = getDialogSettings();
+        if (settings != null) {
+            String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+            if (directoryNames != null) {
+                // destination
+                String filterName = ".jar"; //$NON-NLS-1$
+                for (int i = 0; i < directoryNames.length; i++) {
+                    if (directoryNames[i].toLowerCase().endsWith(filterName)) {
+                        addDestinationItem(directoryNames[i]);
+                    }
+                }
+            }
+            setDefaultDestination();
+        }
+    }
+
     protected void restoreWidgetValuesForWS() {
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
@@ -686,14 +709,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
             settings.put(STORE_EXPORTTYPE_ID, getCurrentExportType());
             settings.put(STORE_DESTINATION_NAMES_ID, directoryNames);
+            if (getCurrentExportType().equals(EXPORTTYPE_OSGI)) {
+                return;
+            }
             if (contextButton != null) {
                 settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
             }
-            if (applyToChildrenButton != null) {
-                settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
-            }
             if (jobScriptButton != null && !jobScriptButton.isDisposed()) {
                 settings.put(STORE_SOURCE_ID, jobScriptButton.getSelection());
+            }
+            if (applyToChildrenButton != null) {
+                settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
             }
             if (jobItemButton != null && !jobItemButton.isDisposed()) {
                 settings.put(STORE_JOB_ID, jobItemButton.getSelection());
@@ -748,6 +774,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
             exportChoiceMap.put(ExportChoice.needSourceCode, jobItemButton.getSelection()); // take source code also
             // when take item
+            return exportChoiceMap;
+        }
+
+        if (exportTypeCombo.getText().equals(EXPORTTYPE_OSGI)) {
+            exportChoiceMap.put(ExportChoice.needMetaInfo, true);
+            exportChoiceMap.put(ExportChoice.needContext, true);
+            exportChoiceMap.put(ExportChoice.needJobItem, false);
+            exportChoiceMap.put(ExportChoice.needSourceCode, false);
             return exportChoiceMap;
         }
 
@@ -807,6 +841,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             createOptionsforPetalsESB(left, font);
             restoreWidgetValuesForPetalsESB();
             restoreWidgetValues();
+        } else if (getCurrentExportType().equals(EXPORTTYPE_OSGI)) {
+            createOptionsForOSGIESB(left, font);
+            restoreWidgetValuesForOSGI();
         } else {
             createOptionsForWS(left, font);
         }
@@ -1122,6 +1159,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         esbQueueMessageName.setLayoutData(gd);
     }
 
+    private void createOptionsForOSGIESB(Composite optionsComposite, Font font) {
+        // contextButton = new Button(optionsComposite, SWT.CHECK | SWT.LEFT);
+        //        contextButton.setText(Messages.getString("JobScriptsExportWizardPage.contextPerlScripts")); //$NON-NLS-1$
+        // contextButton.setSelection(true);
+        // contextButton.setFont(font);
+        // contextCombo = new Combo(optionsComposite, SWT.PUSH);
+    }
+
     protected void createOptionsForWS(Composite optionsGroup, Font font) {
 
         webXMLButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
@@ -1214,6 +1259,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (getCurrentExportType().equals(EXPORTTYPE_POJO)) {
             return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
                     IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
+        } else if (getCurrentExportType().equals(EXPORTTYPE_OSGI)) {
+            return manager.getExportResources(process, exportChoiceMap,
+                    (contextCombo == null || contextCombo.isDisposed()) ? "Default" : contextCombo.getText(), "all", //$NON-NLS-1$  //$NON-NLS-2$
+                    IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
         } else {
             return manager.getExportResources(process, exportChoiceMap,
                     contextCombo == null ? "Default" : contextCombo.getText(), "all", //$NON-NLS-1$  //$NON-NLS-2$
@@ -1295,6 +1344,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                         break;
                     }
                 }
+            }
+        }
+        if (getCurrentExportType().equals(EXPORTTYPE_OSGI)) {
+            if (this.isMultiNodes()) {
+                this.setErrorMessage("This type of export support actually only a single job export.");
+                this.setPageComplete(false);
+                noError = false;
             }
         }
         if (getCheckNodes().length == 0) {
