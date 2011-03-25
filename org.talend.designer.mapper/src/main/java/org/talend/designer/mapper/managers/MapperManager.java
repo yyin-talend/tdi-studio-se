@@ -1108,7 +1108,13 @@ public class MapperManager extends AbstractMapperManager {
             defaultSettingMap.put(DataMapTableView.SCHEMA_ID, null);
 
             defaultSettingMap.put(MapperSettingsManager.DIE_ON_ERROR, true);
-            defaultSettingMap.put(MapperSettingsManager.LOOKUP_IN_PARALLEL, true);
+
+            boolean parallel = false;
+            IElementParameter paraEle = getAbstractMapComponent().getElementParameter("LKUP_PARALLELIZE");
+            if (paraEle != null) {
+                parallel = (Boolean) paraEle.getValue();
+            }
+            defaultSettingMap.put(MapperSettingsManager.LOOKUP_IN_PARALLEL, parallel);
             defaultSettingMap.put(MapperSettingsManager.TEMPORARY_DATA_DIRECTORY, "");
             defaultSettingMap.put(MapperSettingsManager.ROWS_BUFFER_SIZE, 2000000);
         }

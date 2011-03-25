@@ -102,7 +102,12 @@ public class MapperSettingsManager {
             currnentModel.setRowBufferSize(String.valueOf(parameter.getValue()));
         }
         // TODO: temporary set be true, handle after...
-        currnentModel.setLookInParallel(true);
+        boolean parallel = false;
+        IElementParameter paraEle = manager.getAbstractMapComponent().getElementParameter("LKUP_PARALLELIZE");
+        if (paraEle != null) {
+            parallel = (Boolean) paraEle.getValue();
+        }
+        currnentModel.setLookInParallel(parallel);
     }
 
     private void initOriginalModel() {

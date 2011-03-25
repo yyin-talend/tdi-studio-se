@@ -33,10 +33,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.formtools.LabelledDirectoryField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.MapperSettingsManager;
 import org.talend.designer.mapper.model.MapperSettingModel;
 import org.talend.designer.mapper.ui.listener.CommonListener;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC ycbai class global comment. Detailled comment
@@ -87,7 +90,11 @@ public class PropertySetDialog extends Dialog {
 
         lookupInParallelButton = new Button(container, SWT.CHECK);
         lookupInParallelButton.setText("Lookup in parallel");
-        lookupInParallelButton.setEnabled(false);
+        lookupInParallelButton.setEnabled(true);
+        IComponent tempNode = ComponentsFactoryProvider.getInstance().get("tParallelize");//$NON-NLS-1$
+        if (tempNode == null) {
+            lookupInParallelButton.setVisible(false);
+        }
 
         final Group storeOnDiskGroup = new Group(container, SWT.NONE);
         storeOnDiskGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -127,6 +134,10 @@ public class PropertySetDialog extends Dialog {
         lookupInParallelButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
+                IElementParameter paraEle = mapperManager.getAbstractMapComponent().getElementParameter("LKUP_PARALLELIZE");
+                if (paraEle != null) {
+                    paraEle.setValue(lookupInParallelButton.getSelection());
+                }
                 updateStatus();
             }
         });

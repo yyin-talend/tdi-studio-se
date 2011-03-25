@@ -103,6 +103,8 @@ public class DataProcess {
 
     private Map<INode, INode> buildCheckMap = null;
 
+    private Map<String, INode> parallCheckMap = null;
+
     private BidiMap buildGraphicalMap = null;
 
     private List<INode> checkRefList = null;
@@ -133,6 +135,7 @@ public class DataProcess {
 
     private void initialize() {
         buildCheckMap = new HashMap<INode, INode>();
+        parallCheckMap = new HashMap<String, INode>();
         checkRefList = new ArrayList<INode>();
         checkValidationList = new ArrayList<INode>();
         checkMultipleMap = new HashMap<INode, INode>();
@@ -978,6 +981,10 @@ public class DataProcess {
                     if (externalNode != null) {
                         runAfter = externalNode.isRunRefSubProcessAtStart(connection.getUniqueName());
                     }
+
+                    // if (externalNode.getElementName().equals("tmap")) {
+                    // INode parallelizeNode = addVParallelizeBetween();
+                    // }
                 }
 
                 INode refSource = buildCheckMap.get(graphicalNode);
@@ -1007,32 +1014,48 @@ public class DataProcess {
                 DataConnection dataConnec = null;
 
                 if (runAfter) {
-                    // create a link before between the two subprocess
-                    dataConnec = new DataConnection();
-                    dataConnec.setActivate(connection.isActivate());
-                    dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
-                    dataConnec.setTraceConnection(connection.isTraceConnection());
-                    dataConnec.setTracesCondition(connection.getTracesCondition());
-                    dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
-                    dataConnec.setMonitorConnection(connection.isMonitorConnection());
-                    // dataConnec.setLineStyle(EConnectionType.THEN_RUN);
-                    if (!subDataNodeStartSource.getMetadataList().isEmpty()) {
-                        dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
+                    boolean isParall = false;
+                    for (IConnection conn : subDataNodeStartSource.getOutgoingConnections()) {
+                        if (conn.getTarget().getComponent().getName().equals("tMap")) {
+                            IElementParameter elePara = conn.getTarget().getElementParameter("LKUP_PARALLELIZE");
+                            isParall = (Boolean) elePara.getValue();
+                            break;
+                        }
                     }
-                    dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName()); //$NON-NLS-1$
-                    // dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
-                    dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
-                    dataConnec.setSource(subDataNodeStartSource);
-                    // dataConnec.setSource(subDataNodeStartTarget);
-                    dataConnec.setTarget(subDataNodeStartTarget);
-                    // dataConnec.setTarget(subDataNodeStartSource);
 
-                    // the target component can't be start in all case, so no matter where it has been defined, remove
-                    // the start state.
-                    subDataNodeStartTarget.setStart(false);
+                    if (isParall) {
+                        addVParallelizeBetween(subDataNodeStartSource, subDataNodeStartTarget, connection, duplicatedProcess,
+                                connection.getElementParameters());
+                    } else {
+                        // create a link before between the two subprocess
+                        dataConnec = new DataConnection();
+                        dataConnec.setActivate(connection.isActivate());
+                        dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
+                        dataConnec.setTraceConnection(connection.isTraceConnection());
+                        dataConnec.setTracesCondition(connection.getTracesCondition());
+                        dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
+                        dataConnec.setMonitorConnection(connection.isMonitorConnection());
+                        // dataConnec.setLineStyle(EConnectionType.THEN_RUN);
+                        if (!subDataNodeStartSource.getMetadataList().isEmpty()) {
+                            dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
+                        }
+                        dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName()); //$NON-NLS-1$
+                        // dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
+                        dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
+                        dataConnec.setSource(subDataNodeStartSource);
+                        // dataConnec.setSource(subDataNodeStartTarget);
+                        dataConnec.setTarget(subDataNodeStartTarget);
+                        // dataConnec.setTarget(subDataNodeStartSource);
 
-                    outgoingConnections.add(dataConnec);
-                    incomingConnections.add(dataConnec);
+                        // the target component can't be start in all case, so no matter where it has been
+                        // defined,remove
+                        // the start state.
+                        subDataNodeStartTarget.setStart(false);
+
+                        outgoingConnections.add(dataConnec);
+                        incomingConnections.add(dataConnec);
+                    }
+
                 }
 
                 // add a new hash node
@@ -2836,5 +2859,106 @@ public class DataProcess {
             }
             i++;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private INode addVParallelizeBetween(INode sourceNode, INode targetNode, IConnection connection, IProcess process,
+            List<? extends IElementParameter> parameters) {
+
+        IComponent tempNode = ComponentsFactoryProvider.getInstance().get("tParallelize");//$NON-NLS-1$
+        if (tempNode == null) {
+            return targetNode;
+        }
+
+        DataNode parallelizeNode = null;
+        boolean alreadyHave = false;
+        String key = "tParallelize_" + sourceNode.getUniqueName();//$NON-NLS-1$ 
+        if (parallCheckMap.get(key) != null) {
+            parallelizeNode = (DataNode) parallCheckMap.get(key);
+            alreadyHave = true;
+        } else {
+            String uniqueName = "tParallelize_" + connection.getUniqueName();//$NON-NLS-1$ 
+            parallelizeNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tParallelize"), uniqueName); //$NON-NLS-1$ 
+
+            // DataNode hashNode = new DataNode(component, uniqueName);
+            parallelizeNode.setActivate(connection.isActivate());
+            parallelizeNode.setStart(false);
+            parallelizeNode.setDesignSubjobStartNode(sourceNode.getDesignSubjobStartNode());
+            IMetadataTable newMetadata = connection.getMetadataTable().clone();
+            newMetadata.setTableName(uniqueName);
+            parallelizeNode.getMetadataList().remove(0);
+            parallelizeNode.getMetadataList().add(newMetadata);
+            parallelizeNode.setSubProcessStart(true);
+            parallelizeNode.setProcess(process);
+            List<IConnection> outgoingConnections = new ArrayList<IConnection>();
+            List<IConnection> incomingConnections = new ArrayList<IConnection>();
+            parallelizeNode.setIncomingConnections(incomingConnections);
+            parallelizeNode.setOutgoingConnections(outgoingConnections);
+
+            addDataNode(parallelizeNode);
+
+            parallCheckMap.put(key, parallelizeNode);
+        }
+        if (!alreadyHave) {
+            DataConnection dataConnec = new DataConnection();
+            dataConnec.setActivate(connection.isActivate());
+            dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
+            dataConnec.setTraceConnection(connection.isTraceConnection());
+            dataConnec.setTracesCondition(connection.getTracesCondition());
+            dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
+            dataConnec.setMonitorConnection(connection.isMonitorConnection());
+            // dataConnec.setLineStyle(EConnectionType.THEN_RUN);
+            if (!sourceNode.getMetadataList().isEmpty()) {
+                dataConnec.setMetadataTable(sourceNode.getMetadataList().get(0));
+            }
+            dataConnec.setName("after_" + sourceNode.getUniqueName()); //$NON-NLS-1$
+            // dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
+            dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
+            dataConnec.setSource(sourceNode);
+            // dataConnec.setSource(subDataNodeStartTarget);
+            dataConnec.setTarget(parallelizeNode);
+            // dataConnec.setTarget(subDataNodeStartSource);
+
+            // the target component can't be start in all case, so no matter where it has been defined, remove
+            // the start state.
+            targetNode.setStart(false);
+
+            ((List<IConnection>) parallelizeNode.getIncomingConnections()).add(dataConnec);
+            ((List<IConnection>) sourceNode.getOutgoingConnections()).add(dataConnec);
+        }
+
+        // from current node to vFlowMeter node.
+        DataConnection dataConnec = new DataConnection();
+        dataConnec.setActivate(connection.isActivate());
+
+        dataConnec.setLineStyle(EConnectionType.PARALLELIZE);
+        IElementParameter param2 = new ElementParameter(dataConnec);
+        param2.setName(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+        param2.setDisplayName(EParameterName.TRACES_CONNECTION_ENABLE.getDisplayName());
+        param2.setFieldType(EParameterFieldType.CHECK);
+        param2.setValue(Boolean.TRUE);
+        param2.setCategory(EComponentCategory.ADVANCED);
+        param2.setShow(false);
+        param2.setNumRow(1);
+        ((List<IElementParameter>) dataConnec.getElementParameters()).add(param2);
+
+        dataConnec.setTraceConnection(connection.isTraceConnection());
+        dataConnec.setMonitorConnection(connection.isMonitorConnection());
+        dataConnec.setTracesCondition(connection.getTracesCondition());
+        dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
+        dataConnec.setMetadataTable(connection.getMetadataTable());
+        dataConnec.setName("parallelize_" + connection.getUniqueName());
+        // dataConnec.setUniqueName(connection.getUniqueName());
+        dataConnec.setSource(parallelizeNode);
+        dataConnec.setTarget(targetNode);
+        dataConnec.setCondition(connection.getCondition());
+        dataConnec.setConnectorName(EConnectionType.PARALLELIZE.getName());
+        dataConnec.setInputId(connection.getInputId());
+
+        targetNode.setStart(false);
+        ((List<IConnection>) targetNode.getIncomingConnections()).add(dataConnec);
+        ((List<IConnection>) parallelizeNode.getOutgoingConnections()).add(dataConnec);
+
+        return parallelizeNode;
     }
 }
