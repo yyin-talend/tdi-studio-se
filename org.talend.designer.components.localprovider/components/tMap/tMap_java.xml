@@ -65,6 +65,15 @@
    		 >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+    <PARAMETER
+      NAME="LKUP_PARALLELIZE"
+      FIELD="CHECK"
+      NUM_ROW="100"
+      SHOW="false"
+   		 >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
       
       <!-- 
       <PARAMETER NAME="MEMORY_HEAP_MAX_SIZE" FIELD="TEXT"
