@@ -45,6 +45,7 @@ import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.SAPIDocRepositoryObject;
+import org.talend.repository.model.SalesforceModuleRepositoryObject;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -313,6 +314,11 @@ public class RepositoryDoubleClickAction extends Action {
                 }
             } else if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_SAP_IDOC)) {
                 if (current.getClassForDoubleClick().equals(SAPIDocRepositoryObject.class)) {
+                    return current;
+                }
+
+            } else if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_SALESFORCE_MODULE)) {
+                if (current.getClassForDoubleClick().equals(SalesforceModuleRepositoryObject.class)) {
                     return current;
                 }
 

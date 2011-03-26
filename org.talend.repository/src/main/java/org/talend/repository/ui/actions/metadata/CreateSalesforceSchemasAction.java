@@ -25,7 +25,6 @@ import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.properties.BRMSConnectionItem;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
-import org.talend.core.model.properties.EDIFACTConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.HL7ConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -40,6 +39,7 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.SalesforceModuleRepositoryObject;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryConstants;
@@ -48,24 +48,31 @@ import org.talend.repository.model.RepositoryNode;
 /**
  * Action used to create table on metadata.<br/>
  * 
- * $Id$
+ * $Id: CreateTableAction.java 54939 2011-02-11 01:34:57Z mhirt $
  * 
  */
-public class CreateTableAction extends AbstractCreateTableAction {
+public class CreateSalesforceSchemasAction extends AbstractCreateTableAction {
 
     protected static Logger log = Logger.getLogger(CreateConnectionAction.class);
 
     protected static final String PID = RepositoryPlugin.PLUGIN_ID;
 
-    protected static final String CREATE_LABEL = Messages.getString("CreateTableAction.action.createTitle"); //$NON-NLS-1$
+    protected static final String CREATE_LABEL = Messages.getString("CreateSalesforceSchemasAction.createSchemas");//$NON-NLS-1$
 
-    protected static final String EDIT_LABEL = Messages.getString("CreateTableAction.action.editTitle"); //$NON-NLS-1$
+    protected static final String EDIT_LABEL = Messages.getString("CreateSalesforceSchemasAction.editSchemas");//$NON-NLS-1$
 
     private RepositoryNode node;
 
-    public CreateTableAction() {
+    public CreateSalesforceSchemasAction(boolean isToolBar) {
         super();
+        setToolbar(isToolBar);
+        this.setText(CREATE_LABEL);
+        this.setToolTipText(CREATE_LABEL);
+        this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_TABLE_ICON));
+    }
 
+    public CreateSalesforceSchemasAction() {
+        super();
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
         this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_TABLE_ICON));
@@ -76,7 +83,7 @@ public class CreateTableAction extends AbstractCreateTableAction {
      * 
      * @param node
      */
-    public CreateTableAction(RepositoryNode node) {
+    public CreateSalesforceSchemasAction(RepositoryNode node) {
         this();
         this.node = node;
     }
@@ -124,36 +131,14 @@ public class CreateTableAction extends AbstractCreateTableAction {
             nodeType = ERepositoryObjectType.getItemType(connectionItem);
 
         }
+        createSalesforceSchemasWizard(node, false);
 
-        if (ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)) {
-            createFilePositionalTableWizard(node, false);
-        } else if (ERepositoryObjectType.METADATA_FILE_DELIMITED.equals(nodeType)) {
-            createFileDelimitedTableWizard(node, false);
-        } else if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)) {
-            createDatabaseTableWizard(node, false);
-        } else if (ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)) {
-            createFileRegexpTableWizard(node, false);
-        } else if (ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)) {
-            createFileXmlTableWizard(node, false);
-        } else if (ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
-            createFileLdifTableWizard(node, false);
-        } else if (ERepositoryObjectType.METADATA_FILE_EXCEL.equals(nodeType)) {
-            createFileExcelTableWizard(node, false);
-        } else if (ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)) {
-            createGenericSchemaWizard(node, false);
-        } else if (ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)) {
-            createLDAPSchemaWizard(node, false);
-        } else if (ERepositoryObjectType.METADATA_WSDL_SCHEMA.equals(nodeType)) {
-            createWSDLSchemaWizard(node, false);
-        } else if (ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.equals(nodeType)) {
-            createSalesforceSchemaWizard(node, false);
-        }
         this.node = null;
     }
 
     @Override
     public Class getClassForDoubleClick() {
-        return IMetadataTable.class;
+        return SalesforceModuleRepositoryObject.class;
     }
 
     /*
@@ -174,78 +159,14 @@ public class CreateTableAction extends AbstractCreateTableAction {
                     setEnabled(false);
                     return;
                 }
-                if ((factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED)
-                        || (factory.getStatus(node.getObject()) == ERepositoryStatus.LOCK_BY_OTHER)) {
-                    setEnabled(false);
-                    return;
-                }
 
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                 if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)
                         || ERepositoryObjectType.METADATA_CON_COLUMN.equals(nodeType)) {
-                    setText(EDIT_LABEL);
-                    collectSiblingNames(node);
-                    IRepositoryViewObject repositoryObject = node.getObject();
-                    if (repositoryObject != null) {
-                        Item item2 = repositoryObject.getProperty().getItem();
-                        if (item2 instanceof DatabaseConnectionItem) {
-                            DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
-                            DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-                            CDCConnection cdcConns = connection.getCdcConns();
-                            if (cdcConns != null) {
-                                if (repositoryObject instanceof MetadataTableRepositoryObject) {
-                                    MetadataTable table = ((MetadataTableRepositoryObject) repositoryObject).getTable();
-                                    String tableType = table.getTableType();
-                                    setEnabled(RepositoryConstants.TABLE.equals(tableType));
-                                    return;
-                                }
-                            }
-                        }
-
-                        if (item2 instanceof SAPConnectionItem) {
-                            setEnabled(false);
-                            return;
-                        }
-
-                        if (item2 instanceof EbcdicConnectionItem) {
-                            setEnabled(false);
-                            return;
-                        }
-
-                        if (item2 instanceof HL7ConnectionItem) {
-                            setEnabled(false);
-                            return;
-                        }
-                        if (item2 instanceof BRMSConnectionItem) {
-                            setEnabled(false);
-                            return;
-                        }
-
-                        if (item2 instanceof MDMConnectionItem) {
-                            setEnabled(false);
-                            return;
-                        }
-
-                        if (item2 instanceof EDIFACTConnectionItem) {
-                            setEnabled(false);
-                            return;
-                        }
-                    }
-                    if (isLastVersion(node)) {
-                        setEnabled(true);
-                    }
+                    setEnabled(false);
                     return;
                 }
-
-                if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)
-                        || ERepositoryObjectType.METADATA_FILE_DELIMITED.equals(nodeType)
-                        || ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)
-                        || ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)
-                        || ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)
-                        || ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)
-                        || ERepositoryObjectType.METADATA_FILE_EXCEL.equals(nodeType)
-                        || ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)
-                        || ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)) {
+                if (ERepositoryObjectType.METADATA_SALESFORCE_MODULE.equals(nodeType)) {
                     setText(CREATE_LABEL);
                     collectChildNames(node);
                     if (isLastVersion(node)) {

@@ -133,8 +133,11 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                     || repositoryObjectType == ERepositoryObjectType.METADATA_CON_TABLE
                     || repositoryObjectType == ERepositoryObjectType.METADATA_CON_VIEW
                     || repositoryObjectType == ERepositoryObjectType.METADATA_CON_CDC
+                    || repositoryObjectType == ERepositoryObjectType.METADATA_CON_CDC
                     || repositoryObjectType == ERepositoryObjectType.METADATA_SAP_IDOC
+                    || repositoryObjectType == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA
                     || repositoryObjectType == ERepositoryObjectType.METADATA_SAP_FUNCTION
+                    || repositoryObjectType == ERepositoryObjectType.METADATA_SALESFORCE_MODULE
                     || repositoryObjectType == ERepositoryObjectType.METADATA_CON_COLUMN) {
                 String label = object.getLabel();
                 if (!mainProject.getLabel().equals(projectLabel) && PluginChecker.isRefProjectLoaded()) {

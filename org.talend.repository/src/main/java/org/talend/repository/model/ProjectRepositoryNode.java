@@ -62,6 +62,7 @@ import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
+import org.talend.core.model.metadata.builder.connection.SalesforceModuleUnit;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.ValidationRulesConnection;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
@@ -1599,12 +1600,31 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             // add functions
             createSAPIDocNodes(recBinNode, repObj, metadataConnection, iDocNode);
 
+        } else if (metadataConnection instanceof SalesforceSchemaConnection) {
+            createSalesforceModuleNodes(recBinNode, repObj, metadataConnection, node);
         } else {
             Set<org.talend.core.model.metadata.builder.connection.MetadataTable> tableset = ConnectionHelper
                     .getTables(metadataConnection);
             EList tables = new BasicEList();
             tables.addAll(tableset);
             createTables(recBinNode, node, repObj, tables, ERepositoryObjectType.METADATA_CON_TABLE);
+        }
+    }
+
+    private void createSalesforceModuleNodes(final RepositoryNode recBin, IRepositoryViewObject rebObj,
+            Connection metadataConnection, RepositoryNode connectionNode) {
+        EList modules = ((SalesforceSchemaConnection) metadataConnection).getModules();
+        for (int i = 0; i < modules.size(); i++) {
+            SalesforceModuleUnit unit = (SalesforceModuleUnit) modules.get(i);
+            RepositoryNode tableNode = createSalesforceNode(rebObj, connectionNode, unit);
+
+            createTables(recBin, tableNode, rebObj, unit.getTables(), ERepositoryObjectType.METADATA_CON_TABLE);
+            if (SubItemHelper.isDeleted(unit)) {
+                recBin.getChildren().add(tableNode);
+            } else {
+                connectionNode.getChildren().add(tableNode);
+            }
+
         }
     }
 
@@ -1660,6 +1680,15 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             }
 
         }
+    }
+
+    private RepositoryNode createSalesforceNode(IRepositoryViewObject rebObj, RepositoryNode moduleNode, SalesforceModuleUnit unit) {
+        SalesforceModuleRepositoryObject modelObj = new SalesforceModuleRepositoryObject(rebObj, moduleNode, unit);
+        modelObj.setLabel(unit.getModuleName());
+        RepositoryNode tableNode = new RepositoryNode(modelObj, moduleNode, ENodeType.REPOSITORY_ELEMENT);
+        tableNode.setProperties(EProperties.LABEL, modelObj.getLabel());
+        tableNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SALESFORCE_MODULE);
+        return tableNode;
     }
 
     /**
@@ -2074,6 +2103,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         } else if (type == ERepositoryObjectType.METADATA_MDMCONNECTION || type == ERepositoryObjectType.MDM_CONCEPT) {
             return this.metadataMDMConnectionNode;
         } else if (type == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
+            return this.metadataSalesforceSchemaNode;
+        } else if (type == ERepositoryObjectType.METADATA_SALESFORCE_MODULE) {
             return this.metadataSalesforceSchemaNode;
         } else if (type == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
             return this.metadataGenericSchemaNode;

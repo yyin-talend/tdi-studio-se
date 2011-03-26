@@ -101,6 +101,20 @@
             level="10"
             name="Metadata/Create Salesforce"/>
       <Action
+            class="org.talend.repository.ui.actions.metadata.CreateSalesforceModulesAction"
+            id="org.talend.repository.actions.createSalesforceModulesAction"
+            isEditAction="true"
+            isReadAction="true"
+            level="10"
+            name="Metadata/Create Salesforce Modules"/>
+      <Action
+            class="org.talend.repository.ui.actions.metadata.CreateSalesforceSchemasAction"
+            id="org.talend.repository.actions.createSalesforceModulesAction"
+            isEditAction="true"
+            isReadAction="true"
+            level="10"
+            name="Metadata/Create Salesforce Modules"/>
+      <Action
             class="org.talend.repository.ui.actions.documentation.CreateDocumentationAction"
             id="org.talend.repository.actions.createdocumentation"
             level="10"

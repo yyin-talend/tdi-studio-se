@@ -84,7 +84,10 @@ import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.ManagerConnection;
+import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceModulesWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceSchemaTableWizard;
+import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceSchemasWizard;
+import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SelectorModulesWizardPage;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaTableWizard;
 import org.talend.repository.ui.wizards.metadata.connection.ldap.LDAPSchemaTableWizard;
 import org.talend.repository.ui.wizards.metadata.connection.wsdl.WSDLSchemaTableWizard;
@@ -684,6 +687,107 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             SalesforceSchemaTableWizard salesforceSchemaWizard = new SalesforceSchemaTableWizard(PlatformUI.getWorkbench(),
                     creation, item, metadataTable, forceReadOnly);
             salesforceSchemaWizard.setRepositoryObject(node.getObject());
+
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), salesforceSchemaWizard);
+            handleWizard(node, wizardDialog);
+        }
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "createSalesforceSchemaWizard".
+     * 
+     * @param selection
+     * @param forceReadOnly
+     */
+    public void createSalesforceSchemasWizard(RepositoryNode node, final boolean forceReadOnly) {
+        SalesforceSchemaConnection connection = null;
+        MetadataTable metadataTable = null;
+        boolean creation = false;
+        if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+            ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            String tableLabel = (String) node.getProperties(EProperties.LABEL);
+
+            SalesforceSchemaConnectionItem item = null;
+            // if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
+            //
+            // item = (SalesforceSchemaConnectionItem) node.getParent().getObject().getProperty().getItem();
+            // connection = (SalesforceSchemaConnection) item.getConnection();
+            // metadataTable = TableHelper.findByLabel(connection, tableLabel);
+            // creation = false;
+            // } else if (nodeType == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
+            // item = (SalesforceSchemaConnectionItem) node.getObject().getProperty().getItem();
+            // connection = (SalesforceSchemaConnection) item.getConnection();
+            // metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            // String nextId = ProxyRepositoryFactory.getInstance().getNextId();
+            // metadataTable.setId(nextId);
+            // metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
+            // creation = true;
+            // } else
+            if (nodeType == ERepositoryObjectType.METADATA_SALESFORCE_MODULE) {
+                item = (SalesforceSchemaConnectionItem) node.getObject().getProperty().getItem();
+                connection = (SalesforceSchemaConnection) item.getConnection();
+                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
+                metadataTable.setId(nextId);
+                metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
+                creation = false;
+            } else {
+                return;
+
+            }
+            initContextMode(item);
+            // set the repositoryObject, lock and set isRepositoryObjectEditable
+            SalesforceSchemasWizard salesforceSchemasWizard = new SalesforceSchemasWizard(PlatformUI.getWorkbench(), creation,
+                    node.getObject(), metadataTable, getExistingNames(), forceReadOnly, null, null, node.getProperties(
+                            EProperties.LABEL).toString());
+            // salesforceSchemaWizard.setRepositoryObject(node.getObject());
+
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), salesforceSchemasWizard);
+            handleWizard(node, wizardDialog);
+        }
+    }
+
+    public void createSalesforceModuleWizard(RepositoryNode node, final boolean forceReadOnly) {
+        SalesforceSchemaConnection connection = null;
+        MetadataTable metadataTable = null;
+        boolean creation = false;
+        if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+            ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            String tableLabel = (String) node.getProperties(EProperties.LABEL);
+
+            SalesforceSchemaConnectionItem item = null;
+            if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
+
+                item = (SalesforceSchemaConnectionItem) node.getParent().getObject().getProperty().getItem();
+                connection = (SalesforceSchemaConnection) item.getConnection();
+                metadataTable = TableHelper.findByLabel(connection, tableLabel);
+                creation = false;
+            } else if (nodeType == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
+                item = (SalesforceSchemaConnectionItem) node.getObject().getProperty().getItem();
+                connection = (SalesforceSchemaConnection) item.getConnection();
+                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
+                metadataTable.setId(nextId);
+                metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
+                creation = true;
+            } else if (nodeType == ERepositoryObjectType.METADATA_SALESFORCE_MODULE) {
+                item = (SalesforceSchemaConnectionItem) node.getObject().getProperty().getItem();
+                connection = (SalesforceSchemaConnection) item.getConnection();
+                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
+                metadataTable.setId(nextId);
+                metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
+                creation = false;
+            } else {
+                return;
+
+            }
+            initContextMode(item);
+            // set the repositoryObject, lock and set isRepositoryObjectEditable
+            SalesforceModulesWizard salesforceSchemaWizard = new SalesforceModulesWizard(PlatformUI.getWorkbench(), creation,
+                    node.getObject(), metadataTable, getExistingNames(), forceReadOnly, null, null);
+            // salesforceSchemaWizard.setRepositoryObject(node.getObject());
 
             WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), salesforceSchemaWizard);
             handleWizard(node, wizardDialog);

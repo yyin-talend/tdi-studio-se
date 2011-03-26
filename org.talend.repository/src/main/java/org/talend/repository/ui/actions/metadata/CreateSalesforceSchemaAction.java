@@ -37,11 +37,11 @@ import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.Sal
 
 public class CreateSalesforceSchemaAction extends AbstractCreateAction {
 
-    private static final String EDIT_LABEL = Messages.getString("CreateSalesforceSchemaAction.action.editTitle"); //$NON-NLS-1$
+    private static final String CREATE_LABEL = Messages.getString("CreateSalesforceSchemaAction.createConnection"); //$NON-NLS-1$
 
-    private static final String CREATE_LABEL = Messages.getString("CreateSalesforceSchemaAction.action.createTitle"); //$NON-NLS-1$
+    private static final String EDIT_LABEL = Messages.getString("CreateSalesforceSchemaAction.editConnection"); //$NON-NLS-1$
 
-    private static final String OPEN_LABEL = Messages.getString("CreateSalesforceSchemaAction.action.openTitle"); //$NON-NLS-1$
+    private static final String OPEN_LABEL = Messages.getString("CreateSalesforceSchemaAction.editConnection"); //$NON-NLS-1$
 
     protected static final int WIZARD_WIDTH = 800;
 
@@ -94,8 +94,8 @@ public class CreateSalesforceSchemaAction extends AbstractCreateAction {
             salesForceSchemaWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), salesForceSchemaWizard);// TODO send
         } else {
-            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new SalesforceSchemaWizard(PlatformUI
-                    .getWorkbench(), creation, repositoryNode, getExistingNames(), false));
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new SalesforceSchemaWizard(
+                    PlatformUI.getWorkbench(), creation, repositoryNode, getExistingNames(), false));
         }
 
         if (!creation) {
