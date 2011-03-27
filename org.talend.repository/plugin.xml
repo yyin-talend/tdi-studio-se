@@ -1133,6 +1133,13 @@
              id="org.talend.repository.model.migration.SalesforceTimeoutMigrationTask"
              name="SalesforceTimeoutMigrationTask">
        </projecttask>
+         <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.SalesforceMultiSchemaMigrationTask"
+             description="SalesforceMultiSchemaMigrationTask"
+             id="org.talend.repository.model.migration.SalesforceMultiSchemaMigrationTask"
+             name="SalesforceMultiSchemaMigrationTask">
+       </projecttask>
        <projecttask
              beforeLogon="false"
              class="org.talend.repository.model.migration.MysqlOutputDBVersionForBug13250"

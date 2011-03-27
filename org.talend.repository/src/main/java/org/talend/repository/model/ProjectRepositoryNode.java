@@ -1349,7 +1349,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
                 RepositoryNode tableNode = createMetatableNode(node, repObj, metadataTable, repositoryObjectType);
                 if (SubItemHelper.isDeleted(metadataTable)) {
-                    recBinNode.getChildren().add(tableNode);
+                    // no need to do anything here, the deleted table will be added in function addItemToRecycleBin
                 } else {
                     node.getChildren().add(tableNode);
                 }
