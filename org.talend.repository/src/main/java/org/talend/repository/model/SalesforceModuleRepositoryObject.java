@@ -27,6 +27,8 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.model.ISubRepositoryObject;
+import org.talend.cwm.helper.SubItemHelper;
+
 import orgomg.cwm.objectmodel.core.ModelElement;
 
 /**
@@ -80,6 +82,15 @@ public class SalesforceModuleRepositoryObject extends RepositoryObject implement
     @Override
     public String getLabel() {
         return moduleUnit.getLabel();
+    }
+
+    @Override
+    public boolean isDeleted() {
+        final AbstractMetadataObject abstractMetadataObject = getAbstractMetadataObject();
+        if (abstractMetadataObject != null) {
+            return SubItemHelper.isDeleted(abstractMetadataObject);
+        }
+        return false;
     }
 
     @Override

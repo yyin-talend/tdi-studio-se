@@ -109,11 +109,11 @@
             name="Metadata/Create Salesforce Modules"/>
       <Action
             class="org.talend.repository.ui.actions.metadata.CreateSalesforceSchemasAction"
-            id="org.talend.repository.actions.createSalesforceModulesAction"
+            id="org.talend.repository.actions.CreateSalesforceSchemasAction"
             isEditAction="true"
             isReadAction="true"
             level="10"
-            name="Metadata/Create Salesforce Modules"/>
+            name="Metadata/Create Salesforce Schemas"/>
       <Action
             class="org.talend.repository.ui.actions.documentation.CreateDocumentationAction"
             id="org.talend.repository.actions.createdocumentation"
