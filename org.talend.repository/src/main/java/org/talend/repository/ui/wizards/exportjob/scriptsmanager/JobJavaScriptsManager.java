@@ -820,8 +820,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 List<URL> fileURLs = FilesUtils.getFileURLs(targetFile);
                 for (URL url : fileURLs) {
                     String path = url.getPath();
-                    String relPath = path.replace("/", "\\").replace(getTmpFolder(), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    relPath = relPath.substring(0, relPath.lastIndexOf("\\")); //$NON-NLS-1$
+                    String relPath = path.replace(getTmpFolder().replace("\\", "/"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    relPath = relPath.substring(0, relPath.lastIndexOf("/")); //$NON-NLS-1$
                     resource.addResource(relPath, url);
                 }
             }
