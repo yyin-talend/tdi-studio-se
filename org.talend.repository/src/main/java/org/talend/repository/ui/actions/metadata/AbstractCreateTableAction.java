@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.actions.metadata;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,12 +30,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.database.conn.DatabaseConnStrUtil;
 import org.talend.core.database.conn.template.EDatabaseConnTemplate;
 import org.talend.core.model.metadata.IMetadataConnection;
-import org.talend.core.model.metadata.MetadataFillFactory;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -55,7 +52,6 @@ import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
-import org.talend.core.model.metadata.builder.util.MetadataConnectionUtils;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
@@ -87,7 +83,6 @@ import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceModulesWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceSchemaTableWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceSchemasWizard;
-import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SelectorModulesWizardPage;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaTableWizard;
 import org.talend.repository.ui.wizards.metadata.connection.ldap.LDAPSchemaTableWizard;
 import org.talend.repository.ui.wizards.metadata.connection.wsdl.WSDLSchemaTableWizard;
@@ -101,8 +96,6 @@ import org.talend.repository.ui.wizards.metadata.table.files.FileXmlTableWizard;
 import orgomg.cwm.objectmodel.core.Package;
 import orgomg.cwm.resource.record.RecordFactory;
 import orgomg.cwm.resource.record.RecordFile;
-import orgomg.cwm.resource.relational.Catalog;
-import orgomg.cwm.resource.relational.Schema;
 
 /**
  * DOC smallet class global comment. Detailed comment <br/>
@@ -919,29 +912,6 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
                             if (creation) {
                                 managerConnection.check(metadataConnection);
-
-                                // fill catalog/schema to connection
-                                List<Catalog> catalogList = ConnectionHelper.getCatalogs(connection);
-                                List<Schema> schemaList = ConnectionHelper.getSchema(connection);
-                                if (catalogList.isEmpty() && schemaList.isEmpty()) {
-                                    IMetadataConnection newMetadataConn = MetadataFillFactory.getDBInstance().fillUIParams(
-                                            connection);
-                                    connection = (DatabaseConnection) MetadataFillFactory.getDBInstance().fillUIConnParams(
-                                            newMetadataConn, connection);
-                                    java.sql.Connection sqlConn = (java.sql.Connection) MetadataConnectionUtils.checkConnection(
-                                            newMetadataConn).getObject();
-
-                                    if (sqlConn != null) {
-                                        try {
-                                            MetadataFillFactory.getDBInstance().fillCatalogs(connection, sqlConn.getMetaData(),
-                                                    MetadataConnectionUtils.getPackageFilter(connection, sqlConn.getMetaData()));
-                                            MetadataFillFactory.getDBInstance().fillSchemas(connection, sqlConn.getMetaData(),
-                                                    MetadataConnectionUtils.getPackageFilter(connection, sqlConn.getMetaData()));
-                                        } catch (SQLException e) {
-                                            ExceptionHandler.process(e);
-                                        }
-                                    }
-                                }
                                 EList<Package> dp = connection.getDataPackage();
                                 Collection<Package> newDataPackage = EcoreUtil.copyAll(dp);
                                 ConnectionHelper.addPackages(newDataPackage,
