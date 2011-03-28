@@ -67,7 +67,7 @@ if(useXMLField){
     				if(inputCol.getLabel().equals(xmlField))
     				{
 %>
-	String xmlStr_<%=cid%> = <%=inConn.getName()%>.<%=xmlField%>;
+	String xmlStr_<%=cid%> = <%=inConn.getName()%>.<%=xmlField%><%="id_Document".equals(inputCol.getTalendType())?".toString()":""%>;
 <%
     					break;
     				}

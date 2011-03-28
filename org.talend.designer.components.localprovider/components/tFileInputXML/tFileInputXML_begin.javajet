@@ -781,10 +781,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 									isNotSetDefault=true;
 								}
 								
+
 								if(("Dom4j").equals(mode) && ("true").equals(nodeCheck)){
+									if("id_Document".equals(column.getTalendType())) {
 %>
-								<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>;
+										<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Document(str_<%=cid %>);
 <%
+									} else {
+%>
+										<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>;
+<%
+									}
 									continue;
 								}
 								if(javaType == JavaTypesManager.STRING){
