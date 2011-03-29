@@ -229,11 +229,19 @@ class GenerateToolByDom4j{
 <%
 				}
 			}else{
+				if("id_Document".equals(node.relatedColumn.getTalendType())) {
 %>
-		if(<%tool.getValue(node); %>!=null){
-			nestXMLTool_<%=cid%> .setText(<%=currEleName%>_<%=cid%>,<%tool.getValue(node);%>);
-		}
+					if(<%tool.getValue(node); %>!=null){
+						nestXMLTool_<%=cid%> .setText(<%=currEleName%>_<%=cid%>, ParserUtils.parseTo_Document(<%tool.getValue(node);%>).getDocument().getRootElement().asXML());
+					}
 <%
+				} else {
+%>
+					if(<%tool.getValue(node); %>!=null){
+						nestXMLTool_<%=cid%> .setText(<%=currEleName%>_<%=cid%>,<%tool.getValue(node);%>);
+					}
+<%
+				}
 				if(outputAsXSD){
 %>
 		else{
