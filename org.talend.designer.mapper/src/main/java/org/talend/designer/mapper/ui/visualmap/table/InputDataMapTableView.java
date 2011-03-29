@@ -512,7 +512,6 @@ public class InputDataMapTableView extends DataMapTableView {
         boolean isMainConnection = ((InputTable) getDataMapTable()).isMainConnection();
         TableViewerCreatorColumn column = null;
         if (!isMainConnection) {
-
             column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
             column.setTitle(Messages.getString("InputDataMapTableView.columnTitle.Expr")); //$NON-NLS-1$
             column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
@@ -567,7 +566,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
             });
             columnOperator.setModifiable(true);
-            columnOperator.setWidth(80);
+            columnOperator.setWidth(0);
 
             String[] operators = Operator.getLiterals().toArray(new String[0]);
             String[] arrayOperators = new String[operators.length + 1];
