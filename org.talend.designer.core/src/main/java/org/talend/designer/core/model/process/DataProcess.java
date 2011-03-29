@@ -1500,6 +1500,18 @@ public class DataProcess {
             }
         }
 
+        for (INode node : graphicalNodeList) {
+            boolean exist = false;
+            for (INode newNode : newGraphicalNodeList) {
+                if (node.getUniqueName().equals(newNode.getUniqueName())) {
+                    exist = true;
+                }
+            }
+            if (!exist && node.isELTComponent()) {
+                buildDataNodeFromNode((Node) node);
+            }
+        }
+
         // build data nodes from graphical nodes.
         // DataNode are the real objects used by code generation (we don't use Node class)
         for (INode node : newGraphicalNodeList) {
