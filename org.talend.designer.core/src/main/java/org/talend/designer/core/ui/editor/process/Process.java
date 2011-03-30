@@ -129,7 +129,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType
 import org.talend.designer.core.model.utils.emf.talendfile.SubjobType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.cmd.LoadProjectSettingsCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -1464,8 +1463,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         checkStartNodes();
         // (bug 5365)
         checkNodeTableParameters();
+
+        // this fix caused another problem 14736 , project settings should be reload in
+        // ImportItemUtil.importItemRecord()
         // bug 16351
-        checkProjectsettingParameters();
+        // checkProjectsettingParameters();
 
         // loadNodeContainer(processType);
         // bug 6158
@@ -1555,22 +1557,23 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
-    private void checkProjectsettingParameters() {
-        boolean statsLog = (Boolean) this.getElementParameter(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName())
-                .getValue();
-        if (statsLog) {
-            LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(this,
-                    EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), statsLog);
-            command.execute();
-        }
-        boolean implicit = (Boolean) this.getElementParameter(EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName())
-                .getValue();
-        if (implicit) {
-            LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(this,
-                    EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), implicit);
-            command.execute();
-        }
-    }
+    // private void checkProjectsettingParameters() {
+    // boolean statsLog = (Boolean) this.getElementParameter(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName())
+    // .getValue();
+    // if (statsLog) {
+    // LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(this,
+    // EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), statsLog);
+    // command.execute();
+    // }
+    // boolean implicit = (Boolean)
+    // this.getElementParameter(EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName())
+    // .getValue();
+    // if (implicit) {
+    // LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(this,
+    // EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), implicit);
+    // command.execute();
+    // }
+    // }
 
     private List<NodeType> unloadedNode = null;
 
