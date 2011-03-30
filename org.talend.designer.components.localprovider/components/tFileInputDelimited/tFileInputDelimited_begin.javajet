@@ -17,6 +17,14 @@
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     final String cid = node.getUniqueName();	
+	
+	String vcid = "";
+
+	String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
+	if(destination!=null && !"".equals(destination)){
+		vcid = destination;
+	}
+	
 		
 	class GenerateCode{
 		public int colLen = 0; // the length of the column in the input schema
@@ -66,6 +74,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	IMetadataTable metadata = metadatas.get(0);
 	if (metadata!=null) {
 		String filename = ElementParameterParser.getValue(node,"__FILENAME__");
+		
+		if(!("".equals(vcid))) {
+			filename = "\""+filename.substring(1, filename.length()-1)+vcid+"\"";
+		}
+		
     	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     	String header = ElementParameterParser.getValue(node, "__HEADER__");
     	if(("").equals(header)){
