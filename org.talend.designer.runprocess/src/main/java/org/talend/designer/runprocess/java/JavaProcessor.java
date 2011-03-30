@@ -31,14 +31,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -50,7 +44,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -81,7 +74,6 @@ import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.jface.text.formatter.MultiPassContentFormatter;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
-import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
@@ -664,7 +656,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * @throws JavaModelException
      */
     private IPackageFragment getProjectPackage(String packageName) throws JavaModelException {
-        
+
         IJavaProject javaProject = JavaProcessorUtilities.getJavaProject();
 
         IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(javaProject.getProject().getFolder(
@@ -680,9 +672,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     public static void createInternalPackage() {
 
         IJavaProject javaProject = JavaProcessorUtilities.getJavaProject();
-        
-        IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(
-                javaProject.getProject().getFolder(JavaUtils.JAVA_SRC_DIRECTORY));
+
+        IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(javaProject.getProject().getFolder(
+                JavaUtils.JAVA_SRC_DIRECTORY));
         IPackageFragment leave = root.getPackageFragment("internal"); //$NON-NLS-1$
         if (!leave.exists()) {
             try {
@@ -839,19 +831,17 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                     neededLibraries.add(moduleNeeded.getModuleName());
                 }
             }
-        } else { // this will avoid to add all libraries, only the needed
-            // libraries will be added
-            if (process instanceof IProcess2 && property != null && property.getItem() instanceof ProcessItem) {
-                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines((ProcessItem) property
-                        .getItem());
-                for (ModuleNeeded moduleNeeded : modulesNeededs) {
-                    neededLibraries.add(moduleNeeded.getModuleName());
-                }
+        }
+        if (process instanceof IProcess2 && property != null && property.getItem() instanceof ProcessItem) {
+            List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines((ProcessItem) property
+                    .getItem());
+            for (ModuleNeeded moduleNeeded : modulesNeededs) {
+                neededLibraries.add(moduleNeeded.getModuleName());
+            }
 
-            } else {
-                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
-                    neededLibraries.add(moduleNeeded.getModuleName());
-                }
+        } else {
+            for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+                neededLibraries.add(moduleNeeded.getModuleName());
             }
         }
 
@@ -884,7 +874,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 projectPath = projectPath.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
             }
         } else {
-            IFolder classesFolder = JavaProcessorUtilities.getJavaProject().getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY);
+            IFolder classesFolder = JavaProcessorUtilities.getJavaProject().getProject()
+                    .getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY);
             IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
             projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath).toOSString()
                     + classPathSeparator;

@@ -229,7 +229,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         processItem.getProperty().getId(), selectedJobVersion));
             } else {
                 LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId(),
-                        processItem.getProperty().getVersion(), new HashSet<String>());
+                        processItem.getProperty().getVersion(), neededLibraries);
                 LastGenerationInfo.getInstance().setLastMainJob(null);
             }
             List<URL> resources = new ArrayList<URL>();
