@@ -13,8 +13,10 @@
 package org.talend.sqlbuilder.ui;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -35,6 +37,7 @@ import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
@@ -288,6 +291,7 @@ public class DBStructureComposite extends Composite {
         treeViewer.addFilter(filter);
         treeViewer.setInput(new RepositoryNode(null, null, ENodeType.SYSTEM_FOLDER));
         doExpand();
+        treeViewer.setSorter(new DBTreeViewerSorter());
         treeViewer.addTreeListener(new ITreeViewerListener() {
 
             public void treeCollapsed(TreeExpansionEvent event) {
@@ -680,5 +684,25 @@ public class DBStructureComposite extends Composite {
 
     public DBTreeProvider getTreeLabelProvider() {
         return this.treeLabelProvider;
+    }
+
+    /**
+     * 
+     * DOC guanglong.du DBStructureComposite class global comment. Detailled comment
+     */
+    class DBTreeViewerSorter extends ViewerSorter {
+
+        private final Collator col = Collator.getInstance(Locale.getDefault());
+
+        int updown = 1;
+
+        public int compare(Viewer viewer, Object e1, Object e2) {
+            RepositoryNode t1 = (RepositoryNode) e1;
+            RepositoryNode t2 = (RepositoryNode) e2;
+
+            String v1 = (t1.getObject().getLabel());
+            String v2 = (t2.getObject().getLabel());
+            return (col.compare(v1, v2)) * updown;
+        }
     }
 }
