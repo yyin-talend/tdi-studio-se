@@ -269,7 +269,7 @@ if("FR".equalsIgnoreCase(currentLanguage)) {
 						temp_row_<%=cid%>[i] = content;
 					} else {
     					String literal = temp_row_<%=cid%>[i];
-    					if(literal!=null && (literal.indexOf("E")!=-1)) {
+    					if(literal!=null) {
     						literal = df.format(((jxl.NumberCell)cell_<%=cid%>).getValue());
     					}
     					temp_row_<%=cid%>[i] = literal;
