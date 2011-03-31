@@ -64,7 +64,7 @@ public class UseDynamicJobSelectionDialog extends Dialog {
 
     String repositoryType;
 
-    ITypeProcessor typeProcessor;
+    // ITypeProcessor typeProcessor;
 
     private Button upBtn;
 
