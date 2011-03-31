@@ -96,9 +96,9 @@ public class SessionTreeNodeManager {
      * @param selectedContext
      * @return INode
      */
-    public INode convert2INode(RepositoryNode repositoryNode, String selectedContext) throws Exception {
+    public INode convert2INode(RepositoryNode repositoryNode, String selectedContext, SessionTreeNode sessionTreeNode)
+            throws Exception {
         // Creates the SessionTreeNode.
-        SessionTreeNode sessionTreeNode = getSessionTreeNode(repositoryNode, selectedContext);
         RepositoryNodeType nodeType = getRepositoryType(repositoryNode);
         if (nodeType.equals(RepositoryNodeType.DATABASE)) {
             // processes the database
@@ -130,7 +130,7 @@ public class SessionTreeNodeManager {
             // Processes the column.
             // Gets the repositoryNode's parent,should be the repositoryNode of table infomation.
             repositoryNode = repositoryNode.getParent();
-            return convert2INode(repositoryNode, selectedContext);
+            return convert2INode(repositoryNode, selectedContext, sessionTreeNode);
         }
         return null;
     }

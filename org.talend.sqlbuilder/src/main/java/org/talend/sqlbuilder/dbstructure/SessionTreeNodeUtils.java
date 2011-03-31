@@ -25,9 +25,12 @@ import net.sourceforge.sqlexplorer.SQLAlias;
 import net.sourceforge.squirrel_sql.fw.sql.ISQLAlias;
 import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 
+import org.talend.core.database.EDatabase4DriverClassName;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.database.DriverShim;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
@@ -96,7 +99,21 @@ public class SessionTreeNodeUtils {
             url = iMetadataConnection.getUrl();
         }
 
-        SQLConnection connection = createSQLConnection(dbconnection, selectedContext);
+        // bug 17980
+        SQLConnection connection = null;
+        DriverShim wapperDriver = null;
+        List list = createSQLConnection(dbconnection, selectedContext);
+        if (list != null && list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i) instanceof SQLConnection) {
+                    connection = (SQLConnection) list.get(i);
+                }
+                if (list.get(i) instanceof DriverShim) {
+                    wapperDriver = (DriverShim) list.get(i);
+                }
+            }
+        }
+
         ISQLAlias alias = createSQLAlias("Repository Name", url, dbconnection.getUsername(), dbconnection //$NON-NLS-1$
                 .getPassword(),
         // fix bug for 7014,added by hyWang
@@ -104,8 +121,17 @@ public class SessionTreeNodeUtils {
                         : dbconnection.getDatasourceName()) : dbconnection.getSID());
         SessionTreeModel stm = new SessionTreeModel();
         SessionTreeNode session;
-        session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null,
-                dbconnection.getPassword(), repositoryNode);
+        if (((wapperDriver != null)
+                && iMetadataConnection.getDriverClass().equals(EDatabase4DriverClassName.JAVADB_EMBEDED.getDriverClass())
+                || iMetadataConnection.getDbType().equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
+                || iMetadataConnection.getDbType().equals(EDatabaseTypeName.JAVADB_DERBYCLIENT.getDisplayName()) || iMetadataConnection
+                .getDbType().equals(EDatabaseTypeName.JAVADB_JCCJDBC.getDisplayName()))) {
+            session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null,
+                    dbconnection.getPassword(), repositoryNode, wapperDriver);
+        } else {
+            session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null,
+                    dbconnection.getPassword(), repositoryNode);
+        }
         return session;
     }
 
@@ -151,14 +177,18 @@ public class SessionTreeNodeUtils {
         return sqlConnection;
     }
 
-    private static SQLConnection createSQLConnection(DatabaseConnection con, String selectedContext) throws Exception {
+    private static List createSQLConnection(DatabaseConnection con, String selectedContext) throws Exception {
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(con, false, selectedContext);
-        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
+        // bug 17980
+        List list = ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
                 iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(),
                 iMetadataConnection.getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(),
                 iMetadataConnection.getDbVersionString(), iMetadataConnection.getAdditionalParams());
         SQLConnection sqlConnection = new SQLConnection(ExtractMetaDataUtils.conn, null);
-        return sqlConnection;
+        if (sqlConnection != null) {
+            list.add(sqlConnection);
+        }
+        return list;
     }
 
     /**

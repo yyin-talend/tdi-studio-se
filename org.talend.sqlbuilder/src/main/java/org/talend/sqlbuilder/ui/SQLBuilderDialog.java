@@ -48,6 +48,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.database.EDatabase4DriverClassName;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -80,6 +82,7 @@ import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.ImageUtil;
 import org.talend.sqlbuilder.util.UIUtils;
 
@@ -446,7 +449,13 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         IMetadataConnection iMetadataConnection = null;
         iMetadataConnection = ConvertionHelper.convert(databaseConnection, false, selectedContext);
         String dbType = iMetadataConnection.getDbType();
-        if ((dbType.equals("JavaDB Embeded") || dbType.equals("General JDBC") || dbType.equals("HSQLDB In-Process"))) {
+        String driverClassName = iMetadataConnection.getDriverClass();
+        if (driverClassName.equals(EDatabase4DriverClassName.JAVADB_EMBEDED.getDriverClass())
+                || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
+                || dbType.equals(EDatabaseTypeName.JAVADB_DERBYCLIENT.getDisplayName())
+                || dbType.equals(EDatabaseTypeName.JAVADB_JCCJDBC.getDisplayName())
+                || dbType.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName())) {
+
             String username = iMetadataConnection.getUsername();
             String pwd = iMetadataConnection.getPassword();
             String dbVersion = iMetadataConnection.getDbVersionString();
@@ -455,7 +464,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             Connection connection = null;
             DriverShim wapperDriver = null;
             try {
-                List list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, iMetadataConnection.getDriverClass(),
+                List list = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName,
                         iMetadataConnection.getDriverJarPath(), dbVersion, iMetadataConnection.getAdditionalParams());
                 if (list != null && list.size() > 0) {
                     for (int i = 0; i < list.size(); i++) {
@@ -646,6 +655,10 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
         private Shell shell;
 
+        SessionTreeNode sessionTreeNode;
+
+        DriverShim wapperDriver = null;
+
         /**
          * qianbing RefreshDetailCompositeAction constructor comment.
          * 
@@ -700,7 +713,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                                         if (SQLBuilderRepositoryNodeManager.getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER) {
                                             return;
                                         }
-                                        node = nodeManager.convert2INode(repositoryNode, selectedContext);
+                                        sessionTreeNode = nodeManager.getSessionTreeNode(repositoryNode, selectedContext);
+                                        node = nodeManager.convert2INode(repositoryNode, selectedContext, sessionTreeNode);
                                     } catch (Exception e) {
                                         msg = e.getMessage();
                                         SqlBuilderPlugin.log(msg, e);
@@ -708,6 +722,16 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                                     final INode argNode = node;
                                     final String argMsg = msg;
                                     dbDetailsComposite.setSelectedNode(argNode, argMsg);
+
+                                    // bug 17980
+                                    wapperDriver = sessionTreeNode.getWapperDriver();
+                                    if (wapperDriver != null) {
+                                        try {
+                                            wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
+                                        } catch (SQLException e) {
+                                            // exception of shutdown success. no need to catch.
+                                        }
+                                    }
                                 }
                             }
                         });

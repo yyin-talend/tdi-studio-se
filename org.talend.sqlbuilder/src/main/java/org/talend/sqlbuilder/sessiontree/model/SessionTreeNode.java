@@ -28,9 +28,10 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.database.DriverShim;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbdetail.DetailTabManager;
@@ -92,6 +93,8 @@ public class SessionTreeNode implements ISessionTreeNode {
 
     private RepositoryNode repositoryNode;
 
+    DriverShim wapperDriver = null;
+
     /**
      * 
      * @param conn
@@ -113,6 +116,31 @@ public class SessionTreeNode implements ISessionTreeNode {
         parent.add(this);
         this.password = password;
         this.repositoryNode = repositoryNode;
+    }
+
+    /**
+     * bug 17980 DOC SessionTreeNode constructor comment.
+     * 
+     * @param conn
+     * @param alias
+     * @param md
+     * @param monitor
+     * @param password
+     * @param repositoryNode
+     * @param wapperDriver
+     */
+    public SessionTreeNode(final SQLConnection[] conn, ISQLAlias alias, SessionTreeModel md, IProgressMonitor monitor,
+            final String password, RepositoryNode repositoryNode, DriverShim wapperDriver) {
+        interactiveConnection = conn[0];
+        backgroundConnection = conn[1];
+        this.alias = alias;
+        dbModel = new DatabaseModel(this);
+        this.model = md;
+        this.parent = md.getRoot();
+        parent.add(this);
+        this.password = password;
+        this.repositoryNode = repositoryNode;
+        this.wapperDriver = wapperDriver;
     }
 
     /**
@@ -310,6 +338,13 @@ public class SessionTreeNode implements ISessionTreeNode {
      */
     public Dictionary getDictionary() {
         return dictionary;
+    }
+
+    /**
+     * @return wapperDriver
+     */
+    public DriverShim getWapperDriver() {
+        return this.wapperDriver;
     }
 
     /**

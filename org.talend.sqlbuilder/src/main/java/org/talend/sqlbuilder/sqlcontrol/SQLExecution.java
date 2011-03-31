@@ -13,6 +13,7 @@
 package org.talend.sqlbuilder.sqlcontrol;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.eclipse.swt.SWT;
@@ -20,6 +21,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.talend.core.model.metadata.builder.database.DriverShim;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dataset.dataset.DataSet;
@@ -110,6 +112,16 @@ public class SQLExecution extends AbstractSQLExecution {
                 stmt.close();
             } catch (Exception e) {
                 SqlBuilderPlugin.log(Messages.getString("SQLExecution.logMessage2"), e); //$NON-NLS-1$
+            } finally {
+                // bug 17980
+                DriverShim wapperDriver = session.getWapperDriver();
+                if (wapperDriver != null) {
+                    try {
+                        wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
+                    } catch (SQLException e) {
+                        // exception of shutdown success. no need to catch.
+                    }
+                }
             }
         }
         stmt = null;
@@ -199,6 +211,16 @@ public class SQLExecution extends AbstractSQLExecution {
 
             closeStatement();
             throw e;
+        } finally {
+            // bug 17980
+            DriverShim wapperDriver = session.getWapperDriver();
+            if (wapperDriver != null) {
+                try {
+                    wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
+                } catch (SQLException e) {
+                    // exception of shutdown success. no need to catch.
+                }
+            }
         }
 
     }
@@ -207,8 +229,9 @@ public class SQLExecution extends AbstractSQLExecution {
      * Cancel sql execution and close execution tab.
      */
     public void doStop() {
-
-        if (stmt != null) {
+        // wapperdriver is not null such as derby
+        DriverShim wapperDriver = session.getWapperDriver();
+        if (stmt != null && wapperDriver == null) {
 
             try {
                 stmt.cancel();

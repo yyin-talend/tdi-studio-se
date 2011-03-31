@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.database.EDatabase4DriverClassName;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.model.metadata.builder.database.DriverShim;
@@ -181,7 +182,12 @@ public class DbInfo {
             ExceptionHandler.process(e);
         } finally {
             // bug 9162
-            if ((dbType.equals("JavaDB Embeded") || dbType.equals("General JDBC")) && wapperDriver != null) { //$NON-NLS-1$
+            if ((driverClassName.equals(EDatabase4DriverClassName.JAVADB_EMBEDED.getDriverClass())
+                    || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
+                    || dbType.equals(EDatabaseTypeName.JAVADB_DERBYCLIENT.getDisplayName())
+                    || dbType.equals(EDatabaseTypeName.JAVADB_JCCJDBC.getDisplayName())
+                    || dbType.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName()) || dbType
+                    .equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) && wapperDriver != null) {
                 try {
                     wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
                 } catch (SQLException e) {

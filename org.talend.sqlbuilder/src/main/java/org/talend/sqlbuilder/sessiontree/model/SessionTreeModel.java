@@ -17,6 +17,7 @@ import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
+import org.talend.core.model.metadata.builder.database.DriverShim;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -68,12 +69,24 @@ public class SessionTreeModel implements ISessionTreeNode {
      * @return SessionTreeNode SessionTreeNode
      * @exception InterruptedException .
      */
-    public SessionTreeNode createSessionTreeNode(SQLConnection[] conn, ISQLAlias alias, IProgressMonitor monitor,
-            String pswd, RepositoryNode repositoryNode) throws InterruptedException {
+    public SessionTreeNode createSessionTreeNode(SQLConnection[] conn, ISQLAlias alias, IProgressMonitor monitor, String pswd,
+            RepositoryNode repositoryNode) throws InterruptedException {
 
         SessionTreeNode node = null;
         try {
             node = new SessionTreeNode(conn, alias, this, monitor, pswd, repositoryNode);
+        } finally {
+            modelChanged(node);
+        }
+        return node;
+    }
+
+    public SessionTreeNode createSessionTreeNode(SQLConnection[] conn, ISQLAlias alias, IProgressMonitor monitor, String pswd,
+            RepositoryNode repositoryNode, DriverShim wapperDriver) throws InterruptedException {
+
+        SessionTreeNode node = null;
+        try {
+            node = new SessionTreeNode(conn, alias, this, monitor, pswd, repositoryNode, wapperDriver);
         } finally {
             modelChanged(node);
         }
