@@ -18,6 +18,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -56,16 +60,18 @@ public class ReadQueriesAction extends AContextualAction {
             repositoryNode = (RepositoryNode) selection.getFirstElement();
         }
 
+        DatabaseConnectionItem dbConnectionItem = null;
         ConnectionParameters connParameters = new ConnectionParameters();
         if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
+            dbConnectionItem = (DatabaseConnectionItem) repositoryNode.getObject().getProperty().getItem();
             connParameters.setRepositoryName(repositoryNode.getObject().getLabel());
             connParameters.setRepositoryId(repositoryNode.getObject().getId());
             connParameters.setQuery(""); //$NON-NLS-1$
         } else if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
             QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) repositoryNode.getObject();
-            DatabaseConnectionItem parent = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();
-            connParameters.setRepositoryName(parent.getProperty().getLabel());
-            connParameters.setRepositoryId(parent.getProperty().getId());
+            dbConnectionItem = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();
+            connParameters.setRepositoryName(dbConnectionItem.getProperty().getLabel());
+            connParameters.setRepositoryId(dbConnectionItem.getProperty().getId());
             connParameters.setQueryObject(queryRepositoryObject.getQuery());
             connParameters.setQuery(queryRepositoryObject.getQuery().getValue());
         }
@@ -77,6 +83,11 @@ public class ReadQueriesAction extends AContextualAction {
 
         dial.setReadOnly(true);
 
+        Connection connection = dbConnectionItem.getConnection();
+        if (connection instanceof DatabaseConnection) {
+            IMetadataConnection imetadataConnection = ConvertionHelper.convert((DatabaseConnection) connection, true);
+            connParameters.setSchema(imetadataConnection.getSchema());
+        }
         connParameters.setNodeReadOnly(true);
         connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);

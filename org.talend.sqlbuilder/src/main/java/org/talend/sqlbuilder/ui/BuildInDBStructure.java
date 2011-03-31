@@ -43,7 +43,6 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
-import org.talend.core.model.metadata.MetadataConnection;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -74,7 +73,9 @@ public class BuildInDBStructure extends SashForm {
 
     private IMetadataConnection parentMetadata;
 
-    private String schema = QueryUtil.DEFAULT_TABLE_NAME;
+    private SchemaTreeNode<IMetadataTable> schemaNode;
+
+    private String schema = QueryUtil.DEFAULT_SCHEMA_NAME;
 
     private final ConnectionParameters connectionParameters;
 
@@ -86,7 +87,9 @@ public class BuildInDBStructure extends SashForm {
         this.dialog = dialog;
         this.metadataTable = connectionParameters.getMetadataTable();
         this.connectionParameters = connectionParameters;
-        schema = getTableName(connectionParameters);
+        // schema = getTableName(connectionParameters);
+        schema = connectionParameters.getSchema() != null && !connectionParameters.getSchema().equals("") ? connectionParameters
+                .getSchema() : schema;
         addCompnoents();
         setWeights(new int[] { 1, 2 });
     }
@@ -148,15 +151,21 @@ public class BuildInDBStructure extends SashForm {
         SchemaTreePrivder schemaTreePrivder = new SchemaTreePrivder();
         treeViewer.setContentProvider(schemaTreePrivder);
         treeViewer.setLabelProvider(schemaTreePrivder);
-        parentMetadata = new MetadataConnection();
-        List<IMetadataTable> tables = new ArrayList<IMetadataTable>();
+
         if (metadataTable == null) {
             metadataTable = new MetadataTable();
             metadataTable.setListColumns(new ArrayList<IMetadataColumn>());
         }
-        tables.add(metadataTable);
-        parentMetadata.setListTables(tables);
-        treeViewer.setInput(parentMetadata);
+
+        SchemaTreeNode<SchemaTreeNode<IMetadataTable>> root = new SchemaTreeNode<SchemaTreeNode<IMetadataTable>>();
+        schemaNode = new SchemaTreeNode<IMetadataTable>(schema);
+        schemaNode.setParent(root);
+        root.addChildren(schemaNode);
+        if (metadataTable.getLabel() != null) {
+            schemaNode.addChildren(metadataTable);
+        }
+        treeViewer.setInput(root);
+
         generateSelectAction = new GenerateSqlAction(treeViewer);
         addContextMenu();
     }
@@ -176,6 +185,65 @@ public class BuildInDBStructure extends SashForm {
         });
         Menu contextMenu = menuMgr.createContextMenu(treeViewer.getTree());
         treeViewer.getTree().setMenu(contextMenu);
+    }
+
+    /***
+     * DOC ycbai BuildInDBStructure.SchemaTreeNode class global comment. Detailled comment
+     */
+    class SchemaTreeNode<E> {
+
+        private String name;
+
+        private Object parent;
+
+        private List<E> children = new ArrayList<E>();
+
+        /**
+         * DOC ycbai BuildInDBStructure.SchemaTreeNode constructor comment.
+         */
+        public SchemaTreeNode() {
+        }
+
+        public SchemaTreeNode(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public List<E> getChildren() {
+            return this.children;
+        }
+
+        public void addChildren(List<E> children) {
+            this.children.addAll(children);
+        }
+
+        public void addChildren(E child) {
+            this.children.add(child);
+        }
+
+        public Object getParent() {
+            return this.parent;
+        }
+
+        public void setParent(Object parent) {
+            this.parent = parent;
+        }
+
+        public void setChildren(List<E> children) {
+            this.children = children;
+        }
+
+        public boolean isLeaf() {
+            return this.children.size() == 0;
+        }
+
     }
 
     private GenerateSqlAction generateSelectAction;
@@ -239,8 +307,8 @@ public class BuildInDBStructure extends SashForm {
             editorComposite.getRepositoryNode();
             connectionParameters.setQuery(QueryUtil.generateNewQuery(connectionParameters.getNode(), metadataTable,
                     connectionParameters.getDbType(), connectionParameters.getSchema(), schema));
-            dialog.openEditor(editorComposite.getRepositoryNode(), Arrays.asList((new String[] { editorComposite
-                    .getRepositoryName() })), connectionParameters, false);
+            dialog.openEditor(editorComposite.getRepositoryNode(),
+                    Arrays.asList((new String[] { editorComposite.getRepositoryName() })), connectionParameters, false);
         }
 
         /**
@@ -252,8 +320,10 @@ public class BuildInDBStructure extends SashForm {
             String sql = "select "; //$NON-NLS-1$
             String newschema = TalendTextUtils.addQuotesWithSpaceField(schema, connectionParameters.getDbType());
             for (IMetadataColumn column : selectedNodes) {
-                sql += TextUtil.addSqlQuots(connectionParameters.getDbType(), TalendTextUtils.addQuotesWithSpaceField(column
-                        .getOriginalDbColumnName(), connectionParameters.getDbType()), newschema)
+                sql += TextUtil.addSqlQuots(
+                        connectionParameters.getDbType(),
+                        TalendTextUtils.addQuotesWithSpaceField(column.getOriginalDbColumnName(),
+                                connectionParameters.getDbType()), newschema)
                         + ", "; //$NON-NLS-1$
             }
             sql = sql.substring(0, sql.length() - 2);
@@ -295,14 +365,10 @@ public class BuildInDBStructure extends SashForm {
          * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
          */
         public String getColumnText(Object element, int columnIndex) {
-            if (element instanceof IMetadataTable) {
-                // IMetadataTable metadataTable3 = (IMetadataTable) element;
-                // if (metadataTable3.getLabel() == null ||
-                // "".equals(metadataTable3.getLabel())) {
-                return schema;
-                // } else {
-                // return metadataTable3.getLabel();
-                // }
+            if (element instanceof SchemaTreeNode) {
+                return ((SchemaTreeNode) element).getName();
+            } else if (element instanceof IMetadataTable) {
+                return ((IMetadataTable) element).getLabel();
             } else if (element instanceof IMetadataColumn) {
                 final IMetadataColumn metadataColumn = ((IMetadataColumn) element);
                 String originalDbColumnName = metadataColumn.getOriginalDbColumnName();
@@ -326,8 +392,10 @@ public class BuildInDBStructure extends SashForm {
          * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
          */
         public Object getParent(Object element) {
-            if (element instanceof IMetadataColumn) {
-                return metadataTable;
+            if (element instanceof SchemaTreeNode) {
+                return ((SchemaTreeNode) element).getParent();
+            } else if (element instanceof IMetadataTable) {
+                return schemaNode;
             }
             return parentMetadata;
         }
@@ -338,8 +406,12 @@ public class BuildInDBStructure extends SashForm {
          * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
          */
         public boolean hasChildren(Object element) {
-            if (element instanceof IMetadataTable) {
+            if (element instanceof SchemaTreeNode) {
                 return true;
+            } else if (element instanceof IMetadataTable) {
+                IMetadataTable metadataTable = (IMetadataTable) element;
+                List<IMetadataColumn> columns = metadataTable.getListColumns();
+                return columns != null && columns.size() > 0;
             }
             return false;
         }
@@ -350,12 +422,10 @@ public class BuildInDBStructure extends SashForm {
          * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
          */
         public Object[] getElements(Object inputElement) {
-
-            if (inputElement instanceof IMetadataTable) {
-                IMetadataTable metadataTable3 = (IMetadataTable) inputElement;
-                return metadataTable3.getListColumns().toArray();
-            } else if (inputElement instanceof IMetadataConnection) {
-                return ((IMetadataConnection) inputElement).getListTables().toArray();
+            if (inputElement instanceof SchemaTreeNode) {
+                return ((SchemaTreeNode) inputElement).getChildren().toArray();
+            } else if (inputElement instanceof IMetadataTable) {
+                return ((IMetadataTable) inputElement).getListColumns().toArray();
             }
             return Collections.EMPTY_LIST.toArray();
         }

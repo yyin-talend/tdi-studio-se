@@ -242,19 +242,18 @@ public class ErDiagramComposite extends SashForm {
         List<String> wheres = new ArrayList<String>();
         if (editor != null) {
             if (editor.getViewer().getContents() instanceof ErDiagramPart) {
+                String schemaPrefix = "".equals(getSchema()) ? "" : getSchema() + "."; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                String schemaPrefixWithDoubleQuotes = "".equals(getSchema()) ? "" : "\"" + getSchema() + "\"."; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 ErDiagramPart er = (ErDiagramPart) editor.getViewer().getContents();
                 for (Object object : er.getChildren()) {
                     if (object instanceof TablePart) {
                         TablePart tablePart = (TablePart) object;
                         Table table = (Table) tablePart.getModel();
                         if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) { //$NON-NLS-1$
-                            if (!"".equals(getSchema())) { //$NON-NLS-1$
-                                tables.add("\"" + getSchema() + "\".\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            } else {
-                                tables.add("\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-                            }
+                            tables.add(schemaPrefixWithDoubleQuotes + "\"" + table.getElementName() + "\"");
                         } else {
-                            tables.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(), getCurrentDbType()));
+                            tables.add(schemaPrefix
+                                    + TalendTextUtils.addQuotesWithSpaceField(table.getElementName(), getCurrentDbType()));
                         }
 
                         boolean oracleDbType = TextUtil.isOracleDbType(getCurrentDbType());
@@ -265,7 +264,8 @@ public class ErDiagramComposite extends SashForm {
                                 CheckBox isSelected = columnPart.getPrimativeFigure().getFigureCustomColumnIsSelectedFigure();
                                 if (isSelected != null && isSelected.isSelected() && !column.getElementName().equals("*")) { //$NON-NLS-1$
                                     if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) { //$NON-NLS-1$
-                                        columns.add("\"" + table.getElementName() + "\".\"" + column.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                        columns.add(schemaPrefixWithDoubleQuotes
+                                                + "\"" + table.getElementName() + "\".\"" + column.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                     } else {
                                         // added by hyWang
                                         String leftQuote = TalendTextUtils.getQuoteByDBType(getCurrentDbType(), true);
@@ -279,14 +279,16 @@ public class ErDiagramComposite extends SashForm {
                                                 dbType.getProduct());
 
                                         if (!matcher.matches() || (sqlKeyword && oracleDbType)) {
-                                            columns.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
-                                                    getCurrentDbType())
+                                            columns.add(schemaPrefix
+                                                    + TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
+                                                            getCurrentDbType())
                                                     + "." //$NON-NLS-1$
                                                     + TalendTextUtils.addQuotesWithSpaceField(leftQuote + column.getElementName()
                                                             + rightQuote, getCurrentDbType()));
                                         } else {
-                                            columns.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
-                                                    getCurrentDbType())
+                                            columns.add(schemaPrefix
+                                                    + TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
+                                                            getCurrentDbType())
                                                     + "." //$NON-NLS-1$
                                                     + TalendTextUtils.addQuotesWithSpaceField(column.getElementName(),
                                                             getCurrentDbType()));
@@ -297,19 +299,23 @@ public class ErDiagramComposite extends SashForm {
                                     Column source = rel.getSource();
                                     Column target = rel.getTarget();
                                     if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) {
-                                        String where1 = "\"" + source.getTable().getElementName() + "\".\"" //$NON-NLS-1$ //$NON-NLS-2$
-                                                + source.getElementName() + "\"=\"" + target.getTable().getElementName() //$NON-NLS-1$
+                                        String where1 = schemaPrefixWithDoubleQuotes
+                                                + "\"" + source.getTable().getElementName() + "\".\"" //$NON-NLS-1$ //$NON-NLS-2$
+                                                + source.getElementName()
+                                                + "\"= " + schemaPrefixWithDoubleQuotes + "\"" + target.getTable().getElementName() //$NON-NLS-1$
                                                 + "\".\"" + target.getElementName() + "\""; //$NON-NLS-1$ //$NON-NLS-2$
                                         if (!wheres.contains(where1)) {
                                             wheres.add(where1);
                                         }
                                     } else {
-                                        String where1 = TalendTextUtils.addQuotesWithSpaceField(source.getTable()
-                                                .getElementName(), getCurrentDbType())
+                                        String where1 = schemaPrefix
+                                                + TalendTextUtils.addQuotesWithSpaceField(source.getTable().getElementName(),
+                                                        getCurrentDbType())
                                                 + "." //$NON-NLS-1$
                                                 + TalendTextUtils.addQuotesWithSpaceField(source.getElementName(),
                                                         getCurrentDbType())
                                                 + "=" //$NON-NLS-1$
+                                                + schemaPrefix
                                                 + TalendTextUtils.addQuotesWithSpaceField(target.getTable().getElementName(),
                                                         getCurrentDbType())
                                                 + "." //$NON-NLS-1$

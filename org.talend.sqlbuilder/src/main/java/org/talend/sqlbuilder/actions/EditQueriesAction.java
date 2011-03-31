@@ -20,7 +20,10 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.context.ContextUtils;
+import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -104,6 +107,10 @@ public class EditQueriesAction extends AContextualAction {
         }
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell, repositoryNode, selectedContext);
 
+        if (connection instanceof DatabaseConnection) {
+            IMetadataConnection imetadataConnection = ConvertionHelper.convert((DatabaseConnection) connection, true);
+            connParameters.setSchema(imetadataConnection.getSchema());
+        }
         connParameters.setNodeReadOnly(false);
         connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);
