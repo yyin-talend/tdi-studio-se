@@ -286,13 +286,13 @@
 				throw new RuntimeException ("The file " + zipFileURL_<%=cid %> + " is corrupted, process terminated..." );
 			}
 			Thread.sleep(1000);
-			java.util.zip.ZipFile zipFile_<%=cid%> = new java.util.zip.ZipFile(zipFileURL_<%=cid %>); 
+			//java.util.zip.ZipFile zipFile_<%=cid%> = new java.util.zip.ZipFile(zipFileURL_<%=cid %>); 
 
 			<%if (rootName!=true) {%> 
-			java.io.File file_<%=cid %> = new java.io.File(zipFileURL_<%=cid %>); 
+			//java.io.File file_<%=cid %> = new java.io.File(zipFileURL_<%=cid %>); 
 			<%}%>
-			java.io.FileInputStream fileStream_<%=cid %> = new java.io.FileInputStream(file_<%=cid %>);
-			java.io.BufferedInputStream bufferedStream_<%=cid%> = new java.io.BufferedInputStream(fileStream_<%=cid %>);
+			//java.io.FileInputStream fileStream_<%=cid %> = new java.io.FileInputStream(file_<%=cid %>);
+			//java.io.BufferedInputStream bufferedStream_<%=cid%> = new java.io.BufferedInputStream(fileStream_<%=cid %>);
 			
 	 		org.apache.tools.zip.ZipFile zip_<%=cid %> = new org.apache.tools.zip.ZipFile(zipFileURL_<%=cid %>);
 	 		//java.util.zip.ZipInputStream zipInputStream_<%=cid%> = new java.util.zip.ZipInputStream(bufferedStream_<%=cid%>);
