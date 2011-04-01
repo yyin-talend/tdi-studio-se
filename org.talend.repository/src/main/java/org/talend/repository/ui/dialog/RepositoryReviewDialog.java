@@ -247,7 +247,6 @@ public class RepositoryReviewDialog extends Dialog {
         if (type == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
             return new ValidationRuleTypeProcessor(repositoryType);
         }
-
         throw new IllegalArgumentException(Messages.getString("RepositoryReviewDialog.0", type)); //$NON-NLS-1$
     }
 
@@ -1126,6 +1125,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_RULES_MANAGEMENT));
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
             container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP));
+            container.add(contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_EDIFACT));
             container.add(contentProvider.getMetadataConNode());
             container.add(contentProvider.getMetadataBRMSConnectionNode());
         }

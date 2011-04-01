@@ -507,20 +507,20 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                                         List<IMetadataColumn> objectList = metaTable.getListColumns();
                                         List<org.talend.core.model.metadata.builder.connection.MetadataTable> tables = ConnectionHelper
                                                 .getTablesWithOrders(ediItem.getConnection());
-                                        for (IMetadataColumn column : objectList) {
-                                            for (MetadataColumn col : tables.get(0).getColumns()) {
-                                                if (col.getLabel().equals(column.getLabel())) {
-                                                    if (col instanceof EDIFACTColumn) {
-                                                        EDIFACTColumn edicolumn = (EDIFACTColumn) col;
-                                                        String ediColumnName = edicolumn.getEDIColumnName();
-                                                        String ediXpath = edicolumn.getEDIXpath();
-                                                        newLine.put(codes[0], columnName);
-                                                        newLine.put(codes[1], ediColumnName);
-                                                        newLine.put(codes[2], ediXpath);
-                                                        break;
-                                                    }
+                                        // for (IMetadataColumn column : objectList) {
+                                        for (MetadataColumn col : tables.get(0).getColumns()) {
+                                            if (col.getLabel().equals(columnName)) {
+                                                if (col instanceof EDIFACTColumn) {
+                                                    EDIFACTColumn edicolumn = (EDIFACTColumn) col;
+                                                    String ediColumnName = edicolumn.getEDIColumnName();
+                                                    String ediXpath = edicolumn.getEDIXpath();
+                                                    newLine.put(codes[0], columnName);
+                                                    newLine.put(codes[1], ediXpath);
+                                                    // newLine.put(codes[2], ediXpath);
+                                                    break;
                                                 }
                                             }
+                                            // }
                                         }
                                     }
 

@@ -351,6 +351,14 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     elem.setPropertyValue(param.getName(), param.getListItemsValue()[i]);
                                 }
                             }
+                        } else if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
+                                && param.getRepositoryValue().equals("EDI_VERSION")) {
+                            String[] list = param.getListItemsDisplayName();
+                            for (int i = 0; i < list.length; i++) {
+                                if (objectValue.toString().toUpperCase().equals(list[i])) {
+                                    elem.setPropertyValue(param.getName(), objectValue);
+                                }
+                            }
                         } else {
                             if (repositoryValue.equals("ENCODING")) { //$NON-NLS-1$
                                 IElementParameter paramEncoding = param.getChildParameters().get(
