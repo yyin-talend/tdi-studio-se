@@ -17,7 +17,7 @@ import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.talend.designer.webservice.ws.wsdlinfo.Function;
 import org.talend.designer.webservice.ws.wsdlinfo.ParameterInfo;
 import org.talend.designer.webservice.ws.wsdlutil.ServiceDiscoveryHelper;
-import org.talend.ws.helper.ServiceInvokerHelper;
+import org.talend.webservice.helper.ServiceInvokerHelper;
 
 /**
  * DOC gcui class global comment. Detailled comment

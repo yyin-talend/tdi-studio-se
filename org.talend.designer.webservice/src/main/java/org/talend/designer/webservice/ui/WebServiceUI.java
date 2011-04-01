@@ -110,7 +110,7 @@ import org.talend.designer.webservice.ws.wsdlinfo.Function;
 import org.talend.designer.webservice.ws.wsdlinfo.ParameterInfo;
 import org.talend.designer.webservice.ws.wsdlinfo.PortNames;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
-import org.talend.ws.helper.conf.ServiceHelperConfiguration;
+import org.talend.webservice.helper.conf.ServiceHelperConfiguration;
 
 /**
  * gcui class global comment. Detailled comment

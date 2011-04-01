@@ -82,7 +82,7 @@ if (incomingConnections != null && !incomingConnections.isEmpty()) {
 %>
 		util_<%=cid%>.resolveInputPath(paramMap_<%=cid%>);
 		if(!paramMap_<%=cid%>.isEmpty()){
-			inMap_<%=cid%> = org.talend.ws.helper.map.MapConverter.mapToDeepMap(paramMap_<%=cid%>);
+			inMap_<%=cid%> = org.talend.webservice.helper.map.MapConverter.mapToDeepMap(paramMap_<%=cid%>);
 		}
 		if(inMap_<%=cid%>.isEmpty()){
 			inMap_<%=cid%> = null;
@@ -130,7 +130,7 @@ for(IMetadataTable metadata:metadatas){
 %>            		
 					java.util.Map<String, Object> outMap_<%=cid%>=null;
 					if(results_<%=cid%>!=null&&!results_<%=cid%>.isEmpty()){
-						outMap_<%=cid%> = org.talend.ws.helper.map.MapConverter.deepMapToMap(results_<%=cid%>);
+						outMap_<%=cid%> = org.talend.webservice.helper.map.MapConverter.deepMapToMap(results_<%=cid%>);
 					}
             		java.util.Map<String,Object> returnValuesMap_<%=cid%> = new java.util.HashMap<String,Object>();
             		Object outputValue_<%=cid%>;

@@ -64,7 +64,7 @@ import org.talend.designer.webservice.ws.wsdlinfo.Function;
 import org.talend.designer.webservice.ws.wsdlinfo.ParameterInfo;
 import org.talend.designer.webservice.ws.wsdlinfo.PortNames;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
-import org.talend.ws.helper.conf.ServiceHelperConfiguration;
+import org.talend.webservice.helper.conf.ServiceHelperConfiguration;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -160,8 +160,8 @@ public class RepositoryWebService extends AbstractWebService {
             boolean isUseProxy = webServiceComponent.getElementParameter("USE_PROXY").getValue().toString().equals("true");
             boolean isUseAuth = webServiceComponent.getElementParameter("NEED_AUTH").getValue().toString().equals("true");
             boolean isUseNTLM = webServiceComponent.getElementParameter("USE_NTLM").getValue().toString().equals("true");
-            boolean isUseSSL = webServiceComponent.getElementParameter("NEED_SSL_TO_TRUSTSERVER").getValue().toString().equals(
-                    "true");
+            boolean isUseSSL = webServiceComponent.getElementParameter("NEED_SSL_TO_TRUSTSERVER").getValue().toString()
+                    .equals("true");
 
             if (isUseProxy) {
                 useProxy();

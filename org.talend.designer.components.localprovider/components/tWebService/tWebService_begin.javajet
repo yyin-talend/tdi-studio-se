@@ -170,7 +170,7 @@ class Util_<%=cid%>{
 	
 	Util_<%=cid%> util_<%=cid%> = new Util_<%=cid%>();
     
-    org.talend.ws.helper.conf.ServiceHelperConfiguration config_<%=cid%> = new org.talend.ws.helper.conf.ServiceHelperConfiguration();
+    org.talend.webservice.helper.conf.ServiceHelperConfiguration config_<%=cid%> = new org.talend.webservice.helper.conf.ServiceHelperConfiguration();
 	
 	config_<%=cid%>.setConnectionTimeout(Long.valueOf(<%=connTimeout%>));
 	config_<%=cid%>.setReceiveTimeout(Long.valueOf(<%=receiveTimeout%>));
@@ -213,19 +213,19 @@ if (needSSLtoTrustServer) {
 <% 
 } 	
 %> 
-	org.talend.ws.helper.ServiceDiscoveryHelper serviceDiscoveryHelper_<%=cid%> = null ;
-	org.talend.ws.helper.ServiceInvokerHelper serviceInvokerHelper_<%=cid%> = null ;
+	org.talend.webservice.helper.ServiceDiscoveryHelper serviceDiscoveryHelper_<%=cid%> = null ;
+	org.talend.webservice.helper.ServiceInvokerHelper serviceInvokerHelper_<%=cid%> = null ;
 
 <%if(!useNTLM){%>
 	java.net.URI uri_<%=cid%> = new java.net.URI(<%=endpoint%>);
     if ("http".equals(uri_<%=cid%>.getScheme()) || "https".equals(uri_<%=cid%>.getScheme())) {
   
-		serviceInvokerHelper_<%=cid%> = new org.talend.ws.helper.ServiceInvokerHelper(<%=endpoint%>,config_<%=cid%>,<%=tempPath%>);
+		serviceInvokerHelper_<%=cid%> = new org.talend.webservice.helper.ServiceInvokerHelper(<%=endpoint%>,config_<%=cid%>,<%=tempPath%>);
 
 	} else {
 <%}%>
-        serviceDiscoveryHelper_<%=cid%> = new org.talend.ws.helper.ServiceDiscoveryHelper(<%=endpoint%>,<%=tempPath%>);
-    	serviceInvokerHelper_<%=cid%> = new org.talend.ws.helper.ServiceInvokerHelper(serviceDiscoveryHelper_<%=cid%>,config_<%=cid%>);
+        serviceDiscoveryHelper_<%=cid%> = new org.talend.webservice.helper.ServiceDiscoveryHelper(<%=endpoint%>,<%=tempPath%>);
+    	serviceInvokerHelper_<%=cid%> = new org.talend.webservice.helper.ServiceInvokerHelper(serviceDiscoveryHelper_<%=cid%>,config_<%=cid%>);
 <%if(!useNTLM){%>
 	}
 <%}%>

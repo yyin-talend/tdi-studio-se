@@ -16,7 +16,7 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 
 import org.apache.ws.commons.schema.XmlSchemaCollection;
-import org.talend.ws.helper.conf.ServiceHelperConfiguration;
+import org.talend.webservice.helper.conf.ServiceHelperConfiguration;
 
 /**
  * This helper allow easy discovery of services and types
