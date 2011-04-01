@@ -49,6 +49,7 @@
 			<ITEM NAME="VERTICA_3" VALUE="vertica_3.0_jdk_5.jar" />
 			<ITEM NAME="VERTICA_3.5" VALUE="vertica_3.5_jdk_5.jar" />
 			<ITEM NAME="VERTICA_4" VALUE="vertica_4.0_jdk_5.jar" />
+			<ITEM NAME="VERTICA_4.1" VALUE="vertica_4.1.7_jdk_5.jar" />
 		</ITEMS>
 	</PARAMETER>
 
