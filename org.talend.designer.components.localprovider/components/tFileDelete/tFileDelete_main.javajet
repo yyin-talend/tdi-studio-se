@@ -46,7 +46,9 @@ class DeleteFolder<%=cid%>{
     private void deleteDirectory(java.io.File file) {
         java.io.File[] filed = file.listFiles();
         for (int i = 0; i < filed.length; i++) {
-            deleteDirectory(filed[i]);
+        	if(filed[i].isDirectory()) {
+            	deleteDirectory(filed[i]);
+            }
             filed[i].delete();
         }
     }
