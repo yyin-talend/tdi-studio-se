@@ -831,17 +831,18 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                     neededLibraries.add(moduleNeeded.getModuleName());
                 }
             }
-        }
-        if (process instanceof IProcess2 && property != null && property.getItem() instanceof ProcessItem) {
-            List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines((ProcessItem) property
-                    .getItem());
-            for (ModuleNeeded moduleNeeded : modulesNeededs) {
-                neededLibraries.add(moduleNeeded.getModuleName());
-            }
-
         } else {
-            for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
-                neededLibraries.add(moduleNeeded.getModuleName());
+            if (process instanceof IProcess2 && property != null && property.getItem() instanceof ProcessItem) {
+                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines((ProcessItem) property
+                        .getItem());
+                for (ModuleNeeded moduleNeeded : modulesNeededs) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
+
+            } else {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
             }
         }
 

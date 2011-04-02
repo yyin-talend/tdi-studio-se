@@ -28,6 +28,7 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.ContextParameterUtils;
@@ -35,6 +36,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.librariesmanager.model.ModulesNeededProvider;
 
 /**
  * DOC xye class global comment. Detailled comment
@@ -92,6 +94,16 @@ public class JavaProcessUtil {
         IElementParameter elementParameter = process.getElementParameter(EParameterName.DRIVER_JAR.getName());
         if (elementParameter != null && elementParameter.getFieldType() == EParameterFieldType.TABLE) {
             getModulsInTable(process, elementParameter, neededLibraries);
+        }
+
+        if (process instanceof IProcess2) {
+            List<ModuleNeeded> modulesNeededForRoutines = ModulesNeededProvider
+                    .getModulesNeededForRoutines((ProcessItem) ((IProcess2) process).getProperty());
+            if (modulesNeededForRoutines != null) {
+                for (ModuleNeeded moduleNeeded : modulesNeededForRoutines) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
+            }
         }
 
         List<? extends INode> nodeList = process.getGeneratingNodes();
