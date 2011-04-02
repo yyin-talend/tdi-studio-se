@@ -313,8 +313,10 @@ try{
     if(filename_<%=cid %> instanceof java.io.InputStream){
     	parser_<%=cid%>.parse(new org.xml.sax.InputSource((java.io.InputStream)filename_<%=cid %>));
     }else{
-    	java.io.InputStreamReader in_<%=cid %>= new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>);
-    	parser_<%=cid%>.parse(new org.xml.sax.InputSource(in_<%=cid %>));
+    	java.io.InputStream in_<%=cid %>= new java.io.FileInputStream(filename_<%=cid %>.toString());
+    	org.xml.sax.InputSource xmlInputSource_<%=cid%> = new org.xml.sax.InputSource(in_<%=cid %>);
+    	xmlInputSource_<%=cid%>.setEncoding(<%=encoding%>);
+    	parser_<%=cid%>.parse(xmlInputSource_<%=cid%>);
     }
 }catch(Exception e){
 <%if (dieOnError) {%>
@@ -643,7 +645,7 @@ boolean[] asXMLs_<%=cid%> = new boolean[]{
 String str_<%=cid %> = "";
 String[] node_<%=cid%> = null;
 org.talend.xml.sax.SAXLooper looper_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=loopQuery%>,queryPaths_<%=cid%>,asXMLs_<%=cid%>);
-//looper_<%=cid%>.setEncoding(<%=encoding %>);
+looper_<%=cid%>.setEncoding(<%=encoding %>);
 Object filename_<%=cid %> = <%=filename %>;
 if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filename_<%=cid %>.toString().startsWith("//")){
 	filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");
