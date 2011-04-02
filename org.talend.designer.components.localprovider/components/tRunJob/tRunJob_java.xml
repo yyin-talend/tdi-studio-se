@@ -67,6 +67,7 @@ COMPATIBILITY="ALL"
       NAME="USE_INDEPENDENT_PROCESS"
       FIELD="CHECK"
       NUM_ROW="11"
+      SHOW_IF="USE_DYNAMIC_JOB == 'false'"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>

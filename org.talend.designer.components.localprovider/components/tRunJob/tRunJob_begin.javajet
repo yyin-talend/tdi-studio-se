@@ -1,0 +1,53 @@
+<%@ jet 
+imports="
+	import org.talend.core.model.process.INode
+	import org.talend.core.model.process.ElementParameterParser
+	import org.talend.designer.codegen.config.CodeGeneratorArgument
+	import org.talend.designer.runprocess.ProcessorUtilities
+	import org.talend.designer.runprocess.ProcessorException
+"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
+String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
+String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid", "\"--father_node="+ cid + "\""};
+
+String[] commandLine = new String[] {"<command>"};
+
+boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
+String childJobName;
+%>
+<%
+try {
+	if(useDynamicJob){
+	%>
+		java.util.Map<String,String> childJob_Package_Mapper_<%=cid%> = new java.util.HashMap<String,String>();
+		java.util.Map<String,String> childJob_Dependency_Mapper_<%=cid%> = new java.util.HashMap<String,String>();
+	<%
+		if(process!=null && !process.equals("")){
+			String[] childJobIds = process.split(";");
+			for (int i=0;i<childJobIds.length;i++) {
+				commandLine = ProcessorUtilities.getCommandLine(true, childJobIds[i], context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+			    // remove the frontal 2 lines
+			    if (commandLine.length > 0 && ProcessorUtilities.isExportConfig()){
+					int tmpSize = commandLine.length - 2;
+					String[] tmp = new String[tmpSize];
+					System.arraycopy(commandLine, 2, tmp, 0, tmpSize);
+					commandLine = tmp;
+			    }
+			    childJobName = commandLine[5];
+			    childJobName = childJobName.substring(childJobName.lastIndexOf(".")+1);
+			    %>
+			    childJob_Package_Mapper_<%=cid%>.put("<%=childJobName%>","<%=commandLine[5]%>");
+			    childJob_Dependency_Mapper_<%=cid%>.put("<%=childJobName%>","<%=commandLine[4]%>");
+			    <%
+		    }
+		}
+	}
+} catch (ProcessorException e) {
+}	
+%>
