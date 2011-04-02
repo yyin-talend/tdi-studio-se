@@ -56,6 +56,11 @@ boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "_
 String dynamicJobName = ElementParameterParser.getValue(node,"__CONTEXT_JOB__");
 if(useDynamicJob){
 	useIndependentProcess = true;
+	%>
+	if(childJob_Package_Mapper_<%=cid%>.get(<%=dynamicJobName%>)==null){
+		throw new RuntimeException("The child job named "+<%=dynamicJobName%>+" is not in the job list.");
+	}
+	<%
 }
 %>  
 java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
