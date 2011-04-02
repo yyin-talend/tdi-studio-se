@@ -950,7 +950,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         tmpParams.add(className);
         strings = tmpParams.toArray(new String[0]);
 
-        String[] cmd2 = addVMArguments(strings);
+        String[] cmd2 = addVMArguments(strings, exportingJob);
         // achen modify to fix 0001268
         if (!exportingJob) {
             return cmd2;
@@ -969,7 +969,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         // end
     }
 
-    private String[] addVMArguments(String[] strings) {
+    private String[] addVMArguments(String[] strings, boolean exportingJob) {
         String string = null;
         if (this.process != null) {
             IElementParameter param = this.process.getElementParameter(EParameterName.JOB_RUN_VM_ARGUMENTS_OPTION.getName());
@@ -986,6 +986,24 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         }
         String replaceAll = string.trim();
         String[] vmargs = replaceAll.split(" "); //$NON-NLS-1$
+        /* check parameter won't happened on exportingJob */
+        if (!exportingJob) {
+            String fileEncoding = System.getProperty("file.encoding"); //$NON-NLS-N$
+            String encodingFromIni = "-Dfile.encoding=" + fileEncoding; //$NON-NLS-N$
+            List<String> asList = convertArgsToList(vmargs);
+            boolean encodingSetInjob = false;
+            for (String arg : asList) {
+                if (arg.startsWith("-Dfile.encoding") && fileEncoding != null) {
+                    /* if user has set the encoding on .ini file,should use this when exetucte job */
+                    arg = encodingFromIni;
+                    encodingSetInjob = true;
+                }
+            }
+            if (!encodingSetInjob) {
+                asList.add(encodingFromIni);
+                vmargs = asList.toArray(new String[0]);
+            }
+        }
         if (vmargs != null && vmargs.length > 0) {
             String[] lines = new String[strings.length + vmargs.length];
             System.arraycopy(strings, 0, lines, 0, 1);
@@ -994,6 +1012,14 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             return lines;
         }
         return strings; // old
+    }
+
+    private List<String> convertArgsToList(String[] args) {
+        List<String> toReturn = new ArrayList<String>();
+        for (String arg : args) {
+            toReturn.add(arg);
+        }
+        return toReturn;
     }
 
     /*
