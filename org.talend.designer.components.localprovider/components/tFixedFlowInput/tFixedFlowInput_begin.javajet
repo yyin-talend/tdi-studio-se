@@ -189,19 +189,25 @@ while (fid_<%=cid %>.nextRecord()) {
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();					
 					String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
-			%>
-				if(<%=i %> < fid_<%=cid %>.getColumnsCountOfCurrentRow()){				
+%>
+
+				if(<%=i %> < fid_<%=cid %>.getColumnsCountOfCurrentRow()){
+					String colContent = fid_<%=cid %>.get(<%=i %>);				
                     <%if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {%>
-                    		<%=firstConnName %>.<%=label %> = fid_<%=cid %>.get(<%=i %>);			
+                    		<%=firstConnName %>.<%=label %> = (colContent == null || colContent.length() == 0) ? <%=defaultValue %>: colContent;
                     <%}else if(javaType == JavaTypesManager.DATE){%>
-                    		<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_Date(fid_<%=cid %>.get(<%=i %>), <%= patternValue %>);
+                    		<%=firstConnName %>.<%=label %> = (colContent == null || colContent.length() == 0) ? ParserUtils.parseTo_Date(<%=defaultValue %>, <%= patternValue %>) : ParserUtils.parseTo_Date(colContent, <%= patternValue %>);
                     <%}else if(javaType == JavaTypesManager.BYTE_ARRAY){%>
-                    		<%=firstConnName %>.<%=label %> = fid_<%=cid %>.get(<%=i %>).getBytes();
+                    		<%=firstConnName %>.<%=label %> = (colContent == null || colContent.length() == 0) ? <%=defaultValue %> : colContent.getBytes();
                     <%}else{%>
-                    		<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(fid_<%=cid %>.get(<%=i %>));
+                    		<%=firstConnName %>.<%=label %> = (colContent == null || colContent.trim().length() == 0) ? <%=defaultValue %> : ParserUtils.parseTo_<%= typeToGenerate %>(colContent);
                     <%}%>			
 				} else { 
+				<%if(javaType != JavaTypesManager.DATE){%>	
 					<%=firstConnName %>.<%=label %> = <%=defaultValue %>;
+				<%}else {%>
+					<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_Date(<%=defaultValue %>, <%= patternValue %>);
+				<%}%>
 				}
 			
 			<%
