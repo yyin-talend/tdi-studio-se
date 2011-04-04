@@ -22,10 +22,14 @@ boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEN
 
 String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
 boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
-			
+	
+%>
+String fileName_<%=cid%> = "";
+<%
+	
 if(!useStream){
 %>
-String fileName_<%=cid%> = (new java.io.File(<%=fileName%>)).getAbsolutePath().replace("\\","/");
+fileName_<%=cid%> = (new java.io.File(<%=fileName%>)).getAbsolutePath().replace("\\","/");
 String fullName_<%=cid%> = null;
 String extension_<%=cid%> = null;
 String directory_<%=cid%> = null;
