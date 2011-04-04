@@ -20,9 +20,6 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 IProcess process=node.getProcess();
 List<IContextParameter> params = new ArrayList<IContextParameter>();
-
-String dieOnError = ElementParameterParser.getValue(node, "__DIEONERROR__");
-
 params=process.getContextManager().getDefaultContext().getContextParameterList();
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -159,18 +156,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		newPropertyList_<%=cid %>.add(key_<%=cid %>);
     	}
 	    context.setProperty(key_<%=cid %>,value_<%=cid %>);
-    }catch(Exception e){    
-<%
-		if("false".equals(dieOnError)) {
-%>	
-			System.err.println("Set value for key: " + key_<%=cid %> + " failed, error message: " + e.getMessage());
-<%
-		} else {
-%>
-			throw(e);
-<%
-		}
-%>
+    }catch(Exception e){    	
+    	System.err.println("Set value for key: " + key_<%=cid %> + " failed, error message: " + e.getMessage());
     }
     	nb_line_<%=cid %>++;
     }
