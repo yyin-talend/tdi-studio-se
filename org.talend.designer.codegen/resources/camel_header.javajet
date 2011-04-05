@@ -72,11 +72,11 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 						String persistentFile = ElementParameterParser.getValue(node, "__PERSISTENT_FILENAME__");
 						if(usePersistentFile) {
 %>
-							org.apache.camel.spi.AggregationRepository repo_<%=node.getUniqueName() %> = new org.apache.camel.component.hawtdb.HawtDBAggregationRepository("<%=node.getUniqueName() %>", <%=persistentFile%>);
+							org.apache.camel.component.hawtdb.HawtDBAggregationRepository repo_<%=node.getUniqueName() %> = new org.apache.camel.component.hawtdb.HawtDBAggregationRepository("<%=node.getUniqueName() %>", <%=persistentFile%>);
 <%
 						} else {
 %>
-							org.apache.camel.spi.AggregationRepository repo_<%=node.getUniqueName() %> = new org.apache.camel.component.hawtdb.HawtDBAggregationRepository("<%=node.getUniqueName() %>");
+							org.apache.camel.component.hawtdb.HawtDBAggregationRepository repo_<%=node.getUniqueName() %> = new org.apache.camel.component.hawtdb.HawtDBAggregationRepository("<%=node.getUniqueName() %>");
 <%
 						}
 					}
