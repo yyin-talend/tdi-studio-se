@@ -59,6 +59,11 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 				boolean usePersistence = "true".equals(ElementParameterParser.getValue(node, "__USE_PERSISTENCE__"));
 				String repository = ElementParameterParser.getValue(node, "__REPOSITORY__");
 				if(usePersistence) {
+					boolean useRecovery = "true".equals(ElementParameterParser.getValue(node, "__USE_RECOVERY__"));
+					String recoveryInterval = ElementParameterParser.getValue(node, "__RECOVERY_INTERVAL__");
+					String deadLetterUri = ElementParameterParser.getValue(node, "__DEAD_LETTER_URI__");
+					String maximumRedeliveries = ElementParameterParser.getValue(node, "__MAXIMUM_REDELIVERIES__");
+					
 					if("AGGREGATION".equals(repository)) {
 %>
 						org.apache.camel.spi.AggregationRepository repo_<%=node.getUniqueName() %> = new <%=ElementParameterParser.getValue(node, "__CUSTOM_REPOSITORY__") %>;
@@ -67,6 +72,14 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 %>
 						org.apache.camel.spi.RecoverableAggregationRepository repo_<%=node.getUniqueName() %> = new <%=ElementParameterParser.getValue(node, "__CUSTOM_REPOSITORY__") %>;
 <%
+						if(useRecovery) {
+%>
+							repo_<%=node.getUniqueName() %>.setUseRecovery(true);
+							repo_<%=node.getUniqueName() %>.setMaximumRedeliveries(<%=maximumRedeliveries%>);
+							repo_<%=node.getUniqueName() %>.setDeadLetterUri(<%=deadLetterUri%>);
+							repo_<%=node.getUniqueName() %>.setRecoveryInterval(<%=recoveryInterval%>);
+<%
+						}
 					} else if("HAWTDB".equals(repository)) {
 						boolean usePersistentFile = "true".equals(ElementParameterParser.getValue(node, "__USE_PERSISTENT_FILE__"));
 						String persistentFile = ElementParameterParser.getValue(node, "__PERSISTENT_FILENAME__");
@@ -77,6 +90,14 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 						} else {
 %>
 							org.apache.camel.component.hawtdb.HawtDBAggregationRepository repo_<%=node.getUniqueName() %> = new org.apache.camel.component.hawtdb.HawtDBAggregationRepository("<%=node.getUniqueName() %>");
+<%
+						}
+						if(useRecovery) {
+%>
+							repo_<%=node.getUniqueName() %>.setUseRecovery(true);
+							repo_<%=node.getUniqueName() %>.setMaximumRedeliveries(<%=maximumRedeliveries%>);
+							repo_<%=node.getUniqueName() %>.setDeadLetterUri(<%=deadLetterUri%>);
+							repo_<%=node.getUniqueName() %>.setRecoveryInterval(<%=recoveryInterval%>);
 <%
 						}
 					}
