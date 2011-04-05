@@ -21,6 +21,17 @@
 		org.talend.core.model.utils.JavaResourcesHelper
 	"
 %>
+
+<%
+
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    Vector v = (Vector) codeGenArgument.getArgument();
+	IProcess process = (IProcess)v.get(0);
+    String version = (String)v.get(1);
+	
+	List< ? extends INode> processNodes = (List< ? extends INode>)process.getGeneratingNodes();
+%>
+
 class CamelImpl extends org.apache.camel.impl.MainSupport {
 	protected CamelImpl instance;
 
@@ -41,3 +52,36 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 		postProcessContext();
 		getCamelContexts().get(0).addRoutes(new org.apache.camel.builder.RouteBuilder() {
 			public void configure() throws Exception {
+<%	
+	for (INode node : processNodes) {
+		if (node.isActivate()) {
+			if (node.getComponent().getName().equals("cAggregate")) {
+				boolean usePersistence = "true".equals(ElementParameterParser.getValue(node, "__USE_PERSISTENCE__"));
+				String repository = ElementParameterParser.getValue(node, "__REPOSITORY__");
+				if(usePersistence) {
+					if("AGGREGATION".equals(repository)) {
+%>
+						org.apache.camel.spi.AggregationRepository repo_<%=node.getUniqueName() %> = new <%=ElementParameterParser.getValue(node, "__CUSTOM_REPOSITORY__") %>;
+<%
+					} else if("RECOVERABLE".equals(repository)) {
+%>
+						org.apache.camel.spi.RecoverableAggregationRepository repo_<%=node.getUniqueName() %> = new <%=ElementParameterParser.getValue(node, "__CUSTOM_REPOSITORY__") %>;
+<%
+					} else if("HAWTDB".equals(repository)) {
+						boolean usePersistentFile = "true".equals(ElementParameterParser.getValue(node, "__USE_PERSISTENT_FILE__"));
+						String persistentFile = ElementParameterParser.getValue(node, "__PERSISTENT_FILENAME__");
+						if(usePersistentFile) {
+%>
+							org.apache.camel.spi.AggregationRepository repo_<%=node.getUniqueName() %> = new org.apache.camel.component.hawtdb.HawtDBAggregationRepository("<%=node.getUniqueName() %>", <%=persistentFile%>);
+<%
+						} else {
+%>
+							org.apache.camel.spi.AggregationRepository repo_<%=node.getUniqueName() %> = new org.apache.camel.component.hawtdb.HawtDBAggregationRepository("<%=node.getUniqueName() %>");
+<%
+						}
+					}
+				}
+			}
+		}
+	}
+%>
