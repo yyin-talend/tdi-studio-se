@@ -45,16 +45,13 @@
 		return bufferValue;
     }
     
-    
     public int runJobInTOS(String[] args) {	
 		try {
-			<%=process.getName()%>.<%=process.getName()%>InnerThread 
-	          <%=process.getName()%>InnerThreadClass =this.new <%=process.getName()%>InnerThread();
-	          new Thread(this,<%=process.getName()%>InnerThreadClass).start();
+			Route();
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			return 1;
 		}
 		return 0;
-  }			
+	}			
 }

@@ -6,34 +6,39 @@
 		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.designer.runprocess.CodeGeneratorRoutine
-		org.talend.designer.codegen.i18n.Messages
-		org.talend.core.ui.branding.IBrandingService
-		org.talend.core.ui.branding.AbstractBrandingService
-		org.talend.core.GlobalServiceRegister
-		org.talend.designer.codegen.ITalendSynchronizer
-		java.util.List
-		java.util.ArrayList
-		java.util.Vector
-		org.talend.core.model.process.IContextParameter
-		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.utils.NodeUtil
-		org.talend.core.model.utils.JavaResourcesHelper
 	"
 %>
 
-;
+	;
+		}
+			});
+
+			getCamelContexts().get(0).start();
+		}
+
+		protected void doStop() throws Exception {
+			super.doStop();
+			getCamelContexts().get(0).stop();
+		}
+
+		protected org.apache.camel.ProducerTemplate findOrCreateCamelTemplate() {
+			return getCamelContexts().get(0).createProducerTemplate();
+		}
+
+		protected java.util.Map<String, org.apache.camel.CamelContext> getCamelContextMap() {
+			java.util.Map<String, org.apache.camel.CamelContext> answer = new java.util.HashMap<String, org.apache.camel.CamelContext>();
+			answer.put("camel-1", new org.apache.camel.impl.DefaultCamelContext());
+			return answer;
+		}
+
+		protected org.apache.camel.view.ModelFileGenerator createModelFileGenerator()
+				throws javax.xml.bind.JAXBException {
+			return null;
 		}
 	}
-);
-
-		 //ContextStopper.getInstance(context).setTimeOut(1000)
-		  //.setDetectForNewExchangeInterval(1000)
-		  //.shutDownWhenAllExchangeComplete();
-		  
-		  
-		  context.start();
-		  
-		  Thread.sleep(6000);
-		  
-		  }
+	
+	CamelImpl camelImplementation = new CamelImpl();
+	camelImplementation.enableHangupSupport();
+	camelImplementation.run();
+	
+}

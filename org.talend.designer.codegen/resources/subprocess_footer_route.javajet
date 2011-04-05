@@ -18,5 +18,3 @@
 	boolean stat = codeGenArgument.isStatistics();
 	NodesSubTree subTree = (NodesSubTree) codeGenArgument.getArgument();
 %>
-
-}

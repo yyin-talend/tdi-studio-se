@@ -21,6 +21,23 @@
 		org.talend.core.model.utils.JavaResourcesHelper
 	"
 %>
-org.apache.camel.CamelContext context=new org.apache.camel.impl.DefaultCamelContext();
-context.addRoutes(new org.apache.camel.builder.RouteBuilder() {
-    public void configure() {
+class CamelImpl extends org.apache.camel.impl.MainSupport {
+	protected CamelImpl instance;
+
+	public CamelImpl() {
+	}
+	
+	/**
+	 * Returns the currently executing main
+	 * 
+	 * @return the current running instance
+	 */
+	public CamelImpl getInstance() {
+		return instance;
+	}
+
+	protected void doStart() throws Exception {
+		super.doStart();
+		postProcessContext();
+		getCamelContexts().get(0).addRoutes(new org.apache.camel.builder.RouteBuilder() {
+			public void configure() throws Exception {
