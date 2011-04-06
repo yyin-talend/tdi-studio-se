@@ -53,6 +53,10 @@ public class BusinessDiagramActionProvider extends DiagramContextMenuProvider {
         for (IContributionItem item : items) {
             if (ActionIds.ACTION_SHOW_PROPERTIES_VIEW.equals(item.getId())) {
                 item.setVisible(false);
+            } else if ("org.bonitasoft.studio.diagram.custom.actions.copy".equals(item.getId())) {
+                item.setVisible(false);
+            } else if ("org.bonitasoft.studio.diagram.custom.actions.paste".equals(item.getId())) {
+                item.setVisible(false);
             }
         }
 
