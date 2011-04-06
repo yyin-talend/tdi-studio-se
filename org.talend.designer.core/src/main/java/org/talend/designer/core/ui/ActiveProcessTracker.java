@@ -195,7 +195,6 @@ public class ActiveProcessTracker implements IPartListener {
                     sqlBuilderService.closeSqlBuilderDialogs(process.getName());
                 }
             }
-            mpte.beforeDispose();
         } else if (part instanceof IEditorPart) {
             if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) part)) {
                 Contexts.setTitle(""); //$NON-NLS-1$
@@ -203,6 +202,10 @@ public class ActiveProcessTracker implements IPartListener {
 
             }
 
+        }
+        if (part instanceof AbstractMultiPageTalendEditor) {
+            AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
+            mpte.beforeDispose();
         }
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (page != null) {
