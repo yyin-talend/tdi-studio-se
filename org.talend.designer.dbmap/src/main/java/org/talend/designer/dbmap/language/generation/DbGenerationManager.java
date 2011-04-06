@@ -706,8 +706,8 @@ public abstract class DbGenerationManager {
                                 if (columnValue.equals(co.getLabel())) {
                                     String oriName = co.getOriginalDbColumnName();
                                     oriName = oriName.replaceAll("\\$", "\\\\\\$");
-                                    expression = expression.replaceFirst("." + co.getLabel(), //$NON-NLS-1$
-                                            "." + oriName); //$NON-NLS-1$
+                                    expression = expression.replaceFirst("\\." + co.getLabel(), //$NON-NLS-1$
+                                            "\\." + oriName); //$NON-NLS-1$
                                 }
                             }
 
