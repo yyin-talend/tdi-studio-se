@@ -98,7 +98,7 @@ public class JavaProcessUtil {
 
         if (process instanceof IProcess2) {
             List<ModuleNeeded> modulesNeededForRoutines = ModulesNeededProvider
-                    .getModulesNeededForRoutines((ProcessItem) ((IProcess2) process).getProperty());
+                    .getModulesNeededForRoutines((ProcessItem) ((IProcess2) process).getProperty().getItem());
             if (modulesNeededForRoutines != null) {
                 for (ModuleNeeded moduleNeeded : modulesNeededForRoutines) {
                     neededLibraries.add(moduleNeeded.getModuleName());
