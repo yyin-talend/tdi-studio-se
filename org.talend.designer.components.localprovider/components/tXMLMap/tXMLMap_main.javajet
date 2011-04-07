@@ -16,6 +16,8 @@
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
 			org.talend.core.model.process.IConnection
 			org.talend.core.model.process.EConnectionType
+			org.talend.core.model.metadata.IMetadataTable
+			org.talend.core.model.metadata.IMetadataColumn
             java.util.Map
             java.util.HashMap
             java.util.List
@@ -35,13 +37,43 @@ skeleton="tXMLMap_java.skeleton"
 	EList<InputXmlTree> inputTables = xmlMapData.getInputTrees();
 	EList<OutputXmlTree> outputTables = xmlMapData.getOutputTrees();
 	EList<VarTable> varTables = xmlMapData.getVarTables();
+
+	String rejectedInnerJoin = "rejectedInnerJoin_" + cid;
+	String rejectedDocInnerJoin = "rejectedDocInnerJoin_" + cid;
+	String rejected = "rejected_" + cid;
+	String mainRowRejected = "mainRowRejected_" + cid;
+	boolean isLookup = false;
 	
 	List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
+	HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
+	for(IConnection connection : inputConnections){
+		 hNameToConnection.put(connection.getName(), connection);
+	}
+	
+	HashMap<String, TreeNode> hInputTableNodes = new HashMap<String, TreeNode>();
+	int sizeInputTables = inputTables.size();
 	InputXmlTree mainInputTable = null;  // the main input table
+	
+	String mainInputTableName = null;
+	IConnection realMainConnection = null;
+	
+	boolean findNext = false;
+
+	 String nextLookupName = null;
+	 List<IMetadataColumn> nextLookupColumnsKeys = new ArrayList<IMetadataColumn>();
+ 
+	 boolean hasPersistentLookup = false;
+	 int indexLastPersistentSortedTable = -1;
+	 
+	 ArrayList<InputXmlTree> inputTablesWithInnerJoin = new ArrayList<InputXmlTree>();
 	if(inputConnections==null || inputConnections.size() < 1) {
 		return "";
 	}
+	%>
+	  boolean <%= rejectedInnerJoin %> = false;
 	
+	  boolean <%= mainRowRejected %> = false;
+	<%
 //	System.out.println("inputTables size=" + inputTables.size());
 //	System.out.println("outputTables size=" + outputTables.size());
 //	System.out.println("varTables size=" + varTables.size());
@@ -58,22 +90,46 @@ skeleton="tXMLMap_java.skeleton"
 	}
 
 	if(mainInputTable != null) {
+		
+		for(OutputXmlTree outputTable : outputTables) {
+			String outputTableName = outputTable.getName();
+			for(OutputTreeNode outputNode: outputTable.getNodes()) {
+				if(("id_Document").equals(outputNode.getType())){
+				
+		%>
+		    GenerateDocument_<%=outputTableName %> gen_Doc_<%=outputTableName %>_<%=cid %> = new GenerateDocument_<%=outputTableName %>();
+		<%
+					break;
+				} // if(docuemnt)
+			}// for(outputNode)
+		} // for (outputXMLTree)
+		
 		String mainInputName = mainInputTable.getName();
 		for(TreeNode tmpNode : mainInputTable.getNodes()){
+			boolean isInnerJoin = true;
+			MatchXmlTreeExpr matchXmlTreeExpr = null;
+			java.util.Map<String, String> xpathTypeMap = null;
+			String str  = "";
+			if(!("id_Document").equals(tmpNode.getType())) {
+%>
+			<%@ include file="tXMLMap_lookup.inc.javajet" %>
+<%
+			}
 			if(("id_Document").equals(tmpNode.getType())) { // find the type:document node.
-				MatchXmlTreeExpr matchXmlTreeExpr = new MatchXmlTreeExpr(tmpNode, cid);
+				
+				matchXmlTreeExpr = new MatchXmlTreeExpr(tmpNode, cid);
 				//find the loop path
 				FindNodeUtil findUtil = new FindNodeUtil();
 				TreeNode loopNode = findUtil.findLoopPathNode(tmpNode);
 				if(loopNode==null){
 %>
-throw new Exception("Please define the loop node for the main input Table!");
+					throw new Exception("Please define the loop node for the main input Table!");
 <%
 				} else {
 					String loopPath = loopNode.getXpath();
 					loopPath = loopPath.substring(loopPath.indexOf(":") + 1);
 %>
-String xPathLoop_<%=cid %> = "<%=loopPath %>";
+					String xPathLoop_<%=cid %> = "<%=loopPath %>";
 <%
 				}
 %>
@@ -86,42 +142,34 @@ String xPathLoop_<%=cid %> = "<%=loopPath %>";
     java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);	
     String str_<%=cid %> = null;
     org.dom4j.Node node_<%=cid%> = null;
-<%
-for(OutputXmlTree outputTable : outputTables) {
-	String tableName = outputTable.getName();
-	for(OutputTreeNode outputNode: outputTable.getNodes()) {
-		if(("id_Document").equals(outputNode.getType())){
-%>
-    GenerateDocument_<%=tableName %> gen_Doc_<%=tableName %>_<%=cid %> = new GenerateDocument_<%=tableName %>();
-<%
-			break;
-		} // if(docuemnt)
-	}// for(outputNode)
-} // for (outputXMLTree)
-%>
+
     for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
     	nb_line_<%=cid%>++;
+    	boolean <%= rejectedDocInnerJoin %> = false;
     	treeNodeAPI_<%=cid %>.clear();
 <%
-				// find all these leaf nodes with output connectors in order to get the xpath array
-				List<String> resultList = new java.util.ArrayList<String>();
-				java.util.Map<String, String> xpathTypeMap = new java.util.HashMap<String, String>();
-				findUtil.findXpathArray(tmpNode, loopNode.getXpath(), resultList, xpathTypeMap);
-				for(int i = 0; i< resultList.size(); i++) {
-					String str = resultList.get(i);
+		// find all these leaf nodes with output connectors in order to get the xpath array
+		List<String> resultList = new java.util.ArrayList<String>();
+		xpathTypeMap = new java.util.HashMap<String, String>();
+		findUtil.findXpathArray(tmpNode, loopNode.getXpath(), resultList, xpathTypeMap);
+		for(int i = 0; i< resultList.size(); i++) {
+		
+			str = resultList.get(i);
 %>
-	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix("<%=str %>",xPathLoop_<%=cid %>));
-    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
-    Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
-    if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
-    	str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
-    }else{
-    	node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
-    	str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
-    }
-    treeNodeAPI_<%=cid %>.put("<%=xpathTypeMap.get(str) %>", str_<%=cid %>);
+			org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix("<%=str %>",xPathLoop_<%=cid %>));
+		    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
+		    Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
+		    if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
+		    	str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
+		    }else{
+		    	node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
+		    	str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
+		    }
+		    treeNodeAPI_<%=cid %>.put("<%=xpathTypeMap.get(str) %>", str_<%=cid %>);
+		
+		    <%@ include file="tXMLMap_lookup.inc.javajet" %>
 <%
-				}
+	}
 //				System.out.println("size of vartable begin:" + varTables.size());
 				if(varTables.size() > 0 ){
 %>{
@@ -131,14 +179,18 @@ for(OutputXmlTree outputTable : outputTables) {
                     String varsTableName = var.getName();
                     String instanceVarName = varsTableName + "__" + cid;
                     String className = instanceVarName + "__Struct";
-%><%=className + " " + varsTableName + " = " + instanceVarName + ";" %>
+%>			
+				<%=className + " " + varsTableName + " = " + instanceVarName + ";" %>
 <%
             		for(VarNode varNode : var.getNodes()){
                 		String javaType = varNode.getType();
                 		String expression = varNode.getExpression();
-                		String resultExpression = matchXmlTreeExpr.generateExprCode(expression);
+                		String resultExpression = "";
+                		if(matchXmlTreeExpr != null)
+                			resultExpression = matchXmlTreeExpr.generateExprCode(expression);
 						if(resultExpression!=null && !("").equals(resultExpression)){
-%>	<%=varsTableName %>.<%=varNode.getName() %> = <%=resultExpression %>;
+%>	
+				<%=varsTableName %>.<%=varNode.getName() %> = <%=resultExpression %>;
 <%
 						}
             		}
@@ -147,7 +199,6 @@ for(OutputXmlTree outputTable : outputTables) {
 // ###############################
 // # Outputs initialization
 <%
-
         		List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
         		Map<String, IConnection> nameToOutputConnection = new HashMap<String, IConnection>();
                 for (IConnection connection : outputConnections) {
@@ -157,6 +208,7 @@ for(OutputXmlTree outputTable : outputTables) {
         //      EList<OutputXmlTree> outputTablesList = new ArrayList<OutputXmlTree>(outputTables);
                 // constants
                 for (OutputXmlTree table : outputTables) {
+                	
                 
                     EList<OutputTreeNode> tableEntries = table.getNodes();
                     if (tableEntries == null || nameToOutputConnection.get(table.getName()) == null) {
@@ -167,47 +219,68 @@ for(OutputXmlTree outputTable : outputTables) {
                     String instanceVarName = tableName1 + "__" + node.getUniqueName();
                     String className = tableName1 + "Struct";
 %>
-<%= tableName1 %> = null;
-//output table :'<%=tableName1%>'
+		<%= tableName1 %> = null;
+		//output table :'<%=tableName1%>'
 <%
-        			for(OutputTreeNode tableEntry : tableEntries) {
-        				if(("id_Document").equals(tableEntry.getType())){
-        					String typeToGenerate = JavaTypesManager.getTypeToGenerate(tableEntry.getType(), tableEntry.isNullable());
+        for(OutputTreeNode tableEntry : tableEntries) {
+        	
 %>
-gen_Doc_<%=table.getName() %>_<%=cid %>.generateElements(treeNodeAPI_<%=cid %>
+			
 <%
-for (InputXmlTree inputTable: inputTables) {
-%>, <%=inputTable.getName() %><%
-}
-for (VarTable var : varTables) {
-%>, <%=var.getName()%><%
-}
-%>);
-if(<%= tableName1 %>_tmp.<%=tableEntry.getName() %> == null){
-<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = new <%=typeToGenerate %>();
-<%= tableName1 %>_tmp.<%=tableEntry.getName() %>.setDocument(gen_Doc_<%=table.getName() %>_<%=cid %>.getDocument());
-}
-<%
-						} else {
-							String resultExpression = matchXmlTreeExpr.generateExprCode(tableEntry.getExpression());
-							if(resultExpression!=null && !("").equals(resultExpression)){
+        	if(("id_Document").equals(tableEntry.getType())){
+        		String typeToGenerate = JavaTypesManager.getTypeToGenerate(tableEntry.getType(), tableEntry.isNullable());
 %>
-<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = <%=resultExpression %>;
-<%
-							}
-						}
+				gen_Doc_<%=table.getName() %>_<%=cid %>.generateElements(treeNodeAPI_<%=cid %>
+				<%
+				for (InputXmlTree inputTable: inputTables) {
+					if(!inputTable.isLookup()){
+				%>, <%= rejectedDocInnerJoin %>, <%=inputTable.getName() %><%
 					}
-%>
-<%= tableName1 %> = <%= tableName1 %>_tmp;
+				}
+				for (VarTable var : varTables) {
+				%>, <%=var.getName()%><%
+				}
+				%>);
+				
+				if(<%= tableName1 %>_tmp.<%=tableEntry.getName() %> == null){
+						<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = new <%=typeToGenerate %>();
+						<%= tableName1 %>_tmp.<%=tableEntry.getName() %>.setDocument(gen_Doc_<%=table.getName() %>_<%=cid %>.getDocument());
+				}
 <%
-        		}//for (OutputXmlTree table : outputTables) {
+        	} else {
+        		String resultExpression = "";
+        		if(matchXmlTreeExpr != null)
+				   resultExpression = matchXmlTreeExpr.generateExprCode(tableEntry.getExpression());
+				if(resultExpression!=null && !("").equals(resultExpression)){
+				
+%>
+<%	if(isLookup){%>
+	if(!<%= rejectedInnerJoin %>){
+		
+<%	}%>
+					<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = <%=resultExpression %>;
+					<%if(isLookup){%>
+					}
+					<%}%>
+<%
+				
+				}
+			}
+		}
+%>
+		<%= tableName1 %> = <%= tableName1 %>_tmp;
+		
+<%
+       // } // end for isLookup	
+    }//for (OutputXmlTree table : outputTables) {
 //				System.out.println("size of vartable end:" + varTables.size());
 				if(varTables.size() > 0 ){
 %>}
 <%
 				}
 %>
-	} // for input xml loop
+
+ } // for input xml loop
 <%
 				break;
 			}// if(document)
