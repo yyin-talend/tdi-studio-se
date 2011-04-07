@@ -79,7 +79,7 @@ imports="
 		    	listSchema_<%=cid%>.add(rsmd_<%=cid%>.getColumnName(i_<%=cid %>).toUpperCase());
 			}
 			
-			int fixedColumnCount_<%=cid%> = 0;
+			int fixedColumnCount_<%=cid%> = <%=metadata.getListColumns().size()-1%>;
 			
             for (int i = <%=metadata.getListColumns().size()%>; i <= rsmd_<%=cid%>.getColumnCount(); i++) {
                 if (!(listSchema_<%=cid%>.contains(rsmd_<%=cid%>.getColumnName(i).toUpperCase()) )) {
@@ -95,9 +95,7 @@ imports="
                 	dcm_<%=cid%>.setSourceType(DynamicMetadata.sourceTypes.database);
                 	dcm_<%=cid%>.setColumnPosition(i);
                 	dcg_<%=cid%>.metadatas.add(dcm_<%=cid%>);
-                } else {
-					fixedColumnCount_<%=cid%>++;
-				}
+                }
             }
 <%
 		    }
