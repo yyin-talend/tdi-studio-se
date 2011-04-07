@@ -53,6 +53,7 @@ if(!createFile<%=cid%>.exists()){
 %>
 java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
+boolean isXML10Char_<%=cid%> = true;
 
 class NestXMLTool_<%=cid%>{
 	public void parseAndAdd(org.dom4j.Element nestRoot, String value){
@@ -108,7 +109,7 @@ java.util.List<org.dom4j.Element> groupElementList_<%=cid%> = new java.util.Arra
 org.dom4j.Element root4Group_<%=cid%> = null;
 org.dom4j.Document doc_<%=cid %> = org.dom4j.DocumentHelper.createDocument();
 
-org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
+final org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
 format_<%=cid %>.setEncoding(<%=encoding%>);
 
 <%

@@ -415,6 +415,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					for(IMetadataColumn column :preMetadata.getListColumns()){
 %>
 	valueMap_<%=cid%>.put("<%=column.getLabel()%>", <%tool.getValue(column); %>);
+	if(isXML10Char_<%=cid%>) {
+		isXML10Char_<%=cid%> = org.talend.util.xml.XMLText.isValid(<%tool.getValue(column); %>);
+	}
 <%
 					}
 // ------------------- *** Common code end *** ------------------- //
