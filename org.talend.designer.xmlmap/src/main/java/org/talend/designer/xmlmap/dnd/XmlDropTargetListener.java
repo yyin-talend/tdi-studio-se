@@ -25,6 +25,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.figures.treesettings.FilterTextArea;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -114,7 +115,8 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
 
             OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getTargetEditPart();
             OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
-            if (XmlMapUtil.DOCUMENT.equals(model.getType())) {
+
+            if (model.eContainer() instanceof AbstractInOutTree && !(targetFigure instanceof ExpressionFigure)) {
                 event.detail = DND.DROP_NONE;
                 return;
             }
