@@ -61,6 +61,12 @@ imports="
 			java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
 <%
 		}
+		public void createMinValueStatement(INode node){
+%>
+			java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+																					java.sql.ResultSet.CONCUR_READ_ONLY);
+			
+<%}
 		public String mappingType(String typeToGenerate) {
 		
             if(("byte[]").equals(typeToGenerate)) {

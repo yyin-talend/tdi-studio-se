@@ -97,12 +97,13 @@ imports="
 		}
 		
 		public void createStatement(INode node) {
-			super.createStatement(node);
+			super.createMinValueStatement(node);
 			String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
 			String cursorSize= ElementParameterParser.getValue(node, "__CURSOR_SIZE__");
             if(("true").equals(useCursor)) {
 %>
-                stmt_<%=cid %>.setFetchSize(<%=cursorSize %>);
+                //stmt_<%=cid %>.setFetchSize(<%=cursorSize %>);
+				stmt_<%=cid %>.setFetchSize(Integer.MIN_VALUE);
 <%
             }
 		}
