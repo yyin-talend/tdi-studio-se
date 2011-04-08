@@ -46,6 +46,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.service.ICorePerlService;
+import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
@@ -186,6 +187,7 @@ public class LoginDialog extends TrayDialog {
     protected void logIn(final Project project) {
         final ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         ConnectionBean connBean = loginComposite.getConnection();
+        final boolean needRestartForLocal = loginComposite.needRestartForLocal();
         if (connBean == null || project == null || project.getLabel() == null) {
             return;
         }
@@ -204,12 +206,30 @@ public class LoginDialog extends TrayDialog {
                 service.setExecutablePreference(prelExecutableValue);
             }
         }
+
+        try {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreTisService.class)) {
+                final ICoreTisService service = (ICoreTisService) GlobalServiceRegister.getDefault().getService(
+                        ICoreTisService.class);
+                if (service != null) {
+                    if (!service.validProject(project, needRestartForLocal)) {
+                        LoginComposite.isRestart = true;
+                        super.okPressed();
+                        return;
+                    }
+                }
+            }
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            loginComposite.populateProjectList();
+            MessageDialog.openError(getShell(), getShell().getText(), e.getMessage());
+            return;
+        }
+
         final Shell shell = this.getShell();
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
 
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
-
-            private IProgressMonitor monitorWrap;
 
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 // monitorWrap = new EventLoopProgressMonitor(monitor);
@@ -227,18 +247,7 @@ public class LoginDialog extends TrayDialog {
                 monitor.done();
             }
         };
-        try {
-            final boolean validProject = factory.validProject(project);
-            if (!validProject) {
-                LoginComposite.isRestart = true;
-                super.okPressed();
-                return;
-            }
-        } catch (PersistenceException e) {
-            loginComposite.populateProjectList();
-            MessageDialog.openError(getShell(), getShell().getText(), e.getMessage());
-            return;
-        }
+
         try {
 
             dialog.run(true, true, runnable);

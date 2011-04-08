@@ -106,6 +106,8 @@ import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
  */
 public class LoginComposite extends Composite {
 
+    private static final String LOCAL = "local"; //$NON-NLS-1$
+
     private static final String FONT_ARIAL = "Arial"; //$NON-NLS-1$
 
     private static final int VERTICAL_SPACE = 0;
@@ -217,6 +219,8 @@ public class LoginComposite extends Composite {
 
     private ConnectionBean beforeConnBean;
 
+    private ConnectionBean firstConnBean;
+
     /**
      * Constructs a new LoginComposite.
      * 
@@ -263,6 +267,7 @@ public class LoginComposite extends Composite {
         // createRestartArea(formBody);
 
         readConnectionData();
+        recordFirstConnection();
         fillContents();
         addListeners();
         if (inuse) {
@@ -812,6 +817,18 @@ public class LoginComposite extends Composite {
         return layout;
     }
 
+    public boolean needRestartForLocal() {
+        final ConnectionBean curConnection = getConnection();
+        if (curConnection != null && this.firstConnBean != null) {
+            // only switch from other connection to local.
+            if (!this.firstConnBean.getRepositoryId().equals(LoginComposite.LOCAL)
+                    && curConnection.getRepositoryId().equals(LoginComposite.LOCAL)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Class use to fill manage projects dialog box.
      */
@@ -967,6 +984,17 @@ public class LoginComposite extends Composite {
             PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
             storedConnections = prefManipulator.readConnections();
             lastConnection = prefManipulator.getLastConnection();
+        }
+    }
+
+    private void recordFirstConnection() {
+        if (storedConnections != null) {
+            for (ConnectionBean bean : storedConnections) {
+                if (bean.getName().equals(lastConnection)) {
+                    firstConnBean = bean;
+                    break;
+                }
+            }
         }
     }
 
