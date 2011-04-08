@@ -340,12 +340,12 @@ public abstract class DbGenerationManager {
                 boolean commaCouldBeAdded = !explicitJoin && i > 0;
                 boolean crCouldBeAdded = false;
                 if (language.unuseWithExplicitJoin().contains(joinType) && !explicitJoin) {
-                    buildTableDeclaration(sb, inputTable, commaCouldBeAdded, crCouldBeAdded, false);
+                    buildTableDeclaration(component, sb, inputTable, commaCouldBeAdded, crCouldBeAdded, false);
 
                 } else if (!language.unuseWithExplicitJoin().contains(joinType) && explicitJoin) {
                     if (i > 0) {
                         if (previousJoinType == null) {
-                            buildTableDeclaration(sb, inputTables.get(i - 1), commaCouldBeAdded, crCouldBeAdded, true);
+                            buildTableDeclaration(component, sb, inputTables.get(i - 1), commaCouldBeAdded, crCouldBeAdded, true);
                             previousJoinType = joinType;
                         } else {
                             sb.append(DbMapSqlConstants.NEW_LINE);
@@ -359,13 +359,13 @@ public abstract class DbGenerationManager {
                         ExternalDbMapTable nextTable = null;
                         if (i < lstSizeInputTables) {
                             nextTable = inputTables.get(i);
-                            buildTableDeclaration(sb, nextTable, false, false, true);
+                            buildTableDeclaration(component, sb, nextTable, false, false, true);
                         }
 
                     } else {
 
                         // ExternalDbMapTable rightTable = joinLeftToJoinRightTables.get(inputTable.getName());
-                        buildTableDeclaration(sb, inputTable, false, false, true);
+                        buildTableDeclaration(component, sb, inputTable, false, false, true);
                         // if (rightTable != null) {
                         // } else {
                         // sb.append(" <!! NO JOIN CLAUSES FOR '" + inputTable.getName() + "' !!> ");
@@ -639,8 +639,8 @@ public abstract class DbGenerationManager {
      * @param crCouldBeAdded TODO
      * @param writingInJoin TODO
      */
-    private void buildTableDeclaration(StringBuilder sb, ExternalDbMapTable inputTable, boolean commaCouldBeAdded,
-            boolean crCouldBeAdded, boolean writingInJoin) {
+    private void buildTableDeclaration(DbMapComponent component, StringBuilder sb, ExternalDbMapTable inputTable,
+            boolean commaCouldBeAdded, boolean crCouldBeAdded, boolean writingInJoin) {
         sb.append(DbMapSqlConstants.SPACE);
         String alias = inputTable.getAlias();
         if (alias != null) {
@@ -669,7 +669,49 @@ public abstract class DbGenerationManager {
                 sb.append(DbMapSqlConstants.COMMA);
                 sb.append(DbMapSqlConstants.SPACE);
             }
-            sb.append(inputTable.getName());
+
+            String inputTableName = inputTable.getName();
+            List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+            boolean replace = false;
+            if (inputConnections != null) {
+                for (IConnection iconn : inputConnections) {
+                    IMetadataTable metadataTable = iconn.getMetadataTable();
+                    String tName = iconn.getName();
+                    if (tName.equals(inputTableName) && metadataTable != null) {
+                        String tableName = metadataTable.getTableName();
+                        if (inputTableName.contains(".") && tableName != null) {
+                            MapExpressionParser mapParser2 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
+                            List<Map<String, String>> tableNameList = mapParser2.parseInTableEntryLocations(inputTableName);
+                            for (Map<String, String> tableNameMap : tableNameList) {
+                                Set<Entry<String, String>> setTable = tableNameMap.entrySet();
+                                Iterator<Entry<String, String>> iteTable = setTable.iterator();
+
+                                while (iteTable.hasNext()) {
+                                    Entry<String, String> tableEntry = iteTable.next();
+                                    String tableLabel = tableEntry.getKey();
+                                    String schemaValue = tableEntry.getValue();
+                                    if (tableLabel.equals(metadataTable.getLabel())) {
+                                        sb.append(schemaValue);
+                                        sb.append(".");
+                                        sb.append(tableName);
+                                        replace = true;
+                                    }
+                                }
+
+                            }
+                        } else if (tableName != null) {
+                            if (inputTableName.equals(metadataTable.getLabel())) {
+                                sb.append(tableName);
+                                replace = true;
+                            }
+                        }
+                    }
+
+                }
+            }
+            if (!replace) {
+                sb.append(inputTable.getName());
+            }
         }
     }
 
@@ -702,6 +744,32 @@ public abstract class DbGenerationManager {
                         String tName = iconn.getName();
                         if (tableValue.equals(tName) && metadataTable != null) {
                             List<IMetadataColumn> lColumn = metadataTable.getListColumns();
+                            String tableName = metadataTable.getTableName();
+                            if (tableValue.contains(".") && tableName != null) {
+                                MapExpressionParser mapParser2 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
+                                List<Map<String, String>> tableNameList = mapParser2.parseInTableEntryLocations(tableValue);
+
+                                for (Map<String, String> tableNameMap : tableNameList) {
+                                    Set<Entry<String, String>> setTable = tableNameMap.entrySet();
+                                    Iterator<Entry<String, String>> iteTable = setTable.iterator();
+
+                                    while (iteTable.hasNext()) {
+                                        Entry<String, String> tableEntry = iteTable.next();
+                                        String tableLabel = tableEntry.getKey();
+                                        String schemaValue = tableEntry.getValue();
+                                        if (tableLabel.equals(metadataTable.getLabel())) {
+                                            tableName = tableName.replaceAll("\\$", "\\\\\\$");
+                                            expression = expression.replaceFirst(tableValue, schemaValue + "." + tableName);
+                                        }
+                                    }
+
+                                }
+                            } else if (tableName != null) {
+                                if (tableValue.equals(metadataTable.getLabel())) {
+                                    tableName = tableName.replaceAll("\\$", "\\\\\\$");
+                                    expression = expression.replaceFirst(tableValue, tableName);
+                                }
+                            }
                             for (IMetadataColumn co : lColumn) {
                                 if (columnValue.equals(co.getLabel())) {
                                     String oriName = co.getOriginalDbColumnName();

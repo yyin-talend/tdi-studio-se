@@ -274,13 +274,33 @@ public class ConnectionCreateAction extends SelectionAction {
             }
             if (name2 != null) {
                 name2 = TalendTextUtils.removeQuotes(name2);
+                List<IMetadataTable> metaList = node.getMetadataList();
+                if (metaList != null) {
+
+                    for (IMetadataTable metadataTable : metaList) {
+                        if (metadataTable != null) {
+                            String tName = metadataTable.getTableName();
+                            tName = TalendTextUtils.removeQuotes(tName);
+                            if (tName.equals(name2)) {
+                                String tableLable = metadataTable.getLabel();
+                                if (tableLable != null) {
+                                    tableLable = TalendTextUtils.removeQuotes(tableLable);
+                                    if (!"".equals(tableLable)) {
+                                        name2 = tableLable;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 if (!"".equals(name2)) { //$NON-NLS-1$
                     removeQuotes.append(name2);
                     removeQuotes.append(" (");
                     removeQuotes.append(curNodeConnector.getMenuName());
                     removeQuotes.append(")");
-                    //                    removeQuotes = name2 + " (" + curNodeConnector.getMenuName() + ")"; //$NON-NLS-1$ // //$NON-NLS-2$
+                    //                    removeQuotes = name2 + " (" + curNodeConnector.getMenuName() + ")"; //$NON-NLS-1$ // //$NON-NLS-2$ 
                 }
+
             }
             //            if (removeQuotes != null && node.isELTComponent() && node.getComponent().getName().equals("tELTOracleInput")) { //$NON-NLS-1$
             // if (getDefaultSchemaName() != null) {
