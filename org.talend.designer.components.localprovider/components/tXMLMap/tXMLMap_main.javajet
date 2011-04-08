@@ -280,7 +280,7 @@ skeleton="tXMLMap_java.skeleton"
 				}
 %>
 
- } // for input xml loop
+//} // for input xml loop
 <%
 				break;
 			}// if(document)
