@@ -37,7 +37,7 @@
 		if (metadata!=null) {
 			String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 			if(!("".equals(vcid))) {
-				filename = "\""+filename.substring(1, filename.length()-1)+vcid+"_"+projectName+"_"+jobName+"_"+jobVersion+"\"";
+				filename = "\"/"+filename.substring(1, filename.length()-1)+vcid+"_"+projectName+"_"+jobName+"_"+jobVersion+"\"";
 				filename = tempDir+"+"+filename;
 			}
 			
