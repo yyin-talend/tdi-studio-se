@@ -43,7 +43,7 @@ skeleton="tXMLMap_java.skeleton"
 	String rejected = "rejected_" + cid;
 	String mainRowRejected = "mainRowRejected_" + cid;
 	boolean isLookup = false;
-	
+	boolean isXpath = false;
 	List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
 	HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
 	for(IConnection connection : inputConnections){
@@ -71,7 +71,6 @@ skeleton="tXMLMap_java.skeleton"
 	}
 	%>
 	  boolean <%= rejectedInnerJoin %> = false;
-	
 	  boolean <%= mainRowRejected %> = false;
 	<%
 //	System.out.println("inputTables size=" + inputTables.size());
@@ -251,10 +250,16 @@ skeleton="tXMLMap_java.skeleton"
         		String resultExpression = "";
         		if(matchXmlTreeExpr != null)
 				   resultExpression = matchXmlTreeExpr.generateExprCode(tableEntry.getExpression());
+        		
+        		if(resultExpression.indexOf("/") != -1)
+        		   isXpath = true;
+        			
+        	
 				if(resultExpression!=null && !("").equals(resultExpression)){
 				
 %>
 <%	if(isLookup){%>
+
 	if(!<%= rejectedInnerJoin %>){
 		
 <%	}%>
@@ -263,7 +268,6 @@ skeleton="tXMLMap_java.skeleton"
 					}
 					<%}%>
 <%
-				
 				}
 			}
 		}
@@ -277,10 +281,10 @@ skeleton="tXMLMap_java.skeleton"
 				if(varTables.size() > 0 ){
 %>}
 <%
-				}
-%>
-
-//} // for input xml loop
+}
+if(!isXpath){%>
+} // for input xml loop
+<%}%>
 <%
 				break;
 			}// if(document)

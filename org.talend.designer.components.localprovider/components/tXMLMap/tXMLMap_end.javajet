@@ -27,5 +27,34 @@
 "
 skeleton="tXMLMap_java.skeleton"
 %>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	XmlMapComponent node = (XmlMapComponent) codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	XmlMapData xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
+	boolean isXpath = false;	
+	EList<OutputXmlTree> outputTables = xmlMapData.getOutputTrees();
+	EList<VarTable> varTables = xmlMapData.getVarTables();
 
-} // for input xml loop
+for (OutputXmlTree table : outputTables) {
+	
+    
+    EList<OutputTreeNode> tableEntries = table.getNodes();
+    if (tableEntries == null ) {
+        continue;
+    }
+    for(OutputTreeNode tableEntry : tableEntries) {
+        	if(!("id_Document").equals(tableEntry.getType())){
+
+        		String resultExpression = tableEntry.getExpression();
+        		if(resultExpression.indexOf("/") != -1)
+        		   isXpath = true;        	
+			}
+	}
+}
+%>
+<%if(isXpath){%>
+
+} // for input xml loop 
+
+<%}%>
