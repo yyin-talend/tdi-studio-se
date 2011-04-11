@@ -22,6 +22,8 @@
 	String jobName = codeGenArgument.getJobName();
 	String jobVersion = codeGenArgument.getJobVersion();
 	
+	String tempDir = ElementParameterParser.getValue(node, "__TEMP_DIR__");
+	
 	String vcid = "";
 
 	String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
@@ -81,6 +83,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		if(!("".equals(vcid))) {
 			filename = "\""+filename.substring(1, filename.length()-1)+vcid+"_"+projectName+"_"+jobName+"_"+jobVersion+"\"";
+			filename = tempDir+"+"+filename;
 		}
 		
     	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
