@@ -204,6 +204,17 @@
 			}
 			return null;
 		}
+
+		public List<Map<String, String>> getTableParameterValue(String name) {
+			if (name == null || "".equals(name))
+				return null;
+			for (IElementParameter parameter : parameters) {
+				if (name.equals(parameter.getName()))
+					return ElementParameterParser.getTableElementParameterValue(parameter);
+			}
+			return null;
+		}
+
 		
 		/**
 		 * this function returns the number of components that are connected
@@ -470,14 +481,14 @@
 		 */
 		protected String getCondition() {
 			String logicalOperator = (String)(getParameterByName("LOGICAL_OP").getValue());
-			List<Map<String,Object>> conditions = (List<Map<String,Object>>)getParameterByName("CONDITIONS").getValue();
+			List<Map<String,String>> conditions = getTableParameterValue("CONDITIONS");
 			String advancedCondition = (String)(getParameterByName("ADVANCED_COND").getValue());
 			Boolean hasBasicConditions = conditions.size() > 0 ? true : false;
 			Boolean hasAdvancedConditions = (Boolean)getParameterByName("USE_ADVANCED").getValue();
 			String ret = "";
 			boolean firstCondFlag = true;
 			if (hasBasicConditions) {
-				for (Map<String,Object> cond : conditions) {
+				for (Map<String,String> cond : conditions) {
 					String column = cond.get("INPUT_COLUMN").toString();
 					String operator = cond.get("OPERATOR").toString();
 					String value = cond.get("RVALUE").toString();
@@ -563,10 +574,10 @@
 		 * @return returns true if everything is good; otherwise returns false if there are problems.
 		 */
 		protected boolean setOperations(SQL sql) {
-			List<Map<String,Object>> operations = (List<Map<String,Object>>)getParameterByName("OPERATION").getValue();
+			List<Map<String,String>> operations = getTableParameterValue("OPERATION");
 			Boolean hasOperations = operations.size() > 0 ? true : false;
 			if (hasOperations) {
-				for (Map<String,Object> operation : operations) {
+				for (Map<String,String> operation : operations) {
 					String inputColumn = operation.get("INPUT_COLUMN").toString();
 					String outputColumn = operation.get("OUTPUT_COLUMN").toString();
 					String function = operation.get("FUNCTION").toString();

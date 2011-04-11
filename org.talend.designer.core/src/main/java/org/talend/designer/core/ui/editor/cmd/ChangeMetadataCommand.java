@@ -141,10 +141,14 @@ public class ChangeMetadataCommand extends Command {
         this.node = node;
         this.schemaParam = schemaParam;
         if (schemaParam == null) {
-            if (node.isELTComponent()) {
-                currentConnector = EConnectionType.TABLE.getName();
+            if (newOutputMetadata.getAttachedConnector() != null) {
+                currentConnector = newOutputMetadata.getAttachedConnector();
             } else {
-                currentConnector = EConnectionType.FLOW_MAIN.getName();
+                if (node.isELTComponent()) {
+                    currentConnector = EConnectionType.TABLE.getName();
+                } else {
+                    currentConnector = EConnectionType.FLOW_MAIN.getName();
+                }
             }
             for (IElementParameter param : node.getElementParameters()) {
                 if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {

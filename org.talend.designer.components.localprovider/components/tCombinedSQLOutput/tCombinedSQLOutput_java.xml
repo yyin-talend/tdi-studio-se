@@ -267,7 +267,8 @@
 		<PARAMETER 
 			NAME="COMBINE_SCHEMA" 
 			FIELD="SCHEMA_TYPE" 
-			NUM_ROW="20"
+			NUM_ROW="25"
+			SHOW="false"
 			CONTEXT="ELTCOMBINE"
 		/>
 		

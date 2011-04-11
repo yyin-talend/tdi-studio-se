@@ -1917,7 +1917,9 @@ public class Node extends Element implements IGraphicalNode {
             if (nodeTmp.getJobletNode() != null) {
                 nodeTmp = nodeTmp.getJobletNode();
             }
-            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH) || nodeTmp.isELTComponent()) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)
+                    || nodeTmp.getOutgoingConnections(EConnectionType.TABLE).size() != 0
+                    || nodeTmp.getIncomingConnections(EConnectionType.TABLE).size() != 0) {
                 // System.out.println(" ** Ref Link Found in:" + nodeTmp + "
                 // from:" + this);
                 targetWithRef = (Node) nodeTmp;

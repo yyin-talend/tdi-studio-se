@@ -3019,7 +3019,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             // this one will be reaffected to a new subjob after
             if (node == null || !node.isDesignSubjobStartNode()) {
                 // for bug 13314
-                if (node == null || !node.isELTComponent()) {
+                if (node == null
+                        || !(node.getOutgoingConnections(EConnectionType.TABLE).size() != 0 || node.getIncomingConnections(
+                                EConnectionType.TABLE).size() != 0)) {
                     elem.addAll(sjc.getNodeContainers());
                     sjc.getNodeContainers().clear();
                     elem.remove(sjc);
