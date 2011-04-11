@@ -439,6 +439,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(column.isUpdatable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     String dbType = column.getColumn().getType();
+					if( null == dbType) {
+                    	dbType="";
+                    }
                     %>
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, dbType, column, counterCol, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
@@ -465,6 +468,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(column.isUpdateKey()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     String dbType = column.getColumn().getType();
+					if( null == dbType) {
+                    	dbType="";
+                    }
                     %>
                     
 					<% 
@@ -555,6 +561,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(column.isUpdateKey()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     String dbType = column.getColumn().getType();
+					if( null == dbType) {
+                    	dbType="";
+                    }
                     %>
 					<% 
                     //#############for feature:2880 and 6980
@@ -584,6 +593,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                     if(column.isUpdatable()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                         String dbType = column.getColumn().getType();
+						if( null == dbType) {
+							dbType="";
+						}
                         %>
                         <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, dbType, column, counterCol, incomingConnName, cid, UPDATE_TYPE)%>
                         <%
@@ -609,6 +621,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                     if(column.isUpdateKey()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                         String dbType = column.getColumn().getType();
+						if( null == dbType) {
+							dbType="";
+						}
                         %>
                         <% 
 	                    //#############for feature:2880
@@ -679,6 +694,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                     if(columnInsert.isInsertable()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
                         String dbType = columnInsert.getColumn().getType();
+						if( null == dbType) {
+							dbType="";
+						}
                         %>
                         <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, dbType, columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE)%>
                         <%
@@ -748,6 +766,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(columnUpdate.isUpdatable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
                     String dbType = columnUpdate.getColumn().getType();
+					if( null == dbType) {
+                    	dbType="";
+                    }
                     %>
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, dbType, columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE)%>
                     <%
@@ -774,6 +795,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(columnUpdate.isUpdateKey()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
                     String dbType = columnUpdate.getColumn().getType();
+					if( null == dbType) {
+                    	dbType="";
+                    }
                     %>
 					<% 
                     //#############for feature:2880 and 6980
@@ -852,6 +876,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                     if(column.isInsertable()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                         String dbType = column.getColumn().getType();
+						if( null == dbType) {
+							dbType="";
+						}
                         %>
                         <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, dbType, column, counter, incomingConnName, cid, INSERT_TYPE)%>
                         <%
@@ -920,6 +947,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(column.isDeleteKey()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     String dbType = column.getColumn().getType();
+					if( null == dbType) {
+                    	dbType="";
+                    }
                     %>
 					<% 
                     //#############for feature:2880 and 6980
