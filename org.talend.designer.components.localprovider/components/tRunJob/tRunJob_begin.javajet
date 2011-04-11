@@ -20,6 +20,8 @@ String[] commandLine = new String[] {"<command>"};
 
 boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
 String childJobName;
+int jobNamePosition;
+int classpathPosition;
 %>
 <%
 try {
@@ -39,11 +41,22 @@ try {
 					System.arraycopy(commandLine, 2, tmp, 0, tmpSize);
 					commandLine = tmp;
 			    }
-			    childJobName = commandLine[5];
+			    //find the job name and classpath, the job name in front of codeOptions
+			    int position = 0;
+			    for(String tempCommandLine : commandLine){
+			   		if(codeOptions[0].equals(tempCommandLine)){
+			   			break;
+			   		}
+			   		position++;
+			    }
+			    jobNamePosition = position-1;
+			    classpathPosition = position-2;
+			    
+			    childJobName = commandLine[jobNamePosition];
 			    childJobName = childJobName.substring(childJobName.lastIndexOf(".")+1);
 			    %>
-			    childJob_Package_Mapper_<%=cid%>.put("<%=childJobName%>","<%=commandLine[5]%>");
-			    childJob_Dependency_Mapper_<%=cid%>.put("<%=childJobName%>","<%=commandLine[4]%>");
+			    childJob_Package_Mapper_<%=cid%>.put("<%=childJobName%>","<%=commandLine[jobNamePosition]%>");
+			    childJob_Dependency_Mapper_<%=cid%>.put("<%=childJobName%>","<%=commandLine[classpathPosition]%>");
 			    <%
 		    }
 		}

@@ -54,6 +54,9 @@ String childJob = ElementParameterParser.getValue(node,"__PROCESS__");
 
 boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
 String dynamicJobName = ElementParameterParser.getValue(node,"__CONTEXT_JOB__");
+int jobNamePosition=0;
+int classpathPosition=0;
+
 if(useDynamicJob){
 	useIndependentProcess = true;
 	%>
@@ -84,6 +87,19 @@ try {
 } catch (ProcessorException e) {
 }
 
+if(useDynamicJob){
+	//find the job name and classpath, the job name in front of codeOptions
+	int position = 0;
+	for(String tempCommandLine : commandLine){
+		if(codeOptions[0].equals(tempCommandLine)){
+	   		break;
+	   	}
+	   	position++;
+	}
+	jobNamePosition = position-1;
+	classpathPosition = position-2;
+}
+
 for (int i = 0; i < commandLine.length; i++) {
   // commandLine[i] = commandLine[i].replace("\n", "");
   if (i == 0 && useIndependentProcess){
@@ -93,11 +109,11 @@ for (int i = 0; i < commandLine.length; i++) {
   } else if (i == 0 && !useIndependentProcess){
     childJob = commandLine[0];
   } else if (i > 0){
-  	if(i == 4 && useDynamicJob){
+  	if(i == classpathPosition && useDynamicJob){
   	%>
   	paraList_<%=cid %>.add(childJob_Dependency_Mapper_<%=cid%>.get(<%=dynamicJobName%>));
   	<%
-  	}else if(i == 5 && useDynamicJob){
+  	}else if(i == jobNamePosition && useDynamicJob){
   	%>
   	paraList_<%=cid %>.add(childJob_Package_Mapper_<%=cid%>.get(<%=dynamicJobName%>));
   	<%
@@ -178,7 +194,7 @@ for (int i=0; i<contextParams.size(); i++) {
   parentContextMap_<%=cid %>.put("<%=name %>", obj_<%=cid%>);
 <%}%>
 <%if(printParameter){%>
-  System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%=childJob %> with:\n\n" + paraList_<%=cid %> + "\n");
+  System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%if(!useDynamicJob){%><%=childJob %><%}else{%>"+<%=dynamicJobName%>+"<%}%> with:\n\n" + paraList_<%=cid %> + "\n");
 <%}
 
 
