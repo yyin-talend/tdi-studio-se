@@ -87,7 +87,6 @@ skeleton="tXMLMap_java.skeleton"
 			}
 		}
 	}
-
 	if(mainInputTable != null) {
 		
 		for(OutputXmlTree outputTable : outputTables) {
@@ -203,12 +202,9 @@ skeleton="tXMLMap_java.skeleton"
                 for (IConnection connection : outputConnections) {
         		  		nameToOutputConnection.put(connection.getName(), connection);
         		}
-
         //      EList<OutputXmlTree> outputTablesList = new ArrayList<OutputXmlTree>(outputTables);
                 // constants
                 for (OutputXmlTree table : outputTables) {
-                	
-                
                     EList<OutputTreeNode> tableEntries = table.getNodes();
                     if (tableEntries == null || nameToOutputConnection.get(table.getName()) == null) {
                         continue;
@@ -220,11 +216,16 @@ skeleton="tXMLMap_java.skeleton"
 %>
 		<%= tableName1 %> = null;
 		//output table :'<%=tableName1%>'
+		<%	if(isLookup){%>
+
+		if(!<%= rejectedInnerJoin %>){
+			
+		<%	} else {%>
+		if(! <%= rejectedDocInnerJoin %>){
+		<%}%>
 <%
         for(OutputTreeNode tableEntry : tableEntries) {
-        	
 %>
-			
 <%
         	if(("id_Document").equals(tableEntry.getType())){
         		String typeToGenerate = JavaTypesManager.getTypeToGenerate(tableEntry.getType(), tableEntry.isNullable());
@@ -253,26 +254,23 @@ skeleton="tXMLMap_java.skeleton"
         		
         		if(resultExpression.indexOf("/") != -1)
         		   isXpath = true;
-        			
-        	
-				if(resultExpression!=null && !("").equals(resultExpression)){
-				
 %>
-<%	if(isLookup){%>
-
-	if(!<%= rejectedInnerJoin %>){
-		
-<%	}%>
-					<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = <%=resultExpression %>;
-					<%if(isLookup){%>
-					}
-					<%}%>
 <%
+				if(resultExpression!=null && !("").equals(resultExpression)){
+%>
+					<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = <%=resultExpression %>;
+<%	
 				}
 			}
 		}
 %>
 		<%= tableName1 %> = <%= tableName1 %>_tmp;
+		
+	<%if(isLookup){%>
+	}
+	<%} else {%>
+	}
+	<%}%>
 		
 <%
        // } // end for isLookup	

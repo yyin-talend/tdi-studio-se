@@ -30,8 +30,9 @@ skeleton="tXMLMap_java.skeleton"
 <%
 	EConnectionType connectionType = null;
 	for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) { 
-		InputXmlTree  nextInputTable = (iInputTable + 1 < sizeInputTables) ? inputTables.get(iInputTable + 1) : null;
+		InputXmlTree  nextInputTable = inputTables.get(iInputTable);
 		if (nextInputTable != null) { 
+			
 		IConnection connection =  hNameToConnection.get(nextInputTable.getName());
 		if(connection == null){
 			continue;
@@ -40,6 +41,7 @@ skeleton="tXMLMap_java.skeleton"
 			if(connectionType == EConnectionType.FLOW_REF) {
 			     IMetadataTable metadataTable = connection.getMetadataTable();
 				 String tableName = nextInputTable.getName();
+				
 				 String lookupMode = nextInputTable.getLookupMode();
 				 if (nextInputTable.isInnerJoin()) {
 			         inputTablesWithInnerJoin.add(nextInputTable);
@@ -66,12 +68,14 @@ skeleton="tXMLMap_java.skeleton"
 			    TreeNode  externalInputTableEntry = externalTreeNodes.get(j);
 			    if (externalInputTableEntry != null) {
 				     	expressionKey = externalInputTableEntry.getExpression();
+
 						if (expressionKey != null && !"".equals(expressionKey.trim())) {
 						    keysNames.add(columnName);
 						    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 						    String resultExpression = null;
-						    if(matchXmlTreeExpr != null)
+						    if(matchXmlTreeExpr != null){
 						     resultExpression = matchXmlTreeExpr.generateExprCode(expressionKey);
+						    }
 						    
 						    if(resultExpression != null)
 						    	keysValues.add(resultExpression);
@@ -83,8 +87,8 @@ skeleton="tXMLMap_java.skeleton"
 			//			    if(javaPrimitiveKeyColumn) {
 			//			         	hasPrimitiveKey = true;
 						}
-			       }
-			}
+//			       }
+//			}
 			
 			String[] aKeysNames = keysNames.toArray(new String[0]);
 			String[] aKeysValues = keysValues.toArray(new String[0]);
@@ -104,18 +108,22 @@ skeleton="tXMLMap_java.skeleton"
 			//<%= className %> <%= tableName %>ObjectFromLookup = null;
 	<%
 		String xpath = null;
+
 		if(("id_Document").equals(tmpNode.getType())) {
 			xpath = "[" + xpathTypeMap.get(str) + "]";
 		}else{
 			xpath = mainInputName+"."+tmpNode.getName();
 			 isLookup = true;
 		}
-		if( null != expressionKey){
+		
+			if( null != expressionKey){
 			if( xpath.equals(expressionKey.trim())){
 				if(("id_Document").equals(tmpNode.getType())) {
+					
 	%>
 			if(!<%= rejectedDocInnerJoin %>){
-		<%}else {%>
+		<%}else {
+		%>
 			if(!<%= rejectedInnerJoin %>){
 	<%}%>
 	
@@ -133,18 +141,24 @@ skeleton="tXMLMap_java.skeleton"
 		}
 	%>
 			if(!tHash_Lookup_<%= tableName %>.hasNext()) {
-				<%if(("id_Document").equals(tmpNode.getType())) {%>
+				<%if(("id_Document").equals(tmpNode.getType())) {
+				%>
+				
 				<%= rejectedDocInnerJoin %> = true;
-				<%} else {%>
+				<%} else {
+					%>
 				<%= rejectedInnerJoin %> = true;
 				<%}%>
 			}
-		}
+			}
+		//}
 	<%
+			}
+		}
+	  }
 	}
 	%>
 <%		
-			}
 		 }
 	  }
 	}
