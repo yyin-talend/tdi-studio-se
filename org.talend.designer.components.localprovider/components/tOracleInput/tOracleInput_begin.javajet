@@ -105,8 +105,8 @@ imports="
 			}else {
             	super.createMinValueStatement(node);
 %>
-                //stmt_<%=cid %>.setFetchSize(<%=cursorSize %>);
-				stmt_<%=cid %>.setFetchSize(Integer.MIN_VALUE);
+                stmt_<%=cid %>.setFetchSize(<%=cursorSize %>);
+				//stmt_<%=cid %>.setFetchSize(Integer.MIN_VALUE);
 <%
             }
 		}
