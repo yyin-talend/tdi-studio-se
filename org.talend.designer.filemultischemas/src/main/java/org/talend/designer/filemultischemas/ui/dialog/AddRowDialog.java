@@ -130,13 +130,15 @@ public class AddRowDialog extends Dialog {
     }
 
     private void getAllKeysNames(SchemasKeyData root) {
-        if (root.getUniqueRecord() != null) {
-            keyNames.add(root.getUniqueRecord());
-        }
-        if (root.getChildren() != null) {
-            List<SchemasKeyData> children = root.getChildren();
-            for (SchemasKeyData child : children) {
-                getAllKeysNames(child);
+        if (root != null) {
+            if (root.getUniqueRecord() != null) {
+                keyNames.add(root.getUniqueRecord());
+            }
+            if (root.getChildren() != null) {
+                List<SchemasKeyData> children = root.getChildren();
+                for (SchemasKeyData child : children) {
+                    getAllKeysNames(child);
+                }
             }
         }
     }
