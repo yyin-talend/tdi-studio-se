@@ -99,8 +99,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			}
 			String fieldlist = sb.toString();
 		
-			for(IConnection outgoingConn : outgoingConns) {
-				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
+			IConnection outgoingConn = outgoingConns.get(0);
+			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 %>				
 			com.salesforce.soap.partner.GetDeletedResult gdr_<%=cid%> = sfMgr_<%=cid%>.getDeleted("<%=module%>", startCal_<%=cid%>, endCal_<%=cid%>);
     		com.salesforce.soap.partner.QueryResult qr_<%=cid%> = null;
@@ -155,9 +155,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					}		
 					<%=outgoingConn.getName()%>.Id = dr_<%=cid%>.getId().getID();
 <%
-				}
 			}
-		
 		}
 	}
 }

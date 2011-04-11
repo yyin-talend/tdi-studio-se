@@ -22,15 +22,14 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	if (metadata != null) {		
 		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 		if (outgoingConns != null && outgoingConns.size() > 0){
-			for(IConnection outgoingConn : outgoingConns) {
-				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+			IConnection outgoingConn = outgoingConns.get(0);
+			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>	
 				
 	
 		}
 	}
 <%
-				}
 			}
 %>
 		sfMgr_<%=cid%>.logout();	
