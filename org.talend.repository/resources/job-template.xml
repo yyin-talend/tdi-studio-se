@@ -7,7 +7,7 @@
 
     <bean id="job" class="@JOBCLASSNAME@"/>
 
-    <service ref="job" interface="routines.TalendJob">
+    <service ref="job" interface="routines.system.TalendJob">
         <service-properties>
             <entry key="name" value="@JOBNAME@"/>
         </service-properties>
