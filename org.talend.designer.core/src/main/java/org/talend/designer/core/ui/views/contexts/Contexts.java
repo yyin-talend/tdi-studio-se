@@ -27,6 +27,8 @@ public class Contexts {
 
     private static String newTitle = ""; //$NON-NLS-1$
 
+    private static final String PERSPECTIVE_DI_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$ 
+
     public static void switchToCurContextsView() {
         ContextsView cxtView = getView();
         if (cxtView == null) {
@@ -44,16 +46,22 @@ public class Contexts {
      */
     private static ContextsView getView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
-        if (view == null) {
-            try {
-                view = page.showView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
+        // seem 16594
+        if (page != null) {
+            String perId = page.getPerspective().getId();
+            if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
+                IViewPart view = page.findView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
+                if (view == null) {
+                    try {
+                        view = page.showView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+                if (view instanceof ContextsView) {
+                    return (ContextsView) view;
+                }
             }
-        }
-        if (view instanceof ContextsView) {
-            return (ContextsView) view;
         }
         return null;
 
