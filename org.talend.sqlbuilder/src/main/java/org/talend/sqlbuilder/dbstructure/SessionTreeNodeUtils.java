@@ -121,11 +121,12 @@ public class SessionTreeNodeUtils {
                         : dbconnection.getDatasourceName()) : dbconnection.getSID());
         SessionTreeModel stm = new SessionTreeModel();
         SessionTreeNode session;
-        if (((wapperDriver != null)
-                && iMetadataConnection.getDriverClass().equals(EDatabase4DriverClassName.JAVADB_EMBEDED.getDriverClass())
-                || iMetadataConnection.getDbType().equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
-                || iMetadataConnection.getDbType().equals(EDatabaseTypeName.JAVADB_DERBYCLIENT.getDisplayName()) || iMetadataConnection
-                .getDbType().equals(EDatabaseTypeName.JAVADB_JCCJDBC.getDisplayName()))) {
+        if (wapperDriver != null
+                && (iMetadataConnection.getDriverClass().equals(EDatabase4DriverClassName.JAVADB_EMBEDED.getDriverClass())
+                        || iMetadataConnection.getDbType().equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
+                        || iMetadataConnection.getDbType().equals(EDatabaseTypeName.JAVADB_DERBYCLIENT.getDisplayName())
+                        || iMetadataConnection.getDbType().equals(EDatabaseTypeName.JAVADB_JCCJDBC.getDisplayName()) || iMetadataConnection
+                        .getDbType().equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName()))) {
             session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null,
                     dbconnection.getPassword(), repositoryNode, wapperDriver);
         } else {
