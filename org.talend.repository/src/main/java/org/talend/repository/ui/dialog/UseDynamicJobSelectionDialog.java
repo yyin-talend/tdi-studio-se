@@ -15,40 +15,40 @@ package org.talend.repository.ui.dialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
-import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.image.ECoreImage;
-import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.model.general.Project;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
+import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC yhch class global comment. Detailled comment <br/>
@@ -58,50 +58,21 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public class UseDynamicJobSelectionDialog extends Dialog {
 
-    List<IRepositoryViewObject> repositoryNodes = new ArrayList<IRepositoryViewObject>();
+    private FilteredCheckboxTree filteredCheckboxTree;
+
+    private CheckboxRepositoryView exportItemsTreeViewer;
+
+    private IRepositoryView repositoryView = RepositoryView.show();
+
+    List<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
+
+    private UseDynamicJobSelectionDialog useDynamicJobDialog;
 
     ERepositoryObjectType type;
 
     String repositoryType;
 
-    // ITypeProcessor typeProcessor;
-
-    private Button upBtn;
-
-    private Button downBtn;
-
-    List<IRepositoryViewObject> allJobNodes = new ArrayList<IRepositoryViewObject>();
-
-    private CheckboxTableViewer checkboxTableViewer;
-
-    private Table table;
-
-    /**
-     * Renders a human readable representation of the meta model contributors.
-     */
-    class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
-
-        public String getColumnText(final Object element, final int columnIndex) {
-            if (element instanceof IRepositoryViewObject) {
-                final IRepositoryViewObject contributor = (IRepositoryViewObject) element;
-                StringBuffer strB = new StringBuffer();
-                contributor.getVersion();
-                strB.append(contributor.getLabel());
-                strB.append(" " + contributor.getVersion()); //$NON-NLS-1$
-                return strB.toString();
-            }
-            return element.toString();
-        }
-
-        public Image getColumnImage(final Object element, final int columnIndex) {
-            return getDefaultJobletImage();
-        }
-
-        public Image getDefaultJobletImage() {
-            return ImageProvider.getImage(ECoreImage.PROCESS_ICON);
-        }
-
-    }
+    ITypeProcessor typeProcessor;
 
     public UseDynamicJobSelectionDialog(IShellProvider parentShell) {
         super(parentShell);
@@ -118,7 +89,6 @@ public class UseDynamicJobSelectionDialog extends Dialog {
          * borrow the repositoryType to set the current process id here.
          */
         this.repositoryType = repositoryType;
-        getAllJobNodesList();
     }
 
     /**
@@ -147,43 +117,17 @@ public class UseDynamicJobSelectionDialog extends Dialog {
         label.setText(Messages.getString("UseDynamicJobSelectionDialog.selectJob")); //$NON-NLS-1$
         GridDataFactory.swtDefaults().span(2, 1).applyTo(label);
 
-        checkboxTableViewer = CheckboxTableViewer.newCheckList(container, SWT.BORDER);
-        checkboxTableViewer.setLabelProvider(new TableLabelProvider());
-        checkboxTableViewer.setContentProvider(new ArrayContentProvider());
-        table = checkboxTableViewer.getTable();
-        table.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(final SelectionEvent e) {
-                updateButtonStates();
-            }
-
-        });
-        table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        checkboxTableViewer.setInput(allJobNodes);
+        createTreeViewer(container);
         createSelectionButton(container);
+        exportItemsTreeViewer.refresh();
+        // force loading all nodes
+        TreeViewer viewer = exportItemsTreeViewer.getViewer();
+        viewer.expandAll();
+        viewer.collapseAll();
+        // expand to level of metadata connection
+        viewer.expandToLevel(4);
         setCheckedNodes();
         return container;
-    }
-
-    public void getAllJobNodesList() {
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        List<IRepositoryViewObject> list = new ArrayList<IRepositoryViewObject>();
-        Project project = ProjectManager.getInstance().getCurrentProject();
-        allJobNodes.clear();
-        try {
-            list.addAll(factory.getAll(project, ERepositoryObjectType.PROCESS, false, false));
-            for (IRepositoryViewObject object : list) {
-                String jobId = object.getProperty().getId();
-                if (repositoryType != null && !repositoryType.equals("") && jobId != null && !jobId.equals("")) {
-                    if (!jobId.equals(repositoryType)) {
-                        allJobNodes.add(object);
-                    }
-                }
-            }
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        }
     }
 
     /*
@@ -194,49 +138,134 @@ public class UseDynamicJobSelectionDialog extends Dialog {
     @Override
     protected void okPressed() {
 
-        IRepositoryViewObject[] repositoryObjects = getCheckNodes();
+        RepositoryNode[] repositoryObjects = getCheckNodes();
         repositoryNodes.clear();
-        for (IRepositoryViewObject repositoryObject : repositoryObjects) {
+        for (RepositoryNode repositoryObject : repositoryObjects) {
             repositoryNodes.add(repositoryObject);
             //
-            ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
+            ProcessItem processItem = (ProcessItem) repositoryObject.getObject().getProperty().getItem();
             RelationshipItemBuilder relationshipItemBuilder = new RelationshipItemBuilder();
             relationshipItemBuilder.addOrUpdateItem(processItem);
         }
         super.okPressed();
     }
 
-    public List<IRepositoryViewObject> getRepositoryNodes() {
+    public List<RepositoryNode> getRepositoryNodes() {
         return this.repositoryNodes;
     }
 
-    public void setRepositoryNodes(List<IRepositoryViewObject> repositoryNodes) {
+    public void setRepositoryNodes(List<RepositoryNode> repositoryNodes) {
         this.repositoryNodes = repositoryNodes;
     }
 
-    public IRepositoryViewObject[] getCheckNodes() {
-        List<IRepositoryViewObject> ret = new ArrayList<IRepositoryViewObject>();
-        for (int i = 0; i < checkboxTableViewer.getCheckedElements().length; i++) {
-            IRepositoryViewObject node = (IRepositoryViewObject) checkboxTableViewer.getCheckedElements()[i];
-            // if (node. == ENodeType.REPOSITORY_ELEMENT) {
-            ret.add(node);
-            // }
+    public RepositoryNode[] getCheckNodes() {
+        CheckboxTreeViewer viewer = (CheckboxTreeViewer) exportItemsTreeViewer.getViewer();
+        List<RepositoryNode> ret = new ArrayList<RepositoryNode>();
+        for (int i = 0; i < viewer.getCheckedElements().length; i++) {
+            RepositoryNode node = (RepositoryNode) viewer.getCheckedElements()[i];
+            if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                ret.add(node);
+            }
         }
-        return (IRepositoryViewObject[]) ret.toArray(new IRepositoryViewObject[0]);
+        return (RepositoryNode[]) ret.toArray(new RepositoryNode[0]);
     }
 
     public void setCheckedNodes() {
+        CheckboxTreeViewer viewer = (CheckboxTreeViewer) exportItemsTreeViewer.getViewer();
         if (repositoryNodes != null || repositoryNodes.size() != 0) {
-            for (IRepositoryViewObject object : repositoryNodes) {
-                checkboxTableViewer.setChecked(object, true);
-            }
-            // checkboxTableViewer.setCheckedElements(repositoryNodes.toArray());
+            viewer.setCheckedElements(repositoryNodes.toArray());
         }
+        viewer.collapseAll();
+    }
+
+    private void createTreeViewer(Composite itemComposite) {
+        filteredCheckboxTree = new FilteredCheckboxTree(itemComposite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI) {
+
+            @Override
+            protected CheckboxTreeViewer doCreateTreeViewer(Composite parent, int style) {
+                exportItemsTreeViewer = new CheckboxRepositoryView();
+                try {
+                    exportItemsTreeViewer.init(repositoryView.getViewSite());
+                } catch (PartInitException e) {
+                    ExceptionHandler.process(e);
+                }
+                exportItemsTreeViewer.createPartControl(parent);
+
+                return (CheckboxTreeViewer) exportItemsTreeViewer.getViewer();
+            }
+
+            @Override
+            protected void refreshCompleted() {
+                getViewer().expandToLevel(3);
+                restoreCheckedElements();
+            }
+
+            @Override
+            protected boolean isNodeCollectable(TreeItem item) {
+                Object obj = item.getData();
+                if (obj instanceof RepositoryNode) {
+                    RepositoryNode node = (RepositoryNode) obj;
+                    if (node.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+        exportItemsTreeViewer.getViewer().addFilter(new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                RepositoryNode node = (RepositoryNode) element;
+                return filterRepositoryNode(node);
+            }
+        });
+    }
+
+    public void addCheckStateListener(ICheckStateListener listener) {
+        ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).addCheckStateListener(listener);
+    }
+
+    public void removeCheckStateListener(ICheckStateListener listener) {
+        ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).removeCheckStateListener(listener);
+    }
+
+    private boolean filterRepositoryNode(RepositoryNode node) {
+        if (node == null) {
+            return false;
+        }
+        if (node.isBin()) {
+            return false;
+        }
+
+        ERepositoryObjectType contentType = node.getContentType();
+        if (contentType != null) {
+            if (contentType == ERepositoryObjectType.PROCESS) {
+                String id = node.getId();
+                if (repositoryType != null && !repositoryType.equals("") && id != null && !id.equals("")) {
+                    if (id.equals(repositoryType)) {
+                        return false;
+                    }
+                }
+                return true;
+            } else if (contentType == ERepositoryObjectType.SVN_ROOT) {
+                return true;
+            } else if (contentType == ERepositoryObjectType.REFERENCED_PROJECTS) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
-     * 
-     * DOC yhch Comment method "createSelectionButton".
+     * DOC hcw Comment method "createSelectionButton".
      * 
      * @param itemComposite
      */
@@ -251,7 +280,7 @@ public class UseDynamicJobSelectionDialog extends Dialog {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                checkboxTableViewer.setAllChecked(true);
+                ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setAllChecked(true);
             }
         });
 
@@ -263,73 +292,114 @@ public class UseDynamicJobSelectionDialog extends Dialog {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                checkboxTableViewer.setAllChecked(false);
+                ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setAllChecked(false);
             }
         });
 
         setButtonLayoutData(deselectAll);
 
-        upBtn = new Button(buttonComposite, SWT.PUSH);
-        upBtn.setText(Messages.getString("UseDynamicJobSelectionDialog.upBtnText")); //$NON-NLS-1$
-        upBtn.addSelectionListener(new SelectionAdapter() {
+        Button expandBtn = new Button(buttonComposite, SWT.PUSH);
+        expandBtn.setText(Messages.getString("UseDynamicJobSelectionDialog.expandBtnText")); //$NON-NLS-1$
+        expandBtn.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-
-                ISelection selection = checkboxTableViewer.getSelection();
-                if (selection instanceof IStructuredSelection) {
-                    IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-                    Object firstElement = structuredSelection.getFirstElement();
-                    if (firstElement instanceof IRepositoryViewObject) {
-                        IRepositoryViewObject contributor = (IRepositoryViewObject) firstElement;
-                        int index = allJobNodes.indexOf(contributor);
-                        allJobNodes.remove(contributor);
-                        allJobNodes.add(index - 1, contributor);
-                        checkboxTableViewer.refresh();
-                    }
-                }
-                updateButtonStates();
+                exportItemsTreeViewer.getViewer().expandAll();
             }
-
         });
-        setButtonLayoutData(upBtn);
+        setButtonLayoutData(expandBtn);
 
-        downBtn = new Button(buttonComposite, SWT.PUSH);
-        downBtn.setText(Messages.getString("UseDynamicJobSelectionDialog.downBtnText")); //$NON-NLS-1$
-        downBtn.addSelectionListener(new SelectionAdapter() {
+        Button collapseBtn = new Button(buttonComposite, SWT.PUSH);
+        collapseBtn.setText(Messages.getString("UseDynamicJobSelectionDialog.collapseBtnText")); //$NON-NLS-1$
+        collapseBtn.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-
-                ISelection selection = checkboxTableViewer.getSelection();
-                if (selection instanceof IStructuredSelection) {
-                    IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-                    Object firstElement = structuredSelection.getFirstElement();
-                    if (firstElement instanceof IRepositoryViewObject) {
-                        IRepositoryViewObject contributor = (IRepositoryViewObject) firstElement;
-                        int index = allJobNodes.indexOf(contributor);
-                        allJobNodes.remove(contributor);
-                        allJobNodes.add(index + 1, contributor);
-                        checkboxTableViewer.refresh();
-                    }
-                }
-                updateButtonStates();
+                exportItemsTreeViewer.getViewer().collapseAll();
             }
         });
-        setButtonLayoutData(downBtn);
+        setButtonLayoutData(collapseBtn);
     }
 
-    private void updateButtonStates() {
-        final int index = table.getSelectionIndex();
-        if (index == 0) {
-            upBtn.setEnabled(false);
-        } else {
-            upBtn.setEnabled(true);
+    /**
+     * Repository view with checkbox
+     * 
+     * DOC yhch UseDynamicJobSelectionDialog class global comment. Detailled comment <br/>
+     * 
+     * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
+     * 
+     */
+    class CheckboxRepositoryView extends RepositoryView {
+
+        @Override
+        protected TreeViewer createTreeViewer(Composite parent) {
+            return new CheckboxRepositoryTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         }
-        if (index >= checkboxTableViewer.getTable().getItemCount() - 1) {
-            downBtn.setEnabled(false);
-        } else {
-            downBtn.setEnabled(true);
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.repository.ui.views.RepositoryView#createPartControl(org.eclipse.swt.widgets.Composite)
+         */
+        @Override
+        public void createPartControl(Composite parent) {
+            super.createPartControl(parent);
+            CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
         }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.repository.ui.views.RepositoryView#refresh(java.lang.Object)
+         */
+        @Override
+        public void refresh(Object object) {
+            refresh();
+            if (object != null) {
+                getViewer().expandToLevel(object, AbstractTreeViewer.ALL_LEVELS);
+            }
+        }
+
+        @Override
+        protected void makeActions() {
+        }
+
+        @Override
+        protected void hookContextMenu() {
+        }
+
+        @Override
+        protected void contributeToActionBars() {
+        }
+
+        @Override
+        protected void initDragAndDrop() {
+        }
+
+        @Override
+        protected void hookDoubleClickAction() {
+        }
+
+        @Override
+        public void addFilters() {
+        }
+
+        @Override
+        public void createActionComposite(Composite parent) {
+        }
+
+    }
+
+    /**
+     * DOC nrousseau Comment method "dispose".
+     */
+    public void dispose() {
+        ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setCheckedElements(ArrayUtils.EMPTY_OBJECT_ARRAY);
+        exportItemsTreeViewer.dispose();
+        repositoryView = null;
+        exportItemsTreeViewer = null;
+        repositoryNodes.clear();
+        repositoryNodes = null;
+        filteredCheckboxTree = null;
     }
 }

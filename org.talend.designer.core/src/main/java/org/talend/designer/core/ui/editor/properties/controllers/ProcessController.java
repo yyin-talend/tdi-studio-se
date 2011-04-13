@@ -62,6 +62,8 @@ import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectA
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 import org.talend.repository.ui.dialog.UseDynamicJobSelectionDialog;
 
@@ -454,13 +456,14 @@ public class ProcessController extends AbstractElementPropertySectionController 
             selectJobNodeIfChecked(button, usedialog);
 
             if (usedialog.open() == UseDynamicJobSelectionDialog.OK) {
-                List<IRepositoryViewObject> repositoryNodeList = usedialog.getRepositoryNodes();
+                List<RepositoryNode> repositoryNodeList = usedialog.getRepositoryNodes();
                 StringBuffer ids = new StringBuffer();
                 String paramName = (String) button.getData(PARAMETER_NAME);
 
                 if (repositoryNodeList != null && repositoryNodeList.size() > 0) {
                     for (int i = 0; i < repositoryNodeList.size(); i++) {
-                        IRepositoryViewObject repositoryViewObject = repositoryNodeList.get(i);
+                        RepositoryNode node = repositoryNodeList.get(i);
+                        IRepositoryViewObject repositoryViewObject = node.getObject();
                         final Item item = repositoryViewObject.getProperty().getItem();
                         String id = item.getProperty().getId();
                         if (i > 0) {
@@ -533,12 +536,11 @@ public class ProcessController extends AbstractElementPropertySectionController 
                 String jobIds = (String) runJobNode.getPropertyValue(paramName); // .getElementParameter(name).getValue();
                 if (StringUtils.isNotEmpty(jobIds)) {
                     String[] jobsArr = jobIds.split(ProcessController.COMMA);
-                    List<IRepositoryViewObject> repositoryNodeList = new ArrayList<IRepositoryViewObject>();
+                    List<RepositoryNode> repositoryNodeList = new ArrayList<RepositoryNode>();
                     for (String id : jobsArr) {
                         if (StringUtils.isNotEmpty(id)) {
                             // if user have selected jobs
-                            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                            IRepositoryViewObject node = factory.getLastVersion(id);
+                            RepositoryNode node = RepositoryNodeUtilities.getRepositoryNode(id);
                             repositoryNodeList.add(node);
                         }
                     }
