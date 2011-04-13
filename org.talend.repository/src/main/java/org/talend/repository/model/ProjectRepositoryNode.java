@@ -575,7 +575,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 IConfigurationElement element = configurationElements[i];
                 Object extensionNode = element.createExecutableExtension("class"); //$NON-NLS-N$
                 String type = element.getAttribute("type"); //$NON-NLS-N$
-                String parentNodeLabel = element.getAttribute("parentLabel"); //$NON-NLS-N$
+                String parentNodeType = element.getAttribute("parentNodeType"); //$NON-NLS-N$
                 if (extensionNode instanceof IExtendRepositoryNode) {
                     IExtendRepositoryNode diyNode = (IExtendRepositoryNode) extensionNode;
                     IImage icon = diyNode.getNodeImage();
@@ -597,7 +597,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         dynamicNode.setProperties(EProperties.CONTENT_TYPE, repositoryNodeType);
                     }
                     dynamicNode.setIcon(icon);
-                    IRepositoryNode parentNode = findParentNodeByLabel(nodes, parentNodeLabel);
+                    IRepositoryNode parentNode = findParentNodeByLabel(nodes, parentNodeType);
                     if (parentNode != null) {
                         parentNode.getChildren().add(dynamicNode);
                         dynamicNode.setParent((RepositoryNode) parentNode);
@@ -611,13 +611,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         }
     }
 
-    private IRepositoryNode findParentNodeByLabel(List<IRepositoryNode> nodes, String parentNodeLabel) {
+    private IRepositoryNode findParentNodeByLabel(List<IRepositoryNode> nodes, String parentNodeType) {
         for (IRepositoryNode inode : nodes) {
             ERepositoryObjectType contentType = inode.getContentType();
-            if (contentType != null && contentType.toString().equals(parentNodeLabel)) {
+            if (contentType != null && contentType.toString().equals(parentNodeType)) {
                 return inode;
             }
-            IRepositoryNode node = findParentNodeByLabel(inode.getChildren(), parentNodeLabel);
+            IRepositoryNode node = findParentNodeByLabel(inode.getChildren(), parentNodeType);
             if (node != null) {
                 return node;
             } else
