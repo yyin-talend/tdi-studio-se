@@ -256,7 +256,7 @@ public class ComponentsFactory implements IComponentsFactory {
         String installLocation = new Path(Platform.getConfigurationLocation().getURL().getPath()).toFile().getAbsolutePath();
         componentToProviderMap = new HashMap<IComponent, AbstractComponentsProvider>();
         boolean isNeedClean = cleanComponentCache();
-        isCreated = hasComponentFile(installLocation) && !isNeedClean;
+        isCreated = hasComponentFile(installLocation) && !isNeedClean && !CommonsPlugin.isHeadless();
         if (isReset) {
             isCreated = false;
             cache.getComponentEntryMap().clear();
@@ -300,9 +300,7 @@ public class ComponentsFactory implements IComponentsFactory {
             try {
                 Resource resource = createComponentCacheResource(installLocation);
                 resource.getContents().add(cache);
-                if (!CommonsPlugin.isHeadless()) {
-                    EmfHelper.saveResource(cache.eResource());
-                }
+                EmfHelper.saveResource(cache.eResource());
             } catch (PersistenceException e1) {
                 ExceptionHandler.process(e1);
             }
