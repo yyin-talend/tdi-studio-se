@@ -740,7 +740,9 @@ class RepositoryTypeProcessor implements ITypeProcessor {
             return;
         }
         // referenced project.
-        nodesList.removeAll(null);
+        // bug 20515
+        while (nodesList.remove(null))
+            ;
         if (contentProvider.getReferenceProjectNode() != null) {
             RepositoryNode contentRepositoryNode = contentProvider.getReferenceProjectNode();
             if (!contentRepositoryNode.isInitialized()) {
@@ -1169,7 +1171,10 @@ class SchemaTypeProcessor implements ITypeProcessor {
                     refContainer.add(refProject.getMetadataConNode());
 
                 }
-                refContainer.remove(null); // Not allow null element
+                // Not allow null element
+                // bug 20515
+                while (refContainer.remove(null))
+                    ;
                 newProject.getChildren().addAll(refContainer);
                 nodesList.add(newProject);
                 this.addSubReferencedProjectNodes(refProject);
@@ -1182,7 +1187,9 @@ class SchemaTypeProcessor implements ITypeProcessor {
             return;
         }
         // referenced project.
-        nodesList.removeAll(null);
+        // bug 20515
+        while (nodesList.remove(null))
+            ;
         if (contentProvider.getReferenceProjectNode() != null) {
             List<IRepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
@@ -1214,7 +1221,10 @@ class SchemaTypeProcessor implements ITypeProcessor {
                         refContainer.add(refProject.getMetadataConNode());
 
                     }
-                    refContainer.remove(null); // Not allow null element
+                    // Not allow null element
+                    // bug 20515
+                    while (refContainer.remove(null))
+                        ;
                     newProject.getChildren().addAll(refContainer);
                     nodesList.add(newProject);
                     this.addSubReferencedProjectNodes(refProject);
