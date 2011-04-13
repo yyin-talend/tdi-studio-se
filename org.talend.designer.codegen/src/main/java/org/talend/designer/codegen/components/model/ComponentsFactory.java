@@ -300,7 +300,9 @@ public class ComponentsFactory implements IComponentsFactory {
             try {
                 Resource resource = createComponentCacheResource(installLocation);
                 resource.getContents().add(cache);
-                EmfHelper.saveResource(cache.eResource());
+                if (!CommonsPlugin.isHeadless()) {
+                    EmfHelper.saveResource(cache.eResource());
+                }
             } catch (PersistenceException e1) {
                 ExceptionHandler.process(e1);
             }
@@ -437,6 +439,7 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     public void loadUserComponentsFromComponentsProviderExtension() {
+        ComponentsProviderManager.getInstance().getProviders();
         ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
         AbstractComponentsProvider componentsProvider = componentsProviderManager.loadUserComponentsProvidersFromExtension();
         try {
@@ -444,7 +447,7 @@ public class ComponentsFactory implements IComponentsFactory {
             // remove old user components
             if (this.userComponentList != null) {
                 for (IComponent component : userComponentList) {
-                    if (componentList.contains(component)) {
+                    if (componentList != null && componentList.contains(component)) {
                         componentList.remove(component);
                     }
                     if (customComponentList.contains(component)) {
@@ -458,7 +461,9 @@ public class ComponentsFactory implements IComponentsFactory {
             if (componentsProvider.getInstallationFolder().exists()) {
                 loadComponentsFromFolder(componentsProvider.getComponentsLocation(), componentsProvider);
             }
-            ComponentManager.saveResource();
+            if (!CommonsPlugin.isHeadless()) {
+                ComponentManager.saveResource();
+            }
         } catch (IOException e) {
             ExceptionHandler.process(e);
         }
@@ -537,106 +542,109 @@ public class ComponentsFactory implements IComponentsFactory {
                 this.subMonitor = SubMonitor.convert(monitor,
                         Messages.getString("ComponentsFactory.load.components"), childDirectories.length); //$NON-NLS-1$
             }
-            skeletonList.ensureCapacity(childDirectories.length);// to optimize the size of the array
-            for (File currentFolder : childDirectories) {
-                // get the skeleton files first, then XML config files later.
-                File[] skeletonFiles = currentFolder.listFiles(skeletonFilter);
-                if (skeletonFiles != null) {
-                    for (File file : skeletonFiles) {
-                        skeletonList.add(file.getAbsolutePath()); // path
-                    }
-                }
-
-                try {
-                    ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
-                    File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
-                            currentFolder.getName(), getCodeLanguageSuffix()));
-
-                    if (CommonsPlugin.isHeadless() && componentsCache.containsKey(xmlMainFile.getAbsolutePath())) {
-                        // In headless mode, we assume the components won't change and we will use a cache
-                        componentList.add(componentsCache.get(xmlMainFile.getAbsolutePath()));
-                        if (isCustom) {
-                            customComponentList.add(componentsCache.get(xmlMainFile.getAbsolutePath()));
+            if (skeletonList != null) {
+                skeletonList.ensureCapacity(childDirectories.length);// to optimize the size of the array
+                for (File currentFolder : childDirectories) {
+                    // get the skeleton files first, then XML config files later.
+                    File[] skeletonFiles = currentFolder.listFiles(skeletonFilter);
+                    if (skeletonFiles != null) {
+                        for (File file : skeletonFiles) {
+                            skeletonList.add(file.getAbsolutePath()); // path
                         }
-                        continue;
-                    }
-                    String pathName = xmlMainFile.getAbsolutePath();
-                    pathName = pathName.replace(replaceSource.getAbsolutePath(), "");
-                    EmfComponent currentComp = new EmfComponent(pathName, xmlMainFile.getParentFile().getName(), pathSource,
-                            cache, isCreated);
-                    // force to call some functions to update the cache. (to improve)
-                    currentComp.isVisibleInComponentDefinition();
-                    currentComp.isTechnical();
-                    currentComp.getOriginalFamilyName();
-                    currentComp.getTranslatedFamilyName();
-                    currentComp.getPluginFullName();
-                    currentComp.getVersion();
-                    currentComp.getModulesNeeded();
-                    currentComp.getPluginDependencies();
-                    // end of force cache update.
-
-                    // if the component is not needed in the current branding,
-                    // and that this one IS NOT a specific component for code generation
-                    // just don't load it
-                    if (availableComponents != null
-                            && !ArrayUtils.contains(availableComponents, currentComp.getName())
-                            && !(ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, currentComp.getName())
-                                    || currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
-                        continue;
                     }
 
-                    componentToProviderMap.put(currentComp, provider);
+                    try {
+                        ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
+                        File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
+                                currentFolder.getName(), getCodeLanguageSuffix()));
 
-                    // if the component is not needed in the current branding,
-                    // and that this one IS a specific component for code generation,
-                    // hide it
-                    if (availableComponents != null
-                            && !ArrayUtils.contains(availableComponents, currentComp.getName())
-                            && (ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, currentComp.getName())
-                                    || currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
-                        currentComp.setVisible(false);
-                        currentComp.setTechnical(true);
-                    }
-
-                    if (componentList.contains(currentComp)) {
-                        log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version."); //$NON-NLS-1$ //$NON-NLS-2$
-                    } else {
-                        currentComp.setResourceBundle(getComponentResourceBundle(currentComp, pathSource, provider));
-                        loadIcons(currentFolder, currentComp);
-                        componentList.add(currentComp);
-                        if (isCustom) {
-                            customComponentList.add(currentComp);
+                        if (CommonsPlugin.isHeadless() && componentsCache.containsKey(xmlMainFile.getAbsolutePath())) {
+                            // In headless mode, we assume the components won't change and we will use a cache
+                            componentList.add(componentsCache.get(xmlMainFile.getAbsolutePath()));
+                            if (isCustom) {
+                                customComponentList.add(componentsCache.get(xmlMainFile.getAbsolutePath()));
+                            }
+                            continue;
                         }
-                        if (pathSource != null) {
-                            Path userComponent = new Path(pathSource);
-                            Path templatePath = new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
-                                    + IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER + File.separatorChar
-                                    + ComponentUtilities.getExtFolder(OLD_COMPONENTS_USER_INNER_FOLDER));
-                            if (userComponent.equals(templatePath)) {
-                                userComponentList.add(currentComp);
+                        String pathName = xmlMainFile.getAbsolutePath();
+                        pathName = pathName.replace(replaceSource.getAbsolutePath(), "");
+                        EmfComponent currentComp = new EmfComponent(pathName, xmlMainFile.getParentFile().getName(), pathSource,
+                                cache, isCreated);
+                        // force to call some functions to update the cache. (to improve)
+                        currentComp.isVisibleInComponentDefinition();
+                        currentComp.isTechnical();
+                        currentComp.getOriginalFamilyName();
+                        currentComp.getTranslatedFamilyName();
+                        currentComp.getPluginFullName();
+                        currentComp.getVersion();
+                        currentComp.getModulesNeeded();
+                        currentComp.getPluginDependencies();
+                        // end of force cache update.
+
+                        // if the component is not needed in the current branding,
+                        // and that this one IS NOT a specific component for code generation
+                        // just don't load it
+                        if (availableComponents != null
+                                && !ArrayUtils.contains(availableComponents, currentComp.getName())
+                                && !(ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, currentComp.getName())
+                                        || currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
+                            continue;
+                        }
+
+                        componentToProviderMap.put(currentComp, provider);
+
+                        // if the component is not needed in the current branding,
+                        // and that this one IS a specific component for code generation,
+                        // hide it
+                        if (availableComponents != null
+                                && !ArrayUtils.contains(availableComponents, currentComp.getName())
+                                && (ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, currentComp.getName())
+                                        || currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
+                            currentComp.setVisible(false);
+                            currentComp.setTechnical(true);
+                        }
+
+                        if (componentList.contains(currentComp)) {
+                            log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version."); //$NON-NLS-1$ //$NON-NLS-2$
+                        } else {
+                            currentComp.setResourceBundle(getComponentResourceBundle(currentComp, pathSource, provider));
+                            loadIcons(currentFolder, currentComp);
+                            componentList.add(currentComp);
+                            if (isCustom) {
+                                customComponentList.add(currentComp);
+                            }
+                            if (pathSource != null) {
+                                Path userComponent = new Path(pathSource);
+                                Path templatePath = new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
+                                        + IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER + File.separatorChar
+                                        + ComponentUtilities.getExtFolder(OLD_COMPONENTS_USER_INNER_FOLDER));
+                                if (userComponent.equals(templatePath)) {
+                                    userComponentList.add(currentComp);
+                                }
                             }
                         }
+
+                        if (CommonsPlugin.isHeadless()) {
+                            componentsCache.put(xmlMainFile.getAbsolutePath(), currentComp);
+                        }
+                    } catch (MissingMainXMLComponentFileException e) {
+                        log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e); //$NON-NLS-1$ //$NON-NLS-2$
+                    } catch (BusinessException e) {
+                        BusinessException ex = new BusinessException(
+                                "Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
+                                        + e.getMessage(), e);
+                        ExceptionHandler.process(ex, Level.WARN);
                     }
 
-                    if (CommonsPlugin.isHeadless()) {
-                        componentsCache.put(xmlMainFile.getAbsolutePath(), currentComp);
+                    if (this.subMonitor != null) {
+                        this.subMonitor.worked(1);
                     }
-                } catch (MissingMainXMLComponentFileException e) {
-                    log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e); //$NON-NLS-1$ //$NON-NLS-2$
-                } catch (BusinessException e) {
-                    BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
-                            + e.getMessage(), e);
-                    ExceptionHandler.process(ex, Level.WARN);
+                    if (this.monitor != null && this.monitor.isCanceled()) {
+                        return;
+                    }
                 }
-
-                if (this.subMonitor != null) {
-                    this.subMonitor.worked(1);
-                }
-                if (this.monitor != null && this.monitor.isCanceled()) {
-                    return;
-                }
+                skeletonList.trimToSize();// to optimize the size of the array
             }
-            skeletonList.trimToSize();// to optimize the size of the array
         }
     }
 
