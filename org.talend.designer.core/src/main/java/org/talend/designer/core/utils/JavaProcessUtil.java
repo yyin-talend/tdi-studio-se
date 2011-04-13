@@ -30,6 +30,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -97,11 +98,14 @@ public class JavaProcessUtil {
         }
 
         if (process instanceof IProcess2) {
-            List<ModuleNeeded> modulesNeededForRoutines = ModulesNeededProvider
-                    .getModulesNeededForRoutines((ProcessItem) ((IProcess2) process).getProperty().getItem());
-            if (modulesNeededForRoutines != null) {
-                for (ModuleNeeded moduleNeeded : modulesNeededForRoutines) {
-                    neededLibraries.add(moduleNeeded.getModuleName());
+            Item item = ((IProcess2) process).getProperty().getItem();
+            if (item instanceof ProcessItem) {
+                List<ModuleNeeded> modulesNeededForRoutines = ModulesNeededProvider
+                        .getModulesNeededForRoutines((ProcessItem) item);
+                if (modulesNeededForRoutines != null) {
+                    for (ModuleNeeded moduleNeeded : modulesNeededForRoutines) {
+                        neededLibraries.add(moduleNeeded.getModuleName());
+                    }
                 }
             }
         }
