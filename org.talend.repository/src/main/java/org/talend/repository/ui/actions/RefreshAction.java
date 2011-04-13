@@ -48,6 +48,7 @@ public class RefreshAction extends Action {
         // qli modified to fix the bug 6659.
         RepositoryManager.syncRoutineAndJoblet(ERepositoryObjectType.ROUTINES);
         RepositoryManager.syncRoutineAndJoblet(ERepositoryObjectType.JOBLET);
+        RepositoryManager.syncUserComponents();
 
     }
 }
