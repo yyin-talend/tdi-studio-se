@@ -29,6 +29,7 @@ import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.data.text.StringHelper;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
@@ -679,6 +680,8 @@ public abstract class DbGenerationManager {
                     String tName = iconn.getName();
                     if (tName.equals(inputTableName) && metadataTable != null) {
                         String tableName = metadataTable.getTableName();
+                        String tableColneName = tableName;
+                        tableColneName = MetadataToolHelper.validateTableName(tableColneName);
                         if (inputTableName.contains(".") && tableName != null) {
                             MapExpressionParser mapParser2 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
                             List<Map<String, String>> tableNameList = mapParser2.parseInTableEntryLocations(inputTableName);
@@ -690,7 +693,7 @@ public abstract class DbGenerationManager {
                                     Entry<String, String> tableEntry = iteTable.next();
                                     String tableLabel = tableEntry.getKey();
                                     String schemaValue = tableEntry.getValue();
-                                    if (tableLabel.equals(metadataTable.getLabel())) {
+                                    if (tableLabel.equals(metadataTable.getLabel()) && tableColneName.equals(tableLabel)) {
                                         sb.append(schemaValue);
                                         sb.append(".");
                                         sb.append(tableName);
@@ -700,7 +703,7 @@ public abstract class DbGenerationManager {
 
                             }
                         } else if (tableName != null) {
-                            if (inputTableName.equals(metadataTable.getLabel())) {
+                            if (inputTableName.equals(metadataTable.getLabel()) && tableColneName.equals(inputTableName)) {
                                 sb.append(tableName);
                                 replace = true;
                             }
@@ -745,6 +748,8 @@ public abstract class DbGenerationManager {
                         if (tableValue.equals(tName) && metadataTable != null) {
                             List<IMetadataColumn> lColumn = metadataTable.getListColumns();
                             String tableName = metadataTable.getTableName();
+                            String tableColneName = tableName;
+                            tableColneName = MetadataToolHelper.validateTableName(tableColneName);
                             if (tableValue.contains(".") && tableName != null) {
                                 MapExpressionParser mapParser2 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
                                 List<Map<String, String>> tableNameList = mapParser2.parseInTableEntryLocations(tableValue);
@@ -757,7 +762,7 @@ public abstract class DbGenerationManager {
                                         Entry<String, String> tableEntry = iteTable.next();
                                         String tableLabel = tableEntry.getKey();
                                         String schemaValue = tableEntry.getValue();
-                                        if (tableLabel.equals(metadataTable.getLabel())) {
+                                        if (tableLabel.equals(metadataTable.getLabel()) && tableColneName.equals(tableLabel)) {
                                             tableName = tableName.replaceAll("\\$", "\\\\\\$");
                                             expression = expression.replaceFirst(tableValue, schemaValue + "." + tableName);
                                         }
@@ -765,7 +770,7 @@ public abstract class DbGenerationManager {
 
                                 }
                             } else if (tableName != null) {
-                                if (tableValue.equals(metadataTable.getLabel())) {
+                                if (tableValue.equals(metadataTable.getLabel()) && tableColneName.equals(tableValue)) {
                                     tableName = tableName.replaceAll("\\$", "\\\\\\$");
                                     expression = expression.replaceFirst(tableValue, tableName);
                                 }
