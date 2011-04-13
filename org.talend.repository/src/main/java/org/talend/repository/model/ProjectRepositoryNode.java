@@ -574,7 +574,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             for (int i = 0; i < configurationElements.length; i++) {
                 IConfigurationElement element = configurationElements[i];
                 Object extensionNode = element.createExecutableExtension("class"); //$NON-NLS-N$
-                String label = element.getAttribute("label"); //$NON-NLS-N$
+                String type = element.getAttribute("type"); //$NON-NLS-N$
                 String parentNodeLabel = element.getAttribute("parentLabel"); //$NON-NLS-N$
                 if (extensionNode instanceof IExtendRepositoryNode) {
                     IExtendRepositoryNode diyNode = (IExtendRepositoryNode) extensionNode;
@@ -591,7 +591,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         }
                     }
                     ERepositoryObjectType repositoryNodeType = (ERepositoryObjectType) ERepositoryObjectType.valueOf(
-                            ERepositoryObjectType.class, label);
+                            ERepositoryObjectType.class, type);
                     if (repositoryNodeType != null) {
                         dynamicNode.setProperties(EProperties.LABEL, repositoryNodeType);
                         dynamicNode.setProperties(EProperties.CONTENT_TYPE, repositoryNodeType);
