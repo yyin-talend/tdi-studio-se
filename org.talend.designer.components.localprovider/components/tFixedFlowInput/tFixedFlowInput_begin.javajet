@@ -196,7 +196,7 @@ while (fid_<%=cid %>.nextRecord()) {
                     <%if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {%>
                     		<%=firstConnName %>.<%=label %> = (colContent == null || colContent.length() == 0) ? <%=defaultValue %>: colContent;
                     <%}else if(javaType == JavaTypesManager.DATE){%>
-                    		<%=firstConnName %>.<%=label %> = (colContent == null || colContent.length() == 0) ? ParserUtils.parseTo_Date(<%=defaultValue %>, <%= patternValue %>) : ParserUtils.parseTo_Date(colContent, <%= patternValue %>);
+                    		<%=firstConnName %>.<%=label %> = (colContent == null || colContent.length() == 0) ? ParserUtils.parseTo_Date((String)<%=defaultValue %>, <%= patternValue %>) : ParserUtils.parseTo_Date(colContent, <%= patternValue %>);
                     <%}else if(javaType == JavaTypesManager.BYTE_ARRAY){%>
                     		<%=firstConnName %>.<%=label %> = (colContent == null || colContent.length() == 0) ? <%=defaultValue %> : colContent.getBytes();
                     <%}else{%>
@@ -206,7 +206,7 @@ while (fid_<%=cid %>.nextRecord()) {
 				<%if(javaType != JavaTypesManager.DATE){%>	
 					<%=firstConnName %>.<%=label %> = <%=defaultValue %>;
 				<%}else {%>
-					<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_Date(<%=defaultValue %>, <%= patternValue %>);
+					<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_Date((String)<%=defaultValue %>, <%= patternValue %>);
 				<%}%>
 				}
 			
