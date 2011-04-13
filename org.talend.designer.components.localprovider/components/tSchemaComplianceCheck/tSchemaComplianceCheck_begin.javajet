@@ -131,7 +131,7 @@ String cid = node.getUniqueName();
       %>
         if (<%=_sInConnName%>.<%=colName%> != null){
 		  handleBigdecimalPrecision((<%=_sInConnName%>.<%=colName%>).toPlainString(), <%=iPrecision%>, <%=_maxLength%>);
-          ifPassedThrough = ifPassed;
+          ifPassedThrough = ifPassedThrough?ifPassed:false;
           errorCodeThrough += errorCode;
           errorMessageThrough += errorMessage;
 
