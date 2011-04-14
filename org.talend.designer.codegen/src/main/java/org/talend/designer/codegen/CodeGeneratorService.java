@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.jobs.Job;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -105,6 +107,13 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * @see org.talend.designer.codegen.ICodeGeneratorService#refreshTemplates()
      */
     public void refreshTemplates() {
+        // this will force to refresh all components libs when install run ctrl+f3
+        File componentsLibsSetupDone = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath()
+                + "/.componentsSetupDone");
+        if (componentsLibsSetupDone.exists()) {
+            componentsLibsSetupDone.delete();
+        }
+
         ComponentsFactoryProvider.getInstance().resetCache();
         CodeGeneratorEmittersPoolFactory.initialize();
         CorePlugin.getDefault().getLibrariesService().syncLibraries();

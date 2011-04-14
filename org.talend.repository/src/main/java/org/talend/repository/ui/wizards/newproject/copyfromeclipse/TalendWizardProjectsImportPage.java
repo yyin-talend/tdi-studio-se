@@ -215,7 +215,9 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
 
                 IPathVariableManager pathVariableManager = ResourcesPlugin.getWorkspace().getPathVariableManager();
                 pathVariableManager.setValue(EXTERNAL_LIB_JAVA_PATH, new Path(destinationJavaPath));
-                pathVariableManager.setValue(EXTERNAL_LIB_PERL_PATH, new Path(destinationPerlPath));
+                if (destinationPerlPath != null) {
+                    pathVariableManager.setValue(EXTERNAL_LIB_PERL_PATH, new Path(destinationPerlPath));
+                }
 
                 super.updateProjectsList(sourcePath);
             }
