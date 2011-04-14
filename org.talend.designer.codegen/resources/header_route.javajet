@@ -98,3 +98,64 @@ import java.util.Comparator;
 	private final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
 	public Integer errorCode = null;
 	private String currentComponent = "";
+	
+	
+	private java.util.Properties defaultProps = new java.util.Properties();
+	
+	public class ContextProperties extends java.util.Properties {
+
+		public ContextProperties(java.util.Properties properties){
+			super(properties);
+		}
+		public ContextProperties(){
+			super();
+		}
+
+		public void synchronizeContext(){
+			<% for (IContextParameter ctxParam :params){
+				String cParaName = ctxParam.getName();
+			%>
+			if(<%=cParaName %> != null){
+				<%if(ctxParam.getType().equals("id_Date")){%>
+					String pattern_<%=cParaName %> = "yyyy-MM-dd HH:mm:ss";
+					String value_<%=cParaName %> = "<%=ctxParam.getValue() %>";
+					String[] parts_<%=cParaName %> = value_<%=cParaName %>.split(";");
+					if(parts_<%=cParaName %>.length > 1){
+						pattern_<%=cParaName %> = parts_<%=cParaName %>[0];
+						this.setProperty("<%=cParaName %>", pattern_<%=cParaName %> + ";" + FormatterUtils.format_Date(<%=cParaName %>, pattern_<%=cParaName %>));
+					}else{
+						this.setProperty("<%=cParaName %>", FormatterUtils.format_Date(<%=cParaName %>, pattern_<%=cParaName %>));
+					}
+				<%}else{%>
+					this.setProperty("<%=cParaName %>", <%=cParaName %>.toString());
+				<%}%>
+			}
+			<% } %>
+		}
+
+<%
+		for (IContextParameter ctxParam :params)
+		{
+				if(ctxParam.getType().equals("id_List Of Value") || ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory"))
+				{
+		%>
+		public String <%=ctxParam.getName()%>;
+		public String get<%=Character.toUpperCase(ctxParam.getName().charAt(0)) + ctxParam.getName().substring(1)%>(){
+			return this.<%=ctxParam.getName()%>;
+		}
+		<%
+				}else
+				{
+%>
+public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> <%=ctxParam.getName()%>;
+public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Character.toUpperCase(ctxParam.getName().charAt(0)) + ctxParam.getName().substring(1)%>(){
+	return this.<%=ctxParam.getName()%>;
+}
+<%				}
+		}
+%>
+	}
+	private ContextProperties context = new ContextProperties();
+	public ContextProperties getContext() {
+		return this.context;
+	}
