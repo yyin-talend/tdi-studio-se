@@ -171,6 +171,12 @@ public class CodeGenerator implements ICodeGenerator {
                 .getPreferenceStore("displayMethodSize")); //$NON-NLS-1$
         return displayMethodSize;
     }
+    
+//    public void sortSubTree(List<NodesSubTree> nodesSubTree) {
+//        for (NodesSubTree subTree : nodesSubTree) {
+//            subTree.getNodes().get(0).isStart()
+//        }
+//    }
 
     /**
      * Generate the code for the process given to the constructor.
@@ -212,22 +218,33 @@ public class CodeGenerator implements ICodeGenerator {
 
             if ("tcs".equals(service.getAcronym())) {
                 if ((processTree.getSubTrees() != null) && (processTree.getSubTrees().size() > 0)) {
-
+                    
+//                    sortSubTree(processTree.getSubTrees());
+                    
                     boolean displayMethodSize = isMethodSizeNeeded();
                     NodesSubTree lastSubtree = null;
                     boolean generateHeaders = true;
+                    
+                    List<NodesSubTree> nodeSubTreeList = new ArrayList<NodesSubTree>();
+                    
                     for (NodesSubTree subTree : processTree.getSubTrees()) {
                         lastSubtree = subTree;
+                        
                         
                         //Generate headers only one time, for each routes in the CamelContext.
                         if(generateHeaders) {
 							componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER_ROUTE, subTree));
 							componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_HEADER, headerArgument));
-							componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
+							if(subTree.getRootNode().getSubProcessStartNode(true).getUniqueName().contains("cMessageEndpoint"))
+							    nodeSubTreeList.add(subTree);
+							else
+							    componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
 									ETypeGen.CAMEL));
                             generateHeaders = false;
                         } else {
-                            if(subTree.getRootNode().isStart()) {
+                            if(subTree.getRootNode().getSubProcessStartNode(true).getUniqueName().contains("cMessageEndpoint")) {
+                                nodeSubTreeList.add(subTree);
+                            }else if(subTree.getRootNode().isStart()) {
                                 componentsCode.append(";"); // Close the previous route in the CamelContext
                                 componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
                                         ETypeGen.CAMEL)); // And generate the component par of code
@@ -245,6 +262,29 @@ public class CodeGenerator implements ICodeGenerator {
                                             ETypeGen.CAMEL)); // The component part for a component linked to a WHEN or OTHERWISE.
                                 } 
                             }
+                        }
+                    }
+                    
+                    for (NodesSubTree subTree : nodeSubTreeList) {
+                        lastSubtree = subTree;
+                        
+                        if(subTree.getRootNode().isStart()) {
+                            componentsCode.append(";"); // Close the previous route in the CamelContext
+                            componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
+                                    ETypeGen.CAMEL)); // And generate the component par of code
+                        } else {
+                            if(subTree.getRootNode().getIncomingConnections()!=null && subTree.getRootNode().getIncomingConnections().size()>0) {
+                                if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE) && subTree.getRootNode().getIncomingConnections().get(0).getName().equals("EndBlock")) {
+                                    //If ROUTE ENBLOCK link, we generate the .end before generation the component part
+                                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_END_BLOCK, subTree));
+                                }
+                                if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_WHEN) || subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_OTHER)) {
+                                    //If WHEN or OTHERWISE link, we generate the .when or the .otherwise before generation the component part
+                                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_RUNIF, subTree));
+                                }
+                                componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
+                                        ETypeGen.CAMEL)); // The component part for a component linked to a WHEN or OTHERWISE.
+                            } 
                         }
                     }
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_FOOTER, lastSubtree)); // Close the last route in the CamelContext
@@ -977,4 +1017,6 @@ public class CodeGenerator implements ICodeGenerator {
 
         System.out.println(Messages.getString("CodeGenerator.newLine")); //$NON-NLS-1$
     }
+    
+
 }
