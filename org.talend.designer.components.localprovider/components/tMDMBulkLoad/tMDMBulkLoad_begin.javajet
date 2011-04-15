@@ -26,4 +26,5 @@ imports="
 org.talend.mdm.bulkload.client.BulkloadClient bulkloadClient_<%=cid %> = 
 new org.talend.mdm.bulkload.client.BulkloadClient(<%=mdmUrl%>, <%=username %>, <%=password%>, <%=version==null || "".equals(version)? "null":version%>, <%=dataCluster %>, <%=dataEntity %>, <%=dataModule%>);
 bulkloadClient_<%=cid %>.setOptions(new org.talend.mdm.bulkload.client.BulkloadOptions(<%=isGenerateId %>, <%=validate %>, <%=arraySize%>));
-java.util.List<String> xmlChunks_<%=cid %> = new java.util.ArrayList<String>();
+int count_<%=cid%> = 0;
+StringBuffer xmlChunks_<%=cid%> = new StringBuffer();

@@ -10,8 +10,8 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 %>
-if(xmlChunks_<%=cid %>.size()>0){
-	bulkloadClient_<%=cid %>.load(xmlChunks_<%=cid %>);
-	xmlChunks_<%=cid %>.clear();
+if (count_<%=cid%> > 0) {
+    bulkloadClient_<%=cid %>.load(new ByteArrayInputStream(xmlChunks_<%=cid %>.toString().getBytes()));
+    count_<%=cid%> = 0;
 }
 bulkloadClient_<%=cid %> = null;
