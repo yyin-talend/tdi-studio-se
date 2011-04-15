@@ -31,7 +31,7 @@ xmlChunks_<%=cid%>.append(<%=conn.getName()%>.<%=xmlField %>);
 count_<%=cid%>++;
 if (count_<%=cid%> == <%=arraySize%>) {
     bulkloadClient_<%=cid %>.load(new ByteArrayInputStream(xmlChunks_<%=cid %>.toString().getBytes()));
-    bulkloadClient_<%=cid %>.setLength(0);
+    xmlChunks_<%=cid %>.setLength(0);
     count_<%=cid%> = 0;
 }
 
