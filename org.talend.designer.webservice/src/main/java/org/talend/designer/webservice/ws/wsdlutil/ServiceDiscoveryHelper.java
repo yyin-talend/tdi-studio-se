@@ -3,20 +3,20 @@
  */
 package org.talend.designer.webservice.ws.wsdlutil;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
-import javax.wsdl.extensions.schema.Schema;
-import javax.wsdl.extensions.schema.SchemaImport;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 
-import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.talend.webservice.helper.conf.ServiceHelperConfiguration;
+
+import com.ibm.wsdl.ImportImpl;
 
 /**
  * This helper allow easy discovery of services and types
@@ -31,11 +31,9 @@ public class ServiceDiscoveryHelper {
 
     private Definition definition;
 
-    private XmlSchemaCollection schemaCollection;
+    private List<Definition> definitions;
 
     private ServiceHelperConfiguration configuration;
-
-    private File localWsdl;
 
     public ServiceDiscoveryHelper(String wsdlUri) throws WSDLException, IOException {
         this(wsdlUri, null);
@@ -65,61 +63,50 @@ public class ServiceDiscoveryHelper {
         } else {
             definition = newWSDLReader.readWSDL(configuration.createWSDLLocator(wsdlUri));
         }
-        schemaCollection = new XmlSchemaCollection();
-
-        schemaCollection.setBaseUri(definition.getDocumentBaseURI());// bchen for bug 8674
-
-        // Types types = definition.getTypes();
-        // if (types != null) {
-        // List<ExtensibilityElement> extensibilityElements = types.getExtensibilityElements();
-        // for (ExtensibilityElement el : extensibilityElements) {
-        // if (el instanceof Schema) {
-        // Schema schema = (Schema) el;
-        //
-        // // validateSchemaTargetNamespace(schema);
-        // // validateImportSchemaLocation(schema);
-        //
-        // // schemaCollection.read(schema.getElement());
-        // }
-        // }
-        // }
-        // localWsdl = File.createTempFile("service-", ".wsdl");
-        // localWsdl.deleteOnExit();
-        //
-        // wsdlFactory.newWSDLWriter().writeWSDL(definition, new FileOutputStream(localWsdl));
+        definitions = findWsdlImport(definition, null, null, null);
     }
 
-    // bchen for bug 8674
-    private void validateSchemaTargetNamespace(Schema schema) {
-        if (schema.getElement().getAttributeNode("targetNamespace") == null) {
-            String tNs = "";
-            try {
-                tNs = schema.getElement().getFirstChild().getNextSibling().getAttributes().getNamedItem("namespace")
-                        .getNodeValue();
-                schema.getElement().setAttribute("targetNamespace", tNs);
-            } catch (Exception ex) {
-
-            }
+    private List<Definition> findWsdlImport(Definition definition, List<Definition> definitions, List<String> locationURIs,
+            List<String> importNSs) {
+        if (definitions == null) {
+            definitions = new ArrayList<Definition>();
+            definitions.add(definition);
         }
-    }
 
-    private void validateImportSchemaLocation(Schema schema) {
-        Iterator importSchemaIte = schema.getImports().values().iterator();
+        if (locationURIs == null) {
+            locationURIs = new ArrayList<String>();
+        }
+        if (importNSs == null) {
+            importNSs = new ArrayList<String>();
+        }
 
-        while (importSchemaIte.hasNext()) {
-            List importSchemaList = (List) importSchemaIte.next();
-            for (Object importSchemaObj : importSchemaList) {
-                if (importSchemaObj instanceof SchemaImport) {
-                    SchemaImport importSchema = (SchemaImport) importSchemaObj;
-                    Schema refSchema = importSchema.getReferencedSchema();
-                    String schLocUri = importSchema.getSchemaLocationURI();
-                    if (schLocUri != null && refSchema != null) {
-                        importSchema.setSchemaLocationURI(refSchema.getDocumentBaseURI());
-                        // validateImportSchemaLocation(refSchema);
+        if (definition.getImports() != null && !definition.getImports().isEmpty()) {
+
+            Map imports = definition.getImports();
+            for (Object key : imports.keySet()) {
+
+                Vector importsImpl = (Vector) imports.get(key);
+                for (int i = 0; i < importsImpl.size(); i++) {
+
+                    ImportImpl importImpl = (ImportImpl) importsImpl.get(i);
+                    if (!locationURIs.contains(importImpl.getLocationURI()) || !importNSs.contains(importImpl.getNamespaceURI())) {
+                        locationURIs.add(importImpl.getLocationURI());
+                        importNSs.add(importImpl.getNamespaceURI());
+
+                        String importWsdlFileName = "importWsdl" + definitions.size() + ".wsdl";
+                        importImpl.setLocationURI(importWsdlFileName);
+                        Definition importDef = importImpl.getDefinition();
+
+                        if (importDef != null) {
+                            definitions.add(importDef);
+                            findWsdlImport(importDef, definitions, locationURIs, importNSs);
+                        }
                     }
                 }
             }
         }
+
+        return definitions;
     }
 
     /**
@@ -127,26 +114,9 @@ public class ServiceDiscoveryHelper {
      * 
      * @return
      */
-    public Definition getDefinition() {
-        return definition;
+
+    public List<Definition> getDefinitions() {
+        return definitions;
     }
 
-    /**
-     * Return the xml schema collection
-     * 
-     * @return
-     */
-    public XmlSchemaCollection getSchema() {
-        return schemaCollection;
-    }
-
-    public String getWsdlUri() {
-        return wsdlUri;
-    }
-
-    public String getLocalWsdlUri() {
-        localWsdl.toURI().toString();
-        return "file:/d:/service-8862108648722059106.wsdl";
-
-    }
 }

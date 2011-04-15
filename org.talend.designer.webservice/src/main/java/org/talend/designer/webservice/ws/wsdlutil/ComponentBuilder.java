@@ -97,15 +97,15 @@ public class ComponentBuilder {
         } else {
             sdh = new ServiceDiscoveryHelper(serviceinfo.getWsdlUri());
         }
-        Definition def = sdh.getDefinition();
+        List<Definition> defs = sdh.getDefinitions();
 
-        wsdlTypes = createSchemaFromTypes(def);
+        wsdlTypes = createSchemaFromTypes(defs);
 
         collectAllXmlSchemaElement();
 
         collectAllXmlSchemaType();
 
-        Map services = def.getServices();
+        Map services = defs.get(0).getServices();
         if (services != null) {
             Iterator svcIter = services.values().iterator();
             populateComponent(serviceinfo, (Service) svcIter.next());
@@ -152,71 +152,73 @@ public class ComponentBuilder {
 
     }
 
-    protected Vector<XmlSchema> createSchemaFromTypes(Definition wsdlDefinition) {
+    protected Vector<XmlSchema> createSchemaFromTypes(List<Definition> wsdlDefinitions) {
         Vector<XmlSchema> schemas = new Vector<XmlSchema>();
         org.w3c.dom.Element schemaElementt = null;
         Map importElement = null;
         List includeElement = null;
-        if (wsdlDefinition.getTypes() != null) {
-            Vector schemaExtElem = findExtensibilityElement(wsdlDefinition.getTypes().getExtensibilityElements(), "schema");
-            for (int i = 0; i < schemaExtElem.size(); i++) {
-                ExtensibilityElement schemaElement = (ExtensibilityElement) schemaExtElem.elementAt(i);
-                if (schemaElement != null && schemaElement instanceof UnknownExtensibilityElement) {
-                    schemaElementt = ((UnknownExtensibilityElement) schemaElement).getElement();
+        for (Definition def : wsdlDefinitions) {
+            if (def.getTypes() != null) {
+                Vector schemaExtElem = findExtensibilityElement(def.getTypes().getExtensibilityElements(), "schema");
+                for (int i = 0; i < schemaExtElem.size(); i++) {
+                    ExtensibilityElement schemaElement = (ExtensibilityElement) schemaExtElem.elementAt(i);
+                    if (schemaElement != null && schemaElement instanceof UnknownExtensibilityElement) {
+                        schemaElementt = ((UnknownExtensibilityElement) schemaElement).getElement();
 
-                    String documentBase = ((javax.wsdl.extensions.schema.Schema) schemaElement).getDocumentBaseURI();
-                    XmlSchema schema = createschemafromtype(schemaElementt, wsdlDefinition, documentBase);
-                    if (schema != null) {
-                        schemas.add(schema);
-                        if (schema.getTargetNamespace() != null) {
-                            schemaNames.add(schema.getTargetNamespace());
+                        String documentBase = ((javax.wsdl.extensions.schema.Schema) schemaElement).getDocumentBaseURI();
+                        XmlSchema schema = createschemafromtype(schemaElementt, def, documentBase);
+                        if (schema != null) {
+                            schemas.add(schema);
+                            if (schema.getTargetNamespace() != null) {
+                                schemaNames.add(schema.getTargetNamespace());
+                            }
+                        }
+                        importElement = ((javax.wsdl.extensions.schema.Schema) schemaElement).getImports();
+                        if (importElement != null && importElement.size() > 0) {
+                            findImportSchema(def, schemas, importElement);
                         }
                     }
-                    importElement = ((javax.wsdl.extensions.schema.Schema) schemaElement).getImports();
-                    if (importElement != null && importElement.size() > 0) {
-                        findImportSchema(wsdlDefinition, schemas, importElement);
+
+                    if (schemaElement != null && schemaElement instanceof javax.wsdl.extensions.schema.Schema) {
+                        schemaElementt = ((javax.wsdl.extensions.schema.Schema) schemaElement).getElement();
+                        String documentBase = ((javax.wsdl.extensions.schema.Schema) schemaElement).getDocumentBaseURI();
+                        Boolean isHaveImport = false;
+                        importElement = ((javax.wsdl.extensions.schema.Schema) schemaElement).getImports();
+                        if (importElement != null && importElement.size() > 0) {
+                            Iterator keyIterator = importElement.keySet().iterator();
+                            // while (keyIterator.hasNext()) {
+                            // String key = keyIterator.next().toString();
+                            // Vector importEle = (Vector) importElement.get(key);
+                            // for (int j = 0; j < importEle.size(); j++) {
+                            // com.ibm.wsdl.extensions.schema.SchemaImportImpl importValidate =
+                            // (com.ibm.wsdl.extensions.schema.SchemaImportImpl) importEle
+                            // .elementAt(j);
+                            // if (importValidate.getSchemaLocationURI() == null) {
+                            // importElement.remove(key);
+                            // }
+                            // }
+                            // }
+                            if (importElement.size() > 0) {
+                                isHaveImport = true;
+                            }
+                            // validateImportUrlPath(importElement);
+                        }
+
+                        XmlSchema schema = createschemafromtype(schemaElementt, def, documentBase);
+                        if (schema != null) {
+                            schemas.add(schema);
+                            if (schema.getTargetNamespace() != null) {
+                                schemaNames.add(schema.getTargetNamespace());
+                            }
+                        }
+
+                        if (isHaveImport) {
+                            findImportSchema(def, schemas, importElement);
+                        }
                     }
                 }
 
-                if (schemaElement != null && schemaElement instanceof javax.wsdl.extensions.schema.Schema) {
-                    schemaElementt = ((javax.wsdl.extensions.schema.Schema) schemaElement).getElement();
-                    String documentBase = ((javax.wsdl.extensions.schema.Schema) schemaElement).getDocumentBaseURI();
-                    Boolean isHaveImport = false;
-                    importElement = ((javax.wsdl.extensions.schema.Schema) schemaElement).getImports();
-                    if (importElement != null && importElement.size() > 0) {
-                        Iterator keyIterator = importElement.keySet().iterator();
-                        // while (keyIterator.hasNext()) {
-                        // String key = keyIterator.next().toString();
-                        // Vector importEle = (Vector) importElement.get(key);
-                        // for (int j = 0; j < importEle.size(); j++) {
-                        // com.ibm.wsdl.extensions.schema.SchemaImportImpl importValidate =
-                        // (com.ibm.wsdl.extensions.schema.SchemaImportImpl) importEle
-                        // .elementAt(j);
-                        // if (importValidate.getSchemaLocationURI() == null) {
-                        // importElement.remove(key);
-                        // }
-                        // }
-                        // }
-                        if (importElement.size() > 0) {
-                            isHaveImport = true;
-                        }
-                        // validateImportUrlPath(importElement);
-                    }
-
-                    XmlSchema schema = createschemafromtype(schemaElementt, wsdlDefinition, documentBase);
-                    if (schema != null) {
-                        schemas.add(schema);
-                        if (schema.getTargetNamespace() != null) {
-                            schemaNames.add(schema.getTargetNamespace());
-                        }
-                    }
-
-                    if (isHaveImport) {
-                        findImportSchema(wsdlDefinition, schemas, importElement);
-                    }
-                }
             }
-
         }
         return schemas;
     }
