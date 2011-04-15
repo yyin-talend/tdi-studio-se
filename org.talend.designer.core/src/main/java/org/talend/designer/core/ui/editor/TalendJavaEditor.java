@@ -143,7 +143,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                         property.getInformations().clear();
                         // add only the errors in the property, not the warnings
                         for (Information info : informations) {
-                            if (info.getLevel().equals(InformationLevel.ERROR)) {
+                            if (info.getLevel().equals(InformationLevel.ERROR_LITERAL)) {
                                 property.getInformations().add(info);
                             }
                         }

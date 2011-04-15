@@ -103,6 +103,7 @@ import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.runprocess.Processor;
+import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IJavaProcessorStates;
@@ -192,6 +193,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
         this.filenameFromLabel = filenameFromLabel;
         setProcessorStates(STATES_RUNTIME);
+        if (checkableEditor == null) {
+            checkableEditor = CodeEditorFactory.getInstance().getCodeEditor();
+        }
     }
 
     /*
@@ -486,7 +490,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         return document.get();
     }
 
-    @Override
     public void setSyntaxCheckableEditor(ISyntaxCheckableEditor checkableEditor) {
         this.checkableEditor = checkableEditor;
     }

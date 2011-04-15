@@ -86,7 +86,7 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
                     return;
                 }
                 InformationLevel level = getProcess().getProperty().getMaxInformationLevel();
-                if (level.equals(InformationLevel.ERROR)) {
+                if (level.equals(InformationLevel.ERROR_LITERAL)) {
                     image = OverlayImageProvider.getImageWithError(ImageProvider.getImage(ECoreImage.PROCESS_ICON)).createImage();
                 } else {
                     image = ImageProvider.getImage(ECoreImage.PROCESS_ICON);

@@ -12,11 +12,15 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.service.IDesignerPerlService;
+import org.talend.designer.core.ISyntaxCheckableEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -53,5 +57,19 @@ public final class CodeEditorFactory {
             }
         }
         return null;
+    }
+
+    /**
+     * DOC ycbai Comment method "getCodeEditor". Call the method after the code editor has been created and initialized.
+     * 
+     * @return
+     */
+    public ISyntaxCheckableEditor getCodeEditor() {
+        ISyntaxCheckableEditor codeEditor = null;
+        IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
+            codeEditor = ((AbstractMultiPageTalendEditor) activeEditor).getCodeEditor();
+        }
+        return codeEditor;
     }
 }
