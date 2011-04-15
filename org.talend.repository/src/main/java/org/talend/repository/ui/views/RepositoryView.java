@@ -293,7 +293,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         viewer.expandAll();
         viewer.collapseAll();
         refresh();
-
+        // for bug 20256, need to expand to load code and metadata node,expand it can load new node.
+        viewer.expandToLevel(root.getCodeNode(), 1);
+        viewer.expandToLevel(root.getMetadataNode(), 1);
         // This only tree listener aim is to change open/close icons on folders :
         viewer.addTreeListener(new ITreeViewerListener() {
 
