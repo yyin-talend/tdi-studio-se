@@ -25,9 +25,10 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.properties.User;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -147,12 +148,8 @@ public class VersionAuthorSection extends AbstractSection {
         } else {
             authorText.setText(""); //$NON-NLS-1$
         }
-        lockerText.setText("");//$NON-NLS-1$
-        try {
-            lockerText.setText(getObject().getProperty().getItem().getState().getLocker().getLogin());
-        } catch (Exception e) {
-            // ingore null pointer exceptions
-        }
+
+        lockerText.setText(ProxyRepositoryFactory.getInstance().getLockInfo(getObject().getProperty().getItem()).getUser());//$NON-NLS-1$
 
         versionText.setText(getVersion() == null ? "" : getVersion()); //$NON-NLS-1$
     }

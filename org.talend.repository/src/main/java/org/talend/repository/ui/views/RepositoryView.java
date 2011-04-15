@@ -109,7 +109,6 @@ import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.JobDocumentationItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
@@ -119,6 +118,7 @@ import org.talend.core.model.properties.impl.JobletDocumentationItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.LockInfo;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.IUpdateManager;
@@ -289,7 +289,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         viewer.setInput(viewSite);
         getSite().setSelectionProvider(viewer);
         addFilters();
-        /*need to expand so that all folderItem will be created*/
+        /* need to expand so that all folderItem will be created */
         viewer.expandAll();
         viewer.collapseAll();
         refresh();
@@ -729,32 +729,26 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 String content = null;
                 User currentLoginUser = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                         .getUser();
-                String crurentLogin = null;
+                String currentLogin = null;
                 if (currentLoginUser != null) {
-                    crurentLogin = currentLoginUser.getLogin();
+                    currentLogin = currentLoginUser.getLogin();
                 }
                 String login = null;
+                String application = "studio";//$NON-NLS-1$
                 if (object.getRepositoryStatus() == ERepositoryStatus.LOCK_BY_OTHER) {
                     Property property = object.getProperty();
                     if (property != null) {
                         Item item2 = property.getItem();
                         if (item2 != null) {
-                            ItemState state = item2.getState();
-                            if (state != null) {
-                                User locker = state.getLocker();
-                                if (locker != null) {
-                                    String lockerLogin = locker.getLogin();
-                                    if (lockerLogin != null) {
-                                        if (!lockerLogin.equals(crurentLogin)) {
-                                            login = lockerLogin;
-                                        }
-                                    }
-                                }
+                            LockInfo lockInfo = ProxyRepositoryFactory.getInstance().getLockInfo(item2);
+                            if (!lockInfo.getUser().equals(currentLogin)) {
+                                login = lockInfo.getUser();
+                                application = lockInfo.getApplication();
                             }
                         }
                     }
                     if (login != null && !"".equals(login)) {//$NON-NLS-1$
-                        content = "  locked by :" + login;//$NON-NLS-1$
+                        content = "  locked by " + login + " on " + application;
                     }
                 }
                 String description = object.getDescription();
