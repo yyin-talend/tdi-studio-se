@@ -305,8 +305,10 @@ public class RepositoryReviewDialog extends Dialog {
         if (additionalFilters != null) {
             repositoryView.addFilter(additionalFilters);
         }
+
         ProjectRepositoryNode.refProjectBool = false;
         repositoryView.refresh(needInitialize);
+        view.refreshView();
         ProjectRepositoryNode.refProjectBool = true;
         // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to
         // open it on previous selected job if exists
