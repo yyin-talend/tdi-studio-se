@@ -83,7 +83,9 @@ public class DbMapComponent extends AbstractMapComponent {
      */
     public void initialize() {
         super.initialize();
-        initMapperMain();
+        if (mapperMain == null) {
+            initMapperMain();
+        }
         mapperMain.loadInitialParamters();
     }
 
@@ -371,7 +373,9 @@ public class DbMapComponent extends AbstractMapComponent {
     @Override
     public AbstractExternalData getExternalEmfData() {
         final DBMapData emfMapperData = DbmapFactory.eINSTANCE.createDBMapData();
-        initMapperMain();
+        if (mapperMain == null) {
+            initMapperMain();
+        }
         mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
                 getMetadataList(), false);
         ExternalDbMapData data = mapperMain.buildExternalData();
@@ -511,7 +515,9 @@ public class DbMapComponent extends AbstractMapComponent {
      */
     @Override
     public List<Problem> getProblems() {
-        initMapperMain();
+        if (mapperMain == null) {
+            initMapperMain();
+        }
         ProblemsAnalyser problemsAnalyser = new ProblemsAnalyser(mapperMain.getMapperManager());
         return problemsAnalyser.checkProblems(externalData);
     }

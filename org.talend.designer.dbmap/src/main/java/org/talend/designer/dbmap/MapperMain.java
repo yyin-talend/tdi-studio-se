@@ -121,7 +121,9 @@ public class MapperMain {
     }
 
     public void loadModelFromInternalData() {
-        this.mapperModel = new MapperModel(mapperManager.getInputTables(), mapperManager.getOutputTables());
+        if (this.mapperModel == null) {
+            this.mapperModel = new MapperModel(mapperManager.getInputTables(), mapperManager.getOutputTables());
+        }
     }
 
     /**
@@ -193,7 +195,9 @@ public class MapperMain {
         }
         mapperManager.getUiManager().setUiProperties(externalData.getUiProperties());
         ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
-        this.mapperModel = converter.prepareModel(inputs, outputs, outputMetadataTables, externalData, checkProblems);
+        if (this.mapperModel == null) {
+            this.mapperModel = converter.prepareModel(inputs, outputs, outputMetadataTables, externalData, checkProblems);
+        }
     }
 
     /**
