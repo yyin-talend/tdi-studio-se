@@ -34,6 +34,8 @@ import org.talend.migration.IProjectMigrationTask;
  */
 public class CleanFoldersMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
+    private ExecutionResult status;
+
     /*
      * (non-Javadoc)
      * 
@@ -90,5 +92,13 @@ public class CleanFoldersMigrationTask extends AbstractMigrationTask implements 
 
     public boolean isDeprecated() {
         return false;
+    }
+
+    public void setStatus(ExecutionResult status) {
+        this.status = status;
+    }
+
+    public ExecutionResult getStatus() {
+        return status;
     }
 }

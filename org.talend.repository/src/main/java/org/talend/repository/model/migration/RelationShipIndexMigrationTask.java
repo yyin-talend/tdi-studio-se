@@ -36,6 +36,8 @@ public class RelationShipIndexMigrationTask extends AbstractMigrationTask implem
 
     private Project project;
 
+    private ExecutionResult status;
+
     public final ExecutionResult execute(Project project) {
         // setProject(project);
         // IRepositoryService service = (IRepositoryService)
@@ -134,5 +136,13 @@ public class RelationShipIndexMigrationTask extends AbstractMigrationTask implem
 
     public boolean isDeprecated() {
         return true;
+    }
+
+    public void setStatus(ExecutionResult status) {
+        this.status = status;
+    }
+
+    public ExecutionResult getStatus() {
+        return status;
     }
 }

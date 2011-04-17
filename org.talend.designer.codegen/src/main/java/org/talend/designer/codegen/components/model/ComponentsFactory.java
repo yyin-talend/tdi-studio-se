@@ -419,7 +419,8 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private boolean cleanComponentCache() {
-        return ArrayUtils.contains(Platform.getApplicationArgs(), "--clean_component_cache");
+        return ArrayUtils.contains(Platform.getApplicationArgs(), "--clean_component_cache")
+                || ArrayUtils.contains(Platform.getApplicationArgs(), "-clean");
     }
 
     private void loadComponentsFromComponentsProviderExtension() {
