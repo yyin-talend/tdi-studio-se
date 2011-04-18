@@ -699,10 +699,11 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                         tableItem = new TableItem(itemTable, SWT.NONE);
                     }
                 }
-                // else {
-                // itemTable.setRedraw(false);
-                // tableItem = new TableItem(itemTable, SWT.NONE);
-                // }
+                // bug 20078
+                else {
+                    itemTable.setRedraw(false);
+                    tableItem = new TableItem(itemTable, SWT.NONE);
+                }
             } else {
                 if (isDocumentStatus()) {
                     ERepositoryObjectType type = object.getRepositoryNode().getContentType();
