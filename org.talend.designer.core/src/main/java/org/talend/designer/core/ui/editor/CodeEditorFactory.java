@@ -59,16 +59,11 @@ public final class CodeEditorFactory {
         return null;
     }
 
-    /**
-     * DOC ycbai Comment method "getCodeEditor". Call the method after the code editor has been created and initialized.
-     * 
-     * @return
-     */
-    public ISyntaxCheckableEditor getCodeEditor() {
+    public ISyntaxCheckableEditor getCodeEditor(IProcess2 process) {
         ISyntaxCheckableEditor codeEditor = null;
-        IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
-            codeEditor = ((AbstractMultiPageTalendEditor) activeEditor).getCodeEditor();
+        IEditorPart part = process.getEditor();
+        if (part instanceof AbstractMultiPageTalendEditor) {
+            codeEditor = ((AbstractMultiPageTalendEditor) part).getCodeEditor();
         }
         return codeEditor;
     }

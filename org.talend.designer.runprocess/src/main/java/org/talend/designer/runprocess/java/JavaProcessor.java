@@ -73,6 +73,7 @@ import org.eclipse.jface.text.formatter.FormattingContextProperties;
 import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.jface.text.formatter.MultiPassContentFormatter;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -103,6 +104,7 @@ import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.runprocess.Processor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -193,8 +195,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
         this.filenameFromLabel = filenameFromLabel;
         setProcessorStates(STATES_RUNTIME);
-        if (checkableEditor == null) {
-            checkableEditor = CodeEditorFactory.getInstance().getCodeEditor();
+        if (checkableEditor == null && process instanceof IProcess2 && ((IProcess2) process).getEditor() != null) {
+            checkableEditor = CodeEditorFactory.getInstance().getCodeEditor((IProcess2) process);
         }
     }
 
