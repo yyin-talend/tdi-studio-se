@@ -31,6 +31,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
@@ -249,6 +250,19 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setDisplayName(EParameterName.CONDITION.getDisplayName());
             param.setShow(true);
             param.setNumRow(2);
+            addElementParameter(param);
+        }
+        
+        if (lineStyle.equals(EConnectionType.ROUTE_CATCH)) {
+
+            IElementParameter param = new ElementParameter(this);
+            param.setCategory(EComponentCategory.BASIC);
+            param.setName(EParameterName.EXCEPTIONLIST.getName());
+            param.setDisplayName(EParameterName.EXCEPTIONLIST.getDisplayName());
+            param.setNbLines(5);
+            param.setFieldType(EParameterFieldType.TEXT);
+            param.setShow(true);
+            param.setNumRow(1);
             addElementParameter(param);
         }
 
@@ -595,12 +609,12 @@ public class Connection extends Element implements IConnection, IPerformance {
             if (!lineStyle.equals(EConnectionType.TABLE) && !lineStyle.equals(EConnectionType.ITERATE)) {
                 if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF,
-                        EConnectionType.ROUTE_WHEN)
+                        EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_CATCH)
                         && source != null && source.getComponent().getName().equals(source.getLabel())) {
                     uniqueName = connectorName;
                 } else if (!isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF,
-                        EConnectionType.ROUTE_WHEN)
+                        EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_CATCH)
                         || uniqueName == null || !uniqueName.startsWith(lineStyle.getDefaultLinkName())) {
                     uniqueName = name;
                 }
@@ -694,6 +708,12 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.ROUTE_WHEN) && (!sourceNodeConnector.getLinkName().equals(name))) {
+            labelText = sourceNodeConnector.getLinkName() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            if (outputId >= 0) {
+                labelText += " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            updateName = true;
+        } else if (getLineStyle().equals(EConnectionType.ROUTE_CATCH) && (!sourceNodeConnector.getLinkName().equals(name))) {
             labelText = sourceNodeConnector.getLinkName() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             if (outputId >= 0) {
                 labelText += " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -814,7 +834,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 }
             } else if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                     EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF,
-                    EConnectionType.ROUTE_WHEN)) {
+                    EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_CATCH)) {
                 // see 3443, these links should have unique name
                 if (uniqueName == null || uniqueName.equals(lineStyle.getDefaultLinkName())) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(lineStyle.getDefaultLinkName());
@@ -1075,6 +1095,14 @@ public class Connection extends Element implements IConnection, IPerformance {
     public String getRouteConnectionType() {
         if (lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
             return (String) getPropertyValue(EParameterName.ROUTETYPE.getName());
+        } else {
+            return null;
+        }
+    }
+    
+    public String getExceptionList() {
+        if (lineStyle.equals(EConnectionType.ROUTE_CATCH)) {
+            return (String) getPropertyValue(EParameterName.EXCEPTIONLIST.getName());
         } else {
             return null;
         }

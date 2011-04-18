@@ -250,13 +250,20 @@ public class CodeGenerator implements ICodeGenerator {
                                         ETypeGen.CAMEL)); // And generate the component par of code
                             } else {
                                 if(subTree.getRootNode().getIncomingConnections()!=null && subTree.getRootNode().getIncomingConnections().size()>0) {
-									if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE) && subTree.getRootNode().getIncomingConnections().get(0).getName().equals("EndBlock")) {
+									/*if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE) && subTree.getRootNode().getIncomingConnections().get(0).getName().equals("EndBlock")) {
                                         //If ROUTE ENBLOCK link, we generate the .end before generation the component part
                                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_END_BLOCK, subTree));
                                     }
                                     if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_WHEN) || subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_OTHER)) {
 										//If WHEN or OTHERWISE link, we generate the .when or the .otherwise before generation the component part
                                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_RUNIF, subTree));
+                                    }
+                                    if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_TRY) || subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_CATCH) || subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_FINALLY)) {
+                                        //If WHEN or OTHERWISE link, we generate the .when or the .otherwise before generation the component part
+                                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_TRYCATCH, subTree));
+                                    }*/
+                                    if(!(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE))) {
+                                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_SPECIALLINKS, subTree));
                                     }
                                     componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
                                             ETypeGen.CAMEL)); // The component part for a component linked to a WHEN or OTHERWISE.
@@ -274,7 +281,7 @@ public class CodeGenerator implements ICodeGenerator {
                                     ETypeGen.CAMEL)); // And generate the component par of code
                         } else {
                             if(subTree.getRootNode().getIncomingConnections()!=null && subTree.getRootNode().getIncomingConnections().size()>0) {
-                                if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE) && subTree.getRootNode().getIncomingConnections().get(0).getName().equals("EndBlock")) {
+                                /*if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE) && subTree.getRootNode().getIncomingConnections().get(0).getName().equals("EndBlock")) {
                                     //If ROUTE ENBLOCK link, we generate the .end before generation the component part
                                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_END_BLOCK, subTree));
                                 }
@@ -282,6 +289,13 @@ public class CodeGenerator implements ICodeGenerator {
                                     //If WHEN or OTHERWISE link, we generate the .when or the .otherwise before generation the component part
                                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_RUNIF, subTree));
                                 }
+                                if(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_TRY) || subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_CATCH) || subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE_FINALLY)) {
+                                    //If WHEN or OTHERWISE link, we generate the .when or the .otherwise before generation the component part
+                                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_TRYCATCH, subTree));
+                                }*/
+                                if(!(subTree.getRootNode().getIncomingConnections().get(0).getLineStyle().equals(EConnectionType.ROUTE))) {
+                                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_SPECIALLINKS, subTree));
+                                }                                
                                 componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
                                         ETypeGen.CAMEL)); // The component part for a component linked to a WHEN or OTHERWISE.
                             } 

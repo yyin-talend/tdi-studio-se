@@ -238,6 +238,10 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
 
             retrieveConnectors(subMenu, EConnectionType.ITERATE);
             retrieveConnectors(subMenu, EConnectionType.ROUTE);
+            retrieveConnectors(subMenu, EConnectionType.ROUTE_TRY);
+            retrieveConnectors(subMenu, EConnectionType.ROUTE_CATCH);
+            retrieveConnectors(subMenu, EConnectionType.ROUTE_FINALLY);
+            retrieveConnectors(subMenu, EConnectionType.ROUTE_ENDBLOCK);
 
             subMenu = new MenuManager("Link"); //$NON-NLS-1$
             menu.appendToGroup(GROUP_CONNECTIONS, subMenu);

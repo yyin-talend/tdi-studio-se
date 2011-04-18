@@ -365,6 +365,7 @@ public class DataProcess {
                             || connection.getLineStyle() == EConnectionType.ON_SUBJOB_ERROR
                             || connection.getLineStyle() == EConnectionType.RUN_IF
                             || connection.getLineStyle() == EConnectionType.ROUTE_WHEN
+                            || connection.getLineStyle() == EConnectionType.ROUTE_CATCH
                             || connection.getLineStyle() == EConnectionType.ON_COMPONENT_OK || connection.getLineStyle() == EConnectionType.ON_COMPONENT_ERROR)) {
                         IElementParameter param = new ElementParameter(dataConnec);
                         param.setName(EParameterName.RESUMING_CHECKPOINT.getName());
