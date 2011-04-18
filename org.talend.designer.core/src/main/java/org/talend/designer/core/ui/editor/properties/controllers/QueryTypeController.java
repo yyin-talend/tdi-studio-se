@@ -60,6 +60,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
+import orgomg.cwm.resource.relational.impl.SchemaImpl;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -188,6 +189,7 @@ public class QueryTypeController extends AbstractRepositoryController {
         IMetadataTable newRepositoryMetadata = null;
         String realTableName = null;
         String realTableId = null;
+        String schemaName = "";
 
         // Only for getting the real table name.
         if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
@@ -240,10 +242,16 @@ public class QueryTypeController extends AbstractRepositoryController {
                             Connection connection = ((ConnectionItem) item).getConnection();
                             for (org.talend.core.model.metadata.builder.connection.MetadataTable table : ConnectionHelper
                                     .getTables(connection)) {
+                                // bug 20365
                                 if (table.getLabel().equals(tableLabel)) {
                                     IMetadataTable repositoryMetadata = ConvertionHelper.convert(table);
                                     realTableName = repositoryMetadata.getTableName();
                                     realTableId = repositoryMetadata.getId();
+                                    if (table.eContainer() != null && table.eContainer() instanceof SchemaImpl) {
+                                        SchemaImpl schemaImpl = (SchemaImpl) table.eContainer();
+                                        schemaName = schemaImpl.getName();
+                                        dynamicProperty.getTableIdAndDbSchemaMap().put(realTableId, schemaName);
+                                    }
                                     break;
                                 }
                             }
