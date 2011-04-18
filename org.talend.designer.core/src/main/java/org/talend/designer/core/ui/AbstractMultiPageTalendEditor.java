@@ -642,21 +642,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     // create jobscript editor
     protected void createPage2() {
-        if (!GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
-            return;
-        }
-
-        ICreateXtextProcessService convertJobtoScriptService = CorePlugin.getDefault().getCreateXtextProcessService();
-
-        Item item = getDesignerEditor().getProcess().getProperty().getItem();
-        ProcessType processType;
-        if (item instanceof ProcessItem) {
-            processType = ((ProcessItem) item).getProcess();
-        } else {
-            return; // deactivate for joblet
-            // processType = ((JobletProcessItem) item).getJobletProcess();
-        }
-        String scriptValue = convertJobtoScriptService.convertJobtoScript(processType);
+        String scriptValue = "";
         try {
             IProject currentProject = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
             IFile file = currentProject.getFolder("temp").getFile(getEditorInput().getName() + ".jobscript");
