@@ -88,6 +88,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.dialog.ItemsVersionConfirmDialog;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
+import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryCheckBoxView;
 import org.talend.repository.ui.views.RepositoryView;
 
@@ -1042,7 +1043,12 @@ public class VersionManagementPage extends ProjectSettingPage {
                         } catch (PersistenceException e) {
                             ExceptionHandler.process(e);
                         }
-                        RepositoryManager.refresh(types);
+                        // for bug 20256,first open studio,don't expand repositoryTree,
+                        // open projectSetting,change item Verson,then expand Tree,routine,jobscript and metadata always
+                        // use old version.must refresh all tree.
+                        // RepositoryManager.refresh(types);
+                        IRepositoryView view = RepositoryManager.getRepositoryView();
+                        view.refresh();
                     }
                 };
                 rwu.setAvoidUnloadResources(true);
