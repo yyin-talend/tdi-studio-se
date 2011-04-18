@@ -54,25 +54,21 @@ String childJob = ElementParameterParser.getValue(node,"__PROCESS__");
 
 boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
 String dynamicJobName = ElementParameterParser.getValue(node,"__CONTEXT_JOB__");
-int jobNamePosition=0;
-int classpathPosition=0;
-
+%>
+java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
+<%
 if(useDynamicJob){
 	useIndependentProcess = true;
 	%>
-	if(childJob_Package_Mapper_<%=cid%>.get(<%=dynamicJobName%>)==null){
+	if(childJob_commandLine_Mapper_<%=cid%>.get(<%=dynamicJobName%>)==null){
 		throw new RuntimeException("The child job named "+<%=dynamicJobName%>+" is not in the job list.");
 	}
+	paraList_<%=cid %>.addAll(childJob_commandLine_Mapper_<%=cid%>.get(<%=dynamicJobName%>));
 	<%
-}
-%>  
-java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
-<%
-try {
-  if(useIndependentProcess){
-  	if(process!=null && !process.equals("")){
-		String[] childJobIds = process.split(";"); 
-	    commandLine = ProcessorUtilities.getCommandLine(true, childJobIds[0], context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+}else{
+	try {
+	  if(useIndependentProcess){
+	    commandLine = ProcessorUtilities.getCommandLine(true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
 	    // remove the frontal 2 lines
 	    if (commandLine.length > 0 && ProcessorUtilities.isExportConfig()){
 	      int tmpSize = commandLine.length - 2;
@@ -80,50 +76,30 @@ try {
 	      System.arraycopy(commandLine, 2, tmp, 0, tmpSize);
 	      commandLine = tmp;
 	    }
+	  }else{
+	    commandLine = ProcessorUtilities.getMainCommand(process,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);  
+	  }
+	} catch (ProcessorException e) {
 	}
-  }else{
-    commandLine = ProcessorUtilities.getMainCommand(process,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);  
-  }
-} catch (ProcessorException e) {
-}
 
-if(useDynamicJob){
-	//find the job name and classpath, the job name in front of codeOptions
-	int position = 0;
-	for(String tempCommandLine : commandLine){
-		if(codeOptions[0].equals(tempCommandLine)){
-	   		break;
-	   	}
-	   	position++;
+
+	for (int i = 0; i < commandLine.length; i++) {
+	  // commandLine[i] = commandLine[i].replace("\n", "");
+	  if (i == 0 && useIndependentProcess){
+	    %>
+	    paraList_<%=cid %>.add("<%=commandLine[i]%>");
+	    <%
+	  } else if (i == 0 && !useIndependentProcess){
+	    childJob = commandLine[0];
+	  } else if (i > 0){
+	  	if (commandLine[i].indexOf("\"") >= 0){
+	      %>
+	      paraList_<%=cid %>.add(<%=commandLine[i] %>);
+	  <%}else{%>
+	      paraList_<%=cid %>.add("<%=commandLine[i] %>");
+	  <%}
+	  }	 
 	}
-	jobNamePosition = position-1;
-	classpathPosition = position-2;
-}
-
-for (int i = 0; i < commandLine.length; i++) {
-  // commandLine[i] = commandLine[i].replace("\n", "");
-  if (i == 0 && useIndependentProcess){
-    %>
-    paraList_<%=cid %>.add("<%=commandLine[i]%>");
-    <%
-  } else if (i == 0 && !useIndependentProcess){
-    childJob = commandLine[0];
-  } else if (i > 0){
-  	if(i == classpathPosition && useDynamicJob){
-  	%>
-  	paraList_<%=cid %>.add(childJob_Dependency_Mapper_<%=cid%>.get(<%=dynamicJobName%>));
-  	<%
-  	}else if(i == jobNamePosition && useDynamicJob){
-  	%>
-  	paraList_<%=cid %>.add(childJob_Package_Mapper_<%=cid%>.get(<%=dynamicJobName%>));
-  	<%
-  	}else if (commandLine[i].indexOf("\"") >= 0){
-      %>
-      paraList_<%=cid %>.add(<%=commandLine[i] %>);
-    <%}else{%>
-      paraList_<%=cid %>.add("<%=commandLine[i] %>");
-    <%}
-  }
 }
 %>
 //for feature:10589
