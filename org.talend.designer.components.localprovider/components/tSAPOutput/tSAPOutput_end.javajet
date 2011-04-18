@@ -21,16 +21,16 @@
 	
 	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-	String version = "SAP2";
+	String version = "sapjco.jar";
 	if(useExistingConn){
 	    List<? extends INode> nodes = node.getProcess().getGraphicalNodes();
 	    for(INode targetNode : nodes){
 	    	if (targetNode.getUniqueName().equals(connection)) {
-		      version = ElementParameterParser.getValue(targetNode, "__SAP_VERSION__");
+		      version = ElementParameterParser.getValue(targetNode, "__DB_VERSION__");
 		    }
 	    }
 	}else{
-		version = ElementParameterParser.getValue(node, "__SAP_VERSION__");
+		version = ElementParameterParser.getValue(node, "__DB_VERSION__");
 	}
 %>
 	
@@ -68,9 +68,9 @@
 	}
 %>
 	<%if(close){%>
-		<%if("SAP2".equals(version)){%>
+		<%if("sapjco.jar".equals(version)){%>
 			com.sap.mw.jco.JCO.releaseClient(client_<%=cid %>);
-		<%}else if("SAP3".equals(version)){%>
+		<%}else if("sapjco3.jar".equals(version)){%>
 			com.sap.conn.jco.JCoContext.end(dest_<%=cid%>);
 		<%}%>
 	<%}%>

@@ -60,14 +60,14 @@
     />
     
     <PARAMETER 
-		NAME="SAP_VERSION" 
+		NAME="DB_VERSION" 
 		FIELD="CLOSED_LIST" 
 		NUM_ROW="8"
 		SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
 		REPOSITORY_VALUE="SAP_VERSION">
 		<ITEMS DEFAULT="SAP2">
-			<ITEM NAME="SAP2" VALUE="SAP2"/>
-			<ITEM NAME="SAP3" VALUE="SAP3"/>
+			<ITEM NAME="SAP2" VALUE="sapjco.jar" />
+			<ITEM NAME="SAP3" VALUE="sapjco3.jar" />
 		</ITEMS>
 	</PARAMETER>
     
@@ -152,8 +152,10 @@
   </ADVANCED_PARAMETERS>
   <CODEGENERATION>
      <IMPORTS>
+     <!-- 
        <IMPORT NAME="sapjco-ntintel-2.1.8" MODULE="sapjco.jar" REQUIRED="true" />       
        <IMPORT NAME="sapjco-ntintel-3" MODULE="sapjco3.jar" REQUIRED="true" />
+        -->
        <IMPORT NAME="talend-sap" MODULE="talend-sap.jar" REQUIRED="true" />       
      </IMPORTS>
   </CODEGENERATION>
