@@ -1104,7 +1104,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (lineStyle.equals(EConnectionType.ROUTE_CATCH)) {
             return (String) getPropertyValue(EParameterName.EXCEPTIONLIST.getName());
         } else {
-            return "titi";
+            return null;
         }
     }
 
