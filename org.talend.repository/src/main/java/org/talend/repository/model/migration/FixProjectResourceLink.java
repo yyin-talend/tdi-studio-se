@@ -68,6 +68,8 @@ public class FixProjectResourceLink extends AbstractItemMigrationTask {
             factory.save(item, true);
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
+        } catch (UnsupportedOperationException e1) {
+            ExceptionHandler.process(e1);
         }
 
         manager.resourceSet.getResources().removeAll(toDelete);
