@@ -46,7 +46,7 @@ if(connsIf.size()>0) {
 <%
 	} else if(connsIf.get(0).getLineStyle()==EConnectionType.ROUTE_CATCH) {
 %>
-		.doCatch(<%=connsIf.get(0).getRouteConnectionType()%>)
+		.doCatch(<%=connsIf.get(0).getExceptionList()%>)
 <%
 	} else if(connsIf.get(0).getLineStyle()==EConnectionType.ROUTE_FINALLY) {
 %>

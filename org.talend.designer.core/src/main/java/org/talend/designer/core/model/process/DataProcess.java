@@ -320,6 +320,7 @@ public class DataProcess {
                 dataConnec.setSource(dataNode);
                 dataConnec.setCondition(connection.getCondition());
                 dataConnec.setRouteConnectionType(connection.getRouteConnectionType());
+                dataConnec.setExceptionList(connection.getExceptionList());
                 dataConnec.setConnectorName(connection.getConnectorName());
                 dataConnec.setInputId(connection.getInputId());
                 dataConnec.setOutputId(connection.getOutputId());

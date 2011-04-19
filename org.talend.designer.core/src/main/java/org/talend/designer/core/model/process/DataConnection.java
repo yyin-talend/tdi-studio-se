@@ -82,7 +82,4 @@ public class DataConnection extends AbstractConnection implements IDataConnectio
     public void setLinkNodeForHash(INode linkedNodeForHash) {
         this.linkedNodeForHash = linkedNodeForHash;
     }
-
-
-
 }
