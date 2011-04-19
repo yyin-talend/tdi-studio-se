@@ -310,6 +310,7 @@ public class RepositoryReviewDialog extends Dialog {
         repositoryView.refresh(needInitialize);
         view.refresh();
         ProjectRepositoryNode.refProjectBool = true;
+
         // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to
         // open it on previous selected job if exists
         if (selectedNodeName != null) {
@@ -455,6 +456,7 @@ class FakeRepositoryView extends RepositoryView {
      */
     @Override
     public void createPartControl(Composite parent) {
+        super.setFromFake(false);
         super.createPartControl(parent);
         ViewerFilter filter = typeProcessor.makeFilter();
         addFilter(filter);
@@ -649,6 +651,7 @@ class JobTypeProcessor implements ITypeProcessor {
             for (IRepositoryNode repositoryNode : refProjects) {
                 ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
                 ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+
                 newProject.getChildren().add(refProject.getProcessNode());
                 list.add(newProject);
                 if (refProject.getReferenceProjectNode() != null && !refProject.getReferenceProjectNode().getChildren().isEmpty()) {
@@ -979,6 +982,15 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataValidationRulesNode();
                 }
             }
+            if (repositoryType.equals(ERepositoryCategoryType.EDIFACT.getName())) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider)
+                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_EDIFACT);
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataEdifactNode();
+                }
+            }
         }
         return metadataNode;
     }
@@ -1170,6 +1182,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                     refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_RULES_MANAGEMENT));
                     refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
                     refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP));
+                    refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_EDIFACT));
                     refContainer.add(refProject.getMetadataConNode());
 
                 }
@@ -1220,6 +1233,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_RULES_MANAGEMENT));
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION));
                         refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP));
+                        refContainer.add(refProject.getRootRepositoryNode(ERepositoryObjectType.METADATA_EDIFACT));
                         refContainer.add(refProject.getMetadataConNode());
 
                     }

@@ -2165,6 +2165,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         return this.metadataValidationRulesNode;
     }
 
+    public RepositoryNode getMetadataEdifactNode() {
+        return this.metadataEDIFactConnectionNode;
+    }
+
     public RepositoryNode getDocNode() {
         return this.docNode;
     }

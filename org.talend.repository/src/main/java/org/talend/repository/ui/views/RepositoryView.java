@@ -195,6 +195,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private Label filterBtn;
 
+    protected boolean isFromFake = true;
+
     // private boolean useFilter = false;
 
     public RepositoryView() {
@@ -292,7 +294,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         /* need to expand so that all folderItem will be created */
         viewer.expandAll();
         viewer.collapseAll();
-        refresh();
+        if (isFromFake) {
+            refresh();
+        }
         // This only tree listener aim is to change open/close icons on folders :
         viewer.addTreeListener(new ITreeViewerListener() {
 
@@ -1401,5 +1405,13 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
         }
 
+    }
+
+    public boolean isFromFake() {
+        return this.isFromFake;
+    }
+
+    public void setFromFake(boolean isFromFake) {
+        this.isFromFake = isFromFake;
     }
 }
