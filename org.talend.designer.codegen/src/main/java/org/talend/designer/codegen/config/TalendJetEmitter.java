@@ -54,6 +54,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.talend.commons.debug.TalendDebugHandler;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.codegen.i18n.Messages;
 
@@ -343,9 +344,10 @@ public class TalendJetEmitter extends JETEmitter {
                                 + (CodeGenPlugin.getPlugin().getString("jet.mark.file.line", new Object[] { //$NON-NLS-1$
                                         targetFile.getLocation(), marker.getAttribute(IMarker.LINE_NUMBER) })));
                         log.error(jetEmitter.templateURI.substring(jetEmitter.templateURI.lastIndexOf("/") + 1) //$NON-NLS-1$
-                                + Messages.getString("TalendJetEmitter.compileFail", //$NON-NLS-1$
-                                        marker.getAttribute(IMarker.MESSAGE), (CodeGenPlugin.getPlugin().getString(
-                                                "jet.mark.file.line", new Object[] { //$NON-NLS-1$
+                                + Messages.getString(
+                                        "TalendJetEmitter.compileFail", //$NON-NLS-1$
+                                        marker.getAttribute(IMarker.MESSAGE),
+                                        (CodeGenPlugin.getPlugin().getString("jet.mark.file.line", new Object[] { //$NON-NLS-1$
                                                 targetFile.getLocation(), marker.getAttribute(IMarker.LINE_NUMBER) }))));
                     }
                 }
@@ -373,9 +375,11 @@ public class TalendJetEmitter extends JETEmitter {
 
                 subProgressMonitor.done();
             } catch (CoreException exception) {
+                TalendDebugHandler.debug(exception);
                 throw new JETException(
                         Messages.getString("TalendJetEmitter.exception") + templateName + codePart + templateLanguage, exception); //$NON-NLS-1$
             } catch (Exception exception) {
+                TalendDebugHandler.debug(exception);
                 throw new JETException(
                         Messages.getString("TalendJetEmitter.exception") + templateName + codePart + templateLanguage, exception); //$NON-NLS-1$
             } finally {
