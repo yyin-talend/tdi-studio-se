@@ -86,7 +86,7 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
                         try {
                             for (Object obj : ((StructuredSelection) data).toArray()) {
                                 final RepositoryNode sourceNode = (RepositoryNode) obj;
-                                MoveObjectAction.getInstance().execute(sourceNode, targetNode);
+                                MoveObjectAction.getInstance().execute(sourceNode, targetNode, true);
                             }
                         } catch (Exception e) {
                             throw new PersistenceException(e);
@@ -151,11 +151,11 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
                 break;
             case DND.DROP_NONE:
             case DND.DROP_MOVE:
-                isValid = MoveObjectAction.getInstance().validateAction(sourceNode, (RepositoryNode) target);
+                isValid = MoveObjectAction.getInstance().validateAction(sourceNode, (RepositoryNode) target, true);
                 break;
             case DND.DROP_DEFAULT:
             case DND.Drop: // hywang
-                isValid = MoveObjectAction.getInstance().validateAction(sourceNode, (RepositoryNode) target);
+                isValid = MoveObjectAction.getInstance().validateAction(sourceNode, (RepositoryNode) target, true);
                 break;
             default:
                 isValid = false;

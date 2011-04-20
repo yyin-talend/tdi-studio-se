@@ -827,7 +827,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     RepositoryNode sourceNode = (RepositoryNode) obj;
 
                     // As i don't know how to get event operation i test on MoveOperation
-                    event.doit = MoveObjectAction.getInstance().validateAction(sourceNode, null);
+                    event.doit = MoveObjectAction.getInstance().validateAction(sourceNode, null, true);
                 }
 
                 LocalSelectionTransfer.getTransfer().setSelection(selection);
