@@ -216,7 +216,7 @@ if(columnList != null && columnList.size() > 0) {
             boolean whetherExist_<%=cid%> = false;
             while(rsTable_<%=cid%>.next()) {
                 String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-                if(table_<%=cid%>.equalsIgnoreCase(tableName_<%=cid%>)) {
+                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
                     whetherExist_<%=cid%> = true;
                     break;
                 }
