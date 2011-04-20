@@ -17,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -56,6 +57,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.designerproperties.ComponentToRepositoryProperty;
@@ -95,6 +97,7 @@ import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.ProjectNodeHelper;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -846,5 +849,9 @@ public class RepositoryService implements IRepositoryService {
 
     public IDialogSettings getDialogSettings() {
         return RepositoryPlugin.getDefault().getDialogSettings();
+    }
+
+    public Set<MetadataTable> getTablesFromSpecifiedDataPackage(DatabaseConnection dbconn) {
+        return ProjectNodeHelper.getTablesFromSpecifiedDataPackage(dbconn);
     }
 }

@@ -1100,6 +1100,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         if (connectionItem != null) {
                             final String uniqueName = node.getUniqueName();
                             String newSourceId = getSchemaRenamedMap().get(propertyValue);
+                            Map<String, EUpdateResult> deletedOrReselect = getDeletedOrReselectTablesMap();
+                            List<Object> parameter = null;
                             // renamed
                             if (newSourceId != null && !newSourceId.equals(propertyValue)) {
                                 String[] newSourceIdAndName = UpdateManagerUtils.getSourceIdAndChildName(newSourceId);
@@ -1113,7 +1115,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                         copyOfrepositoryMetadata.setTableName(uniqueName);
                                         copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext());
 
-                                        List<Object> parameter = new ArrayList<Object>();
+                                        parameter = new ArrayList<Object>();
                                         parameter.add(copyOfrepositoryMetadata);
                                         parameter.add(propertyValue);
                                         parameter.add(newSourceId);
@@ -1123,6 +1125,29 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                         builtIn = false;
                                     }
                                 }
+                            } else if (!deletedOrReselect.isEmpty()) {
+                                String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
+                                EUpdateResult status = deletedOrReselect.get(propertyValue);
+                                // deleted
+                                if (status.equals(EUpdateResult.DELETE)) {
+                                    // if reselect,need to reload the table for the refrence job.
+                                    parameter = new ArrayList<Object>();
+                                    String tableName = propertyValue.split(UpdatesConstants.SEGMENT_LINE)[1];
+                                    parameter.add(tableName);
+                                    parameter.add(status);
+                                    result = new UpdateCheckResult(node);
+                                    result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.DELETE, parameter, source);
+                                    builtIn = false;
+                                } else if (status.equals(EUpdateResult.RELOAD)) {
+                                    parameter = new ArrayList<Object>();
+                                    String tableName = propertyValue.split(UpdatesConstants.SEGMENT_LINE)[1];
+                                    parameter.add(tableName);
+                                    parameter.add(status);
+                                    result = new UpdateCheckResult(node);
+                                    result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.RELOAD, parameter, source);
+                                    builtIn = false;
+                                }
+
                             } else {
                                 IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, schemaName);
                                 if (table != null) {

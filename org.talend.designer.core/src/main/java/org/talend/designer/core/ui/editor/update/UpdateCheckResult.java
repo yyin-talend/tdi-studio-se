@@ -65,6 +65,22 @@ public class UpdateCheckResult extends UpdateResult {
                 if (display != null) {
                     displayName = display;
                 }
+            } else if (getResultType() == EUpdateResult.DELETE) { // table delete by deselect
+                List<Object> param = (List<Object>) getParameter();
+                String tableDeleted = (String) param.get(0);
+                EUpdateResult status = (EUpdateResult) param.get(1);
+                String display = getDeleteOrReloadDisplay(tableDeleted, status);
+                if (display != null) {
+                    displayName = display;
+                }
+            } else if (getResultType() == EUpdateResult.RELOAD) { // table reload by deselect and reselect
+                List<Object> param = (List<Object>) getParameter();
+                String tableReload = (String) param.get(0);
+                EUpdateResult status = (EUpdateResult) param.get(1);
+                String display = getDeleteOrReloadDisplay(tableReload, status);
+                if (display != null) {
+                    displayName = display;
+                }
             } else {
                 if (getUpdateObject() instanceof INode && getParameter() instanceof List && PluginChecker.isEBCDICPluginLoaded()) {
                     IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
@@ -149,6 +165,13 @@ public class UpdateCheckResult extends UpdateResult {
             return null;
         }
         return oldName + UpdatesConstants.RENAME_SIGN + newName;
+    }
+
+    private String getDeleteOrReloadDisplay(final String tableName, EUpdateResult status) {
+        if (tableName == null) {
+            return null;
+        }
+        return tableName + UpdatesConstants.RENAME_SIGN + status.toString();
     }
 
     @SuppressWarnings("unchecked")

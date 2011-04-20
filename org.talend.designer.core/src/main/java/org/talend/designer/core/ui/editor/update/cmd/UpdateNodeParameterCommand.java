@@ -13,8 +13,10 @@
 package org.talend.designer.core.ui.editor.update.cmd;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.eclipse.gef.commands.Command;
@@ -28,7 +30,10 @@ import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
@@ -52,6 +57,7 @@ import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.service.IDesignerMapperService;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IEBCDICProviderService;
@@ -63,6 +69,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.repository.UpdateRepositoryUtils;
+import org.talend.repository.model.ProjectNodeHelper;
 
 /**
  * ggu class global comment. Detailled comment
@@ -590,6 +597,66 @@ public class UpdateNodeParameterCommand extends Command {
                         SAPParametersUtils.setNoRepositoryParams(param);
                     }
                 }
+            } else if (result.getResultType() == EUpdateResult.DELETE) {
+                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+            } else if (result.getResultType() == EUpdateResult.RELOAD) {
+                List<Object> parameter = (List<Object>) result.getParameter();
+                String connectionId = null;
+                String tableLabel = null;
+                IRepositoryViewObject toReload = null;
+                IMetadataTable tableToReload = null;
+                if (parameter instanceof List) {
+                    List listParameter = (List) parameter;
+                    connectionId = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                    tableLabel = ((String) listParameter.get(0)).split(UpdatesConstants.SEGMENT_LINE)[0];
+                }
+                if (connectionId != null) {
+                    try {
+                        toReload = ProxyRepositoryFactory.getInstance().getLastVersion(connectionId);
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+                if (toReload != null) {
+                    Item item = toReload.getProperty().getItem();
+                    if (item != null && item instanceof DatabaseConnectionItem) {
+                        DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
+                        Connection connection = dbItem.getConnection();
+                        if (connection instanceof DatabaseConnection) {
+                            DatabaseConnection dbConn = (DatabaseConnection) connection;
+                            Set<MetadataTable> tables = ProjectNodeHelper.getTablesFromSpecifiedDataPackage(dbConn);
+                            if (tables != null && !tables.isEmpty()) {
+                                Iterator it = tables.iterator();
+                                while (it.hasNext()) {
+                                    MetadataTable table = (MetadataTable) it.next();
+                                    String label = table.getLabel();
+                                    if (tableLabel != null) {
+                                        if (label != null && label.equals(tableLabel)) {
+                                            tableToReload = ConvertionHelper.convert(table);
+                                            break;
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    if (tableToReload != null) {
+                        int index = -1;
+                        List<IMetadataTable> tablesInNode = node.getMetadataList();
+                        for (IMetadataTable table : tablesInNode) {
+                            if (table.getLabel().equals(tableToReload.getLabel())) {
+                                index = tablesInNode.indexOf(table);
+                                break;
+                            }
+                        }
+                        if (index >= 0) {
+                            tablesInNode.remove(index);
+                            tablesInNode.add(index, tableToReload);
+                        }
+                    }
+                }
+
             }
 
         }
