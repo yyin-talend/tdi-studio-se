@@ -15,6 +15,7 @@
     	java.util.Map
     	java.util.ArrayList
     	java.util.HashMap
+		java.util.Iterator
 	"
 %>
 <%
@@ -148,6 +149,30 @@
 			return tmp;
 		}
 		
+		public String toString() {
+			String ret = "";
+			if (needs != null) {
+				ret += "needs elements:\\n";
+				for (HashMap<String,String> e : needs) {
+					Iterator<String> it = e.keySet().iterator();
+					while (it.hasNext()) {
+						String key = it.next();
+						ret += "\\t" + key + "=" + e.get(key) + "\\n"; 
+					}
+				}
+			}
+			if (has != null) {
+				ret += "has elements:\\n";
+				for (HashMap<String,String> e : has) {
+					Iterator<String> it = e.keySet().iterator();
+					while (it.hasNext()) {
+						String key = it.next();
+						ret += "\\t" + key + "=" + e.get(key) + "\\n"; 
+					}
+				}
+			}
+			return ret;
+		}
 	}
 	
 	
@@ -204,17 +229,6 @@
 			}
 			return null;
 		}
-
-		public List<Map<String, String>> getTableParameterValue(String name) {
-			if (name == null || "".equals(name))
-				return null;
-			for (IElementParameter parameter : parameters) {
-				if (name.equals(parameter.getName()))
-					return ElementParameterParser.getTableElementParameterValue(parameter);
-			}
-			return null;
-		}
-
 		
 		/**
 		 * this function returns the number of components that are connected
@@ -442,8 +456,12 @@
 		}
 		
 		private void addColumnsToSQL(SQL sql) {
+			int i=1;
 			for (IMetadataColumn column : columns) {
 				sql.createPropertyElement(sql.needs, "column", column.getLabel());
+				sql.setPropertyValue(sql.needs, "column", column.getLabel(), "order", String.valueOf(i++));
+				sql.setPropertyValue(sql.needs, "column", column.getLabel(), "physical-name", column.getLabel());
+				//sql.setPropertyValue(sql.needs, "column", column.getLabel(), "alias-name", column.getLabel());
 			}
 		}
 		
@@ -481,14 +499,14 @@
 		 */
 		protected String getCondition() {
 			String logicalOperator = (String)(getParameterByName("LOGICAL_OP").getValue());
-			List<Map<String,String>> conditions = getTableParameterValue("CONDITIONS");
+			List<Map<String,Object>> conditions = (List<Map<String,Object>>)getParameterByName("CONDITIONS").getValue();
 			String advancedCondition = (String)(getParameterByName("ADVANCED_COND").getValue());
 			Boolean hasBasicConditions = conditions.size() > 0 ? true : false;
 			Boolean hasAdvancedConditions = (Boolean)getParameterByName("USE_ADVANCED").getValue();
 			String ret = "";
 			boolean firstCondFlag = true;
 			if (hasBasicConditions) {
-				for (Map<String,String> cond : conditions) {
+				for (Map<String,Object> cond : conditions) {
 					String column = cond.get("INPUT_COLUMN").toString();
 					String operator = cond.get("OPERATOR").toString();
 					String value = cond.get("RVALUE").toString();
@@ -574,15 +592,20 @@
 		 * @return returns true if everything is good; otherwise returns false if there are problems.
 		 */
 		protected boolean setOperations(SQL sql) {
-			List<Map<String,String>> operations = getTableParameterValue("OPERATION");
+			List<Map<String,Object>> operations = (List<Map<String,Object>>)getParameterByName("OPERATION").getValue();
 			Boolean hasOperations = operations.size() > 0 ? true : false;
 			if (hasOperations) {
-				for (Map<String,String> operation : operations) {
+				for (Map<String,Object> operation : operations) {
 					String inputColumn = operation.get("INPUT_COLUMN").toString();
 					String outputColumn = operation.get("OUTPUT_COLUMN").toString();
 					String function = operation.get("FUNCTION").toString();
 					HashMap<String,String> property = sql.getNeedsProperty("column", outputColumn);
 					if (property != null) {
+						//sql.setPropertyValue(sql.needs, "column", outputColumn, "function", function);
+						//sql.removePropertyElement(sql.needs, "column", outputColumn);
+						//sql.createEmptyPropertyElement(sql.needs, "column", inputColumn);
+						//sql.setPropertyValue(sql.needs, "column", inputColumn, "function", function);
+						sql.setPropertyValue(sql.needs, "column", outputColumn, "physical-name", inputColumn);
 						sql.setPropertyValue(sql.needs, "column", outputColumn, "function", function);
 					}
 					else {
@@ -632,15 +655,163 @@
 			return ret;
 		}
 		
+		protected int currentColumnNumber = 1;
+		
+		/**
+		 * this function returns all the columns in the needs in order
+		 * to get all column in order; set the currentColumnNumber 
+		 * to 1 and call this function repeatedly.  
+		 * @param sql
+		 * @return
+		 */
+		protected HashMap<String,String> getNextNeedsColumn(SQL sql) {
+			if (sql.needs == null)
+				return null;
+			if (currentColumnNumber < 1)
+				currentColumnNumber = 1;
+			for (HashMap<String, String> e : sql.needs) {
+				String type = e.get("type");
+				if (type != null && type.equals("column") && e.containsKey("order")) {
+					int order = e.get("order") == null ? 0 : Integer.parseInt((String)e.get("order"));
+					if (order == currentColumnNumber) {
+						currentColumnNumber++;
+						return e;
+					}
+				}
+			}
+			return null;
+		}
+		
+		/**
+		 * this function checks if a given column name exists in the component's
+		 * schema.
+		 * @param columnName
+		 * @return
+		 */
+		protected boolean isSchemaColumn(String columnName) {
+			if (columnName == null)
+				return false;
+			// go through normal columns first
+			for (IMetadataColumn column : columns) {
+				if (columnName.equalsIgnoreCase(column.getLabel()))
+					return true;
+			}
+			// go through the additional columns
+			Boolean hasAdditionalColumns = (Boolean)getParameterByName("HAS_ADD_COLS").getValue();
+			List<Map<String,Object>> additionalColumns = (List<Map<String,Object>>)getParameterByName("ADD_COLS").getValue();
+			if (hasAdditionalColumns) {
+				for (Map<String,Object> column : additionalColumns) {
+					if (columnName.equalsIgnoreCase(column.get("NAME").toString()))
+						return true;
+				}
+			}
+			return false;
+		}
+		
+		/**
+		 * return true if an a column name exists within the additional columns list
+		 * @param columnName
+		 * @return
+		 */
+		protected boolean isAdditionalColumn(String columnName) {
+			if (columnName == null)
+				return false;
+			Boolean hasAdditionalColumns = (Boolean)getParameterByName("HAS_ADD_COLS").getValue();
+			List<Map<String,Object>> additionalColumns = (List<Map<String,Object>>)getParameterByName("ADD_COLS").getValue();
+			if (hasAdditionalColumns) {
+				for (Map<String,Object> column : additionalColumns) {
+					if (columnName.equalsIgnoreCase(column.get("NAME").toString()))
+						return true;
+				}
+			}
+			return false;
+		}
+		
+		/**
+		 * returns the SQL code that makes the additional column.
+		 * @param columnName
+		 * @return
+		 */
+		protected String getAdditionalColumnSQL(String columnName) {
+			if (columnName == null)
+				return null;
+			Boolean hasAdditionalColumns = (Boolean)getParameterByName("HAS_ADD_COLS").getValue();
+			List<Map<String,Object>> additionalColumns = (List<Map<String,Object>>)getParameterByName("ADD_COLS").getValue();
+			if (hasAdditionalColumns) {
+				for (Map<String,Object> column : additionalColumns) {
+					if (columnName.equalsIgnoreCase(column.get("NAME").toString()))
+						return column.get("SQL").toString();
+				}
+			}
+			return null;
+		}
+		
+		
 		/** 
 		 * this function returns the select list form that is driven from the component's
 		 * schema as well as what's needed in the SQL object passed.
 		 * @param sql
 		 * @return example: column1, COUNT(column2), column3 AS col3
 		 */
-		protected String getSelectColumns(SQL sql) {
+		protected String getSelectColumns(SQL sql) throws Exception {
 			String ret = "";
 			boolean firstColumnFlag = true;
+			
+			HashMap<String,String> e;
+			currentColumnNumber = 1;
+			// read all the needs columns in order. order is important;
+			// since columns must be inserted in the same order as the
+			// insert list from tELTOutput (insert operation)
+			while ((e = getNextNeedsColumn(sql)) != null) {
+				String uniqueName = e.get("name");
+				String physicalName = e.get("physical-name");
+				String function = e.get("function");
+				String tableAlias = e.get("table-alias");
+				String columnAlias = e.get("alias-name");
+				if (isSchemaColumn(physicalName) || isAdditionalColumn(physicalName)) {
+					String tmp;
+					if (isAdditionalColumn(physicalName))
+						tmp = "\" + " + getAdditionalColumnSQL(physicalName) + " + \"";
+					else
+						tmp = physicalName;
+					if (tableAlias != null)
+						tmp = tableAlias + "." + tmp;
+					if (function != null)
+						tmp = function + "(" + tmp + ")";
+					if (columnAlias != null) {
+						tmp = tmp + " AS " + columnAlias;
+					}
+					if (firstColumnFlag)
+						ret += tmp;
+					else
+						ret += ", " + tmp;
+					firstColumnFlag = false;
+					// remove the need from the SQL object
+					sql.removePropertyElement(sql.needs, "column", uniqueName);
+				}
+				else {
+					String componentName = (String)getParameterByName("UNIQUE_NAME").getValue();
+					throw new Exception("Column " + physicalName + " is not defined in the " + componentName + " component");
+				}
+			}
+			if (sql.needs.size() > 0) {
+				boolean hasAnyNeedsColumns = false;
+				String tmpName = null;
+				String tmpType = null;
+				for (HashMap<String, String> tmp : sql.needs) {
+					tmpType = tmp.get("type");
+					if (tmpType != null && tmpType.equals("column")) {
+						tmpName = tmp.get("physical-name");
+						hasAnyNeedsColumns = true;
+						break;
+					}
+				}
+				if (hasAnyNeedsColumns) {
+					String componentName = (String)getParameterByName("UNIQUE_NAME").getValue();
+					throw new Exception("Column " + tmpName + " is not defined in the " + componentName + " component.");
+				}
+			}
+			/*
 			for (IMetadataColumn column : columns) {
 				if (column.getLabel() == null) continue;
 				String columnName = column.getLabel();
@@ -697,6 +868,7 @@
 					}
 				}
 			}
+			*/
 			return ret;
 		}
 		
@@ -780,8 +952,9 @@
 	
 	String sql = null;
 	String err = null;
+	SQL sqlObject = new SQL();
 	try {
-		sql = tail.run(new SQL());
+		sql = tail.run(sqlObject);
 	} catch (Exception e) {
 		err = e.getMessage() + " ";
 		e.printStackTrace();
@@ -800,12 +973,15 @@
 		System.out.println("<%=err%>");
 	<% } %>
 
+	<% if (sql != null) { %>
 	java.sql.Connection conn_<%=cid%> = null;
 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 	java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
-	String sql_<%=cid%> = "<%=sql%>";
+	String sql_<%=cid%> = null;
+	sql_<%=cid%> = "<%=sql%>";
 	int ret_<%=cid%> = stmt_<%=cid%>.executeUpdate(sql_<%=cid%>);
 	globalMap.put("<%=cid%>_QUERY", sql_<%=cid%>);
 	globalMap.put("<%=cid%>_NB_LINE", ret_<%=cid%>);
-	
-	
+	<% } else { %>
+	throw new Exception("<%=err%>");
+	<% } %>
