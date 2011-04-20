@@ -523,10 +523,13 @@ public class SQLBuilderRepositoryNodeManager {
 
         Catalog c = (Catalog) ConnectionHelper.getPackage(connection.getSID(), connection, Catalog.class);
         Schema s = (Schema) ConnectionHelper.getPackage(connection.getSID(), connection, Schema.class);
+        Schema schema = (Schema) ConnectionHelper.getPackage(connection.getUiSchema(), connection, Schema.class);
         if (c != null) {
             PackageHelper.addMetadataTable(tablesFromEMF, c);
         } else if (s != null) {
             PackageHelper.addMetadataTable(tablesFromEMF, s);
+        } else if (schema != null) {
+            PackageHelper.addMetadataTable(tablesFromEMF, schema);
         }
     }
 
