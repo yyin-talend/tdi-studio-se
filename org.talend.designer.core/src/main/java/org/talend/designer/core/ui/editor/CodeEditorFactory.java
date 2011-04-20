@@ -13,7 +13,6 @@
 package org.talend.designer.core.ui.editor;
 
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;

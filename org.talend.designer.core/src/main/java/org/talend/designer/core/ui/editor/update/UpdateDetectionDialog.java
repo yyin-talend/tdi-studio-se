@@ -461,6 +461,8 @@ public class UpdateDetectionDialog extends SelectionDialog {
         if (messLabel != null && !messLabel.isDisposed()) {
             messLabel.setText(READ_ONLY_JOB_WARNING_MESSAGE);
         }
-
+        if (selectButton != null && !selectButton.isDisposed()) {
+            selectButton.setVisible(false);
+        }
     }
 }

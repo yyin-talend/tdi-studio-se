@@ -209,7 +209,7 @@ public class UpdateViewerHelper {
 
     private void updateJobState(Job job) {
         getViewer().refresh(job, true);
-        
+
         switch (updateCategoriesState(job)) {
         case ALL:
             getViewer().setChecked(job, true);
@@ -310,13 +310,12 @@ public class UpdateViewerHelper {
         List<UpdateResult> inputElements = updateDialog.getInputElements();
         if (inputElements != null) {
             for (UpdateResult result : inputElements) {
-                
-//                if(result.isReadOnlyProcess())
-//                {
-//                    updateDialog.updateReadOnlyJobWarnMessage();
-//                    return;
-//                }
-                
+
+                if (result.isReadOnlyProcess()) {
+                    updateDialog.updateReadOnlyJobWarnMessage();
+                    return;
+                }
+
                 if (!result.isChecked()
                         && (result.getResultType() == EUpdateResult.UPDATE || result.getResultType() == EUpdateResult.DELETE)) {
                     updateDialog.updateWarnMessage();
