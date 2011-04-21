@@ -642,6 +642,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     // create jobscript editor
     protected void createPage2() {
+        if (!GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
+            return;
+        }
         String scriptValue = "";
         try {
             IProject currentProject = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
