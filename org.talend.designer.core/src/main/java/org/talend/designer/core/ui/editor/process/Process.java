@@ -105,7 +105,6 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.utils.KeywordsValidator;
-import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.DummyComponent;
@@ -1029,22 +1028,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                             if (value != null && value.length() > 2) {
                                 elemParam.setPropertyValue(pType.getName(), TalendTextUtils.removeQuotesIfExist(value)); // value.substring(1,
                             }
-                        } else {
-                            if (pType.getValue().contains(":\"")) {
-                                String[] valueSplit = pType.getValue().split(":\"");
-                                elemParam.setPropertyValue(pType.getName() + ":" + valueSplit[0],
-                                        TalendQuoteUtils.removeQuotesIfExist("\"" + valueSplit[1]));
-
-                            } else {
-                                elemParam.setPropertyValue(pType.getName(), value);
-                            }
-                        }
-                    } else if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                        if (pType.getValue().contains(":\"")) {
-                            String[] valueSplit = pType.getValue().split(":\"");
-                            elemParam.setPropertyValue(pType.getName() + ":" + valueSplit[0],
-                                    TalendQuoteUtils.removeQuotesIfExist("\"" + valueSplit[1]));
-
                         } else {
                             elemParam.setPropertyValue(pType.getName(), value);
                         }
