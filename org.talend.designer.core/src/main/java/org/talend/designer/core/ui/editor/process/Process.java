@@ -1276,6 +1276,17 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             List<IRepositoryViewObject> routines = factory.getAll(ProjectManager.getInstance().getCurrentProject(),
                     ERepositoryObjectType.ROUTINES);
+            for (Project project : ProjectManager.getInstance().getAllReferencedProjects()) {
+                List<IRepositoryViewObject> refRoutines = factory.getAll(project, ERepositoryObjectType.ROUTINES);
+                for (IRepositoryViewObject object : refRoutines) {
+                    if (!((RoutineItem) object.getProperty().getItem()).isBuiltIn()) {
+                        if (!possibleRoutines.contains(object.getLabel()) && !routinesAlreadySetup.contains(object.getLabel())) {
+                            possibleRoutines.add(object.getLabel());
+                            routines.add(object);
+                        }
+                    }
+                }
+            }
             // always add the system, others must be checked
             for (IRepositoryViewObject object : routines) {
                 if (((RoutineItem) object.getProperty().getItem()).isBuiltIn() && routinesDependencies.isEmpty()) {
@@ -3624,6 +3635,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         try {
             routines = ProxyRepositoryFactory.getInstance().getAll(ProjectManager.getInstance().getCurrentProject(),
                     ERepositoryObjectType.ROUTINES);
+            for (Project project : ProjectManager.getInstance().getAllReferencedProjects()) {
+                List<IRepositoryViewObject> routinesFromRef = ProxyRepositoryFactory.getInstance().getAll(project,
+                        ERepositoryObjectType.ROUTINES);
+                for (IRepositoryViewObject routine : routinesFromRef) {
+                    if (!((RoutineItem) routine.getProperty().getItem()).isBuiltIn()) {
+                        routines.add(routine);
+                    }
+                }
+            }
             // always add the system, others must be checked
             Set<String> nonExistingRoutines = new HashSet<String>();
 
