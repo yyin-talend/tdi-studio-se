@@ -49,6 +49,8 @@ String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__"
 String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
 String version = ElementParameterParser.getValue(node,"__PROCESS_TYPE_VERSION__");
 String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid", "\"--father_node="+ cid + "\""};
+String[] commandLineWindows = new String[] {"<command>"};
+String[] commandLineUnix = new String[] {"<command>"};
 String[] commandLine = new String[] {"<command>"};
 String childJob = ElementParameterParser.getValue(node,"__PROCESS__");
 
@@ -68,13 +70,21 @@ if(useDynamicJob){
 }else{
 	try {
 	  if(useIndependentProcess){
-	    commandLine = ProcessorUtilities.getCommandLine(true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
-	    // remove the frontal 2 lines
-	    if (commandLine.length > 0 && ProcessorUtilities.isExportConfig()){
-	      int tmpSize = commandLine.length - 2;
+	    commandLineWindows = ProcessorUtilities.getCommandLine("win32",true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+	    // remove the 2 fist lines
+	    if (commandLineWindows.length > 0 && ProcessorUtilities.isExportConfig()){
+	      int tmpSize = commandLineWindows.length - 2;
 	      String[] tmp = new String[tmpSize];
-	      System.arraycopy(commandLine, 2, tmp, 0, tmpSize);
-	      commandLine = tmp;
+	      System.arraycopy(commandLineWindows, 2, tmp, 0, tmpSize);
+	      commandLineWindows = tmp;
+	    }
+	    commandLineUnix = ProcessorUtilities.getCommandLine("linux",true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+	    // remove the 2 first lines
+	    if (commandLineUnix.length > 0 && ProcessorUtilities.isExportConfig()){
+	      int tmpSize = commandLineUnix.length - 2;
+	      String[] tmp = new String[tmpSize];
+	      System.arraycopy(commandLineUnix, 2, tmp, 0, tmpSize);
+	      commandLineUnix = tmp;
 	    }
 	  }else{
 	    commandLine = ProcessorUtilities.getMainCommand(process,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);  
@@ -83,22 +93,64 @@ if(useDynamicJob){
 	}
 
 
-	for (int i = 0; i < commandLine.length; i++) {
-	  // commandLine[i] = commandLine[i].replace("\n", "");
-	  if (i == 0 && useIndependentProcess){
-	    %>
-	    paraList_<%=cid %>.add("<%=commandLine[i]%>");
-	    <%
-	  } else if (i == 0 && !useIndependentProcess){
-	    childJob = commandLine[0];
-	  } else if (i > 0){
-	  	if (commandLine[i].indexOf("\"") >= 0){
+	if (!useIndependentProcess) {
+	  for (int i = 0; i < commandLine.length; i++) {
+		if (i == 0){
+	      childJob = commandLine[0];
+	    } else if (i > 0){
+	      if (commandLine[i].indexOf("\"") >= 0){
 	      %>
-	      paraList_<%=cid %>.add(<%=commandLine[i] %>);
-	  <%}else{%>
-	      paraList_<%=cid %>.add("<%=commandLine[i] %>");
-	  <%}
-	  }	 
+	        paraList_<%=cid %>.add(<%=commandLine[i] %>);
+	      <%}else{%>
+	        paraList_<%=cid %>.add("<%=commandLine[i] %>");
+	      <%}
+	    }
+	  }
+	} else {
+	  %>
+	  String osName_<%=cid %> = System.getProperty("os.name");
+	  if (osName_<%=cid %> != null && osName_<%=cid %>.toLowerCase().startsWith("win")){
+	      <%
+		  for (int i = 0; i < commandLineWindows.length; i++) {
+		    if (i == 0){
+		      %>
+		      paraList_<%=cid %>.add("<%=commandLineWindows[i]%>");
+		      <%
+		    } else if (i > 0){
+		      if (commandLineWindows[i].indexOf("\"") >= 0){
+		      %>
+		        paraList_<%=cid %>.add(<%=commandLineWindows[i] %>);
+		      <%}else{%>
+		        paraList_<%=cid %>.add("<%=commandLineWindows[i] %>");
+		      <%}
+		    }
+		  }
+		  %>
+	  } else {
+	      <%
+		  for (int i = 0; i < commandLineUnix.length; i++) {
+		    if (i == 0){
+		      %>
+		      paraList_<%=cid %>.add("<%=commandLineUnix[i]%>");
+		      <%
+		    } else if (i > 0){
+		      String param;
+		      if (commandLineUnix[i].indexOf("\"") >= 0){
+		        param = commandLineUnix[i];
+		      } else {
+		      	param = "\""+commandLineUnix[i]+"\"";
+		      }
+		      if (param.contains("$ROOT_PATH")) {
+		      %>
+		        paraList_<%=cid %>.add(<%=param %>.replace("$ROOT_PATH",System.getProperty("user.dir")));
+		      <%}else{%>
+		        paraList_<%=cid %>.add(<%=param %>);
+		      <%}
+		    }
+		  }
+		  %>
+	  }    
+	  <%
 	}
 }
 %>
@@ -108,20 +160,6 @@ paraList_<%=cid %>.add("--stat_port=" + null);
 <%}else{%>
 paraList_<%=cid %>.add("--stat_port=" + portStats);
 <%}%>
-<%
-if (useIndependentProcess && ProcessorUtilities.isExportConfig()){
-%>
-  // exchange characters if this job runs on OS is different from exported base on
-  for(int i_<%=cid%> = 0; i_<%=cid%> < paraList_<%=cid %>.size(); i_<%=cid%>++){
-    String osName_<%=cid %> = System.getProperty("os.name");
-    if (osName_<%=cid %> != null && osName_<%=cid %>.toLowerCase().startsWith("win")){    
-      paraList_<%=cid %>.set(i_<%=cid%>, paraList_<%=cid %>.get(i_<%=cid%>).replace(":", ";").replace("$", "%"));
-    }else{
-      paraList_<%=cid %>.set(i_<%=cid%>, paraList_<%=cid %>.get(i_<%=cid%>).replace(";", ":").replace("%", "$"));
-    }
-  }
-<%
-}%>
 
 if(resuming_logs_dir_path != null){
   paraList_<%=cid %>.add("--resuming_logs_dir_path=" + resuming_logs_dir_path);

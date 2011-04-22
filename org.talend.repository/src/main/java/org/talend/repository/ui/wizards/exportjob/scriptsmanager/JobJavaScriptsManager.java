@@ -212,14 +212,18 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             IProcess jobProcess = null;
 
+            // TODO: option doNotCompileCode is deprecated now.
+            // code is just kept like this to avoid too big changes right now.
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 if (neededLibraries == null) {
                     neededLibraries = new HashSet<String>();
                 }
                 if (contextName != null) {
                     jobProcess = generateJobFiles(processItem, contextName, selectedJobVersion,
-                            statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
-                            isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
+                            statisticPort != IProcessor.NO_STATISTICS
+                                    || isOptionChoosed(exportChoice, ExportChoice.addStatistics),
+                            tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
+                            progressMonitor);
                 } else if (context != null) {
                     jobProcess = generateJobFiles(processItem, context, selectedJobVersion,
                             statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,

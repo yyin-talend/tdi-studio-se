@@ -163,6 +163,7 @@ public abstract class JobScriptsManager {
         // selected
         needContext,
         applyToChildren,
+        addStatistics, // for feature 11031
         doNotCompileCode,
         needDependencies,
         setParameterValues,
