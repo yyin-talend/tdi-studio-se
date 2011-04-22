@@ -196,7 +196,8 @@ public class ActiveProcessTracker implements IPartListener {
                 }
             }
         } else if (part instanceof IEditorPart) {
-            if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) part)) {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDiagramModelService.class)
+                    && CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) part)) {
                 Contexts.setTitle(""); //$NON-NLS-1$
                 Contexts.clearAll();
 
