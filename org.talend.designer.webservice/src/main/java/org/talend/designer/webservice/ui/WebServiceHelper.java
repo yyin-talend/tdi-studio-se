@@ -32,9 +32,9 @@ import org.talend.core.model.metadata.builder.connection.WSDLParameter;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.service.IWebService;
+import org.talend.core.service.IWebServiceTos;
 import org.talend.core.ui.AbstractWebService;
-import org.talend.core.ui.webService.WebServiceSaveManager;
+import org.talend.core.ui.webService.WebServiceTosSaveManager;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.webservice.WebServiceComponent;
 import org.talend.designer.webservice.WebServiceComponentMain;
@@ -43,11 +43,12 @@ import org.talend.repository.model.ComponentsFactoryProvider;
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public class WebServiceHelper implements IWebService {
+public class WebServiceHelper implements IWebServiceTos {
 
     private WebServiceUI webServiceUI;
 
-    WebServiceSaveManager manager = WebServiceSaveManager.getInstance();
+
+    WebServiceTosSaveManager manager = WebServiceTosSaveManager.getInstance();
 
     public WebServiceHelper() {
     }

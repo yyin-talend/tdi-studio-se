@@ -11,7 +11,7 @@
          point="org.talend.core.runtime.service">
       <Service
             class="org.talend.designer.webservice.ui.WebServiceHelper"
-            serviceId="IWebService">
+            serviceId="IWebServiceTos">
       </Service>
    </extension>
 
