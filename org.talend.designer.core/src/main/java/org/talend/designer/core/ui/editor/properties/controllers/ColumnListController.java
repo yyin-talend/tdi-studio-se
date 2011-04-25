@@ -39,12 +39,12 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.ColumnNameChangedExt;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.EDIFACTColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -54,11 +54,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.properties.EDIFACTConnectionItem;
-import org.talend.core.model.properties.Item;
-import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.i18n.Messages;
@@ -366,7 +362,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
         for (IElementParameter par : element.getElementParametersWithChildrens()) {
             if (par.getName().equals("REPOSITORY_PROPERTY_TYPE")) {
-                edifactId = par.getValue().toString();
+                edifactId = par.getValue().toString() + " - metadata";
                 break;
             }
         }
@@ -496,38 +492,22 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         newLine = TableController.createNewLine(param);
                         newLine.put(codes[0], columnName);
                         if (edifactId != null) {
-                            IRepositoryViewObject obj = null;
-                            try {
-                                obj = ProxyRepositoryFactory.getInstance().getLastVersion(edifactId);
-                                if (obj != null) {
-                                    Item item = obj.getProperty().getItem();
-                                    if (item instanceof EDIFACTConnectionItem) {
-                                        EDIFACTConnectionItem ediItem = (EDIFACTConnectionItem) item;
-                                        IMetadataTable metaTable = ((INode) element).getMetadataList().get(0);
-                                        List<IMetadataColumn> objectList = metaTable.getListColumns();
-                                        List<org.talend.core.model.metadata.builder.connection.MetadataTable> tables = ConnectionHelper
-                                                .getTablesWithOrders(ediItem.getConnection());
-                                        // for (IMetadataColumn column : objectList) {
-                                        for (MetadataColumn col : tables.get(0).getColumns()) {
-                                            if (col.getLabel().equals(columnName)) {
-                                                if (col instanceof EDIFACTColumn) {
-                                                    EDIFACTColumn edicolumn = (EDIFACTColumn) col;
-                                                    String ediColumnName = edicolumn.getEDIColumnName();
-                                                    String ediXpath = edicolumn.getEDIXpath();
-                                                    newLine.put(codes[0], columnName);
-                                                    newLine.put(codes[1], ediXpath);
-                                                    // newLine.put(codes[2], ediXpath);
-                                                    break;
-                                                }
-                                            }
-                                            // }
-                                        }
+                            org.talend.core.model.metadata.builder.connection.Connection connection = MetadataTool
+                                    .getConnectionFromRepository(edifactId);
+                            List<org.talend.core.model.metadata.builder.connection.MetadataTable> tables = ConnectionHelper
+                                    .getTablesWithOrders(connection);
+                            for (MetadataColumn col : tables.get(0).getColumns()) {
+                                if (col.getLabel().equals(columnName)) {
+                                    if (col instanceof EDIFACTColumn) {
+                                        EDIFACTColumn edicolumn = (EDIFACTColumn) col;
+                                        String ediXpath = edicolumn.getEDIXpath();
+                                        newLine.put(codes[0], columnName);
+                                        newLine.put(codes[1], ediXpath);
+                                        break;
                                     }
-
                                 }
-                            } catch (PersistenceException e) {
-                                e.printStackTrace();
                             }
+
                         }
                         /* should put other attribute for edi mapping */
                     }
