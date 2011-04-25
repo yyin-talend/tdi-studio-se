@@ -399,8 +399,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             }
         }
         Connection conn = (Connection) connection.getModel();
-        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), (IGraphicalNode) conn.getSource(), (IGraphicalNode) conn
-                .getTarget(), false);
+        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), (IGraphicalNode) conn.getSource(),
+                (IGraphicalNode) conn.getTarget(), false);
         anchor.setConnection(conn);
         return anchor;
     }
@@ -420,8 +420,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         }
         Connection conn = (Connection) connection.getModel();
         sourceAnchor = null;
-        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), (IGraphicalNode) conn.getSource(), (IGraphicalNode) conn
-                .getTarget(), true);
+        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), (IGraphicalNode) conn.getSource(),
+                (IGraphicalNode) conn.getTarget(), true);
         anchor.setConnection(conn);
         return anchor;
     }
@@ -516,17 +516,23 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     String version = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_VERSION.getName());
                     boolean isAvoidShowJobAfterDoubleClick = CorePlugin.getDefault().getComponentsLocalProviderService()
                             .isAvoidToShowJobAfterDoubleClick();
-
-                    if (processName != null && !"".equals(processName) && !isAvoidShowJobAfterDoubleClick) { //$NON-NLS-1$
+                    // bug 20796
+                    boolean isSelectUseDynamic = false;
+                    Object useDynamicJobValue = (Object) node.getPropertyValue(EParameterName.USE_DYNAMIC_JOB.getName());
+                    if (useDynamicJobValue != null && useDynamicJobValue instanceof Boolean) {
+                        isSelectUseDynamic = (Boolean) useDynamicJobValue;
+                    }
+                    if (processName != null && !"".equals(processName) && !isAvoidShowJobAfterDoubleClick && !isSelectUseDynamic) { //$NON-NLS-1$
                         try {
                             ItemCacheManager.clearCache();
                             ProcessItem processItem = ItemCacheManager.getProcessItem(processName, version);
 
                             Property updatedProperty = null;
                             try {
-                                updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-                                        new Project(ProjectManager.getInstance().getProject(processItem)), processName)
-                                        .getProperty();
+                                updatedProperty = ProxyRepositoryFactory
+                                        .getInstance()
+                                        .getLastVersion(new Project(ProjectManager.getInstance().getProject(processItem)),
+                                                processName).getProperty();
                             } catch (PersistenceException e) {
                                 ExceptionHandler.process(e);
                             }
