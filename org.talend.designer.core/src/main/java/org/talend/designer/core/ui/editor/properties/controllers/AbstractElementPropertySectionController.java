@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.BidiMap;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.Dialog;
@@ -1330,10 +1331,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
             } else
                 type = "ORACLE_SID"; //$NON-NLS-1$
         }
-        if (type == null || "".equals(type)) { // JDBC by default
+        // If the dbtype has been setted don't reset it again unless the dbtype of connParameters is null.
+        if (StringUtils.trimToNull(type) == null && StringUtils.trimToNull(connParameters.getDbType()) == null) {
             type = EDatabaseTypeName.GENERAL_JDBC.getXmlName();
         }
         connParameters.setDbType(type);
+
         String frameWorkKey = getValueFromRepositoryName(element, "FRAMEWORK_TYPE"); //$NON-NLS-1$
         connParameters.setFrameworkType(frameWorkKey);
 
