@@ -166,8 +166,8 @@ public class OutputDataMapTableView extends DataMapTableView {
                     } else if (LOOK_UP_INNER_JOIN_REJECT.equals(bean.getName())) {
                         return String.valueOf(outputTable.isRejectInnerJoin());
                     } else if (SCHEMA_TYPE.equals(bean.getName())) {
-                        functComboBox.setItems(new String[] { BULIT_IN, REPOSITORY });
-                        return outputTable.isRepository() ? REPOSITORY : BULIT_IN;
+                        functComboBox.setItems(new String[] { BUILT_IN, REPOSITORY });
+                        return outputTable.isRepository() ? REPOSITORY : BUILT_IN;
                     }
                 } else if (cellEditor instanceof CustomDialogCellEditor) {
                     CustomDialogCellEditor customDialogCellEditor = (CustomDialogCellEditor) cellEditor;
@@ -180,7 +180,7 @@ public class OutputDataMapTableView extends DataMapTableView {
                     } else if (SCHEMA_TYPE.equals(bean.getName())) {
                         customDialogCellEditor.setType(CellValueType.SCHEMA_TYPE);
                         enableDiaplayViewer(outputTable.isRepository());
-                        return outputTable.isRepository() ? REPOSITORY : BULIT_IN;
+                        return outputTable.isRepository() ? REPOSITORY : BUILT_IN;
                     } else if (SCHEMA_ID.equals(bean.getName())) {
                         customDialogCellEditor.setType(CellValueType.SCHEMA_ID);
                         return getSchemaDisplayName(outputTable.getId());

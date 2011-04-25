@@ -279,7 +279,7 @@ public class InputDataMapTableView extends DataMapTableView {
                     } else if (SCHEMA_TYPE.equals(bean.getName())) {
                         customDialogCellEditor.setType(CellValueType.SCHEMA_TYPE);
                         enableDiaplayViewer(inputTable.isRepository());
-                        return inputTable.isRepository() ? REPOSITORY : BULIT_IN;
+                        return inputTable.isRepository() ? REPOSITORY : BUILT_IN;
                     } else if (SCHEMA_ID.equals(bean.getName())) {
                         customDialogCellEditor.setType(CellValueType.SCHEMA_ID);
                         return getSchemaDisplayName(inputTable.getId());
