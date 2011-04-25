@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
@@ -594,20 +595,22 @@ public class PropertyTypeController extends AbstractRepositoryController {
             // if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
             try {
                 Item item = null;
-                IRepositoryViewObject repobj = factory.getLastVersion(connectionSelected);
-                if (repobj != null) {
-                    Property property = repobj.getProperty();
-                    if (property != null) {
-                        item = property.getItem();
+                if (!StringUtils.isEmpty(connectionSelected)) {
+                    IRepositoryViewObject repobj = factory.getLastVersion(connectionSelected);
+                    if (repobj != null) {
+                        Property property = repobj.getProperty();
+                        if (property != null) {
+                            item = property.getItem();
+                        }
                     }
-                }
-                if (item != null && item instanceof ConnectionItem) {
+                    if (item != null && item instanceof ConnectionItem) {
 
-                    repositoryConnectionItem = (ConnectionItem) factory.getLastVersion(connectionSelected).getProperty()
-                            .getItem();
-                    repositoryConnection = repositoryConnectionItem.getConnection();
-                } else {
-                    repositoryConnection = null;
+                        repositoryConnectionItem = (ConnectionItem) factory.getLastVersion(connectionSelected).getProperty()
+                                .getItem();
+                        repositoryConnection = repositoryConnectionItem.getConnection();
+                    } else {
+                        repositoryConnection = null;
+                    }
                 }
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);

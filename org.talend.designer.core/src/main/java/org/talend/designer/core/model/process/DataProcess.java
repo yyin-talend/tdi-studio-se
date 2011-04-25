@@ -1836,7 +1836,7 @@ public class DataProcess {
         List<? extends INodeConnector> connectors = nodeUseValidationRule.getListConnector();
         INodeConnector rejectConnector = null;
         for (INodeConnector connector : connectors) {
-            if ("REJECT".equals(connector.getName())) {//$NON-NLS-1$
+            if ("VALIDATION_REJECT".equals(connector.getName())) {//$NON-NLS-1$
                 rejectConnector = connector;
                 break;
             }
@@ -1845,7 +1845,7 @@ public class DataProcess {
         List<IMetadataTable> metadataList = nodeUseValidationRule.getMetadataList();
 
         for (IMetadataTable metadataTable : metadataList) {
-            if ("REJECT".equals(metadataTable.getTableName()) && !joinNode.getMetadataList().contains(metadataTable)) {//$NON-NLS-1$
+            if ("VALIDATION_REJECT".equals(metadataTable.getTableName()) && !joinNode.getMetadataList().contains(metadataTable)) {//$NON-NLS-1$
                 rejectMetadataTable = metadataTable;
                 joinNode.getMetadataList().add(metadataTable);
                 break;
@@ -2022,8 +2022,8 @@ public class DataProcess {
         hash_incomingConnections.add(dataConnec);
 
         // handle reject link.
-        if (endNode.getOutgoingConnections("REJECT") != null && endNode.getOutgoingConnections("REJECT").size() == 1) {//$NON-NLS-1$ //$NON-NLS-2$
-            IConnection conn = endNode.getOutgoingConnections("REJECT").get(0);//$NON-NLS-1$
+        if (endNode.getOutgoingConnections("VALIDATION_REJECT") != null && endNode.getOutgoingConnections("VALIDATION_REJECT").size() == 1) {//$NON-NLS-1$ //$NON-NLS-2$
+            IConnection conn = endNode.getOutgoingConnections("VALIDATION_REJECT").get(0);//$NON-NLS-1$
             INode targetNode = conn.getTarget();
             List<IConnection> outputconns = (List<IConnection>) endNode.getOutgoingConnections();
             List<IConnection> inputconnns = (List<IConnection>) targetNode.getIncomingConnections();
@@ -2034,7 +2034,7 @@ public class DataProcess {
             rejectLink.setLineStyle(EConnectionType.FLOW_MAIN);
             rejectLink.setMetadataTable(rejectMetadataTable);
             rejectLink.setConnectorName("REJECT"); //$NON-NLS-1$
-            rejectLink.setName(joinNode.getUniqueName() + "_reject"); //$NON-NLS-1$
+            rejectLink.setName(conn.getName()); //$NON-NLS-1$
             rejectLink.setSource(joinNode);
             rejectLink.setTarget(targetNode);
             ((List<IConnection>) joinNode.getOutgoingConnections()).add(rejectLink);
@@ -2104,7 +2104,7 @@ public class DataProcess {
         List<? extends INodeConnector> connectors = nodeUseValidationRule.getListConnector();
         INodeConnector rejectConnector = null;
         for (INodeConnector connector : connectors) {
-            if ("REJECT".equals(connector.getName())) { //$NON-NLS-1$
+            if ("VALIDATION_REJECT".equals(connector.getName())) { //$NON-NLS-1$
                 rejectConnector = connector;
                 break;
             }
@@ -2113,7 +2113,7 @@ public class DataProcess {
         List<IMetadataTable> metadataList = nodeUseValidationRule.getMetadataList();
 
         for (IMetadataTable metadataTable : metadataList) {
-            if ("REJECT".equals(metadataTable.getTableName()) && !filterNode.getMetadataList().contains(metadataTable)) { //$NON-NLS-1$
+            if ("VALIDATION_REJECT".equals(metadataTable.getTableName()) && !filterNode.getMetadataList().contains(metadataTable)) { //$NON-NLS-1$
                 rejectMetadataTable = metadataTable;
                 filterNode.getMetadataList().add(metadataTable);
                 break;
@@ -2157,8 +2157,8 @@ public class DataProcess {
         validRuleConnections.add(dataConnec);
 
         // handle reject link.
-        if (endNode.getOutgoingConnections("REJECT") != null && endNode.getOutgoingConnections("REJECT").size() == 1) {//$NON-NLS-1$ //$NON-NLS-2$
-            IConnection conn = endNode.getOutgoingConnections("REJECT").get(0);//$NON-NLS-1$
+        if (endNode.getOutgoingConnections("VALIDATION_REJECT") != null && endNode.getOutgoingConnections("VALIDATION_REJECT").size() == 1) {//$NON-NLS-1$ //$NON-NLS-2$
+            IConnection conn = endNode.getOutgoingConnections("VALIDATION_REJECT").get(0);//$NON-NLS-1$
             INode targetNode = conn.getTarget();
             List<IConnection> outputconns = (List<IConnection>) endNode.getOutgoingConnections();
             List<IConnection> inputconnns = (List<IConnection>) targetNode.getIncomingConnections();
@@ -2169,7 +2169,7 @@ public class DataProcess {
             rejectLink.setLineStyle(EConnectionType.FLOW_MAIN);
             rejectLink.setMetadataTable(rejectMetadataTable);
             rejectLink.setConnectorName("REJECT"); //$NON-NLS-1$
-            rejectLink.setName(filterNode.getUniqueName() + "_reject"); //$NON-NLS-1$
+            rejectLink.setName(conn.getName()); //$NON-NLS-1$
             rejectLink.setSource(filterNode);
             rejectLink.setTarget(targetNode);
             ((List<IConnection>) filterNode.getOutgoingConnections()).add(rejectLink);

@@ -359,7 +359,7 @@ public class ValidationRulesUtil {
 
     public static void removeRejectConnector(INode node) {
         for (INodeConnector connector : node.getListConnector()) {
-            if ("REJECT".equals(connector.getName())) {
+            if ("VALIDATION_REJECT".equals(connector.getName())) {
                 node.getListConnector().remove(connector);
                 return;
             }
@@ -370,7 +370,7 @@ public class ValidationRulesUtil {
         List<Connection> connectionList = new ArrayList<Connection>();
         for (Iterator<? extends IConnection> iterator = node.getOutgoingConnections().iterator(); iterator.hasNext();) {
             IConnection connection = iterator.next();
-            if ("REJECT".equals(connection.getConnectorName()) && connection instanceof Connection) { //$NON-NLS-1$
+            if ("VALIDATION_REJECT".equals(connection.getConnectorName()) && connection instanceof Connection) { //$NON-NLS-1$
                 connectionList.add((Connection) connection);
                 break;
             }
@@ -393,15 +393,15 @@ public class ValidationRulesUtil {
         if (isHasValidationRule(node)) {
             boolean isHas = false;
             for (INodeConnector connector : node.getListConnector()) {
-                if ("REJECT".equals(connector.getName())) {//$NON-NLS-1$
+                if ("VALIDATION_REJECT".equals(connector.getName())) {//$NON-NLS-1$
                     isHas = true;
                 }
             }
             if (!isHas) {
                 rejectConnector = new NodeConnector(node);
                 rejectConnector.setDefaultConnectionType(EConnectionType.FLOW_MAIN);
-                rejectConnector.setLinkName("Reject");//$NON-NLS-1$
-                rejectConnector.setMenuName("Reject");//$NON-NLS-1$
+                rejectConnector.setLinkName("Validation Reject");//$NON-NLS-1$
+                rejectConnector.setMenuName("Validation Reject");//$NON-NLS-1$
                 rejectConnector.setMaxLinkInput(-1);
                 rejectConnector.setMinLinkInput(0);
                 rejectConnector.setMaxLinkOutput(1);
@@ -409,9 +409,7 @@ public class ValidationRulesUtil {
                 rejectConnector.setBuiltIn(false);
                 rejectConnector.setMultiSchema(false);
                 rejectConnector.setMergeAllowDifferentSchema(false);
-                rejectConnector.setName("REJECT");//$NON-NLS-1$
-                rejectConnector.setMenuName("Reject");//$NON-NLS-1$
-                rejectConnector.setLinkName("Reject");//$NON-NLS-1$
+                rejectConnector.setName("VALIDATION_REJECT");//$NON-NLS-1$
                 RGB rgb = new RGB(243, 99, 0);
                 rejectConnector.addConnectionProperty(EConnectionType.FLOW_MAIN, rgb, 2);
                 rejectConnector.getConnectionProperty(EConnectionType.FLOW_MAIN).setRGB(rgb);
@@ -437,7 +435,7 @@ public class ValidationRulesUtil {
             IMetadataTable table = null;
             boolean isHasRejectTable = false;
             for (IMetadataTable metadataTable : metadatas) {
-                if ("REJECT".equals(metadataTable.getTableName())) {//$NON-NLS-1$
+                if ("VALIDATION_REJECT".equals(metadataTable.getTableName())) {//$NON-NLS-1$
                     isHasRejectTable = true;
                     table = metadataTable;
                     break;
@@ -446,8 +444,8 @@ public class ValidationRulesUtil {
             if (!isHasRejectTable) {
                 table = new MetadataTable();
             }
-            table.setAttachedConnector("REJECT");//$NON-NLS-1$
-            table.setTableName("REJECT");//$NON-NLS-1$
+            table.setAttachedConnector("VALIDATION_REJECT");//$NON-NLS-1$
+            table.setTableName("VALIDATION_REJECT");//$NON-NLS-1$
             table.setReadOnly(true);
 
             List<? extends IConnection> mainConnection = null;
