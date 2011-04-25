@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
@@ -184,36 +185,44 @@ public class RowGeneratorDialog extends Dialog {
         uiManager.closeRowGenerator(SWT.OK, true);
         rowGenMain.buildExternalData();
         super.okPressed();
-        // see bug 7471
-        List<? extends IConnection> connection = rowGenMain.getRowGenManager().getRowGeneratorComponent()
-                .getOutgoingConnections();
-        IConnection curConnection = null;
-        for (IConnection conn : connection) {
-            IMetadataTable metadataTable = conn.getMetadataTable();
-            if (metadataTable != null) {
-                String tabName = metadataTable.getTableName();
-                if (tabName.equals(metadataTable.getTableName())) {
-                    curConnection = conn;
-                }
-            }
+        // bug 20749
+        String componentName = "";
+        IComponent iComponent = rowGenMain.getRowGenManager().getRowGeneratorComponent().getComponent();
+        if (iComponent != null && iComponent instanceof IComponent) {
+            componentName = iComponent.getName();
         }
-        if (curConnection != null) {
-            Set<String> addedColumns = new HashSet<String>();
-            changedNameColumns = rowGenMain.getGeneratorUI().getChangedNameColumns();
-            for (String changedColName : changedNameColumns.keySet()) {
-                String columnName = changedNameColumns.get(changedColName);
-                if (preOutputColumnSet.contains(columnName)) {
-                    preOutputColumnSet.remove(columnName);
-                    preOutputColumnSet.add(changedColName);
+        if (!"tRowGenerator".equals(componentName)) {
+            // see bug 7471
+            List<? extends IConnection> connection = rowGenMain.getRowGenManager().getRowGeneratorComponent()
+                    .getOutgoingConnections();
+            IConnection curConnection = null;
+            for (IConnection conn : connection) {
+                IMetadataTable metadataTable = conn.getMetadataTable();
+                if (metadataTable != null) {
+                    String tabName = metadataTable.getTableName();
+                    if (tabName.equals(metadataTable.getTableName())) {
+                        curConnection = conn;
+                    }
                 }
             }
-            for (IMetadataColumn curColumn : metadataTable.getListColumns()) {
-                if (!(preOutputColumnSet.contains(curColumn.getLabel()))) {
-                    addedColumns.add(curColumn.getLabel());
+            if (curConnection != null) {
+                Set<String> addedColumns = new HashSet<String>();
+                changedNameColumns = rowGenMain.getGeneratorUI().getChangedNameColumns();
+                for (String changedColName : changedNameColumns.keySet()) {
+                    String columnName = changedNameColumns.get(changedColName);
+                    if (preOutputColumnSet.contains(columnName)) {
+                        preOutputColumnSet.remove(columnName);
+                        preOutputColumnSet.add(changedColName);
+                    }
                 }
+                for (IMetadataColumn curColumn : metadataTable.getListColumns()) {
+                    if (!(preOutputColumnSet.contains(curColumn.getLabel()))) {
+                        addedColumns.add(curColumn.getLabel());
+                    }
+                }
+                CorePlugin.getDefault().getDesignerCoreService()
+                        .updateTraceColumnValues(curConnection, changedNameColumns, addedColumns);
             }
-            CorePlugin.getDefault().getDesignerCoreService().updateTraceColumnValues(curConnection, changedNameColumns,
-                    addedColumns);
         }
     }
 
