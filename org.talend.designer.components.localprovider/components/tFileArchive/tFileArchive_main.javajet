@@ -130,6 +130,7 @@
         for (int i_<%=cid %> = 0; i_<%=cid %> < list_<%=cid %>.size(); i_<%=cid %>++) {
             java.io.BufferedInputStream in_<%=cid %> = new java.io.BufferedInputStream(new java.io.FileInputStream(list_<%=cid %>.get(i_<%=cid %>)));
             org.apache.tools.zip.ZipEntry entry = new org.apache.tools.zip.ZipEntry(list_<%=cid %>.get(i_<%=cid %>).getPath().substring(beginIndex_<%=cid %>));    
+            entry.setTime(list_<%=cid %>.get(i_<%=cid %>).lastModified()); 
             out_<%=cid %>.putNextEntry(entry);   
            
             int readLen_<%=cid %>;
@@ -139,7 +140,6 @@
             }    
             out_<%=cid %>.flush();    
             in_<%=cid %>.close();       
-            entry.setTime(list_<%=cid %>.get(i_<%=cid %>).lastModified()); 
         }        
       }
       
