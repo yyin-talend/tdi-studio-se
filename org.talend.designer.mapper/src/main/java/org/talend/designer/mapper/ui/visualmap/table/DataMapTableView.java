@@ -185,7 +185,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
 
     public static final String REPOSITORY = "Repository";
 
-    public static final String BULIT_IN = "Bulit-In";
+    public static final String BUILT_IN = "Built-In";
 
     private final Point realToolbarSize = new Point(0, 0);
 
@@ -653,12 +653,12 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         return new IBeanPropertyAccessors<GlobalMapEntry, Object>() {
 
             public Object get(GlobalMapEntry bean) {
-                functComboBox.setItems(new String[] { BULIT_IN, REPOSITORY });
+                functComboBox.setItems(new String[] { BUILT_IN, REPOSITORY });
                 IDataMapTable parent = bean.getParent();
                 AbstractInOutTable table = (AbstractInOutTable) parent;
                 if (SCHEMA_TYPE.equals(bean.getName())) {
                     if (bean.getExpression() == null) {
-                        return table.getId() == null ? BULIT_IN : REPOSITORY;
+                        return table.getId() == null ? BUILT_IN : REPOSITORY;
                     }
                     return bean.getExpression();
                 }
@@ -3067,7 +3067,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                     return dialog.getSelectStr();
                 }
             } else if (type == CellValueType.SCHEMA_TYPE) {
-                ListStringValueDialog<String> dialog = new ListStringValueDialog<String>(shell, new String[] { BULIT_IN,
+                ListStringValueDialog<String> dialog = new ListStringValueDialog<String>(shell, new String[] { BUILT_IN,
                         REPOSITORY });
                 if (dialog.open() == IDialogConstants.OK_ID) {
                     return dialog.getSelectStr();
