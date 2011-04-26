@@ -2057,7 +2057,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
 
         if (connectionsProblems.size() > 0) {
-            String message = Messages.getString("Process.errorLoadingConnectionMessage"); //$NON-NLS-1$
+            String message = this.getLabel() + ":" + Messages.getString("Process.errorLoadingConnectionMessage"); //$NON-NLS-1$
             for (int i = 0; i < connectionsProblems.size(); i++) {
                 message += connectionsProblems.get(i);
                 if (i < (connectionsProblems.size() - 1)) {
@@ -2071,7 +2071,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
                     public void run() {
                         MessageBox mb = new MessageBox(new Shell(display), SWT.ICON_ERROR);
-                        mb.setText(Messages.getString("Process.errorLoadingConnectionTitle")); //$NON-NLS-1$
+                        mb.setText(getLabel() + ":" + Messages.getString("Process.errorLoadingConnectionTitle")); //$NON-NLS-1$
                         mb.setMessage(message2);
                         mb.open();
                     }

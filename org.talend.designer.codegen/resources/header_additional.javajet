@@ -2,3 +2,21 @@
 	package="org.talend.designer.codegen.translators"
 	class="Header_additional" 
 %>
+	//This field is defined for "In-GEST"  
+    private org.jboss.soa.esb.message.Message tcMessage = null;  
+      
+    public org.jboss.soa.esb.message.Message getMessage() {    
+         return this.tcMessage;    
+    } 
+    
+    public void setMessage(org.jboss.soa.esb.message.Message message) {    
+    	this.tcMessage = message;    
+    }
+    
+	public int runJobInThales(String[] args) throws Exception {
+		int exitCode = runJobInTOS(args);
+		if ("failure".equals(this.getStatus())) {
+			throw this.exception;
+		}
+		return exitCode;
+	}    

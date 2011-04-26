@@ -15,7 +15,6 @@ package org.talend.designer.core.ui.editor.update;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,15 +35,21 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.JobContext;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -60,6 +65,7 @@ import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.RepositoryWorkUnit;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -219,10 +225,79 @@ public final class UpdateManagerUtils {
                         monitor.setCanceled(false);
                         int size = (results.size() * 2 + 1) * UpdatesConstants.SCALE;
                         monitor.beginTask(Messages.getString("UpdateManagerUtils.Update"), size); //$NON-NLS-1$
-                        // execute
-                        executeUpdates(results, monitor);
-                        // save repository item
-                        saveModifiedItem(results, monitor);
+
+                        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+
+                        IRepositoryViewObject previousObj = null;
+                        for (UpdateResult result : results) {
+                            // several results may keep the same objectId , they are from the same process . So no need
+                            // unload each time.
+                            IRepositoryViewObject currentObj = null;
+                            String currentId = result.getObjectId();
+                            if (result.getJob() == null && previousObj != null && previousObj.getId().equals(currentId)) {
+                                currentObj = previousObj;
+                            } else if (previousObj instanceof RepositoryObject) {
+                                if (!ERepositoryStatus.LOCK_BY_USER
+                                        .equals(factory.getStatus(previousObj.getProperty().getItem()))) {
+                                    ((RepositoryObject) previousObj).unload();
+                                    previousObj = null;
+                                }
+                            }
+
+                            if (result.getJob() == null) {
+                                if (currentObj == null && currentId != null) {
+                                    boolean checkOnlyLastVersion = Boolean.parseBoolean(DesignerPlugin.getDefault()
+                                            .getPreferenceStore().getString("checkOnlyLastVersion")); //$NON-NLS-1$
+                                    try {
+                                        if (checkOnlyLastVersion || result.getObjectVersion() == null) {
+                                            currentObj = factory.getLastVersion(currentId);
+                                        } else {
+                                            List<IRepositoryViewObject> allVersion = factory.getAllVersion(currentId);
+                                            for (IRepositoryViewObject obj : allVersion) {
+                                                if (obj.getVersion().equals(result.getObjectVersion())) {
+                                                    currentObj = obj;
+                                                }
+                                            }
+
+                                        }
+                                    } catch (PersistenceException e) {
+                                        ExceptionHandler.process(e);
+                                    }
+                                }
+                                if (currentObj != null) {
+                                    previousObj = currentObj;
+                                    Item item = currentObj.getProperty().getItem();
+                                    IProcess process = null;
+                                    IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+                                    if (item instanceof ProcessItem) {
+                                        process = designerCoreService.getProcessFromProcessItem((ProcessItem) item);
+                                    } else if (item instanceof JobletProcessItem) {
+                                        process = designerCoreService.getProcessFromJobletProcessItem((JobletProcessItem) item);
+                                    }
+                                    result.setJob(process);
+
+                                    // node stored in result set is not the same instance as in process after we
+                                    // load again the closed process, so need to find the corresponding node in process
+                                    if (process != null && result.getUpdateObject() instanceof INode) {
+                                        INode toUpdate = (INode) result.getUpdateObject();
+                                        for (INode node : process.getGraphicalNodes()) {
+                                            if (node.getLabel().equals(toUpdate.getLabel())) {
+                                                result.setUpdateObject(node);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            // execute
+                            executeUpdate(result, monitor);
+
+                            if (result.getObjectId() != null) {
+                                result.setJob(null);
+                            }
+
+                        }
+
                         // update joblet reference
                         upadateJobletReferenceInfor();
 
@@ -272,10 +347,78 @@ public final class UpdateManagerUtils {
                     monitor.setCanceled(false);
                     int size = (results.size() * 2 + 1) * UpdatesConstants.SCALE;
                     monitor.beginTask(Messages.getString("UpdateManagerUtils.Update"), size); //$NON-NLS-1$
-                    // execute
-                    executeUpdates(results, monitor);
-                    // save repository item
-                    saveModifiedItem(results, monitor);
+
+                    ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+
+                    IRepositoryViewObject previousObj = null;
+                    for (UpdateResult result : results) {
+                        // several results may keep the same objectId , they are from the same process . So no need
+                        // unload each time.
+                        IRepositoryViewObject currentObj = null;
+                        String currentId = result.getObjectId();
+                        if (result.getJob() == null && previousObj != null && previousObj.getId().equals(currentId)) {
+                            currentObj = previousObj;
+                        } else if (previousObj instanceof RepositoryObject) {
+                            if (!ERepositoryStatus.LOCK_BY_USER.equals(factory.getStatus(previousObj.getProperty().getItem()))) {
+                                ((RepositoryObject) previousObj).unload();
+                                previousObj = null;
+                            }
+                        }
+
+                        if (result.getJob() == null) {
+                            if (currentObj == null && currentId != null) {
+                                boolean checkOnlyLastVersion = Boolean.parseBoolean(DesignerPlugin.getDefault()
+                                        .getPreferenceStore().getString("checkOnlyLastVersion")); //$NON-NLS-1$
+                                try {
+                                    if (checkOnlyLastVersion || result.getObjectVersion() == null) {
+                                        currentObj = factory.getLastVersion(currentId);
+                                    } else {
+                                        List<IRepositoryViewObject> allVersion = factory.getAllVersion(currentId);
+                                        for (IRepositoryViewObject obj : allVersion) {
+                                            if (obj.getVersion().equals(result.getObjectVersion())) {
+                                                currentObj = obj;
+                                            }
+                                        }
+
+                                    }
+                                } catch (PersistenceException e) {
+                                    ExceptionHandler.process(e);
+                                }
+                            }
+                            if (currentObj != null) {
+                                previousObj = currentObj;
+                                Item item = currentObj.getProperty().getItem();
+                                IProcess process = null;
+                                IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+                                if (item instanceof ProcessItem) {
+                                    process = designerCoreService.getProcessFromProcessItem((ProcessItem) item);
+                                } else if (item instanceof JobletProcessItem) {
+                                    process = designerCoreService.getProcessFromJobletProcessItem((JobletProcessItem) item);
+                                }
+                                result.setJob(process);
+
+                                // node stored in result set is not the same instance as in process after we
+                                // load again the closed process, so need to find the corresponding node in process
+                                if (process != null && result.getUpdateObject() instanceof INode) {
+                                    INode toUpdate = (INode) result.getUpdateObject();
+                                    for (INode node : process.getGraphicalNodes()) {
+                                        if (node.getLabel().equals(toUpdate.getLabel())) {
+                                            result.setUpdateObject(node);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // execute
+                        executeUpdate(result, monitor);
+
+                        if (result.getObjectId() != null) {
+                            result.setJob(null);
+                        }
+
+                    }
+
                     // update joblet reference
                     upadateJobletReferenceInfor();
 
@@ -356,37 +499,21 @@ public final class UpdateManagerUtils {
         }
     }
 
-    private static void saveModifiedItem(List<UpdateResult> updatesNeededResult, IProgressMonitor monitor) {
-        if (updatesNeededResult == null) {
-            return;
-        }
-        Set<IProcess2> process2List = new HashSet<IProcess2>();
+    private static void saveModifiedItem(UpdateResult updateResult) {
 
-        for (UpdateResult result : updatesNeededResult) {
-            if (result.getItemProcess() instanceof IProcess2) {
-                IProcess2 process2 = (IProcess2) result.getItemProcess();
-                if (process2 != null) { // for item update
-                    process2List.add(process2);
-                }
-            }
-        }
-        if (process2List.isEmpty()) {
-            return;
-        }
-        final int rate = updatesNeededResult.size() / process2List.size();
         // save
         IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-        for (IProcess2 process2 : process2List) {
-            try {
-                SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1 * UpdatesConstants.SCALE,
-                        SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
-                subMonitor.beginTask(UpdatesConstants.EMPTY, 1 * rate);
-                Property property = factory.getUptodateProperty(process2.getProperty());
-                process2.setProperty(property);
 
-                subMonitor.subTask(RepositoryUpdateManager.getUpdateJobInfor(process2.getProperty()));
+        try {
+            if (updateResult.getJob() instanceof IProcess2) {
+                IProcess2 process2 = (IProcess2) updateResult.getJob();
+                Property property = factory.getUptodateProperty(process2.getProperty());
+                if (property != null) {
+                    process2.setProperty(property);
+                }
 
                 ProcessType processType = process2.saveXmlFile();
+
                 Item item = process2.getProperty().getItem();
                 if (item instanceof JobletProcessItem) {
                     ((JobletProcessItem) item).setJobletProcess((JobletProcess) processType);
@@ -394,83 +521,75 @@ public final class UpdateManagerUtils {
                     ((ProcessItem) item).setProcess(processType);
                 }
                 factory.save(item);
-                subMonitor.worked(1);
-                subMonitor.done();
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            } catch (IOException e) {
-                ExceptionHandler.process(e);
             }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
         }
+
     }
 
-    /**
-     * 
-     * ggu Comment method "executeUpdates".
-     * 
-     * can override the is method.
-     */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private static void executeUpdates(List selectResult, IProgressMonitor monitor) {
-
+    private static void executeUpdate(UpdateResult result, IProgressMonitor monitor) {
+        if (result.isReadOnlyProcess()) {
+            return;
+        }
+        // update
         Command command = null;
-        for (UpdateResult result : (List<UpdateResult>) selectResult) {
-            if (result.isReadOnlyProcess()) {
-                continue;
-            }
-            switch (result.getUpdateType()) {
-            case NODE_PROPERTY:
-            case NODE_SCHEMA:
-            case NODE_QUERY:
-            case NODE_SAP_IDOC:
-            case NODE_SAP_FUNCTION:
-            case NODE_VALIDATION_RULE:
-                command = new UpdateNodeParameterCommand(result);
-                break;
-            case JOB_PROPERTY_EXTRA:
-            case JOB_PROPERTY_STATS_LOGS:
-            case JOB_PROPERTY_HEADERFOOTER:
-                command = new UpdateMainParameterCommand(result);
-                break;
-            case CONTEXT:
-                command = executeContextUpdates(result);
-                break;
-            case CONTEXT_GROUP:
-                command = executeContextGroupUpdates(result);
-                break;
-            case JOBLET_RENAMED:
-            case JOBLET_SCHEMA:
-            case RELOAD:
-                command = executeJobletNodesUpdates(result);
-                break;
-            case JOBLET_CONTEXT:
-                command = new Command() { // have update in checking.
-                };
-                break;
-            default:
-                break;
-            }
-            if (command != null) {
-                SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1 * UpdatesConstants.SCALE,
-                        SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
-                subMonitor.beginTask(UpdatesConstants.EMPTY, 1);
-                subMonitor.subTask(getResultTaskInfor(result));
-                //
-                Object job = result.getJob();
-                boolean executed = false;
-                if (job != null && result.getItemProcess() == null) { // not repository item
-                    if (job instanceof IProcess2) {
-                        IProcess2 process = (IProcess2) job;
-                        process.getCommandStack().execute(command);
-                        executed = true;
-                    }
+        switch (result.getUpdateType()) {
+        case NODE_PROPERTY:
+        case NODE_SCHEMA:
+        case NODE_QUERY:
+        case NODE_SAP_IDOC:
+        case NODE_SAP_FUNCTION:
+            command = new UpdateNodeParameterCommand(result);
+            break;
+        case JOB_PROPERTY_EXTRA:
+        case JOB_PROPERTY_STATS_LOGS:
+        case JOB_PROPERTY_HEADERFOOTER:
+            command = new UpdateMainParameterCommand(result);
+            break;
+        case CONTEXT:
+            command = executeContextUpdates(result);
+            break;
+        case CONTEXT_GROUP:
+            command = executeContextGroupUpdates(result);
+            break;
+        case JOBLET_RENAMED:
+        case JOBLET_SCHEMA:
+        case RELOAD:
+            command = executeJobletNodesUpdates(result);
+            break;
+        case JOBLET_CONTEXT:
+            command = new Command() { // have update in checking.
+            };
+            break;
+        default:
+            break;
+        }
+        if (command != null) {
+            SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1 * UpdatesConstants.SCALE,
+                    SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
+            subMonitor.beginTask(UpdatesConstants.EMPTY, 1);
+            subMonitor.subTask(getResultTaskInfor(result));
+            //
+            Object job = result.getJob();
+            boolean executed = false;
+            if (job != null) {
+                if (job instanceof IProcess2) {
+                    IProcess2 process = (IProcess2) job;
+                    process.getCommandStack().execute(command);
+                    executed = true;
+                    // save updated process
+                    saveModifiedItem(result);
                 }
-                if (!executed) {
-                    command.execute();
-                }
-                subMonitor.worked(1);
-                subMonitor.done();
             }
+            if (!executed) {
+                command.execute();
+            }
+
+            subMonitor.worked(1);
+
         }
 
     }

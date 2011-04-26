@@ -79,12 +79,17 @@ public class UpdateContentProvider implements ITreeContentProvider {
                         if (job2 instanceof IProcess2) {
                             job.setJoblet(((IProcess2) job2).disableRunJobView()); // ?? joblet
                             job.setReadOnlyProcess(result.isReadOnlyProcess());
+                            IProcess2 process = (IProcess2) job2;
+                            org.talend.core.model.properties.Item processItem = process.getProperty().getItem();
+                            if (processItem instanceof ProcessItem) {
+                                job.setJoblet(false);
+                            } else if (processItem instanceof JobletProcessItem) {
+                                job.setJoblet(true);
+                            }
                         }
-                        if (job2 instanceof ProcessItem) {
-                            job.setJoblet(false);
-                        } else if (job2 instanceof JobletProcessItem) {
-                            job.setJoblet(true);
-                        }
+
+                    } else {
+                        job.setJoblet(result.isJoblet());
                     }
                     jobs.add(job);
                 }

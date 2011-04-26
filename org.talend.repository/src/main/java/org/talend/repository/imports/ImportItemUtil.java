@@ -372,9 +372,10 @@ public class ImportItemUtil {
 
                 for (ItemRecord itemRecord : itemRecords) {
                     if (!monitor.isCanceled()) {
-                        monitor.subTask(Messages.getString("ImportItemWizardPage.Importing") + itemRecord.getItemName()); //$NON-NLS-1$
                         if (itemRecord.isValid()) {
-                            importItemRecord(manager, itemRecord, overwrite, destinationPath, overwriteDeletedItems, contentType);
+                            importItemRecord(manager, itemRecord, overwrite, destinationPath, overwriteDeletedItems, contentType,
+                                    monitor);
+
                             monitor.worked(1);
                         }
                     }
@@ -402,13 +403,13 @@ public class ImportItemUtil {
                     }
                 }
                 // cannot cancel this part
-                monitor.beginTask(Messages.getString("ImportItemWizardPage.ApplyMigrationTasks"), itemRecords.size() + 1); //$NON-NLS-1$
-                for (ItemRecord itemRecord : itemRecords) {
-                    if (itemRecord.isImported()) {
-                        applyMigrationTasks(itemRecord, monitor);
-                    }
-                    monitor.worked(1);
-                }
+                //                monitor.beginTask(Messages.getString("ImportItemWizardPage.ApplyMigrationTasks"), itemRecords.size() + 1); //$NON-NLS-1$
+                // for (ItemRecord itemRecord : itemRecords) {
+                // if (itemRecord.isImported()) {
+                // applyMigrationTasks(itemRecord, monitor);
+                // }
+                // monitor.worked(1);
+                // }
                 checkDeletedFolders();
                 monitor.done();
                 if (RelationshipItemBuilder.getInstance().isNeedSaveRelations()) {
@@ -426,9 +427,9 @@ public class ImportItemUtil {
 
         monitor.done();
 
-        for (ItemRecord itemRecord : itemRecords) {
-            itemRecord.clear();
-        }
+        // for (ItemRecord itemRecord : itemRecords) {
+        // itemRecord.clear();
+        // }
 
         clearAllData();
         if (hasJoblets) {
@@ -490,7 +491,10 @@ public class ImportItemUtil {
     }
 
     private void importItemRecord(ResourcesManager manager, ItemRecord itemRecord, boolean overwrite, IPath destinationPath,
-            final Set<String> overwriteDeletedItems, String contentType) {
+            final Set<String> overwriteDeletedItems, String contentType, final IProgressMonitor monitor) {
+
+        monitor.subTask(Messages.getString("ImportItemWizardPage.Importing") + itemRecord.getItemName()); //$NON-NLS-1$
+
         resolveItem(manager, itemRecord);
 
         int num = 0;
@@ -682,12 +686,15 @@ public class ImportItemUtil {
                     logError(e);
                 }
 
+                if (tmpItem != null) {
+                    RelationshipItemBuilder.getInstance().addOrUpdateItem(tmpItem);
+                }
+
             } catch (Exception e) {
                 itemRecord.addError(e.getMessage());
                 logError(e);
             }
-            itemRecord.setProperty(null);
-            itemRecord.setExistingItemWithSameId(null);
+
         }
         for (Resource resource : itemRecord.getResourceSet().getResources()) {
             // Due to the system of lazy loading for db repository of ByteArray,
@@ -696,6 +703,8 @@ public class ImportItemUtil {
                 resource.unload();
             }
         }
+
+        applyMigrationTasks(itemRecord, monitor);
 
     }
 
@@ -786,7 +795,15 @@ public class ImportItemUtil {
             // }
             if (item.getProperty().eResource() != null) {
                 ProxyRepositoryFactory.getInstance().unloadResources(item.getProperty());
+                if (item.getParent() != null && item.getParent() instanceof FolderItem) {
+                    ((FolderItem) item.getParent()).getChildren().remove(item);
+                    item.setParent(null);
+                }
             }
+
+            itemRecord.setExistingItemWithSameId(null);
+            itemRecord.clear();
+
         } catch (Exception e) {
             logError(e);
         }
