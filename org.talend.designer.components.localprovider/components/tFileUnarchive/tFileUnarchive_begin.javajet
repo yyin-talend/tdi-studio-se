@@ -269,6 +269,7 @@
 		                  unzippedFile.setLastModified(entry_<%=cid %>.getTime());  
 		            <% }%>
 			 }
+			 target_<%=cid%>.close();
 			 System.out.println();
 			 System.out.println("Process finished"); 
 			}
