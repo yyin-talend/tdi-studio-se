@@ -47,6 +47,7 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.EDIFACTColumn;
+import org.talend.core.model.metadata.builder.connection.EDIFACTConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -362,7 +363,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
         for (IElementParameter par : element.getElementParametersWithChildrens()) {
             if (par.getName().equals("REPOSITORY_PROPERTY_TYPE")) {
-                edifactId = par.getValue().toString() + " - metadata";
+                edifactId = par.getValue().toString();
                 break;
             }
         }
@@ -494,16 +495,18 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         if (edifactId != null) {
                             org.talend.core.model.metadata.builder.connection.Connection connection = MetadataTool
                                     .getConnectionFromRepository(edifactId);
-                            List<org.talend.core.model.metadata.builder.connection.MetadataTable> tables = ConnectionHelper
-                                    .getTablesWithOrders(connection);
-                            for (MetadataColumn col : tables.get(0).getColumns()) {
-                                if (col.getLabel().equals(columnName)) {
-                                    if (col instanceof EDIFACTColumn) {
-                                        EDIFACTColumn edicolumn = (EDIFACTColumn) col;
-                                        String ediXpath = edicolumn.getEDIXpath();
-                                        newLine.put(codes[0], columnName);
-                                        newLine.put(codes[1], ediXpath);
-                                        break;
+                            if (connection != null && connection instanceof EDIFACTConnection) {
+                                List<org.talend.core.model.metadata.builder.connection.MetadataTable> tables = ConnectionHelper
+                                        .getTablesWithOrders(connection);
+                                for (MetadataColumn col : tables.get(0).getColumns()) {
+                                    if (col.getLabel().equals(columnName)) {
+                                        if (col instanceof EDIFACTColumn) {
+                                            EDIFACTColumn edicolumn = (EDIFACTColumn) col;
+                                            String ediXpath = edicolumn.getEDIXpath();
+                                            newLine.put(codes[0], columnName);
+                                            newLine.put(codes[1], ediXpath);
+                                            break;
+                                        }
                                     }
                                 }
                             }
