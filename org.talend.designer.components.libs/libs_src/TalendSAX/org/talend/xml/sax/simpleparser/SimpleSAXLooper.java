@@ -103,8 +103,9 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
 
             if (fileURL != null) {
-                org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(new java.io.InputStreamReader(
-                        new java.io.FileInputStream(fileURL), this.charset));
+                org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(
+                        new java.io.FileInputStream(fileURL));
+                inSource.setEncoding(this.charset);
                 saxParser.parse(inSource, hd);
             } else {
                 org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(is);

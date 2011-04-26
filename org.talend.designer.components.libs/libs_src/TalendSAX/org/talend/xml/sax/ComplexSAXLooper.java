@@ -141,8 +141,9 @@ public class ComplexSAXLooper implements ISAXLooper {
             } else {
                 hd = newHandler2();
             }
-            org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(new java.io.InputStreamReader(
-                    new java.io.FileInputStream(fileURL), this.charset));
+            org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(
+                    new java.io.FileInputStream(fileURL));
+            inSource.setEncoding(this.charset);
             saxParser.parse(inSource, hd);
 
         } catch (ParserConfigurationException e) {
