@@ -58,7 +58,6 @@ import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.utils.ResourceFilenameHelper;
 import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
@@ -66,6 +65,7 @@ import org.talend.repository.documentation.IFileExporterFullPath;
 import org.talend.repository.documentation.TarFileExporterFullPath;
 import org.talend.repository.documentation.ZipFileExporterFullPath;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ERepositoryStatus;
 
 /***/
 public class ExportItemUtil {
@@ -121,14 +121,12 @@ public class ExportItemUtil {
         if (items == null || items.size() == 0) {
             return;
         }
-        // ADDED sgandon 31/03/2010 bug 12229: memory optimisation with handling other version items.
-        // create a copy into a list so that we can add other versions if necessary
-        List<Item> exportedItems = new ArrayList<Item>(items);
         Collection<Item> otherVersions = new ArrayList<Item>();
         // get all versions of the exported items if wanted
         if (exportAllVersions) {
-            otherVersions = getOtherVersions(exportedItems);
-            exportedItems.addAll(otherVersions);
+            otherVersions = getOtherVersions(items);
+            items.addAll(otherVersions);
+            otherVersions.clear();
         }// else keep current items version only
         try {
 
@@ -154,7 +152,7 @@ public class ExportItemUtil {
 
             try {
                 if (exporter != null) {
-                    toExport = exportItems(exportedItems, tmpDirectory, true, progressMonitor);
+                    toExport = exportItems(items, tmpDirectory, true, progressMonitor);
 
                     // in case of .tar.gz we remove extension twice
                     // IPath rootPath = new Path(destination.getName()).removeFileExtension().removeFileExtension();
@@ -164,7 +162,7 @@ public class ExportItemUtil {
                         exporter.write(file.getAbsolutePath(), path.toString());
                     }
                 } else {
-                    toExport = exportItems(exportedItems, destination, true, progressMonitor);
+                    toExport = exportItems(items, destination, true, progressMonitor);
                 }
             } catch (Exception e) {
                 throw e;
@@ -179,24 +177,6 @@ public class ExportItemUtil {
                     exporter.finished();
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
-                }
-            }
-            // ADDED sgandon 31/03/2010 bug 12229: remove the resource associated with other versions items from the
-            // global resource
-            for (Item tobeRemoved : otherVersions) {
-                if (tobeRemoved.getParent() != null && (tobeRemoved.getParent()) instanceof FolderItem) {
-                    // to free memory or parent will still hold the item
-                    ((FolderItem) tobeRemoved.getParent()).getChildren().remove(tobeRemoved);
-                    tobeRemoved.setParent(null);
-                }
-
-                tobeRemoved.setParent(null);
-                Resource eResource = tobeRemoved.eResource();
-                if (eResource.getResourceSet() == null) {
-                    // resourceSet not filled in all case
-                    continue;
-                } else {
-                    eResource.getResourceSet().getResources().remove(eResource);
                 }
             }
         }
@@ -279,15 +259,25 @@ public class ExportItemUtil {
             // store item and its corresponding project
             Map<Item, Project> itemProjectMap = new HashMap<Item, Project>();
 
-            items = sortItemsByProject(items, itemProjectMap);
+            Collection<Item> allItems = new ArrayList<Item>(items);
 
-            for (Item item : items) {
-                project = itemProjectMap.get(item);
+            items.clear();
+
+            allItems = sortItemsByProject(allItems, itemProjectMap);
+
+            itemProjectMap.clear();
+
+            int n = 1;
+            Iterator<Item> iterator = allItems.iterator();
+            while (iterator.hasNext()) {
+                Item item = iterator.next();
+                project = pManager.getProject(item);
 
                 computeProjectFileAndPath(destinationDirectory);
                 if (!toExport.containsKey(projectFile)) {
                     createProjectResource(resourceSet, items);
                     toExport.put(projectFile, projectPath);
+
                 }
                 if (ERepositoryObjectType.getItemType(item).isResourceItem()) {
                     Collection<EObject> copiedObjects = copyObjects(item);
@@ -300,6 +290,9 @@ public class ExportItemUtil {
                     fixItemLockState();
                     toExport.put(propertyFile, propertyPath);
                     toExport.put(itemFile, itemPath);
+
+                    // ProxyRepositoryFactory.getInstance().unloadResources(copiedItem.getProperty());
+                    // copiedItem.setParent(null);
                 }
 
                 if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
@@ -325,10 +318,24 @@ public class ExportItemUtil {
                     }
                 }
                 progressMonitor.worked(1);
+
+                n++;
+
+                dereferenceNotContainedObjects(resourceSet);
+                saveResources(resourceSet);
+
+                if (!ERepositoryStatus.LOCK_BY_USER.equals(ProxyRepositoryFactory.getInstance().getStatus(item))) {
+                    ProxyRepositoryFactory.getInstance().unloadResources(item.getProperty());
+                    if (item.getParent() != null && item.getParent() instanceof FolderItem) {
+                        ((FolderItem) item.getParent()).getChildren().remove(item);
+                        item.setParent(null);
+                    }
+                }
+                iterator.remove();
+
+                cleanResources(resourceSet);
             }
 
-            dereferenceNotContainedObjects(resourceSet);
-            saveResources(resourceSet);
             progressMonitor.worked(1);
 
         } catch (Exception e) {
@@ -466,6 +473,8 @@ public class ExportItemUtil {
         for (Resource resource : resourceSet.getResources()) {
             resource.unload();
         }
+        resourceSet.getResources().clear();
+        resourceSet = new ResourceSetImpl();
     }
 
     @SuppressWarnings("unchecked")

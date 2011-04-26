@@ -924,7 +924,7 @@ class ExportItemWizardPage extends WizardPage {
 
         Map<String, Item> items = new HashMap<String, Item>();
         collectNodes(items, elements);
-        return items.values();
+        return new ArrayList<Item>(items.values());
     }
 
     @SuppressWarnings("unchecked")
