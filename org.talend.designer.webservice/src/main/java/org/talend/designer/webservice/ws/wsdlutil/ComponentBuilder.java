@@ -599,6 +599,9 @@ public class ComponentBuilder {
                         Object obj = xmlSchemaComplexType.getContentModel().getContent();
                         if (obj instanceof XmlSchemaComplexContentExtension) {
                             XmlSchemaComplexContentExtension xscce = (XmlSchemaComplexContentExtension) obj;
+                            if (xscce.getBaseTypeName() != null) {
+                                buileParameterFromTypes(xscce.getBaseTypeName().getLocalPart(), parameter, ioOrRecursion);
+                            }
                             if (xscce != null) {
                                 xmlSchemaParticle = xscce.getParticle();
                             }
