@@ -664,6 +664,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                             }
                                         }
                                     } else if (item != null && UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null
+                                            && ((INode) elem).getComponent().getName().equals("tWebService")
                                             && UpdateRepositoryUtils.getMetadataTablesFromItem(item).size() == 2) {
                                         final List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
                                         if (tables != null && !tables.isEmpty()) {
