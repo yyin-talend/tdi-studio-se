@@ -48,7 +48,9 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -2062,11 +2064,19 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     message += ","; //$NON-NLS-1$
                 }
             }
+            final String message2 = message;
             if (!CommonsPlugin.isHeadless()) {
-                MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR);
-                mb.setText(Messages.getString("Process.errorLoadingConnectionTitle")); //$NON-NLS-1$
-                mb.setMessage(message);
-                mb.open();
+                final Display display = PlatformUI.getWorkbench().getDisplay();
+                display.syncExec(new Runnable() {
+
+                    public void run() {
+                        MessageBox mb = new MessageBox(new Shell(display), SWT.ICON_ERROR);
+                        mb.setText(Messages.getString("Process.errorLoadingConnectionTitle")); //$NON-NLS-1$
+                        mb.setMessage(message2);
+                        mb.open();
+                    }
+                });
+
             } else {
                 IStatus status = new Status(IStatus.WARNING, DesignerPlugin.ID, message);
                 DesignerPlugin.getDefault().getLog().log(status);
