@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.actions.metadata;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -21,8 +20,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
@@ -93,7 +90,6 @@ import org.talend.repository.ui.wizards.metadata.table.files.FileLdifTableWizard
 import org.talend.repository.ui.wizards.metadata.table.files.FilePositionalTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileRegexpTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileXmlTableWizard;
-import orgomg.cwm.objectmodel.core.Package;
 import orgomg.cwm.resource.record.RecordFactory;
 import orgomg.cwm.resource.record.RecordFile;
 
@@ -912,10 +908,10 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
                             if (creation) {
                                 managerConnection.check(metadataConnection);
-                                EList<Package> dp = connection.getDataPackage();
-                                Collection<Package> newDataPackage = EcoreUtil.copyAll(dp);
-                                ConnectionHelper.addPackages(newDataPackage,
-                                        (DatabaseConnection) metadataConnection.getCurrentConnection());
+                                // EList<Package> dp = connection.getDataPackage();
+                                // Collection<Package> newDataPackage = EcoreUtil.copyAll(dp);
+                                // ConnectionHelper.addPackages(newDataPackage,
+                                // (DatabaseConnection) metadataConnection.getCurrentConnection());
 
                                 ExtractMetaDataUtils.metadataCon = metadataConnection;
                                 // when open,set use synonyms false.
