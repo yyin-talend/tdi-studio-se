@@ -40,8 +40,6 @@ import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -65,8 +63,6 @@ public class UseDynamicJobSelectionDialog extends Dialog {
     private IRepositoryView repositoryView = RepositoryView.show();
 
     List<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
-
-    private UseDynamicJobSelectionDialog useDynamicJobDialog;
 
     ERepositoryObjectType type;
 
@@ -142,11 +138,9 @@ public class UseDynamicJobSelectionDialog extends Dialog {
         repositoryNodes.clear();
         for (RepositoryNode repositoryObject : repositoryObjects) {
             repositoryNodes.add(repositoryObject);
-            //
-            ProcessItem processItem = (ProcessItem) repositoryObject.getObject().getProperty().getItem();
-            RelationshipItemBuilder relationshipItemBuilder = new RelationshipItemBuilder();
-            relationshipItemBuilder.addOrUpdateItem(processItem);
         }
+        filteredCheckboxTree.dispose();
+        exportItemsTreeViewer.dispose();
         super.okPressed();
     }
 
