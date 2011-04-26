@@ -37,8 +37,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	XmlMapComponent node = (XmlMapComponent) codeGenArgument.getArgument();
-	IHashableInputConnections ihc = new XmlMapComponent();
-	ihc.getHashConfiguration("FLOW_MAIN");
 	String cid = node.getUniqueName();
 	XmlMapData xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
 	
@@ -125,6 +123,7 @@
 	<%}%>
 	<%=className%> <%=tableName%>HashKey = new <%=className%>();
 	<%=className%> <%=tableName%>Default = new <%=className%>();
+	<%=className%> <%=tableName%> = new <%=className%>();
 	<%
 	}
 	%>
@@ -474,9 +473,7 @@ class TreeNode_API_<%=cid %> {
 	if(inputConnections==null || inputConnections.size() < 1) {
 		return "";
 	}
-//	System.out.println("inputTables size=" + inputTables.size());
-//	System.out.println("outputTables size=" + outputTables.size());
-//	System.out.println("varTables size=" + varTables.size());
+
 	if(inputTables==null || inputTables.size()==0) return "";
 	for(IConnection conn : inputConnections) { // find the input main table
 		InputXmlTree inputTable = inputTables.get(0);
@@ -811,17 +808,19 @@ class GenerateDocument_<%=tableName %> {
     	return this.doc;
     }
 	
-    void generateElements(TreeNode_API_<%=cid %> treeNodeAPI <%
+    void generateElements(TreeNode_API_<%=cid %> treeNodeAPI,boolean isInnerJoin<%
 	for (InputXmlTree inputTable: inputTables) {
-		if(!inputTable.isLookup()){
-	%>, boolean isInnerJoin, <%=inputTable.getName() %>Struct <%=inputTable.getName() %><%
-		}
+	
+	%>, <%=inputTable.getName() %>Struct <%=inputTable.getName() %>
+	<%
+		
 	}
 	for (VarTable var : varTables) {
 			String tableName1 = var.getName();
 	        String instanceVarName = tableName1 + "__" + cid;
 	        String className = instanceVarName + "__Struct";
-	%>, <%=className %> <%=var.getName()%><%
+	%>, <%=className %> <%=var.getName()%>
+	<%
 	}
 	%>) {
 	if(this.treeNodeAPI_<%=cid %>==null) {
@@ -842,7 +841,7 @@ if (needRoot) {
 	}
 	// build group xml tree 
 	boolean isNewElememt = false;
-		if(!isInnerJoin){
+		if(isInnerJoin){
 			<%
 			
 			OutputTreeNode loop = (OutputTreeNode)generateToolByDom4j.getLoopNode(root);
@@ -873,7 +872,7 @@ if (needRoot) {
 	List<IConnection> cumulatedInputConnections = new ArrayList<IConnection>();
 	
 	String comma;
-	for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { // T_TM_B_101
+	for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { 
 	        
 			InputXmlTree currentInputTable = inputTables.get(iInputTable);
 			InputXmlTree nextInputTable = null; 
@@ -893,7 +892,7 @@ if (needRoot) {
 		    }
 		    cumulatedInputConnections.add(currentConection);
     
-		if(nextInputTable != null && nextInputTable.isPersistent()) { // T_TM_B_103
+		if(nextInputTable != null && nextInputTable.isPersistent()) {
 			
 			List<IMetadataColumn> nextColumnsKeys = new ArrayList<IMetadataColumn>();
 	
@@ -969,12 +968,12 @@ if (needRoot) {
 			         		comma = ", ";
 			         	}
 			            int sizeNextColumns = nextColumnsKeys.size();
-			            for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T_TM_B_105
+			            for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { 
 			            	IMetadataColumn column = nextColumnsKeys.get(iColumn);
 			
 			         		%><%=comma%> <%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %><%
 			            
-			            } // T_TM_B_105
+			            } 
 			            
 			         %>) {
 			
@@ -991,13 +990,13 @@ if (needRoot) {
 			        	%>
 			            <%
 			            sizeNextColumns = nextColumnsKeys.size();
-			            for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T_TM_B_104
+			            for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { 
 			            	IMetadataColumn column = nextColumnsKeys.get(iColumn);
 			
 							%>this.exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %> = exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %>;
 							<%
 			            
-			            } // T_TM_B_104
+			            } 
 			            %>
 			        }
 			
@@ -1061,7 +1060,7 @@ if (needRoot) {
 			            int returnValue = 0;
 			            <%
 			            sizeNextColumns = nextColumnsKeys.size();
-			            for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T_TM_B_102
+			            for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { 
 			            	IMetadataColumn column = nextColumnsKeys.get(iColumn);
 			            %>
 			            	returnValue = checkNullsAndCompare(this.exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %>, other.exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %>);
@@ -1069,7 +1068,7 @@ if (needRoot) {
 			                    return returnValue;
 			            	}
 			            <%
-			            } // T_TM_B_102
+			            } 
 			            %>
 			            return returnValue;
 			        }
@@ -1177,7 +1176,7 @@ if (needRoot) {
 			        	%>
 			            <%
 			            sizeNextColumns = nextColumnsKeys.size();
-			            for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T_TM_B_104
+			            for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { 
 			            	IMetadataColumn column = nextColumnsKeys.get(iColumn);
 			
 						  	hasAtLeastOneRead = true;
@@ -1244,7 +1243,7 @@ if (needRoot) {
 			   				}
 						<%
 						 	}
-			            } // T_TM_B_104
+			            } 
 					}
 					if(hasAtLeastOneRead) {
 						%>
@@ -1332,7 +1331,7 @@ if (needRoot) {
 			        	%>
 			            <%
 			            sizeNextColumns = nextColumnsKeys.size();
-			            for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T_TM_B_104
+			            for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { 
 			            	IMetadataColumn column = nextColumnsKeys.get(iColumn);
 			
 							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
@@ -1387,7 +1386,7 @@ if (needRoot) {
 			            	}
 						<%
 							}
-			            } // T_TM_B_104
+			            } 
 					}
 					if(hasAtLeastOneWrite) {
 					%>

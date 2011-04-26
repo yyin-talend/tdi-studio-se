@@ -53,8 +53,9 @@ for (OutputXmlTree table : outputTables) {
 	}
 }
 %>
-<%if(isXpath){%>
 
-} // for input xml loop 
 
-<%}%>
+
+//} // for input xml loop 
+
+

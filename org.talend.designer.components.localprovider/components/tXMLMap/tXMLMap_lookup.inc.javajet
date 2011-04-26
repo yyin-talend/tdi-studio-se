@@ -7,11 +7,11 @@
 			org.talend.core.model.process.AbstractExternalNode
 			org.talend.designer.xmlmap.XmlMapComponent
 			org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData
+			org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection
 			org.eclipse.emf.common.util.EList
 			org.talend.designer.xmlmap.model.emf.xmlmap.VarNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.VarTable
 			org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree
-			org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree
 			org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
 			org.talend.core.model.process.IConnection
@@ -24,22 +24,22 @@
             java.util.ArrayList
             org.talend.core.model.metadata.types.JavaTypesManager
         	org.talend.core.model.metadata.types.JavaType
+        
 "
 skeleton="tXMLMap_java.skeleton"
 %>
 <%
 	EConnectionType connectionType = null;
-	for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) { 
-		InputXmlTree  nextInputTable = inputTables.get(iInputTable);
-		if (nextInputTable != null) { 
+	if (nextInputTable != null && nextInputTable.isLookup()) { 
 			
 		IConnection connection =  hNameToConnection.get(nextInputTable.getName());
 		if(connection == null){
 			continue;
 		}else{
 			connectionType = connection.getLineStyle();
+
 			if(connectionType == EConnectionType.FLOW_REF) {
-			     IMetadataTable metadataTable = connection.getMetadataTable();
+				IMetadataTable metadataTable = connection.getMetadataTable();
 				 String tableName = nextInputTable.getName();
 				
 				 String lookupMode = nextInputTable.getLookupMode();
@@ -54,7 +54,7 @@ skeleton="tXMLMap_java.skeleton"
 		//Starting Lookup Table "<%= nextInputTable %>" 
 		///////////////////////////////////////////////
 		//tHash_Lookup_<%= tableName %>.initGet();
-		<%
+<%
 			String expressionKey = "";
 			List<IMetadataColumn> listColumns = metadataTable.getListColumns();
 			ArrayList<String> keysNames = new ArrayList<String>();
@@ -62,34 +62,37 @@ skeleton="tXMLMap_java.skeleton"
 			ArrayList<String> keysTypes = new ArrayList<String>();
 			EList<TreeNode> externalTreeNodes = nextInputTable.getNodes();
 			for(int j = 0; j < listColumns.size(); j++){
-				
 				IMetadataColumn column = listColumns.get(j);
 			    String columnName = column.getLabel();
 			    TreeNode  externalInputTableEntry = externalTreeNodes.get(j);
 			    if (externalInputTableEntry != null) {
-				     	expressionKey = externalInputTableEntry.getExpression();
-
+			    	  	if(externalInputTableEntry.getOutgoingConnections().size() > 0){
+					    	hasOutgoingConnection = true;
+					    }
+			    	  	expressionKey = externalInputTableEntry.getExpression();
 						if (expressionKey != null && !"".equals(expressionKey.trim())) {
 						    keysNames.add(columnName);
 						    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 						    String resultExpression = null;
 						    if(matchXmlTreeExpr != null){
-						     resultExpression = matchXmlTreeExpr.generateExprCode(expressionKey);
+						    	resultExpression = matchXmlTreeExpr.generateExprCode(expressionKey);
 						    }
-						    
-						    if(resultExpression != null)
+						    if(resultExpression != null && !("").equals(resultExpression)){
 						    	keysValues.add(resultExpression);
-						    else
-						    	 keysValues.add(expressionKey);
-						            
+						    	if(resultExpression.indexOf("/") == -1)
+						    	isXpathFromLookup = false;
+						    }
+						    else {
+						    	keysValues.add(expressionKey);
+						    }
 						    keysTypes.add(typeToGenerate);
 						    boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
 			//			    if(javaPrimitiveKeyColumn) {
 			//			         	hasPrimitiveKey = true;
 						}
-//			       }
-//			}
-			
+
+			    }
+			}
 			String[] aKeysNames = keysNames.toArray(new String[0]);
 			String[] aKeysValues = keysValues.toArray(new String[0]);
 			
@@ -102,65 +105,115 @@ skeleton="tXMLMap_java.skeleton"
 					matchingMode = "ALL_ROWS";
 				}
 			}
-			
-			%>
-			//boolean forceLoop<%= tableName %> = false;
-			//<%= className %> <%= tableName %>ObjectFromLookup = null;
-	<%
-		String xpath = null;
-
-		if(("id_Document").equals(tmpNode.getType())) {
-			xpath = "[" + xpathTypeMap.get(str) + "]";
-		}else{
-			xpath = mainInputName+"."+tmpNode.getName();
-			 isLookup = true;
-		}
+%>
+		<% if(hasOutgoingConnection){ %>
+			boolean forceLoop<%= tableName %> = false;
+			<%= className %> <%= tableName %>ObjectFromLookup = null;
 		
-			if( null != expressionKey){
-			if( xpath.equals(expressionKey.trim())){
-				if(("id_Document").equals(tmpNode.getType())) {
-					
-	%>
-			if(!<%= rejectedDocInnerJoin %>){
-		<%}else {
-		%>
+			
+		<%} %>
+<%
+
+		if( null != expressionKey && !("").equals(expressionKey.trim())){
+			isExpressionEmpty = false;
+			if(!isXpathFromLookup){
+%>
 			if(!<%= rejectedInnerJoin %>){
-	<%}%>
-	
-	<% 
+			<% } %>
+<% 
 			if(aKeysValues.length > 0) { 
 				for (int iKeyName = 0; iKeyName < aKeysNames.length; iKeyName++) {
 				   String typeToGenerate = keysTypes.get(iKeyName);
 				   boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
-	%>
-					<%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = <%=aKeysValues[iKeyName] %>;
-					<%= tableName %>HashKey.hashCodeDirty = true;
-					tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
-	<%	
-				}
+%>
+				<% if (aKeysValues[iKeyName].indexOf("/") != -1){ %>
+				if(!<%= rejectedDocInnerJoin %>){
+				<% } %>  
+				   <%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = <%=aKeysValues[iKeyName] %>;
+				   <%= tableName %>HashKey.hashCodeDirty = true;
+				   tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
+				   if(tHash_Lookup_<%= tableName %>.hasNext()){
+					   <%if(!isXpathFromLookup && aKeysValues[iKeyName].indexOf("/") == -1){%>	   
+							<%= rejectedInnerJoin %> = true;
+						<%} else if(isXpathFromLookup || aKeysValues[iKeyName].indexOf("/") != -1){%>
+							<%= rejectedDocInnerJoin %> = true;
+						<%}%>
+					}
+
+				   <% if (aKeysValues[iKeyName].indexOf("/") != -1){ %>
+				   }
+				   <% } %> 
+<%
+				}// end for aKeysNames
+
+		} 
+%>
+<%if(!isXpathFromLookup){%>
+		if(tHash_Lookup_<%= tableName %>.hasNext()){
+			
+		
+			<%= rejectedInnerJoin %> = true;
 		}
-	%>
-			if(!tHash_Lookup_<%= tableName %>.hasNext()) {
-				<%if(("id_Document").equals(tmpNode.getType())) {
-				%>
+	} // End of RejectInnerJoin/RejectedDocInnerJoin
+<%}%>
+<%
+if(hasOutgoingConnection){
+%>
+					if(!<%= rejectedInnerJoin %>){
+						tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
+						if(tHash_Lookup_<%= tableName %>.hasNext()){
+							forceLoop<%= tableName %> = true;
+						}
+					}else {
+						forceLoop<%= tableName %> = true;
+					}
+				   
+					while (tHash_Lookup_<%=tableName%>.hasNext() || forceLoop<%=tableName%>) { 
+								
+						<%=tableName%>Struct fromLookup_<%=tableName%> = null;
+						<%=tableName%> = <%=tableName%>Default;
 				
-				<%= rejectedDocInnerJoin %> = true;
-				<%} else {
-					%>
-				<%= rejectedInnerJoin %> = true;
-				<%}%>
-			}
-			}
-		//}
-	<%
+						if (!forceLoop<%=tableName%>) { 
+							fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
+							if (fromLookup_<%=tableName%> != null) {
+								<%=tableName%> = fromLookup_<%=tableName%>;
+							}
+						}
+						forceLoop<%=tableName%> = false;
+					}
+<%				
+}
+%>
+<%
+		} // end of expression key checking
+else {
+	
+			isExpressionEmpty = true;
+			if(hasOutgoingConnection){
+%>
+				if(!<%= rejectedInnerJoin %>){
+					tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
+					if(tHash_Lookup_<%= tableName %>.hasNext()){
+						forceLoop<%= tableName %> = true;
+					}
+				}else {
+					forceLoop<%= tableName %> = true;
+				}
+				while (tHash_Lookup_<%=tableName%>.hasNext() || forceLoop<%=tableName%>) { 
+						
+					<%=tableName%>Struct fromLookup_<%=tableName%> = null;
+					<%=tableName%> = <%=tableName%>Default;
+			
+					if (!forceLoop<%=tableName%>) { 
+						fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
+						if (fromLookup_<%=tableName%> != null) {
+							<%=tableName%> = fromLookup_<%=tableName%>;
+						}
+					}
+					forceLoop<%=tableName%> = false;
+<%					}
+				}
 			}
 		}
-	  }
 	}
-	%>
-<%		
-		 }
-	  }
-	}
-  }
 %>
