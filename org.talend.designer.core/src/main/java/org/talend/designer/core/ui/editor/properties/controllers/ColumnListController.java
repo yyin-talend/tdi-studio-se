@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
@@ -341,14 +342,15 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         String[] refColumnListValues = refColumnListValuesTmp.toArray(new String[0]);
 
         boolean isSCDComponent = node.getComponent().getName().endsWith("SCD");//$NON-NLS-1$
+        boolean isEdifactComponent = node.getComponent().getName().equals("tExtractEDIField");
         updateColumnsOnElement(node, columnsChanged, synWidthWithMetadataColumn, prevColumnNameList, curColumnNameList,
                 curColumnValueList, refColumnListNamesTmpWithSourceName, refColumnListValuesTmp, refColumnListNames,
-                refColumnListValues, isSCDComponent);
+                refColumnListValues, isSCDComponent, isEdifactComponent);
 
         for (IConnection connection : node.getOutgoingConnections()) {
             updateColumnsOnElement(connection, columnsChanged, synWidthWithMetadataColumn, prevColumnNameList, curColumnNameList,
                     curColumnValueList, refColumnListNamesTmpWithSourceName, refColumnListValuesTmp, refColumnListNames,
-                    refColumnListValues, isSCDComponent);
+                    refColumnListValues, isSCDComponent, isEdifactComponent);
         }
         synLengthTipFlag = null;
     }
@@ -356,15 +358,16 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     private static void updateColumnsOnElement(IElement element, List<ColumnNameChanged> columnsChanged,
             boolean synWidthWithMetadataColumn, String[] prevColumnNameList, String[] curColumnNameList,
             String[] curColumnValueList, List<String> refColumnListNamesTmpWithSourceName, List<String> refColumnListValuesTmp,
-            String[] refColumnListNames, String[] refColumnListValues, boolean isSCDComponent) {
+            String[] refColumnListNames, String[] refColumnListValues, boolean isSCDComponent, boolean isEdifactComponent) {
         List<String> columnList;
         String[] columnNameList;
-        String edifactId = "";
-
-        for (IElementParameter par : element.getElementParametersWithChildrens()) {
-            if (par.getName().equals("REPOSITORY_PROPERTY_TYPE")) {
-                edifactId = par.getValue().toString();
-                break;
+        String edifactId = null;
+        if (isEdifactComponent) {
+            for (IElementParameter par : element.getElementParametersWithChildrens()) {
+                if (par.getName().equals("REPOSITORY_PROPERTY_TYPE")) {
+                    edifactId = par.getValue().toString();
+                    break;
+                }
             }
         }
         for (int i = 0; i < element.getElementParameters().size(); i++) {
@@ -492,7 +495,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     if (!found) {
                         newLine = TableController.createNewLine(param);
                         newLine.put(codes[0], columnName);
-                        if (edifactId != null) {
+                        if (!StringUtils.isEmpty(edifactId)) {
                             org.talend.core.model.metadata.builder.connection.Connection connection = MetadataTool
                                     .getConnectionFromRepository(edifactId);
                             if (connection != null && connection instanceof EDIFACTConnection) {
