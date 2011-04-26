@@ -46,6 +46,7 @@ skeleton="tXMLMap_java.skeleton"
 	boolean isXpathFromLookup = true;
 	boolean isExpressionEmpty = true;
 	boolean hasOutgoingConnection = false;
+	boolean containDocType = false;
 	int lookupTableCount = 0;
 	List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
 	HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
@@ -113,7 +114,7 @@ skeleton="tXMLMap_java.skeleton"
 			boolean isInnerJoin = true;
 			currentMainNode = tmpNode;
 			if(("id_Document").equals(tmpNode.getType())) { // find the type:document node.
-				
+				containDocType = true;
 				matchXmlTreeExpr = new MatchXmlTreeExpr(tmpNode, cid);
 				//find the loop path
 				FindNodeUtil findUtil = new FindNodeUtil();
@@ -299,7 +300,7 @@ skeleton="tXMLMap_java.skeleton"
 	}
 %>
 }// end var
-<% if(isXpathFromLookup || hasOutgoingConnection ){%>
+<% if((isXpathFromLookup || hasOutgoingConnection) && containDocType ){%>
 }	// end for xml loop
 <% } %>
 
