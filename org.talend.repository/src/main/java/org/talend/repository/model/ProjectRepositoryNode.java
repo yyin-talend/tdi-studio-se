@@ -1096,7 +1096,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 }
 
             } else if (ERepositoryObjectType.GENERATED.name().equalsIgnoreCase(label)) {
-                convertDocumentation(newProject, fromModel, parent, type, recBinNode);
+                if (PluginChecker.isDocumentationPluginLoaded()) {
+                    convertDocumentation(newProject, fromModel, parent, type, recBinNode);
+                }
                 continue;
             } else {
                 if (getMergeRefProject()) {
