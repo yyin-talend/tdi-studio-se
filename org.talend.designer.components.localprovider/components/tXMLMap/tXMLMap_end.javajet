@@ -33,14 +33,14 @@ skeleton="tXMLMap_java.skeleton"
 	String cid = node.getUniqueName();
 	XmlMapData xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
 	boolean isXpath = false;	
-	boolean isPlainNode = false;
+	boolean isPlainNode = true;
 	EList<OutputXmlTree> outputTables = xmlMapData.getOutputTrees();
 	EList<VarTable> varTables = xmlMapData.getVarTables();
 	EList<InputXmlTree> inputTables = xmlMapData.getInputTrees();
 	InputXmlTree mainInputTable = inputTables.get(0);
 	for(TreeNode tmpNode : mainInputTable.getNodes()){
-		if(!tmpNode.getType().equals("id_Document"))
-			isPlainNode = true;
+		if(tmpNode.getType().equals("id_Document"))
+			isPlainNode = false;
 	}
 
 for (OutputXmlTree table : outputTables) {
@@ -54,7 +54,7 @@ for (OutputXmlTree table : outputTables) {
         	if(!("id_Document").equals(tableEntry.getType())){
 
         		String resultExpression = tableEntry.getExpression();
-        		if(resultExpression.indexOf("/") != -1)
+        		if(null !=resultExpression && resultExpression.indexOf("/") != -1)
         		   isXpath = true;        	
 			}
 	}

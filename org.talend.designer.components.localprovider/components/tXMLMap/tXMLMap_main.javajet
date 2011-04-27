@@ -47,7 +47,7 @@ skeleton="tXMLMap_java.skeleton"
 	boolean isExpressionEmpty = true;
 	boolean hasOutgoingConnection = false;
 	boolean containDocType = false;
-	boolean isPlainNode = false;
+	boolean isPlainNode = true;
 	boolean isPlainNodeInLookup = false;
 	int lookupTableCount = 0;
 	List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
@@ -55,6 +55,7 @@ skeleton="tXMLMap_java.skeleton"
 	for(IConnection connection : inputConnections){
 		 hNameToConnection.put(connection.getName(), connection);
 	}
+	
 	
 	HashMap<String, TreeNode> hInputTableNodes = new HashMap<String, TreeNode>();
 	int sizeInputTables = inputTables.size();
@@ -114,10 +115,10 @@ skeleton="tXMLMap_java.skeleton"
 			boolean isInnerJoin = true;
 			currentMainNode = tmpNode;
 
-			if(!tmpNode.getType().equals("id_Document")){
-				isPlainNode = true;
+			if(tmpNode.getType().equals("id_Document")){
+				isPlainNode = false;
 			}
-			
+
 			if(("id_Document").equals(tmpNode.getType())) { // find the type:document node.
 				containDocType = true;
 				matchXmlTreeExpr = new MatchXmlTreeExpr(tmpNode, cid);
@@ -177,7 +178,6 @@ skeleton="tXMLMap_java.skeleton"
 	}// for()
 %>
 
-
 <%
 	//	System.out.println("size of vartable begin:" + varTables.size());
 	for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) { 
@@ -207,6 +207,7 @@ skeleton="tXMLMap_java.skeleton"
     		String resultExpression = "";
     		if(matchXmlTreeExpr != null)
     			resultExpression = matchXmlTreeExpr.generateExprCode(expression);
+			%><%=resultExpression%> <%=var%><%
 			if(resultExpression!=null && !("").equals(resultExpression)){
 %>	
 	<%=varsTableName %>.<%=varNode.getName() %> = <%=resultExpression %>;
@@ -239,7 +240,7 @@ skeleton="tXMLMap_java.skeleton"
 	//output table :'<%=tableName1%>'
 <%	if(!isXpathFromLookup){%>
 
-	if(<%=rejectedInnerJoin %>){
+	if(!<%=rejectedInnerJoin %>){
 
 <%	} %>
 
@@ -308,12 +309,12 @@ skeleton="tXMLMap_java.skeleton"
 <%	if(!isXpathFromLookup){%>
 	<%=rejectedInnerJoin %> = false;
 <% } %>
-<% 
-System.out.println(isPlainNode + " aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-System.out.println(containDocType + " bbbbbbbbbbbbbbbbbbbbbbbbbbb");
-System.out.println(isXpathFromLookup + " cccccccccccccccccccccccccccc");
-System.out.println(hasOutgoingConnection + " ddddddddddddddddddddddddddd");
 
+System.out.println(<%=isPlainNode%> + " isPlainNode");
+System.out.println(<%=containDocType%> + " containDocType");
+System.out.println(<%=isXpathFromLookup %>+ " isXpathFromLookup");
+System.out.println(<%=hasOutgoingConnection%> + " hasOutgoingConnection");
+<%
 if((!isXpathFromLookup || hasOutgoingConnection) && containDocType && isPlainNode){%>
 }	// end for xml loop
 <% } %>

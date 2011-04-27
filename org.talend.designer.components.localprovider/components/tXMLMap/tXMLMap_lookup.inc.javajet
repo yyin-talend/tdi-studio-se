@@ -209,7 +209,6 @@ skeleton="tXMLMap_java.skeleton"
 					tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
 					if(tHash_Lookup_<%= tableName %>.hasNext()){
 						forceLoop<%= tableName %> = true;
-						<%= rejectedInnerJoin %> = true;
 					}
 				}else {
 					forceLoop<%= tableName %> = true;
