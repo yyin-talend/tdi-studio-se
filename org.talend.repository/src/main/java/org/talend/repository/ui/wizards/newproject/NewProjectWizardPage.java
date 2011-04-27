@@ -145,7 +145,7 @@ public class NewProjectWizardPage extends WizardPage {
         languageJavaRadio.setSelection(true);
 
         languagePerlRadio = new Button(radioContainer, SWT.RADIO);
-        languagePerlRadio.setText(ECodeLanguage.PERL.getName());
+        languagePerlRadio.setText(ECodeLanguage.PERL.getName() + " (deprecated)");
 
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
@@ -236,8 +236,8 @@ public class NewProjectWizardPage extends WizardPage {
     protected void checkFieldsValue() {
         // Field Name
         if (nameText.getText().length() == 0) {
-            nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
-                    .getString("NewProjectWizardPage.nameEmpty"), null); //$NON-NLS-1$
+            nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
+                    Messages.getString("NewProjectWizardPage.nameEmpty"), null); //$NON-NLS-1$
         } else {
             // for bug 11214
             if (!nameText.getText().endsWith(" ")) {//$NON-NLS-1$
@@ -245,13 +245,13 @@ public class NewProjectWizardPage extends WizardPage {
             }
             if (!Pattern.matches(RepositoryConstants.PROJECT_PATTERN, nameText.getText())
                     || isKeywords(nameText.getText().toLowerCase()) || "java".equalsIgnoreCase(nameText.getText())) {//$NON-NLS-1$
-                nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
-                        .getString("NewProjectWizardPage.illegalCharacter"), null); //$NON-NLS-1$
+                nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
+                        Messages.getString("NewProjectWizardPage.illegalCharacter"), null); //$NON-NLS-1$
             } else {
 
                 if (isProjectNameAlreadyUsed(nameText.getText())) {
-                    nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
-                            .getString("NewProjectWizardPage.projectNameAlredyExists"), null); //$NON-NLS-1$
+                    nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
+                            Messages.getString("NewProjectWizardPage.projectNameAlredyExists"), null); //$NON-NLS-1$
                 } else {
                     nameStatus = createOkStatus();
 
@@ -260,12 +260,12 @@ public class NewProjectWizardPage extends WizardPage {
 
                     // Combo language
                     if (!languageJavaRadio.getSelection() && !languagePerlRadio.getSelection()) {
-                        languageStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
-                                .getString("NewProjectWizardPage.languageEmpty"), //$NON-NLS-1$
+                        languageStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
+                                Messages.getString("NewProjectWizardPage.languageEmpty"), //$NON-NLS-1$
                                 null);
                     } else if (!languageEnable(getLanguage())) {
-                        languageStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.WARNING, Messages
-                                .getString("NewProjectWizard.error.languageNotSupported", getLanguage()), //$NON-NLS-1$
+                        languageStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.WARNING,
+                                Messages.getString("NewProjectWizard.error.languageNotSupported", getLanguage()), //$NON-NLS-1$
                                 null);
                     } else {
                         languageStatus = createOkStatus();
