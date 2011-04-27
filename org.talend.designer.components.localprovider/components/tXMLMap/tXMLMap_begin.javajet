@@ -845,7 +845,7 @@ if (needRoot) {
 	}
 	// build group xml tree 
 	boolean isNewElememt = false;
-		if(isInnerJoin){
+		if(!isInnerJoin){
 			<%
 			
 			OutputTreeNode loop = (OutputTreeNode)generateToolByDom4j.getLoopNode(root);

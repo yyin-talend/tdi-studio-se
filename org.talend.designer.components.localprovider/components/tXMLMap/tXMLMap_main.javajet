@@ -47,6 +47,8 @@ skeleton="tXMLMap_java.skeleton"
 	boolean isExpressionEmpty = true;
 	boolean hasOutgoingConnection = false;
 	boolean containDocType = false;
+	boolean isPlainNode = false;
+	boolean isPlainNodeInLookup = false;
 	int lookupTableCount = 0;
 	List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
 	HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
@@ -108,11 +110,14 @@ skeleton="tXMLMap_java.skeleton"
 %>
 <%
 	String mainInputName = mainInputTable.getName();
-		
-
-		for(TreeNode tmpNode : mainInputTable.getNodes()){
+	for(TreeNode tmpNode : mainInputTable.getNodes()){
 			boolean isInnerJoin = true;
 			currentMainNode = tmpNode;
+
+			if(!tmpNode.getType().equals("id_Document")){
+				isPlainNode = true;
+			}
+			
 			if(("id_Document").equals(tmpNode.getType())) { // find the type:document node.
 				containDocType = true;
 				matchXmlTreeExpr = new MatchXmlTreeExpr(tmpNode, cid);
@@ -167,7 +172,7 @@ skeleton="tXMLMap_java.skeleton"
 		    treeNodeAPI_<%=cid %>.put("<%=xpathTypeMap.get(str) %>", str_<%=cid %>);
 <%
 		}
-			break;
+		//	break;
 	   }// if(document)
 	}// for()
 %>
@@ -234,7 +239,7 @@ skeleton="tXMLMap_java.skeleton"
 	//output table :'<%=tableName1%>'
 <%	if(!isXpathFromLookup){%>
 
-	if(<%=rejectedDocInnerJoin %>){
+	if(<%=rejectedInnerJoin %>){
 
 <%	} %>
 
@@ -300,7 +305,16 @@ skeleton="tXMLMap_java.skeleton"
 	}
 %>
 }// end var
-<% if((isXpathFromLookup || hasOutgoingConnection) && containDocType ){%>
+<%	if(!isXpathFromLookup){%>
+	<%=rejectedInnerJoin %> = false;
+<% } %>
+<% 
+System.out.println(isPlainNode + " aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+System.out.println(containDocType + " bbbbbbbbbbbbbbbbbbbbbbbbbbb");
+System.out.println(isXpathFromLookup + " cccccccccccccccccccccccccccc");
+System.out.println(hasOutgoingConnection + " ddddddddddddddddddddddddddd");
+
+if((!isXpathFromLookup || hasOutgoingConnection) && containDocType && isPlainNode){%>
 }	// end for xml loop
 <% } %>
 

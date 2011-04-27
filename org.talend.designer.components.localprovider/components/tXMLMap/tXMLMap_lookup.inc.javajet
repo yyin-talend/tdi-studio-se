@@ -91,6 +91,8 @@ skeleton="tXMLMap_java.skeleton"
 						    boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
 			//			    if(javaPrimitiveKeyColumn) {
 			//			         	hasPrimitiveKey = true;
+						}else {
+					  		isXpathFromLookup = false;
 						}
 
 			    }
@@ -131,8 +133,6 @@ skeleton="tXMLMap_java.skeleton"
 %>
 				<%
 				if (aKeysValues[iKeyName].indexOf("/") != -1){ 
-					
-					
 				%>
 				
 				if(!<%= rejectedDocInnerJoin %>){
@@ -140,7 +140,7 @@ skeleton="tXMLMap_java.skeleton"
 				   <%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = <%=aKeysValues[iKeyName] %>;
 				   <%= tableName %>HashKey.hashCodeDirty = true;
 				   tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
-				   if(tHash_Lookup_<%= tableName %>.hasNext()){
+				   if(!tHash_Lookup_<%= tableName %>.hasNext()){
 					   <%if(!isXpathFromLookup && aKeysValues[iKeyName].indexOf("/") == -1){%>	   
 							<%= rejectedInnerJoin %> = true;
 						<%} else if(isXpathFromLookup || aKeysValues[iKeyName].indexOf("/") != -1){%>
@@ -150,14 +150,21 @@ skeleton="tXMLMap_java.skeleton"
 
 				   <% if (aKeysValues[iKeyName].indexOf("/") != -1){ %>
 				   }
-				   <% } %> 
+				   <% } 
+				   %> 
+				  // <%= rejectedDocInnerJoin %> = false;
 <%
 				}// end for aKeysNames
+%>
+<% if(iInputTable != sizeInputTables-1){%>
+		<%= rejectedDocInnerJoin %> = false;
+<%}%>
+<%
 
 		} 
 %>
 	<%if(!isXpathFromLookup){%>
-			if(tHash_Lookup_<%= tableName %>.hasNext()){
+			if(!tHash_Lookup_<%= tableName %>.hasNext()){
 			
 				<%= rejectedInnerJoin %> = true;
 			}
@@ -202,6 +209,7 @@ skeleton="tXMLMap_java.skeleton"
 					tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
 					if(tHash_Lookup_<%= tableName %>.hasNext()){
 						forceLoop<%= tableName %> = true;
+						<%= rejectedInnerJoin %> = true;
 					}
 				}else {
 					forceLoop<%= tableName %> = true;
