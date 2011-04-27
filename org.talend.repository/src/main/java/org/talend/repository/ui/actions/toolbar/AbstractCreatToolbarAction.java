@@ -219,14 +219,6 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
             // createSalesforceModulesAction.setWorkbenchPart(repositoryView);
             // addToMenu(menu, createSalesforceModulesAction, -1);
         }
-        if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_SALESFORCE_MODULE)) {
-            final CreateSalesforceModulesAction createSalesforceSchemaAction = new CreateSalesforceModulesAction(true);
-            createSalesforceSchemaAction.setWorkbenchPart(repositoryView);
-            addToMenu(menu, createSalesforceSchemaAction, -1);
-            // final CreateSalesforceModulesAction createSalesforceModulesAction = new CreateSalesforceModulesAction();
-            // createSalesforceModulesAction.setWorkbenchPart(repositoryView);
-            // addToMenu(menu, createSalesforceModulesAction, -1);
-        }
 
         if (repositoryView.containsRepositoryType(ERepositoryObjectType.METADATA_GENERIC_SCHEMA)) {
             final CreateGenericSchemaAction createGenericSchemaAction = new CreateGenericSchemaAction(true);
