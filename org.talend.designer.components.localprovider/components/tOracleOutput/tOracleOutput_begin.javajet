@@ -51,26 +51,24 @@ boolean useSpatialOptions = ("true").equals(ElementParameterParser.getValue(node
 boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
 boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(node,"__GEOMETRY_COLUMNS__"));
 
-int targetSRID = -1;
-try {
-  	targetSRID = Integer.parseInt(ElementParameterParser.getValue(node,"__SRID__"));
-}
-catch (NumberFormatException e) {
-%>
- 	// TODO unable to parse integer: <%=ElementParameterParser.getValue(node,"__SRID__")%>
- 	// TODO error: <%=e.getMessage()%>
-<%
-	e.printStackTrace();
-}
-%>
-/* initialize feature count */
-int nbFeature_<%=cid %> = 0;
-
-<%
 if (useSpatialOptions) {
-%>
-java.util.Map<String, com.vividsolutions.jts.geom.Envelope> geometryColumnToExtends = new java.util.HashMap<String, com.vividsolutions.jts.geom.Envelope>();
-<%
+	int targetSRID = -1;
+	try {
+	  	targetSRID = Integer.parseInt(ElementParameterParser.getValue(node,"__SRID__"));
+	}
+	catch (NumberFormatException e) {
+	%>
+	 	// TODO unable to parse integer: <%=ElementParameterParser.getValue(node,"__SRID__")%>
+	 	// TODO error: <%=e.getMessage()%>
+	<%
+		e.printStackTrace();
+	}
+	%>
+	/* initialize feature count */
+	int nbFeature_<%=cid %> = 0;
+	
+	java.util.Map<String, com.vividsolutions.jts.geom.Envelope> geometryColumnToExtends = new java.util.HashMap<String, com.vividsolutions.jts.geom.Envelope>();
+	<%
 }
 %>
 

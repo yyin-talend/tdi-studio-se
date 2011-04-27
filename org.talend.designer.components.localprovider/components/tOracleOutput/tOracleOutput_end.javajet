@@ -37,21 +37,20 @@ imports="
 	
 	String indexAccuracy = ElementParameterParser.getValue(node, "__SPATIAL_INDEX_ACCURACY__");
 	
-    int targetSRID = -1;
-    try {
-      	targetSRID = Integer.parseInt(ElementParameterParser.getValue(node,"__SRID__"));
-    }
-    catch (NumberFormatException e) {
-%>
-     	// TODO unable to parse integer: <%=ElementParameterParser.getValue(node,"__SRID__")%>
-     	// TODO error: <%=e.getMessage()%>
-<%
-     	e.printStackTrace();
-    }
-
-
     if (useSpatialOptions && (("DROP_CREATE").equals(tableAction) || ("CREATE").equals(tableAction) 
     		|| ("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction))) {
+
+	    int targetSRID = -1;
+	    try {
+	      	targetSRID = Integer.parseInt(ElementParameterParser.getValue(node,"__SRID__"));
+	    }
+	    catch (NumberFormatException e) {
+			%>
+	     	// TODO unable to parse integer: <%=ElementParameterParser.getValue(node,"__SRID__")%>
+	     	// TODO error: <%=e.getMessage()%>
+			<%
+	     	e.printStackTrace();
+	    }
 		%>
 		java.sql.Statement stmtCreateGeoColumns_<%=cid%> = conn_<%=cid%>.createStatement();
 		

@@ -56,18 +56,6 @@ skeleton="../templates/db_output_bulk.skeleton"
     boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
     boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(node,"__GEOMETRY_COLUMNS__"));
 	
-	int targetSRID = -1;
-	try {
-	  	targetSRID = Integer.parseInt(ElementParameterParser.getValue(node,"__SRID__"));
-	}
-    catch (NumberFormatException e) {
-%>
-     	// TODO unable to parse integer: <%=ElementParameterParser.getValue(node,"__SRID__")%>
-     	// TODO error: <%=e.getMessage()%>
-<%
-	 	e.printStackTrace();
-	}
-
 	//feature:2880
     getManager(dbmsId, cid, node);
     boolean whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
@@ -378,6 +366,18 @@ skeleton="../templates/db_output_bulk.skeleton"
                     	dbType="";
                     }
                     if (typeToGenerate.equals("Geometry")) {
+                    	int targetSRID = -1;
+						try {
+						  	targetSRID = Integer.parseInt(ElementParameterParser.getValue(node,"__SRID__"));
+						}
+					    catch (NumberFormatException e) {
+						%>
+					     	// TODO unable to parse integer: <%=ElementParameterParser.getValue(node,"__SRID__")%>
+					     	// TODO error: <%=e.getMessage()%>
+						<%
+						 	e.printStackTrace();
+						}
+					                    
                     %>
                     	org.talend.sdi.geometry.Geometry tGeometry_<%=cid%> = (org.talend.sdi.geometry.Geometry)<%=incomingConnName%>.<%=column.getName() %>;
 	                    com.vividsolutions.jts.geom.Geometry geometry_<%=cid%> = tGeometry_<%=cid%>._getInternalGeometry();
