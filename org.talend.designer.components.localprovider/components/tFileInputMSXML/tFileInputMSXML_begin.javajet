@@ -49,6 +49,60 @@ boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").eq
 
 List< ? extends IConnection> connections = node.getOutgoingSortedConnections();
 
+class XpathUtil {
+
+	public  String[]  toXpathStringArray(String xpathList) {
+		List<String> result = new java.util.ArrayList<String>();
+		char[] charValues = xpathList.toCharArray();
+		int inx = -1;
+		int beginInx = 0;
+		int leftInx = -1;
+		int rightInx = -1;
+		for (int i = 0; i < charValues.length; i++) {
+			char ch = charValues[i];
+			if ('[' == ch) {
+				leftInx = i;
+			} else if (']' == ch) {
+				rightInx = i;
+			} else if (',' == ch) {
+				inx = i;
+				if ((leftInx != -1 && rightInx != -1 && inx > leftInx && inx > rightInx)
+						|| leftInx == -1
+						|| (leftInx != -1 && xpathList
+								.indexOf("]") == -1)) {
+					result.add(addQuotesIfNotExist(xpathList.substring(beginInx, inx)));
+					beginInx = inx + 1;
+					leftInx = -1;
+					rightInx = -1;
+				}
+			}
+		}
+		if (beginInx != 0) {
+			result.add(addQuotesIfNotExist(xpathList.substring(beginInx)));
+		}
+		if (result.size() > 0) {
+			return result.toArray(new String[0]);
+		} else {
+			return new String[] { xpathList };
+		}
+	}
+	
+	private  String addQuotesIfNotExist(String text) {
+        if (text == null) {
+            return null;
+        }
+        if (!text.startsWith("\"")) {
+            text = "\"" + text;
+        }
+        if (!text.endsWith("\"")) {
+            text = text + "\"";
+        }
+        return text;
+    }
+}
+
+XpathUtil xpathUtil = new XpathUtil();
+
 if(connections!=null && connections.size()>0){
 %>
 int nb_line_<%=cid %> = 0;
@@ -311,7 +365,7 @@ XML_API_<%=cid%> xml_api_<%=cid%> = new XML_API_<%=cid%>();
 			}
 			builderLoops.append(loopPath);
 			
-			String[] arrQuery = strQuery.split(",");
+			String[] arrQuery = xpathUtil.toXpathStringArray(strQuery);
 			builderQueries.append("{");
 			for(int i = 0; i < arrQuery.length; i++){
 				if(arrQuery[i]!=null && !("").equals(arrQuery[i])){
@@ -402,7 +456,7 @@ looper_<%=cid%>.parse(<%=filename %>);
 <%
 				}
 				List<IMetadataColumn> columns = metadata.getListColumns();
-				String[] arrXpath = ((String)mapping.get("MAPPING")).split(",");
+				String[] arrXpath = xpathUtil.toXpathStringArray(((String)mapping.get("MAPPING")));
 				for (int i=0;i < arrXpath.length;i++) {
 					String query = arrXpath[i];
 					if(("Dom4j").equals(mode)){
