@@ -71,6 +71,7 @@ skeleton="tXMLMap_java.skeleton"
 					    }
 			    	  	expressionKey = externalInputTableEntry.getExpression();
 						if (expressionKey != null && !"".equals(expressionKey.trim())) {
+							
 						    keysNames.add(columnName);
 						    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 						    String resultExpression = null;
@@ -78,6 +79,7 @@ skeleton="tXMLMap_java.skeleton"
 						    	resultExpression = matchXmlTreeExpr.generateExprCode(expressionKey);
 						    }
 						    if(resultExpression != null && !("").equals(resultExpression)){
+						    
 						    	keysValues.add(resultExpression);
 						    	if(resultExpression.indexOf("/") == -1)
 						    	isXpathFromLookup = false;
@@ -113,8 +115,9 @@ skeleton="tXMLMap_java.skeleton"
 			
 		<%} %>
 <%
-
-		if( null != expressionKey && !("").equals(expressionKey.trim())){
+		//if( null != expressionKey && !("").equals(expressionKey.trim())){
+			
+		if( null != aKeysValues && aKeysValues.length != 0 ){
 			isExpressionEmpty = false;
 			if(!isXpathFromLookup){
 %>
@@ -126,7 +129,12 @@ skeleton="tXMLMap_java.skeleton"
 				   String typeToGenerate = keysTypes.get(iKeyName);
 				   boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
 %>
-				<% if (aKeysValues[iKeyName].indexOf("/") != -1){ %>
+				<%
+				if (aKeysValues[iKeyName].indexOf("/") != -1){ 
+					
+					
+				%>
+				
 				if(!<%= rejectedDocInnerJoin %>){
 				<% } %>  
 				   <%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = <%=aKeysValues[iKeyName] %>;
@@ -148,17 +156,16 @@ skeleton="tXMLMap_java.skeleton"
 
 		} 
 %>
-<%if(!isXpathFromLookup){%>
-		if(tHash_Lookup_<%= tableName %>.hasNext()){
+	<%if(!isXpathFromLookup){%>
+			if(tHash_Lookup_<%= tableName %>.hasNext()){
 			
-		
-			<%= rejectedInnerJoin %> = true;
-		}
-	} // End of RejectInnerJoin/RejectedDocInnerJoin
-<%}%>
-<%
-if(hasOutgoingConnection){
-%>
+				<%= rejectedInnerJoin %> = true;
+			}
+		} // End of RejectInnerJoin/RejectedDocInnerJoin
+	<%}%>
+	<%
+		if(hasOutgoingConnection){
+	%>
 					if(!<%= rejectedInnerJoin %>){
 						tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
 						if(tHash_Lookup_<%= tableName %>.hasNext()){
@@ -181,16 +188,16 @@ if(hasOutgoingConnection){
 						}
 						forceLoop<%=tableName%> = false;
 					}
-<%				
-}
-%>
-<%
-		} // end of expression key checking
-else {
+	<%				
+	}
+	%>
+	<%
+			} // end of expression key checking
+		else {
 	
 			isExpressionEmpty = true;
 			if(hasOutgoingConnection){
-%>
+	%>
 				if(!<%= rejectedInnerJoin %>){
 					tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
 					if(tHash_Lookup_<%= tableName %>.hasNext()){
