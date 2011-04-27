@@ -10,7 +10,9 @@ imports="
 	org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.metadata.MappingTypeRetriever
     org.talend.core.model.metadata.MetadataTalendType	
-    org.talend.core.model.process.IConnectionCategory	
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnection	
 	java.util.List
 	java.util.ArrayList
 	java.util.Map
@@ -49,7 +51,23 @@ skeleton="../templates/db_output_bulk.skeleton"
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+    
+    boolean useSpatialOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_SPATIAL_OPTIONS__"));
+    boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
+    boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(node,"__GEOMETRY_COLUMNS__"));
 	
+	int targetSRID = -1;
+	try {
+	  	targetSRID = Integer.parseInt(ElementParameterParser.getValue(node,"__SRID__"));
+	}
+    catch (NumberFormatException e) {
+%>
+     	// TODO unable to parse integer: <%=ElementParameterParser.getValue(node,"__SRID__")%>
+     	// TODO error: <%=e.getMessage()%>
+<%
+	 	e.printStackTrace();
+	}
+
 	//feature:2880
     getManager(dbmsId, cid, node);
     boolean whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
@@ -355,18 +373,48 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(column.isInsertable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     String dbType = column.getColumn().getType();
+                    String columnName = column.getName();
                     if( null == dbType) {
                     	dbType="";
                     }
+                    if (typeToGenerate.equals("Geometry")) {
+                    %>
+                    	org.talend.sdi.geometry.Geometry tGeometry_<%=cid%> = (org.talend.sdi.geometry.Geometry)<%=incomingConnName%>.<%=column.getName() %>;
+	                    com.vividsolutions.jts.geom.Geometry geometry_<%=cid%> = tGeometry_<%=cid%>._getInternalGeometry();
+                    	
+                    	com.vividsolutions.jts.geom.Envelope extends_<%=cid%> = geometryColumnToExtends.get("<%=columnName%>");
+                    	if (extends_<%=cid%> == null) {
+                    	    geometryColumnToExtends.put("<%=columnName%>", geometry_<%=cid%>.getEnvelopeInternal());
+                    	}
+                    	else {
+                    	    extends_<%=cid%>.expandToInclude(geometry_<%=cid%>.getEnvelopeInternal()); 
+                    	}
+                    	
+						String wkt_<%=cid%> = geometry_<%=cid%>.toText();
+						oracle.spatial.util.WKT oracle_wkt_<%=cid%> = new oracle.spatial.util.WKT();
+						oracle.spatial.geometry.JGeometry jgeometry_<%=cid%> = oracle_wkt_<%=cid%>.toJGeometry(wkt_<%=cid%>.getBytes());
+
+<%
+						if (targetSRID > 0) {
+%>
+							jgeometry_<%=cid%>.setSRID(<%=targetSRID%>);
+<%
+						}
+%>
+               		pstmt_<%=cid%>.setObject(<%=counter%>, oracle.spatial.geometry.JGeometry.store(jgeometry_<%=cid%>, conn_<%=cid%>));
+                	<%
+                	}
+                    else {
                     %>
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, dbType, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
+                    }
                     if(isEnableDebug) {
                         %>
                         query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
                         <%
-                    }                    
-                    counter++;                        
+                    }
+                    counter++;
                 }
             }
 			if(isDynamic) {

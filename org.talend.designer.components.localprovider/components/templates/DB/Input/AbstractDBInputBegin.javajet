@@ -19,6 +19,7 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	        
+	String type = ElementParameterParser.getValue(node, "__TYPE__");
 	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -152,6 +153,21 @@ imports="
 %>
 		                         <%dbInputBeginUtil.generateStringResultSet(firstConnName, column, currentColNo,trimMethod);%>
 <%
+								} else if("Geometry".equals(typeToGenerate) && type.indexOf("ORACLE") >= 0) {
+%>
+                                    oracle.spatial.geometry.JGeometry jGeom = oracle.spatial.geometry.JGeometry.load((oracle.sql.STRUCT) rs_<%=cid %>.getObject(<%=currentColNo%>));
+                                    oracle.spatial.util.WKT wkt = new oracle.spatial.util.WKT();
+                                    String wktValue = new String(wkt.fromJGeometry(jGeom));
+
+                                    <%=firstConnName%>.<%=column.getLabel()%> = new Geometry(wktValue);
+<%
+                                    String sourceCRS = ElementParameterParser.getValue(node,"__CRS__");
+                                    String forceCRS = ElementParameterParser.getValue(node,"__FORCE_CRS__");
+                                    if (forceCRS.equals("true")) {
+%>
+                                        <%=firstConnName%>.<%=column.getLabel()%>.setEPSG(<%=sourceCRS%>);
+<%
+                                    }
 								} else if(("Bytes").equals(typeToGenerate) && (columnType != null && (("LONG RAW").equals(columnType) || ("RAW").equals(columnType)))) {//oracle
 %>
 									<%dbInputBeginUtil.generateBytesResultSet(firstConnName, column, currentColNo);%>

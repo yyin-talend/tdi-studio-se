@@ -24,8 +24,86 @@ imports="
 	boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+	
+	String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+	
+	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
+	
+	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");	
+	
+	boolean useSpatialOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_SPATIAL_OPTIONS__"));
+	
+	boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
+	
+	String indexAccuracy = ElementParameterParser.getValue(node, "__SPATIAL_INDEX_ACCURACY__");
+	
+    int targetSRID = -1;
+    try {
+      	targetSRID = Integer.parseInt(ElementParameterParser.getValue(node,"__SRID__"));
+    }
+    catch (NumberFormatException e) {
+%>
+     	// TODO unable to parse integer: <%=ElementParameterParser.getValue(node,"__SRID__")%>
+     	// TODO error: <%=e.getMessage()%>
+<%
+     	e.printStackTrace();
+    }
 
 
+    if (useSpatialOptions && (("DROP_CREATE").equals(tableAction) || ("CREATE").equals(tableAction) 
+    		|| ("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction))) {
+		%>
+		java.sql.Statement stmtCreateGeoColumns_<%=cid%> = conn_<%=cid%>.createStatement();
+		
+		// Delete geometry columns entry if already exists.
+		String deleteGeometryColumns_<%=cid %> = "DELETE FROM user_sdo_geom_metadata "
+												+ "WHERE TABLE_NAME='" + <%=tableName.toUpperCase(java.util.Locale.US) %> + "'";
+		stmtCreateGeoColumns_<%=cid%>.execute(deleteGeometryColumns_<%=cid %>);
+
+		for (String column: geometryColumnToExtends.keySet()) {
+		    com.vividsolutions.jts.geom.Envelope extend = geometryColumnToExtends.get(column);
+		    
+			// Create new entry in geometry columns table
+	        String insertGeometryColumns_<%=cid %> = "INSERT INTO user_sdo_geom_metadata (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID) VALUES ('" 
+	        										+ <%=tableName.toUpperCase(java.util.Locale.US) %> + "','" + column.toUpperCase(java.util.Locale.US) + "', "
+	        										+ "MDSYS.SDO_DIM_ARRAY(MDSYS.SDO_DIM_ELEMENT('x', " + extend.getMinX() + ", " + extend.getMaxX() + ", <%=indexAccuracy %>), "
+	        										+ "MDSYS.SDO_DIM_ELEMENT('y', " + extend.getMinY() + ", " + extend.getMaxY() + ", <%=indexAccuracy %>)), "
+	        										+ <%=targetSRID < 0 ? "\"NULL\"" : targetSRID %> +")";
+	    	stmtCreateGeoColumns_<%=cid%>.execute(insertGeometryColumns_<%=cid %>);
+    	}
+        
+        stmtCreateGeoColumns_<%=cid%>.close();
+		<%
+	}
+	if (createSpatialIndex && useSpatialOptions) {
+		%>
+		for (String geometryColumnName: geometryColumnToExtends.keySet()) {
+
+			String index_name = "spatialidx_"+<%=tableName %>+"_" + geometryColumnName;
+			if (index_name.length() > 30) {
+				index_name = index_name.substring(0, 29);
+			}
+			
+	    	java.sql.Statement stmtCreateIndex_<%=cid%> = conn_<%=cid%>.createStatement();
+			// Drop spatial index if exists
+			String dropIndex_<%=cid %> = "DROP INDEX "+index_name;
+	        try {
+				stmtCreateIndex_<%=cid%>.execute(dropIndex_<%=cid %>);
+			}
+			catch (java.sql.SQLException e) {
+			}
+			
+			// Create spatial index using GIST on geometry columns
+			String createIndex_<%=cid %> = "CREATE INDEX "+index_name + " " 
+						+ "ON " + <%=tableName %> + "(" + geometryColumnName + ") "
+						+ "INDEXTYPE IS MDSYS.SPATIAL_INDEX";
+	        stmtCreateIndex_<%=cid%>.execute(createIndex_<%=cid %>);
+	        stmtCreateIndex_<%=cid%>.close();
+	    }
+		<%
+	}
+    
+	
     String rejectConnName = null;
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
     if(rejectConns != null && rejectConns.size() > 0) {

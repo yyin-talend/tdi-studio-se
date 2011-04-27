@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
@@ -66,6 +67,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -1535,6 +1537,156 @@ public class EmfComponent extends AbstractComponent {
             createSpecificParametersFromType(listParam, xmlParam, node, type, param);
             listParam.add(param);
         }
+
+        // TODO to remove later, need to find another way to do this (for feature 18686)
+        // adds manually all definitions to avoid to modify the component
+        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleInput".equals(name)) {
+            if (!advanced) {
+                // <PARAMETER NAME="FORCE_CRS" FIELD="CHECK" REQUIRED="true"
+                // NUM_ROW="110">
+                // <DEFAULT>false</DEFAULT>
+                // </PARAMETER>
+                ElementParameter newParam = new ElementParameter(node);
+                newParam.setName("FORCE_CRS"); //$NON-NLS-1$
+                newParam.setDisplayName("Force coordinate reference system"); //$NON-NLS-1$
+                newParam.setFieldType(EParameterFieldType.CHECK);
+                newParam.setRequired(true);
+                newParam.setNumRow(110);
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setValue(new Boolean(false));
+                listParam.add(newParam);
+
+                // <PARAMETER NAME="CRS" FIELD="TEXT" NUM_ROW="110" REQUIRED="true"
+                // SHOW_IF="FORCE_CRS == 'true'">
+                // <DEFAULT>"EPSG:4326"</DEFAULT>
+                // </PARAMETER>
+                newParam = new ElementParameter(node);
+                newParam.setName("CRS"); //$NON-NLS-1$
+                newParam.setDisplayName("EPSG"); //$NON-NLS-1$
+                newParam.setFieldType(EParameterFieldType.TEXT);
+                newParam.setRequired(true);
+                newParam.setNumRow(110);
+                newParam.setShowIf("FORCE_CRS == 'true'");
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setValue("\"EPSG:4326\"");
+                listParam.add(newParam);
+
+                // <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW="false" NUM_ROW="2">
+                // <DEFAULT>import org.talend.sdi.geometry.Geometry;</DEFAULT>
+                // </PARAMETER>
+                newParam = new ElementParameter(node);
+                newParam.setName("IMPORT"); //$NON-NLS-1$
+                newParam.setDisplayName("Imports"); //$NON-NLS-1$
+                newParam.setFieldType(EParameterFieldType.MEMO_IMPORT);
+                newParam.setRequired(true);
+                newParam.setNumRow(2);
+                newParam.setShow(false);
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setValue("import org.talend.sdi.geometry.Geometry;");
+                listParam.add(newParam);
+            }
+        }
+
+        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleOutput".equals(name)) {
+            if (!advanced) {
+                // <PARAMETER
+                // NAME="USE_SPATIAL_OPTIONS"
+                // FIELD="CHECK"
+                // NUM_ROW="200"
+                // SHOW_IF="(TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or
+                // (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE')"
+                // >
+                // <DEFAULT>false</DEFAULT>
+                // </PARAMETER>
+                ElementParameter newParam = new ElementParameter(node);
+                newParam.setName("USE_SPATIAL_OPTIONS"); //$NON-NLS-1$
+                newParam.setDisplayName("Use spatial options"); //$NON-NLS-1$
+                newParam.setFieldType(EParameterFieldType.CHECK);
+                newParam.setRequired(true);
+                newParam.setShowIf("(TABLE_ACTION=='CREATE') or (TABLE_ACTION=='DROP_CREATE') or"
+                        + " (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE')");
+                newParam.setNumRow(200);
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setValue(new Boolean(false));
+                listParam.add(newParam);
+
+                // <PARAMETER
+                // NAME="SPATIAL_INDEX"
+                // FIELD="CHECK"
+                // SHOW_IF="(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or
+                // (TABLE_ACTION=='DROP_CREATE') or
+                // (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))"
+                // NUM_ROW="200"
+                // >
+                // <DEFAULT>false</DEFAULT>
+                // </PARAMETER>
+                newParam = new ElementParameter(node);
+                newParam.setName("SPATIAL_INDEX"); //$NON-NLS-1$
+                newParam.setDisplayName("Create Spatial index"); //$NON-NLS-1$
+                newParam.setFieldType(EParameterFieldType.CHECK);
+                newParam.setRequired(true);
+                newParam.setShowIf("(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or "
+                        + "(TABLE_ACTION=='DROP_CREATE') or (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or"
+                        + " (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))");
+                newParam.setNumRow(200);
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setValue(new Boolean(false));
+                listParam.add(newParam);
+
+                // <PARAMETER
+                // NAME="SPATIAL_INDEX_ACCURACY"
+                // FIELD="TEXT"
+                // REQUIRED="true"
+                // SHOW_IF="(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or
+                // (TABLE_ACTION=='DROP_CREATE') or
+                // (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))"
+                // NUM_ROW="201"
+                // >
+                // <DEFAULT>0.001</DEFAULT>
+                // </PARAMETER>
+                newParam = new ElementParameter(node);
+                newParam.setName("SPATIAL_INDEX_ACCURACY"); //$NON-NLS-1$
+                newParam.setDisplayName("Index accuracy"); //$NON-NLS-1$
+                newParam.setFieldType(EParameterFieldType.TEXT);
+                newParam.setRequired(true);
+                newParam.setShowIf("(USE_SPATIAL_OPTIONS == 'true') and ((TABLE_ACTION=='CREATE') or "
+                        + "(TABLE_ACTION=='DROP_CREATE') or (TABLE_ACTION=='CREATE_IF_NOT_EXISTS') or"
+                        + " (TABLE_ACTION=='DROP_IF_EXISTS_AND_CREATE'))");
+                newParam.setNumRow(201);
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setValue("0.001");
+                listParam.add(newParam);
+
+                // <PARAMETER NAME="SRID" FIELD="TEXT" NUM_ROW="208" REQUIRED="true"
+                // SHOW_IF="USE_SPATIAL_OPTIONS == 'true'">
+                // <DEFAULT>-1</DEFAULT>
+                // </PARAMETER>
+                newParam = new ElementParameter(node);
+                newParam.setName("SRID"); //$NON-NLS-1$
+                newParam.setDisplayName("Oracle Spatial Reference System Identifier"); //$NON-NLS-1$
+                newParam.setFieldType(EParameterFieldType.TEXT);
+                newParam.setRequired(true);
+                newParam.setShowIf("USE_SPATIAL_OPTIONS == 'true'");
+                newParam.setNumRow(208);
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setValue("-1");
+                listParam.add(newParam);
+
+                // <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW="false" NUM_ROW="2">
+                // <DEFAULT>import org.talend.sdi.geometry.Geometry;</DEFAULT>
+                // </PARAMETER>
+                newParam = new ElementParameter(node);
+                newParam.setName("IMPORT"); //$NON-NLS-1$
+                newParam.setDisplayName("Imports"); //$NON-NLS-1$
+                newParam.setFieldType(EParameterFieldType.MEMO_IMPORT);
+                newParam.setRequired(true);
+                newParam.setNumRow(2);
+                newParam.setShow(false);
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setValue("import org.talend.sdi.geometry.Geometry;");
+                listParam.add(newParam);
+            }
+        }
     }
 
     /**
@@ -2502,6 +2654,63 @@ public class EmfComponent extends AbstractComponent {
                 }
             }
         }
+
+        // TODO to remove later, need to find another way to do this (for feature 18686)
+        // adds manually all definitions to avoid to modify the component
+        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleInput".equals(name)) {
+            // <IMPORT NAME="oracle-sdoapi" MODULE="sdoapi.jar" REQUIRED="true" />
+            ModuleNeeded componentImportNeeds = new ModuleNeeded("oracle-sdoapi", "sdoapi.jar",
+                    Messages.getString("modules.required"), true, new ArrayList<String>());
+            componentImportNeedsList.add(componentImportNeeds);
+
+            // <IMPORT NAME="oracle-sdoutil" MODULE="sdoutil.jar" REQUIRED="true" />
+            componentImportNeeds = new ModuleNeeded("oracle-sdoutil", "sdoutil.jar", Messages.getString("modules.required"),
+                    true, new ArrayList<String>());
+            componentImportNeedsList.add(componentImportNeeds);
+
+            // <IMPORT NAME="jts-1.9" MODULE="jts-1.9.jar" REQUIRED="true" />
+            componentImportNeeds = new ModuleNeeded("jts-1.9", "jts-1.9.jar", Messages.getString("modules.required"), true,
+                    new ArrayList<String>());
+            componentImportNeedsList.add(componentImportNeeds);
+
+            // <IMPORT NAME="org.talend.sdi" MODULE="org.talend.sdi.jar" REQUIRED="true" />
+            componentImportNeeds = new ModuleNeeded("org.talend.sdi", "org.talend.sdi.jar",
+                    Messages.getString("modules.required"), true, new ArrayList<String>());
+            componentImportNeedsList.add(componentImportNeeds);
+
+            // <IMPORT NAME="Java-DOM4J" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
+            componentImportNeeds = new ModuleNeeded("Java-DOM4J", "dom4j-1.6.1.jar", Messages.getString("modules.required"),
+                    true, new ArrayList<String>());
+            componentImportNeedsList.add(componentImportNeeds);
+
+            // <IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" REQUIRED="true" />
+            componentImportNeeds = new ModuleNeeded("Java-JAXEN", "jaxen-1.1.1.jar", Messages.getString("modules.required"),
+                    true, new ArrayList<String>());
+            componentImportNeedsList.add(componentImportNeeds);
+        }
+
+        if (ArrayUtils.contains(JavaTypesManager.getJavaTypesLabels(), "Geometry") && "tOracleOutput".equals(name)) {
+            // <IMPORT NAME="oracle-sdoapi" MODULE="sdoapi.jar" REQUIRED="true" />
+            ModuleNeeded componentImportNeeds = new ModuleNeeded("oracle-sdoapi", "sdoapi.jar",
+                    Messages.getString("modules.required"), true, new ArrayList<String>());
+            componentImportNeedsList.add(componentImportNeeds);
+
+            // <IMPORT NAME="oracle-sdoutil" MODULE="sdoutil.jar" REQUIRED="true" />
+            componentImportNeeds = new ModuleNeeded("oracle-sdoutil", "sdoutil.jar", Messages.getString("modules.required"),
+                    true, new ArrayList<String>());
+            componentImportNeedsList.add(componentImportNeeds);
+
+            // <IMPORT NAME="Java-DOM4J" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
+            componentImportNeeds = new ModuleNeeded("Java-DOM4J", "dom4j-1.6.1.jar", Messages.getString("modules.required"),
+                    true, new ArrayList<String>());
+            componentImportNeedsList.add(componentImportNeeds);
+
+            // <IMPORT NAME="Java-JAXEN" MODULE="jaxen-1.1.1.jar" REQUIRED="true" />
+            componentImportNeeds = new ModuleNeeded("Java-JAXEN", "jaxen-1.1.1.jar", Messages.getString("modules.required"),
+                    true, new ArrayList<String>());
+            componentImportNeedsList.add(componentImportNeeds);
+        }
+
         return componentImportNeedsList;
     }
 

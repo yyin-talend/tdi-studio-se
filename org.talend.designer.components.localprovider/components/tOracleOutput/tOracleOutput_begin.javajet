@@ -3,6 +3,8 @@ imports="
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.INode
 		org.talend.core.model.process.ElementParameterParser  
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.EConnectionType
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.metadata.types.JavaTypesManager
@@ -44,7 +46,34 @@ boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__
 String useBatchSize = ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__");
 String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+
+boolean useSpatialOptions = ("true").equals(ElementParameterParser.getValue(node,"__USE_SPATIAL_OPTIONS__"));
+boolean createSpatialIndex = ("true").equals(ElementParameterParser.getValue(node,"__SPATIAL_INDEX__"));
+boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(node,"__GEOMETRY_COLUMNS__"));
+
+int targetSRID = -1;
+try {
+  	targetSRID = Integer.parseInt(ElementParameterParser.getValue(node,"__SRID__"));
+}
+catch (NumberFormatException e) {
 %>
+ 	// TODO unable to parse integer: <%=ElementParameterParser.getValue(node,"__SRID__")%>
+ 	// TODO error: <%=e.getMessage()%>
+<%
+	e.printStackTrace();
+}
+%>
+/* initialize feature count */
+int nbFeature_<%=cid %> = 0;
+
+<%
+if (useSpatialOptions) {
+%>
+java.util.Map<String, com.vividsolutions.jts.geom.Envelope> geometryColumnToExtends = new java.util.HashMap<String, com.vividsolutions.jts.geom.Envelope>();
+<%
+}
+%>
+
 
 <%
 getManager(dbmsId, cid, node);
@@ -368,6 +397,14 @@ if(columnList != null && columnList.size()>0) {
         StringBuffer query_<%=cid%> = null;
 	   <%@ include file="../templates/DB/Output/splitSQLForAllDBInBegin.javajet" %>
 	   <%
+    }
+    if((createGeometryColumns || createSpatialIndex) && useSpatialOptions) {
+    	%>
+    	// Initialize SRID
+    	int SRID_<%=cid %> = 0;
+    	int dimension_<%=cid %> = 0; 
+    	boolean firstGeometry_<%=cid %> = true;
+    	<%
     }
 }
 %>

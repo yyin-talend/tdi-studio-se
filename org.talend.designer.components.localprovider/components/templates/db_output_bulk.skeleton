@@ -141,10 +141,16 @@ public class CLASS {
         }
         public String getSqlStmt() {
 			if(this.getColumn()!=null) {
-				if (this.getColumn().getTalendType().equals("id_Geometry"))
-				   return "GeomFromText(?, ?)";    // For PostGIS
-				else
+				if (this.getColumn().getTalendType().equals("id_Geometry")) {
+				    
+                    if ("MDSYS.SDO_GEOMETRY".equalsIgnoreCase(this.getColumn().getType())) {
+                        return "?";
+                    } else {
+	    			    return "GeomFromText(?, ?)";    // For PostGIS
+                    }
+                } else {
 					return this.sqlStmt;
+				}
 			} else {
 				return this.sqlStmt;
 			}
