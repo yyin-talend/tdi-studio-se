@@ -72,6 +72,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -658,7 +659,6 @@ class ExportItemWizardPage extends WizardPage {
                     public void run() {
                         IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
                         RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
-                        int i = 0;
                         for (Item item : selectedItems) {
                             if (item == null) {
                                 continue;
@@ -666,8 +666,13 @@ class ExportItemWizardPage extends WizardPage {
                             List<RelationshipItemBuilder.Relation> relations = builder.getItemsRelatedTo(item.getProperty()
                                     .getId(), item.getProperty().getVersion(), RelationshipItemBuilder.JOB_RELATION);
                             for (RelationshipItemBuilder.Relation relation : relations) {
+                                IRepositoryViewObject obj = null;
                                 try {
-                                    IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
+                                    if (RelationshipItemBuilder.ROUTINE_RELATION.equals(relation.getType())) {
+                                        obj = RoutinesUtil.getRoutineFromName(relation.getId());
+                                    } else {
+                                        obj = factory.getLastVersion(relation.getId());
+                                    }
                                     if (obj != null) {
                                         RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(obj, false);
                                         if (repositoryNode != null) {
