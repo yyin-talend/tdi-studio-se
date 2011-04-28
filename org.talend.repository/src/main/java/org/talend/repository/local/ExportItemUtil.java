@@ -267,7 +267,6 @@ public class ExportItemUtil {
 
             itemProjectMap.clear();
 
-            int n = 1;
             Iterator<Item> iterator = allItems.iterator();
             while (iterator.hasNext()) {
                 Item item = iterator.next();
@@ -275,7 +274,7 @@ public class ExportItemUtil {
 
                 computeProjectFileAndPath(destinationDirectory);
                 if (!toExport.containsKey(projectFile)) {
-                    createProjectResource(resourceSet, items);
+                    createProjectResource(resourceSet, allItems);
                     toExport.put(projectFile, projectPath);
 
                 }
@@ -318,8 +317,6 @@ public class ExportItemUtil {
                     }
                 }
                 progressMonitor.worked(1);
-
-                n++;
 
                 dereferenceNotContainedObjects(resourceSet);
                 saveResources(resourceSet);
