@@ -302,16 +302,16 @@ for(OutputTreeNode tableEntry : tableEntries) {
 <%
 		} else if(isInnerJoinReject && !isOutputReject) {
 %>
-				if(<%=rejectedInnerJoin %>){
+				if(<%=rejectedInnerJoin %> && !alreadyMapped_<%=cid%>){
 					rejected_<%=cid%> = false;
 <%
 		} else if(!isInnerJoinReject && isOutputReject) {
 %>
-				if(rejected_<%=cid%>){
+				if(!<%=rejectedInnerJoin%> && rejected_<%=cid%> && !alreadyMapped_<%=cid%>){
 <%
 		} else if(isInnerJoinReject && isOutputReject) {
 %>
-				if(<%=rejectedInnerJoin %> || rejected_<%=cid%>){
+				if((<%=rejectedInnerJoin %> || rejected_<%=cid%>) && !alreadyMapped_<%=cid%>){
 <%
 		}
 %>
