@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:32:42">
+    <title>tHDFSPut</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tHDFSGet_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tHDFSPut_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3739522"> </a><h2 class="pHeading1">
+tHDFSPut
+</h2>
+<a name="wp3739534"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tHDFSPut_icon.png" id="wp3739527" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3739544"> </a><h2 class="pHeading2">
+tHDFSPut properties
+</h2>
+<a name="wp3739803"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3739556table3739548">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3739556"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3739559"> </a><div class="pCellBody">
+File/Hadoop
+</div>
+</td>
+    <td><a name="wp3739570"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icon.png" id="wp3739566" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3739578"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3739585"> </a><div class="pCellBody">
+<b class="cBold">tHDFSPut </b>load data into Hadoop file system.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3739596"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3739603"> </a><div class="pCellBody">
+<b class="cBold">tHDFSPut </b>connects to Hadoop distributed file system to load large-scale files into it with optimized performance.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3739614"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3739621"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host</em>
+</div>
+</td>
+    <td><a name="wp3739624"> </a><div class="pCellBody">
+IP address of the Hadoop distributed file system server.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3739628"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3739635"> </a><div class="pCellHeading">
+<em class="cEmphasis">Port</em>
+</div>
+</td>
+    <td><a name="wp3739638"> </a><div class="pCellBody">
+Listening port number of HDFS server.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3739642"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3739649"> </a><div class="pCellHeading">
+<em class="cEmphasis">User name</em>
+</div>
+</td>
+    <td><a name="wp3739652"> </a><div class="pCellBody">
+User authentication name of HDFS
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3739656"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3739663"> </a><div class="pCellHeading">
+<em class="cEmphasis">Group</em>
+</div>
+</td>
+    <td><a name="wp3739666"> </a><div class="pCellBody">
+Membership including the authentication user under which the HDFS instances were started.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3739670"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3739677"> </a><div class="pCellHeading">
+<em class="cEmphasis">HDFS directory</em>
+</div>
+</td>
+    <td><a name="wp3739680"> </a><div class="pCellBody">
+Location to store the files in HDFS.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3739684"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3739691"> </a><div class="pCellHeading">
+<em class="cEmphasis">Local directory</em>
+</div>
+</td>
+    <td><a name="wp3739694"> </a><div class="pCellBody">
+Local directory where are stored the files to be loaded into HDFS.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3739698"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3739705"> </a><div class="pCellHeading">
+<em class="cEmphasis">Overwrite file</em>
+</div>
+</td>
+    <td><a name="wp3739708"> </a><div class="pCellBody">
+Options to overwrite or not the existing file with the new one.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3739712"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3739719"> </a><div class="pCellHeading">
+<em class="cEmphasis">Files</em>
+</div>
+</td>
+    <td><a name="wp3739726"> </a><div class="pCellBody">
+In the <b class="cBold">Files</b> area, the fields to be completed are:<br />- <b class="cBold">File mask</b>: type in the file name to be selected from the local directory. Regular expression is available.<br />- <b class="cBold">New name</b>: give a new name to the loaded file.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3739738"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3739745"> </a><div class="pCellHeading">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp3739748"> </a><div class="pCellBody">
+This check box is selected by default. Clear the check box to skip the row on error and complete the process for error-free rows.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3739752"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3739758"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3739762"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3739770"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3739773"> </a><div class="pCellBody">
+This component combines HDFS connection and data extraction, thus usually used as a single-component subjob but also possible as output or end object.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3739784"> </a><div class="pCellBody">
+<b class="cBold">Limitations</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3739795"> </a><div class="pCellBody">
+To run <b class="cBold">tHDFSGet</b> and <b class="cBold">tHDFSPut</b>, version 1.6+ of JRE is required.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tHDFSGet_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tHDFSPut_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

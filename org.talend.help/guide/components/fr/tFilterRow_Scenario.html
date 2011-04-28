@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:09:03">
+    <title>Scénario&#160;: Filtrer une liste de noms et faire une recherche dans la liste</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFilterRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tJoin_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2814463"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2814468"> </a><h2 class="pHeading2">
+Scénario&#160;: Filtrer une liste de noms et faire une recherche dans la liste
+</h2>
+<a name="wp2814473"> </a><p class="pIndented1">
+Le scénario suivant est un Job Java qui utilise une condition simple et une expression régulière pour filtrer une liste d&#39;enregistrements. Le Job écrit deux tables de sortie&#160;: la première liste tous les enregistrements de langue italienne dont les prénoms contiennent moins de six caractères et la seconde liste tous les enregistrements rejetés. Un message d&#39;erreur s&#39;affichera dans la table pour chaque enregistrement rejeté, afin d&#39;expliquer pourquoi l&#39;enregistrement a été rejeté. 
+</p>
+<a name="wp2814484"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tFilterRow1.png" id="wp2814481" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2814492"> </a><div class="pSmartList2"><li>A partir de la <b class="cBold">Palette</b>, cliquez-déposez les composants suivants dans l&#39;éditeur graphique&#160;: un <b class="cBold">tFixedFlowInput</b>, un <b class="cBold">tFilterRow</b> et un <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp3691525"> </a><div class="pSmartList2"><li>Connectez le <b class="cBold">tFixedFlowInput</b> au <b class="cBold">tFilterRow</b> à l&#39;aide d&#39;un lien <b class="cBold">Row &gt; Main</b>. Ensuite, connectez le <b class="cBold">tFilterRow</b> au <b class="cBold">tLogRow</b>, à l&#39;aide d&#39;un lien <b class="cBold">Row &gt; Filter</b>. </li></div>
+<a name="wp3691541"> </a><div class="pSmartList2"><li>Déposez de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique un nouveau <b class="cBold">tLogRow</b> et renommez-le&#160;<em class="cEmphasis">reject</em>. Reliez le <b class="cBold">tFilterRow</b> à ce <b class="cBold">tLogRow</b> à l&#39;aide d&#39;un lien <b class="cBold">Row</b> &gt; <b class="cBold">Reject</b>.</li></div>
+<a name="wp3691549"> </a><div class="pSmartList2"><li>Dans l&#39;espace graphique, cliquez sur le composant <b class="cBold">tFixedFlowInput</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+<a name="wp3691558"> </a><div class="pSmartList2"><li>Sélectionnez l&#39;option <b class="cBold">Use Inline Content(delimited file)</b> dans la zone <b class="cBold">Mode</b>.</li></div>
+<a name="wp2814559"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...] </b>à côté du champ <b class="cBold">File Name </b>pour définir le chemin d&#39;accès au fichier d&#39;entrée. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2814568"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tFilterRow2.png" id="wp2814565" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2814579"> </a><div class="pSmartList2"><li>Renseignez les séparateurs de lignes (<b class="cBold">Row Separator</b>) et de champs (<b class="cBold">Field Separator</b>). Le séparateur de lignes est constitué d&#39;un retour chariot et le séparateur de champs d&#39;un point-virgule.</li></div>
+<a name="wp2814589"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema</b>, sélectionnez <b class="cBold">Buil-In</b>. Le schéma n&#39;est donc pas stocké dans le <b class="cBold">Repository</b>.</li></div>
+<a name="wp3691749"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit schema</b> pour définir le schéma du fichier d&#39;entrée. Dans cet exemple, le schéma se compose de quatre colonnes&#160;: <em class="cEmphasis">firstname</em>, <em class="cEmphasis">gender</em>, <em class="cEmphasis">language</em> et&#160;<em class="cEmphasis">frequency</em>. Dans la colonne <b class="cBold">Type</b>, sélectionnez <b class="cBold">String</b> pour les trois premières colonnes et <b class="cBold">Integer</b> pour la colonne&#160;<em class="cEmphasis">frequency</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2814616"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tFilterRow3.1.png" id="wp2814613" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2814624"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour valider et fermer l&#39;éditeur. Une boîte de dialogue s&#39;ouvre et vous demande si vous voulez propager les changements. Cliquez sur <b class="cBold">Yes</b> (oui).</li></div>
+<a name="wp2814634"> </a><div class="pSmartList2"><li>Dans la zone de texte <b class="cBold">Content</b>, saisissez votre texte en respectant votre schéma. </li></div>
+<a name="wp3692024"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tFilterRow</b> pour afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3692033"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tFilterRow4.png" id="wp3692030" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3692157"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Conditions</b>, renseignez les paramètres de filtre sur la colonne&#160;<em class="cEmphasis">firstname</em>.</li></div>
+<a name="wp3692173"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">InputColumn</b>, sélectionnez <em class="cEmphasis">firstname</em>.<br />Dans la colonne <b class="cBold">Function</b>, sélectionnez <b class="cBold">Length</b>.<br />Dans la colonne <b class="cBold">Operator</b>, sélectionnez <b class="cBold">Lower than</b>.</li></div>
+<a name="wp3692182"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Value</b>, saisissez&#160;<em class="cEmphasis">6</em> afin de filtrer uniquement les noms dont la longueur est supérieure à six caractères.</li></div>
+<a name="wp3692695"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3692692" border="0" hspace="0" vspace="0"/><br />
+Dans la colonne <b class="cBold">Value</b>, vous devez saisir vos valeurs entre guillemets doubles pour tous les types de données, sauf pour le type <b class="cBold">Integer</b>, qui n&#39;en nécessite pas.
+</p>
+<a name="wp3692699"> </a><div class="pSmartList2"><li>Pour implémenter la recherche sur les noms italiens, cochez la case <b class="cBold">Use advanced mode</b> et saisissez l&#39;expression régulière suivante, qui comprend le nom de la colonne dans laquelle chercher&#160;: <code class="cCode">input_row.language.equals(&quot;italian&quot;)</code>.</li></div>
+<a name="wp3692646"> </a><div class="pSmartList2"><li>Pour combiner les deux conditions, simple et avancée, sélectionnez l&#39;opérateur logique <b class="cBold">And</b> dans la liste<b class="cBold"> Logical operator used to combine conditions</b>.</li></div>
+<a name="wp3692658"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Basic settings</b> des composants <b class="cBold">tLogRow</b>, sélectionnez l&#39;option <b class="cBold">Table (print values in cells of a table)</b> dans la zone <b class="cBold">Mode</b>.</li></div>
+<a name="wp3692671"> </a><div class="pSmartList2"><li>Sauvegardez votre Job puis appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3692674"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tFilterRow5.png" id="wp2814755" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3771636"> </a><p class="pIndented1">
+La première table liste les enregistrements contenant des prénoms italiens comprenant moins de six caractères et la seconde affiche les enregistrements ne correspondant pas à la condition de filtre. A chaque enregistrement rejeté correspond un message d&#39;erreur expliquant la raison du rejet. 
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFilterRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tJoin_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

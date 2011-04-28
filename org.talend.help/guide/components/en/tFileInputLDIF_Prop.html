@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:32:42">
+    <title>tFileInputLDIF </title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFileInputJSON_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputLDIF_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3516475"> </a><h2 class="pHeading1">
+tFileInputLDIF 
+</h2>
+<a name="wp3516484"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tFileInputLDIF_icon32.png" id="wp3516479" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3516491"> </a><h2 class="pHeading2">
+tFileInputLDIF Properties
+</h2>
+<a name="wp3516681"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3516499table3516494">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3516499"> </a><div class="pCellBody">
+<b class="cBold">Component Family</b>
+</div>
+</td>
+    <td><a name="wp3516501"> </a><div class="pCellBody">
+File/Input
+</div>
+</td>
+    <td><a name="wp3516510"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/Components-07-31-022.jpg" height="59" width="112" id="wp3516506" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3516515"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3516520"> </a><div class="pCellBody">
+<b class="cBold">tFileInputLDIF </b>reads a given LDIF file row by row.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3516527"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3516532"> </a><div class="pCellBody">
+<b class="cBold">tFileInputLDIF </b>opens a file, reads it row by row, et gives the full rows to the next component as defined in the schema, using a Row connection.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3516539"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3516544"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp3516552"> </a><div class="pCellBody">
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3516554"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3516556"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3516561"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: No property data stored centrally.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3516563"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3516565"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3516570"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file where the properties are stored. The fields that follow are completed automatically using the data retrieved.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3516572"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3516577"> </a><div class="pCellHeading">
+<em class="cEmphasis">File Name</em>
+</div>
+</td>
+    <td><a name="wp3516579"> </a><div class="pCellBody">
+Name of the file and/or variable to be processed. <br /><br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3516590"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3516594"> </a><div class="pCellHeading">
+<em class="cEmphasis">add operation as prefix when the entry is modify type</em>
+</div>
+</td>
+    <td><a name="wp3516597"> </a><div class="pCellBody">
+Select this check box to display the operation mode.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4269091"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4269094"> </a><div class="pCellHeading">
+<em class="cEmphasis">Value separator</em>
+</div>
+</td>
+    <td><a name="wp4269097"> </a><div class="pCellBody">
+Type in the separator required for parsing data in the given file. By default, the separator used is &quot; <em class="cEmphasis">,</em>&quot;.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3516599"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3516604"> </a><div class="pCellHeading">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp3516606"> </a><div class="pCellBody">
+Select this check box to stop the execution of the Job when an error occurs. Clear the check box to skip the row on error and complete the process for error-free rows. If needed, you can collect the rows on error using a <b class="cBold">Row</b> &gt; <b class="cBold">Reject</b> link.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3516614"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3516621"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit schema</em>
+</div>
+</td>
+    <td><a name="wp3516624"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. Click <b class="cBold">Edit Schema</b> to modify the schema. Note that if you make changes, the schema automatically becomes built-in.<br />Click <b class="cBold">Sync columns</b> to retrieve the schema from the previous component connected in the Job.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3516635"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3516640"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding</em>
+</div>
+</td>
+    <td><a name="wp3516645"> </a><div class="pCellBody">
+Select the encoding type from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3516647"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3516652"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3516654"> </a><div class="pCellBody">
+Select this check box to gather the job processing metadata at a job level as well as at each component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3516656"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3516658"> </a><div class="pCellBody">
+Use this component to read full rows in a voluminous LDIF file. This component enables you to create a data flow, using a <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> link, and to create a reject flow with a <b class="cBold">Row</b> &gt; <b class="cBold">Reject</b> link filtering the data which type does not match the defined type. For an example of usage, see <a href="tFileInputXML_Scenario.html#wp2759958"><em class="cEmphasis">Scenario&#160;2: Extracting erroneous XML data via a reject flow</em></a> from <b class="cBold">tFileInputXML</b>. 
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFileInputJSON_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputLDIF_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:09:31">
+    <title>Scénario&#160;: Ecrire des enregistrements de données dans la base de données de la console d&#39;arbitrage</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tStewardshipTaskOutput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components16-22.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3616811"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3616816"> </a><h2 class="pHeading2">
+Scénario&#160;: Ecrire des enregistrements de données dans la base de données de la console d&#39;arbitrage
+</h2>
+<a name="wp3616821"> </a><p class="pIndented1">
+Ce scénario décrit un Job à cinq composants générant des enregistrements de données sous forme de tâches et chargeant celles-ci dans la base de données de la console d&#39;abitrage. 
+</p>
+<a name="wp3616825"> </a><p class="pIndented1">
+Ces tâches nécessitent l&#39;intervention d&#39;un arbitre ayant l&#39;autorisation de fusionner, de comparer, et de collecter les enregistrements de données contenus dans ces tâches. Pour plus d&#39;informations, consultez le <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Data Stewardship Console</b>.
+</p>
+<a name="wp3616836"> </a><p class="pIndented1">
+Dans ce scénario&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3616844"> </a><div class="pSmartList2"><li>Un composant <b class="cBold">tFixedFlowInput</b> génère un flux de données d&#39;entrée possédant cinq colonnes&#160;: <em class="cEmphasis">Source, Firstname</em>, <em class="cEmphasis">Lastname</em>, <em class="cEmphasis">DOB</em> (date of birth), et&#160;<em class="cEmphasis">PostalCode</em> (Source, prénom, nom, date de naissance et code postal). Ces données contiennent des problèmes telles que des doublons, des prénoms ou des noms mal écrits ou écrits différemment, des informations différentes pour le même client, etc.</li></div>
+<a name="wp3616863"> </a><div class="pSmartList2"><li>Un composant de qualité de données, le <b class="cBold">tMatchGroup</b>, effectue des opérations de mise en correspondance des données de différentes sources définies dans la colonne d&#39;entrée&#160;<em class="cEmphasis">Source</em>. Ce composant regroupe les colonnes de sortie par une valeur de bloc, afin d&#39;optimiser l&#39;opération de mise en correspondance et de comparer uniquement les enregistrements ayant la même valeur de bloc, la colonne&#160;<em class="cEmphasis">Source</em> dans ce scénario. Pour plus d&#39;informations concernant le regroupement des colonnes de sortie et l&#39;utilisation de valeurs de bloc, consultez le&#160;<a href="tMatchGroup_Prop.html"><em class="cEmphasis">tMatchGroup</em></a>.</li></div>
+<a name="wp3616879"> </a><div class="pSmartList2"><li>Un composant<b class="cBold"> tMap</b> filtre le flux d&#39;entrée et sépare les enregistrements de données uniques et les enregistrements de données ayant une distance de correspondance. </li></div>
+<a name="wp3616886"> </a><div class="pSmartList2"><li>Les enregistrements de données uniques sont affichés dans la console de la vue <b class="cBold">Run</b>, via le composant <b class="cBold">tLogRow</b>. Tous les autres enregistrements de données, ayant une distance de correspondance sont envoyés dans la base de données de <b class="cBold">Talend Data Stewardship Console</b> via le composant <b class="cBold">tStewardshipTaskOutput</b> et affichés dans la console d&#39;arbitrage. Un arbitre autorisé peut intervenir pour fusionner les enregistrements de données ayant des distances de correspondance.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3616904"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskOutput.png" id="wp3616901" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3616909"> </a><p class="pIndented1">
+Pour plus d&#39;informations détaillées concernant des scénarios associés, consultez les&#160;<a href="tGenKey_Scenario.html#wp3701068"><em class="cEmphasis">Scénario&#160;1&#160;: Générer des clés fonctionnelles dans le flux de sortie</em></a> et&#160;<a href="tGenKey_Scenario.html#wp3701509"><em class="cEmphasis">Scénario&#160;2&#160;: Comparer les colonnes et regrouper dans le flux de sortie les enregistrements en doublon ayant la même clé fonctionnelle</em></a>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3616922"> </a><div class="pSmartList2"><li>Déposez les composants suivants de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tFixedFlowInput</b>, <b class="cBold">tMatchGroup</b>, <b class="cBold">tMap</b>, <b class="cBold">tStewardshipTaskOutput</b> et <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp3616945"> </a><div class="pSmartList2"><li>Reliez les trois premiers composants à l&#39;aide de liens <b class="cBold">Main</b>.</li></div>
+<a name="wp3616954"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tFixedFlowInput</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et de définir ses propriétés comme expliqué dans le&#160;<a href="tGenKey_Scenario.html#wp3701068"><em class="cEmphasis">Scénario&#160;1&#160;: Générer des clés fonctionnelles dans le flux de sortie</em></a>.<br />Le composant <b class="cBold">tFixedFlowInput</b> génère un flux de données d&#39;entrée comprenant cinq colonnes&#160;: <em class="cEmphasis">Source, Firstname</em>, <em class="cEmphasis">Lastname</em>, <em class="cEmphasis">DOB</em> (date of birth), et&#160;<em class="cEmphasis">PostalCode</em> (Source, prénom, nom, date de naissance et code postal). Ces données contiennent des problèmes comme des doublons, des prénoms ou noms mal écrits ou écrits différemment, des informations différentes pour le même client, etc.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3616981"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskOutput3.png" id="wp3616978" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3616992"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tMatchGroup</b> afin d&#39;afficher sa vue <b class="cBold">Basic Settings</b> et de définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3617001"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskOutput2.png" id="wp3616998" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3617010"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Sync columns</b> pour récupérer le schéma du composant précédent.</li></div>
+<a name="wp3617016"> </a><div class="pSmartList2"><li>Si nécessaire, cliquez sur le bouton <b class="cBold">Edit schema</b> pour voir les schémas d&#39;entrée et de sortie, et apporter des modifications au schéma de sortie.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3617025"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskOutput4.png" id="wp3617022" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3617031"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3617029" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Le schéma de sortie de ce composant, comprend quatre colonnes standards de sortie en lecture seule. Pour plus d&#39;informations, consultez&#160;<a href="tMatchGroup_Prop.html#wp3782686"><em class="cEmphasis">Propriétés du tMatchGroup</em></a>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3617046"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Key definition</b>, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter à la liste les colonnes sur lesquelles vous souhaitez effectuer l&#39;opération de mise en correspondance,&#160;<em class="cEmphasis">FirstName</em> et&#160;<em class="cEmphasis">LastName</em> dans ce scénario.</li></div>
+<a name="wp3617059"> </a><div class="pSmartList2"><li>Cliquez dans la première et la deuxième cellules de la colonne <b class="cBold">Matching type</b> et sélectionnez dans la liste la (les) méthode(s) à utiliser pour l&#39;opération de mise en correspondance, <b class="cBold">Jaro-Winkler</b> dans cet exemple.</li></div>
+<a name="wp3617069"> </a><div class="pSmartList2"><li>Cliquez dans la première et la deuxième cellules de la colonne <b class="cBold">Confidence Weight</b> et définissez les poids numériques pour chaque colonne utilisée comme attribut de clé.</li></div>
+<a name="wp3617079"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[+] </b>sous le tableau <b class="cBold">Blocking Definition</b> afin d&#39;ajouter une ligne, puis cliquez dans la ligne et sélectionnez dans la liste la colonne que vous souhaitez utiliser comme valeur de bloc,&#160;<em class="cEmphasis">Source</em> dans cet exemple. <br />Utiliser une valeur de bloc réduit le nombre de paires d&#39;enregistrements nécessitant examen. Les données d&#39;entrée sont partitionnées en blocs exhaustifs basés sur la source des données. Cela réduit le nombre de paires à comparer, puisque la comparaison est limitée aux paires d&#39;enregistrements dans chaque bloc. </li></div>
+<a name="wp3617097"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tMap</b> afin d&#39;ouvrir le <b class="cBold">Map Editor</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3617104"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskOutput5.png" id="wp3617101" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3617107"> </a><p class="pIndented1">
+La zone d&#39;entrée, à gauche, est déjà remplie par le schéma d&#39;entrée provenant du composant précédent dans le Job. 
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3617116"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[+]</b> en haut à droite de la zone de sortie, afin d&#39;ajouter autant de tables que nécessaire, deux dans cet exemple&#160;: <em class="cEmphasis">uniques</em> et&#160;<em class="cEmphasis">groups</em>. La première table regroupera les enregistrements de données uniques, et la deuxième regroupera tous les enregistrements ayant une distance de correpondance, dans l&#39;enregistrement maître de chaque groupe.</li></div>
+<a name="wp3617129"> </a><div class="pSmartList2"><li>Déposez les colonnes d&#39;entrée afin de remplir le premier schéma de sortie. Pour plus d&#39;informations concernant le mapping des données, consultez&#160;<em class="cEmphasis">Mapping de flux de données</em> dans le <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>.<br />Toutes les colonnes seront automatiquement remplies dans le <b class="cBold">Schema Editor</b>, dans la moitié inférieure du <b class="cBold">Map Editor</b>.</li></div>
+<a name="wp3617154"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <img src="../Images/Expression_Filter.png" id="wp3617151" border="0" hspace="0" vspace="0"/> dans le coin supérieur droit de la première table de sortie afin d&#39;ajouter une condition pour filtrer les données dans cette table&#160;: <em class="cEmphasis">row2.GRP_SIZE == 1</em>.</li></div>
+<a name="wp3617164"> </a><div class="pSmartList2"><li>Déposez les colonnes d&#39;entrée pour remplir le deuxième schéma de sortie et ajoutez le filtre suivant&#160;: <em class="cEmphasis">row2.GRP_SIZE &gt; 1 || !row2.MASTER.</em></li></div>
+<a name="wp3617177"> </a><div class="pSmartList2"><li>Dans le <b class="cBold">Schema Editor</b> de la deuxième table de sortie, cliquez sur le bouton <b class="cBold">[+]</b> afin d&#39;ajouter deux colonnes supplémentaires&#160;: <em class="cEmphasis">weight</em> et&#160;<em class="cEmphasis">istarget</em>. La première mesurera la distance de correspondance et la seconde décidera si l&#39;enregistrement est un enregistrement source ou cible.</li></div>
+<a name="wp3617194"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Ok</b> pour fermer le <b class="cBold">Map Editor</b>.</li></div>
+<a name="wp3617200"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation graphique, cliquez-droit sur le <b class="cBold">tMap</b> et sélectionnez le lien <em class="cEmphasis">uniques</em>, et reliez-le au composant <b class="cBold">tLogRow</b>. Connectez de la même manière le <b class="cBold">tMap</b> au <b class="cBold">tStewardshipTaskOutput</b> avec le lien&#160;<em class="cEmphasis">groups</em>.</li></div>
+<a name="wp3617224"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tStewardshipTaskOutput</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et de définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3617234"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskOutput6.png" id="wp3617231" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3617248"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema</b>, sélectionnez <b class="cBold">Built-In</b> puis cliquez sur le bouton <b class="cBold">[...] </b>à côté du champ <b class="cBold">Edit schema</b> pour ouvrir une boîte de dialogue.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3617260"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskOutput7.png" id="wp3617257" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3617266"> </a><p class="pIndented1">
+Les données sont collectées des colonnes définies dans la table de sortie&#160;<em class="cEmphasis">groups</em> dans le composant <b class="cBold">tMap</b>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3617279"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> afin de fermer la boîte de dialogue et passer à l&#39;étape suivante.</li></div>
+<a name="wp3617285"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Host</b>, saisissez entre guillemets l&#39;adresse IP du serveur de la base de données de la console d&#39;arbitrage.</li></div>
+<a name="wp3617292"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Port</b>, saisissez entre guillemets le numéro du port d&#39;écoute du serveur de la base de données.</li></div>
+<a name="wp3617302"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Username</b> et <b class="cBold">Password</b>, saisissez votre identifiant et votre mot de passe de connexion au serveur MDM.</li></div>
+<a name="wp3617309"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Task name</b>, saisissez un nom fonctionnel pour la tâche que vous souhaitez lister dans <b class="cBold">Talend Data Stewardship Console</b>.</li></div>
+<a name="wp3617319"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Type</b>, sélectionnez le type des tâches que vous souhaitez écrire dans la console d&#39;arbitrage&#160;: <b class="cBold">Resolution</b> ou <b class="cBold">Data</b>. Dans cet exemple, seules les tâches de résolution sont à écrire.<br />Pour plus d&#39;informations concernant les types de tâches, consultez&#160;<em class="cEmphasis">Types de tâches et assignations</em> dans le <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Data Stewardship Console</b>.</li></div>
+<a name="wp3617341"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Created by</b>, saisissez entre guillemets le nom du créateur de la tâche, <em class="cEmphasis">Administrator</em> dans cet exemple. Le créateur de la tâche correspond à l&#39;utilisateur de l&#39;interface Web de <b class="cBold">Talend MDM</b>. Pour plus d&#39;informations, consultez&#160;<em class="cEmphasis">Sécurité</em> dans le <b class="cBold">Guide Utilisateur</b> de l&#39;<b class="cBold">Interface Web Talend MDM</b>. </li></div>
+<a name="wp3617366"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Owner</b>, saisissez entre guillemets le nom du propriétaire de la tâche, c&#39;est-à-dire l&#39;utilisateur auquel la tâche est assignée,&#160;<em class="cEmphasis">Administrator</em> dans cet exemple.</li></div>
+<a name="wp3617379"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3617375" border="0" hspace="0" vspace="0"/><br />
+Une tâche peut être assignée à un utilisateur spécifique, soit à partir de la vue <b class="cBold">Basic settings</b> du composant <b class="cBold">tStewardshipTaskOutput</b>, soit directement à partir de la console d&#39;arbitrage par un administrateur. Pour plus d&#39;informations, consultez&#160;<a href="tStewardshipTaskOutput_Prop.html"><em class="cEmphasis">tStewardshipTaskOutput</em></a> et&#160;<em class="cEmphasis">Types de tâches et assignations</em> dans le <b class="cBold">Guide</b> <b class="cBold">Utilisateur</b> de <b class="cBold">Talend Data Stewardship Console</b>.
+</p>
+<a name="wp3617407"> </a><div class="pSmartList2"><li>Dans le champ<b class="cBold"> Star</b>, saisissez entre guillemets le nombre d&#39;étoiles, de&#160;0 à&#160;5, que vous souhaitez assigner à la tâche dans la console d&#39;arbitrage afin de souligner son importance.</li></div>
+<a name="wp3617414"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Tags</b>, saisissez entre guillemets le nom de la catégorie du tag associé aux tâches que vous souhaitez lire. Ce champ n&#39;est pas utilisé dans ce scénario. <br />Pour plus d&#39;informations, consultez&#160;<em class="cEmphasis">Association de tags aux tâches</em> dans le <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Data Stewardship Console</b>.</li></div>
+<a name="wp3617433"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Looping column</b>, sélectionnez une colonne du schéma d&#39;entrée sur laquelle effectuer la boucle, <em class="cEmphasis">GID</em> dans cet exemple. </li></div>
+<a name="wp3617443"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Source/Target selector</b>, sélectionnez la colonne qui décidera si l&#39;enregistrement est un enregistrement source ou cible.</li></div>
+<a name="wp3617451"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Source</b>, sélectionnez une colonne source dans le schéma d&#39;entrée.</li></div>
+<a name="wp3617457"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Score</b>, sélectionnez la colonne du score de correspondance dans le schéma d&#39;entrée.</li></div>
+<a name="wp3617464"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Weights</b>, sélectionnez la colonne définissant la distance de correspondance pour les colonnes d&#39;entrée.</li></div>
+<a name="wp3617480"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Extra info</b>, cliquez sur le bouton <span style="font-weight: bold"><img src="../Images/plus_button.png" id="wp3617476" border="0" hspace="0" vspace="0"/></span> pour ajouter une ou plusieurs ligne(s) que vous pouvez utiliser afin d&#39;ajouter des informations supplémentaires dans une ou plusieurs colonne(s) d&#39;enregistrements de la tâche créée.</li></div>
+<a name="wp3617494"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3617486" border="0" hspace="0" vspace="0"/><br />
+Vous pouvez cliquer sur le bouton <img src="../Images/AddAll_Button.png" id="wp3617491" border="0" hspace="0" vspace="0"/> afin d&#39;ajouter votre schéma d&#39;entrée complet en une seule fois, sans avoir à le faire ligne par ligne.
+</p>
+</ul></div>
+</ul></div>
+<a name="wp3617502"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskOutput11.png" id="wp3617499" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3617510"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Title</b>, saisissez entre guillemets le rôle de la personne qui ajoute les informations.</li></div>
+<a name="wp3617517"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Info</b>, saisissez entre guillemets les informations supplémentaires que vous souhaitez attacher à la colonne sélectionnée.</li></div>
+<a name="wp3617524"> </a><div class="pSmartList2"><li>Cliquez sur la ligne <b class="cBold">Scope</b> puis sélectionnez dans la liste la colonne d&#39;enregistrement sur laquelle vous souhaitez ajouter les informations supplémentaires,&#160;<em class="cEmphasis">PostalCode</em> dans ce scénario.<br />Cela aura pour effet d&#39;ajouter une marque rouge à la colonne&#160;<em class="cEmphasis">PostalCode</em> au moment d&#39;ouvrir la tâche correspondante dans <b class="cBold">Talend Data Stewardship Console</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3617542"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskOutput12.png" id="wp3617539" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3617545"> </a><p class="pIndented1">
+Lorsque l&#39;arbitre place son curseur sur cette marque, les informations attachées apparaissent. Celles-ci peuvent l&#39;aider à collecter les enregistrements de données. 
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3617563"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Record Column</b>, cliquez sur le bouton <img src="../Images/plus_button.png" id="wp3617557" border="0" hspace="0" vspace="0"/> afin d&#39;ajouter autant de lignes que vous souhaitez afficher dans chaque tâche dans <b class="cBold">Talend Data Stewardship Console</b>. </li></div>
+<a name="wp3617567"> </a><div class="pSmartList2"><li>Cliquez dans chacune des lignes et sélectionnez la colonne que vous souhaitez afficher dans chaque tâche. Dans cet exemple, chaque tâche doit avoir quatre colonnes&#160;: <em class="cEmphasis">Firstname</em>, <em class="cEmphasis">Lastname</em>, <em class="cEmphasis">PostalCode</em> et&#160;<em class="cEmphasis">DOB</em>.</li></div>
+<a name="wp3617593"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3617585" border="0" hspace="0" vspace="0"/><br />
+Vous pouvez cliquer sur le bouton <img src="../Images/AddAll_Button.png" id="wp3617590" border="0" hspace="0" vspace="0"/> afin d&#39;ajouter votre schéma d&#39;entrée complet en une seule fois, sans avoir à le faire ligne par ligne.
+</p>
+<a name="wp3617605"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tLogRow </b>afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+<a name="wp3617614"> </a><div class="pSmartList2"><li>Sauvegarder votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3617621"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskOutput8.png" id="wp3617618" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3617628"> </a><p class="pIndented1">
+La console de la vue <b class="cBold">Run</b> affiche les quatre colonnes uniques du flux d&#39;entrée.
+</p>
+<a name="wp3617634"> </a><p class="pIndented1">
+L&#39;identifiant pour chaque groupe (tâche) est affiché dans la colonne&#160;<em class="cEmphasis">GID</em> à côté de l&#39;enregistrement correspondant. Le nombre d&#39;enregistrements dans chacune des tâches est listé dans la colonne&#160;<em class="cEmphasis">GRP_SIZE</em> et calculé uniquement sur l&#39;enregistrement maître. La colonne&#160;<em class="cEmphasis">MASTER</em> indique par la valeur <b class="cBold">true</b> que l&#39;enregistrement correspondant est un enregistrement maître. La colonne&#160;<em class="cEmphasis">SCORE</em> affiche la distance calculée entre l&#39;enregistrement d&#39;entrée et l&#39;enregistrement maître selon l&#39;algorithme de correspondance <b class="cBold">Jargo-Winkler</b>.
+</p>
+<a name="wp3617653"> </a><p class="pIndented1">
+Tous les autres enregistrements d&#39;entrée ayant une distance de correspondance sont listés dans <b class="cBold">Talend Data Stewardship Console</b>, en attendant qu&#39;un arbitre fusionne, compare et collecte les enregistrements de données. 
+</p>
+<a name="wp3617667"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Components-16-21-145.jpg" height="342" width="775" id="wp3617661" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tStewardshipTaskOutput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Components16-22.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

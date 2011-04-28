@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 18:34:55">
+    <title>Scenario: Doing an exact match on two columns and outputting the main and rejected data</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFuzzyJoin_Prophnw.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMap_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3767090"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3767095"> </a><h2 class="pHeading2">
+Scenario: Doing an exact match on two columns and outputting the main and rejected data
+</h2>
+<a name="wp3767100"> </a><p class="pIndented1">
+This java scenario describes a five-component Job aiming at carrying out an exact match between the <em class="cEmphasis">firstnameClient</em> column of an input file against the data of the reference input file, and the <em class="cEmphasis">lastnameClient</em> column against the data of the reference input file. The outputs of this exact match are written in two separate files: exact data are written in an Excel file, and inaccurate data are written in a delimited file.
+</p>
+<a name="wp3767110"> </a><p class="pIndented1">
+In this scenario, we have already stored the input schemas of the input and reference files in the Repository. For more information about storing schema metadata in the <b class="cBold">Repository</b> tree view, see <em class="cEmphasis">Setting up a File Delimited schema</em> and <em class="cEmphasis">How to drop components from the Metadata node</em> in <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3767137"> </a><div class="pSmartList2"><li>In the <b class="cBold">Repository</b> tree view, expand <b class="cBold">Metadata</b> and the file node where you have stored the input schemas and drop the relevant file onto the design workspace.<br />The <b class="cBold">[Components]</b> dialog box displays.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3767149"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tFuzzyJoin.png" id="wp3767146" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3767160"> </a><div class="pSmartList2"><li>Select <b class="cBold">tFileInputDelimited </b>from the list and click <b class="cBold">OK</b> to close the dialog box.<br />The <b class="cBold">tFileInputDelimited</b> component displays in the workspace. The input file used in this scenario is called <em class="cEmphasis">ClientSample</em>. It holds four columns including the two columns <em class="cEmphasis">firstnameClient</em> and <em class="cEmphasis">lastnameClient</em> we want to do the exact match on.</li></div>
+<a name="wp3767179"> </a><div class="pSmartList2"><li>Do the same for the second input file you want to use as a reference, <em class="cEmphasis">ClientSample_Update </em>in this scenario.</li></div>
+<a name="wp3767189"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tJoin</b>, <b class="cBold">tFileOutputExcel</b>, and <b class="cBold">tFileOutputDelimited</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3767204"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoin1.png" id="wp3767201" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3767215"> </a><div class="pSmartList2"><li>Connect the main and reference input files to <b class="cBold">tJoin</b> using <b class="cBold">Main</b> links. The link between the reference input file and <b class="cBold">tJoin</b> displays as a <em class="cEmphasis">Lookup</em> link on the design workspace.</li></div>
+<a name="wp3767237"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tJoin</b> to <b class="cBold">tFileOutputExcel</b> using the <b class="cBold">Main</b> link and <b class="cBold">tJoin</b> to <b class="cBold">tFileOutputDelimited</b> using the <b class="cBold">Inner join reject</b> link.</li></div>
+<a name="wp3767250"> </a><div class="pSmartList2"><li>If needed, double-click the main and reference input files to display their <b class="cBold">Basic settings</b> views. All their property fields are automatically filled in. If you do not define your input files in the <b class="cBold">Repository</b>, fill in the details manually after selecting <b class="cBold">Built-in</b> in the <b class="cBold">Property Type</b> field.</li></div>
+<a name="wp3767271"> </a><div class="pSmartList2"><li>Double click <b class="cBold">tJoin</b> to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3767278"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoin2.png" id="wp3767275" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3767286"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Edit schema</b> button to open a dialog box that displays the data structure of the input files and then define the data you want to pass to the output components, three columns in this scenario, <em class="cEmphasis">idClient</em>, <em class="cEmphasis">firstnameClient</em> and <em class="cEmphasis">lastnameClient</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3767310"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoin3.png" id="wp3767307" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3767319"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
+<a name="wp3767331"> </a><div class="pSmartList2"><li>In the <b class="cBold">Key definition</b> area of the <b class="cBold">Basic settings</b> view of <b class="cBold">tJoin</b>, click the plus button to add two columns to the list and then select the input columns and the output columns you want to do the exact matching on from the <b class="cBold">Input key attribute</b> and <b class="cBold">Lookup key attribute</b> lists respectively, <em class="cEmphasis">firstnameClient</em> and lastnameClient in this example.</li></div>
+<a name="wp3767353"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Inner join (with reject output)</b> check box to define one of the outputs as inner join reject table.</li></div>
+<a name="wp3767365"> </a><div class="pSmartList2"><li>Double click <b class="cBold">tFileOutputExcel</b> to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3767372"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoin4.png" id="wp3767369" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3767377"> </a><div class="pSmartList2"><li>Set the destination file name as well as the Sheet name and select the Include header check box.</li></div>
+<a name="wp3767387"> </a><div class="pSmartList2"><li> Double click <b class="cBold">tFileOutputDelimited</b> to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3767396"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoin5.png" id="wp3767393" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3767401"> </a><div class="pSmartList2"><li>Set the destination file name as well as row and field separators in the corresponding fields and select the Include header check box.</li></div>
+<a name="wp3767410"> </a><div class="pSmartList2"><li> Save your Job and click <b class="cBold">F6</b> to execute it.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3767417"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoinExecuted.png" id="wp3767414" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3767423"> </a><p class="pIndented1">
+The output of the exact match on the <em class="cEmphasis">firstnameClient</em> and the <em class="cEmphasis">lastnameClient</em> column is written in the defined excel file.
+</p>
+<a name="wp3767431"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoinOutExcel.png" id="wp3767428" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3767437"> </a><p class="pIndented1">
+The inaccurate data are written in the defined delimited file.
+</p>
+<a name="wp3768041"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoinOutCSV.png" id="wp3768037" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFuzzyJoin_Prophnw.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMap_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

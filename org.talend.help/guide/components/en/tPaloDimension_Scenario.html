@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:04">
+    <title>Scenario: Creating a dimension with elements</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloDimension_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloDimensionList_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3471082"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3471092"> </a><h2 class="pHeading2">
+Scenario: Creating a dimension with elements
+</h2>
+<a name="wp3471096"> </a><p class="pIndented1">
+The job in this scenario creates a date dimension with simple element hierarchy composed of three levels: <em class="cEmphasis">Year, Month, Date</em>.
+</p>
+<a name="wp3471111"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloDimension1.png" id="wp3474019" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3474014"> </a><p class="pIndented1">
+To replicate this scenario, proceed as follows:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3471127"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tPaloConnection</b>, <b class="cBold">tRowGenerator</b>, <b class="cBold">tMap</b>, <b class="cBold">tPaloDimension</b> from the component <b class="cBold">Palette</b> onto the design workspace.</li></div>
+<a name="wp3474092"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tPaloConnection</b> to open the contextual menu.</li></div>
+<a name="wp3474102"> </a><div class="pSmartList2"><li>From the menu, select <b class="cBold">Trigger</b> &gt; <b class="cBold">On Subjob Ok</b> to link it to <b class="cBold">tRowGenerator</b>.</li></div>
+<a name="wp3501238"> </a><div class="pSmartList2"><li>Right click <b class="cBold">tRowGenerator</b> to open the contextual menu.</li></div>
+<a name="wp3501246"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp3501242" border="0" hspace="0" vspace="0"/><br />
+<br /><b class="cBold">tRowGenerator</b> is used to generate rows at random in order to simplify this process. In the real case, you can use one of the other input components to load your actual data.
+</p>
+<a name="wp3477073"> </a><div class="pSmartList2"><li>From the menu, select <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> to link it to <b class="cBold">tMap</b>.</li></div>
+<a name="wp3477002"> </a><div class="pSmartList2"><li>Right click <b class="cBold">tMap</b> to open the contextual menu.</li></div>
+<a name="wp3477014"> </a><div class="pSmartList2"><li>From the menu, select <b class="cBold">Row</b> &gt; <b class="cBold">New output</b> to link to <b class="cBold">tPaloDimension</b> and name it as <em class="cEmphasis">out1</em> in the dialog box that pops up.</li></div>
+<a name="wp3477026"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tPaloConnection</b> component to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3477029"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloDimension2.png" id="wp3471146" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3471165"> </a><div class="pSmartList2"><li>In the <b class="cBold">Host name</b> field, type in the host name or the IP address of the host server, <em class="cEmphasis">localhost</em> for this example.</li></div>
+<a name="wp3471174"> </a><div class="pSmartList2"><li>In the <b class="cBold">Server Port</b> field, type in the listening port number of the Palo server. In this scenario, it is <em class="cEmphasis">7777</em>.</li></div>
+<a name="wp3471191"> </a><div class="pSmartList2"><li>In the <b class="cBold">Username</b> field and the <b class="cBold">Password</b> field, type in the authentication information. In this example, both of them are <em class="cEmphasis">admin</em>.</li></div>
+<a name="wp3474524"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tRowGenerator</b> to open its editor.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3474774"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloDimension3.png" id="wp3474771" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3474777"> </a><div class="pSmartList2"><li>On the upper part of the editor, click the plus button to add one column and rename it as <em class="cEmphasis">random_date</em> in the <b class="cBold">Column</b> column.</li></div>
+<a name="wp3474800"> </a><div class="pSmartList2"><li>In the newly added row, select <em class="cEmphasis">Date</em> in the <b class="cBold">Type</b> column and <b class="cBold">getRandomDate</b> in the <b class="cBold">Functions</b> column.</li></div>
+<a name="wp3475021"> </a><div class="pSmartList2"><li>In the <b class="cBold">Function parameters</b> view on the lower part of this editor, type in the new minimum date and maximum date values in the <b class="cBold">Value</b> column. In this example, the minimum is <em class="cEmphasis">2010-01-01</em>, the maximum is <em class="cEmphasis">2010-12-31</em>.</li></div>
+<a name="wp3474973"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate your modifications and close the editor.</li></div>
+<a name="wp3475141"> </a><div class="pSmartList2"><li>On the dialog box that pops up, click <b class="cBold">OK</b> to propagate your changes.</li></div>
+<a name="wp3475114"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tMap</b> to open its editor.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3475329"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloDimension5.png" id="wp3475326" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3475332"> </a><div class="pSmartList2"><li>On the <b class="cBold">Schema editor</b> view on the lower part of the <b class="cBold">tMap</b> editor, under the <b class="cBold">out1</b> table, click the plus button to add three rows.</li></div>
+<a name="wp3475381"> </a><div class="pSmartList2"><li>In the <b class="cBold">Column</b> column of the <b class="cBold">out1</b> table, type in the new names for the three newly added rows. They are <em class="cEmphasis">Year</em>, <em class="cEmphasis">Month</em>, and <em class="cEmphasis">Date</em>. These rows are then added automatically into the <b class="cBold">out1</b> table on the upper part of the <b class="cBold">tMap</b> editor.</li></div>
+<a name="wp3475859"> </a><div class="pSmartList2"><li>In the <b class="cBold">out1</b> table on the upper part of the<b class="cBold"> tMap</b> editor, click the <b class="cBold">Expression</b> column in the <em class="cEmphasis">Year</em> row to locate the cursor.</li></div>
+<a name="wp3475924"> </a><div class="pSmartList2"><li>Press <b class="cBold">Ctrl+space</b> to open the drop-down variable list.</li></div>
+<a name="wp3475951"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">TalendDate.formatDate</b> to select it from the list. The expression to get the date displays in the <em class="cEmphasis">Year </em>row under the <b class="cBold">Expression</b> column. The expression is <code class="cCode">TalendDate.formatDate(&quot;yyyy-MM-dd HH:mm:ss&quot;,myDate)</code>.</li></div>
+<a name="wp3475993"> </a><div class="pSmartList2"><li>Replace the default expression with <code class="cCode">TalendDate.formatDate(&quot;yyyy&quot;,row1.random_date)</code> .</li></div>
+<a name="wp3476121"> </a><div class="pSmartList2"><li>Do the same for the <em class="cEmphasis">Month</em> row and the <em class="cEmphasis">Date</em> row to add this default expression and to replace it with <code class="cCode">TalendDate.formatDate(&quot;MM&quot;,row1.random_date)</code> for the <em class="cEmphasis">Month</em> row and with <code class="cCode">TalendDate.formatDate(&quot;dd-MM-yyyy&quot;, row1.random_date)</code>  for the <em class="cEmphasis">Date</em> row.</li></div>
+<a name="wp3476219"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate this modification and accept the propagation by clicking <b class="cBold">OK</b> in the dialog box that pops up.</li></div>
+<a name="wp3476402"> </a><div class="pSmartList2"><li>On the workspace, double-click <b class="cBold">tPaloDimension</b> to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3476612"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloDimension4.png" id="wp3476621" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3476615"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Use an existing connection</b> check box. Then <b class="cBold">tPaloConnection_1</b> displays automatically in the <b class="cBold">Connection configuration</b> field.</li></div>
+<a name="wp3476678"> </a><div class="pSmartList2"><li>In the <b class="cBold">Database</b> field, type in the database in which the new dimension is created, <em class="cEmphasis">talendDatabase</em> for this scenario.</li></div>
+<a name="wp3476529"> </a><div class="pSmartList2"><li>In the <b class="cBold">Dimension</b> field, type in the name you want to use for the dimension to be created, for example, <em class="cEmphasis">Date</em>.</li></div>
+<a name="wp3476712"> </a><div class="pSmartList2"><li>In the <b class="cBold">Action on dimension</b> field, select the action to be performed. In this scenario, select <b class="cBold">Create dimension if not exist</b>.</li></div>
+<a name="wp3476717"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Create dimension elements</b> check box.</li></div>
+<a name="wp3476740"> </a><div class="pSmartList2"><li>In the <b class="cBold">Consolidation Type</b> area, select the <b class="cBold">Normal</b> check box.</li></div>
+<a name="wp3476560"> </a><div class="pSmartList2"><li>Under the element hierarchy table in the <b class="cBold">Consolidation Type</b> area, click the plus button to add three rows into the table.</li></div>
+<a name="wp3476566"> </a><div class="pSmartList2"><li>In the <b class="cBold">Input column</b> column of the element hierarchy table, select <em class="cEmphasis">Year</em> from the drop-down list for the first row, <em class="cEmphasis">Month</em> for the second and <em class="cEmphasis">Date</em> for the third. This determinates levels of elements from different columns of the input schema.</li></div>
+<a name="wp3476581"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3488163"> </a><p class="pIndented1">
+A new dimension is then created in your Palo database <em class="cEmphasis">talendDatabase</em>.
+</p>
+<a name="wp3488172"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloDimension6.png" id="wp3488167" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloDimension_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloDimensionList_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

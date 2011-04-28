@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:03:47">
+    <title>Scénario: Insérer des données dans des tables parent/enfant</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tAccessConnection_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tAccessInput_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp4062876"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp4191648"> </a><h2 class="pHeading2">
+Scénario: Insérer des données dans des tables parent/enfant
+</h2>
+<a name="wp4191655"> </a><p class="pIndented1">
+Le Job suivant est dédié à des utilisateurs avancés de base de données qui souhaitent effectuer des insertions dans des tables multiples en utilisant une table parent  <em class="cEmphasis">Table1</em> pour générer deux tables enfant&#160;: <em class="cEmphasis">Name</em> et <em class="cEmphasis">Birthday</em>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4194478"> </a><div class="pSmartList2"><li>Créez une base de données connectée à Access 2007 que vous appellerez <em class="cEmphasis">Database1</em>.</li></div>
+<a name="wp4194484"> </a><div class="pSmartList2"><li>Une fois la base de données Access créée, créez une table appelée <em class="cEmphasis">Table1</em> avec les deux en-têtes de colonne suivants&#160;: <em class="cEmphasis">Name</em> et <em class="cEmphasis">Birthday</em>. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp4194498"> </a><p class="pIndented1">
+Dans <b class="cBold">Talend Integration Suite Studio</b>, le Job est constitué de douze composants, parmi lesquels des composants <b class="cBold">tAccessConnection</b>, <b class="cBold">tAccessCommit</b>, <b class="cBold">tAccessInput</b>, <b class="cBold">tAccessOutput</b> et<b class="cBold"> tAccessClose</b>.
+</p>
+<a name="wp4194521"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAccessConnection1.png" id="wp4194518" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4194532"> </a><div class="pSmartList2"><li>A partir de la <b class="cBold">Palette,</b> cliquez et déposez les composants suivants dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tFileList</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tMap</b>, <b class="cBold">tAccessOutput</b> (x2), <b class="cBold">tAccessInput</b> (x2), <b class="cBold">tAccessCommit</b>,   <b class="cBold">tAccessClose</b> et <b class="cBold">tLogRow</b> (x2).</li></div>
+<a name="wp4289705"> </a><div class="pSmartList2"><li>Connectez le composant <b class="cBold">tFileList</b> au composant d&#39;entrée <b class="cBold">tFileInputDelimited</b> à l&#39;aide d&#39;une connexion de type <b class="cBold">Iterate</b>. Ainsi, le nom du fichier à traiter sera automatiquement renseigné à partir de la liste de fichiers du <b class="cBold">tFileList</b> en utilisant une variable globale. </li></div>
+<a name="wp4289718"> </a><div class="pSmartList2"><li>Connectez le composant <b class="cBold">tFileInputDelimited</b> au <b class="cBold">tMap</b> et séparez le flux vers les deux composants de sortie <b class="cBold">tAccessOutput</b>. Utilisez des connexions de type <b class="cBold">Row</b> pour chacune de ces connexions représentant un flux de données principal.</li></div>
+<a name="wp4289728"> </a><div class="pSmartList2"><li>Définissez les propriétés du composant <b class="cBold">tFileList</b>, notamment le répertoire dans lequel sont stockés les fichiers.</li></div>
+<a name="wp4289735"> </a><div class="pSmartList2"><li>Ajoutez le composant <b class="cBold">tAccessConnection</b> et connectez-le au composant de départ de ce Job (dans cet exemple, le composant <b class="cBold">tFileList</b>), à l&#39;aide d&#39;une connexion <b class="cBold">OnComponentOk</b> afin de définir l&#39;ordre d&#39;exécution.</li></div>
+<a name="wp4289748"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Component</b> du composant <b class="cBold">tAccessConnection</b>, définissez manuellement les informations de connexion ou récupérez-les dans le <b class="cBold">Repository</b> si vous les avez préalablement stockées dans le dossier DB connection du répertoire Metadata. Pour plus d&#39;information concernant les Métadonnées, consultez&#160;<em class="cEmphasis">Centraliser les métadonnées</em> du <b class="cBold">Guide utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b> .</li></div>
+<a name="wp4289773"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tFileInputDelimited</b>, appuyez sur la touche <b class="cBold">Ctrl+Espace</b> pour accéder à la liste des variables. Définissez le champ <b class="cBold">File Name</b> avec la variable globale&#160;: <em class="cEmphasis">tFileList_1.CURRENT_FILEPATH</em>. Pour plus d&#39;information concernant l&#39;utilisation des variables, consultez&#160;<em class="cEmphasis">Utiliser les variables dans un Job, page 146</em> du <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b> .</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4289797"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAccessConnection2.png" id="wp4289794" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4289802"> </a><div class="pSmartList2"><li>Paramétrez les autres champs comme vous le souhaitez, définissez les séparateurs de lignes et de champs (<b class="cBold">Row</b> et <b class="cBold">Field Separator</b>) en fonction de la structure de votre document.</li></div>
+<a name="wp4289809"> </a><div class="pSmartList2"><li>Puis définissez manuellement le schéma du fichier à l&#39;aide du bouton<b class="cBold"> Edit schema</b> ou sélectionnez le schéma dans le <b class="cBold">Repository</b>. En version Java, assurez-vous que le type de données est correctement défini, conformément à la nature des données traitées.</li></div>
+<a name="wp4289822"> </a><div class="pSmartList2"><li>Dans la zone Output du <b class="cBold">tMap</b>, ajoutez deux tables de sortie, une que vous nommerez <em class="cEmphasis">Name</em> pour la table <em class="cEmphasis">Name</em>, et une deuxième que vous nommerez <em class="cEmphasis">Birthday</em>, pour la table <em class="cEmphasis">Birthday</em>. Pour plus d&#39;information concernant le composant <b class="cBold">tMap</b>, consultez&#160;<em class="cEmphasis">Présentation du fonctionnement du tMap, page 252</em> du <b class="cBold">Guide utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b>.</li></div>
+<a name="wp4289854"> </a><div class="pSmartList2"><li>Cliquez sur la colonne <em class="cEmphasis">Name</em> de la zone <b class="cBold">Input</b>, et glissez-la dans la table <em class="cEmphasis">Name</em>.</li></div>
+<a name="wp4289869"> </a><div class="pSmartList2"><li>Cliquez sur la colonne <em class="cEmphasis">Birthday</em> de la zone <b class="cBold">Input</b>, et glissez-la dans la table <em class="cEmphasis">Birthday</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4289876"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAccessConnection3.png" id="wp4289873" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4289881"> </a><div class="pSmartList2"><li>Puis sélectionnez une connexion de sortie de type <b class="cBold">Row</b> pour acheminer correctement le flux vers les composants Database de sortie correspondants.</li></div>
+<a name="wp4289893"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> des deux composants <b class="cBold">tAccessOutput</b>, cochez la case <b class="cBold">Use an existing connection</b> pour récupérer les informations du composant <b class="cBold">tAccessConnection</b>. </li></div>
+<a name="wp4289908"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp4289903" border="0" hspace="0" vspace="0"/><br />
+En version Perl, le champ Commit every n&#39;apparaît plus puisque vous utilisez le composant tAccessCommit au lieu de gérer les commits de transaction globale. En version Java, ignorez ce champ puisque cette commande sera annulée par le composant tAccessCommit.
+</p>
+</ul></div>
+</ul></div>
+<a name="wp4289922"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAccessConnection4.png" id="wp4289919" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4289930"> </a><div class="pSmartList2"><li>Nommez votre table dans le champ <b class="cBold">Table</b> en vous assurant que vous saisissez la bonne table. Dans cet exemple, la table est soit <em class="cEmphasis">Name,</em> soit <em class="cEmphasis">Birthday</em>.</li></div>
+<a name="wp4289941"> </a><div class="pSmartList2"><li>Ne définissez aucune action dans le champ <b class="cBold">Action on table</b> puisque les tables ont déjà été créées.</li></div>
+<a name="wp4289951"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">Insert</b> dans le champ <b class="cBold">Action on data</b> pour les deux composants de sortie (<b class="cBold">tAccessOutput</b>).</li></div>
+<a name="wp4289961"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Sync columns</b> pour récupérer le schéma défini dans le <b class="cBold">tMap</b>.</li></div>
+<a name="wp4289970"> </a><div class="pSmartList2"><li>Connectez ensuite le premier composant <b class="cBold">tAccessOutput</b> au premier composant <b class="cBold">tAccessInput</b> à l&#39;aide d&#39;une connexion <b class="cBold">OnComponentOk</b>.</li></div>
+<a name="wp4289985"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> des deux composants <b class="cBold">tAccessInput</b>, cochez la case <b class="cBold">Use an existing connection</b> pour récupérer le flux de données distribué. Puis définissez manuellement le schéma du fichier à l&#39;aide du bouton <b class="cBold">Edit schema</b>. </li></div>
+<a name="wp4290003"> </a><div class="pSmartList2"><li>Nommez ensuite votre table dans le champ <b class="cBold">Table Name</b>. Le nom du <b class="cBold">tAccessInput_1</b> sera <em class="cEmphasis">Name</em>. </li></div>
+<a name="wp4290010"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Guess Query</b>.</li></div>
+<a name="wp4290025"> </a><div class="pSmartList2"><li>Connectez les deux composants <b class="cBold">tAccessInput</b> au composant <b class="cBold">tLogRow</b> à l&#39;aide d&#39;une connexion de type<b class="cBold"> Row</b> &gt; <b class="cBold">Main</b>. Dans l&#39;onglet <b class="cBold">Basic settings</b> des deux composants <b class="cBold">tLogRow</b>, sélectionnez <b class="cBold">Table</b> dans le champ <b class="cBold">Mode</b>.</li></div>
+<a name="wp4290047"> </a><div class="pSmartList2"><li>Ajoutez le composant <b class="cBold">tAccessConnection</b> sous le composant <b class="cBold">tFileList</b> et connectez-les à l&#39;aide d&#39;une connexion <b class="cBold">OnComponentOk</b> afin d&#39;arrêter le Job avec les commits de transaction. </li></div>
+<a name="wp4290063"> </a><div class="pSmartList2"><li>A partir de l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tAccessCommit</b>, sélectionnez dans la liste déroulante <b class="cBold">Component list </b>la connexion à utiliser, <b class="cBold">tAccessConnection_1</b> dans ce scénario.</li></div>
+<a name="wp4290075"> </a><div class="pSmartList2"><li>Enregistrez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4290082"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAccessConnection5.png" id="wp4290079" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp4290096"> </a><p class="pIndented1">
+La table parent <em class="cEmphasis">Table1</em> est utilisée à la fois pour générer la table <em class="cEmphasis">Name</em> et la table <em class="cEmphasis">Birthday</em>.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tAccessConnection_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tAccessInput_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

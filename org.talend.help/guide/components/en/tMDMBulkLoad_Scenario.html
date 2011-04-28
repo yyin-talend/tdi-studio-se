@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:33:17">
+    <title>Scenario: Loading records into a business entity</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMDMBulkLoad_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMDelete_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3544697"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3544704"> </a><h2 class="pHeading2">
+Scenario: Loading records into a business entity
+</h2>
+<a name="wp3544710"> </a><p class="pIndented1">
+This scenario describes a Job that loads records into the <em class="cEmphasis">ProductFamily </em>business entity defined by a specific data model in the MDM hub.
+</p>
+<a name="wp3544715"> </a><p class="pIndented1">
+Prerequisites of this Job:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3544723"> </a><div class="pSmartList2"><li>The <em class="cEmphasis">Product</em> data container: this data container is used to separate the product master data domain from the other master data domains.</li></div>
+<a name="wp3544730"> </a><div class="pSmartList2"><li>The <em class="cEmphasis">Product</em> data model: this data model is used to define the attributes, validation rules, user access rights and relationships of the entities of interest. Thus it defines the attributes of the <em class="cEmphasis">ProductFamily</em> business entity.</li></div>
+<a name="wp3544743"> </a><div class="pSmartList2"><li>The <em class="cEmphasis">ProductFamily</em> business entity: this business entity contains <em class="cEmphasis">Id, Name</em>, both defined by the <em class="cEmphasis">Product</em> data model.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3544751"> </a><p class="pIndented1">
+For further information about how to create a data container, a data model, and a business entity along with its attributes, see the <b class="cBold">Talend Master Data Management</b> Administrator Guide.
+</p>
+<a name="wp3544762"> </a><p class="pIndented1">
+The Job in this scenario uses three components.
+</p>
+<a name="wp3544769"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_MDMBulkLoad1.png" id="wp3544766" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3544777"> </a><div class="pSmartList2"><li><b class="cBold">tFixedFlowInput</b>: this component generates the records to be loaded into the <em class="cEmphasis">ProductFamily</em> business entity. In the real case, your records to be loaded are often voluminous and stored in a specific file, while in order to simplify the replication of this scenario, this Job uses <b class="cBold">tFixedFlowInput</b> to generate four sample records.</li></div>
+<a name="wp3544791"> </a><div class="pSmartList2"><li><b class="cBold">tWriteXMLField</b>: this component transforms the incoming data into XML structure.</li></div>
+<a name="wp3544800"> </a><div class="pSmartList2"><li><b class="cBold">tMDMBulkLoad</b>: this component writes the incoming data into the <em class="cEmphasis">ProductFamily</em> business entity in bulk mode, generating ID value for each of the record data.</li></div>
+<a name="wp3588079"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/warning_smalljl.png" align="left" id="wp3588077" border="0" hspace="0" vspace="0"/><br />
+For the time being, tWriteXMLField has some limitations when used with very large datasets. Another scenario is possible to enhance the MDM bulk data load. For further information, see <a href="tMDMBulkLoad_Prop.html#wp3587871"><em class="cEmphasis">Enhancing the MDM bulk data load</em></a>.
+</p>
+</ul></div>
+</ul></div>
+<a name="wp3588083"> </a><p class="pIndented1">
+To replicate this scenario, proceed as follows:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3544820"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tFixedFlowInput</b>, <b class="cBold">tWriteXMLField</b> and <b class="cBold">tMDMBulkLoad</b> onto the design workspace.</li></div>
+<a name="wp3544828"> </a><div class="pSmartList2"><li>Right click <b class="cBold">tFixedFlowInput</b> to open its contextual menu.</li></div>
+<a name="wp3544840"> </a><div class="pSmartList2"><li>Select <b class="cBold">Row &gt; Main</b> to connect <b class="cBold">tFixedFlowInput</b> to the following component using <b class="cBold">Main</b> link.</li></div>
+<a name="wp3544845"> </a><div class="pSmartList2"><li>Do the same to link the other components.</li></div>
+<a name="wp3544856"> </a><div class="pSmartList2"><li>Double click <b class="cBold">tFixedFlowInput</b> to open its <b class="cBold">Basic settings</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3544863"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_MDMBulkLoad2.png" id="wp3544860" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3544873"> </a><div class="pSmartList2"><li>Click the three-dot button next to <b class="cBold">Edit schema</b> to open the schema editor.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3544880"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_MDMBulkLoad3.png" id="wp3544877" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3544886"> </a><div class="pSmartList2"><li>In the schema editor, click the plus button to add one row. </li></div>
+<a name="wp3544893"> </a><div class="pSmartList2"><li>In the schema editor, click the new row and type in the new name: <em class="cEmphasis">family</em>.</li></div>
+<a name="wp3544900"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b>.</li></div>
+<a name="wp3544913"> </a><div class="pSmartList2"><li>In the <b class="cBold">Mode</b> area of the <b class="cBold">Basic settings</b> view, select the <b class="cBold">Use inline table</b> option.</li></div>
+<a name="wp3544917"> </a><div class="pSmartList2"><li>Under the inline table, click the plus button four times to add four rows in the table.</li></div>
+<a name="wp3544920"> </a><div class="pSmartList2"><li>In the inline table, click each of the added rows and type in their names between the quotation marks: <em class="cEmphasis">Shirts</em>, <em class="cEmphasis">Hats</em>, <em class="cEmphasis">Pets</em>, <em class="cEmphasis">Mugs</em>.</li></div>
+<a name="wp3544944"> </a><div class="pSmartList2"><li>Double click <b class="cBold">tWriteXMLField</b> to open its <b class="cBold">Basic settings</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3544951"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_MDMBulkLoad4.png" id="wp3544948" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3544959"> </a><div class="pSmartList2"><li>Click the three-dot button next to the <b class="cBold">Edit schema</b> field to open the schema editor where you can add a row by clicking the plus button.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3544968"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_MDMBulkLoad5.png" id="wp3544965" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3544973"> </a><div class="pSmartList2"><li>Click the newly added row to the right view of the schema editor and type in the name of the output column where you want to write the XML content. In this example, type in <em class="cEmphasis">xmlRecord</em>.</li></div>
+<a name="wp3544984"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate this output schema and close the schema editor.</li></div>
+<a name="wp3544991"> </a><div class="pSmartList2"><li>In the popped up dialog box, click <b class="cBold">OK</b> to propagate this schema to the following component.</li></div>
+<a name="wp3545000"> </a><div class="pSmartList2"><li>On the <b class="cBold">Basic settings</b> view, click the three-dot button next to <b class="cBold">Configure Xml Tree</b> to open the interface that helps to create the XML structure.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3545009"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_MDMBulkLoad6.png" id="wp3545006" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3545023"> </a><div class="pSmartList2"><li>In the <b class="cBold">Link Target</b> area, click <em class="cEmphasis">rootTag</em> and rename it as <em class="cEmphasis">ProductFamily</em>, which is the name of the business entity used in this scenario.</li></div>
+<a name="wp3545039"> </a><div class="pSmartList2"><li>In the <b class="cBold">Linker source</b> area, drop <em class="cEmphasis">family</em> to <em class="cEmphasis">ProductFamily</em> in the <b class="cBold">Link target</b> area.<br />A dialog box displays asking what type of operation you want to do.</li></div>
+<a name="wp3545049"> </a><div class="pSmartList2"><li>Select <b class="cBold">Create as sub-element of target node</b> to create a sub-element of the <em class="cEmphasis">ProductFamily</em> node. Then the <em class="cEmphasis">family</em> element appears under the <em class="cEmphasis">ProductFamily</em> node.</li></div>
+<a name="wp3545068"> </a><div class="pSmartList2"><li>In the <b class="cBold">Link target</b> area, click the <b class="cBold">family</b> node and rename it as <b class="cBold">Name</b>, which is one of the attributes of the <b class="cBold">ProductFamily</b> business entity.</li></div>
+<a name="wp3545082"> </a><div class="pSmartList2"><li>Right-click the <em class="cEmphasis">Name</em> node and select from the contextual menu <b class="cBold">Set As Loop Element</b>.</li></div>
+<a name="wp3545089"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate the XML structure you defined.</li></div>
+<a name="wp3545100"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tMDMBulkLoad</b> to open its <b class="cBold">Basic settings</b><span style="font-weight: bold"> </span>view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3545107"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_MDMBulkLoad7.png" id="wp3545104" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3545119"> </a><div class="pSmartList2"><li>In <b class="cBold">XML Field</b>, click this field and select <em class="cEmphasis">xmlRecord</em> from the drop-down list.</li></div>
+<a name="wp3545125"> </a><div class="pSmartList2"><li>In the <b class="cBold">URL</b> field, enter the MDM server URL, between quotes: for example, <em class="cEmphasis">http://localhost:8080/talend/TalendPort</em>.</li></div>
+<a name="wp3545138"> </a><div class="pSmartList2"><li>In the <b class="cBold">Username</b> and <b class="cBold">Password</b> fields, enter your login and password to connect to the MDM server.</li></div>
+<a name="wp3545148"> </a><div class="pSmartList2"><li>In the <b class="cBold">Data Model</b> and the <b class="cBold">Data Container</b> fields, enter the names corresponding to the data model and the data container you need to use. Both are <em class="cEmphasis">Product</em> for this scenario.</li></div>
+<a name="wp3545158"> </a><div class="pSmartList2"><li>In the <b class="cBold">Entity</b> field, enter the name of the business entity which the records are to be loaded in. In this example, type in <em class="cEmphasis">ProductFamily</em>.</li></div>
+<a name="wp3545169"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Generate ID</b> check box in order to generate ID values for the records to be loaded.</li></div>
+<a name="wp3580638"> </a><div class="pSmartList2"><li>In the <b class="cBold">Commit size</b> field, type in the batch size to be written into the MDM hub in bulk mode. For further information about the batch size, see <a href="tMDMBulkLoad_Prop.html#wp3588594"><em class="cEmphasis">Tips for better-performance bulk commit with Qizx</em></a>.</li></div>
+<a name="wp3545176"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the Job.</li></div>
+<a name="wp3545182"> </a><div class="pSmartList2"><li>Log into your <b class="cBold">Talend MDM Web User Interface</b> to check the newly added records for the <em class="cEmphasis">ProductFamily</em> business entity.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3545196"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_MDMBulkLoad8.png" id="wp3545191" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMDMBulkLoad_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMDelete_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

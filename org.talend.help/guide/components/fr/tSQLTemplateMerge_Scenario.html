@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:07:08">
+    <title>Scénario&#160;: Effectuer des opérations de MERGE directement dans le SGBD</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSQLTemplateMerge_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSQLTemplateRollback_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3966516"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3966523"> </a><h2 class="pHeading2">
+Scénario&#160;: Effectuer des opérations de MERGE directement dans le SGBD
+</h2>
+<a name="wp3966526"> </a><p class="pIndented1">
+Ce scénario décrit un Job simple permettant d&#39;ouvrir une connexion à une base de données MySQL, d&#39;effectuer des opérations d&#39;insertion ou de mise à jour sur les données d&#39;une table source vers une table cible en fonction de l&#39;identifiant de l&#39;utilisateur et d&#39;afficher le contenu de la table cible avant et après les opérations de MERGE. Une clause de type WHERE est utilisée pour filtrer les données lors de ces opérations.
+</p>
+<a name="wp3966535"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSQLTemplateMerge1.png" id="wp3966532" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3968353"> </a><div class="pSmartList2"><li>A partir de la <b class="cBold">Palette, </b>déposez les composants suivants dans l&#39;espace de modélisation graphique&#160;: un <b class="cBold">tMysqlConnection</b>, un <b class="cBold">tSQLTemplateMerge</b>, deux <b class="cBold">tMysqlInput</b> et deux <b class="cBold">tLogRow</b>. </li></div>
+<a name="wp3971113"> </a><div class="pSmartList2"><li>Connectez le composant <b class="cBold">tMysqlConnection</b> au premier <b class="cBold">tMysqlInput</b> à l&#39;aide d&#39;un lien <b class="cBold">Trigger</b> &gt; <b class="cBold">OnSubjobOK</b>.</li></div>
+<a name="wp3971369"> </a><div class="pSmartList2"><li>Connectez le premier <b class="cBold">tMysqlInput</b> au premier <b class="cBold">tLogRow</b> à l&#39;aide d&#39;un lien <b class="cBold">Row</b> &gt; <b class="cBold">Main</b>. Cette ligne affichera le contenu initial de la table cible dans la console de la vue <b class="cBold">Run</b>.</li></div>
+<a name="wp3971582"> </a><div class="pSmartList2"><li>Connectez le premier <b class="cBold">tMysqlInput</b> au composant <b class="cBold">tSQLTemplateMerge</b>, et le <b class="cBold">tSQLTemplateMerge</b> au second composant <b class="cBold">tMysqlInput</b> à l&#39;aide de connexions <b class="cBold">Trigger</b>&#160;&gt;&#160;<b class="cBold">OnSubjobOK</b>.</li></div>
+<a name="wp3991259"> </a><div class="pSmartList2"><li>Connectez le second <b class="cBold">tMysqlInput</b> au second <b class="cBold">tLogRow</b> à l&#39;aide d&#39;un lien <b class="cBold">Row</b> &gt; <b class="cBold">Main</b>. Cette ligne affichera le résultat des opérations de MERGE dans la console de la vue <b class="cBold">Run</b>.</li></div>
+<a name="wp3991369"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tMysqlConnection</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3991381"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSQLTemplateMerge2.png" id="wp3991378" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3991489"> </a><div class="pSmartList2"><li>Paramétrez manuellement les détails de la connexion à la base de données ou sélectionnez <b class="cBold">Repository</b> dans la liste <b class="cBold">Property Type</b> et sélectionnez votre connexion à une base de données si celle-ci a déjà été définie et stockée dans la zone <b class="cBold">Metadata</b> de la vue <b class="cBold">Repository</b>.<br />Pour plus d&#39;informations concernant les Métadonnées, consultez&#160;<em class="cEmphasis">Centraliser les métadonnées</em> dans le <b class="cBold">Guide utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b>. </li></div>
+<a name="wp3991581"> </a><div class="pSmartList2"><li>Double-cliquez sur le premier composant <b class="cBold">tMysqlInput</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3991420"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSQLTemplateMerge3.png" id="wp3991417" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3991427"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Use an existing connection</b>. Si vous souhaitez utiliser plus d&#39;un composant  de connexion dans votre Job, sélectionnez le composant que vous souhaitez utiliser à partir de la liste <b class="cBold">Component List</b>.</li></div>
+<a name="wp3971688"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à côté de <b class="cBold">Edit schema</b> et définissez la structure des données de la table cible, ou sélectionnez <b class="cBold">Repository</b> à partir de la liste <b class="cBold">Schema</b> puis sélectionnez la table cible si le schéma a déjà été défini et stocké dans la zone <b class="cBold">Metadata</b> de la vue <b class="cBold">Repository</b>.<br />Pour ce scénario, choisissez <b class="cBold">Built-in</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3973729"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSQLTemplateMerge4.png" id="wp3973725" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3973777"> </a><div class="pSmartList2"><li>Définissez les colonnes comme indiqué ci-dessus, puis cliquez sur <b class="cBold">OK</b> pour propager la structure du schéma au composant de sortie et fermer la boîte de dialogue.</li></div>
+<a name="wp3973945"> </a><div class="pSmartList2"><li>Renseignez le champ <b class="cBold">Table Name</b> avec le nom de la table cible, soit&#160;<em class="cEmphasis">customer_info_merge</em> pour ce scénario.</li></div>
+<a name="wp3987128"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Guess Query</b>, ou saisissez <code class="cCode">&quot;SELECT * FROM customer_info_merge&quot;</code> dans la zone <b class="cBold">Query</b> afin de récupérer toutes les colonnes des tables.</li></div>
+<a name="wp3987136"> </a><div class="pSmartList2"><li>Définissez les propriétés du second composant <b class="cBold">tMysqlInput</b> en utilisant exactement les mêmes paramètres que dans le premier composant <b class="cBold">tMysqlInput</b>.</li></div>
+<a name="wp3992702"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b> de chaque composant <b class="cBold">tLogRow</b>, sélectionnez l&#39;option <b class="cBold">Table</b> dans la zone <b class="cBold">Mode</b> afin d&#39;afficher le résultat sous forme de tableau dans la console de la vue <b class="cBold">Run</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3987161"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSQLTemplateMerge5.png" id="wp3987158" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3992797"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tSQLTemplateMerge</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3987181"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSQLTemplateMerge6.png" id="wp3987178" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3987186"> </a><div class="pSmartList2"><li>Saisissez les noms de la table source et de la table cible dans les champs correspondants. <br />Pour ce scénario, la table source,&#160;<em class="cEmphasis">new_customer_info</em>, contient huit enregistrements&#160;; la table cible,&#160;<em class="cEmphasis">customer_info_merge</em>, contient cinq enregistrements et les deux tables ont la même structure.</li></div>
+<a name="wp3989264"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3989261" border="0" hspace="0" vspace="0"/><br />
+Il est possible que la table source et la table cible aient des schémas différents. Dans ce cas, cependant, assurez-vous que la colonne source et la colonne cible spécifiées dans chaque ligne des tables <b class="cBold">Merge ON</b>, <b class="cBold">UPDATE Columns</b> et <b class="cBold">INSERT Columns</b> aient un type de données identique et que la longueur de la colonne cible permette l&#39;insertion de données à partir de la colonne source correspondante.
+</p>
+<a name="wp3989576"> </a><div class="pSmartList2"><li>Définissez le schéma source manuellement, ou sélectionnez <b class="cBold">Repository</b> à partir de la liste <b class="cBold">Schema</b> et sélectionnez la table souhaitée si le schéma a déjà été défini et stocké dans la zone <b class="cBold">Metadata</b> de la vue <b class="cBold">Repository</b>.<br />Pour ce scénario, nous utilisons des schémas en mode <b class="cBold">Built-in</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3989591"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSQLTemplateMerge7.png" id="wp3989588" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3989599"> </a><div class="pSmartList2"><li>Définissez les colonnes comme indiqué ci-dessus puis cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue. Faites de même pour le schéma cible.</li></div>
+<a name="wp3989609"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[+]</b> sous la table <b class="cBold">Merge ON</b> pour ajouter une ligne et sélectionnez la colonne <em class="cEmphasis">ID</em> comme clé primaire.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3989618"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSQLTemplateMerge8.png" id="wp3989615" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3989626"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Use UPDATE (WHEN MATCHED)</b> pour mettre à jour les données existantes lors des opérations de MERGE, définissez les colonnes à mettre à jour en cliquant sur le bouton <b class="cBold">[+]</b> et sélectionnez les colonnes souhaitées. <br />Le but de ce scénario est de mettre à jour toutes les colonnes selon l&#39;identifiant (ID) des utilisateurs. Pour cela, sélectionnez toutes les colonnes sauf la colonne&#160;<em class="cEmphasis">ID</em>.</li></div>
+<a name="wp3989637"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/warning_small.png" align="left" id="wp3989635" border="0" hspace="0" vspace="0"/><br />
+<br />Les colonnes définies comme clés primaires NE PEUVENT et NE DOIVENT PAS être mises à jour.
+</p>
+<a name="wp3989646"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Specify UPDATE WHERE clause</b> et saisissez <code class="cCode">customer_info_merge.ID &gt;= 4</code> entre guillemets doubles, dans le champ <b class="cBold">WHERE clause</b> afin que seuls les enregistrements existants ayant un ID égal ou supérieur à&#160;4 soient mis à jour.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3989661"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSQLTemplateMerge8.png" id="wp3989658" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3993384"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Use INSERT</b> puis définissez dans la table <b class="cBold">INSERT Columns</b> les colonnes où les données seront prises et insérées.<br />Pour ce scénario, nous souhaitons insérer tous les enregistrements qui n&#39;existent pas dans la table cible.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3989681"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSQLTemplateMerge8.png" id="wp3989678" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3989689"> </a><div class="pSmartList2"><li>Sélectionnez l&#39;onglet <b class="cBold">SQL Template</b> pour afficher et ajouter les modèles SQL à utiliser.<br />Par défaut, le composant <b class="cBold">SQLTemplateMerge</b> utilise deux modèles SQL système&#160;: <b class="cBold">MergeUpdate</b> et <b class="cBold">MergeInsert</b>. </li></div>
+<a name="wp3989709"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3989704" border="0" hspace="0" vspace="0"/><br />
+IDans l&#39;onglet <b class="cBold">SQL Template</b>, vous pouvez ajouter des modèles SQL système ou créer vos propres modèles et les utiliser dans votre Job pour effectuer des opérations codées. Pour plus d&#39;informations, consultez&#160;<a href="tSQLTemplateFilterColumns_Prop.html#wp3941535"><em class="cEmphasis">Propriétés du tSQLTemplateFilterColumns</em></a>.
+</p>
+</ul></div>
+</ul></div>
+<a name="wp3989720"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSQLTemplateMerge9.png" id="wp3989717" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3989731"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Add</b> pour ajouter une ligne puis sélectionnez <b class="cBold">Commit</b> dans la liste des modèles afin de commiter les résultats des opérations de MERGE dans votre base de données.<br />Autrement, vous pouvez connecter le composant <b class="cBold">tSQLTemplateMerge</b> à un <b class="cBold">tSQLTemplateCommit</b> ou un <b class="cBold">tMysqlCommit</b> à l&#39;aide d&#39;un lien <b class="cBold">Trigger</b> &gt; <b class="cBold">OnSubjobOK</b> afin de commiter les résultats des opérations dans votre base de données.</li></div>
+<a name="wp3989753"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.<br />La console de la vue <b class="cBold">Run</b> affiche à la fois le contenu d&#39;origine de la table cible ainsi que les résultats des opérations de MERGE. Dans la table cible, les enregistrements No.&#160;4 et No.&#160;5 contiennent les informations mises à jour, tandis que les enregistrements No&#160;.6, No.&#160;7 et No.&#160;8 contiennent les informations insérées dans la table. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3989764"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSQLTemplateMerge10.png" id="wp3989759" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSQLTemplateMerge_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSQLTemplateRollback_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

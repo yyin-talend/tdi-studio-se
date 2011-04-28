@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:07:21">
+    <title>tESBProviderResponse</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tESBProviderRequest_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tESBProviderResponse_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp4082804"> </a><h2 class="pHeading1">
+tESBProviderResponse
+</h2>
+<a name="wp4082813"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tESBProviderResponse_icon32_white.png" id="wp4082808" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp4082822"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 18pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+Le composant <b class="cBold">tESBProviderResponse</b> doit être utilisé avec le composant <b class="cBold">tESBProviderRequest</b>, pour fournir une réponse en tant que résultat du Job, pour un fournisseur de Service Web, dans le cas d&#39;une communication de style requête-réponse.
+</div>
+<a name="wp4082830"> </a><h2 class="pHeading2">
+Propriétés du tESBProviderResponse
+</h2>
+<a name="wp4082950"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp4082838table4082833">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4082838"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp4082840"> </a><div class="pCellBody">
+ESB
+</div>
+</td>
+    <td><a name="wp4082848"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icongh.png" id="wp4082845" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4082853"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp4082855"> </a><div class="pCellBody">
+Génère un message de réponse et un message Fault à la fin d&#39;un Job <b class="cBold">Talend</b>  provenant d&#39;un Service Web.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4082862"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp4082864"> </a><div class="pCellBody">
+Retourne une réponse comme fournisseur de service à la fin de chaque cycle d&#39;un Job <b class="cBold">Talend</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4082871"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp4097321"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp4097325"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le <b class="cBold">Repository</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4082883"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4097332"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4097339"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Le schéma sera créé et conservé pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4082901"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4097353"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4097360"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et Jobs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4082922"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp4097433"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp4097437"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log, aussi bien au niveau du Job qu&#39;au niveau de chaque composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4082934"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp4082936"> </a><div class="pCellBody">
+Ce composant fonctionne comme aide au composant <b class="cBold">tESBProviderRequest</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4082943"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp4082945"> </a><div class="pCellBody">
+Une JDK est requise pour que ce composant fonctionne.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tESBProviderRequest_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tESBProviderResponse_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

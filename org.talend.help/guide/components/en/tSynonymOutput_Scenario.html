@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:17">
+    <title>Scenario: Creating a synonym index</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSynonymOutput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tThresholdViolationAlert_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3790389"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3790396"> </a><h2 class="pHeading2">
+Scenario: Creating a synonym index
+</h2>
+<a name="wp3791515"> </a><p class="pIndented1">
+In this scenario, a three-component Job creates an index of the standardized city names that provides references to the city synonyms used in the client data of an enterprise.
+</p>
+<a name="wp3791544"> </a><p class="pIndented1">
+To create this index, you need a source file to provide the city names and their corresponding synonyms. In this scenario, this is a <em class="cEmphasis">.csv</em> file and reads as follows:
+</p>
+<a name="wp3791568"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSynonymOutput1.png" id="wp3791576" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3791588"> </a><p class="pIndented1">
+Two columns are found in this file:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3792804"> </a><div class="pSmartList2"><li>the left one is the <em class="cEmphasis">CityName</em> column which holds the standard city names as reference data.</li></div>
+<a name="wp3792852"> </a><div class="pSmartList2"><li>the right one is the <em class="cEmphasis">Synonyms</em> column which holds various synonyms collected across the client data of this enterprise.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3792817"> </a><p class="pIndented1">
+The three components used in this Job are:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3791601"> </a><div class="pSmartList2"><li><b class="cBold">tFileInputDelimited</b>: this component loads data from the source file and inputs them to <b class="cBold">tSynonymOutput</b>.</li></div>
+<a name="wp3791626"> </a><div class="pSmartList2"><li><b class="cBold">tSynonymOutput</b>: this component creates the index of interest in this scenario and feed it with the synonyms given in the source file.</li></div>
+<a name="wp3791649"> </a><div class="pSmartList2"><li><b class="cBold">tLogRow</b>: this component lists the data that have been inserted into the newly created index.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3791671"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSynonymOutput2.png" id="wp3791685" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3791696"> </a><p class="pIndented1">
+To replicate this scenario, proceed as follows:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3791708"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tSynonymOutput</b> and <b class="cBold">tLogRow</b> onto the Design workspace from the <b class="cBold">Palette</b>.</li></div>
+<a name="wp3791977"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp3791974" border="0" hspace="0" vspace="0"/><br />
+You can change the name displayed for each of these component as what has been done for the <b class="cBold">tFileInputDelimited</b> component, named as <em class="cEmphasis">CityNames</em> in this scenario. For further information, see section <em class="cEmphasis">View tab</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</p>
+<a name="wp3792166"> </a><div class="pSmartList2"><li>Right-click the <b class="cBold">tFileInputDelimited</b> (<em class="cEmphasis">CityNames</em>) component to open the contextual menu.</li></div>
+<a name="wp3792188"> </a><div class="pSmartList2"><li>From this menu, select <b class="cBold">Row &gt; Main</b>.</li></div>
+<a name="wp3792205"> </a><div class="pSmartList2"><li>Click the <b class="cBold">tSynonymOutput</b> component to create an connection between these two components.</li></div>
+<a name="wp3792225"> </a><div class="pSmartList2"><li>Do the same thing to connect <b class="cBold">tSynonymOutput</b> to <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp3792255"> </a><div class="pSmartList2"><li>Double click <b class="cBold">tFileInputDelimited</b> (<em class="cEmphasis">CityNames</em>) to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3792323"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSynonymOutput3.png" id="wp3792340" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3792352"> </a><div class="pSmartList2"><li>In the <b class="cBold">File name/Stream</b> field, type in the path, or browse to the location where you need to create the index of interest.</li></div>
+<a name="wp3792369"> </a><div class="pSmartList2"><li>Next to the <b class="cBold">Schema</b> field, select the <b class="cBold">Edit schema</b> button to open the schema editor.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3792389"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSynonymOutput4.png" id="wp3792397" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3792409"> </a><div class="pSmartList2"><li>In this editor, click the plus button twice to add two rows.</li></div>
+<a name="wp3792418"> </a><div class="pSmartList2"><li>In the <b class="cBold">Column</b> column, click each of the newly added rows and rename them respectively as: <em class="cEmphasis">CityName</em> and <em class="cEmphasis">Synonyms</em>. These names are consistent with the column names in the source file.</li></div>
+<a name="wp3792449"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate this editing and accept the propagation prompted by the dialog box that pops up.</li></div>
+<a name="wp3792493"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp3792490" border="0" hspace="0" vspace="0"/><br />
+You can also add this <b class="cBold">tFileInputDelimited</b> file using the established metadata stored in the <b class="cBold">Repository</b>. This allows you to use automatically the configuration of the corresponding metadata. For further information about how to create and use this metadata, see <em class="cEmphasis">Setting up a File Delimited schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</p>
+<a name="wp3792639"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tSynonymOutput</b> to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3792660"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSynonymOutput5.png" id="wp3792665" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3792683"> </a><div class="pSmartList2"><li>In the <b class="cBold">Index path</b> field, type in the path, or browse to the location where you need to create the index. The folder to be used to hold the created index must have existed when you execute this Job.</li></div>
+<a name="wp3792713"> </a><div class="pSmartList2"><li>In the <b class="cBold">Operation</b> field, select the operation you need to perform on this created index as well as the related synonyms. In this example, select <em class="cEmphasis">Initialize an index and insert documents</em>.</li></div>
+<a name="wp3792747"> </a><div class="pSmartList2"><li>In the <b class="cBold">Entry</b> field, select the column to be used to receive and store the standard reference data. In the source file used in this scenario, the <em class="cEmphasis">CityName</em> column is holding the standard city names, so select <em class="cEmphasis">CityName</em>.</li></div>
+<a name="wp3792901"> </a><div class="pSmartList2"><li>In the Synonyms field, select the column to be used to receive and store the synonyms. In this scenario, select <em class="cEmphasis">Synonyms</em>.</li></div>
+<a name="wp3792924"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run this Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3792941"> </a><p class="pIndented1">
+The standard city names as well as their synonyms inserted into the newly created index are displayed in the <b class="cBold">Console</b> of the <b class="cBold">Run</b> view.
+</p>
+<a name="wp3792967"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSynonymOutputResult.png" id="wp3792972" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSynonymOutput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tThresholdViolationAlert_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

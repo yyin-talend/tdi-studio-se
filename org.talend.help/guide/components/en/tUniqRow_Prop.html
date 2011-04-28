@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:17">
+    <title>tUniqRow</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tThresholdViolationAlert_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tUniqRow_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3753870"> </a><h2 class="pHeading1">
+tUniqRow
+</h2>
+<a name="wp3753879"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tUniqueRow.png" id="wp3753874" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3753887"> </a><h2 class="pHeading2">
+tUniqRow Properties
+</h2>
+<a name="wp3754078"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3753895table3753890">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3753895"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3753897"> </a><div class="pCellBody">
+Data Quality
+</div>
+</td>
+    <td><a name="wp3753906"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/Components-04-76-001.jpg" height="59" width="112" id="wp3753902" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3753911"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3753913"> </a><div class="pCellBody">
+Compares entries and sorts out duplicate entries from the input flow. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3753920"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3753922"> </a><div class="pCellBody">
+Ensures data quality of input or output flow in a Job. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3753929"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3753936"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit schema</em>
+</div>
+</td>
+    <td><a name="wp3753939"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Click <b class="cBold">Edit Schema</b> to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.<br />Click <b class="cBold">Sync columns</b> to retrieve the schema from the previous component connected in the Job.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3753947"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3753949"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3753954"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3753965"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3753967"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3753972"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3753983"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3753988"> </a><div class="pCellHeading">
+<em class="cEmphasis">Unique key</em>
+</div>
+</td>
+    <td><a name="wp3753990"> </a><div class="pCellBody">
+In this area, select one or more columns to carry out deduplication on the particular column(s)<br />- Select the <b class="cBold">Key attribute</b> check box to carry out deduplication on all the columns<br />- Select the <b class="cBold">Case sensitive</b> check box to differentiate upper case and lower case
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3754001"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3754005"> </a><div class="pCellHeading">
+<em class="cEmphasis">Only once each duplicated key</em>
+</div>
+</td>
+    <td><a name="wp3754008"> </a><div class="pCellBody">
+Select this check box if you want to have only the first duplicated entry in the column(s) defined as key(s) sent to the output flow for duplicates.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3754010"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3754014"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use of disk (suitable for processing large row set)</em>
+</div>
+</td>
+    <td><a name="wp3754017"> </a><div class="pCellBody">
+Select this check box to enable generating temporary files on the hard disk when processing a large amount of data. This helps to prevent Job execution failure caused by memory overflow. With this check box selected, you need also to define:<br />- <b class="cBold">Buffer size in memory</b>: Select the number of rows that can be buffered in the memory before a temporary file is to be generated on the hard disk. <br />- <b class="cBold">Directory for temp files</b>: Set the location where the temporary files should be stored. 
+</div>
+<a name="wp3754029"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_smalljl.png" align="left" id="wp3754027" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+Make sure that you specify an existing directory for temporary files; otherwise your Job execution will fail.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3754032"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3754036"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3754039"> </a><div class="pCellBody">
+Select this check box to gather the job processing metadata at a job level as well as at each component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3754062"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3754064"> </a><div class="pCellBody">
+This component handles flow of data therefore it requires input and output, hence is defined as an intermediary step. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3754071"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3754073"> </a><div class="pCellBody">
+n/a
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tThresholdViolationAlert_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tUniqRow_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:09:03">
+    <title>Scénario&#160;1&#160;: Mapping simple de données avec filtre et jointure explicite </title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMap_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tNormalize_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3772383"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3772390"> </a><h2 class="pHeading2">
+Scénario&#160;1&#160;: Mapping simple de données avec filtre et jointure explicite 
+</h2>
+<a name="wp3772396"> </a><p class="pIndented1">
+Le Job Java ci-dessous a pour objectif de lire des données d&#39;un fichier .csv stocké dans le <b class="cBold">Repository</b>, de rechercher des données d&#39;un fichier de référence, dont le schéma est également stocké dans le <b class="cBold">Repository</b> puis d&#39;extraire des données de ces deux fichiers en fonction de filtres et d&#39;envoyer ces données vers les fichiers de sortie et de rejet.
+</p>
+<a name="wp3772411"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-1-1.png" id="wp3787277" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3787280"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">File</b> dans la <b class="cBold">Palette</b> de composants, sélectionnez <b class="cBold">tFileInputDelimited</b> et déposez-le dans l&#39;espace de modélisation. Changez le libellé en&#160;<em class="cEmphasis">Cars</em> (véhicules), soit en double-cliquant sur le libellé directement dans l&#39;espace de modélisation graphique, soit via l&#39;onglet <b class="cBold">View</b> de la vue <b class="cBold">Component</b>.</li></div>
+<a name="wp3772427"> </a><div class="pSmartList2"><li>Répétez cette opération et renommez le second composant d&#39;entrée en&#160;<em class="cEmphasis">Owners</em> (propriétaires).</li></div>
+<a name="wp3772440"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Processing</b> dans la <b class="cBold">Palette</b> de composants, sélectionnez le <b class="cBold">tMap</b> et déposez-le dans l&#39;espace de modélisation.</li></div>
+<a name="wp3772453"> </a><div class="pSmartList2"><li>Reliez les deux composants d&#39;entrée&#160;<em class="cEmphasis">Owners</em> et <em class="cEmphasis">Cars</em> au composant <b class="cBold">tMap</b> et renommez les libellés des connexions,&#160;<em class="cEmphasis">Cars_data</em> et&#160;<em class="cEmphasis">Owners_data</em> respectivement.</li></div>
+<a name="wp3772491"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tFileInputDelimited</b> nommé&#160;<em class="cEmphasis">Cars</em> pour paramétrer ses propriétés de base (<b class="cBold">Basic settings</b>).</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3772498"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-1-2.png" id="wp3772495" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3772512"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">Repository</b> dans les champs <b class="cBold">Property type</b> et <b class="cBold">Schema</b>. Pour le schéma, sélectionnez la métadonnée&#160;<em class="cEmphasis">cars</em> dans la boîte de dialogue <b class="cBold">[Repository Content]</b>. Le reste des champs est automatiquement renseigné lorsque vous sélectionnez la métadonnée appropriée dans la liste.</li></div>
+<a name="wp3787467"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant&#160;<em class="cEmphasis">Owners</em> et définissez à nouveau les propriétés. Sélectionnez la métadonnée appropriée,&#160;<em class="cEmphasis">owners</em> dans cet exemple.</li></div>
+<a name="wp3787500"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3787498" border="0" hspace="0" vspace="0"/><br />
+Dans ce scénario, les schémas d&#39;entrée sont stockés dans le noeud <b class="cBold">Metadata</b> de la vue <b class="cBold">Repository</b> afin de les retrouver plus facilement. Pour plus d&#39;informations concernant la création de métadonnées dans le Repository, consultez&#160;<em class="cEmphasis">Centraliser les métadonnées</em> dans le <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>.
+</p>
+<a name="wp3772545"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tMap</b> pour ouvrir le Mapper. La zone Input (données en entrée) est déjà renseignée avec les schémas des composants d&#39;entrée et la première table correspond au flux principal (<b class="cBold">Main Row</b>). Les libellés de chacune des connexions d&#39;entrée apparaissent en en-tête des tables.</li></div>
+<a name="wp3787613"> </a><div class="pSmartList2"><li>Créez une jointure entre les deux tables d&#39;entrée en faisant simplement glisser le champ <em class="cEmphasis">ID_Owner</em> de la table principale (<em class="cEmphasis">Cars_data</em>) vers le champ équivalent de la table de référence (<em class="cEmphasis">Owners_data</em>).</li></div>
+<a name="wp3787666"> </a><div class="pSmartList2"><li>Définissez le lien en <b class="cBold">Inner Join</b> en cliquant sur le bouton <b class="cBold">tMap settings</b>, en cliquant dans le champ <b class="cBold">Value</b> pour&#160;<em class="cEmphasis">Join Model</em>, en cliquant sur le bouton qui apparaît dans le champ et en sélectionnant <b class="cBold">Inner Join</b> dans la liste <b class="cBold">Options</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3772568"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-1-3.png" id="wp3772565" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3772579"> </a><div class="pSmartList2"><li>Cliquez sur le signe <b class="cBold">[+]</b> dans la zone <b class="cBold">Output</b> (sortie) du Map Editor et ajoutez trois tables de sortie&#160;: <em class="cEmphasis">Insured</em>, <em class="cEmphasis">Reject_NoInsur</em>, <em class="cEmphasis">Reject_OwnerID</em>.</li></div>
+<a name="wp3772618"> </a><div class="pSmartList2"><li>Glissez et déposez le contenu de la table&#160;<em class="cEmphasis">Cars_data</em> vers la table&#160;<em class="cEmphasis">Insured</em>. </li></div>
+<a name="wp3787791"> </a><div class="pSmartList2"><li>Glissez les colonnes&#160;<em class="cEmphasis">ID_Owner</em>, <em class="cEmphasis">Registration</em> et&#160;<em class="cEmphasis">ID_Reseller</em> de la table&#160;<em class="cEmphasis">Cars_data</em>, ainsi que la colonne&#160;<em class="cEmphasis">Name</em> de la table&#160;<em class="cEmphasis">Owners_data</em> dans la table&#160;<em class="cEmphasis">Reject_NoInsur</em>.</li></div>
+<a name="wp3787815"> </a><div class="pSmartList2"><li>Glissez toutes les colonnes de la table&#160;<em class="cEmphasis">Cars_data</em> dans la table&#160;<em class="cEmphasis">Reject_OwnerID</em>.<br />Pour plus d&#39;informations concernant le mapping de données, consultez <em class="cEmphasis">Mapper des flux de données</em> dans le <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>. </li></div>
+<a name="wp3787909"> </a><div class="pSmartList2"><li>Cliquez sur le bouton<b class="cBold"> [+]</b> en haut de la table&#160;Insured afin d&#39;ajouter une ligne de filtre.</li></div>
+<a name="wp3787897"> </a><div class="pSmartList2"><li>Glissez la colonne&#160;<em class="cEmphasis">ID_Insurance</em> de la table&#160;<em class="cEmphasis">Owners_data</em> vers la zone de filtre et saisissez la formule suivante d&#39;exclusion des valeurs non définies&#160;: <code class="cCode">Owners_data.ID_Insurance != null</code>.<br />Avec ce filtre, la table <em class="cEmphasis">Insured</em> va rassemble tous les enregistrements qui possèdent un <em class="cEmphasis">ID Insurance</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3772652"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-1-4.png" id="wp3772649" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3788570"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">tMap settings</b> en haut de la table&#160;<em class="cEmphasis">Reject_NoInsur</em> et sélectionnez <b class="cBold">true</b> pour <b class="cBold">Catch lookup inner join reject</b> afin que de définir cette table comme le flux de rejet standard pour rassembler les enregistrements n&#39;ayant pas d&#39;<em class="cEmphasis">ID Insurance</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3788328"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-1-5.png" id="wp3788354" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3788357"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">tMap Settings</b> en haut de la table&#160;<em class="cEmphasis">Reject_OwnerID</em> puis sélectionnez <b class="cBold">true</b> pour <b class="cBold">Catch lookup inner join reject</b> afin que cette table rassemble les enregistrements du flux&#160;<em class="cEmphasis">Cars_data</em> ayant des IDs manquants ou ne correspondant pas.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3788299"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-1-5.png" id="wp3788199" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3788153"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour valider et revenir à l&#39;espace de modélisation.</li></div>
+<a name="wp3788166"> </a><div class="pSmartList2"><li>Ajoutez trois composants <b class="cBold">tFileOutputDelimited</b> dans l&#39;espace de modélisation graphique. Reliez le <b class="cBold">tMap</b> à l&#39;aide à ces trois composants de sortie à l&#39;aide des liens <b class="cBold">Row</b> correspondants.</li></div>
+<a name="wp3788189"> </a><div class="pSmartList2"><li>Renommez les trois composants selon les liens.</li></div>
+<a name="wp3788092"> </a><div class="pSmartList2"><li>Double-cliquez sur chacun des composants de sortie afin de définir leurs propriétés. Si vous souhaitez créer un nouveau fichier, parcourez votre système jusqu&#39;au dossier de destination et saisissez le nom du fichier avec son extension.</li></div>
+<a name="wp3772754"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Include header</b> pour réutiliser les libellés des colonnes du schéma d&#39;entrée dans comme en-tête dans votre fichier de sortie.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3772763"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-1-10.png" id="wp3772760" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3772778"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour exécuter le Job ou passez à l&#39;onglet <b class="cBold">Run Job</b> et cliquez sur le bouton <b class="cBold">Run</b>.<br />Les fichiers de sortie sont créés et ils contiennent les données définies.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3772790"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-1-7.png" id="wp3772787" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3772797"> </a><p class="pIndented1">
+Pour des exemples d&#39;utilisation des schémas dynamiques avec le <b class="cBold">tMap</b>, consultez&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3772804"> </a><div class="pSmartList2"><li><a href="tMysqlInput_Scenario.html#wp3857913"><em class="cEmphasis">Scénario&#160;: Ecrire des colonnes dynamiques d&#39;une base de données MySQL vers un fichier de sortie</em></a>.</li></div>
+<a name="wp3772811"> </a><div class="pSmartList2"><li><a href="tMysqlOutput_Scenario.html#wp3662803"><em class="cEmphasis">Scénario 4&#160;: Ecrire des colonnes dynamiques d&#39;un fichier source vers une base de données MySQL</em></a>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3772821"> </a><h2 class="pHeading2">
+Scénario&#160;2&#160;: Mapping de données avec rejet Inner join
+</h2>
+<a name="wp3772827"> </a><p class="pIndented1">
+Ce scénario, basé sur le scénario&#160;1, requiert l&#39;ajout d&#39;un fichier d&#39;entrée contenant les informations sur les revendeurs, ainsi que l&#39;ajout de champs supplémentaires dans la table de sortie principale. De plus, deux filtres sont ajoutés sur les jointures Inner Join afin de récupérer les rejets spécifiques.
+</p>
+<a name="wp3772858"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-2-2.png" id="wp3772855" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3789173"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">File</b> dans la <b class="cBold">Palette</b> des composants et déposez un composant <b class="cBold">tFileInputDelimited</b> dans l&#39;espace de modélisation graphique. Renommez-le&#160;<em class="cEmphasis">Resellers</em>.</li></div>
+<a name="wp3789180"> </a><div class="pSmartList2"><li>Connectez ce nouveau composant au <b class="cBold">tMap</b> et ajoutez un libellé à cette connexion&#160;: ici, <em class="cEmphasis">Resellers_data</em>.</li></div>
+<a name="wp3789187"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant&#160;<em class="cEmphasis">Resellers</em> pour définir ses propriétés dans la vue <b class="cBold">Basic settings</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3772882"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-2-1.png" id="wp3772879" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3794473"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">Repository</b> dans la liste<b class="cBold"> Property Type </b>et sélectionnez le schéma&#160;resellers, dans la boîte de dialogue <b class="cBold">[Repository Content]</b>. Les autres champs sont automatiquement renseignés.</li></div>
+<a name="wp3794458"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3794404" border="0" hspace="0" vspace="0"/><br />
+Dans ce scénario, les schémas d&#39;entrée sont stockés sous le noeud <b class="cBold">Metadata</b> du <b class="cBold">Repository</b> afin de les retrouver facilement. Pour plus d&#39;informations concernant la création de métadonnées dans le <b class="cBold">Repository</b>, consultez&#160;<em class="cEmphasis">Centraliser les métadonnées</em> dans le<b class="cBold"> Guide utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>.
+</p>
+<a name="wp3794507"> </a><div class="pSmartList2"><li> Double-cliquez sur le composant <b class="cBold">tMap</b> pour ouvrir le <b class="cBold">Map Editor</b>. Vous remarquerez que le schéma est automatiquement ajouté à la zone Input des schémas d&#39;entrée.</li></div>
+<a name="wp3794521"> </a><div class="pSmartList2"><li>Créez une jointure entre le flux d&#39;entrée principal et le nouveau flux d&#39;entrée en déposant la colonne&#160;<em class="cEmphasis">ID_Reseller</em> de la table&#160;<em class="cEmphasis">Cars_data</em> dans la colonne&#160;<em class="cEmphasis">ID_Reseller</em> de la table&#160;<em class="cEmphasis">Resellers_data</em>.</li></div>
+<a name="wp3794555"> </a><div class="pSmartList2"><li>Cliquez sur le bouton<b class="cBold"> tMap settings</b> en haut de la table&#160;<em class="cEmphasis">Resellers_data</em> et sélectionnez <b class="cBold">Inner Join</b> comme modèle de jointure (<b class="cBold">Join Model</b>).</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3794349"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-2-3.png" id="wp3772912" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3772941"> </a><div class="pSmartList2"><li>Glissez-déposez toutes les colonnes de la table <em class="cEmphasis">Resellers_data</em> sauf&#160;<em class="cEmphasis">ID_Reseller</em> dans la table de sortie principale,&#160;<em class="cEmphasis">Insured</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3772948"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-2-4.png" id="wp3772945" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3772954"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3772952" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Lorsque deux Inner Joins sont définis, vous devez soit définir deux tables de rejet inner join pour différencier les deux rejets, soit rassembler les deux rejets inner join dans une seule et même table de sortie, s&#39;il n&#39;y a qu&#39;une seule sortie.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3772963"> </a><div class="pSmartList2"><li>Dans la zone de sortie Output, cliquez sur le signe <b class="cBold">[+]</b> pour ajouter une nouvelle table de sortie et nommez-la&#160;<em class="cEmphasis">Reject_ResellerID</em>.</li></div>
+<a name="wp3772971"> </a><div class="pSmartList2"><li>Déposez toutes les colonnes de la table&#160;<em class="cEmphasis">Cars_data</em> dans la table&#160;<em class="cEmphasis">Reject_ResellerID</em>.</li></div>
+<a name="wp3772979"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">tMap Settings</b> puis sélectionnez true pour <b class="cBold">Catch lookup inner join reject</b> afin de définir la dernière table comme étant la table du flux de sortie de rejets Inner Join.Si la jointure Inner Join ne peut être établie pour une entrée, les informations concernant les voitures correspondantes seront rassemblées dans le flux de sortie. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773002"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-2-5.png" id="wp3772999" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773007"> </a><div class="pSmartList2"><li>Appliquez maintenant un filtre sur chacune des sorties de rejet Inner Join afin de distinguer les deux types de rejets.</li></div>
+<a name="wp3773014"> </a><div class="pSmartList2"><li>Dans la première table de rejet (<em class="cEmphasis">Reject_OwnerID</em>), cliquez sur la flèche dotée d&#39;un signe [+] pour ajouter une ligne de filtre et renseignez ce champ avec la formule suivante pour ne recueillir que les rejets liés au champ <em class="cEmphasis">OwnerID</em> non défini&#160;: <code class="cCode">Owners_data.ID_Owner==null</code> </li></div>
+<a name="wp3773027"> </a><div class="pSmartList2"><li>Dans la seconde table de rejet Inner Join (<em class="cEmphasis">Reject_ResellerID</em>), renouvelez l&#39;opération et utilisez la formule suivante&#160;: <code class="cCode">Resellers_data.ID_Reseller==null</code> </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773042"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-2-6.png" id="wp3773039" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773054"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Apply</b> pour enregistrer les changements, puis sur <b class="cBold">OK</b> pour fermer le Mapper.</li></div>
+<a name="wp3773066"> </a><div class="pSmartList2"><li>Déposez un nouveau composant <b class="cBold">tFileOutputDelimited</b> de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique et nommez-le&#160;<em class="cEmphasis">No_Reseller_ID</em>.</li></div>
+<a name="wp3773075"> </a><div class="pSmartList2"><li>Configurez ses propriétés. Dans ce scénario, spécifiez simplement le chemin d&#39;accès au fichier de sortie et cochez la case <b class="cBold">Include Header</b>. Laissez les autres paramètres tels qu&#39;ils sont.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773082"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-2-7.png" id="wp3773079" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773092"> </a><div class="pSmartList2"><li>Connectez le <b class="cBold">tMap</b> au nouveau <b class="cBold">tFileOutputDelimited</b> à l&#39;aide du lien <b class="cBold">Row</b> nommé&#160;<em class="cEmphasis">Reject_ResellerID</em>.</li></div>
+<a name="wp3789990"> </a><div class="pSmartList2"><li>Pour comprendre le fonctionnement du Mapper, dans ce scénario, retirez du fichier <em class="cEmphasis">Resellers.csv</em> les lignes correspondant aux <em class="cEmphasis">Reseller ID 5 et 8</em>.</li></div>
+<a name="wp3790051"> </a><div class="pSmartList2"><li>Exécutez le Job via la touche <b class="cBold">F6</b> du clavier, ou à partir de la vue <b class="cBold">Run</b>.<br />Les quatre fichiers de sortie sont tous créés dans le dossier défini dans les propriétés de la vue <b class="cBold">Component</b>. <br />Remarquez que dans le fichier de rejet lié à l&#39;Inner Join, <em class="cEmphasis">NoResellerID.csv</em>, le champ <em class="cEmphasis">ID_Owners</em> correspond aux entrées du fichier <em class="cEmphasis">Cars</em> dont le Reseller ID est égal à 5 et 8, manquant dans le fichier&#160;Resellers.csv.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773112"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap2-2-8.png" id="wp3773109" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3773142"> </a><p class="pIndented1">
+Pour des exemples d&#39;utilisation des schémas dynamiques avec le <b class="cBold">tMap</b>, consultez&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773149"> </a><div class="pSmartList2"><li><a href="tMysqlInput_Scenario.html#wp3857913"><em class="cEmphasis">Scénario&#160;: Ecrire des colonnes dynamiques d&#39;une base de données MySQL vers un fichier de sortie</em></a>.</li></div>
+<a name="wp3773156"> </a><div class="pSmartList2"><li><a href="tMysqlOutput_Scenario.html#wp3662803"><em class="cEmphasis">Scénario 4&#160;: Ecrire des colonnes dynamiques d&#39;un fichier source vers une base de données MySQL</em></a>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773166"> </a><h2 class="pHeading2">
+Scénario&#160;3&#160;: Mapping de jointure en cascade
+</h2>
+<a name="wp3773169"> </a><p class="pIndented1">
+Un troisième scénario plus avancé et basé sur le scénario&#160;2 requiert l&#39;ajout d&#39;une nouvelle entrée contenant les informations d&#39;assurance, par exemple.
+</p>
+<a name="wp3773179"> </a><p class="pIndented1">
+Dans le <b class="cBold">Mapper</b>, mettez en place une jointure <b class="cBold">Inner Join</b> entre deux tables de référence (Lookup) des flux secondaires <em class="cEmphasis">Owners</em> et <em class="cEmphasis">Insurance</em> afin de gérer les références en cascade et par conséquent de récupérer les informations de la table <em class="cEmphasis">Insurance</em> via les données de la table <em class="cEmphasis">Owners</em>.
+</p>
+<a name="wp3773199"> </a><h2 class="pHeading2">
+Scénario&#160;4&#160;: Mapping avancé avec filtres, jointures explicites et rejet Inner join
+</h2>
+<a name="wp3790182"> </a><p class="pIndented1">
+Ce scénario présente un Job utilisant le <b class="cBold">tMap</b> et permettant de trouver les clients propriétaires d&#39;une voiture de marque définie et avoir entre&#160;2 et 6&#160;enfants (inclus) dans un but de vente incitative.
+</p>
+<a name="wp3773217"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap4-1.png" id="wp3773214" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773228"> </a><div class="pSmartList2"><li>Cliquez-déposez les composants suivants de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tFileInputDelimited</b> (x3), <b class="cBold">tMap</b>, <b class="cBold">tFileOutputDelimited</b> (x2)</li></div>
+<a name="wp3773238"> </a><div class="pSmartList2"><li>Connectez les composants d&#39;entrée au <b class="cBold">tMap</b> à l&#39;aide de connexions de type <b class="cBold">Main row</b>. Faites attention au premier composant que vous connectez car son flux de données sera automatiquement un flux <b class="cBold">Main</b> (principal). Et toutes les autres connexions seront alors de type <b class="cBold">Lookup</b> (flux de référence). Dans ce scénario, le composant d&#39;entrée&#160;<em class="cEmphasis">Owners</em> sera relié au <b class="cBold">tMap</b> par le flux <b class="cBold">Main</b>.</li></div>
+<a name="wp3773251"> </a><div class="pSmartList2"><li>Définissez les propriétés de chaque composant d&#39;entrée dans l&#39;onglet <b class="cBold">Basic settings</b>. Configurez les propriétés du composant&#160;<em class="cEmphasis">Owners</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773263"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap4-2.png" id="wp3773260" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3790530"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">Repository</b> dans la liste<b class="cBold"> Property Type </b>et sélectionnez le schéma&#160;resellers, dans la boîte de dialogue <b class="cBold">[Repository Content]</b>. Les autres champs sont automatiquement renseignés.</li></div>
+<a name="wp3794709"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3794704" border="0" hspace="0" vspace="0"/><br />
+Dans ce scénario, les schémas d&#39;entrée sont stockés sous le noeud <b class="cBold">Metadata</b> du <b class="cBold">Repository</b> afin de les retrouver facilement. Pour plus d&#39;informations concernant la création de métadonnées dans le <b class="cBold">Repository</b>, consultez&#160;<em class="cEmphasis">Centraliser les métadonnées</em> dans le<b class="cBold"> Guide utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>.
+</p>
+<a name="wp3794760"> </a><div class="pSmartList2"><li>Répétez ces étapes pour les autres composants d&#39;entrée&#160;: <em class="cEmphasis">Cars</em> et&#160;<em class="cEmphasis">Resellers</em>. Ces deux flux de référence (<b class="cBold">Lookup</b>) renseigneront les tables secondaires (lookup) de la zone d&#39;entrée du <b class="cBold">Map Editor</b>.</li></div>
+<a name="wp3794788"> </a><div class="pSmartList2"><li>Dobule-cliquez sur le composant <b class="cBold">tMap</b> pour ouvrir le <b class="cBold">Map Editor</b> et définir le mapping et les filtres.</li></div>
+<a name="wp3794813"> </a><div class="pSmartList2"><li>Configurez une jointure explicite entre le flux <b class="cBold">Main</b>&#160;<em class="cEmphasis">Owner</em> et le flux <b class="cBold">Lookup</b>&#160;<em class="cEmphasis">Cars</em> en glissant-déposant la colonne&#160;<em class="cEmphasis">ID_Owner</em> de la table&#160;<em class="cEmphasis">Owner</em> dans la colonne&#160;<em class="cEmphasis">ID_Owner </em>de la table&#160;<em class="cEmphasis">Cars</em>. La jointure explicite s&#39;affiche avec une clé de hachage.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3794645"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap4-3.png" id="wp3773319" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773370"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Expr. Key</b> de la colonne <em class="cEmphasis">Make</em> (Marque), saisissez (en Java) le filtre à appliquer. Dans ce cas d&#39;utilisation, saisissez simplement <em class="cEmphasis">&quot;BMW&quot;</em> puisque ce qui est recherché ce sont les propriétaires (<em class="cEmphasis">Owners</em>) de cette marque en particulier.</li></div>
+<a name="wp3773386"> </a><div class="pSmartList2"><li>Effectuez une jointure en cascade entre les deux tables de référence <em class="cEmphasis">Cars</em> et&#160;<em class="cEmphasis">Resellers</em>, sur la colonne&#160;<em class="cEmphasis">ID_Reseller</em>, afin de retrouver les informations sur les propriétaires et plus précisément le nombre d&#39;enfants qu&#39;ils ont.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773395"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap4-3.png" id="wp3773392" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773442"> </a><div class="pSmartList2"><li>Comme vous souhaitez exclure les valeurs nulles dans une table séparée et les exclure de la sortie standard, cliquez sur le bouton <b class="cBold">tMap Settings</b> puis sélectionnez <b class="cBold">Inner Join</b> comme modèle de jointure pour chaque table <b class="cBold">Lookup</b> à filtrer.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773460"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap4-3.png" id="wp3773457" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773470"> </a><div class="pSmartList2"><li>Dans les paramètres du <b class="cBold">tMap</b>, vous pouvez sélectionner une des options suivantes&#160;: <b class="cBold">Unique match</b>, <b class="cBold">First match</b>, ou <b class="cBold">All Matches</b>. Dans cet exemple, sélectionnez l&#39;option <b class="cBold">All matches</b>. Ainsi, si plusieurs correspondances sont trouvées dans l&#39;Inner Join (i.e. les lignes répondant à la jointure explicite ainsi qu&#39;au filtre), elles seront toutes prises en compte dans le flux de sortie (soit dans le flux de rejet, soit dans le flux de sortie standard).</li></div>
+<a name="wp3773494"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3773486" border="0" hspace="0" vspace="0"/><br />
+L&#39;option <b class="cBold">Unique match</b> fonctionne de la même manière que l&#39;option<b class="cBold"> Last match</b>. Les options <b class="cBold">First match</b> et <b class="cBold">All matches</b> fonctionnent comme l&#39;indiquent leurs noms (respectivement première correspondance et toutes les correspondances).
+</p>
+<a name="wp3773512"> </a><div class="pSmartList2"><li>Puis dans la zone <b class="cBold">Output</b> du <b class="cBold">Map Editor</b>, ajoutez deux tables&#160;: une pour les correspondances répondant à la jointure explicite et au filtre et une pour les rejets.</li></div>
+<a name="wp3773521"> </a><div class="pSmartList2"><li>Déposez toutes les colonnes de la table&#160;<em class="cEmphasis">Owners</em>, les colonnes&#160;<em class="cEmphasis">Registration</em>,&#160;<em class="cEmphasis">Make</em> et&#160;<em class="cEmphasis">Color</em> de la table&#160;<em class="cEmphasis">Cars</em> ainsi que les colonnes&#160;<em class="cEmphasis">ID_Reseller</em> et&#160;<em class="cEmphasis">Name_Reseller </em>de la table&#160;<em class="cEmphasis">Reseller</em> dans la table de sortie principale.</li></div>
+<a name="wp3791154"> </a><div class="pSmartList2"><li>Déposez toutes les colonnes de la table&#160;<em class="cEmphasis">Owners</em> dans la table de rejets.</li></div>
+<a name="wp3791171"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Filter</b> en haut de la table de sortie principale afin d&#39;afficher la zone d&#39;expression <b class="cBold">Filter</b>.</li></div>
+<a name="wp3791183"> </a><div class="pSmartList2"><li>Saisissez une instruction afin de réduire le nombre de lignes chargées dans le flux principale de sortie. Dans cet exemple, saisissez&#160;: <code class="cCode">Owners.Children_Nr &gt;=2 &amp;&amp; Owners.Children_Nr &lt;= 6</code>.</li></div>
+<a name="wp3791365"> </a><div class="pSmartList2"><li>Dans la table de rejets, cliquez sur le bouton <b class="cBold">tMap settings</b> et définissez les types de rejets.</li></div>
+<a name="wp3791374"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">true</b> pour <b class="cBold">Catch output reject </b>afin de collecter des données concernant les détenteurs de voitures BMW ayant moins de deux enfants ou plus de six enfants.</li></div>
+<a name="wp3791380"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">true</b> pour <b class="cBold">Catch lookup inner join reject</b> afin de collecter des données concernant les propriétaires d&#39;autres marques et ceux pour qui l&#39;information&#160;<em class="cEmphasis">Reseller</em> est introuvable.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3791387"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap4-3.png" id="wp3791384" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773559"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour valider le mapping et fermer l&#39;éditeur.</li></div>
+<a name="wp3791532"> </a><div class="pSmartList2"><li>Dans l&#39;éditeur graphique, cliquez droit sur le <b class="cBold">tMap</b> et créez une connexion de sortie vers les composants correspondants.</li></div>
+<a name="wp3773568"> </a><div class="pSmartList2"><li>Définissez les paramètres des composants de sortie dans l&#39;onglet <b class="cBold">Basic settings</b>.<br />Dans ce scénario, spécifiez simplement les chemins d&#39;accès aux fichiers de sortie et cochez la case <b class="cBold">Include Header</b>. Laissez les autres paramètres tels qu&#39;ils sont.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773575"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap4-4.png" id="wp3773572" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773609"> </a><div class="pSmartList2"><li>Enregistrez votre Job, puis appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.<br />Le fichier de sortie principal contient les informations concernant les détenteurs de BMW ayant entre deux et six enfants, et le fichier de rejet contient les informations concernant les autres possesseurs de voiture(s).</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773618"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap4-5.png" id="wp3773615" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3773629"> </a><p class="pIndented1">
+Pour des exemples d&#39;utilisation des schémas dynamiques avec le <b class="cBold">tMap</b>, consultez&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773636"> </a><div class="pSmartList2"><li><a href="tMysqlInput_Scenario.html#wp3857913"><em class="cEmphasis">Scénario&#160;: Ecrire des colonnes dynamiques d&#39;une base de données MySQL vers un fichier de sortie</em></a>.</li></div>
+<a name="wp3773643"> </a><div class="pSmartList2"><li><a href="tMysqlOutput_Scenario.html#wp3662803"><em class="cEmphasis">Scénario 4&#160;: Ecrire des colonnes dynamiques d&#39;un fichier source vers une base de données MySQL</em></a>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773653"> </a><h2 class="pHeading2">
+Scénario&#160;5&#160;: Mapping avancé avec filtres et différents rejets
+</h2>
+<a name="wp3773656"> </a><p class="pIndented1">
+Ce scénario est une version modifiée du scénario précédent. Il décrit un Job qui applique des filtres pour limiter la recherche aux possesseurs de voitures BMW ou Mercedes ayant entre deux et six enfants et divise les données sans correspondance en différents flux de rejets.
+</p>
+<a name="wp3773664"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap5-1.png" id="wp3773661" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773671"> </a><div class="pSmartList2"><li>Reprenez le Job du <a href="tMap_Scenario.html#wp3773199"><em class="cEmphasis">Scénario&#160;4&#160;: Mapping avancé avec filtres, jointures explicites et rejet Inner join</em></a>.</li></div>
+<a name="wp3773677"> </a><div class="pSmartList2"><li>Déposez un nouveau <b class="cBold">tFileOutputDelimited</b> de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique et nommez-le&#160;<em class="cEmphasis">Rejects_BMW_Mercedes</em>.</li></div>
+<a name="wp3773682"> </a><div class="pSmartList2"><li>Connectez le composant <b class="cBold">tMap</b> au nouveau composant de sortie à l&#39;aide d&#39;une connexion <b class="cBold">Row</b> et nommez cette connexion selon la fonction du composant de sortie.<br />Ce lien deviendra le nom de la nouvelle table de sortie dans le <b class="cBold">Map Editor</b>.</li></div>
+<a name="wp3791727"> </a><div class="pSmartList2"><li>Renommez les connexions et les composants de sortie existants afin de présenter leur fonction.<br />Les tables de sortie dans le <b class="cBold">Map Editor </b>seront automatiquement renommées selon le libellé des liens. Dans cet exemple, renommez les connexions de sortie&#160;<em class="cEmphasis">BMW_Mercedes_withChildren</em> et&#160;<em class="cEmphasis">Owners_Other_Makes</em>, respectivement.</li></div>
+<a name="wp3791739"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tMap</b> afin de lancer le <b class="cBold">Map Editor</b> pour modifier le mapping et les filtres.<br />Remarquez que la zone de sortie contient une nouvelle table de sortie, vide, nommée&#160;<em class="cEmphasis">Rejects&#160;BMW_Mercedes</em>. Vous pouvez ajuster la position de la table en la sélectionnant et en cliquant sur les flèches pointant vers le haut ou vers le bas, en haut de la zone de sortie.</li></div>
+<a name="wp3791751"> </a><div class="pSmartList2"><li>Supprimez le filtre&#160;<em class="cEmphasis">BMW</em> de la table&#160;<em class="cEmphasis">Cars</em> dans la zone d&#39;entrée.</li></div>
+<a name="wp3791766"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Filters</b> pour afficher le champ <b class="cBold">Filter</b> et saisissez un nouveau filtre afin de limiter la recherche aux seules marques de voitures BMW et Mercedes. L&#39;instruction est la suivante&#160;: <code class="cCode">Cars.Make.equals(&quot;BMW&quot;) || Cars.Make.equals(&quot;Mercedes&quot;)</code>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773689"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap5-2.png" id="wp3773686" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773694"> </a><div class="pSmartList2"><li>Sélectionnez toutes les colonnes de la table principale de sortie et déposez-les dans la nouvelle table de sortie.<br />Sinon, vous pouvez glisser les colonnes des tables d&#39;entrée correspondantes dans la nouvelle table de sortie.</li></div>
+<a name="wp3773707"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">tMap settings</b> en haut de la nouvelle table de sortie et sélectionnez <b class="cBold">true</b> pour <b class="cBold">Catch output reject</b> afin de collecter les données concernant les détenteurs de voiture(s) BMW ou Mercedes ayant moins de deux enfants ou plus de six.</li></div>
+<a name="wp3773722"> </a><div class="pSmartList2"><li>Dans la table&#160;<em class="cEmphasis">Owners_Other_Makes</em>, sélectionnez <b class="cBold">true</b> pour <b class="cBold">Catch lookup inner join reject</b> afin de collecter les données concernant les possesseurs de voitures d&#39;autres marques et ceux dont l&#39;information&#160;<em class="cEmphasis">reseller</em> est introuvable.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773729"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap5-2.png" id="wp3773726" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773737"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour valider le mapping et fermer le <b class="cBold">Map Editor</b>.</li></div>
+<a name="wp3773758"> </a><div class="pSmartList2"><li>Configurez les propriétés des composants de sortie dans leur vue <b class="cBold">Basic settings</b> respective. Dans ce scénario, définissez simplement les nouveaux chemins d&#39;accès aux fichiers de sortie et cochez la case <b class="cBold">Include Header</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3794850"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap5-3.png" id="wp3794847" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3792569"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.<br />Le contenu du flux de sortie principal montre que les lignes filtrées sont bien passées.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3794875"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap5-4.png" id="wp3794861" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3794876"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap5-5.png" id="wp3773795" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3773809"> </a><p class="pIndented1">
+Pour des exemples d&#39;utilisation des schémas dynamiques avec le <b class="cBold">tMap</b>, consultez&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773816"> </a><div class="pSmartList2"><li><a href="tMysqlInput_Scenario.html#wp3857913"><em class="cEmphasis">Scénario&#160;: Ecrire des colonnes dynamiques d&#39;une base de données MySQL vers un fichier de sortie</em></a>.</li></div>
+<a name="wp3773823"> </a><div class="pSmartList2"><li><a href="tMysqlOutput_Scenario.html#wp3662803"><em class="cEmphasis">Scénario 4&#160;: Ecrire des colonnes dynamiques d&#39;un fichier source vers une base de données MySQL</em></a>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773833"> </a><h2 class="pHeading2">
+Scénario&#160;6&#160;: Mapping avancé avec rechargement de la base de référence à chaque ligne
+</h2>
+<a name="wp3773837"> </a><p class="pIndented1">
+Le scénario suivant décrit un Job permettant de récupérer certaines informations sur des personnes dans une base de données de référence, en se basant sur une jointure effectuée sur leur âge. Le flux principal des données source est lu à partir d&#39;une table MySQL appelée <em class="cEmphasis">people_age</em> contenant certains détails sur les personnes, comme leur identifiant (numérique), leur nom et prénom (alphanumérique) ainsi que leur âge (numérique), qui peut être soit 40, soit 60&#160;ans. On a intentionnellement réduit le nombre d&#39;entrées de cette table. 
+</p>
+<a name="wp3773844"> </a><p class="pIndented1">
+Les informations de référence sont également stockées dans une table MySQL appelée <em class="cEmphasis">large_data_volume</em>. Cette table de référence contient un certain nombre d&#39;entrées, dont le nom des villes dans lesquelles les personnes enregistrées dans la table principale sont allées. Le nombre d&#39;entrées a été restreint pour plus de clarté mais, dans le cas d&#39;une utilisation normale, le Job ci-dessous a des résultats plus significatifs quand on traite un gros volume de données de référence. 
+</p>
+<a name="wp3773851"> </a><p class="pIndented1">
+Pour optimiser les performances, un composant de connexion aux bases de données est utilisé au début de ce Job pour ouvrir une connexion à la base de données de référence afin de ne pas ouvrir et refermer une connexion à chaque ligne de la table de référence chargée.
+</p>
+<a name="wp3773855"> </a><p class="pIndented1">
+Un filtre d&#39;expression (expression filter) est appliqué à ce flux de référence, qui permet de ne sélectionner que les données des personnes dont l&#39;âge est 60 ou 40&#160;ans. Ainsi, seules les lignes pertinentes de la table de référence sont enregistrées pour chaque ligne du flux principal. 
+</p>
+<a name="wp3773859"> </a><p class="pIndented1">
+Ce Job présente donc comment, à partir d&#39;un nombre limité de lignes de flux principal, on peut optimiser la base de données de référence pour n&#39;enregistrer que les résultats correspondant à la clé d&#39;expression (expression key).
+</p>
+<a name="wp3773866"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3773864" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+En général, comme le chargement des références s&#39;effectue pour chacune des lignes de flux principal, il est plus intéressant d&#39;utiliser cette option quand on ne traite qu&#39;un nombre limité de lignes de flux principal et un grand nombre de lignes de référence. 
+</p>
+<a name="wp3773873"> </a><p class="pIndented1">
+La jointure s&#39;effectue au niveau du champ&#160;<em class="cEmphasis">age</em>. Les informations de la base de référence sont ensuite chargées pour chacune des lignes du flux principal en entrée, en utilisant l&#39;option de chargement appropriée dans l&#39;éditeur du composant <b class="cBold">tMap</b>. 
+</p>
+<a name="wp3773884"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tMap6-1.png" id="wp3773881" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3773887"> </a><p class="pIndented1">
+Dans cet exemple, les métadonnées ont été préparées pour le composant de connexion et les composants source. Pour plus d&#39;informations sur les métadonnées de connexion aux bases de données et les métadonnées de création de schémas des tables, consultez la section dédiée au sujet dans le <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>.
+</p>
+<a name="wp3773897"> </a><p class="pIndented1">
+Le Job est formé de cinq composants, quatre composants de bases de données et un composant de mapping. 
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773912"> </a><div class="pSmartList2"><li>A partir du noeud <b class="cBold">Metadata</b> &gt; <b class="cBold">Db Connections</b> dans le <b class="cBold">Repository</b>, glissez le schéma de base de données dans l&#39;éditeur graphique. Dans cet exemple, la table source s&#39;appelle <em class="cEmphasis">people_age</em>.</li></div>
+<a name="wp3773919"> </a><div class="pSmartList2"><li>Lorsque vous déposez le composant, une liste apparaît à l&#39;écran&#160;: sélectionnez le composant <b class="cBold">tMysqlInput</b>. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3773931"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tMap6-2.png" id="wp3773928" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3773940"> </a><div class="pSmartList2"><li>Déposez le schéma de base de donnée de référence à partir du noeud <b class="cBold">Metadata &gt; Db Connections</b>. Dans cet exemple, la table de référence s&#39;appelle <em class="cEmphasis">large_data_volume</em>.</li></div>
+<a name="wp3773949"> </a><div class="pSmartList2"><li>De la même manière, glissez une connexion à la base de données du noeud <b class="cBold">Db Connections </b>dans le <b class="cBold">Repository</b> dans l&#39;éditeur graphique. Dans la boîte de dialogue <b class="cBold">[Components]</b>, sélectionnez le composant <b class="cBold">tMysqlConnection</b>. Ce composant crée une connexion permanente à la base de données de référence afin d&#39;éviter que la connexion ne se referme au chargement que chaque ligne de référence. </li></div>
+<a name="wp3773962"> </a><div class="pSmartList2"><li>A partir de la <b class="cBold">Palette</b>, déposez dans l&#39;éditeur graphique le composant <b class="cBold">tMap</b> (famille <b class="cBold">Processing</b>) et les composants <b class="cBold">tMysqlCommit</b> et <b class="cBold">tMysqlOutput</b> (famille <b class="cBold">Database</b>). </li></div>
+<a name="wp3773981"> </a><div class="pSmartList2"><li>Reliez maintenant tous les composants entre eux&#160;: faites un clic-droit sur le <b class="cBold">tMysqlInput</b> correspondant à la table <em class="cEmphasis">people</em> et maintenez le bouton enfoncé tout en déplaçant le curseur jusqu&#39;au <b class="cBold">tMap</b>.</li></div>
+<a name="wp3773994"> </a><div class="pSmartList2"><li>Relâchez le bouton lorsque vous êtes sur le <b class="cBold">tMap</b>, le flux principal de lignes est créé automatiquement. </li></div>
+<a name="wp3774004"> </a><div class="pSmartList2"><li>Renommez le lien de type <b class="cBold">Main</b> en <em class="cEmphasis">people</em>, pour pouvoir identifier plus facilement le flux de données principal. </li></div>
+<a name="wp3774011"> </a><div class="pSmartList2"><li>Effectuez la même opération pour connecter la table de référence (<em class="cEmphasis">large_data_volume</em>) au <b class="cBold">tMap</b> et le <b class="cBold">tMap</b> au <b class="cBold">tMysqlOutput</b>.</li></div>
+<a name="wp3774024"> </a><div class="pSmartList2"><li>Une boîte de dialogue apparaît et vous devez donner un nom au lien de sortie. Dans cet exemple, le flux de sortie s&#39;appelle <em class="cEmphasis">people_mixandmatch. </em></li></div>
+<a name="wp3774034"> </a><div class="pSmartList2"><li>Renommez également le lien de connexion à la base de référence en <em class="cEmphasis">large_volume</em> pour pouvoir identifier plus facilement le flux de données. </li></div>
+<a name="wp3774048"> </a><div class="pSmartList2"><li>Connectez le <b class="cBold">tMysqlConnection</b> au <b class="cBold">tMysqlInput</b> via un lien de type <b class="cBold">OnSubjobOk</b>.</li></div>
+<a name="wp3774056"> </a><div class="pSmartList2"><li>Double-cliquez ensuite sur le composant <b class="cBold">tMap</b> pour ouvrir l&#39;éditeur graphique de mapping. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3774063"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tMap6-3.png" id="wp3774060" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3774074"> </a><div class="pSmartList2"><li>La table <b class="cBold">Output</b> (qui s&#39;est créée automatiquement quand vous avez lié le <b class="cBold">tMap</b> au <b class="cBold">tMysqlOutput</b>) sera composée des lignes concordantes du flux de référence (<em class="cEmphasis">large_data_volume</em>) et du flux principal (<em class="cEmphasis">people_age</em>).</li></div>
+<a name="wp3774087"> </a><div class="pSmartList2"><li>Sélectionnez les lignes du flux principal que vous voulez passer en sortie et faites les glisser vers la table de sortie (dans le coin supérieur droit de l&#39;éditeur de mapping)&#160;: ils y seront copiés. </li></div>
+<a name="wp3774094"> </a><div class="pSmartList2"><li>Dans cet exemple, la sélection des lignes du flux principal inclut les champs suivants&#160;: <em class="cEmphasis">id</em>, <em class="cEmphasis">first_name</em>, <em class="cEmphasis">last_Name</em> et <em class="cEmphasis">age</em>. </li></div>
+<a name="wp3774112"> </a><div class="pSmartList2"><li>Dans la table de référence, la colonne <em class="cEmphasis">city</em> est sélectionnée. </li></div>
+<a name="wp3774123"> </a><div class="pSmartList2"><li>Faites glisser les colonnes sélectionnées des tables d&#39;entrée (<em class="cEmphasis">people</em> et <em class="cEmphasis">large_volume</em>) vers la table de sortie.</li></div>
+<a name="wp3774128"> </a><div class="pSmartList2"><li>Créez maintenant la jointure entre le flux principal et le flux de référence. </li></div>
+<a name="wp3774134"> </a><div class="pSmartList2"><li>Sélectionnez la colonne <em class="cEmphasis">age</em> dans la table du flux principal (en haut) et faites-la glisser vers la colonne <em class="cEmphasis">age</em> de la table du flux de référence (<em class="cEmphasis">large_volume</em> dans cet exemple).</li></div>
+<a name="wp3774144"> </a><div class="pSmartList2"><li>L&#39;icône d&#39;une clé apparaît à côté de l&#39;expression liée dans la table de référence. La jointure est maintenant établie. </li></div>
+<a name="wp3774154"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">tMap Settings</b> puis sur le bouton <b class="cBold">[...]</b> correspondant à <b class="cBold">Lookup Model </b>et sélectionnez l&#39;option <b class="cBold">Reload at each row</b> dans la boîte de dialogue <b class="cBold">[Options]</b> pour que la base de référence soit chargée à nouveau pour chaque nouvelle ligne traitée. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3774163"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tMap6-4.png" id="wp3774160" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3774171"> </a><div class="pSmartList2"><li>De la même manière, paramétrez <b class="cBold">Match Model</b> comme <b class="cBold">All matches</b> dans la table de référence pour récupérer dans le flux de sortie toutes les occurrences de <em class="cEmphasis">age</em> qui correspondent.</li></div>
+<a name="wp3774181"> </a><div class="pSmartList2"><li>Implémentez ensuite le filtre, établi à partir de la colonne <em class="cEmphasis">age</em>, dans la table de référence. Le champ <b class="cBold">GlobalMapKey</b> est créé automatiquement lorsque vous sélectionnez l&#39;option <b class="cBold">Reload at each row</b>. Vous pouvez donc utiliser cette expression pour filtrer les données de référence de manière dynamique, pour que seules les informations pertinentes soient chargées avec le flux principal. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3774192"> </a><p class="pIndented1">
+Comme l&#39;a souligné l&#39;introduction de ce scénario, le flux de données principal contient uniquement les personnes dont l&#39;âge vaut&#160;40 ou&#160;60. Pour éviter de charger toutes les lignes de la table de référence, dont les âges sont différents de&#160;40 et&#160;60, vous pouvez utiliser la valeur âge du flux principal comme variable globale pour alimenter le filtre de référence. 
+</p>
+<a name="wp3784854"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tMap6-5.png" id="wp3774197" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3774211"> </a><div class="pSmartList2"><li>Glissez la colonne <em class="cEmphasis">Age</em> de la table de flux principal vers le champ <b class="cBold">Expr.</b> dans la table de référence. </li></div>
+<a name="wp3774218"> </a><div class="pSmartList2"><li>Renseignez ensuite le nom de la variable dans le champ <b class="cBold">globalMap Key</b>, en utilisant une expression. Dans cet exemple, l&#39;expression est&#160;: <code class="cCode">&quot;people.Age&quot;</code>. </li></div>
+<a name="wp3774228"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">OK</b> pour enregistrer les paramètres de mapping et retourner dans l&#39;éditeur graphique. </li></div>
+<a name="wp3774232"> </a><div class="pSmartList2"><li>Pour terminer l&#39;implémentation du filtrage dynamique du flux de référence, vous devez maintenant ajouter une clause WHERE à la requête de la base de données d&#39;entrée. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3774241"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tMap6-6.png" id="wp3774238" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3774249"> </a><div class="pSmartList2"><li>A la fin du champ <b class="cBold">Query</b>, juste après la commande <code class="cCode">Select</code>, entrez la clause de type WHERE suivante&#160;: <br /><code class="cCode">WHERE AGE =&#39;&quot;+((Integer)globalMap.get(&quot;people.Age&quot;))+&quot;&#39;&quot;.</code></li></div>
+<a name="wp3774256"> </a><div class="pSmartList2"><li>Assurez-vous que le type correspond à la colonne utilisée comme variable. Dans cet exemple, la donnée <em class="cEmphasis">Age</em> est du type <code class="cCode">Integer</code>. Veillez aussi à utiliser la variable de la manière dont vous l&#39;avez paramétrée dans le champ <b class="cBold">globalMap key</b> de l&#39;éditeur de mapping. </li></div>
+<a name="wp3774272"> </a><div class="pSmartList2"><li>Double-cliquez ensuite sur le composant <b class="cBold">tMysqlOutput</b> et vérifiez que le schéma correspond aux paramètres de mapping. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3774292"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap6-7.png" id="wp3774289" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3774300"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Use an existing connection</b> afin d&#39;utiliser la connexion créée. </li></div>
+<a name="wp3792919"> </a><div class="pSmartList2"><li>Spécifiez dans le champ <b class="cBold">Table</b> le nom de la table cible.<br />Dans les listes <b class="cBold">Action on table </b>et <b class="cBold">Action on data</b>, sélectionnez les actions que vous souhaitez effectuer.</li></div>
+<a name="wp3774304"> </a><div class="pSmartList2"><li>Cliquez sur l&#39;onglet <b class="cBold">Run</b> au bas de l&#39;espace de modélisation graphique, afin d&#39;afficher l&#39;onglet d&#39;exécution. </li></div>
+<a name="wp3774316"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Debug Run</b>, cliquez sur le bouton <b class="cBold">Traces Debug</b> pour voir la progression du traitement des données.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3774319"> </a><p class="pIndented1">
+Pour une meilleure visibilité, il est possible d&#39;agrandir la vue du Job dans l&#39;éditeur graphique lors de l&#39;exécution en double-cliquant simplement sur l&#39;onglet portant le nom du Job. 
+</p>
+<a name="wp3774327"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tMap6-9.png" id="wp3774324" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3774330"> </a><p class="pIndented1">
+Les données de référence sont chargées à nouveau pour chaque ligne du flux principal qui correspond à la contrainte d&#39;âge. Toutes les correspondances à la condition <em class="cEmphasis">age</em> sont récupérées à partir des lignes de la table de référence et regroupées dans le flux de sortie. 
+</p>
+<a name="wp3774340"> </a><p class="pIndented1">
+Si vous vérifiez les données contenues dans la table <em class="cEmphasis">people_mixandmatch </em>nouvellement créée, vous y trouverez toutes les copies basées sur <em class="cEmphasis">age</em> correspondant aux différentes personnes dont l&#39;âge vaut&#160;40 ou 60, ainsi que les villes où ils sont allés.  
+</p>
+<a name="wp3774351"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap6-10.png" id="wp3774348" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3774358"> </a><p class="pIndented1">
+Pour des exemples d&#39;utilisation des schémas dynamiques avec le <b class="cBold">tMap</b>, consultez&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3774365"> </a><div class="pSmartList2"><li><a href="tMysqlInput_Scenario.html#wp3857913"><em class="cEmphasis">Scénario&#160;: Ecrire des colonnes dynamiques d&#39;une base de données MySQL vers un fichier de sortie</em></a>.</li></div>
+<a name="wp3774372"> </a><div class="pSmartList2"><li><a href="tMysqlOutput_Scenario.html#wp3662803"><em class="cEmphasis">Scénario 4&#160;: Ecrire des colonnes dynamiques d&#39;un fichier source vers une base de données MySQL</em></a>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3774383"> </a><h2 class="pHeading2">
+Scénario 7&#160;: Mapping avec des tables de sortie
+</h2>
+<a name="wp3774387"> </a><p class="pIndented1">
+Le scénario suivant décrit un Job traitant des flux de rejet sans les séparer du flux principal. 
+</p>
+<a name="wp3774394"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap7-1.png" id="wp3774391" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3774408"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Repository</b>, cliquez sur <b class="cBold">Metadata</b> &gt; <b class="cBold">File delimited</b>. Glissez-déposez la métadonnée <em class="cEmphasis">customers</em> dans l&#39;espace de modélisation graphique. <br />La métadonnée&#160;customers contient des informations relatives aux clients, comme leur ID, leur nom, leur adresse, etc.<br />Pour plus d&#39;informations concernant la centralisation des métadonnées, consultez&#160;<em class="cEmphasis">Centraliser les métadonnées, page 145</em> du <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>.</li></div>
+<a name="wp3774427"> </a><div class="pSmartList2"><li>Une boîte de dialogue s&#39;ouvre et vous demande de choisir le type de composant que vous souhaitez utiliser. Sélectionnez le composant <b class="cBold">tFileInputDelimited</b> et cliquez sur <b class="cBold">OK</b>.</li></div>
+<a name="wp3774440"> </a><div class="pSmartList2"><li>Ensuite, glissez-déposez la métadonnée <em class="cEmphasis">states</em>. Sélectionnez le même composant dans la boîte de dialogue et cliquez sur <b class="cBold">OK</b>. <br />La métadonnée <em class="cEmphasis">states</em> contient l&#39;identifiant de l&#39;état, ainsi que son nom.</li></div>
+<a name="wp3774460"> </a><div class="pSmartList2"><li>Glissez-déposez de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique un <b class="cBold">tMap</b> et deux composants <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp3774473"> </a><div class="pSmartList2"><li>Reliez le composant <em class="cEmphasis">customers</em> au <b class="cBold">tMap</b> à l&#39;aide d&#39;un lien <b class="cBold">Row </b>&gt; <b class="cBold">Main</b>.</li></div>
+<a name="wp3774485"> </a><div class="pSmartList2"><li>Reliez le composant <em class="cEmphasis">states</em> au <b class="cBold">tMap</b>, en utilisant un lien <b class="cBold">Row </b>&gt;<b class="cBold"> Main</b>. Il sera automatiquement défini comme <b class="cBold">Lookup</b>.</li></div>
+<a name="wp3774498"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tMap</b> afin d&#39;ouvrir le <b class="cBold">Map Editor</b>. </li></div>
+<a name="wp3793093"> </a><div class="pSmartList2"><li>Glissez-déposez la colonne <em class="cEmphasis">idState</em> dans la première ligne de la seconde table, afin de créer une jointure.</li></div>
+<a name="wp3793119"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">tMap settings</b> et sélectionnre <b class="cBold">Inner Join</b> pour <b class="cBold">Join Model</b>.</li></div>
+<a name="wp3793250"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Property settings</b> en haut de la zone d&#39;entrée afin d&#39;ouvrir la boîte de dialogue <b class="cBold">[Property settings] </b>et décochez la case <b class="cBold">Die on error</b> si vous souhaitez gérer les erreurs d&#39;exécution. <br />La table <b class="cBold">ErrorReject</b> est maintenant créée.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3793378"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tmap7-2.png" id="wp3793265" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3794909"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tMap7-2_TIS.png" id="wp3794886" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3794910"> </a><div class="pSmartList2"><li>Sélectionnez les colonnes&#160;<em class="cEmphasis">id</em>,&#160;<em class="cEmphasis">idState</em>,&#160;<em class="cEmphasis">RegTime</em> et&#160;<em class="cEmphasis">RegisterTime</em> de la table d&#39;entrée et déposez-les dans la table <b class="cBold">ErrorReject</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3795030"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tMap7-3.png" id="wp3795027" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3795055"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[+]</b> en haut à droite de l&#39;éditeur afin d&#39;ajouter une table de sortie. Dans la boîte de dialogue qui s&#39;ouvre, sélectionnez<b class="cBold"> New output</b>. Dans le champ à côté, saisissez le nom de la table,&#160;<em class="cEmphasis">out1</em>. Cliquez sur <b class="cBold">OK</b>.</li></div>
+<a name="wp3795087"> </a><div class="pSmartList2"><li>Déposez les colonnes suivantes des tables d&#39;entrée dans la table&#160;<em class="cEmphasis">out1</em>&#160;:&#160;<em class="cEmphasis">id</em>, <em class="cEmphasis">CustomerName</em>, <em class="cEmphasis">idState</em> et&#160;<em class="cEmphasis">LabelState</em>.</li></div>
+<a name="wp3795100"> </a><div class="pSmartList2"><li>Ajoutez deux colonnes&#160;<em class="cEmphasis">RegTime</em> et&#160;<em class="cEmphasis">RegisterTime</em> à la fin de la colonne&#160;<em class="cEmphasis">out1</em> et paramétrez leur format de date&#160;: <code class="cCode">&quot;dd/MM/yyyy HH:mm&quot;</code> et <code class="cCode">&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;</code>, respectivement.</li></div>
+<a name="wp3795110"> </a><div class="pSmartList2"><li>Cliquez sur le champ <b class="cBold">Expression</b> pour&#160;<em class="cEmphasis">RegTime</em> et appuyez sur <b class="cBold">Ctrl+Espace</b> pour afficher la liste d&#39;autocomplétion. Sélectionnez <code class="cCode">TalendDate.parseDate</code>. Changez le modèle en <code class="cCode">(&quot;dd/MM/yyyy HH:mm&quot;,row1.RegTime)</code>.</li></div>
+<a name="wp3795851"> </a><div class="pSmartList2"><li>Répétez l&#39;opération pour la seconde colonne, mais changez le modèle en <code class="cCode">(&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;,row1.RegisterTime)</code>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3795861"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tMap7-4.png" id="wp3795858" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3795868"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[+]</b> en haut à droite de l&#39;éditeur, afin d&#39;ajouter une table de sortie. Dans la boîte de dialogue qui s&#39;ouvre, sélectionnez <b class="cBold">Create join table from</b>, choisissez <em class="cEmphasis">Out1</em> et donnez le nom&#160;<em class="cEmphasis">rejectInner</em>. Cliquez sur <b class="cBold">OK</b>.</li></div>
+<a name="wp3795892"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">tMap settings</b> et sélectionnez <b class="cBold">true</b> pour <b class="cBold">Catch lookup inner join reject</b>, afin de gérer les rejets.</li></div>
+<a name="wp3795906"> </a><div class="pSmartList2"><li>Déposez les colonnes&#160;<em class="cEmphasis">id</em>,&#160;<em class="cEmphasis">CustomerName</em> et&#160;<em class="cEmphasis">idState</em> des tables d&#39;entrée dans les colonnes correspondantes de la table&#160;<em class="cEmphasis">rejectInner</em>.</li></div>
+<a name="wp3793987"> </a><div class="pSmartList2"><li>Cliquez dans le champ <b class="cBold">Expression</b> de la colonne <em class="cEmphasis">LabelState</em> et saisissez <code class="cCode">&quot;UNKNOWN&quot;</code>.</li></div>
+<a name="wp3793996"> </a><div class="pSmartList2"><li>Cliquez dans le champ <b class="cBold">Expression</b> de la colonne <em class="cEmphasis">RegTime</em>, appuyez sur <b class="cBold">Ctrl+Espace</b>, et sélectionnez <code class="cCode">TalendDate.parseDate</code>. Changez le modèle en <code class="cCode">(&quot;dd/MM/yyyy HH:mm&quot;,row1.RegTime.)</code></li></div>
+<a name="wp3794074"> </a><div class="pSmartList2"><li>Dans la colonne <em class="cEmphasis">RegisterTime</em>, appuyez sur <b class="cBold">Ctrl+Espace</b>, et sélectionnez <code class="cCode">TalendDate.parseDate</code>, mais changez le modèle en <code class="cCode">(&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;,row1.RegisterTime)</code>.<br />Si les données de la ligne <em class="cEmphasis">row1</em> ont un modèle incorrect, elles seront retournées par le flux <em class="cEmphasis">ErrorReject</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3795384"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tMap7-4.png" id="wp3795381" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3795387"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> afin de valider les modifications et fermer l&#39;éditeur. </li></div>
+<a name="wp3795312"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tLogRow</b> afin d&#39;afficher sa vue <b class="cBold">Component</b>.</li></div>
+<a name="wp3795399"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Sync columns</b> pour récupérer la structure du schéma depuis le mapper si nécessaire.</li></div>
+<a name="wp3795403"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Mode</b>, sélectionnez <b class="cBold">Table.</b> </li></div>
+<a name="wp3795337"> </a><div class="pSmartList2"><li>Répétez l&#39;opération avec le second <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp3795343"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.<br />La console de la vue <b class="cBold">Run</b> affiche les flux de sortie principal et le flux&#160;<em class="cEmphasis">ErrorReject</em>. Le flux de sortie principal unifie les données valides et les rejets Inner Join, alors que le flux&#160;<em class="cEmphasis">ErrorReject</em> contient les informations des erreurs concernant les lignes ayant un format de date non analysable </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3795354"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/UseCase_tMap7-5.png" id="wp3774742" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3785576"> </a><p class="pIndented1">
+Pour des exemples d&#39;utilisation des schémas dynamiques avec le <b class="cBold">tMap</b>, consultez&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3774769"> </a><div class="pSmartList2"><li><a href="tMysqlInput_Scenario.html#wp3857913"><em class="cEmphasis">Scénario&#160;: Ecrire des colonnes dynamiques d&#39;une base de données MySQL vers un fichier de sortie</em></a>.</li></div>
+<a name="wp3774776"> </a><div class="pSmartList2"><li><a href="tMysqlOutput_Scenario.html#wp3662803"><em class="cEmphasis">Scénario 4&#160;: Ecrire des colonnes dynamiques d&#39;un fichier source vers une base de données MySQL</em></a>.</li></div>
+</ul></div>
+</ul></div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMap_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tNormalize_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

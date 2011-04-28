@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:04">
+    <title>Scenario: Retrieving detailed database information from a given Palo server</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloDatabaseList_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloDimension_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3469849"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3469337"> </a><h2 class="pHeading2">
+Scenario: Retrieving detailed database information from a given Palo server
+</h2>
+<a name="wp3469341"> </a><p class="pIndented1">
+The job in this scenario retrieves details of all of the databases from a given Palo server.
+</p>
+<a name="wp3469356"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloDatabaseList.png" id="wp3470362" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3470357"> </a><p class="pIndented1">
+To replicate this scenario, proceed as follows:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3469372"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tPaloDatabaseList</b> and <b class="cBold">tLogRow</b> from the component <b class="cBold">Palette</b> onto the design workspace.</li></div>
+<a name="wp3470430"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tPaloDatabaseList</b> to open the contextual menu.</li></div>
+<a name="wp3470439"> </a><div class="pSmartList2"><li>From this menu, select <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> to link the two components.</li></div>
+<a name="wp3470442"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tPaloDatabaseList</b> component to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3469410"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloDatabaseList1.png" id="wp3470502" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3470497"> </a><div class="pSmartList2"><li>In the <b class="cBold">Host name</b> field, type in the host name or the IP address of the host server, <em class="cEmphasis">localhost</em> for this example.</li></div>
+<a name="wp3469419"> </a><div class="pSmartList2"><li>In the <b class="cBold">Server Port</b> field, type in the listening port number of the Palo server. In this scenario, it is <em class="cEmphasis">7777</em>.</li></div>
+<a name="wp3469436"> </a><div class="pSmartList2"><li>In the <b class="cBold">Username</b> field and the <b class="cBold">Password</b> field, type in the authentication information. In this example, both of them are <em class="cEmphasis">admin</em>.</li></div>
+<a name="wp3475548"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3469534"> </a><p class="pIndented1">
+Details of all of the databases in the Palo server are retrieved and listed in the console of the <b class="cBold">Run</b> view.
+</p>
+<a name="wp3470569"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloDatabaseList2.png" id="wp3470574" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3470621"> </a><p class="pIndented1">
+For further information about the output schema, see section <a href="tPaloDatabaseList_Prop.html#wp3469327"><em class="cEmphasis">Discovering the read-only output schema of tPaloDatabaseList</em></a>.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloDatabaseList_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloDimension_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

@@ -1,0 +1,503 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:08:03">
+    <title>tFSJoin</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSFilterRows_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSJoin_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3613649"> </a><h2 class="pHeading1">
+tFSJoin
+</h2>
+<a name="wp3613658"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tFSJoin_icon32.png" id="wp3613653" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3628680"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3628670" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+Ce composant n&#39;est disponible dans la <b class="cBold">Palette</b> que si vous avez souscrit à <b class="cBold">Talend Integration Suite MP</b>x. Pour plus d&#39;informations concernant le mode Massively Parallel eXtension, consultez&#160;<em class="cEmphasis">Le mode Massively Parallel eXtension</em> dans le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite MP</b>x.
+</div>
+<a name="wp3628695"> </a><h2 class="pHeading2">
+Propriétés du tFSJoin
+</h2>
+<a name="wp3618883"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3618466table3618461">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618466"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp3618468"> </a><div class="pCellBody">
+FileScale
+</div>
+</td>
+    <td><a name="wp3618476"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icongh.png" id="wp3618473" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618481"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3618486"> </a><div class="pCellBody">
+Le composant <b class="cBold">tFSJoin </b>regroupe les champs de deux fichiers en utilisant des valeurs communes aux deux. Il compare des colonnes du fichier leftset (fichier d&#39;entrée) aux colonnes de référence du fichier rightset (fichier de référence) et écrit les données agrégées et/ou rejetées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618493"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3618495"> </a><div class="pCellBody">
+Ce composant permet de regrouper un fichier leftset et un fichier rightset en utilisant un prédicat de jointure pour identifier les enregistrements sur lesquels effectuer une jointure.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618502"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3618507"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp3618509"> </a><div class="pCellBody">
+Peut être Built-in ou Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618511"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618513"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618518"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Propriétés utilisées ponctuellement.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618520"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618522"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618527"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Sélectionnez le fichier de propriétés du composant. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618529"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3618534"> </a><div class="pCellHeading">
+<em class="cEmphasis">Input File</em>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618538"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618545"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3618548"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository.<br />Cliquez sur <b class="cBold">Edit Schema</b> pour modifier le schéma.
+</div>
+<a name="wp3618557"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3618555" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+ Si vous modifiez le schéma, il se met automatiquement en built-in.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618560"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618562"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618567"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618578"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618580"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618585"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Le schéma est créé et conservé pour ce composant uniquement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide Utilisateur </b>de <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618596"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618601"> </a><div class="pCellHeading">
+<em class="cEmphasis">File Name</em>
+</div>
+</td>
+    <td><a name="wp3618603"> </a><div class="pCellBody">
+Chemin d&#39;accès au fichier leftset (fichier d&#39;entrée) contenant les données sur lesquelles vous souhaitez effectuer une jointure.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618605"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618610"> </a><div class="pCellHeading">
+<em class="cEmphasis">Header</em>
+</div>
+</td>
+    <td><a name="wp3618612"> </a><div class="pCellBody">
+Nombre d&#39;enregistrements à ignorer au début du fichier.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618614"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618619"> </a><div class="pCellHeading">
+<em class="cEmphasis">Footer</em>
+</div>
+</td>
+    <td><a name="wp3618621"> </a><div class="pCellBody">
+Nombre d&#39;enregistrements à ignorer à la fin du fichier.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618623"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3618628"> </a><div class="pCellHeading">
+<em class="cEmphasis">Rightset File</em>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618632"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618639"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3618642"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository.<br />Cliquez sur <b class="cBold">Edit Schema</b> pour modifier le schéma.
+</div>
+<a name="wp3618651"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3618649" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+ Si vous modifiez le schéma, il se met automatiquement en built-in.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618654"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618656"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618661"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Le schéma est créé et conservé pour ce composant uniquement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide Utilisateur </b>de <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618672"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618674"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618679"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618690"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618695"> </a><div class="pCellHeading">
+<em class="cEmphasis">File Name</em>
+</div>
+</td>
+    <td><a name="wp3618697"> </a><div class="pCellBody">
+Chemin d&#39;accès au fichier rightset (fichier de référence) contenant les données sur lesquelles vous souhaitez effectuer une jointure.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618699"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618704"> </a><div class="pCellHeading">
+<em class="cEmphasis">Header</em>
+</div>
+</td>
+    <td><a name="wp3618706"> </a><div class="pCellBody">
+Nombre d&#39;enregistrements à ignorer au début du fichier.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618708"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618713"> </a><div class="pCellHeading">
+<em class="cEmphasis">Footer</em>
+</div>
+</td>
+    <td><a name="wp3618715"> </a><div class="pCellBody">
+Nombre d&#39;enregistrements à ignorer à la fin du fichier.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618717"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618721"> </a><div class="pCellHeading">
+<em class="cEmphasis">Record Separator (char)</em>
+</div>
+</td>
+    <td><a name="wp3618724"> </a><div class="pCellBody">
+Caractère, chaîne de caractères ou expression régulière pour séparer les enregistrements (lignes).
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618726"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618730"> </a><div class="pCellHeading">
+<em class="cEmphasis">Field Separator (char)</em>
+</div>
+</td>
+    <td><a name="wp3618733"> </a><div class="pCellBody">
+Caractère, chaîne de caractères ou expression régulière pour séparer les champs dans un enregistrement.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618735"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618740"> </a><div class="pCellHeading">
+<em class="cEmphasis">Join Key</em>
+</div>
+</td>
+    <td><a name="wp3618745"> </a><div class="pCellBody">
+<b class="cBold">Input column</b>&#160;: Sélectionnez la (les) colonne(s) du fichier d&#39;entrée nécessitant vérification par rapport à la colonne rightset (de référence).<br /><br /><b class="cBold">Rightset column</b>&#160;: Sélectionnez les colonnes clés de référence qui seront utilisées comme référence par rapport aux colonnes du fichier d&#39;entrée que vous souhaitez comparer.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618750"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618755"> </a><div class="pCellHeading">
+<em class="cEmphasis">Join Mode</em>
+</div>
+</td>
+    <td><a name="wp3618757"> </a><div class="pCellBody">
+Sélectionnez dans la liste le mode définissant la jointure entre le fichier d&#39;entrée et le fichier rightset&#160;:<br /><b class="cBold">Inner join</b>&#160;: ce type de jointure est le plus courant. Il crée une table de sortie en combinant les valeurs des colonnes de deux tables à partir du prédicat de jointure.<br /><b class="cBold">Left-outer-join</b>&#160;: avec ce type de jointure, la table de sortie contient toujours tous les enregistrements de la table leftset, même si la condition de jointure ne trouve aucun enregistrement correspondant dans la table rightset.<br /><b class="cBold">Right-outer-join</b>&#160;: avec ce type de jointure, la table de sortie contient toujours tous les enregistrements de la table rightset, même si la condition de jointure ne trouve aucun enregistrement correspondant dans la table leftset.<br /><b class="cBold">Full-outer-join</b>&#160;: cette jointure applique à la fois la jointure Right-outer-join et la jointure Left-outer-join. Chaque colonne de la table se verra attribuer une valeur NULL si aucune ligne ne lui correspond.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618771"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618776"> </a><div class="pCellHeading">
+<em class="cEmphasis">Output File Name</em>
+</div>
+</td>
+    <td><a name="wp3618778"> </a><div class="pCellBody">
+Chemin d&#39;accès au fichier de sortie dans lequel vous souhaitez écrire les données regroupées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618780"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618785"> </a><div class="pCellHeading">
+<em class="cEmphasis">Output Reject File</em>
+</div>
+</td>
+    <td><a name="wp3618787"> </a><div class="pCellBody">
+Chemin d&#39;accès au fichier de sortie dans lequel vous souhaitez écrire les données rejetées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618792"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3618796"> </a><div class="pCellHeading">
+<em class="cEmphasis">Generate FSLang File</em>
+</div>
+</td>
+    <td><a name="wp3618799"> </a><div class="pCellBody">
+Cochez cette case pour générer le fichier FSLang correspondant à votre Job et cliquez sur le bouton <b class="cBold">[...]</b> à côté de chacun des champs suivants&#160;:<br /><b class="cBold">Left FSLang File Name</b>&#160;: pour spécifier le chemin d&#39;accès et le nom du fichier d&#39;entrée FSLang,<br /><b class="cBold">Right FSLang File Name&#160;</b>: pour spécifier le chemin d&#39;accès et le nom du fichier de référence FSLang,<br /><b class="cBold">Join FSLang File Name</b>&#160;: pour spécifier le chemin d&#39;accès et le nom du fichier de sortie FSLang, fichier dans lequel les données regroupées seront écrites.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618813"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618817"> </a><div class="pCellHeading">
+<em class="cEmphasis">Assign FileScale Path</em>
+</div>
+</td>
+    <td><a name="wp3618823"> </a><div class="pCellBody">
+Cochez cette case puis cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">FileScale Path</b> afin de sélectionner le fichier exécutable du programme FileScale nécessaire à l&#39;exécution du composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618828"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618832"> </a><div class="pCellHeading">
+<em class="cEmphasis">Specify Number of Process Child</em>
+</div>
+</td>
+    <td><a name="wp3618835"> </a><div class="pCellBody">
+Cochez cette case et saisissez le nombre de processus fils à utiliser pour effectuer l&#39;agrégation.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618837"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618841"> </a><div class="pCellHeading">
+<em class="cEmphasis">Custom FileScale Parameter (separated by,)</em>
+</div>
+</td>
+    <td><a name="wp3618844"> </a><div class="pCellBody">
+Saisissez les paramètres pour toute opération spécifique que vous souhaitez ajouter à l&#39;appel de l&#39;exécutable FileScale.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618846"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618851"> </a><div class="pCellHeading">
+<em class="cEmphasis">Custom Hash Ratio</em>
+</div>
+</td>
+    <td><a name="wp3618853"> </a><div class="pCellBody">
+Saisissez un ratio entre le maximum de mémoire utilisée pour exécuter le processus FileScale et la taille du fichier d&#39;entrée  Si la taille de l&#39;un des fichiers d&#39;entrée est inférieure au ratio, un algorithme en mémoire de jointure hachée est essayé en premier, afin d&#39;optimiser les performances.<br />Par exemple, si la valeur par défaut de ce paramètre équivaut à 0,5, et si la mémoire de votre ordinateur est égale à 1GB, le processus FileScale utilisera un algorithme en mémoire de jointure hachée, lorsque la taille du fichier d&#39;entrée est inférieure à 500MB.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618855"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3618859"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3618862"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log au niveau du Job ainsi qu&#39;au niveau de chaque composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3618867"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3618869"> </a><div class="pCellBody">
+Ce composant gère des fichiers et ne nécessite donc pas de flux d&#39;entrée ou de sortie. Il est utilisé pour effectuer une jointure sur des données to dans des fichiers à gros volume.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3618876"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3618878"> </a><div class="pCellBody">
+La limitation dépend des limites imposées par la mémoire physique et par l&#39;architecture du processeur. Par exemple, la longueur totale des fichiers traités ne peut excéder la limite système pour les fichiers à gros volume (valeur maximum de 64 bits signés).
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSFilterRows_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSJoin_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

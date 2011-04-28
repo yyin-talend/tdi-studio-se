@@ -1,0 +1,479 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:17">
+    <title>Scenario 1: Normalizing the data using rules of basic types</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tStandardizeRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tStem_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3824291"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3824298"> </a><h2 class="pHeading2">
+Scenario 1: Normalizing the data using rules of basic types
+</h2>
+<a name="wp3824302"> </a><p class="pIndented1">
+In this scenario, two successive steps are performed to:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3824308"> </a><div class="pSmartList2"><li>normalize the incoming data (separate the compliant data from the noncompliant data) and,</li></div>
+<a name="wp3824313"> </a><div class="pSmartList2"><li>extract the data of interests and display them.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3824316"> </a><p class="pIndented1">
+Before replicating these two steps, we need to analyze the source data in order to figure out what rules need to be composed. For this scenario, the source data are stored in a <em class="cEmphasis">.csv</em> file called <em class="cEmphasis">partsmaster</em>.
+</p>
+<a name="wp3824330"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStandardizeRow_rawdata.png" id="wp3824327" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3824334"> </a><p class="pIndented1">
+There are totally 59 rows of raw data, but some of them are not shown in our capture.
+</p>
+<a name="wp3824340"> </a><p class="pIndented1">
+Through observation, you can expect that the third row will not be recognized as it contains the<code class="cCode"> &#8364;</code> sign. Furthermore, you can figure out that:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3824352"> </a><div class="pSmartList2"><li>for the <em class="cEmphasis">SKU</em> data, the data format should be <code class="cCode">&quot;99-9999&quot;</code>, so the other formats of these data are not correct, thus noncompliant. Therefore, the rule used to parse the <em class="cEmphasis">SKU</em> data could be:</li></div>
+<a name="wp3824377"> </a><p class="pBodyRelative">
+<div align="center">
+<table border="1" id="wp3824365table3824363">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp3824365"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Name
+</div>
+</th>
+    <th><a name="wp3824367"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Type
+</div>
+</th>
+    <th><a name="wp3824369"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Value
+</div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp3824371"> </a><div class="pCellBody">
+<code class="cCode">&quot;SKU&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824373"> </a><div class="pCellBody">
+<code class="cCode">&quot;Format&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824375"> </a><div class="pCellBody">
+<code class="cCode">&quot;(DIGIT DIGIT &#39;-&#39; DIGIT DIGIT DIGIT DIGIT )| (LETTER LETTER DIGIT DIGIT DIGIT DIGIT)&quot;</code>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</p>
+<a name="wp3824385"> </a><div class="pSmartList2"><li>for the <em class="cEmphasis">Size</em> data, the correct format is the multiplication of two or three lengths plus the length units. Therefore, the rules used to parse the <em class="cEmphasis">Size</em> data could be: </li></div>
+<a name="wp3824476"> </a><p class="pBodyRelative">
+<div align="center">
+<table border="1" id="wp3824395table3824393">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp3824395"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Name
+</div>
+</th>
+    <th><a name="wp3824397"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Type
+</div>
+</th>
+    <th><a name="wp3824399"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Value
+</div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp3824404"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;LengthUnit&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824409"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;Enumeration&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824414"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot; &#39;m&#39; |  &#39;\&#39;&#39; | &#39;inch&#39; | &#39;inches&#39; | &#39;\&quot;&#39;&quot;</code>
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824419"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;BY&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824424"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;Enumeration&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824432"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;&#39;X&#39; | &#39;x&#39; | &#39;by&#39; &quot;</code>
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824437"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;length&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824442"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;Format&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824447"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;(INT | FRACTION | DECIMAL)  LengthUnit &quot;</code>
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824452"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;Size&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824457"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;Combination&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824462"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;length BY length BY length&quot;</code>
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824467"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;Size&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824469"> </a><div class="pCellBody">
+<code class="cCode">&quot;Combination&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824474"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;length BY length&quot;</code>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</p>
+</ul></div>
+</ul></div>
+<a name="wp3824482"> </a><p class="pIndented1">
+Two <b class="cBold">Combination</b> rules use the same name, in which case, they will be executed in top-down order as is presented in this table.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3824491"> </a><div class="pSmartList2"><li>for the <em class="cEmphasis">Weight</em> data, the correct format is the weight plus the weight unit. Therefore, the rules used to parse the <em class="cEmphasis">Weight</em> data are:    </li></div>
+<a name="wp3824537"> </a><p class="pBodyRelative">
+<div align="center">
+<table border="1" id="wp3824501table3824499">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp3824501"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Name
+</div>
+</th>
+    <th><a name="wp3824503"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Type
+</div>
+</th>
+    <th><a name="wp3824505"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Value
+</div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp3824510"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;WeightUnit&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824515"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;Enumeration&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824519"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot; &#39;lb&#39; | &#39;lbs&#39; | &#39;pounds&#39; | &#39;Kg&#39; | &#39;pinds&#39;&quot;</code>
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824525"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;Weight&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824530"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;Format&quot;</code>
+</div>
+</td>
+    <td><a name="wp3824535"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&quot;(INT | FRACTION | DECIMAL)  WeightUnit &quot;</code>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</p>
+</ul></div>
+</ul></div>
+<a name="wp3824541"> </a><p class="pIndented1">
+Now, you can begin to replicate the two steps of this scenario.
+</p>
+<a name="wp3824548"> </a><h3 class="pHeading3">
+Separating the compliant data and the noncompliant data
+</h3>
+<a name="wp3824552"> </a><p class="pIndented2">
+In this first step, four components are used. They are
+</p>
+<a name="wp3824563"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 72pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -11pt; text-transform: none">
+·	<b class="cBold">tFileInputDelimited</b> (<em class="cEmphasis">partsmaster</em>): this component loads and outputs the source data to the component that follows.
+</div>
+<a name="wp3824570"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 72pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -11pt; text-transform: none">
+·	<b class="cBold">tStandardizeRow</b>: this component normalizes the incoming data and rejects the exception data that it cannot recognize.
+</div>
+<a name="wp3824577"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 72pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -11pt; text-transform: none">
+·	<b class="cBold">tLogRow</b>: this component is used two times to display respectively the exception data and the output XML data.
+</div>
+<a name="wp3824586"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStandardizeRow_Normalization.png" id="wp3824583" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3824590"> </a><p class="pIndented2">
+To replicate this step, proceed as follows:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3824601"> </a><div class="pSmartList3"><li>Set up the file delimited schema for the <em class="cEmphasis">partsmaster.csv</em> file in the <b class="cBold">Repository</b> of your Studio. For further information about how to set up a file delimited schema, see section <em class="cEmphasis">Setting up a File Delimited schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.</li></div>
+<a name="wp3824620"> </a><div class="pSmartList3"><li>Under the <b class="cBold">Metadata</b> node of the <b class="cBold">Repository</b> of your Studio, select the file delimited schema for <em class="cEmphasis">partsmaster.csv</em> and drop it on the design workspace.</li></div>
+<a name="wp3824632"> </a><div class="pSmartList3"><li>From the dialog box that pops up, select <b class="cBold">tFileInputDelimited</b>.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3824639"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStandardizeRow2.png" id="wp3824636" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3824649"> </a><p class="pIndented2">
+Then the <b class="cBold">tFileInputDelimited</b> (<em class="cEmphasis">partsmaster</em>) component displays in the design workspace.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3824663"> </a><div class="pSmartList3"><li>From the <b class="cBold">Palette</b>, drop the <b class="cBold">tStandardizeRow</b> component and two <b class="cBold">tLogRow</b> components into the design workspace.</li></div>
+<a name="wp3824674"> </a><div class="pSmartList3"><li>Right-click <b class="cBold">tFileInputDelimited</b> (<em class="cEmphasis">partsmaster</em>) to open the contextual menu.</li></div>
+<a name="wp3824680"> </a><div class="pSmartList3"><li>From the contextual menu, select <b class="cBold">Row &gt; Main</b> link to connect this component to <b class="cBold">tStandardizeRow</b>.</li></div>
+<a name="wp3824688"> </a><div class="pSmartList3"><li>Accept the schema propagation prompted by the pop-up dialog box.</li></div>
+<a name="wp3824694"> </a><div class="pSmartList3"><li>From <b class="cBold">tStandardizeRow</b>, do the same to connect this component to one of the two <b class="cBold">tLogRow</b> components using <b class="cBold">Row &gt; Main</b> link and to the other using <b class="cBold">Row &gt; Reject</b> link and accept the schema propagation.</li></div>
+<a name="wp3824711"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp3824709" border="0" hspace="0" vspace="0"/><br />
+You can change the name displayed for each of these component as what has been done for one of the <b class="cBold">tLogRow</b> component, named as <em class="cEmphasis">Exception</em> in this scenario. For further information, see section <em class="cEmphasis">View tab</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</p>
+<a name="wp3824740"> </a><div class="pSmartList3"><li>Click <b class="cBold">tStandardizeRow</b> to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3824747"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStandardizeRow3.png" id="wp3824744" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3824758"> </a><div class="pSmartList3"><li>In the <b class="cBold">Column to parse</b> field, select <em class="cEmphasis">SKU_Description_Size_Weight</em>. This is the only column that the incoming schema has.</li></div>
+<a name="wp3824765"> </a><div class="pSmartList3"><li>Under the <b class="cBold">Conversion rules</b> table, click the plus button eight times to add eight rows in this table.</li></div>
+<a name="wp3824769"> </a><div class="pSmartList3"><li>To complete these rows, type in the rules you have figured out when analyzing the raw data at the beginning of this scenario.</li></div>
+<a name="wp3824780"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp3824775" border="0" hspace="0" vspace="0"/><br />
+The two <em class="cEmphasis">Size</em> rules are executed in top-down order as they belong to the same rule type.
+</p>
+<a name="wp3824790"> </a><div class="pSmartList3"><li>Click the <b class="cBold">Generate parser code in routines</b> button.</li></div>
+<a name="wp3824798"> </a><div class="pSmartList3"><li>Press <b class="cBold">F6</b> to run this Job.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3824805"> </a><p class="pIndented2">
+In the console of the <b class="cBold">Run</b> view, you can read the output data structure. 
+</p>
+<a name="wp3824812"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStandardizeRow4.png" id="wp3824809" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3824818"> </a><p class="pIndented2">
+Corresponding to the raw data, such as, <em class="cEmphasis">34-9923, Monolithic Membrance, 4&#39; x 8&#39;, 26 lbs</em>, an XML segment is generated where the compliant data are separated from the noncompliant data (unmatched). Thus the raw data are normalized.
+</p>
+<a name="wp3824823"> </a><p class="pIndented2">
+Again from this console, you can read that a row is rejected as it contains unrecognizable data.
+</p>
+<a name="wp3824831"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStandardizeRow5.png" id="wp3824827" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3824837"> </a><h3 class="pHeading3">
+Extracting data of interest from the normalized XML data
+</h3>
+<a name="wp3824840"> </a><p class="pIndented2">
+This section presents the second step of this scenario. Four components are added to receive the  normalized XML data in place of the <b class="cBold">tLogRow</b> component which was set for this action in the first step. The four components are:
+</p>
+<a name="wp3824853"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 72pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -11pt; text-transform: none">
+·	<b class="cBold">tExtractXMLField</b>: this component reads an input XML field and extracts desired data;
+</div>
+<a name="wp3824859"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 72pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -11pt; text-transform: none">
+·	<b class="cBold">tFilterRow</b>: this component filters input rows by setting conditions on the selected columns;
+</div>
+<a name="wp3824866"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 72pt; margin-right: 14pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: -11pt; text-transform: none">
+·	<b class="cBold">tLogRow</b> (two times): the two components receive and display respectively the valid or invalid data against conditions set in <b class="cBold">tFilterRow</b>.
+</div>
+<a name="wp3824878"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStandardizeRow1.png" id="wp3824875" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3824882"> </a><p class="pIndented2">
+To replicate the second step, proceed as follows:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3824890"> </a><div class="pSmartList3"><li>On the design workspace, delete the <b class="cBold">tLogRow</b> component that is connected to <b class="cBold">tStandardizeRow</b> with <b class="cBold">Main</b> row link.</li></div>
+<a name="wp3824912"> </a><div class="pSmartList3"><li>From the <b class="cBold">Palette</b>, drop <b class="cBold">tExtractXMLField</b>, <b class="cBold">tFilterRow</b> and two <b class="cBold">tLogRow</b> components into the design workspace. In this scenario, the two <b class="cBold">tLogRow</b> components are named respectively <em class="cEmphasis">ValidSize</em> and <em class="cEmphasis">InvalidSize</em>.<br />For further information about how to rename a component, see section View tab in the Talend Integration Suite Studio User Guide.</li></div>
+<a name="wp3824943"> </a><div class="pSmartList3"><li>Connect <b class="cBold">tExtractXMLField</b> to <b class="cBold">tFilterRow</b> with <b class="cBold">Main</b> link as you did in the first step to connect <em class="cEmphasis">partsmaster</em> to <b class="cBold">tStandardizeRow</b>.</li></div>
+<a name="wp3824963"> </a><div class="pSmartList3"><li>Do the same but with <b class="cBold">Filter</b> link to connect <b class="cBold">tFilterRow</b> to <em class="cEmphasis">ValidSize</em>.</li></div>
+<a name="wp3824975"> </a><div class="pSmartList3"><li>Connect <b class="cBold">tFilterRow</b> to <em class="cEmphasis">InvalidSize</em> with <b class="cBold">Reject</b> link as you did in the first step to connect <b class="cBold">tSandardizeRow</b> to <em class="cEmphasis">Exception</em>.</li></div>
+<a name="wp3824993"> </a><div class="pSmartList3"><li>Double click <b class="cBold">tExtractXMLField</b> to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3825000"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStandardizeRow6.png" id="wp3824997" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3825010"> </a><div class="pSmartList3"><li>Next to <b class="cBold">Edit schema</b>, click the three-dot button to open the schema editor.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3825017"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStandardizeRow7.png" id="wp3825014" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3825026"> </a><div class="pSmartList3"><li>On the left side of this editor, select the <em class="cEmphasis">SKU_Description_Size_Weight</em> row.</li></div>
+<a name="wp3825036"> </a><div class="pSmartList3"><li>Click the <img src="../Images/Schema_icon_RightArrow.png" id="wp3825032" border="0" hspace="0" vspace="0"/> button to add this row to the right side of the editor.</li></div>
+<a name="wp3825039"> </a><div class="pSmartList3"><li>On the right side of this editor, click the plus button on the bottom toolbar three times to add three rows.</li></div>
+<a name="wp3825052"> </a><div class="pSmartList3"><li>Rename the three rows as <em class="cEmphasis">SKU</em>, <em class="cEmphasis">Size</em>, <em class="cEmphasis">Weight</em>, all of which are tags of the normalized XML data.</li></div>
+<a name="wp3825059"> </a><div class="pSmartList3"><li>Click <b class="cBold">OK</b> to validate this editing and accept the schema propagation prompted by the pop-up dialog box. Four rows are automatically filled in the <b class="cBold">Mapping</b> table on the <b class="cBold">Component</b> view.</li></div>
+<a name="wp3825075"> </a><div class="pSmartList3"><li>In the <b class="cBold">XML field</b> field of the <b class="cBold">Component</b> view, select the desired XML field of the incoming data. In this example, it is <em class="cEmphasis">Normalized_field</em>.</li></div>
+<a name="wp3825085"> </a><div class="pSmartList3"><li>In the <b class="cBold">Loop XPath Query</b> field, type in the name of the XML Tree root tag to replace the default value. In this example, type in <code class="cCode">&quot;/record&quot;</code>.</li></div>
+<a name="wp3825098"> </a><div class="pSmartList3"><li>In the <b class="cBold">XPath query</b> column of the <b class="cBold">Mapping</b> table, type in the XML Tree tags corresponding to desired normalized data between quotation marks. In this example, they are<code class="cCode"> &quot;SKU&quot;</code>, <code class="cCode">&quot;Size&quot;</code>, <code class="cCode">&quot;Weight&quot;</code>.</li></div>
+<a name="wp3825119"> </a><div class="pSmartList3"><li>Double click <b class="cBold">tFilterRow</b> to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3825126"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStandardizeRow8.png" id="wp3825123" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3825135"> </a><div class="pSmartList3"><li>Under the <b class="cBold">Conditions</b> table, click the plus button to add one row.</li></div>
+<a name="wp3825145"> </a><div class="pSmartList3"><li>In the <b class="cBold">InputColumn</b> column of this row, select <em class="cEmphasis">Size</em> from the drop-down list.</li></div>
+<a name="wp3825155"> </a><div class="pSmartList3"><li>In the <b class="cBold">Function</b> column, select <b class="cBold">Empty</b>.</li></div>
+<a name="wp3825165"> </a><div class="pSmartList3"><li>In the <b class="cBold">Operator</b> column, select <b class="cBold">Not equal to</b>.</li></div>
+<a name="wp3825176"> </a><div class="pSmartList3"><li>In the <b class="cBold">Value</b> column, type in the quotation marks <code class="cCode">&quot;&quot;</code>. </li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3825182"> </a><p class="pIndented2">
+The condition is set up. The normalized data which contain no null in the <em class="cEmphasis">Size</em> tag will be output while those which contain null in this <em class="cEmphasis">Size</em> tag will be rejected.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3825196"> </a><div class="pSmartList3"><li>Press <b class="cBold">F6</b> to run this Job.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3825202"> </a><p class="pIndented2">
+In the console of the <b class="cBold">Run</b> view, you can read the desired data selected from the normalized XML data flow.
+</p>
+<a name="wp3825210"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStandardizeRow9.png" id="wp3825207" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3825214"> </a><p class="pIndented2">
+This Job lists the normalized data of interest in parallel with the raw data.
+</p>
+<a name="wp3825221"> </a><p class="pIndented2">
+You can read the data rejected by <b class="cBold">tFilterRow</b> as well.
+</p>
+<a name="wp3825228"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStandardizeRow10.png" id="wp3825225" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3837302"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3825232" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<br />For reason of page space, all of the results are not displayed.
+</p>
+<a name="wp517714"> </a><p class="pBodyRelative">
+<b class="cBold">Talend Integration Suite Studio</b>
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tStandardizeRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tStem_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

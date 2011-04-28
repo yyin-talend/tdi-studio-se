@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:04">
+    <title>Scenario 1: Writing data into a given cube</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloOutputMulti_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloRule_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3481443"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3481453"> </a><h2 class="pHeading2">
+Scenario 1: Writing data into a given cube
+</h2>
+<a name="wp3481457"> </a><p class="pIndented1">
+The job in this scenario writes new values in the <em class="cEmphasis">Sales</em> cube given as demo in the <em class="cEmphasis">Demo</em> database installed with Palo.
+</p>
+<a name="wp3481472"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloOutputMulti1.png" id="wp3482448" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3482440"> </a><p class="pIndented1">
+To replicate this scenario, proceed as follows:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3481488"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tFixedFlowInput</b> and <b class="cBold">tPaloOutputMulti</b> from the component <b class="cBold">Palette</b> onto the design workspace.</li></div>
+<a name="wp3483005"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tFixedFlowInput</b> to open its contextual menu.</li></div>
+<a name="wp3483022"> </a><div class="pSmartList2"><li>In this menu, select <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> to connect this component to <b class="cBold">tPaloOutputMulti</b>. </li></div>
+<a name="wp3483057"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tFixedFlowInput</b> component to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3482577"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloOutputMulti2.png" id="wp3482574" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3482582"> </a><div class="pSmartList2"><li>Click the three-dot button to open the schema editor.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3482951"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloOutputMulti3.png" id="wp3482948" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3482954"> </a><div class="pSmartList2"><li>In the schema editor, click the plus button to add 7 rows and rename them respectively as <em class="cEmphasis">Products, Regions, Months, Years, Datatypes, Measures</em> and <em class="cEmphasis">Values</em>. The order of these rows must be consistent with that of the corresponding dimensions in the <em class="cEmphasis">Sales</em> cube and the type of the <em class="cEmphasis">Value</em> column where the measure value resides is set to double/Double.</li></div>
+<a name="wp3482966"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate the editing and accept the propagation prompted by the dialog box that pops up. Then the schema column labels display automatically in the <b class="cBold">Value</b> table under the <b class="cBold">Use single table</b> check box, in the <b class="cBold">Mode</b> area.</li></div>
+<a name="wp3482812"> </a><div class="pSmartList2"><li>In the <b class="cBold">Value</b> table, type in values for each row in the <b class="cBold">Value</b> column. In this example, these values are: <em class="cEmphasis">Desktop L, Germany, Jan, 2009, Actual, Turnover, 1234.56</em>. </li></div>
+<a name="wp3485856"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tPaloOutputMulti</b> to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3485842"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloOutputMulti4.png" id="wp3485839" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3485845"> </a><div class="pSmartList2"><li>In the <b class="cBold">Server Port</b> field, type in the listening port number of the Palo server. In this scenario, it is <em class="cEmphasis">7777</em>.</li></div>
+<a name="wp3485727"> </a><div class="pSmartList2"><li>In the <b class="cBold">Username</b> field and the <b class="cBold">Password</b> field, type in the authentication information. In this example, both of them are <em class="cEmphasis">admin</em>.</li></div>
+<a name="wp3485740"> </a><div class="pSmartList2"><li>In the <b class="cBold">Database</b> field, type in the database name in which you want to create the cube, <em class="cEmphasis">Demo</em> in this example.</li></div>
+<a name="wp3485747"> </a><div class="pSmartList2"><li>In the <b class="cBold">Cube</b> field, type in the name of the cube you want to write data in, for example, <em class="cEmphasis">Sales</em>.</li></div>
+<a name="wp3485760"> </a><div class="pSmartList2"><li>In the <b class="cBold">Cube type</b> field, select the <b class="cBold">Normal</b> type from the drop-down list for the cube to be created, meaning this cube will be normal and default.</li></div>
+<a name="wp3485769"> </a><div class="pSmartList2"><li>In the <b class="cBold">Measure Value</b> field, select the Measure element. In this scenario, select <b class="cBold">Value</b>.</li></div>
+<a name="wp3485799"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3485802"> </a><p class="pIndented1">
+The inflow data has been written into the <em class="cEmphasis">Sales</em> cube.
+</p>
+<a name="wp3485972"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloOutputMulti5.png" id="wp3485977" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3490025"> </a><h2 class="pHeading2">
+Scenario 2: Rejecting inflow data when the elements to be written do not exist in a given cube
+</h2>
+<a name="wp3490603"> </a><p class="pIndented1">
+The job in this scenario tries to write data into the <em class="cEmphasis">Sales</em> cube but as the elements of interest do not exist in this cube, the inflow data is rejected.
+</p>
+<a name="wp3490047"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloOutputMulti6.png" id="wp3490043" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3490052"> </a><p class="pIndented1">
+To replicate this scenario, proceed as follows:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3490071"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tFixedFlowInput</b>, <b class="cBold">tPaloCheckElements</b>, <b class="cBold">tPaloOutputMulti</b> and <b class="cBold">tLogRow</b> from the component <b class="cBold">Palette</b> onto the design workspace.</li></div>
+<a name="wp3490081"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tFixedFlowInput</b> to open its contextual menu.</li></div>
+<a name="wp3490094"> </a><div class="pSmartList2"><li>In this menu, select <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> to connect this component to <b class="cBold">tPaloCheckElements</b>.</li></div>
+<a name="wp3494502"> </a><div class="pSmartList2"><li>Do the same to connect <b class="cBold">tPaloOutputMulti</b> using <b class="cBold">row</b> link.</li></div>
+<a name="wp3494511"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tPaloCheckElements</b> to open its contextual menu.</li></div>
+<a name="wp3494542"> </a><div class="pSmartList2"><li>In this menu, select <b class="cBold">Row</b> &gt; <b class="cBold">Reject</b> to connect this component to <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp3490108"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tFixedFlowInput</b> component to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3490117"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloOutputMulti2.png" id="wp3490113" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3490126"> </a><div class="pSmartList2"><li>Click the three-dot button to open the schema editor.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3490135"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloOutputMulti3.png" id="wp3490131" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3490142"> </a><div class="pSmartList2"><li>In the schema editor, click the plus button to add 7 rows and rename them respectively as <em class="cEmphasis">Products, Regions, Months, Years, Datatypes, Measures</em> and <em class="cEmphasis">Values</em>. The order of these rows must be consistent with that of the corresponding dimensions in the <em class="cEmphasis">Sales</em> cube and the type of the <em class="cEmphasis">Value</em> column where the measure value resides is set to double/Double.</li></div>
+<a name="wp3490167"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate the editing and accept the propagation prompted by the dialog box that pops up. Then the schema column labels display automatically in the <b class="cBold">Value</b> table under the <b class="cBold">Use single table</b> check box, in the <b class="cBold">Mode</b> area.</li></div>
+<a name="wp3490192"> </a><div class="pSmartList2"><li>In the <b class="cBold">Value</b> table, type in values for each row in the <b class="cBold">Value</b> column. In this example, these values are: <em class="cEmphasis">Smart Products, Germany, Jan, 2009, Actual, Turnover, 1234.56</em>. The <em class="cEmphasis">Smart Products</em> element does not exist in the <em class="cEmphasis">Sales</em> cube.</li></div>
+<a name="wp3490211"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tPaloCheckElements</b> to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3490220"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloOutputMulti7.png" id="wp3492025" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3492085"> </a><div class="pSmartList2"><li>In the <b class="cBold">Host name</b> field, type in <em class="cEmphasis">localhost</em>. </li></div>
+<a name="wp3492367"> </a><div class="pSmartList2"><li>In the <b class="cBold">Server Port</b> field, type in the listening port number of the Palo server. In this scenario, it is <em class="cEmphasis">7777</em>.</li></div>
+<a name="wp3492102"> </a><div class="pSmartList2"><li>In the <b class="cBold">Username</b> field and the <b class="cBold">Password</b> field, type in the authentication information. In this example, both of them are <em class="cEmphasis">admin</em>.</li></div>
+<a name="wp3492119"> </a><div class="pSmartList2"><li>In the <b class="cBold">Database</b> field, type in the database name in which you want to create the cube, <em class="cEmphasis">Demo</em> in this example.</li></div>
+<a name="wp3492133"> </a><div class="pSmartList2"><li>In the <b class="cBold">Cube</b> field, type in the name of the cube you want to write data in, for example, <em class="cEmphasis">Sales</em>.</li></div>
+<a name="wp3492399"> </a><div class="pSmartList2"><li>In the <b class="cBold">On Element error</b> field, select <b class="cBold">Reject row</b> from the drop-down list.</li></div>
+<a name="wp3492423"> </a><div class="pSmartList2"><li>In the element table at the bottom of the <b class="cBold">Basic settings</b> view, click the <b class="cBold">Element type</b> column in the <em class="cEmphasis">Value</em> row and select <b class="cBold">Measure</b> from the drop down list.</li></div>
+<a name="wp3494067"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tPaloOutputMulti</b> to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3492177"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloOutputMulti4.png" id="wp3490216" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3490231"> </a><div class="pSmartList2"><li>In the <b class="cBold">Server Port</b> field, type in the listening port number of the Palo server. In this scenario, it is <em class="cEmphasis">7777</em>.</li></div>
+<a name="wp3490248"> </a><div class="pSmartList2"><li>In the <b class="cBold">Username</b> field and the <b class="cBold">Password</b> field, type in the authentication information. In this example, both of them are <em class="cEmphasis">admin</em>.</li></div>
+<a name="wp3490265"> </a><div class="pSmartList2"><li>In the <b class="cBold">Database</b> field, type in the database name in which you want to create the cube, <em class="cEmphasis">Demo</em> in this example.</li></div>
+<a name="wp3490279"> </a><div class="pSmartList2"><li>In the <b class="cBold">Cube</b> field, type in the name of the cube you want to write data in, for example, <em class="cEmphasis">Sales</em>.</li></div>
+<a name="wp3490291"> </a><div class="pSmartList2"><li>In the <b class="cBold">Cube type</b> field, select the <b class="cBold">Normal</b> type from the drop-down list for the cube to be created, meaning this cube will be normal and default.</li></div>
+<a name="wp3490305"> </a><div class="pSmartList2"><li>In the <b class="cBold">Measure Value</b> field, select the Measure element. In this scenario, select <b class="cBold">Value</b>.</li></div>
+<a name="wp3490315"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3490324"> </a><p class="pIndented1">
+The data to be written is rejected and displayed in the console of the <b class="cBold">Run</b> view. You can read that the error message is <em class="cEmphasis">Smart Products</em>.
+</p>
+<a name="wp3494343"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloOutputMulti8.png" id="wp3494348" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloOutputMulti_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloRule_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

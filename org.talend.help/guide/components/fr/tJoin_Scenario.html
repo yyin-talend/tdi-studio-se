@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:09:03">
+    <title>Scénario&#160;: Faire une correspondance exacte entre deux colonnes et écrire les données rejetées</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tJoin_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMap_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3775747"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3775753"> </a><h2 class="pHeading2">
+Scénario&#160;: Faire une correspondance exacte entre deux colonnes et écrire les données rejetées
+</h2>
+<a name="wp3775758"> </a><p class="pIndented1">
+Ce scénario Java décrit un Job à cinq composants dont le but est d&#39;effectuer une correspondance exacte entre la colonne <em class="cEmphasis">firstnameClient</em> d&#39;un fichier d&#39;entrée, par rapport aux données du fichier de référence d&#39;entrée, et la colonne <em class="cEmphasis">lastnameClient</em>, par rapport aux données du fichier d&#39;entrée de référence. Les sorties de cette correspondance sont écrites dans des fichiers de sortie distincts&#160;: les données exactes sont écrites dans un fichier Excel, tandis que les données inexactes sont écrites dans un fichier délimité.
+</p>
+<a name="wp3775768"> </a><p class="pIndented1">
+Dans ce scénario, vous avez déjà stocké les schémas d&#39;entrée et les fichiers de référence dans le <b class="cBold">Repository</b>. Pour plus d&#39;informations à propos du stockage de métadonnées dans l&#39;arborescence du <b class="cBold">Repository</b>, consultez le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3775792"> </a><div class="pSmartList2"><li>Dans l&#39;arborescence du <b class="cBold">Repository</b>, développez le noeud <b class="cBold">Metadata</b> ainsi que le noeud des fichiers (<b class="cBold">File</b>) où vous avez stocké les schémas d&#39;entrée, et glissez la métadonnée correspondante dans l&#39;espace de modélisation graphique.<br />La boîte de dialogue <b class="cBold">[Components]</b> s&#39;ouvre.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3775804"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tFuzzyJoin.png" id="wp3775801" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3775815"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">tFileInputDelimited </b>dans la liste et cliquez sur <b class="cBold">OK</b> afin de fermer la boîte de dialogue.<br />Le composant <b class="cBold">tFileInputDelimited</b> apparaît dans l&#39;espace de modélisation. Le fichier d&#39;entrée utilisé dans ce scénario est appelé <em class="cEmphasis">ClientSample</em>. Il contient quatre colonnes, y compris les deux colonnes <em class="cEmphasis">firstnameClient</em> et <em class="cEmphasis">lastnameClient</em> sur lesquelles vous voulez appliquer la correspondance exacte.</li></div>
+<a name="wp3775831"> </a><div class="pSmartList2"><li>Répétez l&#39;opération pour le deuxième fichier d&#39;entrée que vous souhaitez utiliser comme référence, <em class="cEmphasis">ClientSample_Update </em>dans ce scénario.</li></div>
+<a name="wp3775841"> </a><div class="pSmartList2"><li>Glissez les composants suivants de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tJoin</b>, <b class="cBold">tFileOutputExcel</b>, et <b class="cBold">tFileOutputDelimited</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3775859"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoin1.png" id="wp3775856" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3775869"> </a><div class="pSmartList2"><li>Connectez les fichiers principal et de référence au <b class="cBold">tJoin</b> à l&#39;aide d&#39;une connexion de type <b class="cBold"> Row &gt; Main</b>. Le lien principal entre le fichier de référence et le <b class="cBold">tJoin</b> s&#39;affiche comme un lien <em class="cEmphasis">Lookup</em> (de référence) dans l&#39;espace de modélisation.</li></div>
+<a name="wp3775895"> </a><div class="pSmartList2"><li>Connectez le <b class="cBold">tJoin</b> au <b class="cBold">tFileOutputExcel</b> à l&#39;aide d&#39;une connexion <b class="cBold">Main</b>, et le <b class="cBold">tJoin</b> au <b class="cBold">tFileOutputDelimited</b> avec une connexion <b class="cBold">Inner join reject</b>.</li></div>
+<a name="wp3775905"> </a><div class="pSmartList2"><li>Au besoin, double-cliquez sur les fichiers d&#39;entrée principal et de référence afin d&#39;afficher leur vue <b class="cBold">Basic settings</b>. Toutes les propriétés sont automatiquement renseignées. Si vous ne définissez pas vos fichiers d&#39;entrée dans le <b class="cBold">Repository</b>, remplissez les champs manuellement, après avoir sélectionné <b class="cBold">Built-in</b> dans le champ <b class="cBold">Property Type</b>.<br />Pour plus d&#39;informations, consultez&#160;<em class="cEmphasis">Paramétrer un schéma built-in, page 91</em> et&#160;<em class="cEmphasis">Paramétrer un schéma du Repository, page 91</em>, du <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b>.</li></div>
+<a name="wp3775941"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tJoin</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3775948"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoin2.png" id="wp3775945" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3775956"> </a><div class="pSmartList2"><li>Cliquez sur le bouton situé à côté du champ <b class="cBold">Edit schema</b> pour ouvrir une boîte de dialogue qui affiche la structure des données des fichiers d&#39;entrée, et définissez les données que vous souhaitez passer aux composants de sortie, trois colonnes dans ce scénario, <em class="cEmphasis">idClient</em>, <em class="cEmphasis">firstnameClient</em> et <em class="cEmphasis">lastnameClient</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3775980"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoin3.png" id="wp3775977" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3775989"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue.</li></div>
+<a name="wp3776001"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Key definition</b> de l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tJoin</b>, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter deux colonnes à la liste, puis sélectionnez les colonnes d&#39;entrée et de sortie sur lesquelles la correspondance exacte sera appliquée, depuis les listes <b class="cBold">Input key attribute</b> et <b class="cBold">Lookup key attribute</b>, respectivement <em class="cEmphasis">firstnameClient</em> et <em class="cEmphasis">lastnameClient</em> dans cet exemple.</li></div>
+<a name="wp3776023"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Inner join (with reject output)</b> pour définir l&#39;une des sorties comme table de rejet de l&#39;inner join.</li></div>
+<a name="wp3776033"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tFileOutputExcel</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b>, et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3776045"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoin4.png" id="wp3776042" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3776050"> </a><div class="pSmartList2"><li>Paramétrez le répertoire de destination ainsi que le nom de la feuille (<b class="cBold">Sheet name</b>) et cochez la case Include header.</li></div>
+<a name="wp3776059"> </a><div class="pSmartList2"><li> Double-cliquez sur le composant <b class="cBold">tFileOutputDelimited</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b>, et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3776072"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoin5.png" id="wp3776069" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3776080"> </a><div class="pSmartList2"><li>Paramétrez le répertoire de destination ainsi que les séparateurs de lignes (<b class="cBold">Row separator</b>) et de champs (<b class="cBold">Field separator</b>) et cochez la case Include header.</li></div>
+<a name="wp3776092"> </a><div class="pSmartList2"><li>Sauvgardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3776099"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoinExecuted.png" id="wp3776096" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3776105"> </a><p class="pIndented1">
+La sortie de la correspondance exacte des colonnes <em class="cEmphasis">firstnameClient</em> et <em class="cEmphasis">lastnameClient</em> est écrite dans le fichier Excel défini.
+</p>
+<a name="wp3776113"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoinOutExcel.png" id="wp3776110" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3776764"> </a><p class="pIndented1">
+Les données qui ne correspondent pas sont écrites dans le fichier delimité défini.
+</p>
+<a name="wp3776802"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tJoinOutCSV.png" id="wp3776798" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tJoin_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMap_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

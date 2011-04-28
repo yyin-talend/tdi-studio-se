@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:32:53">
+    <title>Scenario: Partitioning mass data based on the hash method before writing it to an output file</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSPartitionFile_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSSort_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3609448"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3609453"> </a><h2 class="pHeading2">
+Scenario: Partitioning mass data based on the hash method before writing it to an output file
+</h2>
+<a name="wp3609464"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_smalljl.png" align="left" id="wp3609459" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Make sure that you have unzipped and saved locally the FileScale executable file delivered by <b class="cBold">Talend</b>. You must define the path of this executable file in the <b class="cBold">Advanced settings </b>view of <b class="cBold">tFSPartitionFile</b>.
+</p>
+<a name="wp3609477"> </a><p class="pIndented1">
+This Java scenario describes a Job that uses the <b class="cBold">tFSPartitionFile </b>component to partition, in high speed, very big data according to the hash method and using two of the input columns as partition keys.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3609489"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> to the design workspace: <b class="cBold">tRowGenerator</b>, <b class="cBold">tFileOutputDelimited</b> and <b class="cBold">tFSPartitionFile</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3609504"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSPartitionFile.png" id="wp3609501" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3609518"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tRowGenerator</b> first to <b class="cBold">tFileOutputDelimited</b> using a <b class="cBold">Row &gt; Main</b> link and then to <b class="cBold">tFSPartitionFile</b> using an <b class="cBold">OnSubjobOk</b> link.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3609532"> </a><p class="pIndented1">
+In this scenario, the <b class="cBold">tRowGenerator</b> component will generate data according to the schema you define in the component <b class="cBold">Basic settings</b> view and send it to the input file. If data generation is errorless, the <b class="cBold">tFSPartitionFile</b> component will partition data into six subsets according to the defined partition method.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3609553"> </a><div class="pSmartList2"><li>Click <b class="cBold">tRowGenerator</b> to display its <b class="cBold">Basic settings</b> view and define the component properties. </li></div>
+<a name="wp3609560"> </a><div class="pSmartList2"><li>Click the three-dot button next to <b class="cBold">RowGenerator Editor</b> to open the component editor where you can define your schema.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3609569"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSPartitionFile1.png" id="wp3609566" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3609574"> </a><div class="pSmartList2"><li>In the upper half of the editor, click the plus button to add the columns you want to write in the input file.</li></div>
+<a name="wp3609578"> </a><div class="pSmartList2"><li>Define the schema and set the parameters of the columns.<br />In this scenario, the input file contains five columns: <em class="cEmphasis">id</em>, <em class="cEmphasis">firstname</em>, <em class="cEmphasis">lastname</em>, <em class="cEmphasis">city</em> and <em class="cEmphasis">age.</em></li></div>
+<a name="wp3609601"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/warning_smalljl.png" align="left" id="wp3609599" border="0" hspace="0" vspace="0"/><br />
+Make sure to define the length of your columns. Otherwise, an error message will display when executing your Job.
+</p>
+<a name="wp3609610"> </a><div class="pSmartList2"><li>If required, click the <b class="cBold">Preview</b> tab in the lower half of the editor to display the corresponding view and then click the <b class="cBold">View</b> button to display a sample of the generated data.</li></div>
+<a name="wp3609624"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate your schema and close the <b class="cBold">tRowGenerator</b> editor. </li></div>
+<a name="wp3609633"> </a><div class="pSmartList2"><li>Click <b class="cBold">tFileOutputDelimited</b> to display its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3609642"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSPartitionFile2.png" id="wp3609639" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3609652"> </a><div class="pSmartList2"><li>Set the <b class="cBold">tFileOutputdelimited</b> properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3609655"> </a><p class="pIndented1">
+For this scenario, we want to define a context variables for the input file path. You can create context variables in different ways. For more information about how to create and use context variables, see <em class="cEmphasis">How to use variables in the Contexts view</em> and <em class="cEmphasis">How to define variables from the Component view</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide. In this example, we want to define context variables directly from the component view.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3609673"> </a><div class="pSmartList2"><li>Place your pointer in the field that you want to parameterize, <b class="cBold">File Name</b> in this example, and then press <b class="cBold">F5</b>.<br />A dialog box displays.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3609685"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSPartitionFile3.png" id="wp3609682" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3609694"> </a><div class="pSmartList2"><li>Give a name to this new variable and select its type from the <b class="cBold">Type</b> list.</li></div>
+<a name="wp3609701"> </a><div class="pSmartList2"><li>In the <b class="cBold">Default value</b> field, type in the context value you want to use for the input file path.</li></div>
+<a name="wp3609707"> </a><div class="pSmartList2"><li>Click <b class="cBold">Finish</b> to validate your changes and close the dialog box.<br />The newly created variable is displayed in the <b class="cBold">File Name</b> field and in the <b class="cBold">Contexts</b> view.</li></div>
+<a name="wp3609726"> </a><div class="pSmartList2"><li>In the <b class="cBold">Basic settings</b> view of <b class="cBold">tFileOutputDelimited</b>, click the <b class="cBold">Edit schema</b> button to display the schema you defined in the editor and modify it if required.</li></div>
+<a name="wp3609734"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
+<a name="wp3609745"> </a><div class="pSmartList2"><li>Click <b class="cBold">tFSPartitionFile</b> to open its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3609752"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSPartitionFile4.png" id="wp3609749" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3609761"> </a><div class="pSmartList2"><li>Set schema and property type to <b class="cBold">Built-In</b>.</li></div>
+<a name="wp3622406"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Edit schema</b> button to display a dialog box. Here you can define your column schema. This schema must corresponds to the input file schema.</li></div>
+<a name="wp3622415"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the schema dialog box.<br />The defined column schema displays in the <b class="cBold">Partition configuration</b> table.</li></div>
+<a name="wp3622423"> </a><div class="pSmartList2"><li>Set the input and output file names using the variable context you define earlier by pressing <b class="cBold">Ctrl + Space</b> and selecting the variable from the list.</li></div>
+<a name="wp3609772"> </a><div class="pSmartList2"><li>Define the record and field separators and then the header and footer of the file, if any.</li></div>
+<a name="wp3609778"> </a><div class="pSmartList2"><li>In the <b class="cBold">Number of partitions</b> field, enter a number of the data subsets you want to create, six in this scenario.</li></div>
+<a name="wp3609786"> </a><div class="pSmartList2"><li>From the <b class="cBold">Partition</b> list, select the partition method you want to use, <b class="cBold">Hash </b>in this scenario.</li></div>
+<a name="wp3609792"> </a><div class="pSmartList2"><li>In the <b class="cBold">Partition </b>configuration table, select the check boxes that correspond to the input columns you want to use as partition keys, <em class="cEmphasis">id</em> and <em class="cEmphasis">firstname</em> in this scenario.</li></div>
+<a name="wp3609807"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Advanced settings</b> tab to display the advanced settings view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3609814"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSPartitionFile5.png" id="wp3609811" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3609825"> </a><div class="pSmartList2"><li> Select the <b class="cBold">Assign FileScale Path</b> check box to display the <b class="cBold">FileScale Path</b> field and then browse to the executable file delivered by <b class="cBold">Talend</b>.</li></div>
+<a name="wp3615900"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3615906"> </a><p class="pIndented1">
+A progress bar displays below the <b class="cBold">tFSPartition</b> component in the design workspace to show the completed percentage of the operation. This progress bar will make it evident how the huge input data is partitioned at a very high speed.
+</p>
+<a name="wp3615910"> </a><p class="pIndented1">
+When the percentage progress bar reaches 100%, the data is partitioned into six subsets as defined in the component settings and written in the defined output files as shown in the below capture. 
+</p>
+<a name="wp3615920"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSPartitionFile6.png" id="wp3615915" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3616125"> </a><p class="pIndented1">
+The generated set of the output files is postfixed with an auto-increment number depending on the number of partitions you define, six in this scenario.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSPartitionFile_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSSort_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

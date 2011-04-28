@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 18:34:55">
+    <title>Scenario: Filtering and searching a list of names</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFilterRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFuzzyJoin_Prophnw.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3694370"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3694377"> </a><h2 class="pHeading2">
+Scenario: Filtering and searching a list of names
+</h2>
+<a name="wp3694380"> </a><p class="pIndented1">
+The following scenario is a Java Job that uses a simple condition and a regular expression to filter a list of records. This scenario will output two tables: the first will list all Italian records where first names are shorter than six characters; the second will list all rejected records. An error message for each rejected record will display in the same table to explain why such a record has been rejected.
+</p>
+<a name="wp3694388"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tFilterRow1.png" id="wp3694385" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3694405"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tFixedFlowInput</b>, <b class="cBold">tFilterRow</b> and <b class="cBold">tLogRow</b> from the <b class="cBold">Palette</b> onto the design workspace.</li></div>
+<a name="wp3694418"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tFixedFlowInput</b> to the <b class="cBold">tFilterRow</b>, using a <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> link. Then, connect the <b class="cBold">tFilterRow</b> to the <b class="cBold">tLogRow</b>, using a <b class="cBold">Row</b> &gt; <b class="cBold">Filter</b> link.</li></div>
+<a name="wp3694443"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tLogRow</b> from the <b class="cBold">Palette</b> onto the design workspace and rename it as <em class="cEmphasis">reject</em>. Then, connect the <b class="cBold">tFilterRow</b> to the <em class="cEmphasis">reject</em>, using a <b class="cBold">Row</b> &gt; <b class="cBold">Reject</b> link.</li></div>
+<a name="wp3694469"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tFixedFlowInput</b> to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
+<a name="wp3694478"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Use Inline Content(delimited file)</b> option in the <b class="cBold">Mode</b> area to define the input mode.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3694487"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tFilterRow2.png" id="wp3694484" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3694492"> </a><div class="pSmartList2"><li>Set the row and field separators in the corresponding fields. The row separator is a carriage return and the field separator is a semi-colon.</li></div>
+<a name="wp3694505"> </a><div class="pSmartList2"><li>From the <b class="cBold">Schema</b> list, select <b class="cBold">Built-in</b>. The properties and schema are <b class="cBold">Built-in</b> for this Job. This means, the schema is not stored in the <b class="cBold">Repository</b>.</li></div>
+<a name="wp3694515"> </a><div class="pSmartList2"><li>Click the three-dot button next to <b class="cBold">Edit schema </b>to define the schema for the input file. In this example, the schema is made of the following four columns:  <em class="cEmphasis">firstname</em>, <em class="cEmphasis">gender</em>, <em class="cEmphasis">language</em> and <em class="cEmphasis">frequency</em>. In the <b class="cBold">Type</b> column, select <b class="cBold">String</b> for the first three rows and select <b class="cBold">Integer</b> for frequency. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3694545"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tFilterRow3.1.png" id="wp3694542" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3694553"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate and close the editor. A dialog box opens and asks you if you want to propagate the schema. Click <b class="cBold">Yes</b>.</li></div>
+<a name="wp3694561"> </a><div class="pSmartList2"><li>Type in content in the Content multiline textframe according to the setting in the schema.</li></div>
+<a name="wp3694572"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tFilterRow</b> to display its <b class="cBold">Basic settings</b> view and define its properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3694579"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tFilterRow4.png" id="wp3694576" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3694591"> </a><div class="pSmartList2"><li>In the <b class="cBold">Conditions</b> table, fill in the filtering parameters based on the <em class="cEmphasis">firstname </em>column. </li></div>
+<a name="wp3694612"> </a><div class="pSmartList2"><li>In <b class="cBold">InputColumn</b>, select <em class="cEmphasis">firstname</em>, in <b class="cBold">Function</b>, select <b class="cBold">Length,</b> in <b class="cBold">Operator</b>, select <b class="cBold">Lower</b> <b class="cBold">than</b>.</li></div>
+<a name="wp3694625"> </a><div class="pSmartList2"><li>In the <b class="cBold">Value</b> column, type in <em class="cEmphasis">6</em> to filter only first names of which length is lower than six characters.</li></div>
+<a name="wp3714519"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp3714516" border="0" hspace="0" vspace="0"/><br />
+In the <b class="cBold">Value</b> column, you must type in your values between double quotes for all data types, except for the <b class="cBold">Integer</b> type, which does not need quotes.
+</p>
+<a name="wp3714523"> </a><div class="pSmartList2"><li>Then to implement the search on names whose language is italian, select the <b class="cBold">Use advanced mode</b> check box and type in the following regular expression that includes the name of the column to be searched: <code class="cCode">input_row.language.equals(&quot;italian&quot;)</code></li></div>
+<a name="wp3714471"> </a><div class="pSmartList2"><li>To combine both conditions (simple and advanced), select <b class="cBold">And</b> as logical operator for this example.</li></div>
+<a name="wp3714488"> </a><div class="pSmartList2"><li>In the <b class="cBold">Basic settings</b> of <b class="cBold">tLogRow</b> components, select <b class="cBold">Table (print values in cells of a table)</b> in the <b class="cBold">Mode</b> area. </li></div>
+<a name="wp3714496"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3714499"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tFilterRow5.png" id="wp3694671" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3697889"> </a><p class="pIndented1">
+Thus, the first table lists records that have Italian names made up of less than six characters and the second table lists all records that do not match the filter condition &quot;rejected record&quot;. Each rejected record has a corresponding error message that explains the reason of rejection.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFilterRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFuzzyJoin_Prophnw.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

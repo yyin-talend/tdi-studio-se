@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:32:53">
+    <title>Scenario: Combining data from two columns and outputting the joined and rejected data</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSJoin_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSPartitionFile_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3612691"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3612696"> </a><h2 class="pHeading2">
+Scenario: Combining data from two columns and outputting the joined and rejected data
+</h2>
+<a name="wp3612707"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_smalljl.png" align="left" id="wp3612702" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Make sure that you have unzipped and saved locally the FileScale executable file delivered by <b class="cBold">Talend</b>. You must define the path of this executable file in the <b class="cBold">Advanced settings </b>view of <b class="cBold">tFSJoin</b>.
+</p>
+<a name="wp3612720"> </a><p class="pIndented1">
+This Java scenario describes a Job that uses the <b class="cBold">tFSJoin </b>component to combine data from an input (leftset) file with data from a lookup (rightset) file by using one column common to both as the join key. This Job also outputs the rejected data,i.e data that does not have a match in the lookup file.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3612732"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> to the design workspace: <b class="cBold">tRowGenerator</b> (x2), <b class="cBold">tFileOutputDelimited</b> (x2) and <b class="cBold">tFSJoin</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3612747"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin.png" id="wp3612744" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3612758"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tRowGenerator</b> components to the <b class="cBold">tFileOutputDelimited</b> components using <b class="cBold">Row &gt; Main</b> links.</li></div>
+<a name="wp3612771"> </a><div class="pSmartList2"><li>Use <b class="cBold">Trigger &gt; OnSubjobOk</b> links to connect the two <b class="cBold">tRowGenerator</b> components together and then the second <b class="cBold">tRowGenerator</b> to <b class="cBold">tFSJoin</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3612785"> </a><p class="pIndented1">
+In this scenario, the first <b class="cBold">tRowGenerator</b> component will generate the lookup data according to the schema you define in the component editor and will send it to the lookup file. The second <b class="cBold">tRowGenerator</b> component will generate the main data according to the schema you define in the component editor and will send it to the input file. 
+</p>
+<a name="wp3612795"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3612793" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+You must have at least one column common to both the main and lookup files in order to be able to combine data according to this column.
+</p>
+<a name="wp3612802"> </a><p class="pIndented1">
+If data generation is errorless, the <b class="cBold">tFSJoin</b> component will compare data in both files according to the join key, combine common data and writes it in an output file and finally writes rejected data in another output file.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3612817"> </a><div class="pSmartList2"><li>Click <b class="cBold">tRowGenerator</b> to display its <b class="cBold">Basic settings</b> view and define the component properties. </li></div>
+<a name="wp3612824"> </a><div class="pSmartList2"><li>Click the three-dot button next to <b class="cBold">RowGenerator Editor</b> to open the component editor where you can define your schema.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3612833"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin1.png" id="wp3612830" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3612838"> </a><div class="pSmartList2"><li>In the upper half of the editor, click the plus button to add the columns you want to write in the input file.</li></div>
+<a name="wp3612842"> </a><div class="pSmartList2"><li>Define the schema and set the parameters of the columns.<br />In this scenario, the lookup file contains three columns: <em class="cEmphasis">firstname_client</em>, <em class="cEmphasis">lastname_client </em>and <em class="cEmphasis">id_client.</em></li></div>
+<a name="wp3612861"> </a><div class="pSmartList2"><li>If required, click the <b class="cBold">Preview</b> tab in the lower half of the editor to display the corresponding view and then click the <b class="cBold">View</b> button to display a sample of the generated data.</li></div>
+<a name="wp3612875"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate your schema and close the <b class="cBold">tRowGenerator</b> editor. </li></div>
+<a name="wp3612884"> </a><div class="pSmartList2"><li>Click <b class="cBold">tFileOutputDelimited</b> to display its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3612893"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin2.png" id="wp3612890" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3612908"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Edit schema</b> button to display the schema you defined in the editor and modify it if required.</li></div>
+<a name="wp3612916"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
+<a name="wp3612922"> </a><div class="pSmartList2"><li>In the design workspace, double-click the second <b class="cBold">tRowGenerator</b> to open its editor and define the main input schema as you did with the lookup schema.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3612931"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin3.png" id="wp3612928" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3612937"> </a><p class="pIndented1">
+In this scenario, the main input file contains three columns: <em class="cEmphasis">id_command, price_command</em> and <em class="cEmphasis">id_client</em>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3612953"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate the input schema and close the <b class="cBold">tRowGenerator</b> editor. </li></div>
+<a name="wp3612962"> </a><div class="pSmartList2"><li>Click the second <b class="cBold">tFileOutputDelimited</b> to display its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3612971"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin4.png" id="wp3612968" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3612986"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Edit schema</b> button to display the input schema you defined in the editor and modify it if required.</li></div>
+<a name="wp3612994"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the dialog box.</li></div>
+<a name="wp3613005"> </a><div class="pSmartList2"><li>Click <b class="cBold">tFSJoin</b> to open its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3613012"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin5.png" id="wp3613009" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3613021"> </a><div class="pSmartList2"><li>Set property type to <b class="cBold">Built-In</b>.</li></div>
+<a name="wp3622595"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Edit schema</b> button to display a dialog box. Here you can define your column schema. This schema must corresponds to the input file schema.</li></div>
+<a name="wp3622604"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the schema dialog box.</li></div>
+<a name="wp3622612"> </a><div class="pSmartList2"><li>In the <b class="cBold">Input File</b> area, set the properties of the input file and click <b class="cBold">Edit schema</b> to view/modify the input schema, if required.</li></div>
+<a name="wp3613040"> </a><div class="pSmartList2"><li>In the <b class="cBold">Rightset File</b> area, set the properties of the lookup file and click <b class="cBold">Edit schema</b> to view/modify the lookup schema, if required.</li></div>
+<a name="wp3613045"> </a><div class="pSmartList2"><li>Set the record and field separators in the corresponding fields.</li></div>
+<a name="wp3613051"> </a><div class="pSmartList2"><li>In the <b class="cBold">Join Key</b> table, click the plus button to add a line in the table and then click in the line and select a column from the input file and one of the lookup file. You want to use these columns common to both files as the value to link data. Repeat the operation to add as many join keys as needed.</li></div>
+<a name="wp3613059"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/warning_smalljl.png" align="left" id="wp3613057" border="0" hspace="0" vspace="0"/><br />
+<br />You can use only the final columns in the input and lookup files as join keys.
+</p>
+<a name="wp3613069"> </a><div class="pSmartList2"><li>From the <b class="cBold">Join Mode</b> list, select the mode you want to use as a base to join data.</li></div>
+<a name="wp3613076"> </a><div class="pSmartList2"><li>In the <b class="cBold">Output File Name</b> field, set the path to the output file that will hold the combined data.</li></div>
+<a name="wp3613082"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Output Reject File</b> check box if you want to output the rejected data after the join. Set in the field that displays the path to the reject file.</li></div>
+<a name="wp3613091"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Advanced settings</b> tab to display the advanced settings view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3613098"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin6.png" id="wp3613095" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3613109"> </a><div class="pSmartList2"><li> Select the <b class="cBold">Assign FileScale Path</b> check box to display the <b class="cBold">FileScale Path</b> field and then browse to the executable file delivered by <b class="cBold">Talend</b>.</li></div>
+<a name="wp3613708"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3613714"> </a><p class="pIndented1">
+A progress bar displays below the <b class="cBold">tFSJoin</b> component in the design workspace to show the completed percentage of the operation. This progress bar will make it evident how the huge input data is partitioned at a very high speed.
+</p>
+<a name="wp3613718"> </a><p class="pIndented1">
+When the percentage progress bar reaches 100%, combined data for matched pairs is written in the output file and data without a match is written in the reject output file.
+</p>
+<a name="wp3613994"> </a><p class="pIndented1">
+Below is a sample of the output joined client data. In the output file, you can see client first and last names combined with the command id and command price based on the client id.
+</p>
+<a name="wp3613728"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin7.png" id="wp3613723" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSJoin_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSPartitionFile_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

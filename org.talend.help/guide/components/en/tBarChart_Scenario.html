@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:04">
+    <title>Scenario: Creating a bar chart from the input data</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tBarChart_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tDB2SCD_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3931312"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3931319"> </a><h2 class="pHeading2">
+Scenario: Creating a bar chart from the input data
+</h2>
+<a name="wp3957223"> </a><p class="pIndented1">
+This scenario describes a simple Job that reads data from a CSV file and transforms the data into a bar chart. The input file is shown below:
+</p>
+<a name="wp3957231"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tBarChart01.png" id="wp3957228" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3957237"> </a><p class="pIndented1">
+Because the input file has a different structure than the one required by the <b class="cBold">tBarChart</b> component, this use case uses the <b class="cBold">tMap</b> component to map the data to a three-column CSV file before using the <b class="cBold">tBarChart</b> component to generate a bar chart file. 
+</p>
+<a name="wp3957323"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3957316" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+You will usually use the <b class="cBold">tMap</b> component to adjust the input schema in accordance with the schema structure of the <b class="cBold">tBarChart</b> component. For more information about how to use the <b class="cBold">tMap</b> component, see <em class="cEmphasis">Mapping data flows</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b> and the section related to the <a href="tMap_Prop.html#wp3767441"><em class="cEmphasis">tMap</em></a>.
+</p>
+<a name="wp3957271"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tBarChart02.png" id="wp3957268" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3957278"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> to the design workspace: two <b class="cBold">tFileInputDelimited</b> components, a <b class="cBold">tMap</b>, three <b class="cBold">tFileOutputDelimited</b> components, and a <b class="cBold">tBarChart</b>. Relabel the components to best describe their functionality.</li></div>
+<a name="wp3938622"> </a><div class="pSmartList2"><li>Double-click the first <b class="cBold">tFileInputDelimited</b> component to display its <b class="cBold">Basic settings</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3979404"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tBarChart03.png" id="wp3938626" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3938638"> </a><div class="pSmartList2"><li>Fill in the <b class="cBold">File name</b> field by browsing to the input file.</li></div>
+<a name="wp3938642"> </a><div class="pSmartList2"><li>Specify the number of header rows. In this use case, you have only one header row.</li></div>
+<a name="wp3938646"> </a><div class="pSmartList2"><li>Leave the other parameters as they are.</li></div>
+<a name="wp3938652"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit schema</b> to describe the data structure of the input file. In this use case, the input schema is made of four columns: <em class="cEmphasis">City</em>, <em class="cEmphasis">Population</em>, <em class="cEmphasis">Area</em>, and <em class="cEmphasis">Density</em>. Upon defining the column names and data types, click <b class="cBold">OK</b> to close the schema dialog box.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3938682"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tBarChart04.png" id="wp3938679" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3945347"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tFileInputDelimited</b> to the <b class="cBold">tMap</b> using a <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> connection.</li></div>
+<a name="wp3955900"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMap</b> to open the <b class="cBold">Map Editor</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3955907"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tBarChart05.png" id="wp3955904" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3955915"> </a><div class="pSmartList2"><li>Click the green plus button on top of the output panel to add three output tables: <em class="cEmphasis">Population</em>, <em class="cEmphasis">Area</em>, and <em class="cEmphasis">Density</em>. These output table names will appear as the labels of the connections linking the <b class="cBold">tMap</b> to the output components on the design workspace.</li></div>
+<a name="wp3955937"> </a><div class="pSmartList2"><li>Use the <b class="cBold">Schema editor</b> to add three columns to each output table: <em class="cEmphasis">series</em> (string), <em class="cEmphasis">category</em> (string), and <em class="cEmphasis">value</em> (integer).</li></div>
+<a name="wp3955947"> </a><div class="pSmartList2"><li>In the relevant <b class="cBold">Expression</b> field of the output tables, enter the series names, as shown above. These series names will appear in the legend of the bar chart. </li></div>
+<a name="wp3955957"> </a><div class="pSmartList2"><li>Drop the <em class="cEmphasis">City</em> column of the input table onto the <em class="cEmphasis">category</em> column of each output table. </li></div>
+<a name="wp3955967"> </a><div class="pSmartList2"><li>Drop the <em class="cEmphasis">Population</em> column of the input table onto the <em class="cEmphasis">value</em> column of the <em class="cEmphasis">Population</em> table. </li></div>
+<a name="wp3955984"> </a><div class="pSmartList2"><li>Drop the <em class="cEmphasis">Area</em> column of the input table onto the <em class="cEmphasis">value</em> column of the <em class="cEmphasis">Area</em> table. </li></div>
+<a name="wp3955996"> </a><div class="pSmartList2"><li>Drop the <em class="cEmphasis">Density</em> column of the input table onto the <em class="cEmphasis">value</em> column of the <em class="cEmphasis">Density</em> table. </li></div>
+<a name="wp3956007"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to save the mappings and close the <b class="cBold">Map Editor</b>.</li></div>
+<a name="wp3956019"> </a><div class="pSmartList2"><li>Right-click the <b class="cBold">tMap</b> component and select <b class="cBold">Row</b> &gt; <b class="cBold">Population</b> to connect it to the first <b class="cBold">tFileOutputDelimited</b> component. </li></div>
+<a name="wp3956032"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tMap</b> to the other <b class="cBold">tFileOutputDelimited</b> components in the same way but by selecting <b class="cBold">Area</b> and <b class="cBold">Density</b> respectively.</li></div>
+<a name="wp3956050"> </a><div class="pSmartList2"><li>Double-click the first <b class="cBold">tFileOutputDelimited</b> component to display its <b class="cBold">Basic settings</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3979560"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tBarChart06.png" id="wp3956054" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3965482"> </a><div class="pSmartList2"><li>In the <b class="cBold">File Name</b> field, define a CSV file to send the mapped data flows to. In this use case, we name the output file to be created <em class="cEmphasis">LargeCities_mapped.csv</em>. This file will be used as the input to the <b class="cBold">tBarChart</b> component. If an existing file name is specified, make sure that the <b class="cBold">Append</b> check box is cleared.</li></div>
+<a name="wp3965496"> </a><div class="pSmartList2"><li>Leave the other parameters as they are.</li></div>
+<a name="wp3965502"> </a><div class="pSmartList2"><li>For the other two <b class="cBold">tFileOutputDelimited</b> components, use the same file path as defined for the first <b class="cBold">tFileOutputDelimited</b> component, and select the <b class="cBold">Append</b> check box.</li></div>
+<a name="wp3965532"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp3965526" border="0" hspace="0" vspace="0"/><br />
+Make sure that the Append check box is selected so that all the mapped data flows will go to the same file without overwriting the existing data.
+</p>
+<a name="wp3965536"> </a><div class="pSmartList2"><li>Connect the first <b class="cBold">tFileInputDelimited</b> component to the second <b class="cBold">tFileInputDelimited</b> component using a <b class="cBold">Trigger</b> &gt; <b class="cBold">OnSubjobOK</b> connection.</li></div>
+<a name="wp3956120"> </a><div class="pSmartList2"><li>Connect the second <b class="cBold">tFileInputDelimited</b> component to the <b class="cBold">tBarChart</b> using a <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> connection. </li></div>
+<a name="wp3956132"> </a><div class="pSmartList2"><li>Double-click the second <b class="cBold">tFileInputDelimited</b> component to display its <b class="cBold">Basic settings</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3979614"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tBarChart07.png" id="wp3956136" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3965574"> </a><div class="pSmartList2"><li>Fill in the <b class="cBold">File name</b> field with the file path and name defined in the <b class="cBold">Basic settings</b> view of each of the <b class="cBold">tFileOutputDelimited</b> components. In this use case, the input file to the <b class="cBold">tBarChart</b> is <em class="cEmphasis">LargeCities_mapped.csv</em>.</li></div>
+<a name="wp3965587"> </a><div class="pSmartList2"><li>Leave the other parameters as they are. <br />As the input schema needs to have a structure required by the <b class="cBold">tBarChart</b> component, we will copy the structure from the schema of the <b class="cBold">tBarChart</b> component. </li></div>
+<a name="wp3956172"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tBarChart</b> component to display its <b class="cBold">Basic settings</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3979647"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tBarChart08.png" id="wp3956176" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3956188"> </a><div class="pSmartList2"><li>In the <b class="cBold">Generated image path</b> field, define the file path of the image file to be generated. </li></div>
+<a name="wp3956195"> </a><div class="pSmartList2"><li>In the <b class="cBold">Chart title</b> field, define a title for the bar chart. </li></div>
+<a name="wp3956199"> </a><div class="pSmartList2"><li>Define the category and series axis names. </li></div>
+<a name="wp3956202"> </a><div class="pSmartList2"><li>Define the size and transparency degree of the image if needed. In this use case, we simply use the default settings.</li></div>
+<a name="wp3956211"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit schema</b> to open the schema dialog box.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3956218"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tBarChart09.png" id="wp3956215" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3956223"> </a><div class="pSmartList2"><li>Copy all the columns from the output schema to the input schema by clicking the left-pointing double arrow button. Then, click <b class="cBold">OK</b> to close the schema dialog box.</li></div>
+<a name="wp3956233"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to launch it. <br />A bar chart is generated as defined. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3956244"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tBarChart10.png" id="wp3956239" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tBarChart_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tDB2SCD_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

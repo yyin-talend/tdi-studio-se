@@ -1,0 +1,528 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:04">
+    <title>tPaloDimension</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloDatabaseList_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloDimension_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3470656"> </a><h2 class="pHeading1">
+tPaloDimension
+</h2>
+<a name="wp3470668"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tPaloDimension_icon32.png" id="wp3470661" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3470678"> </a><h2 class="pHeading2">
+tPaloDimension Properties
+</h2>
+<a name="wp3471077"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3472996table3470682">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3472996"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3472998"> </a><div class="pCellBody">
+Business Intelligence/Cube OLAP/Palo
+</div>
+</td>
+    <td><a name="wp3473006"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icon.png" id="wp3473003" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473011"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3473013"> </a><div class="pCellBody">
+This component creates, drops or recreates dimensions with or without dimension elements inside a Palo database.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473020"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3473022"> </a><div class="pCellBody">
+This component manages Palo dimensions, even elements inside a database
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473029"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3473033"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp3473036"> </a><div class="pCellBody">
+Select this check box and click the relevant DB connection component on the <b class="cBold">Connection configuration</b> to reuse the connection details you already defined.<br />
+</div>
+<a name="wp3473045"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3473043" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+When a Job contains the parent Job and the child Job, <b class="cBold">Connection configuration</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, make sure that the available connection components are sharing the intended connection.<br />For further information about how to share a DB connection across Job levels, see <b class="cBold">Use or register a shared DB connection</b> in any database connection component corresponding to the database you are using, in <a href="Databases_group_intro.html"><em class="cEmphasis">Database components</em></a>.<br />Otherwise, you can as well deactivate the connection components and use <b class="cBold">Dynamic settings</b> of the component to specify the intended connection manually. In this case, make sure the connection name is unique and distinctive all over through the two Job levels. For further information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473065"> </a><div class="pCellHeading">
+<em class="cEmphasis">Connection configuration<br /></em>
+</div>
+<a name="wp3473072"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3473070" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Unavailable when using an existing connection.
+</p>
+</td>
+    <td><a name="wp3473078"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host Name</em>
+</div>
+</td>
+    <td><a name="wp3473080"> </a><div class="pCellBody">
+Enter the host name or the IP address of the host server.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473082"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473087"> </a><div class="pCellHeading">
+<em class="cEmphasis">Server Port</em>
+</div>
+</td>
+    <td><a name="wp3473089"> </a><div class="pCellBody">
+Type in the listening port number of the Palo server.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473091"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473096"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> and <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp3473101"> </a><div class="pCellBody">
+Enter the Palo user authentication data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473103"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473108"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database</em>
+</div>
+</td>
+    <td><a name="wp3473110"> </a><div class="pCellBody">
+Type in the name of the database in which the dimensions are managed.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473112"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473117"> </a><div class="pCellHeading">
+<em class="cEmphasis">Dimension</em>
+</div>
+</td>
+    <td><a name="wp3473119"> </a><div class="pCellBody">
+Type in the name of the dimension on which the given operation should take place.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473121"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473126"> </a><div class="pCellHeading">
+<em class="cEmphasis">Action on dimension</em>
+</div>
+</td>
+    <td><a name="wp3473128"> </a><div class="pCellBody">
+Select the operation you want to perform on the dimension of interest:<br />- <b class="cBold">None</b>: no action is taken on this dimension.<br />- <b class="cBold">Create dimension</b>: the dimension does not exist and will be created.<br />- <b class="cBold">Create dimension if not exists</b>: this dimension is created only when it does not exist.<br />- <b class="cBold">Delete dimension if exists and create</b>: this dimension is deleted if exist and then a new one will be created.<br />- <b class="cBold">Delete dimension</b>: this dimension is removed from the database.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473145"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473147"> </a><div class="pCellBody">
+<em class="cEmphasis">Create dimension elements</em>
+</div>
+</td>
+    <td><a name="wp3473152"> </a><div class="pCellBody">
+Select this check box to activate the dimension management fields and create dimension elements along with the creation of this dimension.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473159"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3473157" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+The below fields are available only when the <b class="cBold">Create dimension elements</b> check box is selected
+</p>
+</td>
+    <td><a name="wp3473168"> </a><div class="pCellHeading">
+<em class="cEmphasis">Dimension type<br /></em>
+</div>
+<a name="wp3476332"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3476323" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Available only when the action on dimension is <b class="cBold">None</b>.
+</p>
+</td>
+    <td><a name="wp3473170"> </a><div class="pCellBody">
+Select the type of the dimension to be created. The type may be:<br />- <b class="cBold">Normal</b><br />- <b class="cBold">User info</b><br />- <b class="cBold">System</b><br />- <b class="cBold">Attribute</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473184"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473189"> </a><div class="pCellHeading">
+<em class="cEmphasis">Commit size</em>
+</div>
+</td>
+    <td><a name="wp3473191"> </a><div class="pCellBody">
+Type in the number of elements which will be created before saving them inside the dimension.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473193"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473200"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3473203"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473205"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473207"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473212"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473223"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473225"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473230"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473241"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473245"> </a><div class="pCellHeading">
+<em class="cEmphasis">Consolidation type - None<br /></em>
+</div>
+<a name="wp3473252"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3473250" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+With this option, you activate the corresponding parameter fields to be completed.
+</p>
+</td>
+    <td><a name="wp3473255"> </a><div class="pCellBody">
+Select this check box to move directly the incoming elements into the given dimension. With this option, you will not define any consolidations or hierarchy. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473257"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473259"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473264"> </a><div class="pCellBody">
+<b class="cBold">Input Column</b>: select a column from the drop-down list. The columns in the drop-down list are those you defined for the schema. The values from this selected column would be taken to process dimension elements.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473266"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473268"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473273"> </a><div class="pCellBody">
+<b class="cBold">Element type</b>: Select the type of elements. It may be:<br />- <b class="cBold">Numeric</b><br />- <b class="cBold">Text</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473281"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473283"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473288"> </a><div class="pCellBody">
+<b class="cBold">Creation mode</b>: Select creation mode for elements to be processed. This mode may be<br />- <b class="cBold">Add</b>: add simply an element to the dimension.<br />- <b class="cBold">Force add</b>: force the creation of this element. If exist this element will be recreated.<br />- <b class="cBold">Update</b>: updates this element if it exists.<br />- <b class="cBold">Add or Update</b>: if this element does not exist, it will be created otherwise it will be updated. This is the default option.<br />- <b class="cBold">Delete</b>: delete this element from the dimension
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473305"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473309"> </a><div class="pCellHeading">
+<em class="cEmphasis">Consolidation type - Normal<br /></em>
+</div>
+<a name="wp3473316"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3473314" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+With this option, you activate the corresponding parameter fields to be completed.
+</p>
+</td>
+    <td><a name="wp3473319"> </a><div class="pCellBody">
+Select this check box to create elements and consolidate them inside the given dimension. This consolidation structures the created elements in different levels.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473321"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473323"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473328"> </a><div class="pCellBody">
+<b class="cBold">Input Column</b>: select a column from the drop-down list. The columns in the drop-down list are those you defined for the schema. The values from this selected column would be taken to process dimension elements.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473330"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473332"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473337"> </a><div class="pCellBody">
+<b class="cBold">Element type</b>: Select the type of elements. It may be:<br />- <b class="cBold">Numeric</b><br />- <b class="cBold">Text</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473345"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473347"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473352"> </a><div class="pCellBody">
+<b class="cBold">Creation mode</b>: Select creation mode for elements to be created. This mode may be<br />- <b class="cBold">Add</b>: add simply an element to the dimension.<br />- <b class="cBold">Force add</b>: force the creation of this element. If the element exists, it will be recreated.<br />- <b class="cBold">Update</b>: updates this element if it exists.<br />- <b class="cBold">Add or Update</b>: if this element does not exist, it will be created, otherwise it will be updated. This is the default option.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473533"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473539"> </a><div class="pCellHeading">
+<em class="cEmphasis">Consolidation type - Self-referenced<br /></em>
+</div>
+<a name="wp3473548"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3473545" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+With this option, you activate the corresponding parameter fields to be completed.
+</p>
+</td>
+    <td><a name="wp3473560"> </a><div class="pCellBody">
+Select this check box to create elements and structure them based on a parent-child relationship. The input stream is responsible for the grouping of the consolidation.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473369"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473371"> </a><div class="pCellHeading">
+<em class="cEmphasis">Element&#39;s type</em>
+</div>
+</td>
+    <td><a name="wp3473575"> </a><div class="pCellBody">
+Select the type of elements. It may be:<br />- <b class="cBold">Numeric</b><br />- <b class="cBold">Text</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473592"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473595"> </a><div class="pCellHeading">
+<em class="cEmphasis">Creation mode</em>
+</div>
+</td>
+    <td><a name="wp3473598"> </a><div class="pCellBody">
+Select creation mode for elements to be created. This mode may be<br />- <b class="cBold">Add</b>: add simply an element to the dimension.<br />- <b class="cBold">Force add</b>: force the creation of this element. If exist this element will be recreated.<br />- <b class="cBold">Update</b>: update this element if it exists.<br />- <b class="cBold">Add or Update</b>: if this element does not exist, it will be created otherwise it will be updated. This is the default option.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473725"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473728"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473811"> </a><div class="pCellBody">
+<b class="cBold">Input Column</b>: select a column from the drop-down list. The columns in the drop-down list are those you defined for the schema. The values from this selected column would be taken to process dimension elements.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473816"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473819"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473896"> </a><div class="pCellBody">
+<b class="cBold">Hierarchy Element</b>: select the type and the relationship of this input column in the consolidation.<br />- <b class="cBold">Parent</b>: set the input value as parent element.<br />- <b class="cBold">Child</b>: relate the input value to the parent value and build the consolidation.<br />- <b class="cBold">Factor</b>: define the factor for this consolidation.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473378"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3473386"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStat</em><em class="cEmphasis">Catcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3473388"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473393"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3473395"> </a><div class="pCellBody">
+This component can be used in standalone or as end component of a process.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473402"> </a><div class="pCellBody">
+<b class="cBold">Global Variables</b>
+</div>
+</td>
+    <td><a name="wp3473404"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473409"> </a><div class="pCellBody">
+<b class="cBold">Dimensionname</b>: Indicates the name of the dimension processed. This is available as an <b class="cBold">After</b> variable.<br />    Returns a String. <br /><br />For further information about variables, see <em class="cEmphasis">How to use variables in a Job</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3473423"> </a><div class="pCellBody">
+<b class="cBold">Connections</b>
+</div>
+</td>
+    <td><a name="wp3473425"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3473427"> </a><div class="pCellBody">
+Outgoing links (from one component to another):<br /><b class="cBold">Trigger</b>: Run if; On Subjob Ok; On Subjob Error; On Component Ok; On Component Error.<br /><br />Incoming links (from one component to another):<br /><b class="cBold">Row</b>: Main; Iterate<br /><b class="cBold">Trigger</b>: Run if; On Subjob Ok; On Subjob Error; On Component Ok; On Component Error.<br />For further information regarding connections, see <em class="cEmphasis">Connection types</em> in the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3473453"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3473455"> </a><div class="pCellBody">
+Deletion of dimension elements is only possible with the consolidation type <b class="cBold">None</b>. Only consolidation type <b class="cBold">Self-Referenced</b> allows the placing of an factor on this consolidation.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloDatabaseList_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloDimension_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

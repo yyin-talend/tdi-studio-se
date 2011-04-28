@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:09:31">
+    <title>Scénario&#160;: Lire des données dans la base de données de la console d&#39;arbitrage</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tStewardshipTaskInput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tStewardshipTaskOutput_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3615945"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3615950"> </a><h2 class="pHeading2">
+Scénario&#160;: Lire des données dans la base de données de la console d&#39;arbitrage
+</h2>
+<a name="wp3615955"> </a><p class="pIndented1">
+Ce scénario décrit un Job a deux composants qui lit des ensembles de données (enregistrements de données) à partir des tâches stockées dans la base de données de <b class="cBold">Talend Data Stewardship Console</b>, selon les critères que vous avez définis dans la vue <b class="cBold">Basic settings </b>du composant <b class="cBold">tStewardshipTaskInput</b>. 
+</p>
+<a name="wp3615971"> </a><p class="pIndented1">
+Vous pouvez utiliser n&#39;importe quel composant <b class="cBold">Talend</b> de sortie pour écrire les données récupérées de la base de données d&#39;arbitrage dans l&#39;application ou la base de données.
+</p>
+<a name="wp3615976"> </a><p class="pIndented1">
+Dans ce scénario, les données maître filtrées sont récupérées et affichées dans la console de log.
+</p>
+<a name="wp3615983"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskInput.png" id="wp3615980" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3615997"> </a><div class="pSmartList2"><li>Déposez les composants <b class="cBold">tStewardshipTaskInput</b> et <b class="cBold">tLogRow</b> de la <b class="cBold">Palette </b>dans l&#39;espace de modélisation graphique.</li></div>
+<a name="wp3616005"> </a><div class="pSmartList2"><li>Connectez les deux composants à l&#39;aide d&#39;un lien <b class="cBold">Row </b>&gt; <b class="cBold">Main</b>.</li></div>
+<a name="wp3616014"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tStewardshipTaskInput</b> afin d&#39;ouvrir sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3616023"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskInput2.png" id="wp3616020" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3616037"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema</b>, sélectionnez <b class="cBold">Built-In</b> et cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit schema</b> afin d&#39;ouvrir une boîte de dialogue. <br />Vous pouvez définir la structure des données que vous souhaitez lire dans la base de données de <b class="cBold">Talend Data Stewardship Console</b>.</li></div>
+<a name="wp3616051"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3616049" border="0" hspace="0" vspace="0"/><br />
+Les colonnes par défaut dans la boîte de dialogue du schéma varient selon si la case <b class="cBold">Target record only</b> est cochée ou non.
+</p>
+</ul></div>
+</ul></div>
+<a name="wp3616062"> </a><p class="pIndented1">
+Si la case <b class="cBold">Target record only </b>est cochée, le schéma par défaut ressemble à&#160;:
+</p>
+<a name="wp3616069"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskInput6.png" id="wp3616066" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3616075"> </a><p class="pIndented1">
+Si la case <b class="cBold">Target record only</b> n&#39;est pas cochée, le schéma par défaut contient deux colonnes supplémentaires&#160;:&#160;<em class="cEmphasis">TARGET</em> et&#160;<em class="cEmphasis">SOURCE</em>.
+</p>
+<a name="wp3616089"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskInput3.png" id="wp3616086" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3616095"> </a><p class="pIndented1">
+La colonne&#160;<em class="cEmphasis">TARGET</em> indique quel ensemble de données est l&#39;enregistrement cible dans chacune des tâches de la base de données. La colonne&#160;<em class="cEmphasis">SOURCE</em> indique le nom de l&#39;application source pour chaque enregistrement source dans les tâches.
+</p>
+<a name="wp3616107"> </a><p class="pIndented1">
+Dans ce scénario, les données sont collectées depuis les trois colonnes d&#39;entrée définies&#160;:&#160;<em class="cEmphasis">Firstname</em>, <em class="cEmphasis">Lastname</em> et&#160;<em class="cEmphasis">DOB</em> (prénom, nom et date de naissance), ainsi que des colonnes par défaut.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3616121"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue et passer à l&#39;étape suivante.</li></div>
+<a name="wp3616127"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Host</b>, saisissez entre guillemets l&#39;adresse IP du serveur de la base de données de la console d&#39;arbitrage.</li></div>
+<a name="wp3616134"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Port</b>, saisissez entre guillemets le numéro du port d&#39;écoute du serveur de la base de données.</li></div>
+<a name="wp3616144"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Username</b> et <b class="cBold">Password</b>, saisissez votre identifiant et votre mot de passe de connexion au serveur MDM.</li></div>
+<a name="wp3616151"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Type</b>, sélectionnez le type de tâches desquelles vous souhaitez récupérer les enregistrements de données&#160;: <b class="cBold">Resolution</b> ou <b class="cBold">Data</b>. Dans cet exemple, seules les tâches de résolution sont récupérées.<br />Pour plus d&#39;informations concernant les types de tâches, consultez&#160;<em class="cEmphasis">Types de tâches et assignations</em> dans le <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Data Stewardship Console</b>.</li></div>
+<a name="wp3616173"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Owner</b>, saisissez entre guillemets le nom du propriétaire de la tâche, c&#39;est-à-dire l&#39;utilisateur auquel est assignée la tâche,&#160;<em class="cEmphasis">Administrator</em> dans cet exemple.</li></div>
+<a name="wp3616186"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3616182" border="0" hspace="0" vspace="0"/><br />
+Une tâche peut être assignée à un utilisateur spécifique soit à partir de la vue <b class="cBold">Basic settings </b>du composant <b class="cBold">tStewardshipTaskOutput</b>, soit directement à partir de la console d&#39;arbitrage par un administrateur. Pour plus d&#39;informations, consultez&#160;<a href="tStewardshipTaskOutput_Prop.html"><em class="cEmphasis">tStewardshipTaskOutput</em></a> ainsi que&#160;<em class="cEmphasis">Types de tâches et assignations</em> dans  le <b class="cBold">Guide</b><b class="cBold"> Utilisateur</b> de <b class="cBold">Talend Data Stewardship Console</b>.
+</p>
+<a name="wp3616214"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Tag</b>, saisissez entre guillemets nom de la catégorie du tag associé aux tâches que vous souhaitez lire. Ce champ n&#39;est pas utilisé dans ce scénario. <br />Pour plus d&#39;informations, consultez&#160;<em class="cEmphasis">Association de tags aux tâches</em> dans le <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Data Stewardship Console</b>.</li></div>
+<a name="wp3616233"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Start Date</b> et <b class="cBold">End Date</b>, saisissez entre guillemets une plage de dates de création de tâches durant laquelle vous souhaitez lire les tâches. Ce champ n&#39;est pas utilisé dans ce scénario.</li></div>
+<a name="wp3616240"> </a><div class="pSmartList2"><li>Dans la champ <b class="cBold">Status</b>, sélectionnez le statut de la tâche selon lequel vous souhaitez filtrez les données récupérées. Dans ce scénario, seules les tâches résolues sont récupérées.</li></div>
+<a name="wp3616247"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Star ranking</b>, sélectionnez dans la liste le nombre d&#39;étoiles, de&#160;0 à&#160;5, assigné aux tâches dans la console d&#39;arbitrage. Cela permet de filtrer les tâches desquelles vous souhaitez récupérer les données selon leur nombre d&#39;étoiles.<br />Dans cet exemple, sélectionnez&#160;<em class="cEmphasis">2</em> dans la liste. Les données serton récupérées de toutes les tâches ayant deux étoiles ou plus. </li></div>
+<a name="wp3616261"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3616256" border="0" hspace="0" vspace="0"/><br />
+Si vous sélectionnez&#160; <em class="cEmphasis">All</em> dans la liste, vous récupérerez les données de toutes les tâches, quel que soit leur nombre d&#39;étoiles.
+</p>
+<a name="wp3616270"> </a><div class="pSmartList2"><li>Dans le champ<b class="cBold"> Limit</b>, saisissez un nombre afin de limiter les tâches à récupérer dans la base de données d&#39;arbitrage.</li></div>
+<a name="wp3616277"> </a><div class="pSmartList2"><li>Laissez cochée la case <b class="cBold">Target record only</b> afin de récupérer uniquement l&#39;enregistrement cible à partir des tâches.</li></div>
+<a name="wp3616284"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation graphique, double-cliquez sur le composant <b class="cBold">tLogRow</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+<a name="wp3616294"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Edit Schema</b> pour ouvrir la boîte de dialogue du schéma et vérifier que le schéma a bien été reçu du composant précédent. Si ce n&#39;est pas le cas, cliquez sur <b class="cBold">Sync Columns</b>.</li></div>
+<a name="wp3616306"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3616313"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskInput4.png" id="wp3616310" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3616319"> </a><p class="pIndented1">
+Le composant <b class="cBold">tStewardshipTaskInput</b> a récupéré de la base de données de la console d&#39;arbitrage à la fois les enregistrements de données cible et source de toutes les tâches résolues ayant&#160;0, 1 ou&#160;2 étoile(s). Le schéma de sortie est le même pour tous les enregistrements récupérés. 
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3616325"> </a><div class="pSmartList2"><li>Décochez la case Target record only afin de récupérer tous les enregistrements source et cible à partir des tâches.<br />Vous allez récupérer plus d&#39;une ligne pour chaque tâche.</li></div>
+<a name="wp3616338"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Basic settings</b> du composant <b class="cBold">tLogRow</b>, cliquez sur le bouton <b class="cBold">Sync columns</b> afin de synchroniser le schéma du lien d&#39;entrée (qui possède à présent deux colonnes supplémentaires) et celui du <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp3616348"> </a><div class="pSmartList2"><li>Sauvegardez le Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.<br />Le composant <b class="cBold">tStewardshipTaskInput</b> récupère les enregistrements cible et source de la base de données de la console d&#39;arbitrage à partir de toutes les tâches résolues ayant 0, 1 ou&#160;2 étoile(s).</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3616360"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tStewardshipTaskInput5.png" id="wp3616357" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3616363"> </a><p class="pIndented1">
+La capture d&#39;écran ci-dessus montre un exemple des données récupérées de l&#39;une des tâches de la base de données de la console d&#39;arbitrage. Trois lignes ont été écrites en sortie pour cette tâche&#160;: l&#39;enregistrement cible, pour lequel <code class="cCode">TARGET = true</code> et deux enregistrements d&#39;entrée pour lesquels <code class="cCode">TARGET = false</code> et <code class="cCode">SOURCE = CRM</code>.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tStewardshipTaskInput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tStewardshipTaskOutput_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

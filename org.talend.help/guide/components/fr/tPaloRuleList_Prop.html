@@ -1,0 +1,395 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:02:53">
+    <title>tPaloRuleList</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloRule_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloRuleList_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3502403"> </a><h2 class="pHeading1">
+tPaloRuleList
+</h2>
+<a name="wp3502415"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tPaloRuleList_icon32.png" id="wp3502408" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3502425"> </a><h2 class="pHeading2">
+Propriétés du tPaloRuleList
+</h2>
+<a name="wp3502804"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3503450table3502429">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3503450"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp3503452"> </a><div class="pCellBody">
+Business Intelligence/Cube OLAP/Palo
+</div>
+</td>
+    <td><a name="wp3503460"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icongh.png" id="wp3503457" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3503465"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3503470"> </a><div class="pCellBody">
+Le composant <b class="cBold">tPaloRuleList</b> récupère les informations d&#39;une liste de règles d&#39;une base de données Palo spécifiée.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3503477"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3503479"> </a><div class="pCellBody">
+Ce composant liste toutes les règles, les formules, les commentaires, les statuts d&#39;activation, les IDs externes d&#39;un cube donné. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3503486"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3503490"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp3503493"> </a><div class="pCellBody">
+Cochez la case et cliquez sur le composant de connexion adéquat dans la liste <b class="cBold">Component list</b> pour réutiliser les informations de connexion que vous avez déjà définies.<br />
+</div>
+<a name="wp3503502"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3503500" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Lorsqu&#39;un Job contient un Job parent et un Job enfant, la liste <b class="cBold">Component List</b> présente uniquement les composants de connexion du Job du même niveau. Si vous souhaitez utiliser une connexion existant dans un autre niveau, vérifiez que les composants de connexion disponibles partagent la même connexion.<br />Pour plus d&#39;informations concernant le partage d&#39;une connexion à travers différents niveaux de Jobs, consultez <b class="cBold">Use or register a shared DB connection</b> dans tous les composants de base de données que vous utilisez.
+</p>
+<a name="wp3503510"> </a><div class="pCellBody">
+Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afinde paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3503523"> </a><div class="pCellHeading">
+<em class="cEmphasis">Connection configuration<br /></em>
+</div>
+<a name="wp3503530"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3503528" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Indisponible lors de l&#39;utilisation d&#39;une connexion existante.
+</p>
+</td>
+    <td><a name="wp3503536"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host Name</em>
+</div>
+</td>
+    <td><a name="wp3503538"> </a><div class="pCellBody">
+Saisissez le nom de l&#39;hôte ou l&#39;adresse IP du serveur hôte.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3503540"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3503545"> </a><div class="pCellHeading">
+<em class="cEmphasis">Server Port</em>
+</div>
+</td>
+    <td><a name="wp3503547"> </a><div class="pCellBody">
+Saisissez le numéro du port d&#39;écoute du serveur Palo.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3503549"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3503554"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> et <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp3503559"> </a><div class="pCellBody">
+Informations d&#39;authentification de l&#39;utilisateur de Palo.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3503561"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3503566"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database</em>
+</div>
+</td>
+    <td><a name="wp3503568"> </a><div class="pCellBody">
+Saisissez le nom de la base de données dans laquelle se trouve le cube qui vous intéresse.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3503570"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3503575"> </a><div class="pCellHeading">
+<em class="cEmphasis">Cube</em>
+</div>
+</td>
+    <td><a name="wp3503577"> </a><div class="pCellBody">
+Saisissez le nom du cube dans lequel  les informations de règles doivent être retrouvées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3503579"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3503688"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3503692"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3503585"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3503695"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3503702"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> <b class="cBold">Talend Integration Suite Studio</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3503591"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3503712"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3503719"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> <b class="cBold">Talend Integration Suite Studio</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3503600"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3503608"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStat</em><em class="cEmphasis">Catcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3503610"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log au niveau du composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3503612"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3503614"> </a><div class="pCellBody">
+Ce composant peut être utilisé en standalone ou en tant que composant de début d&#39;un processus.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3503735"> </a><div class="pCellBody">
+<b class="cBold">Global Variables</b>
+</div>
+</td>
+    <td><a name="wp3503738"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3503741"> </a><div class="pCellBody">
+<b class="cBold">Number of rules</b>&#160;: indique le nombre de règles traitées. Disponible en tant que variable <b class="cBold">After</b>.<br />     Retourne un entier.<br /><b class="cBold">External ruleID</b>&#160;: indique l&#39;ID externe de la règle traitée. Disponible en tant que variable <b class="cBold">Flow</b>.<br />    Retourne une chaîne de caractères.<br /><br />Pour plus d&#39;informations concernant les variables, consultez&#160;<em class="cEmphasis">Utiliser les variables dans un Job, page 146</em> du <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3503621"> </a><div class="pCellBody">
+<b class="cBold">Connections</b>
+</div>
+</td>
+    <td><a name="wp3503623"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3933039"> </a><div class="pCellBody">
+Liens de sortie (d&#39;un composant à un autre)&#160;:<br /><b class="cBold">Row</b>&#160;: Main, Iterate.<br /><b class="cBold">Trigger&#160;</b>: Run if, On Subjob Ok, On Subjob Error, On Component Ok, On Component Error.<br /><br />Liens d&#39;entrée (d&#39;un composant à un autre)&#160;:<br /><b class="cBold">Row&#160;</b>: Iterate<br /><b class="cBold">Trigger&#160;</b>: Run if, On Subjob Ok, On Subjob Error, On Component Ok, On Component Error.<br />Pour plus d&#39;informations concernant les connexions, consultez&#160;<em class="cEmphasis">Types de connexions</em> dans le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3503654"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3503656"> </a><div class="pCellBody">
+Le schéma de sortie est fixe et en lecture seule.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+<a name="wp3503921"> </a><h2 class="pHeading2">
+Découvrir le schéma de sortie en lecture seule du tPaloRuleList
+</h2>
+<a name="wp3503926"> </a><p class="pIndented1">
+Le tableau ci-dessous présente les informations relatives au schéma de sortie en lecture seule du composant <b class="cBold">tPaloRuleList</b>.
+</p>
+<a name="wp3504057"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3503939table3503935">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp3503939"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Base de données
+</div>
+</th>
+    <th><a name="wp3503942"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Type
+</div>
+</th>
+    <th><a name="wp3503945"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Description
+</div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp3503949"> </a><div class="pCellBody">
+rule_identifier
+</div>
+</td>
+    <td><a name="wp3503952"> </a><div class="pCellBody">
+long
+</div>
+</td>
+    <td><a name="wp3503955"> </a><div class="pCellBody">
+Identifiant interne de la règle.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3503959"> </a><div class="pCellBody">
+rule_definition
+</div>
+</td>
+    <td><a name="wp3503962"> </a><div class="pCellBody">
+string
+</div>
+</td>
+    <td><a name="wp3503965"> </a><div class="pCellBody">
+Nom de la dimension.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3503969"> </a><div class="pCellBody">
+Dimension_attribute_cube
+</div>
+</td>
+    <td><a name="wp3503972"> </a><div class="pCellBody">
+string
+</div>
+</td>
+    <td><a name="wp3503975"> </a><div class="pCellBody">
+Formule de la règle. Pour plus d&#39;informations concernant cette règle, consultez le Guide Utilisateur Palo.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3503979"> </a><div class="pCellBody">
+rule_extern_id
+</div>
+</td>
+    <td><a name="wp3503982"> </a><div class="pCellBody">
+string
+</div>
+</td>
+    <td><a name="wp3503985"> </a><div class="pCellBody">
+ID externe personnalisé.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3503989"> </a><div class="pCellBody">
+rule_comment
+</div>
+</td>
+    <td><a name="wp3503992"> </a><div class="pCellBody">
+string
+</div>
+</td>
+    <td><a name="wp3503995"> </a><div class="pCellBody">
+Commentaire utilisateur de la règle.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3503999"> </a><div class="pCellBody">
+rule_activated
+</div>
+</td>
+    <td><a name="wp3504002"> </a><div class="pCellBody">
+boolean
+</div>
+</td>
+    <td><a name="wp3504005"> </a><div class="pCellBody">
+Indique si la règle a été activée ou non.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloRule_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloRuleList_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

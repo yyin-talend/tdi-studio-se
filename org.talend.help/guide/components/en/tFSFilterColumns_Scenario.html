@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:32:53">
+    <title>Scenario: Combining filtering and sorting processes in a large scale file</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSFilterColumns_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSFilterRows_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2520224"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3623037"> </a><h2 class="pHeading2">
+Scenario: Combining filtering and sorting processes in a large scale file
+</h2>
+<a name="wp3614950"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_smalljl.png" align="left" id="wp3614944" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Make sure that you have unzipped and saved locally the FileScale executable file delivered by <b class="cBold">Talend</b>. You must define the path of this executable file in the <b class="cBold">Advanced settings </b>view of each of the FileScale components.
+</p>
+<a name="wp3614967"> </a><p class="pIndented1">
+This Java scenario describes a Job that uses several FileScale components which are connected with the <b class="cBold">FS Combine</b> link. Using this link, the different FileScale components will process data simultaneously and thus optimize performance. This Java scenario uses the following FileScale components:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3614983"> </a><div class="pSmartList2"><li><b class="cBold">tFSFilterColumns</b>:<b class="cBold"> </b>to filter columns in a table based on column name mapping,</li></div>
+<a name="wp3616795"> </a><div class="pSmartList2"><li><b class="cBold">tFSFilterRows</b>:<b class="cBold"> </b>to define a row filter on the table to keep only the rows that have a value greater than or equal to 5000.0,</li></div>
+<a name="wp3616814"> </a><div class="pSmartList2"><li><b class="cBold">tFSUnique</b>: to recuperate only one occurrence of the <em class="cEmphasis">name</em> record, in case duplicates are present,</li></div>
+<a name="wp3616829"> </a><div class="pSmartList2"><li><b class="cBold">tFSSort</b>: to sort data in alphabetical order based on the <em class="cEmphasis">name</em> column.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3616741"> </a><p class="pIndented1">
+To design such a scenario, complete the following:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3617857"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> to the design workspace: <b class="cBold">tRowGenerator</b>, <b class="cBold">tFileOutputDelimited</b>, <b class="cBold">tFSFilterColumns</b>, <b class="cBold">tFSFilterRows</b>, <b class="cBold">tFSUnique</b> and <b class="cBold">tFSSort</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3617843"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns.png" id="wp3616894" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3616889"> </a><div class="pSmartList2"><li>Connect <b class="cBold">tRowGenerator</b> first to <b class="cBold">tFileOutputDelimited</b> using a <b class="cBold">Row &gt; Main</b> link and then to <b class="cBold">tFSFilterColumns</b> using an <b class="cBold">OnSubjobOk</b> link.</li></div>
+<a name="wp3617284"> </a><div class="pSmartList2"><li>Connect all the FileScale components together using the <b class="cBold">Row &gt; FS Combine</b> link.</li></div>
+<a name="wp3617340"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp3617337" border="0" hspace="0" vspace="0"/><br />
+As the <b class="cBold">FS Combine</b> link joins all data processes designed in the Job and executes them simultaneously, the sequence of the FileScale components is of no importance. You can order them the way you like.
+</p>
+<a name="wp3618624"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/warning_smalljl.png" align="left" id="wp3618621" border="0" hspace="0" vspace="0"/><br />
+In order for such scenario to execute correctly, you must define the same input and output files in all the FileScale components.
+</p>
+</ul></div>
+</ul></div>
+<a name="wp3618628"> </a><p class="pIndented1">
+In this scenario, the <b class="cBold">tRowGenerator</b> component will generate data according to the schema you define in the component <b class="cBold">Basic settings</b> view and send it to the input file. If data generation is errorless, data in the input file will be processed simultaneously by the four FileScale components and thus optimize performance.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3615067"> </a><div class="pSmartList2"><li>Click <b class="cBold">tRowGenerator</b> to display its <b class="cBold">Basic settings</b> view and define the component properties. </li></div>
+<a name="wp3615076"> </a><div class="pSmartList2"><li>Click the three-dot button next to <b class="cBold">RowGenerator Editor</b> to open the component editor where you can define your schema.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3615087"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns1.png" id="wp3615083" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3615094"> </a><div class="pSmartList2"><li>In the upper half of the editor, click the plus button to add the columns you want to write in the input file.</li></div>
+<a name="wp3615099"> </a><div class="pSmartList2"><li>Define the schema and set the parameters of the columns.<br />In this scenario, the input file contains nine columns: <em class="cEmphasis">id</em>, <em class="cEmphasis">name</em>, <em class="cEmphasis">dateOfBirth</em>, <em class="cEmphasis">amount</em> and five other columns that hold extra information.</li></div>
+<a name="wp3617492"> </a><div class="pSmartList2"><li>If required, click the <b class="cBold">Preview</b> tab in the lower half of the editor to display the corresponding view and then click the <b class="cBold">View</b> button to display a sample of the generated data.</li></div>
+<a name="wp3617540"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate your schema and close the <b class="cBold">tRowGenerator</b> editor. </li></div>
+<a name="wp3617650"> </a><div class="pSmartList2"><li>Click <b class="cBold">tFileOutputDelimited</b> to display its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3617659"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns2.png" id="wp3617656" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3617669"> </a><div class="pSmartList2"><li>Set the <b class="cBold">tFileOutputDelimited</b> properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3617942"> </a><p class="pIndented1">
+For this scenario, we have defined two context variables: <em class="cEmphasis">filename</em> for the input file name and <em class="cEmphasis">folder</em> for the input file path. For more information about context variables, check <em class="cEmphasis">How to use variables in the Contexts view</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3617696"> </a><div class="pSmartList2"><li>Put your pointer in the <b class="cBold">File Name</b> field and then press <b class="cBold">Ctrl + Space</b> and select the context variable for the file path (<em class="cEmphasis">context.folder</em>).</li></div>
+<a name="wp3618020"> </a><div class="pSmartList2"><li>Enter <code class="cCode">+&quot;/&quot;+</code> to separate the file path from the file name and then press <b class="cBold">Ctrl+Space</b> to display the context variable list.</li></div>
+<a name="wp3617794"> </a><div class="pSmartList2"><li>Select the context variable for the file name (<em class="cEmphasis">context.filename</em>).</li></div>
+<a name="wp3617785"> </a><div class="pSmartList2"><li>If required, click the <b class="cBold">Edit schema</b> button to view the schema you defined in the editor or modify it.</li></div>
+<a name="wp3617715"> </a><div class="pSmartList2"><li>Click <b class="cBold">tFSFilterColumns</b> to open its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3617722"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns3.png" id="wp3617719" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3617730"> </a><div class="pSmartList2"><li>Set schema and property type to <b class="cBold">Built-In</b>.</li></div>
+<a name="wp3619309"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Edit schema</b> button to display a dialog box. Here you can define your column schema. This schema must corresponds to the input file schema.</li></div>
+<a name="wp3619347"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the schema dialog box.<br />The defined column schema displays in the <b class="cBold">Column configuration</b> table.</li></div>
+<a name="wp3619332"> </a><div class="pSmartList2"><li>Set the input file path and name using the variable contexts you define earlier by pressing <b class="cBold">Ctrl + Space</b> and selecting the variables from the list. Separate the two variables by <code class="cCode">+&quot;/&quot;+</code>.</li></div>
+<a name="wp3618311"> </a><div class="pSmartList2"><li>Click the three-dot button next to the <b class="cBold">Output File Name</b> and browse to the output file where you want to write the processed data.<br />In this example, we have defined a context variable for the output file the same way we did for the input file.</li></div>
+<a name="wp3615350"> </a><div class="pSmartList2"><li>Define the record and field separators and then the header and footer of the file, if any.</li></div>
+<a name="wp3615368"> </a><div class="pSmartList2"><li>In the <b class="cBold">Column configuration</b> table, select the check boxes of the columns you want to write in the output file, <em class="cEmphasis">id, name, dateOfBirth</em> and <em class="cEmphasis">amount </em>in this scenario.</li></div>
+<a name="wp3615395"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Advanced settings</b> tab to display the advanced settings view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3615404"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns4.png" id="wp3615400" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3615419"> </a><div class="pSmartList2"><li> Select the <b class="cBold">Generate FSLang File</b> check box to display the <b class="cBold">FSLang File Name</b> field and then browse to where you want to generate the FSLang file corresponding to your Job. <br />In this example, we have defined a context variable for the FSLang output file as we did for the input and output files.</li></div>
+<a name="wp3618378"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Assign FileScale Path</b> check box to display the <b class="cBold">FileScale Path</b> field and then browse to the FileScale executable file delivered by <b class="cBold">Talend</b>.</li></div>
+<a name="wp3619813"> </a><div class="pSmartList2"><li>Click <b class="cBold">tFSFilterRows</b> to display the <b class="cBold">Basic settings</b> view and define the component properties. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3619822"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns5.png" id="wp3619819" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619830"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Edit schema</b> button to display the schema dialog box. Here you can define your column schema. This schema must corresponds to the input file schema.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3619839"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns7.png" id="wp3619836" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619846"> </a><div class="pSmartList2"><li>From the panel to the right, delete the output column that do not map to the column filter you defined in <b class="cBold">tFSFilterColumns</b>, all <em class="cEmphasis">extraInfo</em> columns in this scenario.</li></div>
+<a name="wp3619893"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the schema dialog box.</li></div>
+<a name="wp3619789"> </a><div class="pSmartList2"><li>Define the components properties as you did with<b class="cBold"> tFSFilterColumns</b>. Use the same input and output files.</li></div>
+<a name="wp3619713"> </a><div class="pSmartList2"><li>Select a logical operator from the corresponding list, <b class="cBold">And</b> in this scenario.</li></div>
+<a name="wp3619591"> </a><div class="pSmartList2"><li>In the <b class="cBold">Conditions</b> table, click the plus button to add a line to the table.</li></div>
+<a name="wp3618870"> </a><div class="pSmartList2"><li>Click in the line and then select the column on which you want to base your row filter.<br />In this scenario, we want write out only the rows where the <em class="cEmphasis">amount</em> value is greater than or equal to 5000.0.</li></div>
+<a name="wp3618959"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Advanced settings</b> tab to display the advanced settings view.</li></div>
+<a name="wp3619008"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Assign FileScale Path</b> check box to display the <b class="cBold">FileScale Path</b> field and then browse to the FileScale executable file delivered by <b class="cBold">Talend</b>.</li></div>
+<a name="wp3619024"> </a><div class="pSmartList2"><li>Click <b class="cBold">tFSUnique</b> to display the <b class="cBold">Basic settings</b> view and define the component properties. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3618742"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns6.png" id="wp3619060" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619109"> </a><div class="pSmartList2"><li>Define the components properties as you did with<b class="cBold"> tFSFilterRows</b>. Use the same input and output files.</li></div>
+<a name="wp3619128"> </a><div class="pSmartList2"><li>In the <b class="cBold">Unique key</b> table, select the check box of the column you want to use as a key attribute.<br />In this scenario, we want to recuperate only one occurrence of each name in the <em class="cEmphasis">name</em> column.</li></div>
+<a name="wp3619132"> </a><div class="pSmartList2"><li>If you want to take into account upper and lower cases, select the corresponding <b class="cBold">Case Sensitive</b> check box.</li></div>
+<a name="wp3619146"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Advanced settings</b> tab to display the advanced settings view.</li></div>
+<a name="wp3619158"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Assign FileScale Path</b> check box to display the <b class="cBold">FileScale Path</b> field and then browse to the FileScale executable file delivered by <b class="cBold">Talend</b>.</li></div>
+<a name="wp3620770"> </a><div class="pSmartList2"><li>Click <b class="cBold">tFSSort</b> to display its <b class="cBold">Basic settings</b> view and define the component properties. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3620777"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns8.png" id="wp3620774" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3620785"> </a><div class="pSmartList2"><li>Define the components properties as you did with<b class="cBold"> tFSUnique</b>. Use the same input and output files.</li></div>
+<a name="wp3620793"> </a><div class="pSmartList2"><li>In the <b class="cBold">Criteria</b> table, click the plus button to add a line to the table.</li></div>
+<a name="wp3620800"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">Schema column</b> and then select the column by which you want to sort data.</li></div>
+<a name="wp3620807"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">Sort type</b> column and select the sort type.</li></div>
+<a name="wp3620815"> </a><div class="pSmartList2"><li>Click in the <b class="cBold">Order type</b> column and select the order type.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3620818"> </a><p class="pIndented1">
+In this scenario, you want to output data alphabetically in ascending order based on the <em class="cEmphasis">name</em> column.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3620827"> </a><div class="pSmartList2"><li>Click the <b class="cBold">Advanced settings</b> tab to display the advanced settings view.</li></div>
+<a name="wp3620533"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Assign FileScale Path</b> check box to display the <b class="cBold">FileScale Path</b> field and then browse to the FileScale executable file delivered by <b class="cBold">Talend</b>.</li></div>
+<a name="wp3620518"> </a><div class="pSmartList2"><li>Save your job and press <b class="cBold">F6</b> to execute it. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3620479"> </a><p class="pIndented1">
+A progress bar displays in the design workspace to show the completed percentage of the simultaneous operations. This progress bar will make it evident how the huge input data is processed at a very high speed.
+</p>
+<a name="wp3615446"> </a><p class="pIndented1">
+When the percentage progress bar reaches 100%, the data is written in the output file. A simple comparison between the input data and the processed data will show us that:
+</p>
+<a name="wp3621400"> </a><p class="pIndented1">
+The output file has only the <em class="cEmphasis">id, name, dateOfBirth</em> and <em class="cEmphasis">amount</em> columns. Only the rows where the <em class="cEmphasis">amount</em> value is greater than or equal to 5000.0 are listed. There is only one occurrence of each of the names and data records are written in an alphabetical ascending order.
+</p>
+<a name="wp3621440"> </a><p class="pIndented1">
+The below two captures show a sample of the large scale data before and after processing.
+</p>
+<a name="wp3621407"> </a><p class="pIndented1">
+Input data:
+</p>
+<a name="wp3621449"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns10.png" id="wp3620929" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3621334"> </a><p class="pIndented1">
+Output data:
+</p>
+<a name="wp3621461"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns9.png" id="wp3621329" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSFilterColumns_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSFilterRows_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

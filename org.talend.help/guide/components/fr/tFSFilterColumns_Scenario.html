@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:08:03">
+    <title>Scénario&#160;: Regrouper les processus de filtrage et de tri dans un fichier à gros volume</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSFilterColumns_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSFilterRows_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1710142"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3621500"> </a><h2 class="pHeading2">
+Scénario&#160;: Regrouper les processus de filtrage et de tri dans un fichier à gros volume
+</h2>
+<a name="wp3623789"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3623783" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Vérifiez que vous avez dézippé et sauvegardé localement le fichier exécutable FileScale fourni par <b class="cBold">Talend</b>. Vous devez définir le chemin d&#39;accès à ce fichier exécutable dans la vue <b class="cBold">Advanced settings </b>du composant <b class="cBold">tFSJoin</b>.
+</p>
+<a name="wp3621521"> </a><p class="pIndented1">
+Ce scénario Java décrit un Job utilisant plusieurs composants FileScale connectés via le lien <b class="cBold">FS Combine</b>. A l&#39;aide de ce lien, les différents composants FileScale traiteront des données simultanément et optimiseront ainsi les performances. Ce scénario Java utilise les composants FileScale suivants&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3622794"> </a><div class="pSmartList2"><li><b class="cBold">tFSFilterColumns&#160;</b>:<b class="cBold"> </b>filtre des colonnes dans une table, à partir du mapping du nom des colonnes,</li></div>
+<a name="wp3622800"> </a><div class="pSmartList2"><li><b class="cBold">tFSFilterRows&#160;</b>:<b class="cBold"> </b>définit un filtre sur les lignes de la table, pour ne garder que les lignes dont la valeur est supérieure ou égale à&#160;5000.0,</li></div>
+<a name="wp3622810"> </a><div class="pSmartList2"><li><b class="cBold">tFSUnique</b>&#160;: récupère une seule occurrence de l&#39;enregistrement&#160;<em class="cEmphasis">name</em>, même en cas de doublons,</li></div>
+<a name="wp3622822"> </a><div class="pSmartList2"><li><b class="cBold">tFSSort&#160;</b>: trie les données par ordre alphabétique, selon la colonne&#160;<em class="cEmphasis">name</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3622826"> </a><p class="pIndented1">
+Afin de reproduire ce scénario, procédez comme suit&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3622837"> </a><div class="pSmartList2"><li>Déposez les composants suivants de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tRowGenerator</b>, <b class="cBold">tFileOutputDelimited</b>, <b class="cBold">tFSFilterColumns</b>, <b class="cBold">tFSFilterRows</b>, <b class="cBold">tFSUnique</b> et <b class="cBold">tFSSort</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3622861"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns.png" id="wp3622858" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3622875"> </a><div class="pSmartList2"><li>Reliez le <b class="cBold">tRowGenerator</b> au <b class="cBold">tFileOutputDelimited</b> à l&#39;aide d&#39;un lien <b class="cBold">Row &gt; Main</b> puis au <b class="cBold">tFSFilterColumns</b> à l&#39;aide d&#39;un lien <b class="cBold">OnSubjobOk</b>.</li></div>
+<a name="wp3622890"> </a><div class="pSmartList2"><li>Reliez les composants FileScale à l&#39;aide de liens <b class="cBold">Row &gt; FS Combine</b>.</li></div>
+<a name="wp3624955"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3624950" border="0" hspace="0" vspace="0"/><br />
+Puisque le lien <b class="cBold">FS Combine</b> groupe tous les processus de données créés dans le Job et les exécute simultanément, l&#39;ordre des composants FileScale n&#39;a aucune importance. Vous pouvez les disposer dans l&#39;ordre que vous voulez.
+</p>
+<a name="wp3624962"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/warning_small.png" align="left" id="wp3624960" border="0" hspace="0" vspace="0"/><br />
+Pour que ce scénario soit exécuté correctement, vous devez définir les mêmes fichiers d&#39;entrée et de sortie dans tous les composants FileScale.
+</p>
+</ul></div>
+</ul></div>
+<a name="wp3624969"> </a><p class="pIndented1">
+Dans ce scénario, le composant <b class="cBold">tRowGenerator</b> va générer des données selon le schéma que vous avez défini dans la vue <b class="cBold">Basic settings</b> et les envoyer au fichier d&#39;entrée. Si la génération s&#39;effectue sans erreur, les données du fichier d&#39;entrée seront traitées simultanément dans les quatre composants FileScale, ce qui permet d&#39;optimiser les performances.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3624987"> </a><div class="pSmartList2"><li>Cliquez sur le <b class="cBold">tRowGenerator</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés. </li></div>
+<a name="wp3624994"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à côté du <b class="cBold">RowGenerator Editor</b> afin d&#39;ouvrir l&#39;éditeur du composant, dans lequel vous pouvez définir votre schéma.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3625003"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns1.png" id="wp3625000" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3625007"> </a><div class="pSmartList2"><li>Dans la moitié supérieure de l&#39;éditeur, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter les colonnes que vous souhaitez écrire dans le fichier d&#39;entrée.</li></div>
+<a name="wp3622959"> </a><div class="pSmartList2"><li>Définissez le schéma et configurez les paramètres des colonnes.<br />Dans ce scénario, le fichier d&#39;entrée contient neuf colonnes&#160;: <em class="cEmphasis">id</em>, <em class="cEmphasis">name</em>, <em class="cEmphasis">dateOfBirth</em>, <em class="cEmphasis">amount</em> et cinq autres colonnes contenant des informations supplémentaires.</li></div>
+<a name="wp3622979"> </a><div class="pSmartList2"><li>Si nécessaire, cliquez sur l&#39;onglet <b class="cBold">Preview</b> dans la partie inférieure de l&#39;éditeur pour afficher la vue correspondante puis cliquez sur le bouton <b class="cBold">View</b> afin d&#39;afficher une partie des données générées.</li></div>
+<a name="wp3622996"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour valider votre schéma et fermer l&#39;éditeur <b class="cBold">tRowGenerator</b>. </li></div>
+<a name="wp3623005"> </a><div class="pSmartList2"><li>Cliquez sur le composant <b class="cBold">tFileOutputDelimited</b> pour afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3623014"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns2.png" id="wp3623011" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3623024"> </a><div class="pSmartList2"><li>Configurez les propriétés du <b class="cBold">tFileOutputDelimited</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3623034"> </a><p class="pIndented1">
+Dans ce scénario, définissez deux variables de contexte&#160;: <em class="cEmphasis">filename</em> pour le nom du fichier d&#39;entrée et&#160;<em class="cEmphasis">folder</em> pour le chemin d&#39;accès au fichier d&#39;entrée. Pour plus d&#39;informations concernant les variables de contexte, consultez&#160;<em class="cEmphasis">Définir les variables à partir de la vue Contexts</em> dans le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3623052"> </a><div class="pSmartList2"><li>Placez votre souris sur le champ <b class="cBold">File Name</b>, appuyez sur <b class="cBold">Ctrl+Espace</b> et sélectionnez la variable de contexte pour le chemin d&#39;accès au fichier (<em class="cEmphasis">context.folder</em>).</li></div>
+<a name="wp3623065"> </a><div class="pSmartList2"><li>Saisissez <code class="cCode">+&quot;/&quot;+</code> pour séparer le chemin d&#39;accès au fichier du nom du fichier puis appuyez sur <b class="cBold">Ctrl+Espace</b> pour afficher la liste des variables de contexte.</li></div>
+<a name="wp3623073"> </a><div class="pSmartList2"><li>Sélectionnez la variable de contexte pour le nom du fichier (<em class="cEmphasis">context.filename</em>).</li></div>
+<a name="wp3623079"> </a><div class="pSmartList2"><li>Si nécessaire, cliquez sur le bouton <b class="cBold">Edit schema</b> pour voir le schéma que vous avez défini dans l&#39;éditeur et le modifier.</li></div>
+<a name="wp3623090"> </a><div class="pSmartList2"><li>Cliquez sur le <b class="cBold">tFSFilterColumns</b> afin d&#39;ouvrir sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3623099"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns3.png" id="wp3623096" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3623110"> </a><div class="pSmartList2"><li>Dans les listes <b class="cBold">Schema</b> et <b class="cBold">Property Type</b>, sélectionnez <b class="cBold">Built-In</b>.</li></div>
+<a name="wp3623116"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Edit schema</b> pour ouvrir une boîte de dialogue. Vous pouvez définir les colonnes de votre schéma. Ce schéma doit correspondre au schéma du fichier d&#39;entrée.</li></div>
+<a name="wp3625942"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue du schéma.<br />Les colonnes du schéma s&#39;affichent dans le tableau <b class="cBold">Column configuration</b>.</li></div>
+<a name="wp3625949"> </a><div class="pSmartList2"><li>Configurez le nom du fichier d&#39;entrée et son chemin d&#39;accès en utilisant les variables de contexte définies précédemment en appuyant sur <b class="cBold">Ctrl+Espace</b> et en sélectionnant la variable dans la liste. Séparez les deux variables par <code class="cCode">+&quot;/&quot;+</code>.</li></div>
+<a name="wp3625962"> </a><div class="pSmartList2"><li>Cliquez sur le bouton&#160;<b class="cBold">[+]</b> à côté du champ <b class="cBold">Output File Name</b> et parcourez votre répertoire jusqu&#39;au fichier de sortie dans lequel vous souhaitez écrire les données traitées.<br />Dans cet exemple, vous avez défini une variable de contexte pour le fichier de sortie, de la même façon que pour le fichier d&#39;entrée.</li></div>
+<a name="wp3625967"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Record Separator</b> et <b class="cBold">Field Separator</b>, saisissez respectivement le séparateur d&#39;enregistrements puis le séparateur de champs, puis dans les champs <b class="cBold">Header</b> et <b class="cBold">Footer</b>, configurez respectivement les en-têtes et les pieds de page, s&#39;il y en a.</li></div>
+<a name="wp3623156"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Column configuration</b>, cochez la case des colonnes que vous souhaitez écrire dans le fichier de sortie, <em class="cEmphasis">id, name, dateOfBirth</em> et ce scénario.</li></div>
+<a name="wp3623173"> </a><div class="pSmartList2"><li>Cliquez sur l&#39;onglet <b class="cBold">Advanced settings</b> pour afficher la vue correspondante.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3623182"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns4.png" id="wp3623178" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3623196"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Generate FSLang File</b> pour afficher le champ <b class="cBold">FSLang File Name</b> et parcourir votre répertoire jusqu&#39;à l&#39;emplacement dans lequel vous souhaitez générer le fichier FSLang correspondant à votre Job. <br />Dans cet exemple, vous avez défini une variable de contexte pour le fichier de sortie FSLang comme vous l&#39;avez fait pour les fichiers d&#39;entrée et de sortie.</li></div>
+<a name="wp3623206"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Assign FileScale Path</b> pour afficher le champ <b class="cBold">FileScale Path</b> puis parcourir votre répertoire jusqu&#39;au fichier FileScale exécutable livré par <b class="cBold">Talend</b>.</li></div>
+<a name="wp3623221"> </a><div class="pSmartList2"><li>Cliquez sur le <b class="cBold">tFSFilterRows</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3623230"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns5.png" id="wp3623227" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3627061"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Edit schema</b> pour ouvrir la boîte de dialogue du schéma dans laquelle vous pouvez définir les colonnes de votre schéma. Ce schéma doit correspondre au schéma du fichier d&#39;entrée.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3627070"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns7.png" id="wp3627067" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3627075"> </a><div class="pSmartList2"><li>Dans le panneau de droite, supprimez la colonne de sortie ne correspondant pas au filtre sur les colonnes que vous avez défini dans le <b class="cBold">tFSFilterColumns</b>, toutes les colonnes&#160;<em class="cEmphasis">extraInfo</em> dans ce scénario.</li></div>
+<a name="wp3627089"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue du schéma.</li></div>
+<a name="wp3627095"> </a><div class="pSmartList2"><li>Configurez les propriétés des composants comme pour le<b class="cBold"> tFSFilterColumns</b>. Utilisez les mêmes fichiers d&#39;entrée et de sortie.</li></div>
+<a name="wp3627103"> </a><div class="pSmartList2"><li>Sélectionnez un opérateur logique dans la liste correspondante, <b class="cBold">And</b> dans ce scénario.</li></div>
+<a name="wp3627110"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Conditions</b>, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter une ligne.</li></div>
+<a name="wp3627113"> </a><div class="pSmartList2"><li>Cliquez dans la ligne et sélectionnez la colonne sur laquelle vous souhaitez baser votre filtr sur les lignes.<br />Dans ce scénario, vous allez écrire uniquement les lignes dans lesquelles la valeur&#160;<em class="cEmphasis">amount</em> est supérieure ou égale à 5000.0.</li></div>
+<a name="wp3627124"> </a><div class="pSmartList2"><li>Cliquez sur l&#39;onglet <b class="cBold">Advanced settings</b> pour afficher la vue correspondante.</li></div>
+<a name="wp3627133"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Assign FileScale Path</b> pour afficher le champ <b class="cBold">FileScale Path</b> puis parcourez votre répertoire jusqu&#39;au fichier FileScale exécutable livré par <b class="cBold">Talend</b>.</li></div>
+<a name="wp3627148"> </a><div class="pSmartList2"><li>Cliquez sur le <b class="cBold">tFSUnique</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3627155"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns6.png" id="wp3627152" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3627162"> </a><div class="pSmartList2"><li>Définissez les propriétés comme vous l&#39;avez fait pour le<b class="cBold"> tFSFilterRows</b>. Utilisez les mêmes fichiers d&#39;entrée et de sortie.</li></div>
+<a name="wp3623349"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Unique key</b>, cochez la case de la colonne que vous souhaitez utiliser comme attribut de clé.<br />Dans ce scénario, vous souhaitez récupérer une seule occurrence de chaque nom dans la colonne&#160;<em class="cEmphasis">name</em>.</li></div>
+<a name="wp3623360"> </a><div class="pSmartList2"><li>Si vous souhaitez prendre en compte les majuscules et les minuscules, cochez la case <b class="cBold">Case Sensitive</b>.</li></div>
+<a name="wp3623369"> </a><div class="pSmartList2"><li>Cliquez sur l&#39;onglet <b class="cBold">Advanced settings</b> pour afficher la vue correspondante.</li></div>
+<a name="wp3623378"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Assign FileScale Path</b> pour afficher le champ <b class="cBold">FileScale Path</b> et parcourir votre répertoire jusqu&#39;au fichier FileScale exécutable livré par <b class="cBold">Talend</b>.</li></div>
+<a name="wp3623394"> </a><div class="pSmartList2"><li>Cliquez sur le <b class="cBold">tFSSort</b> pour afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3623401"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns8.png" id="wp3623398" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3623409"> </a><div class="pSmartList2"><li>Configurez les propriétés du composant comme vous l&#39;avez fait avec le<b class="cBold"> tFSUnique</b>. Utilisez les mêmes fichiers d&#39;entrée et de sortie.</li></div>
+<a name="wp3623417"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Criteria</b>, cliquez sur le bouton <b class="cBold">[+]</b> afin d&#39;ajouter une ligne.</li></div>
+<a name="wp3623424"> </a><div class="pSmartList2"><li>Cliquez dans le champ <b class="cBold">Schema column</b> puis sélectionnez la colonne sur laquelle vous souhaitez vous baser pour trier les données.</li></div>
+<a name="wp3623431"> </a><div class="pSmartList2"><li>Cliquez dans la colonne <b class="cBold">Sort type</b> et sélectionnez le type de tri.</li></div>
+<a name="wp3623439"> </a><div class="pSmartList2"><li>Cliquez dans la colonne <b class="cBold">Order type</b> et sélectionnez l&#39;ordre de tri.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3623445"> </a><p class="pIndented1">
+Dans ce scénario, triez les données de sortie alphabétiquement en ordre ascendant basé sur la colonne&#160;<em class="cEmphasis">name</em>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3623455"> </a><div class="pSmartList2"><li>Cliquez sur l&#39;onglet <b class="cBold">Advanced settings</b> pour afficher la vue correspondante.</li></div>
+<a name="wp3623464"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Assign FileScale Path</b> pour afficher le champ <b class="cBold">FileScale Path</b> puis parcourez votre répertoire jusqu&#39;au fichier FileScale exécutable livré par <b class="cBold">Talend</b>.</li></div>
+<a name="wp3623477"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3628232"> </a><p class="pIndented1">
+Une barre de progression s&#39;affiche dans l&#39;espace de modélisation graphique et vous montre l&#39;avancement des opérations simultanées. Cette barre de progression vous permet de voir combien de gros volumes de données d&#39;entrée sont traités rapidement.
+</p>
+<a name="wp3628236"> </a><p class="pIndented1">
+Lorsque le pourcentage atteint les&#160;100%, les données sont écrites dans le fichier de sortie. Une simple comparaison entre les données d&#39;entrée et les données traitées vous montre que le fichier de sortie n&#39;a que les colonnes&#160;<em class="cEmphasis">id, name, dateOfBirth</em> et&#160;<em class="cEmphasis">amount</em>. Seules les lignes dans lesquelles la valeur&#160;<em class="cEmphasis">amount</em> est supérieure ou égale à&#160;5000.0 sont affichées.
+</p>
+<a name="wp3628249"> </a><p class="pIndented1">
+Une seule occurrence de chaque nom et de chaque enregistrement de données est écrite dans l&#39;ordre alphabétique ascendant.
+</p>
+<a name="wp3628254"> </a><p class="pIndented1">
+Les deux captures d&#39;écran ci-dessous montrent une partie des données à gros volume avant et après traitement.
+</p>
+<a name="wp3623506"> </a><p class="pIndented1">
+Les données d&#39;entrée&#160;:
+</p>
+<a name="wp3623513"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns10.png" id="wp3623510" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3623517"> </a><p class="pIndented1">
+Les données de sortie&#160;:
+</p>
+<a name="wp3623525"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSFilterColumns9.png" id="wp3623521" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSFilterColumns_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSFilterRows_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

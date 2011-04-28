@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:04">
+    <title>Scenario: Retrieving dimension elements from a given cube</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloInputMulti_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloOutput_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3489083"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3489090"> </a><h2 class="pHeading2">
+Scenario: Retrieving dimension elements from a given cube
+</h2>
+<a name="wp3489097"> </a><p class="pIndented1">
+The job in this scenario retrieves several dimension elements from a demo Palo cube <em class="cEmphasis">Sales</em>.
+</p>
+<a name="wp3489104"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloInputMulti1.png" id="wp3489101" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3489108"> </a><p class="pIndented1">
+To replicate this scenario, proceed as follows:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3489122"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tPaloInputMulti</b> and <b class="cBold">tLogRow</b> from the component <b class="cBold">Palette</b> onto the design workspace.</li></div>
+<a name="wp3489130"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tPaloInputMulti</b> to open its contextual menu.</li></div>
+<a name="wp3489149"> </a><div class="pSmartList2"><li>In the menu, select <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> to connect <b class="cBold">tPaloInputMulti</b> to <b class="cBold">tLogRow</b> with a <b class="cBold">row</b> link.</li></div>
+<a name="wp3489160"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tPaloInputMulti</b> component to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3489167"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloInputMulti2.png" id="wp3489164" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3489178"> </a><div class="pSmartList2"><li>In the <b class="cBold">Host name</b> field, type in the host name or the IP address of the host server, <em class="cEmphasis">localhost</em> for this example.</li></div>
+<a name="wp3489185"> </a><div class="pSmartList2"><li>In the <b class="cBold">Server Port</b> field, type in the listening port number of the Palo server. In this scenario, it is <em class="cEmphasis">7777</em>.</li></div>
+<a name="wp3489198"> </a><div class="pSmartList2"><li>In the <b class="cBold">Username</b> field and the <b class="cBold">Password</b> field, type in the authentication information. In this example, both of them are <em class="cEmphasis">admin</em>.</li></div>
+<a name="wp3489209"> </a><div class="pSmartList2"><li>In the <b class="cBold">Database</b> field, type in the database name in which the cube to be used is stored.</li></div>
+<a name="wp3489215"> </a><div class="pSmartList2"><li>In the <b class="cBold">Cube</b> field, type in the cube name in which the dimensions of interests are stored. In this scenario, it is one of the demo cubes <em class="cEmphasis">Sales</em>.</li></div>
+<a name="wp3489228"> </a><div class="pSmartList2"><li>In the <b class="cBold">Cube type</b> field, select the <b class="cBold">Normal</b> type from the drop-down list for the cube to be created, meaning this cube will be normal and default.</li></div>
+<a name="wp3489237"> </a><div class="pSmartList2"><li>Next to the <b class="cBold">Edit schema</b> field, click the three-dot button to open the schema editor.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3489244"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloInputMulti3.png" id="wp3489241" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3489249"> </a><div class="pSmartList2"><li>In the schema editor, click the plus button to add the rows of the schema to be edited. In this example, add rows corresponding to all of the dimensions stored in the <em class="cEmphasis">Sales</em> cube: <em class="cEmphasis">Products, Regions, Months, Years, Datatypes, Measures</em>. Type in them in the order given in this cube.</li></div>
+<a name="wp3489262"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate this editing and accept the propagation of this change to the next component. Then these columns are added automatically into the <b class="cBold">Column</b> column of the <b class="cBold">Cube query</b> table in the <b class="cBold">Component</b> view. If the order is not consistent with the one in the <em class="cEmphasis">Sales</em> cube, adapt it using the up and down arrows under the schema table.</li></div>
+<a name="wp3489281"> </a><div class="pSmartList2"><li>In the <b class="cBold">Dimensions</b> column of the <b class="cBold">Cube query</b> table, type in each of the dimension names stored in the <em class="cEmphasis">Sales</em> cube regarding to each row in the <b class="cBold">Column</b> column. In the <em class="cEmphasis">Sales</em> cube, the dimension names are: <em class="cEmphasis">Products, Regions, Months, Years, Datatypes, Measures</em>.</li></div>
+<a name="wp3489303"> </a><div class="pSmartList2"><li>In the <b class="cBold">Elements</b> columns of the <b class="cBold">Cube query</b> table, type in the dimension elements you want to retrieve regarding to the dimensions they belong to. In this example, the elements to be retrieved are <em class="cEmphasis">All Products</em>, <em class="cEmphasis">Germany</em> and <em class="cEmphasis">Austria</em> (Belonging to the same dimension <b class="cBold">Regions</b>, these two elements are entered in the same row and separated with a coma.), <em class="cEmphasis">Jan</em>, <em class="cEmphasis">2009</em>, <em class="cEmphasis">Actual</em>, <em class="cEmphasis">Turnover</em>.</li></div>
+<a name="wp3489339"> </a><div class="pSmartList2"><li>Click <b class="cBold">tLogRow</b> to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3489346"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloInputMulti4.png" id="wp3489343" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3489357"> </a><div class="pSmartList2"><li>In the <b class="cBold">Mode</b> area, select the <b class="cBold">Table (print values in cells of a table)</b> check box to display the execution result in a table.</li></div>
+<a name="wp3489366"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3489373"> </a><p class="pIndented1">
+The dimension elements and the corresponding Measure values display in the <b class="cBold">Run</b> console.
+</p>
+<a name="wp3489382"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloInputMulti5.png" id="wp3489377" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloInputMulti_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloOutput_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

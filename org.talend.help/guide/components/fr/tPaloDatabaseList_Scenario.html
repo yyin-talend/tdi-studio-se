@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:02:53">
+    <title>Scénario&#160;: Récupérer des informations détaillées concernant les bases de données d&#39;un serveur Palo donné</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloDatabaseList_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloDimension_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3470336"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3470341"> </a><h2 class="pHeading2">
+Scénario&#160;: Récupérer des informations détaillées concernant les bases de données d&#39;un serveur Palo donné
+</h2>
+<a name="wp3470347"> </a><p class="pIndented1">
+Le Job de ce scénario récupère des informations concernant toutes les bases de données d&#39;un serveur  Palo donné.
+</p>
+<a name="wp3470367"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloDatabaseList.png" id="wp3470358" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3470371"> </a><p class="pIndented1">
+Pour reproduire ce scénario, procédez comme suit&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3470415"> </a><div class="pSmartList2"><li>Déposez un composant <b class="cBold">tPaloDatabaseList</b> et un <b class="cBold">tLogRow</b> de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique.</li></div>
+<a name="wp3470430"> </a><div class="pSmartList2"><li>Cliquez-droit sur le <b class="cBold">tPaloDatabaseList</b> pour ouvrir le menu contextuel.</li></div>
+<a name="wp3470439"> </a><div class="pSmartList2"><li>Dans ce menu, sélectionnez <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> pour relier les deux composants.</li></div>
+<a name="wp3470450"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tPaloDatabaseList</b> pour ouvrir sa vue <b class="cBold">Component</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3470507"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloDatabaseList1.png" id="wp3470498" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3470518"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Host name</b>, saisissez le nom de l&#39;hôte ou l&#39;adresse IP du serveur hôte, <em class="cEmphasis">localhost</em> dans cet exemple.</li></div>
+<a name="wp3470525"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Server Port</b>, saisissez le numéro du port d&#39;écoute du serveur Palo. Dans ce scénario, le numéro est&#160;<em class="cEmphasis">7777</em>.</li></div>
+<a name="wp3470538"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Username</b> (identifiant) et <b class="cBold">Password</b> (mot de passe), saisissez vos informations d&#39;authentification. Dans cet exemple, les deux sont&#160;<em class="cEmphasis">admin</em>.</li></div>
+<a name="wp3470560"> </a><div class="pSmartList2"><li>Appuyez sur <b class="cBold">F6</b> pour exécuter le Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3480578"> </a><p class="pIndented1">
+Les informations de toutes les bases de données du serveur Palo sont récupérées et affichées dans la console de la vue <b class="cBold">Run</b>.
+</p>
+<a name="wp3480589"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloDatabaseList2.png" id="wp3480586" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3480594"> </a><p class="pIndented1">
+Pour plus d&#39;informations concernant le schéma de sortie, consultez la section&#160;<a href="tPaloDatabaseList_Prop.html#wp3470138"><em class="cEmphasis">Découvrir le schéma de sortie en lecture seule du tPaloDatabaseList</em></a>.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloDatabaseList_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloDimension_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

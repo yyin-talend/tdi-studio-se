@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:08:07">
+    <title>Scénario&#160;: Ecrire et récupérer des messages dans une file d&#39;attente de message Microsoft</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMicrosoftMQInput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMicrosoftMQOutput_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3622925"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3622931"> </a><h2 class="pHeading2">
+Scénario&#160;: Ecrire et récupérer des messages dans une file d&#39;attente de message Microsoft
+</h2>
+<a name="wp3622936"> </a><p class="pIndented1">
+Ce scénario se compose de deux Jobs. Le premier Job poste des messages dans une file de message Microsoft et le second Job récupère les messages du serveur.
+</p>
+<a name="wp3624122"> </a><p class="pIndented1">
+Dans le premier Job, un message de type string est créé via un <b class="cBold">tRowGenerator</b> et posté dans une file d&#39;attente de message Microsoft à l&#39;aide d&#39;un composant <b class="cBold">tMicrosoftMQOutput</b>. Un composant <b class="cBold">tLogRow</b> intermédiaire affiche le flux passé d&#39;un composant à l&#39;autre.
+</p>
+<a name="wp3622957"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ1.png" id="wp3622954" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3622965"> </a><div class="pSmartList2"><li>Déposez de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique un <b class="cBold">tRowGenerator</b>, un <b class="cBold">tLogRow</b> et un <b class="cBold">tMicrosoftMQOutput</b>.</li></div>
+<a name="wp3622973"> </a><div class="pSmartList2"><li>Cliquez-droit sur le composant <b class="cBold">tRowGenerator</b> afin d&#39;ouvrir son menu contextuel.</li></div>
+<a name="wp3622985"> </a><div class="pSmartList2"><li>Dans ce menu, sélectionnez <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> afin de relier ce composant au <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp3622996"> </a><div class="pSmartList2"><li>Effectuez la même opération pour relier le <b class="cBold">tLogRow</b> au <b class="cBold">tMicrosoftMQOutput</b>.</li></div>
+<a name="wp3623004"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tRowGenerator</b> afin d&#39;ouvrir son éditeur.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3623011"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ2.png" id="wp3623008" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3623017"> </a><div class="pSmartList2"><li>Dans cet éditeur, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter trois lignes au schéma.</li></div>
+<a name="wp3623026"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Column</b>, saisissez un nouveau nom pour chaque ligne, afin de les renommer. Ici, saisissez respectivement&#160;<em class="cEmphasis">ID</em>, <em class="cEmphasis">Name</em> et&#160;<em class="cEmphasis">Address</em>.</li></div>
+<a name="wp3623045"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Type</b>, sélectionnez <b class="cBold">Integer</b> pour la ligne <em class="cEmphasis">ID</em> dans la liste déroulante et laissez les autres lignes en <b class="cBold">String</b>.</li></div>
+<a name="wp3623067"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">Functions</b>, sélectionnez <code class="cCode">random</code> pour la ligne&#160;<em class="cEmphasis">ID</em>, <code class="cCode">getFirstName</code> pour la ligne&#160;<em class="cEmphasis">Name</em> et <code class="cCode">getUsCity</code> pour la ligne&#160;<em class="cEmphasis">Address</em>.</li></div>
+<a name="wp3623083"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Number of Rows for RowGenerator</b>, saisissez&#160;<em class="cEmphasis">12</em> afin de limiter le nombre de lignes à générer. </li></div>
+<a name="wp3623092"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour valider vos modifications.</li></div>
+<a name="wp3623098"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3623096" border="0" hspace="0" vspace="0"/><br />
+Lors d&#39;une utilisation réelle, vous devrez utiliser un composant d&#39;entrée pour charger les données qui vous intéressent, au lieu du <b class="cBold">tRowGenerator</b>.
+</p>
+<a name="wp3623112"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tMicrosoftMQOutput </b>afin d&#39;ouvrir sa vue <b class="cBold">Component</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3623119"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ3.png" id="wp3623116" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3623128"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Host</b>, saisissez l&#39;adresse de l&#39;hôte. Dans cet exemple, saisissez&#160;<em class="cEmphasis">localhost</em>.</li></div>
+<a name="wp3623134"> </a><div class="pSmartList2"><li>Dans le champ<b class="cBold"> Queue</b>, saisissez le nom de la file de messages dans laquelle vous souhaitez écrire le message. Dans cet exemple, nommez-la&#160;<em class="cEmphasis">AddressQueue</em>.</li></div>
+<a name="wp3623150"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Message column (String Type</b><b class="cBold">)</b>, sélectionnez&#160;<em class="cEmphasis">Address</em> dans la liste déroulante afin de déterminer le corps du message à écrire.</li></div>
+<a name="wp3623159"> </a><div class="pSmartList2"><li>Appuyez sur <b class="cBold">F6</b> pour exécuter le Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3623166"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ4.png" id="wp3623163" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3623170"> </a><p class="pIndented1">
+Vous pouvez voir que la file a été créée automatiquement et que les messages ont été écrits.
+</p>
+<a name="wp3623174"> </a><p class="pIndented1">
+Créez ensuite le second Job pour récupérer le premier message de la file d&#39;attente.
+</p>
+<a name="wp3623181"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ5.png" id="wp3623178" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3623196"> </a><div class="pSmartList2"><li>Déposez un <b class="cBold">tMicrosoftMQInput</b> et un <b class="cBold">tLogRow</b> de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique.</li></div>
+<a name="wp3623203"> </a><div class="pSmartList2"><li>Reliez ces deux composants à l&#39;aide d&#39;un lien <b class="cBold">Row</b> &gt; <b class="cBold">Main</b>.</li></div>
+<a name="wp3623214"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tMicrosoftMQInput</b> afin d&#39;ouvrir sa vue <b class="cBold">Component</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3623221"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ6.png" id="wp3623218" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3623230"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Host</b>, saisissez le nom ou l&#39;adresse de l&#39;hôte. Ici, saisissez&#160;<em class="cEmphasis">localhost</em>.</li></div>
+<a name="wp3623236"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Queue</b>, saisissez le nom de la file d&#39;attente de message à aprtir de laquelle vous souhaitez récupérer le message. Dans cet exemple, saisissez&#160;<em class="cEmphasis">AddressQueue</em>.</li></div>
+<a name="wp3623248"> </a><div class="pSmartList2"><li>Appuyez sur <b class="cBold">F6</b> pour exécuter le Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3623255"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ7.png" id="wp3623252" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3623264"> </a><p class="pIndented1">
+Le corps du message <em class="cEmphasis">Atlanta</em> récupéré de la file d&#39;attente s&#39;affiche dans la console.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMicrosoftMQInput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMicrosoftMQOutput_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

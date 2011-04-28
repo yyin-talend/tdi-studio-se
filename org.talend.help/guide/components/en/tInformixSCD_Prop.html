@@ -1,0 +1,375 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:04">
+    <title>tInformixSCD</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tGreenplumSCD_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tInformixSCD_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3979800"> </a><h2 class="pHeading1">
+tInformixSCD
+</h2>
+<a name="wp3979809"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tInformixSCD_icon32_whiteza.png" id="wp3979804" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3979816"> </a><h2 class="pHeading2">
+tInformixSCD properties
+</h2>
+<a name="wp3980117"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3979824table3979819">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3979824"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3979826"> </a><div class="pCellBody">
+Databases/Business Intelligence/Informix
+</div>
+</td>
+    <td><a name="wp3979834"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icon.png" id="wp3979831" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3979839"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3979844"> </a><div class="pCellBody">
+<b class="cBold">tInformixSCD</b> tracks and shows changes which have been made to Informix SCD dedicated tables. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3979854"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3979859"> </a><div class="pCellBody">
+<b class="cBold">tInformixSCD</b> addresses Slowly Changing Dimension transformation needs, by regularly reading a data source and listing the modifications in an SCD dedicated table.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3979866"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3979871"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp3979873"> </a><div class="pCellBody">
+Built-in or Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3979875"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3979877"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3979882"> </a><div class="pCellBody">
+<b class="cBold">Built-in: </b>No property data stored centrally.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3979884"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3979886"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3979891"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the Repository file where properties are stored. The following fields are pre-filled in using fetched data
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3979893"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3979897"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp3979900"> </a><div class="pCellBody">
+Select this check box and click the relevant DB connection component on the <b class="cBold">Component list</b> to reuse the connection details you already defined.<br />
+</div>
+<a name="wp3979909"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3979907" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+When a Job contains the parent Job and the child Job, <b class="cBold">Component list</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, make sure that the available connection components are sharing the intended connection.<br />For more information on how to share a DB connection across Job levels, see <b class="cBold">Use or register a shared DB connection</b> in any database connection component corresponding to the database you are using, in <a href="Databases_group_intro.html"><em class="cEmphasis">Database components</em></a>.<br />Otherwise, you can as well deactivate the connection components and use <b class="cBold">Dynamic settings</b> of the component to specify the intended connection manually. In this case, make sure the connection name is unique and distinctive all over through the two  Job levels. For more information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3979927"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3979932"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host</em>
+</div>
+</td>
+    <td><a name="wp3979934"> </a><div class="pCellBody">
+Database server IP address.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3979936"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3979941"> </a><div class="pCellHeading">
+<em class="cEmphasis">Port</em>
+</div>
+</td>
+    <td><a name="wp3979943"> </a><div class="pCellBody">
+DB server listening port.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3979945"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3979950"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database</em>
+</div>
+</td>
+    <td><a name="wp3979952"> </a><div class="pCellBody">
+Name of the database.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3979954"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3979959"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em>
+</div>
+</td>
+    <td><a name="wp3979961"> </a><div class="pCellBody">
+Name of the schema.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3979963"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3979968"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> et <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp3979973"> </a><div class="pCellBody">
+User authentication information.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3979975"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3979980"> </a><div class="pCellHeading">
+<em class="cEmphasis">Instance</em>
+</div>
+</td>
+    <td><a name="wp3979982"> </a><div class="pCellBody">
+Name of the Informix instance to be used. This information can generally be found in the SQL hosts file.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3979984"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3979989"> </a><div class="pCellHeading">
+<em class="cEmphasis">Table</em>
+</div>
+</td>
+    <td><a name="wp3979991"> </a><div class="pCellBody">
+Name of the table to be created
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3979993"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3980000"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit schema</em>
+</div>
+</td>
+    <td><a name="wp3980003"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3980005"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3980007"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3980012"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3980023"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3980025"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3980030"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3980041"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3980046"> </a><div class="pCellHeading">
+<em class="cEmphasis">SCD Editor</em>
+</div>
+</td>
+    <td><a name="wp3980048"> </a><div class="pCellBody">
+The SCD editor helps to build and configure the data flow for slowly changing dimension outputs.<br />For more information, see <a href="tMysqlSCD_Prop.html#wp1555883"><em class="cEmphasis">SCD management methodologies</em></a>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3980053"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3980057"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use memory saving Mode</em>
+</div>
+</td>
+    <td><a name="wp3980060"> </a><div class="pCellBody">
+Select this check box to improve system performance.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3980062"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3980067"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use Transaction</em>
+</div>
+</td>
+    <td><a name="wp3980069"> </a><div class="pCellBody">
+Select this check box when the database is configured in NO_LOG mode.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3980071"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3980076"> </a><div class="pCellHeading">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp3980078"> </a><div class="pCellBody">
+This check box is cleared by default, meaning to skip the row on error and to complete the process for error-free rows.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3980083"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3980091"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3980093"> </a><div class="pCellBody">
+Select this check box to collect the log data at a component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3980095"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3980100"> </a><div class="pCellHeading">
+<em class="cEmphasis">Debug mode</em>
+</div>
+</td>
+    <td><a name="wp3980102"> </a><div class="pCellBody">
+Select this check box to display each step of the process by which data is written in the database.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3980107"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3980109"> </a><div class="pCellBody">
+This component is an output component.  Consequently, it requires an input component and a connection of the <b class="cBold">Row &gt; Main</b> type.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tGreenplumSCD_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tInformixSCD_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

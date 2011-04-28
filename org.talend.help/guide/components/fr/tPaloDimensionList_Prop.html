@@ -1,0 +1,452 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:02:53">
+    <title>tPaloDimensionList</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloDimension_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloDimensionList_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3483681"> </a><h2 class="pHeading1">
+tPaloDimensionList
+</h2>
+<a name="wp3483690"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tPaloDimensionList_icon32.png" id="wp3483685" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3483698"> </a><h2 class="pHeading2">
+Propriétés du tPaloDimensionList
+</h2>
+<a name="wp3483991"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3483706table3483701">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3483706"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp3483708"> </a><div class="pCellBody">
+Business Intelligence/Cube OLAP/Palo
+</div>
+</td>
+    <td><a name="wp3483716"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icongh.png" id="wp3483713" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3483721"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3483724"> </a><div class="pCellBody">
+Le composant<b class="cBold"> tPaloDimensionList</b> récupère les informations d&#39;une liste de dimensions de la base de données Palo déterminée.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3483731"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3483733"> </a><div class="pCellBody">
+Ce composant affiche le nom des dimensions, leur type, le nombre d&#39;éléments de dimension, le maximum d&#39;indentation des dimensions, le maximum de profondeur des dimensions, le maximum des niveaux des dimensions, l&#39;ID des dimensions dans un serveur Palo donné.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3483740"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3483744"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp3485187"> </a><div class="pCellBody">
+Cochez la case et cliquez sur le composant de connexion adéquat dans la liste <b class="cBold">Component list</b> pour réutiliser les informations de connexion que vous avez déjà définies.<br />
+</div>
+<a name="wp3485199"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3485196" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Lorsqu&#39;un Job contient un Job parent et un Job enfant, la liste <b class="cBold">Component List</b> présente uniquement les composants de connexion du Job du même niveau. Si vous souhaitez utiliser une connexion existant dans un autre niveau, vérifiez que les composants de connexion disponibles partagent la même connexion.<br />Pour plus d&#39;informations concernant le partage d&#39;une connexion à travers différents niveaux de Jobs, consultez <b class="cBold">Use or register a shared DB connection</b> dans tous les composants de base de données que vous utilisez.
+</p>
+<a name="wp3483756"> </a><div class="pCellBody">
+Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afinde paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3483776"> </a><div class="pCellHeading">
+<em class="cEmphasis">Connection configuration<br /></em>
+</div>
+<a name="wp3483783"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3483781" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Indisponible lors de l&#39;utilisation d&#39;une connexion existante.
+</p>
+</td>
+    <td><a name="wp3485267"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host Name</em>
+</div>
+</td>
+    <td><a name="wp3485270"> </a><div class="pCellBody">
+Saisissez le nom de l&#39;hôte ou l&#39;adresse IP du serveur hôte.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3483793"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3485277"> </a><div class="pCellHeading">
+<em class="cEmphasis">Server Port</em>
+</div>
+</td>
+    <td><a name="wp3485280"> </a><div class="pCellBody">
+Saisissez le numéro du port d&#39;écoute du serveur Palo.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3483803"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3485287"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> et <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp3485294"> </a><div class="pCellBody">
+Informations d&#39;authentification de l&#39;utilisateur de Palo.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3483815"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3483821"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database</em>
+</div>
+</td>
+    <td><a name="wp3483823"> </a><div class="pCellBody">
+Saisissez le nom de la base de données dans laquelle se trouvent les dimensions qui vous intéressent.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3483825"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3483829"> </a><div class="pCellHeading">
+<em class="cEmphasis">Retrieve cube dimensions</em>
+</div>
+</td>
+    <td><a name="wp3483832"> </a><div class="pCellBody">
+Cochez cette case pour récupérer les informations des dimensions d&#39;un cube existant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3483834"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3483839"> </a><div class="pCellHeading">
+<em class="cEmphasis">Cube</em><br />
+</div>
+<a name="wp3483845"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3483843" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Disponible lorsque vous cochez la case <b class="cBold">Retrieve cube dimensions</b>.
+</p>
+</td>
+    <td><a name="wp3483851"> </a><div class="pCellBody">
+Saisissez le nom du cube duquel les informations concernant les dimensions sont récupérées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3483853"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3483860"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3485346"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3483865"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3483867"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3485353"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> <b class="cBold">Talend Integration Suite Studio</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3483883"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3483885"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3485367"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> <b class="cBold">Talend Integration Suite Studio</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3483904"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3483912"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStat</em><em class="cEmphasis">Catcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3483914"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log au niveau du composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3483919"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3483921"> </a><div class="pCellBody">
+Ce composant peut être utilisé en standalone ou comme composant de début d&#39;un processus. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3483928"> </a><div class="pCellBody">
+<b class="cBold">Global Variables</b>
+</div>
+</td>
+    <td><a name="wp3483931"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3485450"> </a><div class="pCellBody">
+<b class="cBold">Dimension name</b>&#160;: Indique le nom de la dimension traitée. Disponible en tant que variable <b class="cBold">Flow</b>.<br />    Retourne une chaîne de caractères. <br /><br />Pour plus d&#39;informations concernant les variables, consultez&#160;<em class="cEmphasis">Utiliser les variables dans un Job, page 146</em> du <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3483951"> </a><div class="pCellBody">
+<b class="cBold">Connections</b>
+</div>
+</td>
+    <td><a name="wp3483953"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3933140"> </a><div class="pCellBody">
+Liens de sortie (d&#39;un composant à un autre)&#160;:<br /><b class="cBold">Row&#160;</b>: Main, Iterate.<br /><b class="cBold">Trigger</b>&#160;: Run if, On Subjob Ok; On Subjob Error, On Component Ok, On Component Error.<br /><br />Liens d&#39;entrée (d&#39;un composant à un autre)&#160;:<br /><b class="cBold">Row&#160;</b>: Iterate.<br /><b class="cBold">Trigger</b>&#160;: Run if, On Subjob Ok, On Subjob Error, On Component Ok, On Component Error.<br />Pour plus d&#39;informations concernant les connexions, consultez&#160;<em class="cEmphasis">Types de connexions</em> dans le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3483984"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3483986"> </a><div class="pCellBody">
+Le schéma de sortie est fixe et en lecture seule.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+<a name="wp3483998"> </a><h2 class="pHeading2">
+Découvrir le schéma de sortie en lecture seule du tPaloDimensionList
+</h2>
+<a name="wp3484001"> </a><p class="pIndented1">
+Le tableau ci-dessous présente les informations relatives au schéma de sortie en lecture seule du composant <b class="cBold">tPaloDimensionList</b>.
+</p>
+<a name="wp3484087"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3484010table3484008">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp3484010"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Dimension
+</div>
+</th>
+    <th><a name="wp3484012"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Type
+</div>
+</th>
+    <th><a name="wp3484014"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Description
+</div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp3484016"> </a><div class="pCellBody">
+Dimension_id
+</div>
+</td>
+    <td><a name="wp3484018"> </a><div class="pCellBody">
+long
+</div>
+</td>
+    <td><a name="wp3484020"> </a><div class="pCellBody">
+ID interne de la dimension.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3484022"> </a><div class="pCellBody">
+Dimension_name
+</div>
+</td>
+    <td><a name="wp3484024"> </a><div class="pCellBody">
+string
+</div>
+</td>
+    <td><a name="wp3484026"> </a><div class="pCellBody">
+Nom de la dimension.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3484028"> </a><div class="pCellBody">
+Dimension_attribute_cube
+</div>
+</td>
+    <td><a name="wp3484030"> </a><div class="pCellBody">
+string
+</div>
+</td>
+    <td><a name="wp3484032"> </a><div class="pCellBody">
+Nom du cube des attributs.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3484034"> </a><div class="pCellBody">
+Dimension_rights_cube
+</div>
+</td>
+    <td><a name="wp3484036"> </a><div class="pCellBody">
+string
+</div>
+</td>
+    <td><a name="wp3484038"> </a><div class="pCellBody">
+Nom du cube des droits.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3484040"> </a><div class="pCellBody">
+Dimension_elements
+</div>
+</td>
+    <td><a name="wp3484042"> </a><div class="pCellBody">
+int
+</div>
+</td>
+    <td><a name="wp3484044"> </a><div class="pCellBody">
+Nombre d&#39;éléments de dimension.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3484046"> </a><div class="pCellBody">
+Dimension_max_level
+</div>
+</td>
+    <td><a name="wp3484048"> </a><div class="pCellBody">
+int
+</div>
+</td>
+    <td><a name="wp3484050"> </a><div class="pCellBody">
+Niveau maximal de la dimension.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3484052"> </a><div class="pCellBody">
+Dimension_max_indent
+</div>
+</td>
+    <td><a name="wp3484055"> </a><div class="pCellBody">
+int
+</div>
+</td>
+    <td><a name="wp3484058"> </a><div class="pCellBody">
+Indentation maximum de la dimension.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3484061"> </a><div class="pCellBody">
+Dimension_max_depth
+</div>
+</td>
+    <td><a name="wp3484063"> </a><div class="pCellBody">
+int
+</div>
+</td>
+    <td><a name="wp3484065"> </a><div class="pCellBody">
+Profondeur maximale de la dimension.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3484067"> </a><div class="pCellBody">
+Dimension_type
+</div>
+</td>
+    <td><a name="wp3484069"> </a><div class="pCellBody">
+int
+</div>
+</td>
+    <td><a name="wp3484072"> </a><div class="pCellBody">
+Type de la dimension&#160;:<br />- <b class="cBold">0 </b>= normal<br />- <b class="cBold">1 </b>= system<br />- <b class="cBold">2</b> = attribute<br />- <b class="cBold">3 </b>= user info
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloDimension_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloDimensionList_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

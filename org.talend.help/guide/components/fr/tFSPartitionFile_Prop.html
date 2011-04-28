@@ -1,0 +1,381 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:08:03">
+    <title>tFSPartitionFile</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSJoin_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSPartitionFile_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3620235"> </a><h2 class="pHeading1">
+tFSPartitionFile
+</h2>
+<a name="wp3614591"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tFSPartitionFile_icon32.png" id="wp3614586" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3628745"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3628735" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+Ce composant n&#39;est disponible dans la <b class="cBold">Palette</b> que si vous avez souscrit à <b class="cBold">Talend Integration Suite MP</b>x. Pour plus d&#39;informations concernant le mode Massively Parallel eXtension, consultez&#160;<em class="cEmphasis">Le mode Massively Parallel eXtension</em> dans le <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite MP</b>x.
+</div>
+<a name="wp3628760"> </a><h2 class="pHeading2">
+Propriétés du tFSPartitionFile
+</h2>
+<a name="wp3614924"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3614619table3614614">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3614619"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp3614621"> </a><div class="pCellBody">
+FileScale
+</div>
+</td>
+    <td><a name="wp3614629"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icongh.png" id="wp3614626" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3614634"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3614639"> </a><div class="pCellBody">
+Le composant <b class="cBold">tFSPartitionFile </b>vous permet de partitionner des données en masse d&#39;un fichier d&#39;entrée avec les méthodes de partitionnement Hash ou Round-Robin avant de les écrire dans un fichier de sortie. Cela permet de gérer de très grandes tables.<br />Ce composant possède des fonctionnalités de partitionnement de fichiers à gros volume en temps réel. Afin d&#39;optimiser les performances, le composant trie généralement les données avant de les traiter.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3614646"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3614648"> </a><div class="pCellBody">
+Permet de partitionner des données en masse avant de les écrire dans un fichier de sortie.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3614661"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3614668"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3614671"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository.<br />Cliquez sur <b class="cBold">Edit Schema</b> pour modifier le schéma.
+</div>
+<a name="wp3614680"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3614678" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+ Si vous modifiez le schéma, il se met automatiquement en built-in.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3614683"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614685"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614690"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé dans divers projets et job designs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3614701"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614703"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614708"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Le schéma est créé et conservé pour ce composant uniquement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide Utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3614722"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614727"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp3614729"> </a><div class="pCellBody">
+Peut être Built-in ou Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3614731"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614733"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614738"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Propriétés utilisées ponctuellement.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3614740"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614742"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614747"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Sélectionnez le fichier de propriétés du composant. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3614752"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614757"> </a><div class="pCellHeading">
+<em class="cEmphasis">Input File Name</em>
+</div>
+</td>
+    <td><a name="wp3614759"> </a><div class="pCellBody">
+Nom du fichier contenant les données que vous souhaitez partitionner.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3614764"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614769"> </a><div class="pCellHeading">
+<em class="cEmphasis">Output File Name</em>
+</div>
+</td>
+    <td><a name="wp3629847"> </a><div class="pCellBody">
+Nom du fichier dans lequel vous souhaitez écrire les données partitionnées.
+</div>
+<a name="wp3629869"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3629863" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Les fichiers de sortie générés se verront ajouter un postfixe avec un numéro auto-incrémenté qui dépend du nombre de partitions défini.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3614773"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614778"> </a><div class="pCellHeading">
+<em class="cEmphasis">Record separator</em> (char)
+</div>
+</td>
+    <td><a name="wp3614780"> </a><div class="pCellBody">
+Caractère, chaîne de caractères ou expression régulière pour séparer les enregistrements (lignes).
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3614782"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614787"> </a><div class="pCellHeading">
+<em class="cEmphasis">Field separator</em> (char)
+</div>
+</td>
+    <td><a name="wp3614789"> </a><div class="pCellBody">
+Caractère, chaîne de caractères ou expression régulière pour séparer les champs dans un enregistrement.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3614791"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614796"> </a><div class="pCellHeading">
+<em class="cEmphasis">Header</em>
+</div>
+</td>
+    <td><a name="wp3614798"> </a><div class="pCellBody">
+Nombre d&#39;enregistrements à ignorer au début du fichier.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3614800"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614805"> </a><div class="pCellHeading">
+<em class="cEmphasis">Footer</em>
+</div>
+</td>
+    <td><a name="wp3614807"> </a><div class="pCellBody">
+Nombre d&#39;enregistrements à ignorer à la fin du fichier.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3614809"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614813"> </a><div class="pCellHeading">
+<em class="cEmphasis">Number of partitions</em>
+</div>
+</td>
+    <td><a name="wp3614816"> </a><div class="pCellBody">
+Nombre de partitions dans le fichier.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3614818"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614823"> </a><div class="pCellHeading">
+<em class="cEmphasis">Partition</em>
+</div>
+</td>
+    <td><a name="wp3614825"> </a><div class="pCellBody">
+Sélectionnez dans la liste la méthode de partition que vous souhaitez utiliser&#160;:<br /><b class="cBold">Round-robin&#160;</b>: Les enregistrements sont partitionnés via la méthode Round-Robin, afin que chaque partition contienne plus ou moins le même nombre de lignes et que la répartition de charge soit effectuée. Puisqu&#39;il n&#39;y a pas de clé de partition, les lignes sont distribuées au hasard dans toutes les partitions.<br /><b class="cBold">Hash&#160;</b>: Les enregistrements sont hachés en partitions basées sur la valeur d&#39;une colonne clé ou de colonnes clé sélectionnée(s) dans le schéma du fichier. <br />Cochez la case <b class="cBold">Partition Key</b> correspondant à la colonne (aux colonnes) que vous souhaitez utiliser comme base de partitionnement des données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3614839"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3614843"> </a><div class="pCellHeading">
+<em class="cEmphasis">Generate FSLang File</em>
+</div>
+</td>
+    <td><a name="wp3614846"> </a><div class="pCellBody">
+Cochez cette case pour générer le fichier FSLang correspondant à votre Job et cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">FSLang File Name</b> pour spécifier son chemin d&#39;accès et son nom.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3614854"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614858"> </a><div class="pCellHeading">
+<em class="cEmphasis">Assign FileScale Path</em>
+</div>
+</td>
+    <td><a name="wp3614864"> </a><div class="pCellBody">
+Cochez cette case puis cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">FileScale Path</b> afin de sélectionner le fichier exécutable du programme FileScale nécessaire à l&#39;exécution du composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3614869"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614873"> </a><div class="pCellHeading">
+<em class="cEmphasis">Specify Number of Process Child</em>
+</div>
+</td>
+    <td><a name="wp3614876"> </a><div class="pCellBody">
+Cochez cette case et saisissez le nombre de processus fils à utiliser pour effectuer l&#39;agrégation.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3614887"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614891"> </a><div class="pCellHeading">
+<em class="cEmphasis">Custom FileScale Parameter (separated by ,)</em>
+</div>
+</td>
+    <td><a name="wp3614894"> </a><div class="pCellBody">
+Saisissez les paramètres pour toute opération spécifique que vous souhaitez ajouter à l&#39;appel de l&#39;exécutable FileScale.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3614896"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3614900"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3614903"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log au niveau du Job ainsi qu&#39;au niveau de chaque composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3614908"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3614910"> </a><div class="pCellBody">
+Ce composant gère des fichiers et ne nécessite donc pas de flux d&#39;entrée ou de sortie. Il est utilisé pour effectuer une jointure sur des données to dans des fichiers à gros volume.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3614917"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3614919"> </a><div class="pCellBody">
+La limitation dépend des limites imposées par la mémoire physique et par l&#39;architecture du processeur. Par exemple, la longueur totale des fichiers traités ne peut excéder la limite système pour les fichiers à gros volume (valeur maximum de 64 bits signés).
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSJoin_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSPartitionFile_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

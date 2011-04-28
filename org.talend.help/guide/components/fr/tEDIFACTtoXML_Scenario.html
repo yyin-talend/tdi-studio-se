@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:09:37">
+    <title>Scénario&#160;: Passer d&#39;EDIFACT à XML</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tEDIFACTtoXML_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tExtractXMLField_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2960460"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2961838"> </a><h2 class="pHeading2">
+Scénario&#160;: Passer d&#39;EDIFACT à XML
+</h2>
+<a name="wp2961841"> </a><p class="pIndented1">
+Ce scénario décrit un Job simple qui lit un fichier de message EDIFACT Customs Cargo (CUSCAR) et le sauvegarde en tant que fichier XML.
+</p>
+<a name="wp2961849"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tEDIFACTtoXML1.png" id="wp2961846" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2961860"> </a><div class="pSmartList2"><li>Déposez un composant <b class="cBold">tEDIFACTtoXML</b> et un <b class="cBold">tFileOutputXML</b> de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique.</li></div>
+<a name="wp2961873"> </a><div class="pSmartList2"><li>Connectez le composant <b class="cBold">tEDIFACTtoXML</b> au <b class="cBold">tFileOutputXML</b> à l&#39;aide d&#39;un lien <b class="cBold">Row&#160;</b>&gt;&#160;<b class="cBold">Main</b>.</li></div>
+<a name="wp2961894"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tEDIFACTtoXML</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2961901"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tEDIFACTtoXML2.png" id="wp2961898" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2961909"> </a><div class="pSmartList2"><li>Saisissez dans le champ <b class="cBold">EDI filename</b> le chemin d&#39;accès au fichier du message EDIFACT d&#39;entrée ou parcourez votre système.<br />Dans ce scénario, le fichier d&#39;entrée est&#160;<em class="cEmphasis">99a_cuscar.edi</em>.</li></div>
+<a name="wp2961923"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">EDI version</b>, sélectionnez la version d&#39;EDIFACT du fichier d&#39;entrée,&#160;<em class="cEmphasis">D99A</em> dans cet exemple.</li></div>
+<a name="wp2961929"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Ignore new line</b> afin d&#39;ignorer les caractères de retour chariot dans le fichier d&#39;entrée durant la transformation.</li></div>
+<a name="wp2961934"> </a><div class="pSmartList2"><li>Laissez les autres paramètres tels qu&#39;ils sont.</li></div>
+<a name="wp2961945"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tFileOutputXML</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2961952"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tEDIFACTtoXML3.png" id="wp2961949" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2961960"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">File Name</b>, saisissez le chemin d&#39;accès au fichier XML de sortie que vous souhaitez générer ou parcourez votre système.<br />Dans cet exemple, le fichier XML de sortie est&#160;<em class="cEmphasis">99a_cuscar.xml</em>.</li></div>
+<a name="wp2961968"> </a><div class="pSmartList2"><li>Laissez les autres paramètres tels qu&#39;ils sont.</li></div>
+<a name="wp2961974"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.<br />Le fichier du message d&#39;entrée EDIFACT CUSCAR est transformé au format XML et le fichier XML de sortie est généré comme défini.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2961985"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Components-17-07-46.jpg" height="487" width="570" id="wp2961980" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tEDIFACTtoXML_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tExtractXMLField_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

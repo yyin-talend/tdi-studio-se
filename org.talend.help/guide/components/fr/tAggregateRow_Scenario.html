@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:09:03">
+    <title>Scénario 1&#160;: Agréger des valeurs et trier des données</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tAggregateRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tAggregateSortedRow_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1559203"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp1559212"> </a><h2 class="pHeading2">
+Scénario 1&#160;: Agréger des valeurs et trier des données
+</h2>
+<a name="wp1559215"> </a><p class="pIndented1">
+Le scénario suivant décrit un Job à quatre composants. Le composant d&#39;entrée, un fichier délimité CSV, contient des noms de pays et des valeurs de notation à trier par ordre décroissant de moyenne. Ce composant d&#39;entrée est connecté à un opérateur <b class="cBold">tAggregateRow</b> qui se charge de calculer les moyennes puis à un composant <b class="cBold">tSortRow</b> qui se charge du tri. Le flux de sortie est dirigé dans un nouveau fichier CSV.
+</p>
+<a name="wp1559229"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow1.png" id="wp1559226" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1559241"> </a><div class="pSmartList2"><li>A partir du dossier <b class="cBold">File</b> de la <b class="cBold">Palette</b>, cliquez et déposez un composant <b class="cBold">tFileInputDelimited</b>. </li></div>
+<a name="wp1559247"> </a><div class="pSmartList2"><li>Cliquez sur le libellé du composant et renommez-le en <em class="cEmphasis">Countries</em>. Ou passez dans l&#39;onglet <b class="cBold">View</b> pour le changer.</li></div>
+<a name="wp1559257"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b>, définissez le chemin d&#39;accès ainsi que les critères de délimitation. Ou sélectionnez l&#39;entrée de métadonnées correspondant à votre fichier d&#39;entrée, si vous en avez défini une.</li></div>
+<a name="wp1559270"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Edit schema...</b> et paramétrez les colonnes&#160;: <em class="cEmphasis">Countries</em> et <em class="cEmphasis">Points</em> correspondant à la structure du fichier. Si la description du fichier est conservée dans les <b class="cBold">Metadata</b> du <b class="cBold">Repository</b>, le schéma est automatiquement chargé lorsque vous cliquez sur <b class="cBold">Repository</b> dans le champ <b class="cBold">Schema type</b>.</li></div>
+<a name="wp1559286"> </a><div class="pSmartList2"><li>Puis dans le dossier <b class="cBold">Processing</b> de la <b class="cBold">Palette</b>, cliquez et déposez le composant <b class="cBold">tAggregateRow</b>. Renommez-le en <em class="cEmphasis">Calculation</em>.</li></div>
+<a name="wp1559309"> </a><div class="pSmartList2"><li>Cliquez-droit et connectez <em class="cEmphasis">Countries</em> à <em class="cEmphasis">Calculation</em> à l&#39;aide d&#39;une connexion <b class="cBold">Row &gt; Main</b>.</li></div>
+<a name="wp1559315"> </a><div class="pSmartList2"><li>Double-cliquez sur <em class="cEmphasis">Calculation</em> (composant <b class="cBold">tAggregateRow</b>) pour définir les propriétés. Cliquez sur <b class="cBold">Edit schema</b> et définissez le schéma de sortie. Vous pouvez ajouter autant de colonnes que vous le voulez selon le nombre d&#39;opérations d&#39;ensemble que vous souhaitez obtenir en sortie.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1559327"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow3.png" id="wp1559324" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1559332"> </a><div class="pSmartList2"><li>Dans cet exemple, calculez la moyenne de la notation par pays et affichez les valeurs minimale et maximale par pays, sachant que chaque pays possède plusieurs notes. Cliquez sur <b class="cBold">OK</b> lorsque le schéma est terminé.</li></div>
+<a name="wp1559336"> </a><div class="pSmartList2"><li>Définissez à présent les différentes opérations d&#39;ensemble à effectuer. Dans le champ <b class="cBold">Group&#160;By</b> de la fenêtre <b class="cBold">Basic settings</b> du composant <b class="cBold">tAggregateRow</b>, définissez les ensembles sur lesquels les opérations sont effectuées. Dans cet exemple, sélectionnez <b class="cBold">Country</b> comme colonne de regroupement. Notez que dans la colonne de sortie, un champ clé doit être défini dans le schéma. La première colonne citée comme de sortie (Output) dans la table <b class="cBold">Group&#160;By</b> devient l&#39;ensemble principal de calcul. Toutes les autres sorties deviennent alors secondaires dans l&#39;ordre d&#39;affichage.</li></div>
+<a name="wp1559353"> </a><div class="pSmartList2"><li>Sélectionnez la colonne d&#39;entrée (Input) dont sont extraites les valeurs.</li></div>
+<a name="wp1559356"> </a><div class="pSmartList2"><li>Puis renseignez les diverses opérations réalisées. Les fonctions utilisées dans cet exemple sont des moyennes (average), min, max. Sélectionnez la colonne d&#39;entrée dont sont extraites les valeurs de calcul et sélectionnez les cases <b class="cBold">Ignore null values</b> si nécessaire.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1559365"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow4.png" id="wp1559362" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1559373"> </a><div class="pSmartList2"><li>Cliquez-déposez un composant <b class="cBold">tSortRow</b> dans l&#39;espace de modélisation. Pour plus d&#39;informations concernant ce composant<a href="tSortRow_Prop.html#wp1657617">, consultez&#160;<em class="cEmphasis">Propriétés du tSortRow.</em></a></li></div>
+<a name="wp1559387"> </a><div class="pSmartList2"><li>Connectez-le au composant <b class="cBold">tAggregateRow</b> à l&#39;aide d&#39;une connexion de type <b class="cBold">Row &gt; Main</b>.</li></div>
+<a name="wp1559396"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Component</b> du composant <b class="cBold">tSortRow</b>, définissez la colonne de tri, le type ainsi que l&#39;ordre de tri.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1559405"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow5.png" id="wp1559402" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1559413"> </a><div class="pSmartList2"><li>Dans ce scénario, la colonne à trier est <em class="cEmphasis">Country</em>, le type de tri est alphabétique et l&#39;ordre est ascendant.</li></div>
+<a name="wp1559417"> </a><div class="pSmartList2"><li>Ajoutez un composant de sortie à ce Job. Cliquez et déposez un composant <b class="cBold">tFileOutputDelimited</b> et paramétrez-le.</li></div>
+<a name="wp1559428"> </a><div class="pSmartList2"><li>Connectez le composant <b class="cBold">tSortRow</b> à ce composant de sortie.</li></div>
+<a name="wp1559434"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Component</b>, saisissez le chemin d&#39;accès au fichier de sortie. Cliquez sur <b class="cBold">Edit&#160;schema</b> pour le configurer si nécessaire. Dans ce scénario, le fichier délimité est de type CSV. <br />Cochez la case <b class="cBold">Include Header</b> afin de réutiliser les libellés des colonnes du schéma dans le flux de sortie.</li></div>
+<a name="wp1559447"> </a><div class="pSmartList2"><li>Appuyez sur <b class="cBold">F6</b> pour exécuter le Job. Le fichier CSV est ainsi créé et il contient les résultats des opérations d&#39;agrégation.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1559458"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow6.png" id="wp1559453" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3759976"> </a><h2 class="pHeading2">
+Scénario 2: Agréger des valeurs basées sur un schéma dynamique
+</h2>
+<a name="wp3759982"> </a><p class="pIndented1">
+Ce scénario Java décrit un Job à quatre composants. On utilise un composant <b class="cBold">tAggregateRow</b> pour lire les données d&#39;un fichier CSV, les rassembler puis envoyer le résultat de l&#39;opération dans la console <b class="cBold">Run</b> et dans un fichier de sortie. Pour plus d&#39;informations concernant le schéma dynamique, consultez&#160;<em class="cEmphasis">Schéma dynamique, page 96</em> du <b class="cBold">Guide Utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b> .
+</p>
+<a name="wp3760002"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow7.png" id="wp3759999" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3760013"> </a><div class="pSmartList2"><li>A partir de la <b class="cBold">Palette</b>, cliquez et déposez dans l&#39;éditeur graphique les composants requis pour ce scénario&#160;: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tAggregateRow</b>, <b class="cBold">tLogRow</b> et <b class="cBold">tFileOutputDelimited</b>.</li></div>
+<a name="wp3760033"> </a><div class="pSmartList2"><li>Connectez-les à l&#39;aide de liens de type <b class="cBold">Row</b> &gt; <b class="cBold">Main</b>. </li></div>
+<a name="wp3760044"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tFileInputDelimited</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b>. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3760051"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow8.png" id="wp3760048" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3760063"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3760055" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+La fonction de schéma dynamique est disponible uniquement en mode <em class="cEmphasis">Built-In</em> et nécessite que le fichier d&#39;entrée contienne une ligne d&#39;en-tête.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3760077"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">Built-In</b> dans la liste déroulante <b class="cBold">Property Type</b>.</li></div>
+<a name="wp3761043"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à droite du champ <b class="cBold">File Name</b> afin de parcourir votre répertoire et de sélectionner votre fichier d&#39;entrée. Dans ce scénario, un fichier CSV contenant seulement trois colonnes est utilisé, comme affiché ci-dessous&#160;: </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3761052"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow9.png" id="wp3761049" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3761060"> </a><div class="pSmartList2"><li>Spécifiez dans le champ <b class="cBold">Header</b> quelle est la ligne d&#39;en-tête. Dans ce scénario, il s&#39;agit de la première ligne.</li></div>
+<a name="wp3761073"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">Built-In</b> dans la liste déroulante <b class="cBold">Schema</b>, puis cliquez sur <b class="cBold">Edit schema</b> pour paramétrer le schéma d&#39;entrée.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3761082"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow10.png" id="wp3761079" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3761088"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3761086" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<br />La colonne dynamique doit être définie sur la dernière ligne du schéma.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3760145"> </a><div class="pSmartList2"><li>Dans l&#39;éditeur de schéma, ajoutez deux colonnes à l&#39;aide du bouton <b class="cBold">[+]</b> et nommez les respectivement <em class="cEmphasis">Task</em> et <em class="cEmphasis">Other</em>. Paramétrez le type de données de la colonne <em class="cEmphasis">Other</em> en <b class="cBold">Dynamic</b> afin de récupérer toutes les colonnes non définies dans le schéma. </li></div>
+<a name="wp3760159"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer l&#39;éditeur de schéma.</li></div>
+<a name="wp3760170"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tAggregateRow</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3760177"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow11.png" id="wp3760174" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3760187"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Sync columns</b> pour réutiliser le schéma d&#39;entrée dans les lignes de sortie. Si nécessaire, cliquez sur <b class="cBold">Edit schema</b> et renommez les colonnes du schéma de sortie. Dans ce scénario, le schéma reste tel qu&#39;il est.</li></div>
+<a name="wp3760200"> </a><div class="pSmartList2"><li>Ajoutez une ligne dans le tableau <b class="cBold">Group by</b> à l&#39;aide du bouton <b class="cBold">[+]</b>, et sélectionnez <em class="cEmphasis">Other</em> à la fois dans le champ <b class="cBold">Output column</b> et dans le champ <b class="cBold">Input column position</b> pour agréger les données en fonction de la colonne dynamique.</li></div>
+<a name="wp3760212"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/warning_small.png" align="left" id="wp3760210" border="0" hspace="0" vspace="0"/><br />
+L&#39;aggrégation de la colonne dynamique n&#39;est possible que dans le cadre de l&#39;opération de groupement des données. 
+</p>
+<a name="wp3760226"> </a><div class="pSmartList2"><li>Ajoutez une ligne dans le tableau <b class="cBold">Operations</b> à l&#39;aide du bouton <b class="cBold">[+]</b>,sélectionnez <em class="cEmphasis">Task</em> à la fois dans le champ <b class="cBold">Output column</b> et dans le champ <b class="cBold">Input column position,</b> puis sélectionnez <em class="cEmphasis">list</em> dans le champ <b class="cBold">Function</b> pour que toutes les entrées de la colonne <em class="cEmphasis">Task</em> soient listées dans le résultat de l&#39;opération de groupement.</li></div>
+<a name="wp3760252"> </a><div class="pSmartList2"><li>Pour visionner les données de sortie sous forme de tableau dans la console <b class="cBold">Run</b>, double-cliquez sur le composant <b class="cBold">tLogRow</b> et sélectionnez l&#39;option <b class="cBold">Table</b> dans l&#39;onglet <b class="cBold">Basic settings</b>.</li></div>
+<a name="wp3760270"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tFileOutputDelimited</b> pour afficher l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3760277"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow14.png" id="wp3760274" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3760288"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...] </b>à droite du champ <b class="cBold">File Name</b> afin de parcourir et sélectionner le répertoire dans lequel vous souhaitez enregistrer le fichier de sortie, puis donnez-lui un nom..</li></div>
+<a name="wp3760295"> </a><div class="pSmartList2"><li>Cochez la case<b class="cBold"> Include Header</b> pour récupérer les noms des colonnes ainsi que les données agrégées.</li></div>
+<a name="wp3760302"> </a><div class="pSmartList2"><li>Enregistrez votre Job puis appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.<br />Comme le montre le résultat de l&#39;exécution du Job, les données sont agrégées conformément à <em class="cEmphasis">Team</em> et <em class="cEmphasis">Status</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3760317"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow15.png" id="wp3760314" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3760325"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow16.png" id="wp3760321" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tAggregateRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tAggregateSortedRow_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

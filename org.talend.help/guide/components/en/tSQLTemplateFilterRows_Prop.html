@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:32:33">
+    <title>tSQLTemplateFilterRows</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSQLTemplateFilterColumns_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSQLTemplateFilterRows_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3964162"> </a><h2 class="pHeading1">
+tSQLTemplateFilterRows
+</h2>
+<a name="wp3964809"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tSQLTemplateFilterRows_icon32.png" id="wp3964157" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3964169"> </a><h2 class="pHeading2">
+tSQLTemplateFilterRows Properties
+</h2>
+<a name="wp3964400"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3964177table3964172">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3964177"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3964179"> </a><div class="pCellBody">
+ELT/SQLTemplate
+</div>
+</td>
+    <td><a name="wp3964187"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icon.png" id="wp3964184" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3964192"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3964197"> </a><div class="pCellBody">
+<b class="cBold">tSQLTemplateFilterRows </b>allows you to define a row filter on one table. This component has real-time capabilities since it runs the data filtering on the DBMS itself.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3964204"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3964206"> </a><div class="pCellBody">
+Helps to set row filters for any given data source, based on a WHERE clause.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3964213"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3964215"> </a><div class="pCellBody">
+<em class="cEmphasis">Database Type</em>
+</div>
+</td>
+    <td><a name="wp3964217"> </a><div class="pCellBody">
+Select the type of database you want to work on from the drop down list.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3964219"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3964224"> </a><div class="pCellHeading">
+<em class="cEmphasis">Component List</em>
+</div>
+</td>
+    <td><a name="wp3964226"> </a><div class="pCellBody">
+Select the relevant DB connection component in the list if you are using more than one connection in the current Job.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3964228"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3964233"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database name</em>
+</div>
+</td>
+    <td><a name="wp3964235"> </a><div class="pCellBody">
+Name of the database.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3964240"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3964245"> </a><div class="pCellHeading">
+<em class="cEmphasis">Source table name</em>
+</div>
+</td>
+    <td><a name="wp3964247"> </a><div class="pCellBody">
+Name of the table holding the data you want to filter.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3964252"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3964257"> </a><div class="pCellHeading">
+<em class="cEmphasis">Target table name</em>
+</div>
+</td>
+    <td><a name="wp3964259"> </a><div class="pCellBody">
+Name of the table you want to write the filtered data in.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3964264"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3964271"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit schema</em>
+</div>
+</td>
+    <td><a name="wp3964274"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />Click <b class="cBold">Edit Schema </b>to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3964279"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3964281"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3964286"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: You create and store the schema locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3964294"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3964296"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3964301"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can reuse it in various projects and job flowcharts. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3964309"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3964314"> </a><div class="pCellHeading">
+<em class="cEmphasis">Where condition</em>
+</div>
+</td>
+    <td><a name="wp3964316"> </a><div class="pCellBody">
+Use a WHERE clause to set the criteria that you want the rows to meet.<br />You can use the WHERE clause to select specific rows from the table that match specified criteria or conditions. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3964321"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3964325"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3964328"> </a><div class="pCellBody">
+Select this check box to gather the job processing metadata at a job level as well as at each component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3964333"> </a><div class="pCellBody">
+<b class="cBold">SQL Template</b>
+</div>
+</td>
+    <td><a name="wp3964338"> </a><div class="pCellHeading">
+<em class="cEmphasis">SQL Template List</em>
+</div>
+</td>
+    <td><a name="wp3964343"> </a><div class="pCellBody">
+<b class="cBold">To add a default system SQL template:</b><br />Click the <b class="cBold">Add</b> button to add the default system SQL template(s) in the <b class="cBold">SQL Template List</b>. <br />Click in the SQL template field and then click the arrow to display the system SQL template list. Select the desired system SQL template provided by Talend. <br /><b class="cBold">Note:</b> You can create your own SQL template and add them to the <b class="cBold">SQL Template List</b>. <br /><br /><b class="cBold">To create a user-defined SQL template:</b> <br />-Select a system template from the <b class="cBold">SQL Template list</b> and click on its code in the code box. You will be prompted by the system to create a new template.<br />-Click <b class="cBold">Yes</b> to open the SQL template wizard.<br />-Define your new SQL template in the corresponding fields and click <b class="cBold">Finish</b> to close the wizard. An SQL template editor opens where you can enter the template code.<br />-Click the <b class="cBold">Add</b> button to add the new created template to the <b class="cBold">SQL Template list</b>.<br />For more information, see <em class="cEmphasis">How to use the SQL Templates</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3964384"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3964386"> </a><div class="pCellBody">
+This component is used as an intermediary component with other DB components, particularly DB connection components.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3964393"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3964395"> </a><div class="pCellBody">
+n/a
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSQLTemplateFilterColumns_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSQLTemplateFilterRows_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

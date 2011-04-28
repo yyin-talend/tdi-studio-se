@@ -1,0 +1,388 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:03:47">
+    <title>tMysqlCDC</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMysqlBulkExec_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlCDC_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp4013450"> </a><h2 class="pHeading1">
+tMysqlCDC
+</h2>
+<a name="wp4013460"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tMySQLCDC_white.png" id="wp4013455" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp4013470"> </a><h2 class="pHeading2">
+Propriétés du tMysqlCDC
+</h2>
+<a name="wp4013937"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp4013482table4013474">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4013482"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp4013485"> </a><div class="pCellBody">
+Databases/MySQL
+</div>
+</td>
+    <td><a name="wp4013496"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icongh.png" id="wp4013492" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4013504"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp4013511"> </a><div class="pCellBody">
+Le composant <b class="cBold">tMysqlCDC </b>extrait les données modifiées d&#39;une table source à partir de la dernière extraction et migration de données vers un ou plusieurs autre(s) système(s).
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4013522"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp4013529"> </a><div class="pCellBody">
+Le <b class="cBold">tMysqlCDC</b> permet l&#39;extraction et la migration de données. tMysqlCDC extrait uniquement les changements apportés aux données source et les met à disposition de(s) système(s) cible(s) utilisant l&#39;aperçu de base de données CDC.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4013540"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp4013547"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp4013550"> </a><div class="pCellBody">
+Peut-être Built-in ou Repository.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4013554"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013557"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013564"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>&#160;: Propriétés utilisées ponctuellement.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4013568"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013571"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013578"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Sélectionnez le fichier de propriétés du composant dans le <span style="font-weight: bold">Repository</span>. Les champs suivants sont alors pré-remplis à l&#39;aide des données collectées.
+</div>
+<a name="wp4013589"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp4013583" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<em class="cEmphasis">Réinitialisez le type de base de données en cliquant sur le bouton adéquat afin de sélectionner la connexion CDC</em>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4013595"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013601"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp4013605"> </a><div class="pCellBody">
+Cochez cette case lorsque vous utilisez un composant <b class="cBold">tMysqlConnection</b>.<br />
+</div>
+<a name="wp4013617"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp4013614" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Lorsqu&#39;un Job contient un Job parent et un Job enfant, la liste <b class="cBold">Component List</b> présente uniquement les composants de connexion du Job du même niveau. Si vous souhaitez utiliser une connexion existant dans un autre niveau, vérifiez que les composants de connexion disponibles partagent la même connexion.<br />Pour plus d&#39;informations concernant le partage d&#39;une connexion à travers différents niveaux de Jobs, consultez <b class="cBold">Use or register a shared DB connection</b> dans tous les composants de base de données que vous utilisez.
+</p>
+<a name="wp4013627"> </a><div class="pCellBody">
+Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afin de paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4013643"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013650"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host</em>
+</div>
+</td>
+    <td><a name="wp4013653"> </a><div class="pCellBody">
+Adresse IP du serveur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4013657"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013664"> </a><div class="pCellHeading">
+<em class="cEmphasis">Port</em>
+</div>
+</td>
+    <td><a name="wp4013667"> </a><div class="pCellBody">
+Numéro du port d&#39;écoute du serveur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4013671"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013678"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database</em>
+</div>
+</td>
+    <td><a name="wp4013681"> </a><div class="pCellBody">
+Nom de la base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4013685"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013692"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> et <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp4013699"> </a><div class="pCellBody">
+Informations d&#39;authentification sur l&#39;utilisateur de base de données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4013703"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013710"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema using CDC</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp4013717"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le <span style="font-weight: bold">Repository</span>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4013721"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013724"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013731"> </a><div class="pCellBody">
+<b class="cBold">Built-in&#160;</b>: Le schéma sera créé et conservé pour ce composant uniquement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <b class="cBold">Guide utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4013746"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013749"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013756"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>&#160;: Le schéma existe déjà et est stocké dans le <span style="font-weight: bold">Repository</span>. Ainsi, il peut être réutilisé dans divers projets et Jobs. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <b class="cBold">Guide utilisateur</b> <b class="cBold">Talend Integration Suite Studio</b>.
+</div>
+<a name="wp4013778"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp4013772" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<em style="font-style: italic" class="cEmphasis">Réinitialisez le type de base de données en cliquant sur le bouton adéquat afin de sélectionner la connexion CDC.</em> 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4013784"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013791"> </a><div class="pCellHeading">
+<em class="cEmphasis">Table Using CDC</em>
+</div>
+</td>
+    <td><a name="wp4013794"> </a><div class="pCellBody">
+Nom de la table source dans laquelle capturer les changements apportés aux données.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4013798"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013805"> </a><div class="pCellHeading">
+<em class="cEmphasis">Subscriber</em>
+</div>
+</td>
+    <td><a name="wp4013808"> </a><div class="pCellBody">
+Saisissez le nom du souscripteur ayant accès à la table de modifications.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4013812"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013819"> </a><div class="pCellHeading">
+<em class="cEmphasis">Events to catch</em>
+</div>
+</td>
+    <td><a name="wp4013826"> </a><div class="pCellBody">
+<b class="cBold">Insert</b>&#160;: Cochez cette case pour capturer les données insérées dans la table de modifications depuis la dernière extraction.<br /><b class="cBold">Update&#160;</b>: Cochez cette case pour capturer les données mises à jour dans la table de modifications depuis la dernière extraction.<br /><b class="cBold">Delete</b>&#160;: Cochez cette case pour capturer les données supprimées dans la table de modifications depuis la dernière extraction.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4013838"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013845"> </a><div class="pCellHeading">
+<em class="cEmphasis">Limit</em>
+</div>
+</td>
+    <td><a name="wp4013848"> </a><div class="pCellBody">
+Nombre maximum de lignes pouvant être consommées par un souscripteur dans la table de modifications.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4013852"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp4013858"> </a><div class="pCellHeading">
+<em class="cEmphasis">Keep data in CDC Table</em>
+</div>
+</td>
+    <td><a name="wp4013862"> </a><div class="pCellBody">
+Cochez cette case pour garder les changements à disposition d&#39;un ou plusieurs système(s) cible même après qu&#39;ils aient été consultés.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4013866"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013872"> </a><div class="pCellHeading">
+<em class="cEmphasis">Enable Streaming Result</em>
+</div>
+</td>
+    <td><a name="wp4013876"> </a><div class="pCellBody">
+Cochez cette case pour activer le mode flux. Cette option optimisera les performances.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4013880"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013886"> </a><div class="pCellHeading">
+<em class="cEmphasis">Trim all the String/Char columns</em>
+</div>
+</td>
+    <td><a name="wp4013890"> </a><div class="pCellBody">
+Cochez cette case pour supprimer les espaces en début et en fin de champ dans toutes les colonnes contenant des chaînes de caractères.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4013894"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013901"> </a><div class="pCellHeading">
+<em class="cEmphasis">Trim column</em>
+</div>
+</td>
+    <td><a name="wp4013904"> </a><div class="pCellBody">
+Supprimez les espaces en début et en fin de champ dans les colonnes sélectionnées.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4013908"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4013915"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp4013918"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log au niveau du composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4013926"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp4013929"> </a><div class="pCellBody">
+Ce composant est généralement utilisé comme composant de début. Il nécessite un composant de sortie et une connexion de type row Main.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMysqlBulkExec_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlCDC_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

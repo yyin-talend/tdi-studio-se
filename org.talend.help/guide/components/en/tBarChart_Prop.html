@@ -1,0 +1,297 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:04">
+    <title>tBarChart</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="BusinessIntelligenceGroup_intro.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tBarChart_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3929362"> </a><h2 class="pHeading1">
+tBarChart
+</h2>
+<a name="wp3929375"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tBarChart_icon32_white.png" id="wp3929368" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3929385"> </a><h2 class="pHeading2">
+tBarChart properties
+</h2>
+<a name="wp3931308"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3929397table3929389">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3929397"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3929400"> </a><div class="pCellBody">
+Business Intelligence/Charts
+</div>
+</td>
+    <td><a name="wp3956472"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icon.png" id="wp3956468" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3929419"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3929426"> </a><div class="pCellBody">
+<b class="cBold">tBarChart</b> reads data from an input flow and transforms the data into a bar chart in a PNG image file.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3929437"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3929444"> </a><div class="pCellBody">
+<b class="cBold">tBarChart</b> generates a bar chart from the input data to ease technical analysis. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3930381"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3930388"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit schema</em>
+</div>
+</td>
+    <td><a name="wp3930391"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository. 
+</div>
+<a name="wp3956493"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3956490" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+The schema of <b class="cBold">tBarChart</b> contains three read-only columns named <b class="cBold">series</b> (string), <b class="cBold">category</b> (string), and <b class="cBold">value</b> (integer) respectively, in a fixed order. The data in any extra columns will be only passed to the next component, if any, without being presented in the bar chart.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3931097"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931099"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931104"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3931115"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931117"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931122"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3931133"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931138"> </a><div class="pCellHeading">
+<em class="cEmphasis">Sync columns</em>
+</div>
+</td>
+    <td><a name="wp3931140"> </a><div class="pCellBody">
+Click to synchronize the output file schema with the input file schema. The Sync function only displays once the <b class="cBold">Row</b> connection is linked with the output component.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3931145"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931150"> </a><div class="pCellHeading">
+<em class="cEmphasis">Generated image path</em>
+</div>
+</td>
+    <td><a name="wp3931152"> </a><div class="pCellBody">
+Name and path of the output image file. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3931154"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931159"> </a><div class="pCellHeading">
+<em class="cEmphasis">Chart title</em>
+</div>
+</td>
+    <td><a name="wp3931161"> </a><div class="pCellBody">
+Enter the title of the bar chart to be generated.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3931163"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931168"> </a><div class="pCellHeading">
+<em class="cEmphasis">Include legend</em>
+</div>
+</td>
+    <td><a name="wp3931170"> </a><div class="pCellBody">
+Select this check box if you want the bar chart to include a legend, indicating all series in different colors.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3931172"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931177"> </a><div class="pCellHeading">
+<em class="cEmphasis">3Dimensions</em>
+</div>
+</td>
+    <td><a name="wp3931179"> </a><div class="pCellBody">
+Select this check box to create an image with 3D effect. By default, this check box is selected and the bars representing the series of each category will be stacked one over another. If this check box is cleared, a 2D image will be created, with the bars displayed one besides another along the category axis. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3931181"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931186"> </a><div class="pCellHeading">
+<em class="cEmphasis">Image width</em> and <em class="cEmphasis">Image height</em> 
+</div>
+</td>
+    <td><a name="wp3931191"> </a><div class="pCellBody">
+Enter the width and height of the image file, in pixels.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3931193"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931198"> </a><div class="pCellHeading">
+<em class="cEmphasis">Category axis name</em> and <em class="cEmphasis">Value axis name</em>
+</div>
+</td>
+    <td><a name="wp3931203"> </a><div class="pCellBody">
+Enter the category axis name and value axis name.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3931205"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931210"> </a><div class="pCellHeading">
+<em class="cEmphasis">Foreground alpha</em>
+</div>
+</td>
+    <td><a name="wp3931241"> </a><div class="pCellBody">
+Enter an integer in the range of <em class="cEmphasis">0</em> to <em class="cEmphasis">100</em> to define the transparency of the image. The smaller the number you enter, the more transparent the image will be.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3931243"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931248"> </a><div class="pCellHeading">
+<em class="cEmphasis">Plot orientation</em>
+</div>
+</td>
+    <td><a name="wp3931250"> </a><div class="pCellBody">
+Select the plot orientation of the bar chart: <b class="cBold">VERTICAL</b> or <b class="cBold">HORIZONTAL</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3931262"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3931270"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStat</em><em class="cEmphasis">Catcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3931272"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3931274"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3931278"> </a><div class="pCellHeading">
+<em class="cEmphasis">Enable parallel execution</em>
+</div>
+</td>
+    <td><a name="wp3931281"> </a><div class="pCellBody">
+Select this check box to perform high-speed data processing, by treating multiple data flows simultaneously. <br />In the <b class="cBold">Number of parallel executions</b> field, either:<br /> - Enter the number of parallel executions desired.<br /> - Press <b class="cBold">Ctrl + Space</b> and select the appropriate context variable from the list.<br /><br />For further information, see <em class="cEmphasis">How to parallelize data flows</em> in the Talend Integration Suite Studio <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3931301"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3931303"> </a><div class="pCellBody">
+This component is mainly used as Output component. It requires an Input component and <b class="cBold">Row</b> main link as input.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="BusinessIntelligenceGroup_intro.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tBarChart_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

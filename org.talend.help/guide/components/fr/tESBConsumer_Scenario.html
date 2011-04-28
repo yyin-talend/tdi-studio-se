@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:07:21">
+    <title>Scénario&#160;: Retourner une adresse e-mail valide </title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tESBConsumer_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tESBProviderFault_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp4091676"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp4091683"> </a><h2 class="pHeading2">
+Scénario&#160;: Retourner une adresse e-mail valide 
+</h2>
+<a name="wp4091689"> </a><p class="pIndented1">
+Ce scénario Java décrit un Job utilisant un composant <b class="cBold">tESBConsumer</b> afin de récupérer une adresse e-mail valide.
+</p>
+<a name="wp4091694"> </a><p class="pIndented1">
+Pour créer le Job&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4091702"> </a><div class="pSmartList2"><li>Déposez les composants de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tFixedFlowInput</b>, <b class="cBold">tESBConsumer</b>, deux <b class="cBold">tJavaFlex</b> et deux <b class="cBold">tLogRow</b> et connectez-les comme dans la capture d&#39;écran ci-dessous&#160;:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4091723"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer1.png" id="wp4091720" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp4091727"> </a><p class="pIndented1">
+Configurez ensuite les propriétés des composants.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4091735"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation graphique, double-cliquez sur le composant <b class="cBold">tFixedFlowInput_1</b> afin d&#39;afficher sa vue <b class="cBold">Component</b> et définir ses propriétés de base (<b class="cBold">Basic settings</b>).</li></div>
+<a name="wp4091754"> </a><div class="pSmartList2"><li>Sélectionnez, dans la liste <b class="cBold">Schema</b>, le mode <b class="cBold">Built-in</b>, puis cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit Schema</b> et configurez le schéma comme suit&#160;:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4091763"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer2.png" id="wp4091760" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4091772"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter une nouvelle ligne de type <b class="cBold">String</b> et nommez-la&#160;<em class="cEmphasis">payloadString</em>.</li></div>
+<a name="wp4093474"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4093481"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer3.png" id="wp4093478" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4093490"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Number of rows</b>, configurez le nombre de lignes à&#160;<em class="cEmphasis">1</em>.</li></div>
+<a name="wp4093499"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Mode</b>, sélectionnez <b class="cBold">Use Single Table</b> et saisissez la requête suivante tentre guillemets dans le champ<b class="cBold"> Value</b>&#160;:<br /><code class="cCode">&lt;web:IsValidEmail xmlns:web=&#39;http://www.webservicex.net&#39;&gt;&lt;web:Email&gt;nomatter@gmail.com&lt;/web:Email&gt;&lt;/web:IsValidEmail&gt;</code></li></div>
+<a name="wp4093518"> </a><div class="pSmartList2"><li>Dans le Job, double-cliquez sur le composant <b class="cBold">tJavaFlex_1</b> afin d&#39;afficher sa vue <b class="cBold">Component</b> et définir ses <b class="cBold">Basic settings</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4091836"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer4.png" id="wp4091833" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4091847"> </a><div class="pSmartList2"><li>Ajoutez le code suivant dans le champ <b class="cBold">Main code</b>&#160;:<br /><code class="cCode">org.dom4j.Document doc = org.dom4j.DocumentHelper.parseText(row1.payloadString);<br />Document talendDoc = new Document();<br />talendDoc.setDocument(doc);<br />row2.payload = talendDoc;</code></li></div>
+<a name="wp4091863"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema</b>, sélectionnez <b class="cBold">Built-in</b> et cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit Schema</b> et configurez le schéma comme suit&#160;:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4091872"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer5.png" id="wp4091869" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4091886"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation graphique, double-cliquez sur le composant <b class="cBold">tESBConsumer_1</b> afin d&#39;afficher sa vue <b class="cBold">Component</b> et définissez ses <b class="cBold">Basic settings</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4091901"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer6.png" id="wp4091898" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4091911"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Service Configuration</b> afin d&#39;ouvrir l&#39;éditeur.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4091918"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer7.png" id="wp4091915" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4091930"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">WSDL</b>, saisissez&#160;: <em class="cEmphasis">http://www.webservicex.net/ValidateEmail.asmx?WSDL</em></li></div>
+<a name="wp4091937"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Refresh</b> pour récupérer le nom du port et de l&#39;opération.</li></div>
+<a name="wp4093971"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Port Name</b>, sélectionnez le port que vous souhaitez utiliser,&#160;<em class="cEmphasis">ValidateEmailSoap</em> dans cet exemple.</li></div>
+<a name="wp4093930"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b>.</li></div>
+<a name="wp4091968"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> du composant <b class="cBold">tESBConsumer</b>, configurez le schéma d&#39;entrée <b class="cBold">Input Schema</b> comme suit&#160;:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4091975"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer8.png" id="wp4091972" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4091985"> </a><div class="pSmartList2"><li>Configurez le <b class="cBold">Response Schema</b> comme suit&#160;:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4091992"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer9.png" id="wp4091989" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4092002"> </a><div class="pSmartList2"><li>Configurez le <b class="cBold">Fault Schema</b> comme suit&#160;:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4092009"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer10.png" id="wp4092006" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4092029"> </a><div class="pSmartList2"><li>Dans le Job, double-cliquez sur le composant <b class="cBold">tJavaFlex_2</b> afin d&#39;afficher sa vue <b class="cBold">Component</b> et définir ses <b class="cBold">Basic settings</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4092041"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer11.png" id="wp4092038" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4092052"> </a><div class="pSmartList2"><li>Ajoutez le code suivant dans le champ <b class="cBold">Main code</b> dans l&#39;onglet <b class="cBold">Basic properties</b>&#160;: <br /><code class="cCode">if (null != row4.faultDetail) {<br />row6.faultDetailString = row4.faultDetail.getDocument().asXML();<br />}</code></li></div>
+<a name="wp4092068"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema</b>, sélectionnez <b class="cBold">Built-in</b> puis cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit Schema</b> et configurez le schéma comme suit&#160;:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4092077"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer12.png" id="wp4092074" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4092100"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation graphique, double-cliquez sur le composant <b class="cBold">tLogRow_1</b> afin d&#39;afficher sa vue <b class="cBold">Component</b> et définir ses <b class="cBold">Basic settings</b></li></div>
+</ul></div>
+</ul></div>
+<a name="wp4092112"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer13.png" id="wp4092109" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4092126"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema</b>, sélectionnez <b class="cBold">Built-in</b> puis cliquez sur le bouton<b class="cBold"> [...]</b> à côté du champ <b class="cBold">Edit Schema</b> et configurez le schéma comme suit&#160;:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4092135"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer14.png" id="wp4092132" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4092158"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation graphique, double-cliquez sur le composant <b class="cBold">tLogRow_2</b> afin d&#39;afficher sa vue <b class="cBold">Component</b> et définir ses <b class="cBold">Basic settings</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4092170"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer15.png" id="wp4092167" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4092184"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema</b>, sélectionnez <b class="cBold">Built-in</b> puis cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ  <b class="cBold">Edit Schema</b> puis configurez le schéma comme suit&#160;:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4092193"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBConsumer16.png" id="wp4092190" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp4092203"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp4092207"> </a><p class="pIndented1">
+Dans le log d&#39;exécution, vous pouvez voir&#160;:
+</p>
+<a name="wp4092212"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 36pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">Starting job consumer4 at 15:02 21/04/2011.<br />[statistics] connecting to socket on port 4057<br />[statistics] connected<br />ValidateEmail<br />ValidateEmailSoap<br />|<br />{http://www.webservicex.net}ValidateEmail<br />{http://www.webservicex.net}ValidateEmailSoap<br />IsValidEmail<br />[tLogRow_2] payload: &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;<br />&lt;IsValidEmailResponse xmlns=&quot;http://www.webservicex.net&quot;&gt;&lt;IsValidEmailResult&gt;false&lt;/IsValidEmailResult&gt;&lt;/IsValidEmailResponse&gt;<br />[statistics] disconnected<br />Job consumer4 ended at 15:03 21/04/2011. [exit code=0]</code>
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tESBConsumer_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tESBProviderFault_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:31">
+    <title>tAccessOutputBulkExec</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tAccessOutputBulk_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tAccessOutputBulkExec_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp4292084"> </a><h2 class="pHeading1">
+tAccessOutputBulkExec
+</h2>
+<a name="wp4292093"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tAccessOutputBulkExec_icon32_white.png" id="wp4292088" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp4292100"> </a><h2 class="pHeading2">
+tAccessOutputBulkExec properties
+</h2>
+<a name="wp4292109"> </a><p class="pIndented1">
+The <b class="cBold">tAccessOutputBulk</b> and <b class="cBold">tAccessBulkExec</b> components are generally used together to output data to a delimited file and then to perform various actions on the file in an Access database, in a two step process. These two steps are fused together in <b class="cBold">tAccessOutputBulkExec</b>. 
+</p>
+<a name="wp4292458"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp4292121table4292116">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292121"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp4292123"> </a><div class="pCellBody">
+Databases/Access
+</div>
+</td>
+    <td><a name="wp4292131"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icon.png" id="wp4292128" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4292136"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp4292141"> </a><div class="pCellBody">
+The <b class="cBold">tAccessOutputBulkExec</b> component executes an Insert action on the data provided.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292148"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp4292150"> </a><div class="pCellBody">
+As a dedicated component, it improves performance during Insert operations in an Access database.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4292157"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp4292162"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp4292170"> </a><div class="pCellBody">
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292172"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292174"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292179"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: No property data stored centrally.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4292181"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292183"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292188"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file in which the properties are stored. The fields that follow are completed automatically using the data retrieved.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292190"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292194"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp4292197"> </a><div class="pCellBody">
+Select this check box and select the appropriate <b class="cBold">tAccessConnection</b> component from the <b class="cBold">Component list </b>if you want to re-use connection parameters that you have already defined.
+</div>
+<a name="wp4292209"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp4292207" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+When a Job contains the parent Job and the child Job, <b class="cBold">Component list</b> presents only the connection components in the same Job level, so if you need to use an existing connection from the other level, make sure that the available connection components are sharing the intended connection.<br />For more information on how to share a DB connection across Job levels, see <b class="cBold">Use or register a shared DB connection</b> in any database connection component corresponding to the database you are using.<br />Otherwise, you can as well deactivate the connection components and use <b class="cBold">Dynamic settings</b> of the component to specify the intended connection manually. In this case, make sure the connection name is unique and distinctive all over through the two Job levels. For more information about <b class="cBold">Dynamic settings</b>, see your studio user guide.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4292224"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292229"> </a><div class="pCellHeading">
+<em class="cEmphasis">DB Version</em>
+</div>
+</td>
+    <td><a name="wp4292231"> </a><div class="pCellBody">
+Select the version of Access that you are using.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292233"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292238"> </a><div class="pCellHeading">
+<em class="cEmphasis">DB name</em>
+</div>
+</td>
+    <td><a name="wp4292240"> </a><div class="pCellBody">
+Name of the database
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4292242"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292247"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> and <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp4292252"> </a><div class="pCellBody">
+DB user authentication data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292254"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292259"> </a><div class="pCellHeading">
+<em class="cEmphasis">Action on table</em>
+</div>
+</td>
+    <td><a name="wp4292261"> </a><div class="pCellBody">
+On the table defined, you can perform one of the following operations:<br /><b class="cBold">None</b>: No operation is carried out.<br /><b class="cBold">Drop and create a table</b>: The table is removed and created again.<br /><b class="cBold">Create a table</b>: The table does not exist and gets created.<br /><b class="cBold">Create a table if doesn&#39;t exist</b>: The table is created if it does not already exist.<br /><b class="cBold">Clear a table</b>: The table content is deleted.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4292278"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292283"> </a><div class="pCellHeading">
+<em class="cEmphasis">Table</em>
+</div>
+</td>
+    <td><a name="wp4292285"> </a><div class="pCellBody">
+Name of the table to be written. 
+</div>
+<a name="wp4292292"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/Components-05-014-0126.jpg" height="47" width="47" align="left" id="wp4292289" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Note that only one table can be written at a time and that the table must already exist for the insert operation to succeed
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292295"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292300"> </a><div class="pCellHeading">
+<em class="cEmphasis">FileName</em>
+</div>
+</td>
+    <td><a name="wp4292302"> </a><div class="pCellBody">
+Name of the file to be processed. <br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4292313"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292318"> </a><div class="pCellHeading">
+<em class="cEmphasis">Action on data</em>
+</div>
+</td>
+    <td><a name="wp4292320"> </a><div class="pCellBody">
+On the data of the table defined, you can perform:<br /><b class="cBold">Insert</b>: Add new entries to the table.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292325"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292332"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit schema</em>
+</div>
+</td>
+    <td><a name="wp4292335"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either <b class="cBold">Built-in</b> or stored remotely in the <b class="cBold">Repository</b>. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4292343"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292345"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292350"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292361"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292363"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292368"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4292379"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292383"> </a><div class="pCellHeading">
+<em class="cEmphasis">Create directory if not exists</em>
+</div>
+</td>
+    <td><a name="wp4292386"> </a><div class="pCellBody">
+Select this check box to create the as yet non existant file directory specified in the <b class="cBold">File name</b> field.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292391"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292393"> </a><div class="pCellBody">
+<em class="cEmphasis">Append</em>
+</div>
+</td>
+    <td><a name="wp4292395"> </a><div class="pCellBody">
+Select this check box to append new rows to the end of the file.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4292400"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp4292404"> </a><div class="pCellHeading">
+<em class="cEmphasis">Additional JDBC parameters</em>
+</div>
+</td>
+    <td><a name="wp4292407"> </a><div class="pCellBody">
+Specify additional connection properties for the DB connection you are creating.
+</div>
+<a name="wp4303640"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp4303633" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+You can press <b class="cBold">Ctrl+Space</b> to access a list of predefined global variables.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292409"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292414"> </a><div class="pCellHeading">
+<em class="cEmphasis">Include header</em>
+</div>
+</td>
+    <td><a name="wp4292416"> </a><div class="pCellBody">
+Select this check box to include the column header to the file. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4292418"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292423"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding</em>
+</div>
+</td>
+    <td><a name="wp4292428"> </a><div class="pCellBody">
+Select the encoding from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292430"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4292435"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp4292437"> </a><div class="pCellBody">
+Select this check box to collect the log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4292442"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp4292444"> </a><div class="pCellBody">
+This component is mainly used when no particular transformation is required on the data to be loaded in the database. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4292451"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp4292453"> </a><div class="pCellBody">
+n/a
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tAccessOutputBulk_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tAccessOutputBulkExec_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

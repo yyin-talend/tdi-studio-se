@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:09:03">
+    <title>Scénario&#160;: Extraire des données d&#39;un message EDIFACT</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tExtractEDIField_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tExtractPositionalFields_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3949850"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3949857"> </a><h2 class="pHeading2">
+Scénario&#160;: Extraire des données d&#39;un message EDIFACT
+</h2>
+<a name="wp3949860"> </a><p class="pIndented1">
+Ce scénario décrit un Job lisant la structure EDIFACT du fichier d&#39;un message EDIFACT Customs Cargo (CUSCAR) et extrait des données selon la définition du schéma. Les données extraites sont affichées dans la console de la vue <b class="cBold">Run</b> et envoyées dans un fichier XML.
+</p>
+<a name="wp3951267"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tExtractEDIField1.png" id="wp3949868" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3949879"> </a><div class="pSmartList2"><li>Déposez les composants suivants de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tExtractEDIField</b>, <b class="cBold">tLogRow</b> et <b class="cBold">tFileOutputXML</b>.</li></div>
+<a name="wp3950072"> </a><div class="pSmartList2"><li>Connectez les composants à l&#39;aide de liens <b class="cBold">Row</b> &gt; <b class="cBold">Main</b>.</li></div>
+<a name="wp3950083"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tExtractEDIField</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3950090"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tExtractEDIField2.png" id="wp3950087" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3951465"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3950094" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Dans ce scénario, le schéma d&#39;entrée est stocké sous le noeud <b class="cBold">Metadata</b> du <b class="cBold">Repository</b> afin de le retrouver facilement. Pour plus d&#39;informations concernant les métadonnées, consultez&#160;<em class="cEmphasis">Centraliser les métadonnées</em> dans le <b class="cBold">Guide utilisateur</b> de <b class="cBold">Talend Integration Suite Studio</b>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3950120"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">Repository</b> dans la liste <b class="cBold">Property Type </b>puis cliquez sur le bouton <b class="cBold">[...]</b> qui apparaît afin d&#39;ouvrir la boîte de dialogue <b class="cBold">[Repository Content]</b>. </li></div>
+<a name="wp3950133"> </a><div class="pSmartList2"><li>Dans la boîte de dialogue <b class="cBold">[Repository Content]</b>, sélectionnez l&#39;élement souhaité,&#160;<em class="cEmphasis">cuscar</em> dans cet exemple puis cliquez sur <b class="cBold">OK</b>.</li></div>
+<a name="wp3950146"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">EDI parameters</b>, saisissez dans le champ <b class="cBold">EDI filename</b> le chemin d&#39;accès au fichier du message EDIFACT ou parcourez votre système.<br />Dans ce scénario, le fichier d&#39;entrée est&#160;<em class="cEmphasis">99a_cuscar.edi</em>.</li></div>
+<a name="wp3950156"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Ignore new line</b> afin d&#39;ignorer les caractères de retour chariot dans le fichier d&#39;entrée durant le traitement des données.</li></div>
+<a name="wp3950161"> </a><div class="pSmartList2"><li>Laissez les autres paramètres tels qu&#39;ils sont, puisqu&#39;ils ont été automatiquement récupérés.</li></div>
+<a name="wp3950172"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tFileOutputXML</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3950179"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tExtractEDIField3.png" id="wp3950176" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3950187"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">File Name</b>, saisissez le chemin d&#39;accès complet au fichier XML de sortie que vous souhaitez générer.<br />Dans ce scénario, le XML de sortie est&#160;<em class="cEmphasis">99a_cuscar_extract.xml</em>.</li></div>
+<a name="wp3950195"> </a><div class="pSmartList2"><li>Laissez les autres paramètres tels qu&#39;ils sont.</li></div>
+<a name="wp3950201"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.<br />Les données définies dans le fichier du message d&#39;entrée EDIFACT CUSCAR sont récupérées, affichées dans la console et écrites dans le fichier XML de sortie.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3950210"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tExtractEDIField4.png" id="wp3950207" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3950220"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tExtractEDIField5.png" id="wp3950214" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tExtractEDIField_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tExtractPositionalFields_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

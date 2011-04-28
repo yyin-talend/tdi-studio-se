@@ -1,0 +1,418 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:33:17">
+    <title>tMDMBulkLoad</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="TalendMDM_group_intro.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMBulkLoad_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3567555"> </a><h2 class="pHeading1">
+tMDMBulkLoad
+</h2>
+<a name="wp3544385"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tMDMBulkLoad.png" id="wp3544381" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3587566"> </a><h2 class="pHeading2">
+tMDMBulkLoad properties
+</h2>
+<a name="wp3587866"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3587574table3587569">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3587574"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3587576"> </a><div class="pCellBody">
+Talend MDM
+</div>
+</td>
+    <td><a name="wp3587584"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icon.png" id="wp3587581" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3587589"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3587594"> </a><div class="pCellBody">
+<b class="cBold">tMDMBulkLoad</b> writes XML structured master data into the MDM hub in bulk mode.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3587601"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3587603"> </a><div class="pCellBody">
+This component uses bulk mode to write data so that big batches of data or data of high complexity can be fast uploaded onto the MDM server.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3587610"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3587617"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3587620"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository.<br />Click <b class="cBold">Edit Schema</b> to modify the schema.
+</div>
+<a name="wp3587629"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3587627" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+If you modify the schema, it automatically becomes built-in.
+</p>
+<a name="wp3587634"> </a><div class="pCellBody">
+Click <b class="cBold">Sync columns</b> to collect the schema from the previous component.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3587636"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587638"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587643"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: You create the schema and store it locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3587654"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587656"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587661"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can reuse it in various projects and job designs. Related topic: <em class="cEmphasis">How to set a repository schema</em> in the Talend Integration Suite Studio <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3587672"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587677"> </a><div class="pCellHeading">
+<em class="cEmphasis">XML field</em>
+</div>
+</td>
+    <td><a name="wp3587679"> </a><div class="pCellBody">
+Select the name of the column in which you want to write the XML data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3587681"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587686"> </a><div class="pCellHeading">
+<em class="cEmphasis">URL</em>
+</div>
+</td>
+    <td><a name="wp3587688"> </a><div class="pCellBody">
+Type in the URL required to access the MDM server.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3587690"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587695"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> and <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp3587700"> </a><div class="pCellBody">
+Type in the user authentication data for the MDM server.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3587702"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587707"> </a><div class="pCellHeading">
+<em class="cEmphasis">Version</em>
+</div>
+</td>
+    <td><a name="wp3587709"> </a><div class="pCellBody">
+Type in the name of the Version of master data you want to connect to, for which you have the required user rights.<br />Leave this field empty if you want to display the default Version of master data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3587711"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587716"> </a><div class="pCellHeading">
+<em class="cEmphasis">Data model</em>
+</div>
+</td>
+    <td><a name="wp3587718"> </a><div class="pCellBody">
+Type in the name of the data model against which the data to be written is validated.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3587720"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587725"> </a><div class="pCellHeading">
+<em class="cEmphasis">Data Container</em>
+</div>
+</td>
+    <td><a name="wp3587727"> </a><div class="pCellBody">
+Type in the name of the data container where you want to write the master data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3587729"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587734"> </a><div class="pCellHeading">
+<em class="cEmphasis">Entity</em>
+</div>
+</td>
+    <td><a name="wp3587736"> </a><div class="pCellBody">
+Type in the name of the entity that holds the data record(s) you want to write.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3587738"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587743"> </a><div class="pCellHeading">
+<em class="cEmphasis">Validate</em>
+</div>
+</td>
+    <td><a name="wp3587745"> </a><div class="pCellBody">
+Select this checkbox to validate the data you want to write onto the MDM server against validation rules defined for the current data model.<br />For more information on how to set the validation rules, see <em class="cEmphasis">Data Models</em> in your  Talend Master Data Management Administrator Guide.
+</div>
+<a name="wp3587757"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_smalljl.png" align="left" id="wp3587755" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+If you need faster loading performance, do not select this checkbox.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3587760"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587765"> </a><div class="pCellHeading">
+<em class="cEmphasis">Generate ID</em>
+</div>
+</td>
+    <td><a name="wp3587767"> </a><div class="pCellBody">
+Select this check box to generate an ID number for all of the data written.
+</div>
+<a name="wp3587773"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_smalljl.png" align="left" id="wp3587771" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+If you need faster loading performance, do not select this checkbox.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3587776"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587781"> </a><div class="pCellHeading">
+<em class="cEmphasis">Commit size</em>
+</div>
+</td>
+    <td><a name="wp3587783"> </a><div class="pCellBody">
+Type in the row count of each batch to be written onto the MDM server.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3587788"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3587793"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3587795"> </a><div class="pCellBody">
+Select this check box to gather the processing metadata at the Job level as well as at each component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3587797"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587801"> </a><div class="pCellHeading">
+<em class="cEmphasis">Enable parallel execution</em>
+</div>
+</td>
+    <td><a name="wp3587804"> </a><div class="pCellBody">
+Select this check box to perform high-speed data processing, that is treating multiple data flows simultaneously. <br />For more information, see <em class="cEmphasis">How to parallelize data flows</em>of Talend Integration Suite Studio <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3587818"> </a><div class="pCellBody">
+<b class="cBold">Connections</b>
+</div>
+</td>
+    <td><a name="wp3587820"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3587822"> </a><div class="pCellBody">
+Outgoing links (from one component to another):<br /><b class="cBold">Row</b>: Main,<br /><b class="cBold">Trigger</b>: Run if; On Component Ok; On Component Error, On Subjob Ok, On Subjob Error.<br /><br />Incoming links (from one component to another):<br /><b class="cBold">Row</b>: Main<br /><b class="cBold">Trigger</b>: Run if, On Component Ok, On Component Error, On Subjob Ok, On Subjob Error <br /><br />For further information regarding connections, see <em class="cEmphasis">Connection types</em> in the Talend Integration Suite Studio <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3587851"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3587853"> </a><div class="pCellBody">
+This component needs always an incoming link to offer XML structured data. If your data offered is not yet in the XML structure, you need use components like <b class="cBold">tWriteXMLField</b> to transform this data into the XML structure. For further information about <b class="cBold">tWriteXMLField</b>, see <a href="tWriteXMLField_Prop.html"><em class="cEmphasis">tWriteXMLField</em></a>.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+<a name="wp3587871"> </a><h3 class="pHeading3">
+Enhancing the MDM bulk data load
+</h3>
+<a name="wp3589010"> </a><p class="pIndented2">
+The information below concerns only MDM used with eXist.
+</p>
+<a name="wp3589014"> </a><p class="pIndented2">
+As XML parsing is a CPU and memory consuming process, it is not really compatible with large datasets. The <a href="tMDMBulkLoad_Scenario.html#wp3544704"><em class="cEmphasis">Scenario: Loading records into a business entity</em></a> given in a following section as an example for the <b class="cBold">tMDMBulkLoad </b>component has some limitations because it can not work with large dataset, for the time being at least. 
+</p>
+<a name="wp3588937"> </a><p class="pIndented2">
+An alternative scenario in which you process the dataset file per bulk load iterations can be designed as the following:
+</p>
+<a name="wp3587246"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/MDM_Data_Import.jpg" id="wp3588112" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3588136"> </a><p class="pIndented2">
+In such a scenario, the <b class="cBold">tMDMBulkLoad</b> component waits for XML data as an input. You must manually format this incoming data to match the entity schema defined in the MDM Studio. Most of the time, the data you want to import is in a flat &quot;format&quot;, and you have to transform it into XML.
+</p>
+<a name="wp3588160"> </a><p class="pIndented2">
+As XML parsing is memory consuming, you can workaround this problem by splitting your source file into several files using the <b class="cBold">tAdvancedFileOutputXML</b> component. To do this, you select the <b class="cBold">Split output in several files</b> option in the <b class="cBold">Advaced settings</b> view of the component and then set the rows in each output file through a context variable (<em class="cEmphasis">context.chunkSize</em>), for example. 
+</p>
+<a name="wp3588146"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/MDM_Data_Import1.png" id="wp3588213" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3588208"> </a><p class="pIndented2">
+The XML schema you must define in the XML editor of this component should be an exact match of the business entity defined in the MDM Studio. The XMl schema in the editor must represent a single <code class="cCode">&lt;root&gt;</code> element which contains all the other elements, so that you can loop on each of the element. The path of the file should be defined in a temporary folder.
+</p>
+<a name="wp3587217"> </a><p class="pIndented2">
+Use a <b class="cBold">tFileList</b> component to read all the XML files that have just been created. This component enables you to parallelize the process. Connect it to a <b class="cBold">tFileInputXML </b>component using the <b class="cBold">Iterate</b> link.
+</p>
+<a name="wp3588246"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/MDM_Data_Import2.png" id="wp3588274" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3588335"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3588332" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+For the <b class="cBold">Iterate</b> link, it is recommended that you set as many threads as the number of the physical cores of the computer. You can achieve that using <code class="cCode">Runtime.getRuntime().availableProcessors()</code>
+</p>
+<a name="wp3588310"> </a><p class="pIndented2">
+The <b class="cBold">tFileInputXML</b> component will read the data from the XML files you have created, by defining a loop on the elements, and getting all the nodes that are already formatted as XML. You must then select the <b class="cBold">Get Nodes</b> check box.
+</p>
+<a name="wp3588367"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/MDM_Data_Import3.png" id="wp3588372" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3588569"> </a><p class="pIndented2">
+Finally, you must setup the <b class="cBold">tMDMBulkLoad </b>component as the following:
+</p>
+<a name="wp3588576"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/MDM_Data_Import4.png" id="wp3588573" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3588582"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3588580" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Make sure that you set the commit size to the same value you defined in the <b class="cBold">tAdvancedfileOutputXML</b>, the <em class="cEmphasis">context.chunkSize</em> context variable.
+</p>
+<a name="wp3588588"> </a><p class="pIndented2">
+The <b class="cBold">tFiledelete </b>component in such a scenario will delete all the temporary data at the end of the Job.
+</p>
+<a name="wp3588594"> </a><h3 class="pHeading3">
+Tips for better-performance bulk commit with Qizx
+</h3>
+<a name="wp3583915"> </a><p class="pIndented2">
+The below tables will help you decide what batch size to use and the expected bulk load time for each choice.
+</p>
+<a name="wp3583924"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3583921" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<br />The information below concerns only MDM used with Qizx.
+</p>
+<a name="wp3583934"> </a><p class="pIndented2">
+to be continued...
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="TalendMDM_group_intro.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMDMBulkLoad_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

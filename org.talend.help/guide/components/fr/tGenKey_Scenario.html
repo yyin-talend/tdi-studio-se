@@ -1,0 +1,345 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:03:24">
+    <title>Scénario&#160;1&#160;: Générer des clés fonctionnelles dans le flux de sortie</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tGenKey_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tIntervalMatch_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3701060"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3701068"> </a><h2 class="pHeading2">
+Scénario&#160;1&#160;: Générer des clés fonctionnelles dans le flux de sortie
+</h2>
+<a name="wp3701075"> </a><p class="pIndented1">
+Ce scénario Java comprend trois composants. Il décrit un Job simple qui génère une clé fonctionnelle pour chaque enregistrement de données utilisant un algorithme sur l&#39;une des colonnes d&#39;entrée,&#160;<em class="cEmphasis">PostalCode</em>.
+</p>
+<a name="wp3701088"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3701085" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Cette clé fonctionnelle peut être utilisée de différentes façons, afin de réduire le nombre de résultats d&#39;un filtre sur les données ou d&#39;une correspondance de données, par exemple. Le composant <b class="cBold">tGenKey</b> peut être utilisé avec de nombreux composants de qualité ou d&#39;intégration de données, lors d&#39;utilisations variées. Pour un exemple d&#39;utilisation du <b class="cBold">tGenKey</b>, consultez le&#160;<a href="tGenKey_Scenario.html#wp3701509"><em class="cEmphasis">Scénario&#160;2&#160;: Comparer les colonnes et regrouper dans le flux de sortie les enregistrements en doublon ayant la même clé fonctionnelle</em></a>.
+</p>
+<a name="wp3701105"> </a><p class="pIndented1">
+Dans ce scénario, le flux de données d&#39;entrée se compose de quatre colonnes&#160;:&#160;<em class="cEmphasis">Firstname</em>, <em class="cEmphasis">Lastname</em>, <em class="cEmphasis">DOB</em>, et <em class="cEmphasis">PostalCode </em>(Prénom, Nom, Date de naissance et Code postal). Ces données contiennent des problèmes, comme des doublons, des prénoms ou des noms écrits différemment ou mal orthographiés, des informations différentes sur un même client, etc. Ce scénario génère une clé fonctionnelle pour chaque enregistrement de données utilisant un algorithme qui concatène les deux premiers caractères du code postal.
+</p>
+<a name="wp3701131"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tWindowKey.png" id="wp3701127" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3701142"> </a><div class="pSmartList2"><li>Déposez les composants suivants de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tFixedFlowInput</b>, <b class="cBold">tGenKey</b> et <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp3701172"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3701161" border="0" hspace="0" vspace="0"/><br />
+Dans ce scénario, renommez les composants<b class="cBold"> tFixedFlowInput </b>et <b class="cBold">tGenKey</b> en double-cliquant sur leur nom. Respectivement, saisissez <em class="cEmphasis">SampleData</em> et <em class="cEmphasis">CreateBlockKey</em>.
+</p>
+</ul></div>
+</ul></div>
+<a name="wp3701190"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tWindowKey1.png" id="wp3701186" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3701206"> </a><div class="pSmartList2"><li>Connectez les composants à l&#39;aide de liens <b class="cBold">Row</b> &gt; <b class="cBold">Main</b>.</li></div>
+<a name="wp3701218"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tFixedFlowInput</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et de définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3701229"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tWindowKey2.png" id="wp3701225" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3701248"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Schema</b>, sélectionnez <b class="cBold">Built-In</b>, puis cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit Schema</b><br />Une boîte de dialogue s&#39;affiche.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3701263"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tWindowKey3.png" id="wp3701259" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3701274"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter autant de lignes que nécessaire au schéma d&#39;entrée que vous souhaitez créer, à partir de variables internes. <br />Dans cet exemple, le schéma se compose de quatre colonnes&#160;: <em class="cEmphasis">Firstnam</em>e, <em class="cEmphasis">Lastname</em>, <em class="cEmphasis">DOB</em> et <em class="cEmphasis">PostalCode</em>.</li></div>
+<a name="wp3701299"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue.<br />Les colonnes définies s&#39;affichent dans le tableau <b class="cBold">Values</b> de la vue <b class="cBold">Basic settings</b> du composant.</li></div>
+<a name="wp3701320"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Mode</b>, sélectionnez l&#39;option <b class="cBold">Use Inline Table</b>.<br />Le tableau <b class="cBold">Value</b> s&#39;affiche en tant que <b class="cBold">Inline Table</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3701339"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tWindowKey4.png" id="wp3701335" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3701350"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter autant de lignes que nécessaire puis cliquez sur chacune d&#39;entre elles pour définir les données d&#39;entrée des quatre colonnes.</li></div>
+<a name="wp3701363"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tGenKey</b> pour afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3701374"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tWindowKey6.png" id="wp3701370" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3701390"> </a><div class="pSmartList2"><li>Sous le tableau <b class="cBold">Algorithm</b>, cliquez sur le bouton <b class="cBold">[+]</b> afin d&#39;ajouter une ligne.</li></div>
+<a name="wp3785375"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">column</b>, cliquez sur la nouvelle ligne et sélectionnez dans la liste la colonne sur laquelle vous souhaitez appliquer l&#39;algorithme. Dans cet exemple, sélectionnez&#160;<em class="cEmphasis">PostalCode</em>.</li></div>
+<a name="wp3785294"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">algorithm</b>, cliquez sur la nouvelle ligne et sélectionnez dans la liste l&#39;algorithme que vous souhaitez appliquer à la colonne correspondante. Dans cet exemple, sélectionnez <b class="cBold">first N characters of the string</b>.</li></div>
+<a name="wp3701411"> </a><div class="pSmartList2"><li>Cliquez sur la colonne <b class="cBold">Value</b> et saisissez la valeur de l&#39;algorithme sélectionné, si besoin. Dans ce scénario, saisissez&#160;<em class="cEmphasis">2</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3701421"> </a><p class="pIndented1">
+Dans cet exemple, générez une clé fonctionnelle contenant les deux premiers caractères du code postal pour chaque ligne de données, et ne définissez aucune option supplémentaire pour ces colonnes.
+</p>
+<a name="wp3701434"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3701427" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Vous pouvez cocher la case <b class="cBold">Show help</b> afin d&#39;afficher les instructions concernant la définition des paramètres des algorithmes et des options.
+</p>
+<a name="wp3768134"> </a><p class="pIndented1">
+Après avoir paramétré le composant <b class="cBold">tGenKey</b>, vous pouvez afficher une vue statistique de ces paramètres. Pour ce faire&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3768145"> </a><div class="pSmartList2"><li>Cliquez-droit sur le composant <b class="cBold">tGenKey</b> et sélectionnez <b class="cBold">View Key Profile</b> dans le menu contextuel. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3701461"> </a><p class="pIndented1">
+L&#39;éditeur <b class="cBold">View Key Profile</b> s&#39;affiche et vous permet de visualiser les statistiques du nombre de lignes par blocs et d&#39;adapter les paramètres selon le résultat que vous souhaitez obtenir.
+</p>
+<a name="wp3768311"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3768304" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Lors du traitement de données volumineuses et lorsque ce composant est utilisé pour partitionner les données afin de les utiliser dans un composant de mise en correspondance (<b class="cBold">tRecordMatching</b> ou <b class="cBold">tMatchGroup</b> par exemple), il est préférable d&#39;avoir un nombre restreint de lignes par blocs. La configuration est considérée comme optimale autour de 50 lignes par blocs, mais cela dépend du nombre de champs à comparer, du nombre total de lignes et du temps considéré comme acceptable pour le traitement des données.
+</p>
+<a name="wp3785652"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3785649" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Pour un exemple d&#39;utilisation de l&#39;option <b class="cBold">View Key Profile</b>, consultez&#160;<a href="tGenKey_Scenario.html#wp3701509"><em class="cEmphasis">Scénario&#160;2&#160;: Comparer les colonnes et regrouper dans le flux de sortie les enregistrements en doublon ayant la même clé fonctionnelle</em></a>
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3785664"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tLogRow </b>afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3768265"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tBlockedFuzzyJoin5.png" id="wp3701457" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3701474"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3701483"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tWindowKey8.png" id="wp3701479" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3701491"> </a><p class="pIndented1">
+Toutes les colonnes de sortie comprenant la colonne&#160;<em class="cEmphasis">T_GEN_KEY</em> sont listées dans la console de la vue <b class="cBold">Run</b>. La clé fonctionnelle pour chaque enregistrement de données concatène les deux premiers caractères de la valeur correspondante dans la colonne <b class="cBold">PostalCode</b>.
+</p>
+<a name="wp3701509"> </a><h2 class="pHeading2">
+Scénario&#160;2&#160;: Comparer les colonnes et regrouper dans le flux de sortie les enregistrements en doublon ayant la même clé fonctionnelle
+</h2>
+<a name="wp3701517"> </a><p class="pIndented1">
+Ce second scénario Java décrit un Job comprenant quatre composants, dont le but est de&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3701526"> </a><div class="pSmartList2"><li>générer une clé fonctionnelle utilisant un algorithme sur l&#39;une des colonnes d&#39;entrée,&#160;<em class="cEmphasis">DoB</em>&#160;;</li></div>
+<a name="wp3701536"> </a><div class="pSmartList2"><li>mettre en correspondance les colonnes selon certains types de correspondances&#160;;</li></div>
+<a name="wp3701540"> </a><div class="pSmartList2"><li>regrouper les colonnes de sortie via la clé fonctionnelle générée afin d&#39;optimiser l&#39;opération de mise en correspondance et comparer uniquement les enregistrements ayant la même valeur de bloc, la clé fonctionnelle dans ce scénario. Pour plus d&#39;informations concernant le regroupement des colonnes de sortie et l&#39;utilisation des valeurs de bloc, consultez le&#160;<a href="tMatchGroup_Prop.html"><em class="cEmphasis">tMatchGroup</em></a>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3784329"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tGenKey9.png" id="wp3784326" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3784332"> </a><div class="pSmartList2"><li>Déposez les composants suivants de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tRowGenerator</b>, <b class="cBold">tGenKey</b>, <b class="cBold">tMatchGroup</b> et <b class="cBold">tLogRow</b>.</li></div>
+<a name="wp3701605"> </a><div class="pSmartList2"><li>Connectez les composants les uns aux autres à l&#39;aide de liens <b class="cBold">Row</b> &gt; <b class="cBold">Main</b>.</li></div>
+<a name="wp3701617"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tRowGenerator</b> afin de définir son schéma comme suit&#160;:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3784635"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tGenKey10.png" id="wp3784631" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3784669"> </a><p class="pIndented1">
+Le composant <b class="cBold">tRowGenerator</b> génèrera un flux de données d&#39;entrée comprenant trois colonnes&#160;: <em class="cEmphasis">Firstname, Lastname</em>, et <em class="cEmphasis">DOB</em> (date de naissance). Ces données peuvent contenir des problèmes, comme des doublons, des prénoms ou des noms écrits différemment ou mal orthographiés, des informations différentes sur un même client, etc.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3785425"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tGenKey</b> pour afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3785432"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tGenKey11.png" id="wp3785429" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3785444"> </a><div class="pSmartList2"><li>Sous le tableau <b class="cBold">Algorithm</b>, cliquez sur le bouton <b class="cBold">[+]</b> afin d&#39;ajouter une ligne.</li></div>
+<a name="wp3785588"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">column</b>, cliquez sur la nouvelle ligne et sélectionnez dans la liste la colonne sur laquelle vous souhaitez appliquer l&#39;algorithme. Dans cet exemple, sélectionnez&#160;<em class="cEmphasis">DoB</em>.</li></div>
+<a name="wp3785595"> </a><div class="pSmartList2"><li>Dans la colonne <b class="cBold">algorithm</b>, cliquez sur la nouvelle ligne et sélectionnez dans la liste l&#39;algorithme que vous souhaitez appliquer à la colonne correspondante. Dans cet exemple, sélectionnez <b class="cBold">substring(a,b)</b>.</li></div>
+<a name="wp3785542"> </a><div class="pSmartList2"><li>Cliquez sur la colonne <b class="cBold">value</b> et saisissez la valeur de l&#39;algorithme sélectionné, si besoin. Dans ce scénario, saisissez&#160;<em class="cEmphasis">6,10</em>.</li></div>
+<a name="wp3787114"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3787107" border="0" hspace="0" vspace="0"/><br />
+L&#39;algorithme <b class="cBold">substring(a,b)</b> permet d&#39;extraire les caractères d&#39;une chaîne situés entre deux indices, et de retourner la nouvelle sous-chaîne. Le premier caractère est numéroté <em class="cEmphasis">0</em>. Dans ce scénario, pour une date de naissance &quot;<em class="cEmphasis">21-01-1995</em>&quot;, la valeur&#160;<em class="cEmphasis">6,10</em> retourne uniquement l&#39;année de naissance, soit &quot;<em class="cEmphasis">1995</em>&quot; qui correspond à la sous-chaîne du 7ème au 10ème caractère.
+</p>
+</ul></div>
+</ul></div>
+<a name="wp3787118"> </a><p class="pIndented1">
+Dans cet exemple, générez une clé fonctionnelle contenant les quatre derniers caractères, correspondant à l&#39;année dans la date de naissance (<em class="cEmphasis">DoB</em>), pour chaque ligne de données, et ne définissez aucune option supplémentaire pour ces colonnes.
+</p>
+<a name="wp3785627"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3785620" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Vous pouvez cocher la case <b class="cBold">Show help</b> afin d&#39;afficher les instructions concernant la définition des paramètres des algorithmes et des options.
+</p>
+<a name="wp3785762"> </a><p class="pIndented1">
+Après avoir paramétré le composant <b class="cBold">tGenKey</b>, vous pouvez afficher une vue statistique de ces paramètres. Pour ce faire&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3785769"> </a><div class="pSmartList2"><li>Cliquez-droit sur le composant <b class="cBold">tGenKey</b> et sélectionnez <b class="cBold">View Key Profile</b> dans le menu contextuel. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3785782"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tGenKey12.png" id="wp3785778" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3785785"> </a><p class="pIndented1">
+L&#39;éditeur <b class="cBold">View Key Profile</b> s&#39;affiche et vous permet de visualiser les statistiques du nombre de blocs et d&#39;adapter les paramètres selon le résultat que vous souhaitez obtenir.
+</p>
+<a name="wp3785927"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3785924" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Lors du traitement de données volumineuses et lorsque ce composant est utilisé pour partitionner les données afin de les utiliser dans un composant de mise en correspondance (<b class="cBold">tRecordMatching</b> ou <b class="cBold">tMatchGroup</b> par exemple), il est préférable d&#39;avoir un nombre restreint de lignes par blocs. La configuration est considérée comme optimale autour de 50 lignes par blocs, mais cela dépend du nombre de champs à comparer, du nombre total de lignes et du temps considéré comme acceptable pour le traitement des données.
+</p>
+<a name="wp3785952"> </a><p class="pIndented1">
+Si nécessaire, vous pouvez&#160;:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3785965"> </a><div class="pSmartList2"><li>éditer la limite (<b class="cBold">Limit</b>) du nombre de lignes utilisées pour calculer les statistiques&#160;;</li></div>
+<a name="wp3786055"> </a><div class="pSmartList2"><li>éditer la colonne (<b class="cBold">column</b>) sur laquelle vous souhaitez appliquer l&#39;algorithme&#160;;</li></div>
+<a name="wp3786029"> </a><div class="pSmartList2"><li>éditer l&#39;algorithme (<b class="cBold">algorithm</b>) à appliquer sur la colonne correspondante&#160;;</li></div>
+<a name="wp3786009"> </a><div class="pSmartList2"><li>éditer la valeur (<b class="cBold">value</b>) la valeur de l&#39;algorithme sélectionné, etc.</li></div>
+<a name="wp3786216"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3786213" border="0" hspace="0" vspace="0"/><br />
+Pour chaque modification effectuée, vous pouvez visualiser ses implications en cliquant sur le bouton <b class="cBold">Refresh</b> situé en haut à droite de l&#39;éditeur.
+</p>
+<a name="wp3786228"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tMatchGroup</b> pour afficher sa vue <b class="cBold">Basic Settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3768777"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tWindowKey7.png" id="wp3701678" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3701690"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3701687" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Si vous souhaitez ajouter une colonne fixe de sortie, <em class="cEmphasis">MATCHING_DISTANCES</em>, donnant le détail de la distance entre chaque colonne, cliquez sur l&#39;onglet <b class="cBold">Advanced settings</b> et cochez la case<b class="cBold"> Output distance details</b>. Pour plus d&#39;informations, consultez&#160;<a href="tMatchGroup_Prop.html#wp3782686"><em class="cEmphasis">Propriétés du tMatchGroup</em></a>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3701718"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Sync columns</b> afin de récupérer le schéma du composant précédent.</li></div>
+<a name="wp3701727"> </a><div class="pSmartList2"><li>Si nécessaire, cliquez sur le bouton <b class="cBold">Edit schema</b> pour voir le schéma d&#39;entrée et le schéma de sortie et effectuer toute modification requise sur le schéma de sortie.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3701738"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tGenKey13.png" id="wp3701734" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3701746"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3701743" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Dans le schéma de sortie de ce composant, quatre colonnes standard de sortie sont en lecture seule. Pour plus d&#39;informations, consultez&#160;<a href="tMatchGroup_Prop.html#wp3782686"><em class="cEmphasis">Propriétés du tMatchGroup</em></a>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3701766"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Key definition</b>, cliquez sur le bouton<b class="cBold"> [+]</b> pour ajouter à la liste les colonnes sur lesquelles vous souhaitez effectuer la mise en correspondance,&#160;<em class="cEmphasis">FirstName</em> et<em class="cEmphasis">&#160;LastName</em> dans ce scénario.</li></div>
+<a name="wp3701783"> </a><div class="pSmartList2"><li>Cliquez sur la première et la deuxième cellules de la colonne <b class="cBold">Matching type</b> et sélectionnez dans la liste la (les) méthode(s) à utiliser pour effectuer la mise en correspondance, <em class="cEmphasis">Jaro-Winkler</em> dans cet exemple.</li></div>
+<a name="wp3701796"> </a><div class="pSmartList2"><li>Cliquez sur la première et la deuxième cellules de la colonne <b class="cBold">Confidence Weight</b> et  définissez les poids numériques pour chacune des colonnes utilisées comme attributs de clés.</li></div>
+<a name="wp3701809"> </a><div class="pSmartList2"><li>Cliquez sur le bouton<b class="cBold"> [+]</b> sous le tableau <b class="cBold">Blocking Definition</b> afin d&#39;ajouter une ligne, puis cliquez sur cette ligne et sélectionnez dans la liste la colonne que vous souhaitez utiliser comme une valeur de bloc,&#160;<em class="cEmphasis">T_GEN_KEY</em> dans cet exemple. <br />Utiliser une valeur de bloc réduit le nombre de paires d&#39;enregistrements à examiner. Les données d&#39;entrée sont partitionnées en blocs exhaustifs basés sur la clé fonctionnelle. Cela permet de diminuer le nombre de paires à comparer, puisque la comparaison est limitée aux paires d&#39;enregistrements dans chaque bloc. </li></div>
+<a name="wp3701826"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tLogRow </b>afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3701837"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tBlockedFuzzyJoin5.png" id="wp3701833" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3701850"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3701859"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tGenKey14.png" id="wp3701855" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3701867"> </a><p class="pIndented1">
+Les colonnes de sortie incluent la colonne&#160;<em class="cEmphasis">T_GEN_KEY</em> contenant la clé fonctionnelle générée par le composant <b class="cBold">tGenKey</b>. Vous pouvez constater que tous les enregistrements ayant la même clé fonctionnelle sont regroupés en trois groupes de blocs différents. Tous les enregistrements ayant la même clé fonctionnelle sont partitionnés en trois groupes de blocs. L&#39;identifiant de chaque groupe est affiché dans la colonne&#160;<em class="cEmphasis">GID</em> à côté de l&#39;enregistrement correspondant. Le nombre d&#39;enregistrements dans chacun des trois blocs de sortie est listé dans la colonne&#160;<em class="cEmphasis">GRP_SIZE</em> et calculé uniquement sur l&#39;enregistrement maître. La colonne&#160;<em class="cEmphasis">MASTER</em> indique par <b class="cBold">true</b>/<b class="cBold">false</b> si l&#39;enregistrement correspondant est un enregistrement maître ou non. La colonne&#160;<em class="cEmphasis">SCORE</em> affiche la distance calculée entre l&#39;enregistrement d&#39;entrée et l&#39;enregistrement maître selon l&#39;algorithme de correspondance <b class="cBold">Jaro-Winkler</b>.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tGenKey_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tIntervalMatch_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

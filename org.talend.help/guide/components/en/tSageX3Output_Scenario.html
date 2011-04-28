@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:30:53">
+    <title>Scenario: Using a Sage X3 Webservice to insert data into a given Sage X3 system</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSageX3Output_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSalesforceBulkExec_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3618375"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3618382"> </a><h2 class="pHeading2">
+Scenario: Using a Sage X3 Webservice to insert data into a given Sage X3 system
+</h2>
+<a name="wp3618389"> </a><p class="pIndented1">
+This scenario describes a two-component Job used to generate one row of data and insert the data into a given Sage X3 system. You can find the data used in this scenario in the example provided by Sage X3. The Sage X3 Webservice is used to access an object.
+</p>
+<a name="wp3618414"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSageX3Output1.png" id="wp3619390" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619418"> </a><div class="pSmartList2"><li>Drop the <b class="cBold">tFixedFlowInput</b> and the <b class="cBold">tSageX3Output </b>components onto the workspace from <b class="cBold">Palette</b>. </li></div>
+<a name="wp3619446"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tFixedFlowInput</b> component to the <b class="cBold">tSageX3Output</b> component using a <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> link.</li></div>
+<a name="wp3619522"> </a><div class="pSmartList2"><li>Double click the <b class="cBold">tFixedFlowInput</b> component to set its <b class="cBold">Basic Settings</b> in the <b class="cBold">Component</b> view</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3619585"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSageX3Output2.png" id="wp3619602" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619597"> </a><div class="pSmartList2"><li>Click the three-dot button next to <b class="cBold">Edit schema</b> to open the schema editor.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3619622"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSageX3Output3.png" id="wp3619641" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619636"> </a><div class="pSmartList2"><li>In the schema editor and then under the schema table, click the plus button four times to add four rows.</li></div>
+<a name="wp3619662"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK </b>to validate this changes and then accept the propagation prompted by the pop-up dialog box. The four rows appear automatically in the <b class="cBold">Values</b> table of the <b class="cBold">Component</b> view.</li></div>
+<a name="wp3619700"> </a><div class="pSmartList2"><li>In the <b class="cBold">Values</b> table within the <b class="cBold">Mode</b> area, type in the values for each of the four rows in the <b class="cBold">Value</b> column. In this scenario, the values downward are: <code class="cCode">CONTS00059, Screen 24\&quot; standard 16/10, Screen 24\&quot; standard 28/10, 2</code>.</li></div>
+<a name="wp3620333"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/warning_smalljl.png" align="left" id="wp3620330" border="0" hspace="0" vspace="0"/><br />
+These values in the Value column must be put between quotation marks.
+</p>
+<a name="wp3620336"> </a><div class="pSmartList2"><li>Double click <b class="cBold">tSageX3Output</b> to set its <b class="cBold">Basic Settings</b> in the <b class="cBold">Component</b> view. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3618491"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSageX3Output4.png" id="wp3620397" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3618583"> </a><div class="pSmartList2"><li>In the <b class="cBold">Endpoint address</b> field, type in the URL address of the Webservice provided by the Sage X3 Web server. In this example, it is <em class="cEmphasis">http://10.42.20.168:28880/adxwsvc/services/CAdxWebServiceXmlCC</em></li></div>
+<a name="wp3618601"> </a><div class="pSmartList2"><li>In the <b class="cBold">User</b> field, type in the user name of the given Sage X3. In this example, it is <em class="cEmphasis">ERP</em>.</li></div>
+<a name="wp3618609"> </a><div class="pSmartList2"><li>In the <b class="cBold">Language</b> field, type in the name of the X3 language code used to start a connection group. In this example, it is <em class="cEmphasis">FRA</em>.</li></div>
+<a name="wp3618622"> </a><div class="pSmartList2"><li>In the <b class="cBold">Pool alias</b> field, type in the name of connection pool to be used. In this example, this connection pool is called <em class="cEmphasis">TALEND</em>.</li></div>
+<a name="wp3618635"> </a><div class="pSmartList2"><li>In the <b class="cBold">Publication name</b> field, type in the publication name of the object to be called. In this scenario, the publication name is <em class="cEmphasis">ITMDET</em>.</li></div>
+<a name="wp3620452"> </a><div class="pSmartList2"><li>In the <b class="cBold">Action</b> field, select <b class="cBold">insert</b> from the drop-down list.</li></div>
+<a name="wp3622651"> </a><div class="pSmartList2"><li>In the <b class="cBold">Field name</b> column of the <b class="cBold">Mapping</b> table, type in the field names of the attributes the selected data action is exercised on.</li></div>
+<a name="wp3622682"> </a><div class="pSmartList2"><li>In the <b class="cBold">Group ID</b> column of the <b class="cBold">Mapping</b> table,  type in values corresponding to group IDs of the selected attributes. These IDs are defined in the Sage X3 Web server</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3618683"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSageX3Output5.png" id="wp3620570" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3620514"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3618672" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+In the <b class="cBold">Mapping</b> table, the <b class="cBold">Column</b> column has been filled automatically with the columns retrieved from the schema of the preceding component.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3618773"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3620622"> </a><p class="pIndented1">
+To verify the data that you inserted in this scenario, you can use the <b class="cBold">tSageX3Input</b> component to read the concerned data from the Sage X3 server.
+</p>
+<a name="wp3620631"> </a><p class="pIndented1">
+For further information about how to use the <b class="cBold">tSageX3Input</b> component to read data, see <a href="tSageX3Input_Scenario.html#wp3614029"><em class="cEmphasis">Scenario: Using query key to extract data from a given Sage X3 system</em></a>.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSageX3Output_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSalesforceBulkExec_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

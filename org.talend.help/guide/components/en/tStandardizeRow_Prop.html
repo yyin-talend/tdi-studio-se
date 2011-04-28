@@ -1,0 +1,524 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:17">
+    <title>tStandardizeRow</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSchemaComplianceCheck_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tStandardizeRow_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3823574"> </a><h2 class="pHeading1">
+tStandardizeRow
+</h2>
+<a name="wp3823583"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tStandardizeRow_icon32.png" id="wp3823578" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3823592"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_smalljl.png" align="left" id="wp3823587" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+This component will be available in the <b class="cBold">Palette</b> of the studio on the condition that you have subscribed to the relevant edition of <b class="cBold">Talend Data Quality</b>.
+</div>
+<a name="wp3823603"> </a><h2 class="pHeading2">
+tStandardizeRow properties
+</h2>
+<a name="wp3823859"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3823611table3823606">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3823611"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3823613"> </a><div class="pCellBody">
+Data quality
+</div>
+</td>
+    <td><a name="wp3823621"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icon.png" id="wp3823618" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3823626"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3823631"> </a><div class="pCellBody">
+<b class="cBold">tStandardizeRow</b> tokenizes the data flow it has received from the preceding component and applies user-defined rules to parse the data. Based on this parsing, this component normalizes and writes these data in a separate XML data flow and tags them using the user-defined rule names. The standardization option adds a supplementary column to the output flow where the normalized data are then standardized.<br />ANTLR is used to parse and tokenize the incoming data. For further information about ANTLR, see the site<br /><a href="http://www.antlr.org/">http://www.antlr.org/</a>
+</div>
+<a name="wp3823638"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3823636" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<br />This component does not make any changes on your raw data.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3823646"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3823651"> </a><div class="pCellBody">
+<b class="cBold">tStandardizeRow</b> normalizes the incoming data in a separate XML data flow. This alllows you to separate, even standardize if need be, the rule-compliant data from the noncompliant data.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3823658"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3823665"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit schema</em>
+</div>
+</td>
+    <td><a name="wp3823668"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3823670"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3823672"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3823677"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: You create the schema and store it locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3823688"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3823690"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3823695"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: You have already created the schema and stored it in the Repository. You can reuse it in various projects and job designs. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3823706"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3823711"> </a><div class="pCellHeading">
+<em class="cEmphasis">Column to parse</em>
+</div>
+</td>
+    <td><a name="wp3823713"> </a><div class="pCellBody">
+Select the column to be parsed from the received data flow 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3823715"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3823719"> </a><div class="pCellHeading">
+<em class="cEmphasis">Standardize this field</em>
+</div>
+</td>
+    <td><a name="wp3823722"> </a><div class="pCellBody">
+Select this check box to standardize the rule-compliant data identified, that is, to replace the duplicates of the identified data with the corresponding standardized data.<br />For further information about the standardized data, see section <a href="tSynonymOutput_Prop.html"><em class="cEmphasis">tSynonymOutput</em></a>.<br />
+</div>
+<a name="wp3823731"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3823729" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Every time you select or clear this check box, the schema of this component is changed automatically, so in a given Job, you need to click the activated <b class="cBold">Sync columns</b> button to fix the inconsistencies in the schema.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3823737"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3823742"> </a><div class="pCellHeading">
+<em class="cEmphasis">Conversion rules</em>
+</div>
+</td>
+    <td><a name="wp3823744"> </a><div class="pCellBody">
+Complete this table to define the rules you need to apply. The table columns to be filled are:<br />- <b class="cBold">Name</b>: in this column, name the rule you need to use. This name is also used as the XML tag name and the token name to label the incoming data identified by this rule.<br />- <b class="cBold">Type</b>: in this column, select the type of the rule you need to apply. For further information about the rule types available, see section <a href="tStandardizeRow_Prop.html#wp3823866"><em class="cEmphasis">Rule types</em></a>.<br />- <b class="cBold">Value</b>: in this column, type in the rule you need to define.<br />
+</div>
+<a name="wp3823762"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3823760" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+When several rules of the same type use the identical rule name in this table, they are executed in top-down order, so arrange them properly in order to obtain the best result.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3823765"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3823769"> </a><div class="pCellHeading">
+<em class="cEmphasis">Generate parser code in Routines</em>
+</div>
+</td>
+    <td><a name="wp3823772"> </a><div class="pCellBody">
+Click this button to enable the data parser of your Studio to recognize the rules defined in the <b class="cBold">Conversion rules</b> table.<br />
+</div>
+<a name="wp3823781"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3823779" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+In a given Job, when a rule is created, this operation is required for the execution of this rule, while if just a modification is made on an existing rule, this operation is required only when the modified rule is of type <b class="cBold">Enumeration</b>, <b class="cBold">Format</b> or <b class="cBold">Combination</b>. For further information about all of the rule types, see section <a href="tStandardizeRow_Prop.html#wp3823866"><em class="cEmphasis">Rule types</em></a>.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3823799"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3823809"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<em class="cEmphasis">tStatCatcher</em> <em class="cEmphasis">Statistics</em>
+</div>
+</td>
+    <td><a name="wp3823812"> </a><div class="pCellBody">
+Select this check box to collect log data at the component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3823817"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3823819"> </a><div class="pCellBody">
+This component is an intermediary step. It requires an input flow as well as an output.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3823826"> </a><div class="pCellBody">
+<b class="cBold">Connections</b>
+</div>
+</td>
+    <td><a name="wp3823828"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3823830"> </a><div class="pCellBody">
+Outgoing links (from one component to another):<br /><b class="cBold">Row</b>: Main; Reject<br /><b class="cBold">Trigger</b>: Run if; On Component Ok; On Component Error.<br /><br />Incoming links (from one component to another):<br /><b class="cBold">Row</b>: Main; Reject <br /><br />For further information regarding connections, see <em class="cEmphasis">Connection types</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3823853"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3823855"> </a><div class="pCellBody">
+n/a
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+<a name="wp3823866"> </a><h3 class="pHeading3">
+Rule types
+</h3>
+<a name="wp3823870"> </a><p class="pIndented2">
+Two groups of rule types are provided: the basic rule types and the advanced rule types.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3823884"> </a><div class="pSmartList3"><li>Basic rule types: <b class="cBold">Enumeration</b>, <b class="cBold">Format</b> and <b class="cBold">Combination</b>. Rules of these types are composed with some given ANTRL symbols.</li></div>
+<a name="wp3823897"> </a><div class="pSmartList3"><li>Advanced rule types: <b class="cBold">Regex</b>, <b class="cBold">Index</b> and <b class="cBold">Shape</b>. Rules of these types match the tokenized data and standardize them when needed.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3823902"> </a><p class="pIndented2">
+The following three tables successively present detailed information about the basic types, the advanced types and the ANTRL symbols used by the basic rule types. These three tables help you to complete the <b class="cBold">Conversion rules</b> table in the <b class="cBold">Basic settings</b> of this component.
+</p>
+<a name="wp3823913"> </a><p class="pIndented2">
+For basic rule types:
+</p>
+<a name="wp3824099"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3823918table3823916">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp3823918"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Basic Rule Type
+</div>
+</th>
+    <th><a name="wp3823920"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Usage
+</div>
+</th>
+    <th><a name="wp3823922"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Example
+</div>
+</th>
+    <th><a name="wp3823924"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Warning
+</div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp3823929"> </a><div class="pCellBody">
+<b class="cBold">Enumeration</b>
+</div>
+</td>
+    <td><a name="wp3823931"> </a><div class="pCellBody">
+A rule of this type provides a list of optional criteria
+</div>
+</td>
+    <td><a name="wp3823939"> </a><div class="pCellHeading">
+<em class="cEmphasis">RuleName</em>: <code class="cCode">Gender</code><br /><em class="cEmphasis">RuleValue: </em><code class="cCode">&quot; `Male&#39; | `Female&#39;&quot;</code>
+</div>
+</td>
+    <td><a name="wp3823947"> </a><div class="pCellBody">
+- Each option must be put in a pair of single quotation marks.<br /><br />- Defined options must be separated by the | symbol.<br /><br />- The rule name must start with upper case
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3823952"> </a><div class="pCellBody">
+<b class="cBold">Format</b> <br />(Rule name starts with upper case)
+</div>
+</td>
+    <td><a name="wp3823954"> </a><div class="pCellBody">
+A rule of this type defines the composition of a string by specifying the type of each element of this string. 
+</div>
+</td>
+    <td><a name="wp3823961"> </a><div class="pCellHeading">
+<em class="cEmphasis">RuleName</em>: <code class="cCode">ProductNumber</code><br /><em class="cEmphasis">RuleValue</em>:<code class="cCode"> &quot; DIGIT DIGIT LETTER `-` DIGIT DIGIT &quot;<br /></code><br />This rule matches strings like, <em class="cEmphasis">13A-74</em>
+</div>
+</td>
+    <td><a name="wp3823973"> </a><div class="pCellBody">
+- Only the pre-defined element types (ANTLR tokens) are accepted to define the string elements. They are: <em class="cEmphasis">DIGIT</em>, <em class="cEmphasis">LETTER</em>, <em class="cEmphasis">UPPERCASEDLETTER</em>, <em class="cEmphasis">CAPITALIZEDWORD</em>, <em class="cEmphasis">WORD</em>, <em class="cEmphasis">INTEGER</em>, <em class="cEmphasis">DECIMALFLOAT</em>, <em class="cEmphasis">FRACTIONFLOAT</em>.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824002"> </a><div class="pCellBody">
+<b class="cBold">Format</b><br />(Rule name starts with lower case)
+</div>
+</td>
+    <td><a name="wp3824004"> </a><div class="pCellBody">
+A rule of this type defines the composition of a string by specifying the type of each element of this string.<br />In addition to the pre-defined element types, an <b class="cBold">Enumeration</b> rule is applicable to define the type of a string element. 
+</div>
+</td>
+    <td><a name="wp3824015"> </a><div class="pCellHeading">
+<em class="cEmphasis">RuleName</em>: <code class="cCode">length</code><br /><em class="cEmphasis">RuleValue</em>: <code class="cCode">&quot;DECIMALFLOAT LengthUnit &quot;</code><br /><br />The rule matches strings like <em class="cEmphasis">1.4 cm</em>, where the <code class="cCode">DecimalFloat</code> is one of the pre-defined element type and <code class="cCode">LengthUnit</code> is an <b class="cBold">Enumeration</b> rule defining <code class="cCode">&quot; `inch&#39; | &#39;cm&#39; &quot;</code>.
+</div>
+</td>
+    <td><a name="wp3824038"> </a><div class="pCellBody">
+n/a
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+<a name="wp3824105"> </a><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_smalljl.png" align="left" id="wp3824103" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 10pt; font-style: italic; font-variant: normal; font-weight: normal; margin-bottom: 12pt; margin-left: 18pt; margin-right: 0pt; margin-top: 12pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+Any characters or string literals, if accepted by a rule type, must be put in single quotation marks when used, otherwise they will be treated as ANTLR grammar symbols or variables and generate errors or unexpected results at runtime.
+</div>
+<a name="wp3824110"> </a><p class="pIndented2">
+For advanced rule types:
+</p>
+<a name="wp3824225"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3824115table3824113">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp3824115"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Advanced Rule Type
+</div>
+</th>
+    <th><a name="wp3824117"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Usage
+</div>
+</th>
+    <th><a name="wp3824119"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Example
+</div>
+</th>
+    <th><a name="wp3824121"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Warning
+</div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp3824126"> </a><div class="pCellBody">
+<b class="cBold">Regex</b>
+</div>
+</td>
+    <td><a name="wp3824128"> </a><div class="pCellBody">
+A rule of this type uses regular expressions to match the incoming data tokenized by ANTLR.
+</div>
+</td>
+    <td><a name="wp3824136"> </a><div class="pCellHeading">
+<em class="cEmphasis">RuleName</em>: <code class="cCode">ZipCode</code><br /><em class="cEmphasis">RuleValue</em>: <code class="cCode">&quot;\\d\\d\\d\\d\\d&quot;</code><br /><br />The rule matches strings like <em class="cEmphasis">&quot;92150&quot;</em>
+</div>
+</td>
+    <td><a name="wp3824147"> </a><div class="pCellBody">
+Regular expressions must be Java compliant.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824152"> </a><div class="pCellBody">
+<b class="cBold">Index</b>
+</div>
+</td>
+    <td><a name="wp3824154"> </a><div class="pCellBody">
+A rule of this type uses a synonym index as reference to search for the matched incoming data.<br />For further information about this synonym index, see section <a href="tSynonymOutput_Prop.html"><em class="cEmphasis">tSynonymOutput</em></a>.
+</div>
+</td>
+    <td><a name="wp3824159"> </a><div class="pCellBody">
+A scenario is available in section <em class="cEmphasis">Scenario 2: Standardizing the addresses and city names saved in the client data on page 1043</em>.
+</div>
+</td>
+    <td><a name="wp3824164"> </a><div class="pCellBody">
+In Windows, the backslashes <code class="cCode">\</code> need to be doubled or replaced by slashes <code class="cCode">/</code> if the path is copied from the file system.
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824175"> </a><div class="pCellBody">
+<b class="cBold">Shape</b>
+</div>
+</td>
+    <td><a name="wp3824177"> </a><div class="pCellBody">
+A rule of this type uses pre-defined tokens along with the established <b class="cBold">Regex</b> or <b class="cBold">Index</b> rules or both to match the incoming data.
+</div>
+</td>
+    <td><a name="wp3824191"> </a><div class="pCellHeading">
+<em class="cEmphasis">RuleName</em>: <code class="cCode">Address</code><br /><em class="cEmphasis">RuleValue</em>: <code class="cCode">&quot;&lt;INTR&gt;&lt;WORD&gt;&lt;StreetType&gt;&quot;</code> <br /><br />This rule matches the addresses like <em class="cEmphasis">12 main street</em>, where <em class="cEmphasis">StreetType</em> is an <b class="cBold">Index</b> rule which is used for the current data flow.
+</div>
+</td>
+    <td><a name="wp3824208"> </a><div class="pCellBody">
+- Pre-defined tokens are: <code class="cCode">INT</code> for integer; <code class="cCode">WORD</code> for word; WORD+ for literals of several words; <code class="cCode">CAPWORD</code> for capitalized word; <code class="cCode">FlOAT</code> for Decimal/Fraction Float.<br /><br />- Only the contents put in  <code class="cCode">&lt; &gt;</code> are recognizable. In the other cases, the contents are considered as error or are omitted.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+<a name="wp3824229"> </a><p class="pIndented2">
+For the given ANTLR symbols:
+</p>
+<a name="wp3824280"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3824234table3824232">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp3824234"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Symbols
+</div>
+</th>
+    <th><a name="wp3824236"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: center; text-decoration: none; text-indent: 0pt; text-transform: none">
+Meaning
+</div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp3824241"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">|</code>
+</div>
+</td>
+    <td><a name="wp3824243"> </a><div class="pCellBody">
+alternative
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824248"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">&#39;s&#39;</code>
+</div>
+</td>
+    <td><a name="wp3824250"> </a><div class="pCellBody">
+char or string literal
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824255"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">+</code>
+</div>
+</td>
+    <td><a name="wp3824257"> </a><div class="pCellBody">
+1 or more
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824262"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">*</code>
+</div>
+</td>
+    <td><a name="wp3824264"> </a><div class="pCellBody">
+0 or more
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824269"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">?</code>
+</div>
+</td>
+    <td><a name="wp3824271"> </a><div class="pCellBody">
+optional or semantic predicate
+</div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp3824276"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<code class="cCode">~</code>
+</div>
+</td>
+    <td><a name="wp3824278"> </a><div class="pCellBody">
+match not
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+<a name="wp3824283"> </a><p class="pIndented2">
+<a href="http://www.antlr.org/wiki/display/ANTLR3/ANTLR+Cheat+Sheet">Examples of using these symbols are presented in the following scenarios, but you can also find more examples on the following site:<br /></a>http://www.antlr.org/wiki/display/ANTLR3/ANTLR+Cheat+Sheet
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSchemaComplianceCheck_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tStandardizeRow_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

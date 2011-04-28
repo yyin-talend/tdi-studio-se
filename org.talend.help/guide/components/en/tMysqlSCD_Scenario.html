@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:04">
+    <title>Scenario: Tracking changes using Slowly Changing Dimensions (type 0 through type 3) </title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMysqlSCD_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlSCDELT_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2074141"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2074144"> </a><h2 class="pHeading2">
+Scenario: Tracking changes using Slowly Changing Dimensions (type 0 through type 3) 
+</h2>
+<a name="wp2066607"> </a><p class="pIndented1">
+This five-component Java scenario describes a Job that tracks changes in four of the columns in a source delimited file, writes changes and the history of changes in an SCD table, and displays error information on the <b class="cBold">Run</b> console.
+</p>
+<a name="wp2067016"> </a><p class="pIndented1">
+The source delimited file contains various personal details including <em class="cEmphasis">firstname</em>, <em class="cEmphasis">lastname</em>, <em class="cEmphasis">address</em>, <em class="cEmphasis">city</em>, <em class="cEmphasis">company</em>, <em class="cEmphasis">age</em>, and <em class="cEmphasis">status</em>. An <em class="cEmphasis">id</em> column helps ensuring the unicity of the data. 
+</p>
+<a name="wp2067031"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMysqlSCD.png" id="wp2067028" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2067034"> </a><p class="pIndented1">
+We want any change in the marital status to overwrite the existing old status record. This type of change is equivalent to an SCD <b class="cBold">Type 1</b>.
+</p>
+<a name="wp2067041"> </a><p class="pIndented1">
+We want to insert a new record in the dimensional table with a separate key each time a person changes his/her company. This type of change is equivalent to an SCD <b class="cBold">Type 2</b>.
+</p>
+<a name="wp2066821"> </a><p class="pIndented1">
+We want to track only the previous city and previous address of a person. This type of change is equivalent to an SCD <b class="cBold">Type 3</b>.
+</p>
+<a name="wp2066829"> </a><p class="pIndented1">
+To realize this kind of scenario, it is better to divide it into three main steps: defining the main flow of the Job, setting up the SCD editor, and finally creating the relevant SCD table in the database.
+</p>
+<a name="wp2067587"> </a><p class="pBodyRelative">
+<b class="cBold">Step 1: Defining the main flow of the job:</b>
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3969185"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: a <b class="cBold">tMysqlConnection</b>, a <b class="cBold">tFileInputDelimited</b>, a <b class="cBold">tMysqlSCD</b>, a <b class="cBold">tMysqlCommit</b>, and two <b class="cBold">tLogRow</b> components.</li></div>
+<a name="wp3969216"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tFileInputDelimited</b>, the first <b class="cBold">tLogRow</b>, and the <b class="cBold">tMysqlSCD</b> using the <b class="cBold">Row Main</b> link. This is the main flow of your Job.</li></div>
+<a name="wp2061582"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tMysqlConnection</b> to the <b class="cBold">tFileInputDelimited</b> and <b class="cBold">tMysqlSCD</b> to <b class="cBold">tMysqlCommit</b> using the <b class="cBold">OnComponntOk</b> trigger.</li></div>
+<a name="wp3969249"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tMysqlSCD</b> to the second <b class="cBold">tLogRow</b> using the <b class="cBold">Row</b> <b class="cBold">Rejects</b> link. Two columns, <em class="cEmphasis">errorCode</em> and <em class="cEmphasis">errorMessage</em>, are added to the schema. This connection collects error information.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2061594"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMysqlSCD1.png" id="wp2061591" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2061608"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tMysqlConnection</b> to display its <b class="cBold">Basic settings</b> view and set the database connection details manually. The <b class="cBold">tMysqlConnection</b> component should be used to avoid setting several times the same DB connection when multiple DB components are used.</li></div>
+<a name="wp2075522"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp2075520" border="0" hspace="0" vspace="0"/><br />
+If you have already stored the connection details locally in the <b class="cBold">Repository</b>, drop the needed metadata item to the design workspace and the database connection detail will automatically display in the relevant fields. For more information about Metadata, see <em class="cEmphasis">How to centralize the Metadata items</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</p>
+</ul></div>
+</ul></div>
+<a name="wp2061146"> </a><p class="pIndented1">
+In this scenario, we want to connect to the SCD table where changes in the source delimited file will be tracked down.
+</p>
+<a name="wp1567850"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMysqlSCD2.png" id="wp2061130" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2062248"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tFileInputDelimited</b> to display its <b class="cBold">Basic settings</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2062255"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMysqlSCD3.png" id="wp2062252" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2062266"> </a><div class="pSmartList2"><li>Click the three-dot button next to the <b class="cBold">File Name </b>field to select the path to the source delimited file, <em class="cEmphasis">dataset.csv</em> in this scenario, that contains the personal details. </li></div>
+<a name="wp2062275"> </a><div class="pSmartList2"><li>Define the row and field separators used in the source file.</li></div>
+<a name="wp2075570"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp2075567" border="0" hspace="0" vspace="0"/><br />
+<br />The <b class="cBold">File Name</b>, <b class="cBold">Row separator</b>, and <b class="cBold">Field separators</b> are mandatory.
+</p>
+<a name="wp2062494"> </a><div class="pSmartList2"><li>If needed, set <b class="cBold">Header</b>, <b class="cBold">Footer</b>, and <b class="cBold">Limit</b>.<br />In this scenario, set <b class="cBold">Header</b> to <em class="cEmphasis">1</em>. Footer and limit for the number of processed rows are not set.</li></div>
+<a name="wp3972840"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit schema </b>to describe the data structure of the source delimited file.<br />In this scenario, the source schema is made of eight columns: <em class="cEmphasis">id</em>, <em class="cEmphasis">firstName</em>, <em class="cEmphasis">lastName</em>, <em class="cEmphasis">address</em>, <em class="cEmphasis">city</em>, <em class="cEmphasis">company</em>, <em class="cEmphasis">age</em>, and <em class="cEmphasis">status</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3973395"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMysqlSCD4.png" id="wp2062597" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2062609"> </a><div class="pSmartList2"><li>Define the basic settings for the first <b class="cBold">tLogRow</b> in order to view the content of the source file with varying attributes in cells of a table on the console before being processed through the SCD component.</li></div>
+<a name="wp2067289"> </a><div class="pSmartList2"><li>In the design workspace, click the <b class="cBold">tMysqlSCD</b> and select the <b class="cBold">Component</b> tab to define its basic settings.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2067296"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMysqlSCD5.png" id="wp2067293" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2067307"> </a><div class="pSmartList2"><li>In the <b class="cBold">Basic settings</b> view, select the <b class="cBold">Use an existing connection</b> check box to reuse the connection details defined on the <b class="cBold">tMysqlConnection</b> properties.</li></div>
+<a name="wp2067318"> </a><div class="pSmartList2"><li>In the <b class="cBold">Table </b>field, enter the table name to be used to track changes.</li></div>
+<a name="wp2067480"> </a><div class="pSmartList2"><li>If needed, click <b class="cBold">Sync columns</b> to retrieve the output data structure from the <b class="cBold">tFileInputDelimited</b>.</li></div>
+<a name="wp3971316"> </a><div class="pSmartList2"><li>In the design workspace, double-click <b class="cBold">tMysqlCommit</b> to define its basic settings.</li></div>
+<a name="wp3971323"> </a><div class="pSmartList2"><li>Select the relevant connection on the <b class="cBold">Component list</b> if more than one connection exists.</li></div>
+<a name="wp3972322"> </a><div class="pSmartList2"><li>Define the basic settings of the second <b class="cBold">tLogRow</b> in order to view reject information in cells of a table.</li></div>
+<a name="wp2067793"> </a><p class="pBodyRelative">
+<b class="cBold">Step 2: Setting up the SCD editor:</b>
+</p>
+<a name="wp2067530"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMysqlSCD</b> component in the design workspace or click the three-dot<b class="cBold"> </b>button next to the <b class="cBold">SCD Editor</b> in the component&#39;s <b class="cBold">Basic settings</b> view to open the <b class="cBold">SCD editor</b> and build the data flow for the SCD outputs.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2067244"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMysqlSCD6.png" id="wp2063413" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3973740"> </a><p class="pIndented1">
+All the columns from the preceding component are displayed in the <b class="cBold">Unused</b> panel of the <b class="cBold">SCD editor</b>. All the other panels in the <b class="cBold">SCD editor </b>are empty.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3973763"> </a><div class="pSmartList2"><li>From the <b class="cBold">Unused</b> list, drop the <em class="cEmphasis">id</em> column to the <b class="cBold">Source keys</b> panel to use it as the key to ensure the unicity of the incoming data.</li></div>
+<a name="wp3973776"> </a><div class="pSmartList2"><li>In the <b class="cBold">Surrogate keys</b> panel, enter a name for the surrogate key in the <b class="cBold">Name</b> field, <em class="cEmphasis">SK1</em> in this scenario.</li></div>
+<a name="wp3973783"> </a><div class="pSmartList2"><li>From the <b class="cBold">Creation</b> list, select the method to be used for the surrogate key generation, <b class="cBold">Auto-increment</b> in this scenario.</li></div>
+<a name="wp2068149"> </a><div class="pSmartList2"><li>From the <b class="cBold">Unused</b> list, drop the <em class="cEmphasis">firstname</em> and <em class="cEmphasis">lastname </em>columns to the <b class="cBold">Type 0</b> panel, changes in these two columns do not interest us.</li></div>
+<a name="wp2068042"> </a><div class="pSmartList2"><li>Drop the <em class="cEmphasis">status</em><em class="cEmphasis"> </em>column to the <b class="cBold">Type 1</b> panel. The new value will overwrite the old value.</li></div>
+<a name="wp2068697"> </a><div class="pSmartList2"><li>Drop the <em class="cEmphasis">company</em><em class="cEmphasis"> </em>column to the <b class="cBold">Type 2</b> panel. Each time a person changes his/her company, a new record will be inserted in the dimensional table with a separate key.<br />In the <b class="cBold">Versioning</b> area:<br />- Define the <b class="cBold">start</b> and <b class="cBold">end</b> columns of your SCD table that will hold the start and end date values. The end date is null for current records until a change is detected. Then the end date gets filled in and a new record is added with no end date.<br />In this scenario, we select <b class="cBold">Fixed Year Value</b> for the <b class="cBold">end</b> column and fill in a fictive year to avoid having a null value in the end date field.<br />- Select the <b class="cBold">version</b> check box to hold the version number of the record.<br />- Select the <b class="cBold">active</b> check box to spot the column that will hold the <b class="cBold">True</b> or <b class="cBold">False</b> status. <b class="cBold">True</b> for the current active record and <b class="cBold">False</b> for the modified record.</li></div>
+<a name="wp2068744"> </a><div class="pSmartList2"><li>Drop the <em class="cEmphasis">address</em> and <em class="cEmphasis">city </em>columns to the <b class="cBold">Type 3</b> panel to track only the information about the previous value of the address and city.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2063470"> </a><p class="pIndented1">
+For more information about SCD types, see <a href="tMysqlSCD_Prop.html#wp1555883"><em class="cEmphasis">SCD management methodologies</em></a>.
+</p>
+<a name="wp2068852"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMysqlSCD11.png" id="wp2065317" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2065265"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate your configuration and close the <b class="cBold">SCD editor</b>.</li></div>
+<a name="wp3971568"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit schema</b> to view the input and output data structures. <br />The SCD output schema should include the SCD-specific columns defined in the <b class="cBold">SCD editor</b> to hold standard log information.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2063273"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMysqlSCD8.png" id="wp2063270" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3975933"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3975930" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+If you adjust any of the input schema definitions, you need to check, and reconfigure if necessary, the output flow definitions in the <b class="cBold">SCD editor</b> to ensure that the output data structure is properly updated.
+</p>
+<a name="wp3975949"> </a><p class="pBodyRelative">
+<b class="cBold">Step 3: Creating the SCD table:</b>
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3970525"> </a><div class="pSmartList2"><li>In the <b class="cBold">Basic settings</b> view of the <b class="cBold">tMysqlSCD</b> component, select <b class="cBold">Create table if not exists</b> from the <b class="cBold">Action on table</b> list to avoid creating and defining the SCD table manually.</li></div>
+<a name="wp3970681"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it. <br />The console shows the content of the input delimited file, and your SCD table is created in your database, containing the initial dataset. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2070266"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/SCD_Result_Console.png" id="wp2070281" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3970970"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMysqlSCD9.png" id="wp3970968" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2070680"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 36pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<em class="cEmphasis">Janet</em> gets divorced and moves to <em class="cEmphasis">Adelanto</em> at <em class="cEmphasis">355 Golf Rd.</em> She works at <em class="cEmphasis">Greenwood.</em>
+</div>
+<a name="wp2070693"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 36pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<em class="cEmphasis">Adam</em> gets married and moves to <em class="cEmphasis">Belmont</em> at <em class="cEmphasis">2505 Alisson ct. </em>He works at <em class="cEmphasis">Scoop.</em>
+</div>
+<a name="wp3972050"> </a><div style="color: #000000; font-size: 11pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 36pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<em class="cEmphasis">Martin</em> gets a new job at <em class="cEmphasis">Phillips and Brothers</em>. 
+</div>
+<a name="wp2072226"> </a><p class="pIndented1">
+Update the delimited file with the above information and press <b class="cBold">F6</b> to run your Job.
+</p>
+<a name="wp3972178"> </a><p class="pIndented1">
+The console shows the updated personal information and the rejected data, and the SCD table shows the history of valid changes made to the input file along with the status and version number. Because the name of Martin&#39;s new company exceeds the length of the column <em class="cEmphasis">company</em> defined in the schema, this change is directed to the reject flow instead of being logged in the SCD table.
+</p>
+<a name="wp2072233"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/SCD_Result_Console1.png" id="wp2072230" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2072241"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/SCD_Result.png" id="wp2072443" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMysqlSCD_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlSCDELT_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

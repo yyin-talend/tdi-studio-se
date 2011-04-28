@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:03:11">
+    <title>Se connecter à un système SAP R/3 afin d&#39;observer la création de fichiers IDoc</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSAPIDocInput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSAPIDocOutput_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3608797"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3651136"> </a><h2 class="pHeading2">
+Se connecter à un système SAP R/3 afin d&#39;observer la création de fichiers IDoc
+</h2>
+<a name="wp3651144"> </a><p class="pIndented1">
+Ce scénario décrit un Job à un seul composant qui utilise le composant <b class="cBold">tSAPIDocInput</b> pour écouter la création de fichiers IDoc dans un système SAP R/3 donné.
+</p>
+<a name="wp3651149"> </a><p class="pIndented1">
+Pour reproduire ce scénario, vous devez&#160;:  
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3648554"> </a><div class="pSmartList2"><li>créer une destination RFC (RFC Destination) sur le système SAP R/3 donné.</li></div>
+<a name="wp3654810"> </a><div class="pSmartList2"><li>configurer le composant <b class="cBold">tSAPIDocInput</b> pour écouter l&#39;invocation à partir du système SAP R/3.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3648572"> </a><h3 class="pHeading3">
+Créer une destination RFC pour le composant d&#39;écoute tSAPIDocInput
+</h3>
+<a name="wp3648575"> </a><p class="pIndented2">
+Connectez-vous à un système SAP R/3 donné puis procédez comme suit pour créer la destination RFC requise.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3648584"> </a><div class="pSmartList3"><li>Exécutez la transaction SM59 pour ouvrir la vue <b class="cBold">Display and maintain RFC destinations</b>.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3648593"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSAPIDocInput1.png" id="wp3648590" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3648606"> </a><div class="pSmartList3"><li>A partir de cette vue, sélectionnez l&#39;option <b class="cBold">TCP/IP connections</b> et cliquez sur <b class="cBold">Create</b>. </li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3648613"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSAPIDocInput2.png" id="wp3648610" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3648620"> </a><p class="pIndented2">
+La vue <b class="cBold">RFC Destination</b> s&#39;affiche.
+</p>
+<a name="wp3648627"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSAPIDocInput3.png" id="wp3648624" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3648635"> </a><div class="pSmartList3"><li>Dans le champ <b class="cBold">RFC destination</b> de cette vue, saisissez le nom de la destination RFC à utiliser. Ce champ étant sensible à la casse, il est recommandé d&#39;utiliser des majuscules. Pour ce scénario, saisissez&#160;<em class="cEmphasis">IDOC_TALEND</em>.</li></div>
+<a name="wp3648648"> </a><div class="pSmartList3"><li>Dans le champ <b class="cBold">Connection type</b>, sélectionnez le type <b class="cBold">T </b>pour lancer un programme externe via TCP/IP.</li></div>
+<a name="wp3648655"> </a><div class="pSmartList3"><li>Dans le champ <b class="cBold">Description</b>, saisissez une courte description de la destination RFC sur le point d&#39;être créée. Pour ce scénario, saisissez simplement&#160;<em class="cEmphasis">TALEND IDOC LISTENER</em>.</li></div>
+<a name="wp3648666"> </a><div class="pSmartList3"><li>Dans la zone <b class="cBold">Logon</b>, cochez la case <b class="cBold">Current user</b>.</li></div>
+<a name="wp3648671"> </a><div class="pSmartList3"><li>Dans la barre d&#39;outils supérieure, cliquez sur le bouton <b class="cBold">Save</b> (sous forme de disquette).</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3648678"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSAPIDocInput4.png" id="wp3648675" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3648682"> </a><p class="pIndented2">
+La destination RFC nommée <em class="cEmphasis">IDOC_TALEND</em> s&#39;ouvre.
+</p>
+<a name="wp3648689"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSAPIDocInput5.png" id="wp3648686" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3648701"> </a><div class="pSmartList3"><li>A partir de cette vue, cliquez sur <b class="cBold">Registration</b> pour afficher le champ <b class="cBold">Program ID</b>.</li></div>
+<a name="wp3648704"> </a><div class="pSmartList3"><li>Dans ce champ, saisissez l&#39;ID du programme. Cet ID doit utiliser le même nom que celui de la destination RFC créée, soit&#160;<em class="cEmphasis">IDOC_TALEND</em>.</li></div>
+<a name="wp3651742"> </a><div class="pSmartList3"><li>Cliquez de nouveau sur <b class="cBold">Save</b> dans la barre d&#39;outils supérieure pour valider cette configuration.</li></div>
+<a name="wp3651746"> </a><div class="pSmartList3"><li>Toujours dans cette barre d&#39;outils, cliquez sur le bouton de retour (sous forme de flèche pointant vers la gauche) pour retourner à la vue <b class="cBold">SAP Easy Access</b> (écran principal de SAP) et exécuter la transaction&#160;<em class="cEmphasis">SMGW</em> afin d&#39;ouvrir la vue Moniteur passerelle (gateway monitor).</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3651758"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSAPIDocInput6.png" id="wp3651755" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3651766"> </a><div class="pSmartList3"><li>A partir de la barre de menu Moniteur passerelle (gateway monitor), sélectionnez <b class="cBold">Goto&#160;&gt;&#160;Programs&#160;&gt;&#160;Display</b>. Un tableau s&#39;affiche, comme celui présenté ci-dessous, où vous pouvez trouver le service de passerelle du système SAP R/3.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3648744"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSAPIDocInput7.png" id="wp3648741" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3648751"> </a><p class="pIndented2">
+Dans cet exemple, le service de passerelle à utiliser est&#160;<em class="cEmphasis">sapgw00</em>.
+</p>
+<a name="wp3648756"> </a><p class="pIndented2">
+La destination RFC requise est maintenant créée.
+</p>
+<a name="wp3651048"> </a><h3 class="pHeading3">
+Configurer le composant d&#39;écoute tSAPIDocInput
+</h3>
+<a name="wp3648770"> </a><p class="pIndented2">
+Depuis la perspective <b class="cBold">Data Integration</b> de votre Studio, procédez comme suit&#160;: 
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3648787"> </a><div class="pSmartList3"><li>A partir de la <b class="cBold">Palette</b>,déposez le composant <b class="cBold">tSAPIDocInput</b> dans l&#39;espace de modélisation graphique.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3648794"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSAPIDocInput8.png" id="wp3648791" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3648801"> </a><div class="pSmartList3"><li>Double-cliquez sur ce composant pour ouvrir l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3648808"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSAPIDocInput9.png" id="wp3648805" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3648816"> </a><div class="pSmartList3"><li>Dans le champ <b class="cBold">Client</b>, saisissez le code de connexion (client number) du système SAP R/3. Pour ce scénario, saisissez&#160;<em class="cEmphasis">000</em>.</li></div>
+<a name="wp3648829"> </a><div class="pSmartList3"><li>Dans les champs <b class="cBold">Userid</b> et <b class="cBold">Password</b> respectivement, saisissez les informations d&#39;authentification, à savoir l&#39;identifiant et le mot de passe.</li></div>
+<a name="wp3652037"> </a><div class="pSmartList3"><li>Dans le champ <b class="cBold">Language</b>, saisissez la langue utilisée par le système SAP R/3. Pour ce scénario, saisissez&#160;<em class="cEmphasis">EN</em>.</li></div>
+<a name="wp3652047"> </a><div class="pSmartList3"><li>Dans le champ <b class="cBold">Host name</b>, saisissez l&#39;adresse IP du serveur d&#39;hébergement du système SAP R/3 donné.</li></div>
+<a name="wp3652055"> </a><div class="pSmartList3"><li>Dans le champ <b class="cBold">System number</b>, saisissez le numéro du système du système SAP R/3.</li></div>
+<a name="wp3652062"> </a><div class="pSmartList3"><li>Dans le champ <b class="cBold">Gateway service</b>, saisissez le nom de votre service Gateway.</li></div>
+<a name="wp3648869"> </a><div class="pSmartList3"><li>Dans le champ <b class="cBold">Program ID</b>, saisissez l&#39;ID du programme défini lors de la création de la destination RFC requise. Pour ce scénario, saisissez&#160;<em class="cEmphasis">IDOC_TALEND</em>.</li></div>
+<a name="wp3648880"> </a><div class="pSmartList3"><li>Dans le champ <b class="cBold">XML-IDoc file output</b>, saisissez le chemin d&#39;accès ou parcourez votre répertoire jusqu&#39;à l&#39;emplacement où vous souhaitez stocker le fichier SAP IDoc récupéré.</li></div>
+<a name="wp3648889"> </a><div class="pSmartList3"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3648898"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSAPIDocInput10.png" id="wp3648894" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3648906"> </a><p class="pIndented2">
+A partir de cette console, vous pouvez constater que le composant <b class="cBold">tSAPIDocInput</b> écoute le système SAP R/3 donné.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3648917"> </a><div class="pSmartList3"><li>Retournez sur la destination RFC du système SAP R/3 et cliquez sur <b class="cBold">Test connection</b>. </li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3648926"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSAPIDocInput11.png" id="wp3648922" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3648930"> </a><p class="pIndented2">
+Le résultat du test indique que la connexion entre le système SAP R/3 et le composant d&#39;écoute <b class="cBold">tSAPIDocInput</b> est établie avec succès.
+</p>
+<a name="wp3648941"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSAPIDocInput16.png" id="wp3648938" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3654953"> </a><p class="pIndented2">
+Le composant <b class="cBold">tSAPIDocInput</b> écoute désormais le système SAP R/3 et attend l&#39;invocation de la destination RFC précédemment définie.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSAPIDocInput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSAPIDocOutput_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

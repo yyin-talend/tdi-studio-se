@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:17">
+    <title>Scenario: Remotely launching a report from a given Talend Administration Center Web application</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tLaunchDQReports_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMatchGroup_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3725489"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3725499"> </a><h2 class="pHeading2">
+Scenario: Remotely launching a report from a given <b class="cBold">Talend Administration Center</b> Web application
+</h2>
+<a name="wp3725509"> </a><p class="pIndented1">
+This scenario shows the collaborative operations performed to execute remotely an established launching-report Job from a given <b class="cBold">Talend Administration Center</b> Web application. To do this, you need to commit all of the required metadata to the remote SVN repository used by this given <b class="cBold">Talend Administration Center</b> Web application and need to install an execution server on the system hosting your Studio.
+</p>
+<a name="wp3769882"> </a><h3 class="pHeading3">
+Prerequisites
+</h3>
+<a name="wp3771097"> </a><p class="pIndented2">
+Before starting this scenario, proceed as follows to set up the prerequisites:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3771113"> </a><div class="pSmartList3"><li>Create a project from your <b class="cBold">Talend Administration Center</b> Web application. The collaborative operations for launching a report will be performed in this project. In this scenario, this project is called <em class="cEmphasis">test_ychen</em>. <br />For further information about how to create a project on the <b class="cBold">Talend Administration Center</b> Web application, see section <em class="cEmphasis">Adding a project</em> in the <b class="cBold">Talend Administration Center</b> <b class="cBold">User Guide</b>.</li></div>
+<a name="wp3771148"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp3771146" border="0" hspace="0" vspace="0"/><br />
+If you have not the required rights to create or manage a project, see the administrator of your <b class="cBold">Talend Administration Center</b> Web application. 
+</p>
+<a name="wp3771166"> </a><div class="pSmartList3"><li>Establish a connection from your Studio to the remote SVN repository storing the above-mentioned project. <br />For further information about how to create the connection of this kind, see section <em class="cEmphasis">How to connect to a remote repository</em> in the Talend Integration Suite <b class="cBold">User Guide</b>.</li></div>
+<a name="wp3771179"> </a><div class="pSmartList3"><li>Launch your Studio using this new connection and the new project created. For further information about how to launch the Studio in this way, see section <em class="cEmphasis">How to connect to a remote repository</em> in the Talend Integration Suite <b class="cBold">User Guide</b>.</li></div>
+<a name="wp3771195"> </a><div class="pSmartList3"><li>In the <b class="cBold">Data Profiler</b> perspective of your Studio, create a report which will be launched and generated remotely in this scenario. In this scenario, it is <em class="cEmphasis">US_State</em>. </li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3771235"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tLaunchDQReport1.png" id="wp3771232" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3772633"> </a><p class="pIndented2">
+For further information about how to create a report in the <b class="cBold">Data Profiler</b> perspective, see section <em class="cEmphasis">Creating a new report</em> in the <b class="cBold">Talend Data Quality</b> <b class="cBold">User Guide</b>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3772648"> </a><div class="pSmartList3"><li>In the report editor in the <b class="cBold">Data Profiler</b> perspective of your Studio, add the analysis, <em class="cEmphasis">US_State</em> in this scenario, upon which you base the report of interest on and type in the parameters in order to generate this report in the PDF format and store it in the following directory:<br /><em class="cEmphasis">C:\Documents and Settings\ychen\Bureau\TEST_YCHEN\Report_Center</em>.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3772096"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tLaunchDQReport4.png" id="wp3772537" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3772531"> </a><p class="pIndented2">
+For further information about how to set up the relative parameters for report generation, see section <em class="cEmphasis">Creating a new report</em> in the <b class="cBold">Talend Data Quality</b> <b class="cBold">User Guide</b>.
+</p>
+<a name="wp3773289"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3773248" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+If you did not create a report database to keep the history of the reports yet, your Studio will prompt you to create one. For further information, see section <em class="cEmphasis">Managing the report database</em> in the <b class="cBold">Talend Data Quality</b> <b class="cBold">User Guide</b>. 
+</p>
+<a name="wp3772027"> </a><p class="pIndented2">
+This way, the required metadata such as the analysis, the report and the DB connection have been committed to the remote SVN repository used by your <b class="cBold">Talend Administration Center</b> Web application.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3771347"> </a><div class="pSmartList3"><li>On the host system of your Studio, install and launch a jobserver. For further information, see chapter <em class="cEmphasis">Installing services</em> in your Studio&#39;s <b class="cBold">Installation Guide</b>.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3770509"> </a><h3 class="pHeading3">
+Launching a report remotely
+</h3>
+<a name="wp3771383"> </a><p class="pIndented2">
+After having prepared these prerequisite conditions, proceed as follows to replicate this scenario:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3774086"> </a><div class="pSmartList3"><li>From the <b class="cBold">DQ Repository</b> tree view of the <b class="cBold">Data Profiler</b> perspective, right-click the <em class="cEmphasis">US_State</em> report under the <b class="cBold">Report</b> node and select <b class="cBold">Generate Jobs &gt; Launch a report</b> from the contextual menu. This generates a launching-report Job.</li></div>
+<a name="wp3774296"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp3774288" border="0" hspace="0" vspace="0"/><br />
+It is recommended to verify the <b class="cBold">Basic settings</b> of the <b class="cBold">tLaunchDQReport</b> component used in this Job to ensure that the generated paths point to your <b class="cBold">Talend Data Quality</b> executable file, to the report of interests and to the project this report belongs to.
+</p>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3774303"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tLaunchDQReport2.png" id="wp3774114" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3774136"> </a><div class="pSmartList3"><li>In the menu tree view of your <b class="cBold">Talend Administration Center</b> Web application, expand <b class="cBold">Job Conductor</b> and click <b class="cBold">Servers</b> to display the list of the remote execution servers available for deploying and executing Jobs.</li></div>
+<a name="wp3771505"> </a><div class="pSmartList3"><li>From the toolbar on the <b class="cBold">Servers</b> page, click<b class="cBold"> Add</b> to clear the <b class="cBold">Execution server</b> configuration panel.</li></div>
+<a name="wp3771546"> </a><div class="pSmartList3"><li>In this configuration panel, type in and save the configuration information of the jobserver you have installed and launched on the system hosting your Studio.<br />For further information about the required configuration to connect to a jobserver, see <em class="cEmphasis">Adding an execution server</em> in the <b class="cBold">Talend Administration Center</b> <b class="cBold">User Guide</b>.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3771630"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tLaunchDQReport3.png" id="wp3771594" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3771662"> </a><p class="pIndented2">
+In this scenario, this jobserver&#39;s label is <em class="cEmphasis">Report_Server</em>, its host is <em class="cEmphasis">10.42.20.246</em> and the relative ports are <em class="cEmphasis">8000, 8001, 8888</em>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3773584"> </a><div class="pSmartList3"><li>Click <b class="cBold">Save</b> to validate this configuration. The new server displays in the server list of the <b class="cBold">Servers</b> page and the green ticks indicate that the connection to this server is done.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3773679"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tLaunchDQReport5.png" id="wp3773685" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3773704"> </a><div class="pSmartList3"><li>In the menu tree view of your <b class="cBold">Talend Administration Center</b> Web application, expand <b class="cBold">Job Conductor</b> and click <b class="cBold">Execution task</b> to display the task list on the <b class="cBold">Job Conductor</b> page.</li></div>
+<a name="wp3773869"> </a><div class="pSmartList3"><li>From the toolbar on the <b class="cBold">Job Conductor</b> page, click<b class="cBold"> Add</b> to clear the <b class="cBold">Execution task</b> configuration panel.</li></div>
+<a name="wp3773987"> </a><div class="pSmartList3"><li>On this configuration panel, type in the parameters required for executing the launching-report Job you have generated.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3774370"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tLaunchDQReport6.png" id="wp3774375" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp3774390"> </a><div class="pSmartList3"><li>In the <b class="cBold">Label</b> field of this <b class="cBold">Execution task</b> panel, type in the task name that will be displayed in the execution task list.</li></div>
+<a name="wp3774414"> </a><div class="pSmartList3"><li>In the <b class="cBold">Project</b> field, select the project which the launching-report Job to be used was generated in. In this scenario, it is the <em class="cEmphasis">test_ychen</em> project.</li></div>
+<a name="wp3774442"> </a><div class="pSmartList3"><li>In the <b class="cBold">Branch</b> field, select the branch of this project. It is<em class="cEmphasis"> trunk</em> in this scenario.</li></div>
+<a name="wp3774469"> </a><div class="pSmartList3"><li>In the <b class="cBold">Job</b> field, select the launching-report Job to be used.</li></div>
+<a name="wp3774517"> </a><div class="pSmartList3"><li>In the <b class="cBold">Version</b> and the <b class="cBold">Context</b> fields, select the information corresponding to this launching-report Job. In this scenario, they are <em class="cEmphasis">0.1</em> and <em class="cEmphasis">Default</em>.</li></div>
+<a name="wp3774566"> </a><div class="pSmartList3"><li>In the <b class="cBold">Execution server</b> field, select the jobserver which executes this task you are configuring. This server must be installed on the system hosting your Studio. In this scenario, this server is <em class="cEmphasis">Report_Server</em> you have added to the server list.</li></div>
+<a name="wp3774615"> </a><div class="pSmartList3"><li>Click <b class="cBold">Save</b> to validate this configuration. The new task displays in the task list on the <b class="cBold">Job Conductor</b> page.</li></div>
+<a name="wp3774645"> </a><div class="pSmartList3"><li>From the task list, select the newly added task.</li></div>
+<a name="wp3774696"> </a><div class="pSmartList3"><li>On the toolbar of the <b class="cBold">Job Conductor</b> page, click <b class="cBold">Generate</b>.</li></div>
+<a name="wp3774719"> </a><div class="pSmartList3"><li>Once the status of this task reads <em class="cEmphasis">Ready to send</em> on the task list, select this task again and click <b class="cBold">Deploy</b> on the toolbar of the <b class="cBold">Job Conductor</b> page.</li></div>
+<a name="wp3774766"> </a><div class="pSmartList3"><li>Once the status of this task reads <em class="cEmphasis">Ready to run</em> on the task list, select this task again and click <b class="cBold">Run</b> on the toolbar of the <b class="cBold">Job Conductor</b> page.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp3774804"> </a><p class="pIndented2">
+Once the Job execution is done, check the output folder that you have defined in the <b class="cBold">Generated Report Settings</b> view of the report editor in the <b class="cBold">Data Profiler</b> perspective of your Studio.
+</p>
+<a name="wp3774890"> </a><p class="pIndented2">
+In this scenario, the path to this output folder is<br /><em class="cEmphasis">C:\Documents and Settings\ychen\Bureau\TEST_YCHEN\Report_Center</em>
+</p>
+<a name="wp3775000"> </a><p class="pIndented2">
+There the generated report displays:
+</p>
+<a name="wp3775008"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tLaunchDQReport7.png" id="wp3775016" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tLaunchDQReports_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMatchGroup_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

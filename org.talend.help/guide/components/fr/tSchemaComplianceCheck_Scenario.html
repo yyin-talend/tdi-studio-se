@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:03:24">
+    <title>Scénario&#160;: Valider les dates en fonction d&#39;un schéma (java)</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSchemaComplianceCheck_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tStandardizeRow_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3002226"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3002233"> </a><h2 class="pHeading2">
+Scénario&#160;: Valider les dates en fonction d&#39;un schéma (java)
+</h2>
+<a name="wp3002236"> </a><p class="pIndented1">
+Ce scénario très basique permet de vérifier le type, la nullabilité et la longueur des données du flux d&#39;entrée en fonction du schéma de référence défini. Le flux d&#39;entrée provient d&#39;un fichier csv simple contenant des données dont les propriétés ont un mauvais type, un mauvais id, dont les données sont supérieures à la longueur maximum, ou contenant des valeurs nulles dans les colonnes alors que celles-ci sont définies comme non nullables.
+</p>
+<a name="wp3002244"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSchemaComplianceCheck5.png" id="wp3002241" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3002247"> </a><p class="pIndented1">
+Lors de la validation, les données valides ainsi que les données rejetées sont affichées respectivement dans deux tableaux de la console.
+</p>
+<a name="wp3002255"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSchemaComplianceCheck1.png" id="wp3002252" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3002263"> </a><div class="pSmartList2"><li>A partir de la <b class="cBold">Palette</b>, cliquez et déposez les composants suivants dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tSchemaComplianceCheck</b>, ainsi que deux composants<b class="cBold"> tLogRow</b>.</li></div>
+<a name="wp3002279"> </a><div class="pSmartList2"><li>Cliquez-droit sur le <b class="cBold">tFileInputDelimited</b> pour le connecter au composant <b class="cBold">tSchemaComplianceCheck</b> via une connexion <b class="cBold">Row Main</b>.</li></div>
+<a name="wp3002292"> </a><div class="pSmartList2"><li>Cliquez-droit sur le composant <b class="cBold">tSchemaComplianceCheck</b> et sélectionnez <b class="cBold">Row &gt; Main</b> pour le connecter au premier composant <b class="cBold">tLogRow</b>. Ce flux de sortie ne contiendra que les données valides.</li></div>
+<a name="wp3002302"> </a><div class="pSmartList2"><li>Cliquez-droit une deuxième fois sur le composant <b class="cBold">tSchemaComplianceCheck</b> et cette fois sélectionnez <b class="cBold">Row &gt; Rejects</b> pour le connecter au second composant <b class="cBold">tLogRow</b>. Cette deuxième sortie regroupera toutes les données non conformes.</li></div>
+<a name="wp3002315"> </a><div class="pSmartList2"><li>Sélectionnez le lien <b class="cBold">Rejects</b> que vous venez de connecter, vous remarquerez que le schéma transmis au second <b class="cBold">tLogRow</b> contient deux nouvelles colonnes&#160;: <em class="cEmphasis">ErrorCode</em> et <em class="cEmphasis">ErrorMessage</em>. Ces deux colonnes sont en lecture seule et fournissent des informations sur les données rejetées, afin de faciliter le traitement et la correction des erreurs, si nécessaire.</li></div>
+<a name="wp3002330"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tFileInputDelimited </b>afin d&#39;afficher sa vue <b class="cBold">Basic settings</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3002337"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSchemaComplianceCheck2.png" id="wp3002334" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3002348"> </a><div class="pSmartList2"><li>Renseignez le chemin d&#39;accès au fichier d&#39;entrée dans le champ <b class="cBold">File Name</b>.</li></div>
+<a name="wp3760013"> </a><div class="pSmartList2"><li>Spécifiez quelle est la ligne d&#39;en-tête. Dans ce scénario, il s&#39;agit de la première ligne.</li></div>
+<a name="wp3760024"> </a><div class="pSmartList2"><li>Laissez les autres paramètres tels qu&#39;ils sont.</li></div>
+<a name="wp3760059"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Edit Schema</b> pour décrire la structure de données de ce fichier d&#39;entrée. Dans ce scénario, le schéma est composé de cinq colonnes&#160;: <em class="cEmphasis">ID</em>, <em class="cEmphasis">Name</em>, <em class="cEmphasis">BirthDate</em>, <em class="cEmphasis">State</em>, et <em class="cEmphasis">City</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3002388"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSchemaComplianceCheck3.png" id="wp3002385" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3002396"> </a><div class="pSmartList2"><li>Laissez le champ <b class="cBold">Type</b> aussi permissif que possible (particulièrement en Java). Vous définirez le type de données réel dans la vue <b class="cBold">Component</b> du composant <b class="cBold">tSchemaComplianceCheck</b>.</li></div>
+<a name="wp3760131"> </a><div class="pSmartList2"><li>Renseignez le champ <b class="cBold">Length</b> des colonnes <em class="cEmphasis">Name</em>, <em class="cEmphasis">State</em> et <em class="cEmphasis">City</em>&#160;: respectivement <em class="cEmphasis">7</em>, <em class="cEmphasis">10</em> et <em class="cEmphasis">10</em>.</li></div>
+<a name="wp3002428"> </a><div class="pSmartList2"><li>Puis double-cliquez sur le composant <b class="cBold">tSchemaComplianceCheck</b> pour configurer les paramètres de validation.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3002437"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSchemaComplianceCheck4.png" id="wp3002434" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3762442"> </a><div class="pSmartList2"><li>Cochez l&#39;option <b class="cBold">Custom defined</b> dans la zone <b class="cBold">Mode</b> pour effectuer des validations personnalisées. Dans cet exemple, le tableau <b class="cBold">Checked columns</b> permet de configurer les paramètres de validations.<br />Cependant, vous pouvez aussi cocher la case <b class="cBold">Check all columns from schema</b> si vous souhaitez vérifier tous les paramètres de toutes les colonnes (type, valeurs nulles et longueur), en fonction du schéma de base défini, ou encore cocher l&#39;option <b class="cBold">Use another schema for compliance check</b> et définir le schéma de la structure des données souhaité.</li></div>
+<a name="wp3762458"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Checked Columns</b>, définissez les vérifications à effectuer. Pour ce scénario&#160;:<br />- Sélectionnez <b class="cBold">Int</b> comme <b class="cBold">Type</b> de données de la colonne <em class="cEmphasis">ID</em>.<br />- Cochez la case <b class="cBold">Length</b> afin que les longueurs des colonnes <em class="cEmphasis">Name</em>, <em class="cEmphasis">State</em> et <em class="cEmphasis">City</em> soient vérifiées.<br />- Sélectionnez <b class="cBold">Date</b> comme <b class="cBold">Type</b> de données de la colonne <em class="cEmphasis">BirthDate, </em>et<em class="cEmphasis"> </em><em class="cEmphasis">dd-MM-yyyy</em><em class="cEmphasis"> </em>comme<b style="font-weight: bold" class="cBold"> Date pattern</b>.<br />- Décochez la case <b class="cBold">Nullable</b> afin que les valeurs nulles de toutes les colonnes soient vérifiées. </li></div>
+<a name="wp3762702"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3762700" border="0" hspace="0" vspace="0"/><br />
+Pour rejeter les champs dont les données sont supérieures à la longueur maximum définie, assurez-vous que la case <b class="cBold">Trim the excess content of column when length checking chosen and the length is greater than defined length</b> est décochée. 
+</p>
+<a name="wp3762731"> </a><div class="pSmartList2"><li>Dans la vue <b class="cBold">Advanced settings</b> du composant <b class="cBold">tSchemaComplianceCheck</b>, cochez la case <b class="cBold">Treat all empty string as NULL</b> afin de rejeter toutes les lignes contenant des champs vides.</li></div>
+<a name="wp3762744"> </a><div class="pSmartList2"><li>Pour visualiser le résultat du processus de validation sous forme de tableau dans la console <b class="cBold">Run</b>, double-cliquez sur chaque composant <b class="cBold">tLogRow</b> et cochez la case <b class="cBold">Table</b> dans leur vue <b class="cBold">Basic settings</b>.</li></div>
+<a name="wp3762757"> </a><div class="pSmartList2"><li>Enregistrez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter. <br />Deux tableaux s&#39;affichent dans la console, qui montrent respectivement les données valides et les données rejetées.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3762762"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tSchemaComplianceCheck6.png" id="wp3002558" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSchemaComplianceCheck_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tStandardizeRow_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

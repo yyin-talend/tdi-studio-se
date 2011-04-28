@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:08:07">
+    <title>Scénario&#160;: Créer et récupérer des données en invoquant un service Web REST</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tREST_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tRSSInput_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3644336"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3644341"> </a><h2 class="pHeading2">
+Scénario&#160;: Créer et récupérer des données en invoquant un service Web REST
+</h2>
+<a name="wp3644364"> </a><p class="pIndented1">
+Ce scénario décrit un Job simple qui invoque un service Web REST afin de créer un nouvel enregistrement client du côté serveur et de récupérer les informations du client. Une fois exécuté, ce Job affiche les informations correspondantes dans la console de la vue <b class="cBold">Run</b>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3648116"> </a><div class="pSmartList2"><li>A partir de la <b class="cBold">Palette</b>, cliquez-déposez les composants suivants dans l&#39;espace de modélisation graphique&#160;: deux composants <b class="cBold">tREST</b> et deux composants <b class="cBold">tLogRow</b>. Renommez les deux composants <b class="cBold">tREST</b> afin qu&#39;ils décrivent au mieux les actions à effectuer.</li></div>
+<a name="wp3656215"> </a><div class="pSmartList2"><li>Connectez chaque composant <b class="cBold">tREST</b> à un <b class="cBold">tLogRow</b> à l&#39;aide d&#39;une connexion de type <b class="cBold">Row</b>&#160;&gt;&#160;<b class="cBold">Main</b>.</li></div>
+<a name="wp3648354"> </a><div class="pSmartList2"><li>Connectez le premier composant <b class="cBold">tREST</b> au second <b class="cBold">tREST</b> à l&#39;aide d&#39;une connexion de type <b class="cBold">Trigger</b> &gt; <b class="cBold">OnSubjobOK</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3648361"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tREST01.png" id="wp3648358" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3648374"> </a><div class="pSmartList2"><li>Double-cliquez sur le premier composant <b class="cBold">tREST</b> afin d&#39;afficher l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3648382"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tREST02.png" id="wp3648379" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3648391"> </a><div class="pSmartList2"><li>Renseignez le champ <b class="cBold">URL</b> avec l&#39;adresse URL du serveur Web que vous êtes sur le point d&#39;invoquer. Notez que l&#39;adresse URL fournie dans ce scénario est destinée essentiellement à la démonstration, ce n&#39;est pas une adresse valide.</li></div>
+<a name="wp3649467"> </a><div class="pSmartList2"><li>A partir de la liste <b class="cBold">HTTP Method</b>, sélectionnez <b class="cBold">POST</b> afin d&#39;envoyer une requête HTTP permettant de créer un nouvel enregistrement.</li></div>
+<a name="wp3656637"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[+]</b> afin d&#39;ajouter une ligne au tableau <b class="cBold">HTTP Headers</b>, et saisissez la paire nom-valeur (<b class="cBold">name</b>-<b class="cBold">value</b>) adéquate, soumise aux définitions de votre fournisseur de service, en indiquant le type de média des données utiles (payload) à envoyer du côté serveur. Dans ce scénario, saisissez <em class="cEmphasis">Content-Type</em> et <em class="cEmphasis">application/xml</em>. Pour plus d&#39;informations concernant les types de média Internet, consultez&#160;<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7</a>. (en anglais).</li></div>
+<a name="wp3650576"> </a><div class="pSmartList2"><li>Saisissez dans le champ <b class="cBold">HTTP Body</b> les données utiles (payload) à charger du côté serveur, à savoir&#160;<em class="cEmphasis">&lt;Customer&gt;&lt;name&gt;Steven&lt;/name&gt;&lt;/Customer&gt;</em> dans ce scénario, pour créer un enregistrement d&#39;un nouvel utilisateur appelé&#160;<em class="cEmphasis">Steven</em>. </li></div>
+<a name="wp3655673"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_small.png" align="left" id="wp3655671" border="0" hspace="0" vspace="0"/><br />
+Si vous souhaitez inclure des guillemets double dans votre payload, assurez-vous d&#39;utiliser un caractère d&#39;échappement, la barre oblique inversée, avant chaque guillemet. Dans ce scénario par exemple, saisissez&#160;<em class="cEmphasis">&lt;Customer&gt;&lt;name&gt;\&quot;Steven\&quot;&lt;/name&gt;&lt;/Customer&gt;</em> si vous souhaitez mettre le prénom&#160;<em class="cEmphasis">Steven</em> entre guillemets double.
+</p>
+<a name="wp3655708"> </a><div class="pSmartList2"><li>Double-cliquez sur le second <b class="cBold">tREST</b> afin d&#39;afficher l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b>.</li></div>
+<a name="wp3655721"> </a><div class="pSmartList2"><li>Renseignez le champ <b class="cBold">URL</b> avec la même adresse URL que celle utilisée dans le premier composant <b class="cBold">tREST</b>.</li></div>
+<a name="wp3655738"> </a><div class="pSmartList2"><li>A partir de la liste <b class="cBold">HTTP Method</b>, sélectionnez <b class="cBold">GET</b> afin d&#39;envoyer une requête HTTP permettant de récupérer tous les enregistrements existants.</li></div>
+<a name="wp3655755"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b> de chaque <b class="cBold">tLogRow</b>, cochez la case <b class="cBold">Print component unique name in front of each output row</b> (Afficher le nom unique du composant en face de chaque ligne de sortie) pour identifier au mieux les deux flux de sortie.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3655663"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tREST03.png" id="wp3651997" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3652025"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter. <br />La console indique que le premier composant <b class="cBold">tREST</b> envoie une requête HTTP côté serveur afin de créer un nouvel utilisateur appelé&#160;<em class="cEmphasis">Steven</em> et que le second composant <b class="cBold">tREST</b> lit avec succès les données côté serveur comprenant les informations de l&#39;utilisateur nouvellement créé.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3652056"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tREST04.png" id="wp3652051" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tREST_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tRSSInput_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

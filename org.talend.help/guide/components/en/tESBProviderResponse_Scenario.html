@@ -1,0 +1,457 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:32:39">
+    <title>Scenario: Return Hello world response</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tESBProviderResponse_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="File_group_intro.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp4072815"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp4072821"> </a><h2 class="pHeading2">
+Scenario: Return Hello world response
+</h2>
+<a name="wp4071161"> </a><p class="pIndented1">
+This project consists of two Jobs: a Comsumer Job and a Provider Job.
+</p>
+<a name="wp4071188"> </a><h3 class="pHeading3">
+Setting up a Provider Job
+</h3>
+<a name="wp4071193"> </a><p class="pIndented2">
+This section shows how to set up a Provider Job as shown below.
+</p>
+<a name="wp4071202"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse1.png" id="wp4071198" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071213"> </a><div class="pSmartList3"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: a <b class="cBold">tESBProviderRequest</b>, three <b class="cBold">tLogRow</b>, two <b class="cBold">tJavaFlex</b>, and a <b class="cBold">tESBProviderResponse</b>.</li></div>
+<a name="wp4071235"> </a><div class="pSmartList3"><li>Connect the components as shown in the diagram.</li></div>
+<a name="wp4071245"> </a><div class="pSmartList3"><li>Set properties for the <b class="cBold">tESBProvider Request_1</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071254"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse2.png" id="wp4071250" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071267"> </a><div class="pSmartList3"><li>Edit the schema of the <b class="cBold">tESBProvider Request_1</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071276"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse3.png" id="wp4071272" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071289"> </a><div class="pSmartList3"><li>Set properties for the <b class="cBold">tLogRow_1</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071298"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse4.png" id="wp4071294" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071315"> </a><div class="pSmartList3"><li>Edit the Schema of the <b class="cBold">tLogRow_1</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071324"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse5.png" id="wp4071320" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071342"> </a><div class="pSmartList3"><li>Set properties for the <b class="cBold">tJavaFlex_1</b> component. Add the following code in the <b class="cBold">Main code</b> field at the <b class="cBold">Basic properties</b> tab as shown below.<br />Document requestTalendDoc = row2.payload;<br />org.dom4j.Document requestDoc = requestTaldndDoc.getDocument(); <br />org.dom4j.Element rootElement = requestDoc.getRootElement(); <br />String text = rootElement.getTextTrim();<br />System.out.println(&quot;### &quot; + text);<br />row3.content = text;</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071362"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse6.png" id="wp4071358" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071379"> </a><div class="pSmartList3"><li> Edit the schema of the <b class="cBold">tJavaFlex_1</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071388"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse7.png" id="wp4071384" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071405"> </a><div class="pSmartList3"><li>Set properties for the <b class="cBold">tLogRow_2</b> component</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071414"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse8.png" id="wp4071410" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071431"> </a><div class="pSmartList3"><li>Edit the schema for the <b class="cBold">tLogRow_2</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071440"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse9.png" id="wp4071436" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4074082"> </a><div class="pSmartList3"><li>Set properties for the <b class="cBold">tJavaFlex_2</b> component. Add the following code in the <b class="cBold">Main code</b> field at the <b class="cBold">Basic properties</b> tab as shown below.<br /><code class="cCode">String name = row5 content<br />String faultText = &quot;Hello, &quot; + name + &quot;!&quot;;<br /><br />org.dom4j.Document faultDoc = org.dom4j.DocumentHelper.createDocument();<br />faultDoc.addElement(<br />            new org.dom4j.QName(&quot;response&quot;,<br /> &#160;&#160;&#160;&#160;&#160;&#160;org.dom4j.Namespace.get(&quot;http://talend.org/esb/service/job&quot;))<br />      ).addText(faultText);<br /><br />Document faultTalendDoc = new Document();<br />faultTalendDoc.setDocument(faultDoc);<br />row6.payload = faultTalendDoc;</code></li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4074098"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse10.png" id="wp4074095" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4074111"> </a><div class="pSmartList3"><li>Edit the schema of the <b class="cBold">tJavaFlex_2</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071504"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse11.png" id="wp4071500" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071521"> </a><div class="pSmartList3"><li>Set properties for the <b class="cBold">tLogRow_3</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071530"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse12.png" id="wp4071526" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071547"> </a><div class="pSmartList3"><li>Edit the schema of the <b class="cBold">tLogRow_3</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071556"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse13.png" id="wp4071552" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071573"> </a><div class="pSmartList3"><li>Set Properties for the <b class="cBold">tESBProviderResponse_1</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071582"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse14.png" id="wp4071578" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071599"> </a><div class="pSmartList3"><li>Edit the schema of the <b class="cBold">tESBProviderResponse_1</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071608"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse15.png" id="wp4071604" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4074605"> </a><div class="pSmartList3"><li>Save the Job. </li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4074610"> </a><h3 class="pHeading3">
+Setting up a Consumer Job
+</h3>
+<a name="wp4074614"> </a><p class="pIndented2">
+This section shows how to set up a Consumer Job as shown below.
+</p>
+<a name="wp4071640"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse16.png" id="wp4071636" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071651"> </a><div class="pSmartList3"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: a <b class="cBold">tESBConsumer</b>, three <b class="cBold">tLogRow</b>, a <b class="cBold">JavaFlex</b>, and a <b class="cBold">tFixedFlowInput</b>.</li></div>
+<a name="wp4071674"> </a><div class="pSmartList3"><li>Connect the components as shown in the diagram.</li></div>
+<a name="wp4071687"> </a><div class="pSmartList3"><li>Edit the schema of the <b class="cBold">tFixedFlowInput_1</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071696"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse17.png" id="wp4071692" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071709"> </a><div class="pSmartList3"><li>Set properties for the <b class="cBold">tFixedFlowInput_1</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071718"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse18.png" id="wp4071714" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071732"> </a><div class="pSmartList3"><li>Set properties for the <b class="cBold">tJavaFlex_1</b> component. Add the following code in the <b class="cBold">Main code</b> field at the <b class="cBold">Basic Properties</b> tab.<br /><code class="cCode">org.dom4j.Document doc = org.dom4j.DocumentHelper.parseText(row1.payloadString);<br />Document talendDoc = new Document();<br />talendDoc.setDocument(doc);<br />row2.payload = talendDoc;</code></li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071752"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse19.png" id="wp4071748" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4074957"> </a><div class="pSmartList3"><li>Edit the schema of  the <b class="cBold">tJavaFlex_1</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4074964"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse20.png" id="wp4074961" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4074969"> </a><div class="pSmartList3"><li>Start the Provider Job. In the executing log you can see:<br />...<br />web service [endpoint: http://127.0.0.1:8088/esb/provider] published<br />...</li></div>
+<a name="wp4074988"> </a><div class="pSmartList3"><li>Open the <b class="cBold">tESBConsumer_1</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4075059"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse21.png" id="wp4075150" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4075272"> </a><div class="pSmartList3"><li>Open <b class="cBold">Service Configuration</b> and put path to WSDL: <code class="cCode">http://127.0.0.1.8088/esbprovider?WSDL</code></li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4075258"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse22.png" id="wp4074985" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4075001"> </a><div class="pSmartList3"><li>Press the <img src="../Images/Use_Case_tESBProviderResponse23.png" id="wp4074996" border="0" hspace="0" vspace="0"/>icon to retrieve port name and operation name.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071831"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse24.png" id="wp4071827" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071842"> </a><div class="pSmartList3"><li>Edit the input schema, response schema, and fault schema of the <b class="cBold">tESBComsumer_1</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071853"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse25.png" id="wp4071849" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp4071862"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse26.png" id="wp4071858" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp4071871"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse27.png" id="wp4071867" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4076707"> </a><div class="pSmartList3"><li>Set properties for the <b class="cBold">tJavaFlex_3</b> component. Add the following code in the <b class="cBold">Main code</b> field at the <b class="cBold">Basic Properties</b> tab.<br /> <br /><code class="cCode">if (null != row4.faultDetail) {<br />      row6.faultDetailString = row4.faultDetail.getDocument().asXML()<br />}<br /></code></li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4076723"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse28.png" id="wp4076720" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4076770"> </a><div class="pSmartList3"><li>Edit schema for the <b class="cBold">tJavaFlex_3</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4076740"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse29.png" id="wp4076737" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4076750"> </a><div class="pSmartList3"><li>Set properties for the <b class="cBold">tLogRow_2</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4076825"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse30.png" id="wp4076852" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4076855"> </a><div class="pSmartList3"><li>Edit schema for the <b class="cBold">tLogRow_2</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4076675"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse31.png" id="wp4076672" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4076685"> </a><div class="pSmartList3"><li>Set the properties for the <b class="cBold">tLogRow_3</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4076270"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse32.png" id="wp4076267" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4076280"> </a><div class="pSmartList3"><li>Edit the Schema for the <b class="cBold">tLogRow_3</b> component.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071964"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tESBProviderResponse33.png" id="wp4071960" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071974"> </a><div class="pSmartList3"><li>Save the Job.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+<a name="wp4071982"> </a><h3 class="pHeading3">
+Run the Scenario
+</h3>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<div class="pSmartList3"><ul class="pSmartList3">
+<a name="wp4071994"> </a><div class="pSmartList3"><li>Run the Provider Job. In the execution log you will see:<br /><br /><code class="cCode">2011-04-21 15:28:26.874:INFO::jetty-7.2.2.v20101205<br />2011-04-21 15:28:27.108:INFO::Started web service [endpoint: http://127.0.0.1:8088/esb/provider] published</code></li></div>
+<a name="wp4077281"> </a><div class="pSmartList3"><li>Run the Consumer Job. In the execution log of the Job you will see:<br /><code class="cCode">Starting job ConsumerJob at 15:29 21/04/2011.<br /><br />[statistics] connecting to socket on port 3690<br />[statistics] connected<br />TEST_ProviderJob<br />LOCAL_ProviderJobSoapBinding<br />|<br /></code>{http://talend.org/esb/service/job}TEST_ProviderJob<br />{http://talend.org/esb/service/job}TEST_ProviderJobSoapBinding<br />invoke<br />[tLogRow_2] payload: &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;<br />&lt;response xmlns=&quot;http://talend.org/esb/service/job&quot;&gt;Hello, world!&lt;/response&gt;<br />[statistics] disconnected<br />Job ConsumerJob ended at 15:29 21/04/2011. [exit code=0]</li></div>
+<a name="wp4077288"> </a><div class="pSmartList3"><li>In the Provider&#39;s log you will see the trace log:<br /><br /><code class="cCode">W[tLogRow_1] payload: &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;<br />&lt;request&gt;world&lt;/request&gt;<br />### world<br />[tLogRow_2] content: world<br />[tLogRow_3] payload: &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;<br />&lt;response xmlns=&quot;http://talend.org/esb/service/job&quot;&gt;Hello, world!&lt;/response&gt;<br />web service [endpoint: http://127.0.0.1:8088/esb/provider] unpublished<br />[statistics] disconnected<br />Job ProviderJob ended at 15:29 21/04/2011. [exit code=0]</code>.</li></div>
+</ul></div>
+</ul></div>
+</ul></div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tESBProviderResponse_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="File_group_intro.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

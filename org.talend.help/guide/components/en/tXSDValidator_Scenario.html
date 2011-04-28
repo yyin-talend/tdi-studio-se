@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:33:22">
+    <title>Scenario: Validating data flows against an XSD file</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tXSDValidator_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tXSLT_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp2950534"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2950563"> </a><h2 class="pHeading2">
+Scenario: Validating data flows against an XSD file
+</h2>
+<a name="wp2951396"> </a><p class="pIndented1">
+This scenario describes a Java Job that validates an XML column in an input file against a reference XSD file and outputs the log information for the invalid rows of the column into a delimited file. For the <b class="cBold">tXSDValidator</b> use case that validates an XML file<a href="tDTDValidator_Scenario.html#wp1357735">, see&#160;<em class="cEmphasis">Scenario: Validating XML files.</em></a>
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2950578"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tFileInputDelimited</b> component, a <b class="cBold">tXSDValidator </b>component, and two <b class="cBold">FileOutputDelimited</b> components from the <b class="cBold">Palette</b> to the design workspace. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2950593"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tXSDValidator1.png" id="wp2950590" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2950606"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tFileInputDelimited</b> to open its <b class="cBold">Component</b> view and set its properties:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2950613"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tXSDValidator2.png" id="wp2950610" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2950622"> </a><div class="pSmartList2"><li>Use the <b class="cBold">Built-In</b> property type for this scenario.</li></div>
+<a name="wp2950625"> </a><div class="pSmartList2"><li>Browse to the input file, and define the number of rows to be skipped in the beginning of the file. </li></div>
+<a name="wp2950633"> </a><div class="pSmartList2"><li>Use a <b class="cBold">Built-In</b> schema for this scenario. This means that it is available for this Job only. </li></div>
+<a name="wp2952376"> </a><div class="pSmartList2"><li>Click <span style="font-weight: bold">Edit schema</span> and edit the schema according to the input file. In this scenario, the input file has only two columns: <span style="font-weight: normal">ID</span> and <span style="font-weight: normal">ShipmentInfo</span>. The <span style="font-weight: normal">ShipmentInfo</span> column is an XML column and needs to be validated.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2950654"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tXSDValidator3.png" id="wp2950651" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2950662"> </a><div class="pSmartList2"><li>On your design workspace, connect the <b class="cBold">tFileInputDelimited</b> component to the <b class="cBold">tXSDValidator</b> component using a <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> link.</li></div>
+<a name="wp2950680"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tXSDValidator</b> component, and set its properties: </li></div>
+</ul></div>
+</ul></div>
+<a name="wp2950687"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tXSDValidator4.png" id="wp2950684" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2950699"> </a><div class="pSmartList2"><li>From the <b class="cBold">Mode</b> dropdown list, select <b class="cBold">Flow Mode</b>.</li></div>
+<a name="wp2950708"> </a><div class="pSmartList2"><li>Use a <b class="cBold">Built-In</b> schema for this scenario. Click <b class="cBold">Sync columns</b> to retrieve the schema from the preceding component. To view or modify the schema, click the three-dot button next to <b class="cBold">Edit schema</b>.</li></div>
+<a name="wp2950718"> </a><div class="pSmartList2"><li>Add a line in the <b class="cBold">Allocate</b> table by clicking the plus button. The name of the first column of the input file automatically appears in the <b class="cBold">Input Column</b> field. Click in the field and select the column you want to validate. </li></div>
+<a name="wp2950729"> </a><div class="pSmartList2"><li>In the <b class="cBold">XSD File</b> field, fill in the path to your reference XSD file.</li></div>
+<a name="wp2950735"> </a><div class="pSmartList2"><li>On your design workspace, connect the <b class="cBold">tXSDValidator</b> component to one <b class="cBold">tFileOutputDelimited</b> component using a <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> link to output the information about valid XML rows. </li></div>
+<a name="wp2951114"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tXSDValidator</b> component to the other <b class="cBold">tFileOutputDelimited</b> component using a <b class="cBold">Row</b> &gt; <b class="cBold">Rejects</b> link to output the information about invalid XML rows.</li></div>
+<a name="wp2950760"> </a><div class="pSmartList2"><li>Double-click each of the two <b class="cBold">tFileOutputDelimited</b> components and configure the component properties.</li></div>
+<a name="wp2951870"> </a><div class="pSmartList2"><li>In the <b class="cBold">Property Type</b> field, select <span style="font-weight: bold">Built-In</span>.</li></div>
+<a name="wp2951959"> </a><div class="pSmartList2"><li>In the <b class="cBold">File Name</b> field, enter or, if you want to use an existing output file, browse to the output file path.</li></div>
+<a name="wp2952017"> </a><div class="pSmartList2"><li>Select <b class="cBold">Built-In </b>from the <b class="cBold">Schema</b> list and click <b class="cBold">Sync columns</b> to retrieve the schema from the preceding component.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2950772"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tXSDValidator5.png" id="wp2950769" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2950782"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to run it.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2950789"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tXSDValidator6.png" id="wp2950786" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp2950792"> </a><p class="pIndented1">
+The output files contain the validation information about the valid and invalid XML rows of the specified column respectively.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tXSDValidator_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tXSLT_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

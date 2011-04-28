@@ -1,0 +1,328 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:32:33">
+    <title>tSQLTemplateMerge</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSQLTemplateFilterRows_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSQLTemplateMerge_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3981324"> </a><h2 class="pHeading1">
+tSQLTemplateMerge
+</h2>
+<a name="wp3981333"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tSQLTemplateMerge_icon32.png" id="wp3981328" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3985044"> </a><h2 class="pHeading2">
+tSQLTemplateMerge properties
+</h2>
+<a name="wp3985346"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3985052table3985047">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3985052"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3985054"> </a><div class="pCellBody">
+ELT/SQLTemplate
+</div>
+</td>
+    <td><a name="wp3985062"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icon.png" id="wp3985059" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3985067"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3985069"> </a><div class="pCellBody">
+This component creates an SQL MERGE statement to merge data into a database table.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3985076"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3985078"> </a><div class="pCellBody">
+This component is used to merge data into a database table directly on the DBMS by creating and executing a MERGE statement. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3985085"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b> 
+</div>
+</td>
+    <td><a name="wp3985090"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database Type</em>
+</div>
+</td>
+    <td><a name="wp3985092"> </a><div class="pCellBody">
+Select the type of database you want to work on from the drop-down list.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3985094"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985099"> </a><div class="pCellHeading">
+<em class="cEmphasis">Component list</em>
+</div>
+</td>
+    <td><a name="wp3985101"> </a><div class="pCellBody">
+Select the relevant DB connection component from the list if you use more than one connection in the current Job.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3985103"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985108"> </a><div class="pCellHeading">
+<em class="cEmphasis">Source table name</em>
+</div>
+</td>
+    <td><a name="wp3985110"> </a><div class="pCellBody">
+Name of the database table holding the data you want to merge into the target table.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3985112"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985117"> </a><div class="pCellHeading">
+<em class="cEmphasis">Target table name</em>
+</div>
+</td>
+    <td><a name="wp3985119"> </a><div class="pCellBody">
+Name of the table you want to merge data into.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3985121"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985128"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit schema</em>
+</div>
+</td>
+    <td><a name="wp3985131"> </a><div class="pCellBody">
+This component involves two schemas: source schema and target schema. <br />A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component. The schema is either built-in or remotely stored in the Repository.<br />Click <b class="cBold">Edit Schema</b> to modify the schema. Note that if you make the modification, the schema switches automatically to the <b class="cBold">Built-in</b> mode.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3985139"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985141"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985146"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3985154"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985156"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985161"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3985169"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985171"> </a><div class="pCellBody">
+Merge ON
+</div>
+</td>
+    <td><a name="wp3985173"> </a><div class="pCellBody">
+Specify the target and source columns you want to use as the primary keys. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3985175"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985179"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use UPDATE (WHEN MATCHED)</em> 
+</div>
+</td>
+    <td><a name="wp3985182"> </a><div class="pCellBody">
+Select this check box to update existing records. With the check box selected, the <b class="cBold">UPDATE Columns</b> table appears, allowing you to define the columns in which records are to be updated.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3985187"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985191"> </a><div class="pCellHeading">
+<em class="cEmphasis">Specify additional output columns</em>
+</div>
+</td>
+    <td><a name="wp3985194"> </a><div class="pCellBody">
+Select this check box to update records in additional columns other than those listed in the <b class="cBold">UPDATE Columns</b> table. With this check box selected, the <b class="cBold">Additional UPDATE Columns</b> table appears, allowing you to specify additional columns.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3985202"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985206"> </a><div class="pCellHeading">
+<em class="cEmphasis">Specify UPDATE WHERE clause</em>
+</div>
+</td>
+    <td><a name="wp3985209"> </a><div class="pCellBody">
+Select this check box and type in a WHERE clause in the <b class="cBold">WHERE clause</b> field to filter data during the update operation.
+</div>
+<a name="wp3985219"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3985216" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+This option may not work with certain database versions, including Oracle 9i.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3985221"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985225"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use INSERT (WHEN MATCHED)</em>
+</div>
+</td>
+    <td><a name="wp3985228"> </a><div class="pCellBody">
+Select this check box to insert new records. With the check box selected, the <b class="cBold">INSERT Columns</b> table appears, allowing you to specify the columns to be involved in the insert operation.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3985233"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985237"> </a><div class="pCellHeading">
+<em class="cEmphasis">Specify additional output columns</em>
+</div>
+</td>
+    <td><a name="wp3985240"> </a><div class="pCellBody">
+Select this check box to insert records to additional columns other than those listed in the <b class="cBold">INSERT Columns</b> table. With this check box selected, the <b class="cBold">Additional INSERT Columns</b> table appears, allowing you to specify additional columns.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3985248"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3985250"> </a><div class="pCellBody">
+<em class="cEmphasis">Specify INSERT WHERE clause</em>
+</div>
+</td>
+    <td><a name="wp3985252"> </a><div class="pCellBody">
+Select this check box and type in a WHERE clause in the <b class="cBold">WHERE clause</b> field to filter data during the insert operation.
+</div>
+<a name="wp3985262"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_smalljj.png" align="left" id="wp3985259" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+This option may not work with certain database versions, including Oracle 9i.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3985267"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3985272"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3985274"> </a><div class="pCellBody">
+Select this check box to gather the Job processing metadata at a Job level as well as at component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3985279"> </a><div class="pCellBody">
+<b class="cBold">SQL Template</b>
+</div>
+</td>
+    <td><a name="wp3985284"> </a><div class="pCellHeading">
+<em class="cEmphasis">SQL Template List</em>
+</div>
+</td>
+    <td><a name="wp3985289"> </a><div class="pCellBody">
+<b class="cBold">To add a default system SQL template:</b><br />Click the <b class="cBold">Add</b> button to add the default system SQL template(s) in the <b class="cBold">SQL </b><b class="cBold">Template</b><b class="cBold"> List</b>. <br />Click in the SQL template field and then click the arrow to display the system SQL template list. Select the desired system SQL template provided by <b class="cBold">Talend</b>. <br /><b class="cBold">Note:</b> You can create your own SQL template and add them to the <b class="cBold">SQL Template List</b>. <br /><br /><b class="cBold">To create a user-defined SQL template:</b> <br />-Select a system template from the <b class="cBold">SQL Template list</b> and click on its code in the code box. You will be prompted by the system to create a new template.<br />-Click <b class="cBold">Yes</b> to open the SQL template wizard.<br />-Define your new SQL template in the corresponding fields and click <b class="cBold">Finish</b> to close the wizard. An SQL template editor opens where you can enter the template code.<br />-Click the <b class="cBold">Add</b> button to add the new created template to the <b class="cBold">SQL Template list</b>.<br />For more information, see <em class="cEmphasis">How to use the SQL Templates</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guid</b>e.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3985339"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3985341"> </a><div class="pCellBody">
+This component is used as an intermediate component with other relevant DB components, especially the DB connection and commit components.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tSQLTemplateFilterRows_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tSQLTemplateMerge_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

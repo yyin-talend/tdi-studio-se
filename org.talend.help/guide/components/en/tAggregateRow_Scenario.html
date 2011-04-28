@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 18:34:55">
+    <title>Scenario 1: Aggregating values and sorting data</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tAggregateRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tAggregateSortedRow_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1404260"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp1404267"> </a><h2 class="pHeading2">
+Scenario 1: Aggregating values and sorting data
+</h2>
+<a name="wp1354727"> </a><p class="pIndented1">
+The following scenario describes a four-component Job. As input component, a CSV file contains countries and notation values to be sorted by best average value. This component is connected to a <b class="cBold">tAggregateRow</b> operator, in charge of the average calculation then to a <b class="cBold">tSortRow</b> component for the ascending sort. The output flow goes to the new csv file. 
+</p>
+<a name="wp1354741"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow1.png" id="wp1354738" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1354753"> </a><div class="pSmartList2"><li>From the <b class="cBold">File</b> folder in the <b class="cBold">Palette</b>, drop a <b class="cBold">tFileInputDelimited</b> component to the design workspace. </li></div>
+<a name="wp1354763"> </a><div class="pSmartList2"><li>Click the label and rename it as <em class="cEmphasis">Countries</em>. Or rename it from the <b class="cBold">View</b> tab panel</li></div>
+<a name="wp1354769"> </a><div class="pSmartList2"><li>In the <b class="cBold">Basic settings</b> tab panel of this component, define the filepath and the delimitation criteria. Or select the metadata file in the repository if it exists.</li></div>
+<a name="wp1354782"> </a><div class="pSmartList2"><li>Click <b class="cBold">Edit schema...</b> and set the columns: <em class="cEmphasis">Countries</em> and <em class="cEmphasis">Points</em> to match the file structure. If your file description is stored in the Metadata area of the Repository, the schema is automatically uploaded when you click <b class="cBold">Repository</b> in <b class="cBold">Schema type</b> field.</li></div>
+<a name="wp1354798"> </a><div class="pSmartList2"><li>Then from the <b class="cBold">Processing</b> folder in the <b class="cBold">Palette</b>, drop a <b class="cBold">tAggregateRow</b> component to the design workspace. Rename it as <em class="cEmphasis">Calculation</em>.</li></div>
+<a name="wp1354818"> </a><div class="pSmartList2"><li>Connect <em class="cEmphasis">Countries</em> to <em class="cEmphasis">Calculation</em> via a right-click and select <b class="cBold">Row &gt; Main</b>.</li></div>
+<a name="wp2943709"> </a><div class="pSmartList2"><li>Double-click <em class="cEmphasis">Calculation</em> (<b class="cBold">tAggregateRow </b>component) to set the properties. Click <b class="cBold">Edit schema</b> and define the output schema. You can add as many columns as you need to hold the set operations results in the output flow.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp2943721"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow3.png" id="wp2943718" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp2943725"> </a><div class="pSmartList2"><li>In this example, we&#39;ll calculate the average notation value per country and we will display the max and the min notation for each country, given that each country holds several notations. Click <b class="cBold">OK</b> when the schema is complete.</li></div>
+<a name="wp2943735"> </a><div class="pSmartList2"><li>To carry out the various set operations, back in the <b class="cBold">Basic settings</b> panel, define the sets holding the operations in the <b class="cBold">Group By </b>area. In this example, select <b class="cBold">Country</b> as group by column. Note that the output column needs to be defined a key field in the schema. The first column mentioned as output column in the <b class="cBold">Group By</b> table is the main set of calculation. All other output sets will be secondary by order of display. </li></div>
+<a name="wp1354859"> </a><div class="pSmartList2"><li>Select the input column which the values will be taken from.</li></div>
+<a name="wp1354862"> </a><div class="pSmartList2"><li>Then fill in the various operations to be carried out. The functions are <em class="cEmphasis">average</em>, <em class="cEmphasis">min</em>, <em class="cEmphasis">max</em> for this use case. Select the input columns, where the values are taken from and select the check boxes in the <b class="cBold">Ignore null values</b> list as needed.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1354871"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow4.png" id="wp1354868" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1354879"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tSortRow</b> component from the <b class="cBold">Palette</b> onto the design workspace. For more information regarding this component<a href="tSortRow_Prop.html#wp3740324">, see&#160;<em class="cEmphasis">tSortRow properties.</em></a></li></div>
+<a name="wp1354890"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tAggregateRow</b> to this new component using a row main link. </li></div>
+<a name="wp1354893"> </a><div class="pSmartList2"><li>On the <b class="cBold">Component</b> view of the <b class="cBold">tSortRow</b> component, define the column the sorting is based on, the sorting type and order. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp1354902"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow5.png" id="wp1354899" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1354907"> </a><div class="pSmartList2"><li>In this case, the column to be sorted by is <em class="cEmphasis">Country</em>, the sort type is alphabetical and the order is ascending.</li></div>
+<a name="wp1354911"> </a><div class="pSmartList2"><li>Drop a <b class="cBold">tFileOutputDelimited</b> from the <b class="cBold">Palette</b> to the design workspace and define it to set the output flow.</li></div>
+<a name="wp1354916"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tSortRow</b> component to this output component.</li></div>
+<a name="wp1354919"> </a><div class="pSmartList2"><li>In the <b class="cBold">Component</b> view, enter the output filepath. Edit the schema if need be. In this case the delimited file is of csv type. And select the <b class="cBold">Include Header</b> check box to reuse the schema column labels in your output flow.</li></div>
+<a name="wp3756069"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to execute the Job. The csv file thus created contains the aggregating result. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3756077"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow6.png" id="wp3756073" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3833070"> </a><h2 class="pHeading2">
+Scenario 2: Aggregating values based on dynamic schema
+</h2>
+<a name="wp3833079"> </a><p class="pIndented1">
+In this scenario, a four-component Java Job uses a <b class="cBold">tAggregateRow</b> component to read data from a CSV file, group the data, and then send the grouping result to the <b class="cBold">Run</b> console and an output file. A dynamic schema is used in this Job. For more information about dynamic schema, see <em class="cEmphasis">Dynamic schema</em> of the <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</p>
+<a name="wp3833104"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow7.png" id="wp3833100" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3833121"> </a><div class="pSmartList2"><li>Drop the components required for this use case: <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tAggregateRow</b>, <b class="cBold">tLogRow</b> and <b class="cBold">tFileOutputDelimited</b> from the <b class="cBold">Palette</b> to the design workspace.</li></div>
+<a name="wp3833155"> </a><div class="pSmartList2"><li>Connect these components together using <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> links. </li></div>
+<a name="wp3833163"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tFileInputDelimited</b> component to display its <b class="cBold">Basic settings</b> view. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3833178"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow8.png" id="wp3833174" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3833194"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_smalljl.png" align="left" id="wp3833183" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+The dynamic schema feature is only supported in <em class="cEmphasis">Built-In</em> mode and requires the input file to have a header row.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3833212"> </a><div class="pSmartList2"><li>Select <b class="cBold">Built-In</b> from the <b class="cBold">Property Type</b> list.</li></div>
+<a name="wp3833227"> </a><div class="pSmartList2"><li>Click the <b class="cBold">[...]</b> button next to the <b class="cBold">File Name</b> field to browse to your input file. In this use case, we use a simple CSV file that has only three columns, as shown below: </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3833238"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow9.png" id="wp3833234" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3833249"> </a><div class="pSmartList2"><li>Specify the header row in <b class="cBold">Header</b> field. In this use case the first row is the header row.</li></div>
+<a name="wp3833266"> </a><div class="pSmartList2"><li>Select <b class="cBold">Built-In</b> from the <b class="cBold">Schema</b> list, and click <b class="cBold">Edit schema</b> to set the input schema.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3833277"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow10.png" id="wp3833273" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3833285"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_smalljl.png" align="left" id="wp3833282" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+<br />The dynamic column must be defined in the last row of the schema.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3833297"> </a><div class="pSmartList2"><li>In the schema editor, add two columns and name them <em class="cEmphasis">Task</em> and <em class="cEmphasis">Other</em> respectively. Set the data type of the <em class="cEmphasis">Other</em> column to <b class="cBold">Dynamic</b> to retrieve all the columns undefined in the schema. </li></div>
+<a name="wp3833319"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to close the schema editor.</li></div>
+<a name="wp3833330"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tAggregateRow</b> component to display the <b class="cBold">Basic settings</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3833383"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow11.png" id="wp3833377" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3833396"> </a><div class="pSmartList2"><li>Click <b class="cBold">Sync columns</b> to reuse the input schema for the output row. If needed, click <b class="cBold">Edit schema</b> and rename the columns in the output schema. In this use case, we simply keep the schema as it is.</li></div>
+<a name="wp3833409"> </a><div class="pSmartList2"><li>Add a row in the <b class="cBold">Group by</b> table by clicking the plus button, and select <em class="cEmphasis">Other</em> in both <b class="cBold">Output column</b> and <b class="cBold">Input column position</b> fields to group the data entries by the dynamic column.</li></div>
+<a name="wp3833431"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/warning_smalljl.png" align="left" id="wp3833428" border="0" hspace="0" vspace="0"/><br />
+<br />Dynamic column aggregation can be carried out only for the grouping operation. 
+</p>
+<a name="wp3833443"> </a><div class="pSmartList2"><li>Add a row in the <b class="cBold">Operations</b> table by clicking the plus button, select <em class="cEmphasis">Task</em> in both <b class="cBold">Output column</b> and <b class="cBold">Input column position</b> fields, and select <em class="cEmphasis">list</em> in the <b class="cBold">Function</b> field so that all the  entries of the <em class="cEmphasis">Task</em> column are listed in the grouping result.</li></div>
+<a name="wp3833480"> </a><div class="pSmartList2"><li>To view the output in the form of a table on the <b class="cBold">Run</b> console, double-click the <b class="cBold">tLogRow</b> component and select the <b class="cBold">Table</b> option in the <b class="cBold">Basic settings</b> view.</li></div>
+<a name="wp3833501"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tFileOutputDelimited</b> component to display its <b class="cBold">Basic settings</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3833516"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow14.png" id="wp3833512" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3833561"> </a><div class="pSmartList2"><li>Click the <b class="cBold">[...]</b> button next to the <b class="cBold">File Name</b> field to browse to the directory where you want to save the output file, and then enter a name for the file.</li></div>
+<a name="wp3833570"> </a><div class="pSmartList2"><li>Select the<b class="cBold"> Include Header</b> check box to retrieve the column names as well as the grouped data.</li></div>
+<a name="wp3833579"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to run it.<br />As shown in the Job execution result, the data entries are grouped as per <em class="cEmphasis">Team</em> and <em class="cEmphasis">Status</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3833611"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow15.png" id="wp3833605" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3833621"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tAggregateRow16.png" id="wp3833615" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tAggregateRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tAggregateSortedRow_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

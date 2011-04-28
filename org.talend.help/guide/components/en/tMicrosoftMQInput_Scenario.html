@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:32:57">
+    <title>Scenario: Writing and fetching queuing messages from Microsoft message queue</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMicrosoftMQInput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMicrosoftMQOutput_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3666425"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3666431"> </a><h2 class="pHeading2">
+Scenario: Writing and fetching queuing messages from Microsoft message queue
+</h2>
+<a name="wp3666436"> </a><p class="pIndented1">
+This scenario is made of two Jobs. The first Job posts messages on a Microsoft message queue and the second Job fetches the message from the server.
+</p>
+<a name="wp3666443"> </a><p class="pIndented1">
+In the first Job, a string message is created using a <b class="cBold">tRowGenerator</b> and put on a Microsoft message queue using a <b class="cBold">tMicrosoftMQOutput</b>. An intermediary <b class="cBold">tLogRow</b> component displays the flow being passed.
+</p>
+<a name="wp3666457"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ1.png" id="wp3666454" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3666465"> </a><div class="pSmartList2"><li>Drop the three components required for the first Job from the <b class="cBold">Palette</b> onto the design workspace.</li></div>
+<a name="wp3666473"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tRowGenerator</b> to open its contextual menu.</li></div>
+<a name="wp3666488"> </a><div class="pSmartList2"><li>In this menu, select <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> to connect this component to <b class="cBold">tLogRow</b> using a <b class="cBold">Main </b>row link.</li></div>
+<a name="wp3666499"> </a><div class="pSmartList2"><li>Do the same to connect <b class="cBold">tLogRow</b> to <b class="cBold">tMicrosoftMQOutput</b>.</li></div>
+<a name="wp3666507"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tRowGenerator</b> to open its editor.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3666514"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ2.png" id="wp3666511" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3666520"> </a><div class="pSmartList2"><li>In this editor, click the plus button to add three rows into the schema table.</li></div>
+<a name="wp3666529"> </a><div class="pSmartList2"><li>In the <b class="cBold">Column</b> column, type in a new name for each row to rename it. Here, we type in <em class="cEmphasis">ID</em>, <em class="cEmphasis">Name</em> and <em class="cEmphasis">Address</em>.</li></div>
+<a name="wp3666548"> </a><div class="pSmartList2"><li>In the <b class="cBold">Type</b> column, select <b class="cBold">Integer</b> for the <em class="cEmphasis">ID</em> row from the drop-down list and leave the other rows as <b class="cBold">String</b>.</li></div>
+<a name="wp3666570"> </a><div class="pSmartList2"><li>In the <b class="cBold">Functions</b> column, select <code class="cCode">random</code> for the <em class="cEmphasis">ID</em> row, <code class="cCode">getFirstName</code> for the <em class="cEmphasis">Name</em> row and <code class="cCode">getUsCity</code> for the <em class="cEmphasis">Address</em> row. </li></div>
+<a name="wp3666586"> </a><div class="pSmartList2"><li>In the <b class="cBold">Number of Rows for RowGenerator</b> field on the right end of the toolbar, type in <em class="cEmphasis">12</em> to limit the number of rows to be generated. </li></div>
+<a name="wp3666595"> </a><div class="pSmartList2"><li>Click <b class="cBold">Ok</b> to validate this editing.</li></div>
+<a name="wp3666601"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/bulb_smalljj.png" align="left" id="wp3666599" border="0" hspace="0" vspace="0"/><br />
+In real case, you may use an input component to load the data of your interest, instead of the <b class="cBold">tRowGenerator</b> component.
+</p>
+<a name="wp3666618"> </a><div class="pSmartList2"><li>Double click the <b class="cBold">tMicrosoftMQOutput </b>component to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3666625"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ3.png" id="wp3666622" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3666637"> </a><div class="pSmartList2"><li>In the <b class="cBold">Host</b> field, type in the host address. In this example, it is <em class="cEmphasis">localhost</em>.</li></div>
+<a name="wp3666643"> </a><div class="pSmartList2"><li>In the<b class="cBold"> Queue</b> field, type in the queue name you want to write message in. In this example, name it <em class="cEmphasis">AddressQueue</em>.</li></div>
+<a name="wp3666662"> </a><div class="pSmartList2"><li>In <b class="cBold">Message column (String Type</b><b class="cBold">)</b> field, select <em class="cEmphasis">Address</em> from the drop-down list to determine the message body to be written.</li></div>
+<a name="wp3666671"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run this Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3666678"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ4.png" id="wp3666675" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3666682"> </a><p class="pIndented1">
+You can see that this queue has been created automatically and that the messages have been written.
+</p>
+<a name="wp3666686"> </a><p class="pIndented1">
+Then set the second Job in order to fetch the first queuing message from the message queue.
+</p>
+<a name="wp3666693"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ5.png" id="wp3666690" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3666708"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tMicrosoftMQInput</b> and <b class="cBold">tLogRow</b> from the <b class="cBold">Palette</b> to the design workspace.</li></div>
+<a name="wp3666718"> </a><div class="pSmartList2"><li>Connect these two components using a <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> link.</li></div>
+<a name="wp3666729"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tMicrosoftMQInput</b> to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3666736"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ6.png" id="wp3666733" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3666748"> </a><div class="pSmartList2"><li>In the <b class="cBold">Host</b> field, type in the host name or address. Here, we type in <em class="cEmphasis">localhost</em>.</li></div>
+<a name="wp3666754"> </a><div class="pSmartList2"><li>In the <b class="cBold">Queue</b> field, type in the queue name from which you want to fetch the message. In this example, it is <em class="cEmphasis">AddressQueue</em>.</li></div>
+<a name="wp3666766"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run this Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3666773"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tMicrosoftMQ7.png" id="wp3666770" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3666782"> </a><p class="pIndented1">
+The message body <em class="cEmphasis">Atlanta</em> fetched from the queue is displayed on the console.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tMicrosoftMQInput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMicrosoftMQOutput_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

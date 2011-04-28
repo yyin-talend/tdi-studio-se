@@ -1,0 +1,379 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:02:53">
+    <title>tPaloOutputMulti</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloOutput_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloOutputMulti_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3506449"> </a><h2 class="pHeading1">
+tPaloOutputMulti
+</h2>
+<a name="wp3492660"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tPaloOutputMulti_icon32.png" id="wp3492655" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3492667"> </a><h2 class="pHeading2">
+Propriétés du tPaloOutputMulti
+</h2>
+<a name="wp3492997"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3492672table3492670">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3492672"> </a><div class="pCellBody">
+<b class="cBold">Famille de composant</b>
+</div>
+</td>
+    <td><a name="wp3492674"> </a><div class="pCellBody">
+Business Intelligence/Cube OLAP/Palo
+</div>
+</td>
+    <td><a name="wp3492682"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icongh.png" id="wp3492679" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3492687"> </a><div class="pCellBody">
+<b class="cBold">Fonction</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3492692"> </a><div class="pCellBody">
+Le composant <b class="cBold">tPaloOutputMulti</b> écrit des données (des éléments et des valeurs) dans un cube Palo.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3492699"> </a><div class="pCellBody">
+<b class="cBold">Objectif</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3492701"> </a><div class="pCellBody">
+Ce composant prend la flux d&#39;entrée et l&#39;écrit dans un cube Palo donné.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3492708"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3492712"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use an existing connection</em>
+</div>
+</td>
+    <td><a name="wp3492715"> </a><div class="pCellBody">
+Cochez la case et cliquez sur le composant de connexion adéquat dans la liste <b class="cBold">Component list</b> pour réutiliser les informations de connexion que vous avez déjà définies.<br />
+</div>
+<a name="wp3492724"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3492722" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Lorsqu&#39;un Job contient un Job parent et un Job enfant, la liste <b class="cBold">Component List</b> présente uniquement les composants de connexion du Job du même niveau. Si vous souhaitez utiliser une connexion existant dans un autre niveau, vérifiez que les composants de connexion disponibles partagent la même connexion.<br />Pour plus d&#39;informations concernant le partage d&#39;une connexion à travers différents niveaux de Jobs, consultez <b class="cBold">Use or register a shared DB connection</b> dans tous les composants de base de données que vous utilisez.
+</p>
+<a name="wp3492732"> </a><div class="pCellBody">
+Sinon, vous pouvez également désactiver le composant de connexion et utiliser les <b class="cBold">Dynamic settings</b> du composant, afinde paramétrer manuellement la connexion. Dans ce cas, vérifiez que le nom de la connexion est unique et distinct tout au long des deux niveaux de Jobs. Pour plus d&#39;informations concernant les paramètres dynamiques (<b class="cBold">Dynamic settings</b>), consultez le <b class="cBold">Guide Utilisateur</b> de votre Studio.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3492745"> </a><div class="pCellHeading">
+<em class="cEmphasis">Connection configuration<br /></em>
+</div>
+<a name="wp3492752"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3492750" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Indisponible lors de l&#39;utilisation d&#39;une connexion existante.
+</p>
+</td>
+    <td><a name="wp3492758"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host Name</em>
+</div>
+</td>
+    <td><a name="wp3492760"> </a><div class="pCellBody">
+Saisissez le nom de l&#39;hôte ou l&#39;adresse IP du serveur hôte.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3492762"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3492767"> </a><div class="pCellHeading">
+<em class="cEmphasis">Server Port</em>
+</div>
+</td>
+    <td><a name="wp3492769"> </a><div class="pCellBody">
+Saisissez le numéro du port d&#39;écoute du serveur Palo.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3492771"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3492776"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> et <em class="cEmphasis">Password</em>
+</div>
+</td>
+    <td><a name="wp3492781"> </a><div class="pCellBody">
+Informations d&#39;authentification de l&#39;utilisateur de Palo.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3492783"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3492788"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database</em>
+</div>
+</td>
+    <td><a name="wp3492790"> </a><div class="pCellBody">
+Saisissez le nom de la base de données dans laquelle se trouve le cube qui vous intéresse.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3492792"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3492797"> </a><div class="pCellHeading">
+<em class="cEmphasis">Cube</em>
+</div>
+</td>
+    <td><a name="wp3492799"> </a><div class="pCellBody">
+mé dans lequel les données entrantes sont écrites.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3492801"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3492806"> </a><div class="pCellHeading">
+<em class="cEmphasis">Cube type</em>
+</div>
+</td>
+    <td><a name="wp3492808"> </a><div class="pCellBody">
+Sélectionnez le type de cube dans la liste déroulante pour le cube sur lequel l&#39;opération donnée doit s&#39;effectuer&#160;:<br />- <b class="cBold">Normal</b>&#160;: Type de cube &quot;normal&quot;, type par défaut.<br />- <b class="cBold">Attribut</b>&#160;: un cube <b class="cBold">Attribute</b> sera créé avec la création d&#39;un cube &quot;normal&quot;.<br />- <b class="cBold">System</b>&#160;: Type de cube &quot;système&quot;.<br />- <b class="cBold">User Info&#160;</b>: un cube <b class="cBold">User Info</b> sera créé/modifié par ce composant. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3492822"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3492827"> </a><div class="pCellHeading">
+<em class="cEmphasis">Commit size</em>
+</div>
+</td>
+    <td><a name="wp3492829"> </a><div class="pCellBody">
+Saisissez le nombre de lignes de chaque lot devant être écrit dans le cube.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3492831"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3493428"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> et <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3493432"> </a><div class="pCellBody">
+Un schéma est une description de lignes, i.e., il définit le nombre de champs qui sont traités et passés au composant suivant. Le schéma est soit local (built-in) soit distant dans le Repository. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3492843"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3493435"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3493442"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>&#160;: Le schéma est créé et conservé ponctuellement pour ce composant seulement. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma built-in</em> du <span style="font-weight: bold">Guide Utilisateur</span> Talend Integration Suite Studio. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3492861"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3493452"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3493459"> </a><div class="pCellBody">
+<b class="cBold">Repository&#160;</b>: Le schéma existe déjà et est stocké dans le Repository. Ainsi, il peut être réutilisé. Voir également&#160;: <em class="cEmphasis">Paramétrer un schéma du Repository</em> du <span style="font-weight: bold">Guide Utilisateur</span> Talend Integration Suite Studio. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3492879"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3492884"> </a><div class="pCellBody">
+<em class="cEmphasis">Measure value</em>
+</div>
+</td>
+    <td><a name="wp3492886"> </a><div class="pCellBody">
+Sélectionnez la colonne du flux d&#39;entrée contenant les valeurs <b class="cBold">Measure</b> ou <b class="cBold">Text</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3492888"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3492893"> </a><div class="pCellHeading">
+<em class="cEmphasis">Splash mode</em>
+</div>
+</td>
+    <td><a name="wp3492895"> </a><div class="pCellBody">
+Sélectionnez le mode splash utilisé pour écrire des données dans un élément consolidé. Le mode peut être&#160;:<br />- <b class="cBold">Add&#160;</b>:écrit des valeurs dans les éléments sous-jacents.<br />- <b class="cBold">Default&#160;</b>: utilise le mode splash par défaut.<br />- <b class="cBold">Set</b>&#160;: définit simplement la valeur et effectue la distribution à partir d&#39;autres valeurs.<br />- <b class="cBold">Disable&#160;</b>: n&#39;applique aucun splash.<br />Pour plus d&#39;informations concernant les modes splash Palo, consultez le Guide Utilisateur de Palo.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3492909"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3492914"> </a><div class="pCellHeading">
+<em class="cEmphasis">Add values</em>
+</div>
+</td>
+    <td><a name="wp3492916"> </a><div class="pCellBody">
+Cochez cette case pour ajouter des nouvelles valeurs aux valeurs actuelles. Si vous ne cochez pas cette case, les nouvelles valeurs écraseront les valeurs actuelles.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3492918"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3492923"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use eventprocessor</em>
+</div>
+</td>
+    <td><a name="wp3492925"> </a><div class="pCellBody">
+Cochez cette case pour appeler le serveur de supervision.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3492927"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3492932"> </a><div class="pCellHeading">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp3492934"> </a><div class="pCellBody">
+Cette case est décochée par défaut, ce qui vous permet de terminer le traitement avec les lignes sans erreur, et ignorer les lignes en erreur. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3492939"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3492947"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStat</em><em class="cEmphasis">Catcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3492949"> </a><div class="pCellBody">
+Cochez cette case pour collecter les données de log au niveau du composant.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3932216"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3934648"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<em class="cEmphasis">Enable parallel execution</em>
+</div>
+</td>
+    <td><a name="wp3932270"> </a><div class="pCellBody">
+Cocher cette case permet de traiter plusieurs flux de données simultanément. Cela permet de traiter les données plus rapidement.<br />Dans le champ <b class="cBold">Number of parallel executions</b>, vous pouvez&#160;:<br />- Saisisr le nombre d&#39;exécutions parallèles désiré<br />- Appuyer sur <b class="cBold">Ctrl+Espace </b>et sélectionner la variable de contexte dans la liste.<br />Pour plus d&#39;informations, consultez <em class="cEmphasis">Paralléliser les flux de données</em> du <span style="font-weight: bold">Guide Utilisateur</span> Talend Integration Suite Studio.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3492954"> </a><div class="pCellBody">
+<b class="cBold">Utilisation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3492956"> </a><div class="pCellBody">
+Ce composant requiert un composant de début.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3492963"> </a><div class="pCellBody">
+<b class="cBold">Connections</b>
+</div>
+</td>
+    <td><a name="wp3492965"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3933063"> </a><div class="pCellBody">
+Liens de sortie (d&#39;un composant à un autre)&#160;:<br /><b class="cBold">Row</b>&#160;: Main<br /><b class="cBold">Trigger&#160;</b>: Run if, On Component Ok, On Component Error.<br /><br />Liens d&#39;entrée (d&#39;un composant à un autre)&#160;:<br /><b class="cBold">Row&#160;</b>: Main, Reject<br /><br />Pour plus d&#39;informations concernant les connexions, consultez&#160;<em class="cEmphasis">Types de connexions</em> dans le <b class="cBold">Guide Utilisateur</b> Talend Integration Suite Studio.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3492990"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3492992"> </a><div class="pCellBody">
+Les mesures numériques doivent être de type Double ou String. Lorsque le type String est utilisé, saisissez entre guillements la valeur devant être traitée.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloOutput_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPaloOutputMulti_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

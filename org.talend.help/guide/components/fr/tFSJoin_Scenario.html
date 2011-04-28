@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:08:03">
+    <title>Scénario&#160;: Regrouper les données de deux colonnes et écrire les données agrégées et rejetées</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSJoin_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSPartitionFile_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3618887"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3618892"> </a><h2 class="pHeading2">
+Scénario&#160;: Regrouper les données de deux colonnes et écrire les données agrégées et rejetées
+</h2>
+<a name="wp3618903"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/warning_small.png" align="left" id="wp3618898" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Vérifiez que vous avez dézippé et sauvegardé localement le fichier exécutable FileScale fourni par <b class="cBold">Talend</b>. Vous devez définir le chemin d&#39;accès à ce fichier exécutable dans la vue <b class="cBold">Advanced settings </b>du composant <b class="cBold">tFSJoin</b>.
+</p>
+<a name="wp3618916"> </a><p class="pIndented1">
+Ce scénario Java décrit un Job utilisant le composant <b class="cBold">tFSJoin</b> pour regrouper les données d&#39;un fichier leftset (fichier d&#39;entrée) avec les données d&#39;un fichier rightset (fichier de référence) en utilisant une colonne commune aux deux fichiers comme clé de jointure. Ce Job écrit également également les données rejetées, c&#39;est-à-dire les données n&#39;ayant aucune correspondance dans le fichier de référence.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3618925"> </a><div class="pSmartList2"><li>Déposez les composants suivants de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tRowGenerator</b> (x2), <b class="cBold">tFileOutputDelimited</b> (x2) et <b class="cBold">tFSJoin</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3618943"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin.png" id="wp3618940" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3618960"> </a><div class="pSmartList2"><li>Reliez d&#39;abord les <b class="cBold">tRowGenerator</b> aux <b class="cBold">tFileOutputDelimited</b> à l&#39;aide de liens <b class="cBold">Row</b> &gt; <b class="cBold">Main</b>.</li></div>
+<a name="wp3620897"> </a><div class="pSmartList2"><li>Utilisez un lien <b class="cBold">Trigger</b> &gt; <b class="cBold">OnSubjobOk</b> afin de relier les deux <b class="cBold">tRowGenerator</b>, puis liez le second <b class="cBold">tRowGenerator</b> au <b class="cBold">tFSJoin</b> à l&#39;aide d&#39;un lien <b class="cBold">Trigger</b> &gt; <b class="cBold">OnSubjobOk</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3618974"> </a><p class="pIndented1">
+Dans ce scénario, le premier composant <b class="cBold">tRowGenerator</b> va générer les données de référence selon le schéma que vous avez défini dans la vue <b class="cBold">Basic settings</b> et les envoyer au fichier de référence. Le second composant <b class="cBold">tRowGenerator</b> va générer les données d&#39;entrée selon le schéma que vous avez défini dans la vue <b class="cBold">Basic settings</b> et les envoyer au fichier d&#39;entrée.
+</p>
+<a name="wp3618990"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/bulb_small.png" align="left" id="wp3618988" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+Vous devez avoir au moins une colonne commune aux deux fichiers pour pouvoir regrouper les données selon cette colonne.
+</p>
+<a name="wp3618997"> </a><p class="pIndented1">
+Si la génération des données s&#39;effectue sans erreur, le composant <b class="cBold">tFSJoin</b> comparera les données des deux fichiers selon la clé de jointure, regroupera les données communes, les écrira dans un fichier de sortie, puis écrira les données rejetées dans un autre fichier de sortie.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619010"> </a><div class="pSmartList2"><li>Cliquez sur le <b class="cBold">tRowGenerator</b> afin d&#39;afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés. </li></div>
+<a name="wp3619019"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">RowGenerator Editor</b> pour ouvrir l&#39;éditeur dans lequel vous pouvez définir votre schéma.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3619028"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin1.png" id="wp3619025" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619036"> </a><div class="pSmartList2"><li>Dans la partie supérieure de l&#39;éditeur, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter les colonnes que vous souhaitez écrire dans le fichier d&#39;entrée.</li></div>
+<a name="wp3619040"> </a><div class="pSmartList2"><li>Définissez le schéma et configurez les paramètres des colonnes.<br />Dans ce scénario, le fichier de référence contient trois colonnes&#160;:  <em class="cEmphasis">firstname_client</em>, <em class="cEmphasis">lastname_client</em>, et <em class="cEmphasis">id</em><em class="cEmphasis">_client.</em></li></div>
+<a name="wp3619059"> </a><div class="pSmartList2"><li>Si nécessaire, cliquez sur l&#39;onglet <b class="cBold">Preview</b> dans la partie inférieure de l&#39;éditeur pour afficher la vue correspondante, puis cliquez sur le bouton <b class="cBold">View</b> pour afficher une partie des données générées.</li></div>
+<a name="wp3619073"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> afin de valider votre schéma et fermer l&#39;éditeur du <b class="cBold">tRowGenerator</b>. </li></div>
+<a name="wp3619082"> </a><div class="pSmartList2"><li>Cliquez sur le <b class="cBold">tFileOutputDelimited</b> pour afficher sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3619091"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin2.png" id="wp3619088" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619112"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Edit schema</b> afin d&#39;afficher le schéma que vous avez défini dans l&#39;éditeur et le modifier si nécessaire.</li></div>
+<a name="wp3619120"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue.</li></div>
+<a name="wp3619126"> </a><div class="pSmartList2"><li>Dans l&#39;espace de modélisation graphique, double-cliquez sur le second <b class="cBold">tRowGenerator</b> pour ouvrir son éditeur et définir le schéma d&#39;entrée comme vous venez de le faire pour le schéma de référence.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3619135"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin3.png" id="wp3619132" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3619141"> </a><p class="pIndented1">
+Dans ce scenario, le fichier leftset contient trois colonnes&#160;: <em class="cEmphasis">id_command, price_command</em> et <em class="cEmphasis">id_client</em>.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619157"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> afin de valider votre schéma et fermer l&#39;éditeur du <b class="cBold">tRowGenerator</b>. </li></div>
+<a name="wp3619166"> </a><div class="pSmartList2"><li>Cliquez sur le second <b class="cBold">tFileOutputDelimited</b> pour ouvrir sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3619175"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin4.png" id="wp3619172" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619196"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Edit schema</b> afin d&#39;afficher le schéma d&#39;entrée que vous avez défini dans l&#39;éditeur et le modifier si nécessaire.</li></div>
+<a name="wp3619204"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue.</li></div>
+<a name="wp3619215"> </a><div class="pSmartList2"><li>Cliquez sur le <b class="cBold">tFSJoin</b> pour ouvrir sa vue <b class="cBold">Basic settings</b> et définir ses propriétés.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3619222"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin5.png" id="wp3619219" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619237"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Property Type</b>, sélectionnez <b class="cBold">Built-In</b>.</li></div>
+<a name="wp3629623"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">Edit schema</b> pour ouvrir une boîte de dialogue dans laquelle vous pouvez définir les colonnes de votre schéma. Le schéma doit correspondre au schéma du fichier d&#39;entrée.</li></div>
+<a name="wp3629648"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">OK</b> pour fermer la boîte de dialogue.</li></div>
+<a name="wp3619243"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Input File</b>, paramétrez les propriétés du fichier d&#39;entrée et cliquez sur le bouton  <b class="cBold">Edit schema</b> pour afficher/modifier le schéma du fichier d&#39;entrée, si nécessaire.</li></div>
+<a name="wp3619253"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Rightset File</b>, paramétrez les propriétés du fichier de référence et cliquez sur le bouton <b class="cBold">Edit schema</b> pour afficher/modifier le schéma de référence, si nécessaire.</li></div>
+<a name="wp3619261"> </a><div class="pSmartList2"><li>Dans les champs <b class="cBold">Record Separator</b> et <b class="cBold">Field Separator</b>, définissez les séparateurs d&#39;enregistrements et de champs.</li></div>
+<a name="wp3619270"> </a><div class="pSmartList2"><li>Dans le tableau <b class="cBold">Join Key</b>, cliquez sur le bouton <b class="cBold">[+]</b> pour ajouter une ligne puis cliquez sur cette ligne et sélectionnez une colonne du fichier d&#39;entrée ainsi qu&#39;une colonne du fichier de référence. Ces colonnes communes sont utilisées dans les deux fichiers comme la valeur permettant d&#39;effectuer une jointure. Répétez cette opération pour ajouter autant de clés de jointure que nécessaire.</li></div>
+<a name="wp3619278"> </a><p class="pBodyRelative">
+<br />
+<img src="../Images/warning_small.png" align="left" id="wp3619276" border="0" hspace="0" vspace="0"/><br />
+Vous pouvez n&#39;utiliser que les dernières colonnes des fichiers d&#39;entrée et de référence comme clés de jointure.
+</p>
+<a name="wp3619287"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Join Mode</b>, sélectionnez le mode que vous souhaitez utiliser pour effectuer la jointure entre les données.</li></div>
+<a name="wp3619294"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Output File Name</b>, définissez le chemin d&#39;accès au fichier de référence qui contiendra les données agrégées.</li></div>
+<a name="wp3619301"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Output Reject File</b> si vous souhaiter écrire les données rejetées dans un fichier après la jointure. Définissez le chemin d&#39;accès au fichier de rejet dans le champ qui apparaît.</li></div>
+<a name="wp3619310"> </a><div class="pSmartList2"><li>Cliquez sur l&#39;onglet <b class="cBold">Advanced settings</b> pour configurer les propriétés avancées.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3619317"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin6.png" id="wp3619314" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3619328"> </a><div class="pSmartList2"><li> Cochez la case <b class="cBold">Assign FileScale Path</b> pour afficher le champ <b class="cBold">FileScale Path</b> puis cliquez sur le bouton <b class="cBold">[...]</b> afin de sélectionner le fichier exécutable fourni par <b class="cBold">Talend</b>.</li></div>
+<a name="wp3619343"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3619346"> </a><p class="pIndented1">
+Une barre de progression apparaît dans l&#39;espace de modélisation graphique sous le composant <b class="cBold">tFSJoin</b>, pour afficher l&#39;avancement de l&#39;opération. Cette barre de progression vous montre combien les données volumineuses sont traitées rapidement.
+</p>
+<a name="wp3619350"> </a><p class="pIndented1">
+Lorsque le pourcentage de la barre de progression atteint les&#160;100%, les données sont agrégées puis écrites dans le fichier de sortie tandis que les données rejetées sont écrites dans le fichier de rejets.
+</p>
+<a name="wp3619696"> </a><p class="pIndented1">
+Ci-dessous, une partie des données client agrégées dans le fichier de sortie&#160;:  le prénom et le nom du client sont groupés avec l&#39;ID et le prix de la commande selon l&#39;ID du client.
+</p>
+<a name="wp3620715"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_FSJoin7.png" id="wp3620712" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFSJoin_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFSPartitionFile_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

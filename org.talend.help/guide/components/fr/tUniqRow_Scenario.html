@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:03:24">
+    <title>Scénario&#160;: Dédoublonner des données</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tUniqRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Databases_group_intro.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3522990"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3522997"> </a><h2 class="pHeading2">
+Scénario&#160;: Dédoublonner des données
+</h2>
+<a name="wp3523006"> </a><p class="pIndented1">
+Ce scénario Java décrit un Job à cinq composants, dont le but est de trier des entrées à partir d&#39;une liste d&#39;entrée comprenant des noms, de trouver des noms en doublons, et d&#39;afficher les noms uniques ainsi que les noms en doublon dans la console <b class="cBold">Run</b>.
+</p>
+<a name="wp3523014"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tUniqRow1.png" id="wp3523011" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3764599"> </a><div class="pSmartList2"><li>A partir de la <b class="cBold">Palette</b>, cliquez et déposez les composants suivants dans l&#39;espace de modélisation graphique&#160;: un <b class="cBold">tFileInputDelimited</b>, un <b class="cBold">tSortRow</b>, un <b class="cBold">tUniqRow</b>, ainsi que deux composants <b class="cBold">tLogRow</b>, et nommez-les comme illustré ci-dessus. </li></div>
+<a name="wp3764502"> </a><div class="pSmartList2"><li>Connectez les composants <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tSortRow</b>, et <b class="cBold">tUniqRow</b> via une connexion de type <b class="cBold">Row</b> &gt; <b class="cBold">Main</b>. Connectez ensuite le <b class="cBold">tUniqRow</b> au premier <b class="cBold">tLogRow</b> via une connexion <b class="cBold">Main</b> &gt; <b class="cBold">Uniques</b>, puis connectez le composant <b class="cBold">tUniqRow</b> au second <b class="cBold">tLogRow</b> via une connexion de type <b class="cBold">Main</b> &gt; <b class="cBold">Duplicates</b>.</li></div>
+<a name="wp3764547"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tFileInputDelimited</b> afin d&#39;afficher l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b>. </li></div>
+</ul></div>
+</ul></div>
+<a name="wp3764550"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tUniqRow2.png" id="wp3523054" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3765232"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">Built-In</b> dans le champ <b class="cBold">Property Type</b>.</li></div>
+<a name="wp3765244"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">File Name</b> pour sélectionner le fichier contenant les données d&#39;entrée.</li></div>
+<a name="wp3765682"> </a><div class="pSmartList2"><li>Définissez l&#39;en-tête (<b class="cBold">Header)</b> et le pied de page (<b class="cBold">Footer)</b><br />Dans ce scénario, la ligne d&#39;en-tête est la première ligne du fichier d&#39;entrée. </li></div>
+<a name="wp3766063"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Edit schema</b> pour définir le schéma de ce composant. Dans ce scénario, le fichier d&#39;entrée comprend cinq colonnes&#160;: <em class="cEmphasis">Id</em>, <em class="cEmphasis">FirstName</em>, <em class="cEmphasis">LastName</em>, <em class="cEmphasis">Age</em>, et <em class="cEmphasis">City</em>. Click ensuite sur <b class="cBold">OK</b> pour propager le schéma et fermer l&#39;éditeur de schéma.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3766090"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tUniqRow3.png" id="wp3766087" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3766095"> </a><div class="pSmartList2"><li>Afin de disposer les entrées en fonction de l&#39;ordre alphabétique des noms, ajoutez deux lignes au tableau <b class="cBold">Criteria</b> en cliquant sur le bouton <b class="cBold">[+]</b>, sélectionnez les colonnes <em class="cEmphasis">FirstName</em> et <em class="cEmphasis">LastName</em> sous <b class="cBold">Schema column</b>, sélectionnez le type de tri alphabétique (<em class="cEmphasis">alpha)</em>, puis sélectionnez l&#39;ordre ascendant (asc).</li></div>
+<a name="wp3766276"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tUniqRow</b> afin d&#39;afficher l&#39;onglet <b class="cBold">Basic settings</b> de sa vue <b class="cBold">Component</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3766132"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tUniqRow4.png" id="wp3766129" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3766139"> </a><div class="pSmartList2"><li>Dans la zone <b class="cBold">Unique key</b>, sélectionnez les colonnes sur lesquelles vous souhaitez effectuer le dédoublonnage. Dans ce scénario, les noms en doublon seront triés.</li></div>
+<a name="wp3765063"> </a><div class="pSmartList2"><li>Dans l&#39;onglet <b class="cBold">Basic settings</b> de la vue <b class="cBold">Component</b> des deux composants <b class="cBold">tLogRow</b>, cochez l&#39;option <b class="cBold">Table</b> afin de visualiser le résultat de l&#39;exécution du Job en mode tableau.</li></div>
+<a name="wp3765070"> </a><div class="pSmartList2"><li>Sauvegardez votre Job, puis appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.<br />Dans la console <b class="cBold">Run</b>, les noms uniques et les noms en doublon sont affichés dans des tableaux différents.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3765082"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tUniqRow5.png" id="wp3765079" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tUniqRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="Databases_group_intro.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:31:04">
+    <title>Scenario: Retrieving detailed rule information from a given cube</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloRuleList_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tParAccelSCD_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3498353"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3498360"> </a><h2 class="pHeading2">
+Scenario: Retrieving detailed rule information from a given cube
+</h2>
+<a name="wp3498368"> </a><p class="pIndented1">
+The job in this scenario retrieves rule details applied on the dimensions of a given cube.
+</p>
+<a name="wp3498377"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloRuleList1.png" id="wp3498373" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3498382"> </a><p class="pIndented1">
+To replicate this scenario, proceed as follows:
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3498401"> </a><div class="pSmartList2"><li>Drop <b class="cBold">tPaloRuleList</b> and <b class="cBold">tLogRow</b> from the component <b class="cBold">Palette</b> onto the design workspace.</li></div>
+<a name="wp3498411"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tPaloRuleList</b> to open the contextual menu.</li></div>
+<a name="wp3498420"> </a><div class="pSmartList2"><li>From this menu, select <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> to link the two components.</li></div>
+<a name="wp3498434"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tPaloRuleList</b> component to open its <b class="cBold">Component</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3498443"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloRuleList2.png" id="wp3498439" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3498458"> </a><div class="pSmartList2"><li>In the <b class="cBold">Host name</b> field, type in the host name or the IP address of the host server, <em class="cEmphasis">localhost</em> for this example.</li></div>
+<a name="wp3498467"> </a><div class="pSmartList2"><li>In the <b class="cBold">Server Port</b> field, type in the listening port number of the Palo server. In this scenario, it is <em class="cEmphasis">7777</em>.</li></div>
+<a name="wp3498484"> </a><div class="pSmartList2"><li>In the <b class="cBold">Username</b> and <b class="cBold">Password</b> fields, type in the authentication information. In this example, both of them are <em class="cEmphasis">admin</em>.</li></div>
+<a name="wp3498497"> </a><div class="pSmartList2"><li>In the <b class="cBold">Database</b> field, type in the database name where the dimensions applying the rules of interest reside, <em class="cEmphasis">Biker</em> in this example.</li></div>
+<a name="wp3498948"> </a><div class="pSmartList2"><li>In the <b class="cBold">Cube</b> field, type in the name of the cube which the rules of interest belong to.</li></div>
+<a name="wp3498512"> </a><div class="pSmartList2"><li>Press <b class="cBold">F6</b> to run the Job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3498520"> </a><p class="pIndented1">
+Details of all of the rules in the <em class="cEmphasis">Orders</em> cube are retrieved and listed in the console of the <b class="cBold">Run</b> view.
+</p>
+<a name="wp3498534"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPaloRuleList3.png" id="wp3498530" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3498541"> </a><p class="pIndented1">
+For further information about the output schema, see section <a href="tPaloRuleList_Prop.html#wp3498213"><em class="cEmphasis">Discovering the read-only output schema of tPaloRuleList</em></a>.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPaloRuleList_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tParAccelSCD_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

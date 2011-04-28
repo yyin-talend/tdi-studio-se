@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:32:57">
+    <title>Scenario: Sending a HTTP request to the server and saving the response information to a local file</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tHttpRequest_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tJBossESBInput_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3665345"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3665350"> </a><h2 class="pHeading2">
+Scenario: Sending a HTTP request to the server and saving the response information to a local file
+</h2>
+<a name="wp3665358"> </a><p class="pIndented1">
+This java scenario describes a two-component Job that uses the <b class="cBold">GET</b> method to retrieve information from the server end and writes the response to a local file as well as to the console.
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3665373"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> onto the design workspace: <b class="cBold">tHttpRequest</b> and <b class="cBold">tLogRow</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3665385"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tHttpRequest1.png" id="wp3665382" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3665402"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tHttpRequest</b> component to the <b class="cBold">tLogRow</b> component using a <b class="cBold">Row</b> &gt; <b class="cBold">Main</b> connection.</li></div>
+<a name="wp3665415"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tHttpRequest</b> component to open its <b class="cBold">Basic settings</b> view and define the component properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3665427"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tHttpRequest2.png" id="wp3665424" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3665438"> </a><div class="pSmartList2"><li>Fill in the <b class="cBold">URI</b> field with <em class="cEmphasis">&quot;http://192.168.0.63:8081/testHttpRequest/build.xml&quot;.</em> Note that this URI is for demonstration purpose only and it is not a live address.</li></div>
+<a name="wp3665449"> </a><div class="pSmartList2"><li>Select <b class="cBold">GET</b> from the <b class="cBold">Method</b> list.</li></div>
+<a name="wp3665455"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Write response content to file</b> check box and fill in the input field on the right with the file path by manual entry, <em class="cEmphasis">D:/test.txt</em> for this use case.</li></div>
+<a name="wp3665468"> </a><div class="pSmartList2"><li>Select the <b class="cBold">Need authentication</b> check box and fill in the user and password, both <em class="cEmphasis">tomcat</em> in this use case.</li></div>
+<a name="wp3665481"> </a><div class="pSmartList2"><li>Double-click the <b class="cBold">tLogRow</b> component to open its <b class="cBold">Basic settings</b> view and select <b class="cBold">Table</b> in the <b class="cBold">Mode</b> area.</li></div>
+<a name="wp3665491"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to execute it.<br />Then the response information from the server is saved and displayed.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3665502"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tHttpRequest3.png" id="wp3665497" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tHttpRequest_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tJBossESBInput_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

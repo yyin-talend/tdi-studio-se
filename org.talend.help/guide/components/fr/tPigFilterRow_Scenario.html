@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 20:09:03">
+    <title>Scénario&#160;: Sélectionner des lignes de données d&#39;une relation et stocker le résultat dans un fichier local</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPigFilterRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPigJoin_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3954473"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3954479"> </a><h2 class="pHeading2">
+Scénario&#160;: Sélectionner des lignes de données d&#39;une relation et stocker le résultat dans un fichier local
+</h2>
+<a name="wp3954484"> </a><p class="pIndented1">
+Ce scénario décrit un Job a trois composants sélectionnant des lignes de données qui correspondent à une condition de filtre d&#39;une relation et stockant les résultats du filtre dans un fichier local.
+</p>
+<a name="wp3954492"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPigFilterRow1.png" id="wp3954489" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3954503"> </a><div class="pSmartList2"><li>Déposez les composants suivants de la <b class="cBold">Palette</b> dans l&#39;espace de modélisation graphique&#160;: <b class="cBold">tPigFilterRow</b>, <b class="cBold">tPigLoad</b>, <b class="cBold">tPigStoreResult</b>.</li></div>
+<a name="wp3954522"> </a><div class="pSmartList2"><li>Cliquez-droit sur le <b class="cBold">tPigLoad</b> pour le relier au <b class="cBold">tPigFilterRow</b> à l&#39;aide d&#39;un lien <b class="cBold">Row&#160;&gt;&#160;Pig Combine</b>.</li></div>
+<a name="wp3954535"> </a><div class="pSmartList2"><li>Cliquez-droit sur le <b class="cBold">tPigFilterRow</b> pour le connecter au <b class="cBold">tPigStoreResult</b> à l&#39;aide d&#39;un lien <b class="cBold">Row&#160;&gt;&#160;Pig Combine</b>.</li></div>
+<a name="wp3954547"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tPigload</b> afin d&#39;ouvrir sa vue <b class="cBold">Basic settings</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3954554"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPigFilterRow2.png" id="wp3954551" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3954567"> </a><div class="pSmartList2"><li>Cliquez sur le bouton <b class="cBold">[...]</b> à côté du champ <b class="cBold">Edit schema</b> pour ajouter des colonnes au schéma du composant <b class="cBold">tPigLoad</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3954574"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPigFilterRow3.png" id="wp3954571" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3954592"> </a><div class="pSmartList2"><li>Cliquez sur le bouton<b class="cBold"> [+]</b> pour ajouter les colonnes&#160;<em class="cEmphasis">Name</em>, <em class="cEmphasis">Country</em> et&#160;<em class="cEmphasis">Age</em> et cliquez <b class="cBold">OK</b> pour sauvegarder la configuration.</li></div>
+<a name="wp3954602"> </a><div class="pSmartList2"><li>Dans la liste <b class="cBold">Mode</b>, sélectionnez <b class="cBold">Local</b>.</li></div>
+<a name="wp3954608"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Input filename</b>, renseignez le chemin d&#39;accès au fichier d&#39;entrée.<br />Dans ce scénario, le fichier d&#39;entrée est&#160;<em class="cEmphasis">CustomerList</em> qui contient les lignes de noms, les noms des pays et les âges des clients.</li></div>
+<a name="wp3954622"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">PigStorage</b> dans la liste <b class="cBold">Load function</b>.</li></div>
+<a name="wp3954626"> </a><div class="pSmartList2"><li>Laissez les autres paramètres tels qu&#39;ils sont</li></div>
+<a name="wp3954637"> </a><div class="pSmartList2"><li>Double-cliquez sur le <b class="cBold">tPigFilterRow</b> afin d&#39;ouvrir sa vue <b class="cBold">Basic settings</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3954644"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPigFilterRow4.png" id="wp3954641" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3954653"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Sync columns</b> pour récupérer la structure du schéma du composant précédent.</li></div>
+<a name="wp3954662"> </a><div class="pSmartList2"><li>Cochez la case <b class="cBold">Use advanced filter</b> et saisissez, dans le champ <b class="cBold">Filter</b>, l&#39;expression&#160;:<br /><code class="cCode">Country matches `PuertoRico&#39;&lt;<br /></code>Cette expression de filtre sélectionne les ligne de données contenant &quot;PuertoRico&quot; dans&#160;<em class="cEmphasis">CustomerList</em>. </li></div>
+<a name="wp3954680"> </a><div class="pSmartList2"><li>Double-cliquez sur le composant <b class="cBold">tPigStoreResult</b> pour ouvrir sa vue <b class="cBold">Basic settings</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3954687"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPigFilterRow5.png" id="wp3954684" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3954696"> </a><div class="pSmartList2"><li>Cliquez sur <b class="cBold">Sync columns</b> pour récupérer la structure du schéma du composant précédent.</li></div>
+<a name="wp3954702"> </a><div class="pSmartList2"><li>Dans le champ <b class="cBold">Result file</b>, renseignez le chemin d&#39;accès au fichier de résultat.<br />Dans ce scénario, le résultat du filtre est sauvegardé dans le fichier&#160;<em class="cEmphasis">Lucky_Customer</em>.</li></div>
+<a name="wp3954716"> </a><div class="pSmartList2"><li>Sélectionnez <b class="cBold">PigStorage</b> dans la liste <b class="cBold">Store function</b>.</li></div>
+<a name="wp3954720"> </a><div class="pSmartList2"><li>Laissez les autres paramètres tels qu&#39;il sont.</li></div>
+<a name="wp3954728"> </a><div class="pSmartList2"><li>Sauvegardez votre Job et appuyez sur <b class="cBold">F6</b> pour l&#39;exécuter.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3954735"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPigFilterRow6.png" id="wp3954732" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3954744"> </a><p class="pIndented1">
+Le fichier&#160;<em class="cEmphasis">Lucky_Customer</em> est généré et contient les lignes de données sélectionnées.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPigFilterRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPigJoin_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

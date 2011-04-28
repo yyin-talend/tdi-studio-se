@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 18:34:55">
+    <title>Scenario: Selecting rows of data from a relation and storing the result into a local file</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPigFilterRow_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPigJoin_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3835764"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3835771"> </a><h2 class="pHeading2">
+Scenario: Selecting rows of data from a relation and storing the result into a local file
+</h2>
+<a name="wp3835778"> </a><p class="pIndented1">
+This scenario describes a three-component Job that selects rows of data that matches filter condition from a relation and stores the filter result into a local file.
+</p>
+<a name="wp3835788"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPigFilterRow1.png" id="wp3835784" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3835799"> </a><div class="pSmartList2"><li>Drop the following components from the <b class="cBold">Palette</b> to the design workspace: <b class="cBold">tPigFilterRow</b>, <b class="cBold">tPigLoad</b>, <b class="cBold">tPigStoreResult</b>.</li></div>
+<a name="wp3835824"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tPigLoad</b> to connect it to <b class="cBold">tPigFilterRow</b> using a <b class="cBold">Row &gt; Pig Combine</b> connection.</li></div>
+<a name="wp3835841"> </a><div class="pSmartList2"><li>Right-click <b class="cBold">tPigFilterRow</b> to connect it to <b class="cBold">tPigStoreResult</b> using a <b class="cBold">Row &gt; Pig Combine</b> connection.</li></div>
+<a name="wp3835860"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tPigLoad</b> to open its <b class="cBold">Basic settings</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3835869"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPigFilterRow2.png" id="wp3835865" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3835880"> </a><div class="pSmartList2"><li>Click the three-dot button next to <b class="cBold">Edit schema</b> to add columns for <b class="cBold">tPigLoad</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3835895"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPigFilterRow3.png" id="wp3835891" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3835918"> </a><div class="pSmartList2"><li>Click the plus button to add <em class="cEmphasis">Name</em>, <em class="cEmphasis">Country</em> and <em class="cEmphasis">Age</em> and click <b class="cBold">OK</b> to save the setting.</li></div>
+<a name="wp3835932"> </a><div class="pSmartList2"><li>Select <b class="cBold">Local</b> from the <b class="cBold">Mode</b> list.</li></div>
+<a name="wp3835940"> </a><div class="pSmartList2"><li>Fill in the <b class="cBold">Input filename</b> field with the full path to the input file.<br />In this scenario, the input file is <em class="cEmphasis">CustomerList</em> which contains rows of names, country names and age.</li></div>
+<a name="wp3835958"> </a><div class="pSmartList2"><li>Select <b class="cBold">PigStorage</b> from the <b class="cBold">Load function</b> list.</li></div>
+<a name="wp3835963"> </a><div class="pSmartList2"><li>Leave rest of the settings as they are.</li></div>
+<a name="wp3835977"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tPigFilterRow</b> to open its <b class="cBold">Basic settings</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3835986"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPigFilterRow4.png" id="wp3835982" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3835997"> </a><div class="pSmartList2"><li>Click <b class="cBold">Sync columns</b> to retrieve the schema structure from the preceding component.</li></div>
+<a name="wp3836010"> </a><div class="pSmartList2"><li>Select <b class="cBold">Use advanced filter</b> and fill in the <b class="cBold">Filter</b> field with filter expression:<br /><code class="cCode">Country matches `PuertoRico&#39;<br /></code>This filter expression selects rows of data that contains &quot;PuertoRico&quot; from <em class="cEmphasis">CustomerList</em>. </li></div>
+<a name="wp3836033"> </a><div class="pSmartList2"><li>Double-click <b class="cBold">tPigStoreResult</b> to open its <b class="cBold">Basic settings</b> view.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3836042"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPigFilterRow5.png" id="wp3836038" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp3836053"> </a><div class="pSmartList2"><li>Click <b class="cBold">Sync columns</b> to retrieve the schema structure from the preceding component.</li></div>
+<a name="wp3836062"> </a><div class="pSmartList2"><li>Fill in the <b class="cBold">Result file</b> field with the full path to the result file.<br />In this scenario, the result of filter is saved in <em class="cEmphasis">Lucky_Customer</em> file.</li></div>
+<a name="wp3836080"> </a><div class="pSmartList2"><li>Select <b class="cBold">PigStorage</b> from the <b class="cBold">Store function</b> list.</li></div>
+<a name="wp3836085"> </a><div class="pSmartList2"><li>Leave rest of the settings as they are.</li></div>
+<a name="wp3836095"> </a><div class="pSmartList2"><li>Save your Job and press <b class="cBold">F6</b> to run it.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp3836104"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="../Images/Use_Case_tPigFilterRow6.png" id="wp3836100" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3836112"> </a><p class="pIndented1">
+The <em class="cEmphasis">Lucky_Customer</em> file is generated containing the selected rows of data.
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPigFilterRow_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPigJoin_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

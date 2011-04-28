@@ -1,0 +1,288 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 18:34:55">
+    <title>tPigJoin</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPigFilterRow_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPigJoin_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3956588"> </a><h2 class="pHeading1">
+tPigJoin
+</h2>
+<a name="wp3954181"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tPigJoin_icon32_white.png" id="wp3954176" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3954188"> </a><h2 class="pHeading2">
+tPigJoin Properties
+</h2>
+<a name="wp3954467"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3954196table3954191">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3954196"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3954198"> </a><div class="pCellBody">
+Processing/Fields
+</div>
+</td>
+    <td><a name="wp3954206"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/java_icon.png" id="wp3954203" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3954211"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3954213"> </a><div class="pCellBody">
+This component allows you to perform join of two files based on join keys.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3954220"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3954225"> </a><div class="pCellBody">
+The <b class="cBold">tPigJoin</b> component is used to perform inner joins and outer joins based on join keys.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3954232"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b><br /><b class="cBold">-Input file</b>
+</div>
+</td>
+    <td><a name="wp3954242"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3954245"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. In this component, the schema is read-only.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3954247"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954249"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954254"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3954265"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954267"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954272"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job designs. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3954289"> </a><div class="pCellBody">
+-<b class="cBold">Lookup file</b>
+</div>
+</td>
+    <td><a name="wp3954296"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3954299"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. In this component, the schema is read-only.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3954301"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954303"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954308"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3954319"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954321"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954326"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job designs. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3954337"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954342"> </a><div class="pCellHeading">
+<em class="cEmphasis">Filename</em>
+</div>
+</td>
+    <td><a name="wp3954350"> </a><div class="pCellBody">
+Fill in the path of the <b class="cBold">Lookup</b><b class="cBold"> file</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3954352"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954357"> </a><div class="pCellHeading">
+<em class="cEmphasis">Join key</em>
+</div>
+</td>
+    <td><a name="wp3954361"> </a><div class="pCellBody">
+Click the plus button to add lines to set the <b class="cBold">Join key</b> for <b class="cBold">Input file</b> and <b class="cBold">Lookup</b><b class="cBold"> file</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3954373"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954378"> </a><div class="pCellHeading">
+<em class="cEmphasis">Join mode</em>
+</div>
+</td>
+    <td><a name="wp3954380"> </a><div class="pCellBody">
+Select a join mode from the list:<br /><b class="cBold">inner-join</b>: Select this mode to perform an inner join of two or more relations based on Join keys.<br /><b class="cBold">left-outer-join</b>: Select this mode to performs a left outer join of two or more relations based on Join keys.<br /><b class="cBold">right-outer-join</b>: Select this mode to performs a right outer join of two or more relations based on Join keys.<br /><b class="cBold">full-outer-join</b>: Select this mode to combine the effect of applying both left and right outer joins.<br />For further information about inner join and outer join, see:<br /><a href="http://en.wikipedia.org/wiki/Join_%28SQL%29">http://en.wikipedia.org/wiki/Join_%28SQL%29</a>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3954395"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3954400"> </a><div class="pCellHeading">
+<em class="cEmphasis">Optimize the join</em>
+</div>
+</td>
+    <td><a name="wp3954402"> </a><div class="pCellBody">
+Select this check box to optimize the performance of joins using <b class="cBold">REPLICATED</b>, <b class="cBold">SKEWED</b>, or <b class="cBold">MERGE</b> joins. For further information about optimized joins, see:<br /><a href="http://pig.apache.org/docs/r0.8.0/piglatin_ref1.html#Specialized+Joins">http://pig.apache.org/docs/r0.8.0/piglatin_ref1.html#Specialized+Joins</a>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3954414"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954419"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use partitioner</em>
+</div>
+</td>
+    <td><a name="wp3954421"> </a><div class="pCellBody">
+Select this check box to specify the Hadoop Partitioner that controls the partitioning of the keys of the intermediate map-outputs. For further information about the usage of Hadoop Partitioner, see:<br /><a href="http://hadoop.apache.org/common/docs/r0.20.2/api/org/apache/hadoop/mapred/Partitioner.html">http://hadoop.apache.org/common/docs/r0.20.2/api/org/apache/hadoop/mapred/Partitioner.html</a>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3954424"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954429"> </a><div class="pCellHeading">
+<em class="cEmphasis">Increase parallelism</em>
+</div>
+</td>
+    <td><a name="wp3954431"> </a><div class="pCellBody">
+Select this check box to set the number of reduce tasks for the <b class="cBold">MapReduce</b> Jobs
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3954439"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3954443"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3954446"> </a><div class="pCellBody">
+Select this check box to gather the Job processing metadata at the Job level as well as at each component level. 
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3954451"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3954453"> </a><div class="pCellBody">
+This component is commonly used as intermediate step together with input component and output component.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3954460"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3954462"> </a><div class="pCellBody">
+Knowledge of Pig scripts is required.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tPigFilterRow_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tPigJoin_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

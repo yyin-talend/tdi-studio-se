@@ -1,0 +1,401 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:32:42">
+    <title>tFileInputPositional </title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFileInputMSXML_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputPositional_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3518509"> </a><h2 class="pHeading1">
+tFileInputPositional 
+</h2>
+<a name="wp3518518"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tFileInputPositional.png" id="wp3518513" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3518525"> </a><h2 class="pHeading2">
+tFileInputPositional properties
+</h2>
+<a name="wp3518850"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3518533table3518528">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3518533"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3518535"> </a><div class="pCellBody">
+File/Input
+</div>
+</td>
+    <td><a name="wp3518544"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/Components-07-41-029.jpg" height="59" width="112" id="wp3518540" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3518549"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3518554"> </a><div class="pCellBody">
+<b class="cBold">tFileInputPositional</b> reads a given file row by row and extracts fields based on a pattern.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3518561"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3518563"> </a><div class="pCellBody">
+This component opens a file and reads it row by row to split them up into fields then sends fields as defined in the schema to the next job component, via a Row link.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3518570"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3518575"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp3518583"> </a><div class="pCellBody">
+Either <b class="cBold">Built-in</b> or <b class="cBold">Repository</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3518585"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518587"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518592"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: No property data stored centrally.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3518594"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518596"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518601"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the repository file where the properties are stored. The fields that follow are completed automatically using the data retrieved.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3518603"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518608"> </a><div class="pCellHeading">
+<em class="cEmphasis">File Name/Stream</em>
+</div>
+</td>
+    <td><a name="wp3518613"> </a><div class="pCellBody">
+<b class="cBold">File name</b>: Path and name of the output file and/or variable to be used<br /><b class="cBold">Stream</b>: Data flow to be processed. The data must be added to the flow so that it can be collected by <b class="cBold">tFileInputPositional</b> via the <em class="cEmphasis">INPUT_STREAM</em> variable in the autocompletion list (<b class="cBold">Ctrl+Space</b>).<br /> <br />Related topic:<em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3518636"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518641"> </a><div class="pCellHeading">
+<em class="cEmphasis">Row separator</em>
+</div>
+</td>
+    <td><a name="wp3518643"> </a><div class="pCellBody">
+String (ex: &quot;\n&quot;on Unix) to distinguish rows.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3734078"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3734080"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use byte length as the cardinality</em>
+</div>
+</td>
+    <td><a name="wp3734082"> </a><div class="pCellBody">
+Select this check box to enable the support of double-byte character to this component. JDK 1.6 is required for this feature.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3518645"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518650"> </a><div class="pCellHeading">
+<em class="cEmphasis">Customize</em>
+</div>
+</td>
+    <td><a name="wp3518652"> </a><div class="pCellBody">
+Select this check box to customize the data format of the positional file and define the table columns:<br /><b class="cBold">Column</b>: Select the column you want to customize.<br /><b class="cBold">Size</b>: Enter the column size.<br /><b class="cBold">Padding char</b>: Type in between inverted commas the padding character used in order for it to be removed from the field. A space by default.<br /><b class="cBold">Alignment</b>: Select the appropriate alignment parameter.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3518666"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518671"> </a><div class="pCellHeading">
+<em class="cEmphasis">Pattern</em>
+</div>
+</td>
+    <td><a name="wp3518673"> </a><div class="pCellBody">
+Length values separated by commas, interpreted as a string between quotes. Make sure the values entered in this field are consistent with the schema defined.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3518675"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518680"> </a><div class="pCellHeading">
+<em class="cEmphasis">Skip empty rows</em>
+</div>
+</td>
+    <td><a name="wp3518682"> </a><div class="pCellBody">
+Select this check box to skip empty rows.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3518684"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518689"> </a><div class="pCellHeading">
+<em class="cEmphasis">Uncompress as zip file</em>
+</div>
+</td>
+    <td><a name="wp3518691"> </a><div class="pCellBody">
+Select this check box to uncompress the input file.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3518693"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518698"> </a><div class="pCellHeading">
+<em class="cEmphasis">Die on error</em>
+</div>
+</td>
+    <td><a name="wp3518700"> </a><div class="pCellBody">
+Select this check box to stop the execution of the Job when an error occurs. Clear the check box to skip the row on error and complete the process for error-free rows. If needed, you can collect the rows on error using a <b class="cBold">Row</b> &gt; <b class="cBold">Reject</b> link.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3518708"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518713"> </a><div class="pCellHeading">
+<em class="cEmphasis">Header</em>
+</div>
+</td>
+    <td><a name="wp3518715"> </a><div class="pCellBody">
+Number of rows to be skipped in the beginning of file
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3518717"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518722"> </a><div class="pCellHeading">
+<em class="cEmphasis">Footer</em>
+</div>
+</td>
+    <td><a name="wp3518724"> </a><div class="pCellBody">
+Number of rows to be skipped at the end of the file.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3518726"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518731"> </a><div class="pCellHeading">
+<em class="cEmphasis">Limit</em>
+</div>
+</td>
+    <td><a name="wp3518733"> </a><div class="pCellBody">
+Maximum number of rows to be processed. If Limit = 0, no row is read or processed.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3518735"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518743"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3518745"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. The schema is either built-in or remote in the Repository. <br />
+</div>
+<a name="wp4263754"> </a><p class="pBodyRelative">
+</p>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="../Images/Components-07-41-030.jpg" height="47" width="47" align="left" id="wp4263750" border="0" hspace="0" vspace="0"/></table></div><p class="pBodyRelative">
+This component offers the advantage of the dynamic schema feature. This allows  you to retrieve unknown columns from source files or to copy batches of columns from a source without mapping each column individually. For further information about dynamic schemas, see <em class="cEmphasis">Dynamic schema</em> in the <b class="cBold">Talend Integration Suite Studio</b> User Guide.
+</p>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3518747"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518749"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518754"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <em class="cEmphasis">How to set a built-in schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3518765"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518767"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518772"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already exists and is stored in the Repository, hence can be reused in various projects and job flowcharts. Related topic: <em class="cEmphasis">How to set a repository schema</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3518786"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp3518790"> </a><div class="pCellHeading">
+<em class="cEmphasis">Needed to process rows longer than 100 000 characters</em>
+</div>
+</td>
+    <td><a name="wp3518793"> </a><div class="pCellBody">
+Select this check box if the rows to be processed in the input file are longer than 100 000 characters.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4270969"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4270979"> </a><div style="color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 8pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<em class="cEmphasis">Advanced separator (for numbers)</em>
+</div>
+</td>
+    <td><a name="wp4270983"> </a><div class="pCellBody">
+Select this check box to modify the separators used for numbers:<br /><b class="cBold">Thousands separator</b>: define separators for thousands.<br /><b class="cBold">Decimal separator</b>: define separators for decimals.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3518804"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518809"> </a><div class="pCellHeading">
+<em class="cEmphasis">Trim all column</em>
+</div>
+</td>
+    <td><a name="wp3518811"> </a><div class="pCellBody">
+Select this check box to remove leading and trailing whitespaces from defined columns.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3518813"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518818"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding</em>
+</div>
+</td>
+    <td><a name="wp3518823"> </a><div class="pCellBody">
+Select the encoding type from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3518825"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3518830"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp3518832"> </a><div class="pCellBody">
+Select this check box to gather the job processing metadata at a job level as well as at each component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3518837"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3518839"> </a><div class="pCellBody">
+Use this component to read a file and separate fields using a position separator value. You can also create a rejection flow using a <b class="cBold">Row &gt; Reject</b> link to filter the data which doesn&#39;t correspond to the type defined.  For an example of how to use these two links, see <a href="tExtractXMLField_Scenario.html#wp2755292"><em class="cEmphasis">Scenario 2: Extracting correct and erroneous data from an XML field in a delimited file</em></a>.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFileInputMSXML_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputPositional_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

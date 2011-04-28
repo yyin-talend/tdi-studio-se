@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="04/28/11 19:32:42">
+    <title>tFileInputProperties</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFileInputPositional_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputProperties_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp3519080"> </a><h2 class="pHeading1">
+tFileInputProperties
+</h2>
+<a name="wp3519089"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="../Images/tFileInputProperties_icon32_white.png" id="wp3519084" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp3519097"> </a><h2 class="pHeading2">
+tFileInputProperties properties
+</h2>
+<a name="wp3519224"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp3519105table3519100">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3519105"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp3519107"> </a><div class="pCellBody">
+File/Input
+</div>
+</td>
+    <td><a name="wp3519116"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="../Images/Components-07-43-031.jpg" height="59" width="112" id="wp3519112" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3519121"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3519126"> </a><div class="pCellBody">
+<b class="cBold">tFileInputProperties</b> reads a text file row by row and extracts the fields.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3519133"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3519138"> </a><div class="pCellBody">
+<b class="cBold">tFileInputProperties</b> opens a text file and reads it row by row then separates the fields according to the model key = value.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3519142"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp3519149"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema </em>and <em class="cEmphasis">Edit Schema</em>
+</div>
+</td>
+    <td><a name="wp3519152"> </a><div class="pCellBody">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component. <br />The schema is either built-in or remotely stored in the Repository but for this component, the schema is read-only. It is made of two column, <em class="cEmphasis">Key</em> and <em class="cEmphasis">Value</em>, corresponding to the parameter name and the parameter value to be copied.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3519160"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3519165"> </a><div class="pCellHeading">
+<em class="cEmphasis">File format</em>
+</div>
+</td>
+    <td><a name="wp3519173"> </a><div class="pCellBody">
+Select from the list your file format, either: <b class="cBold">.properties</b> or <b class="cBold">.ini</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3519175"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3519177"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3519182"> </a><div class="pCellBody">
+<b class="cBold">.properties</b>: data in the configuration file is written in two lines and structured according to the following way: key = value.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3519184"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3519186"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3519191"> </a><div class="pCellBody">
+<b class="cBold">.ini</b>: data in the configuration file is written in two lines and structured according to the following way: key = value and re-grouped in sections.<br /><b class="cBold">Section Name</b>: enter the section name on which the iteration is based.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp3519196"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp3519201"> </a><div class="pCellHeading">
+<em class="cEmphasis">File Name</em>
+</div>
+</td>
+    <td><a name="wp3519205"> </a><div class="pCellBody">
+Name or path to the file to be processed. Related topic: <em class="cEmphasis">How to define variables from the Component view</em> of <b class="cBold">Talend Integration Suite Studio</b> <b class="cBold">User Guide</b>.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp4271043"> </a><div class="pCellBody">
+<b class="cBold">Advanced settings</b>
+</div>
+</td>
+    <td><a name="wp4271017"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding</em>
+</div>
+</td>
+    <td><a name="wp4271024"> </a><div class="pCellBody">
+Select the encoding type from the list or select <b class="cBold">Custom</b> and define it manually. This field is compulsory for DB data handling.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp4271028"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp4271035"> </a><div class="pCellHeading">
+<em class="cEmphasis">tStatCatcher Statistics</em>
+</div>
+</td>
+    <td><a name="wp4271038"> </a><div class="pCellBody">
+Select this check box to gather the job processing metadata at a job level as well as at each component level.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp3519217"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp3519219"> </a><div class="pCellBody">
+Use this component to read a text file and separate data according to the structure key = value.
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tFileInputPositional_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileInputProperties_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>
