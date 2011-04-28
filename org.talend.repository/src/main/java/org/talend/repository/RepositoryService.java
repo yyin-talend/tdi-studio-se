@@ -56,6 +56,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
@@ -658,6 +659,10 @@ public class RepositoryService implements IRepositoryService {
         return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn, defaultContext, null);
     }
 
+    public void setMetadataConnectionParameter(DatabaseConnection dbConn, IMetadataConnection metaConn) {
+        DBConnectionContextUtils.setMetadataConnectionParameter(dbConn, metaConn);
+    }
+
     public DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn, boolean defaultContext,
             String selectedContext) {
         return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn, defaultContext, selectedContext);
@@ -854,4 +859,5 @@ public class RepositoryService implements IRepositoryService {
     public Set<MetadataTable> getTablesFromSpecifiedDataPackage(DatabaseConnection dbconn) {
         return ProjectNodeHelper.getTablesFromSpecifiedDataPackage(dbconn);
     }
+
 }
