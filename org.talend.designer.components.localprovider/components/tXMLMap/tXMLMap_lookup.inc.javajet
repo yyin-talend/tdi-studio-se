@@ -91,8 +91,6 @@ skeleton="tXMLMap_java.skeleton"
 						    boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
 			//			    if(javaPrimitiveKeyColumn) {
 			//			         	hasPrimitiveKey = true;
-						}else {
-					  		isXpathFromLookup = false;
 						}
 
 			    }
@@ -163,13 +161,9 @@ skeleton="tXMLMap_java.skeleton"
 
 		} 
 %>
-	<%if(!isXpathFromLookup){%>
-			if(!tHash_Lookup_<%= tableName %>.hasNext()){
-			
-				<%= rejectedInnerJoin %> = true;
-			}
+<% if(!isXpathFromLookup){ %>
 		} // End of RejectInnerJoin/RejectedDocInnerJoin
-	<%}%>
+<% } %>
 	<%
 		if(hasOutgoingConnection){
 	%>
