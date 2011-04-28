@@ -10,8 +10,5 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 %>
-if (count_<%=cid%> > 0) {
-    bulkloadClient_<%=cid %>.load(new ByteArrayInputStream(xmlChunks_<%=cid %>.toString().getBytes()));
-    count_<%=cid%> = 0;
-}
 bulkloadClient_<%=cid %> = null;
+inputStreamMerger_<%=cid%>.close(); 

@@ -27,14 +27,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
 %>
 
-xmlChunks_<%=cid%>.append(<%=conn.getName()%>.<%=xmlField %>);
 count_<%=cid%>++;
-if (count_<%=cid%> == <%=arraySize%>) {
-    bulkloadClient_<%=cid %>.load(new ByteArrayInputStream(xmlChunks_<%=cid %>.toString().getBytes()));
-    xmlChunks_<%=cid %>.setLength(0);
-    count_<%=cid%> = 0;
+if (count_<%=cid%> > 0 && count_<%=cid%> % <%=arraySize%> == 0) {
+	inputStreamMerger_<%=cid%>.close();
+	inputStreamMerger_<%=cid%> = bulkloadClient_<%=cid %>.load();
 }
 
+inputStreamMerger_<%=cid%>.push(new java.io.ByteArrayInputStream(<%=conn.getName()%>.<%=xmlField %>.toString().getBytes()));
 <%
 			}//4
 		}//3

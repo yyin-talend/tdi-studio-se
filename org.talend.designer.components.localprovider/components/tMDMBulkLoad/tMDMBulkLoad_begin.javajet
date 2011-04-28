@@ -23,8 +23,7 @@ imports="
 	boolean isGenerateId = ("true").equals(ElementParameterParser.getValue(node,"__GENERATE_ID__"));
 	
 %>
-org.talend.mdm.bulkload.client.BulkloadClient bulkloadClient_<%=cid %> = 
-new org.talend.mdm.bulkload.client.BulkloadClient(<%=mdmUrl%>, <%=username %>, <%=password%>, <%=version==null || "".equals(version)? "null":version%>, <%=dataCluster %>, <%=dataEntity %>, <%=dataModule%>);
+org.talend.mdm.bulkload.client.BulkloadClient bulkloadClient_<%=cid %> = new org.talend.mdm.bulkload.client.BulkloadClient(<%=mdmUrl%>, <%=username %>, <%=password%>, <%=version==null || "".equals(version)? "null":version%>, <%=dataCluster %>, <%=dataEntity %>, <%=dataModule%>);
 bulkloadClient_<%=cid %>.setOptions(new org.talend.mdm.bulkload.client.BulkloadOptions(<%=isGenerateId %>, <%=validate %>, <%=arraySize%>));
 int count_<%=cid%> = 0;
-StringBuffer xmlChunks_<%=cid%> = new StringBuffer();
+org.talend.mdm.bulkload.client.InputStreamMerger inputStreamMerger_<%=cid%> = bulkloadClient_<%=cid %>.load();
