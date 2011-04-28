@@ -1796,7 +1796,8 @@ public class Node extends Element implements IGraphicalNode {
 
     public IMetadataTable getMetadataTable(String metaName) {
         for (int i = 0; i < metadataList.size(); i++) {
-            if (metadataList.get(i).getTableName().equals(metaName)) {
+            String tableName = metadataList.get(i).getTableName();
+            if (tableName != null && tableName.equals(metaName)) {
                 return metadataList.get(i);
             }
         }

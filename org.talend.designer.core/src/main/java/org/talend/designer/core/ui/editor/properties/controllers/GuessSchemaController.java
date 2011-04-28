@@ -412,6 +412,10 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     columns.add(oneColum);
                 }
                 IMetadataTable tempMetatable = new MetadataTable();
+                /* for bug 20973 */
+                if (tempMetatable.getTableName() == null) {
+                    tempMetatable.setTableName(inputNode.getUniqueName());
+                }
                 IMetadataTable outputMetaCopy, originaleOutputTable;
 
                 String propertyName = (String) btn.getData(PARAMETER_NAME);
