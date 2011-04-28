@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
@@ -369,10 +370,10 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         return routinesPath;
     }
 
-    private void initModuleFolder(IProject javaProject, Project project) throws CoreException {
+    private void initModuleFolder(IProject javaProject, Project project, String directory) throws CoreException {
         IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
                 + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$
-                + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY);
+                + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/" + directory);
         if (!rep.exists()) {
             rep.create(true, true, null);
         }
@@ -395,20 +396,26 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncRoutine(org.talend .core.model.properties.RoutineItem)
      */
     public IFile syncModule(File[] modules) throws SystemException {
+        return syncModules(modules, "");
+    }
+
+    private IFile syncModules(File[] modules, String directory) throws SystemException {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
-            initModuleFolder(javaProject, project);
+            initModuleFolder(javaProject, project, directory);
 
             for (File module : modules) {
                 if (!module.isDirectory()) {
                     IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
                             + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$
-                            + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/" + module.getName()); //$NON-NLS-1$
+                            + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/" + directory + module.getName()); //$NON-NLS-1$
 
                     copyFile(module, file);
+                } else if (!module.getName().startsWith(".") && !FilesUtils.isSVNFolder(module.getName())) {
+                    syncModules(module.listFiles(), directory + module.getName() + "/");
                 }
             }
         } catch (CoreException e) {

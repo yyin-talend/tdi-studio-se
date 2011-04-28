@@ -502,6 +502,21 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY, systemRoutinesFileUrls);
             }
 
+            rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY
+                    + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + PATH_SEPARATOR + "api"); //$NON-NLS-1$
+            if (rep.exists()) {
+                for (IResource fileResource : rep.members()) {
+                    if (fileResource instanceof IFile
+                            && ((IFile) fileResource).getFileExtension().equals(ECodeLanguage.JAVA.getExtension())) {
+                        systemRoutinesFileUrls.add(fileResource.getLocationURI().toURL());
+                    }
+                }
+
+                resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY
+                        + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + PATH_SEPARATOR + "api", //$NON-NLS-1$
+                        systemRoutinesFileUrls);
+            }
+
             List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
             collectRoutines.addAll(collectRoutines(process));
 
