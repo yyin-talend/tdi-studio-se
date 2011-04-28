@@ -157,6 +157,8 @@ skeleton="tXMLMap_java.skeleton"
     for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
     	nb_line_<%=cid%>++;
     	boolean <%= rejectedDocInnerJoin %> = false;
+		<%=mainRowRejected%>=false;
+		
     	treeNodeAPI_<%=cid %>.clear();
 <%
 		// find all these leaf nodes with output connectors in order to get the xpath array
@@ -270,30 +272,76 @@ for(OutputTreeNode tableEntry : tableEntries) {
 //###############################
 //# Outputs initialization
 <%
+		boolean isInnerJoinReject = false;
+		boolean isOutputReject = false;
 
 //      EList<OutputXmlTree> outputTablesList = new ArrayList<OutputXmlTree>(outputTables);
     // constants
+%>
+	boolean rejected_<%=cid%> = true;
+	boolean alreadyMapped_<%=cid%> = false;
+<%
     for (OutputXmlTree table : outputTables) {
         EList<OutputTreeNode> tableEntries = table.getNodes();
         if (tableEntries == null || nameToOutputConnection.get(table.getName()) == null) {
             continue;
         }
         String tableName1 = table.getName();
-        
+        isInnerJoinReject = table.isRejectInnerJoin();
+		isOutputReject = table.isReject();
         String instanceVarName = tableName1 + "__" + node.getUniqueName();
         String className = tableName1 + "Struct";
 %>
 	<%= tableName1 %> = null;
 	//output table :'<%=tableName1%>'
 <%	if(!isXpathFromLookup){%>
-
-	if(!<%=rejectedInnerJoin %>){
+<%
+		if(!isInnerJoinReject && !isOutputReject) {
+%>
+				if(!<%=rejectedInnerJoin %>){
+<%
+		} else if(isInnerJoinReject && !isOutputReject) {
+%>
+				if(<%=rejectedInnerJoin %>){
+					rejected_<%=cid%> = false;
+<%
+		} else if(!isInnerJoinReject && isOutputReject) {
+%>
+				if(rejected_<%=cid%>){
+<%
+		} else if(isInnerJoinReject && isOutputReject) {
+%>
+				if(<%=rejectedInnerJoin %> || rejected_<%=cid%>){
+<%
+		}
+%>
 
 <%	} else if(isXpathFromLookup && containDocType ){ %>
-	if(!<%=rejectedDocInnerJoin %>){
+<%
+		if(!isInnerJoinReject && !isOutputReject) {
+%>
+				if(!<%=rejectedDocInnerJoin %>){
+<%
+		} else if(isInnerJoinReject && !isOutputReject) {
+%>
+				if(<%=rejectedDocInnerJoin %> && !alreadyMapped_<%=cid%>){
+					rejected_<%=cid%> = false;
+<%
+		} else if(!isInnerJoinReject && isOutputReject) {
+%>
+				if(!<%=rejectedDocInnerJoin %> && rejected_<%=cid%> && !alreadyMapped_<%=cid%>){
+<%
+		} else if(isInnerJoinReject && isOutputReject) {
+%>
+				if((<%=rejectedDocInnerJoin %> || rejected_<%=cid%>) && !alreadyMapped_<%=cid%>){
+<%
+		}
+%>
 <% } %>
 <%  if(table.isActivateExpressionFilter() && table.getExpressionFilter() != null && !("").equals(table.getExpressionFilter())){ %>
 	if( <%=table.getExpressionFilter()%> ){
+		rejected_<%=cid%> = false;
+		alreadyMapped_<%=cid%> = true;
 <% } %>
 <%
 	for(OutputTreeNode tableEntry : tableEntries) {
@@ -330,7 +378,9 @@ for(OutputTreeNode tableEntry : tableEntries) {
 %>
 <%= tableName1 %> = <%= tableName1 %>_tmp;
 <% if(table.isActivateExpressionFilter() && table.getExpressionFilter() != null && !("").equals(table.getExpressionFilter())){ %>
-} // close for filter
+} else {
+	rejected_<%=cid%> = true;
+}// close for filter
 <% } %>
 
 <%	if(!isXpathFromLookup){%>
