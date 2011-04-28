@@ -180,7 +180,7 @@ skeleton="tXMLMap_java.skeleton"
 		    treeNodeAPI_<%=cid %>.put("<%=xpathTypeMap.get(str) %>", str_<%=cid %>);
 <%
 		}
-		//	break;
+		
 	   }// if(document)
 	}// for()
 %>
@@ -289,22 +289,26 @@ for(OutputTreeNode tableEntry : tableEntries) {
 
 	if(!<%=rejectedInnerJoin %>){
 
-<%	} else { %>
+<%	} else if(isXpathFromLookup && containDocType ){ %>
 	if(!<%=rejectedDocInnerJoin %>){
+<% } %>
+<%  if(table.isActivateExpressionFilter() && table.getExpressionFilter() != null && !("").equals(table.getExpressionFilter())){ %>
+	if( <%=table.getExpressionFilter()%> ){
 <% } %>
 <%
 	for(OutputTreeNode tableEntry : tableEntries) {
+		
 %>
-<%
+		
+			
+<%		
 		if(("id_Document").equals(tableEntry.getType())){
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(tableEntry.getType(), tableEntry.isNullable());
 %>
-			
-
-		if(<%= tableName1 %>_tmp.<%=tableEntry.getName() %> == null){
-			<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = new <%=typeToGenerate %>();
-			<%= tableName1 %>_tmp.<%=tableEntry.getName() %>.setDocument(gen_Doc_<%=table.getName() %>_<%=cid %>.getDocument());
-		}
+			if(<%= tableName1 %>_tmp.<%=tableEntry.getName() %> == null){
+				<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = new <%=typeToGenerate %>();
+				<%= tableName1 %>_tmp.<%=tableEntry.getName() %>.setDocument(gen_Doc_<%=table.getName() %>_<%=cid %>.getDocument());
+			}
 <%
 		} else {
 			String resultExpression = "";
@@ -318,14 +322,20 @@ for(OutputTreeNode tableEntry : tableEntries) {
 <%	
 		}
 	}
+
 %>
-	<%= tableName1 %> = <%= tableName1 %>_tmp;
+
 <%	
 }//for (OutputXmlTree table : outputTables) {
 %>
+<%= tableName1 %> = <%= tableName1 %>_tmp;
+<% if(table.isActivateExpressionFilter() && table.getExpressionFilter() != null && !("").equals(table.getExpressionFilter())){ %>
+} // close for filter
+<% } %>
+
 <%	if(!isXpathFromLookup){%>
 } // end for rejection
-<% } else {%>
+<% } else if(isXpathFromLookup && containDocType ){%>
 } // end for doc rejection
 <% } %>
 <%
