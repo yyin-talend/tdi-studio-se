@@ -339,7 +339,7 @@ for(OutputTreeNode tableEntry : tableEntries) {
 %>
 <% } %>
 <%  if(table.isActivateExpressionFilter() && table.getExpressionFilter() != null && !("").equals(table.getExpressionFilter())){ %>
-	if( <%=table.getExpressionFilter()%> ){
+	if( <%=matchXmlTreeExpr!=null?matchXmlTreeExpr.generateExprCode(table.getExpressionFilter()):false%> ){
 		rejected_<%=cid%> = false;
 		alreadyMapped_<%=cid%> = true;
 <% } %>
@@ -362,8 +362,6 @@ for(OutputTreeNode tableEntry : tableEntries) {
 			String resultExpression = "";
 			if(matchXmlTreeExpr != null)
 				resultExpression = matchXmlTreeExpr.generateExprCode(tableEntry.getExpression());
-%>
-<%
 		if(resultExpression!=null && !("").equals(resultExpression)){
 %>
 			<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = <%=resultExpression %>;

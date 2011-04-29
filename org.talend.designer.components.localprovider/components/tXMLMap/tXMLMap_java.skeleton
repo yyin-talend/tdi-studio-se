@@ -36,32 +36,46 @@ public class CLASS {
 			if(expression==null || ("").equals(expression)) {
 				return "";
 			}
-//			System.out.println("expression=" + expression);
-			if(expression.indexOf("[")>-1 && (expression.indexOf(".") > expression.indexOf("[")) 
-				&& (expression.indexOf(".") < expression.indexOf(":")) && (expression.indexOf(":") < expression.indexOf("]")) ){
-				// has the input tree path expression: [row1.doc:/root/subRoot]
+	
+			String currentExpression = expression;
+			String tmpXpath = "";
+			java.util.regex.Pattern expressionFromDoc = java.util.regex.Pattern.compile("\\[.*\\..*:.*\\]");
+			java.util.regex.Matcher matcherFromDoc;
+			
+			boolean end = false;
+			
+			if(expression.indexOf("[")>-1) {
+				strBuilder.append(expression.substring(0, expression.indexOf("[")));
+				currentExpression = currentExpression.substring(currentExpression.indexOf("["), currentExpression.length());
 				
-	// here we need to use a loop to query all the xpath in the expression
+				while(currentExpression.length()>0 && !end) {
+					expression = currentExpression.substring(0, currentExpression.indexOf("]")+1);
+					currentExpression = currentExpression.substring(expression.length(), currentExpression.length());
+					matcherFromDoc = expressionFromDoc.matcher(expression);
+					if(matcherFromDoc.matches()) {
+						tmpXpath = expression.substring(1, expression.length()-1);
+						if("id_String".equals(pathTypeMap.get(tmpXpath)) || "id_Object".equals(pathTypeMap.get(tmpXpath))){
+							strBuilder.append("treeNodeAPI_"+cid+".get_String(\""+ tmpXpath + "\")");
+						} else if("id_Date".equals(pathTypeMap.get(tmpXpath))) {
+							strBuilder.append("treeNodeAPI_"+cid+".get_Date(\""+ tmpXpath + "\" , \"" + pathPatternMap.get(tmpXpath) + "\")");
+						} else if("id_byte[]".equals(pathTypeMap.get(tmpXpath))) {
+							strBuilder.append("treeNodeAPI_"+cid+".get_Bytes(\""+ tmpXpath + "\")");
+						} else {
+							strBuilder.append("treeNodeAPI_"+cid+".get_" + pathTypeToGenMap.get(tmpXpath) + "(\""+ tmpXpath + "\")");
+						}				
+					} else {
+						strBuilder.append(expression);
+					}
+					if(currentExpression.indexOf("[")>-1) {
+						strBuilder.append(currentExpression.substring(0, currentExpression.indexOf("[")));
+						currentExpression = currentExpression.substring(currentExpression.indexOf("["), currentExpression.length());
+					} else {
+						strBuilder.append(currentExpression);
+						end=true;
+					}
 				
-				int index_start = expression.indexOf("[");
-				int index_end = expression.indexOf("]", index_start+1);
-				String tmpXpath = expression.substring(index_start + 1, index_end );
-				if(index_start>0){
-					strBuilder.append(expression.substring(0,index_start-1));
 				}
-				if("id_String".equals(pathTypeMap.get(tmpXpath)) || "id_Object".equals(pathTypeMap.get(tmpXpath))){
-					strBuilder.append("treeNodeAPI_"+cid+".get_String(\""+ tmpXpath + "\")");
-				} else if("id_Date".equals(pathTypeMap.get(tmpXpath))) {
-					strBuilder.append("treeNodeAPI_"+cid+".get_Date(\""+ tmpXpath + "\" , \"" + pathPatternMap.get(tmpXpath) + "\")");
-				} else if("id_byte[]".equals(pathTypeMap.get(tmpXpath))) {
-					strBuilder.append("treeNodeAPI_"+cid+".get_Bytes(\""+ tmpXpath + "\")");
-				} else {
-					strBuilder.append("treeNodeAPI_"+cid+".get_" + pathTypeToGenMap.get(tmpXpath) + "(\""+ tmpXpath + "\")");
-				}
-				if(index_end+1 < expression.length()) {
-					strBuilder.append(expression.substring(index_end+1));
-				}
-			} else { // there is no xpath in the expression
+			} else {
 				strBuilder.append(expression);
 			}
 			return strBuilder.toString();
