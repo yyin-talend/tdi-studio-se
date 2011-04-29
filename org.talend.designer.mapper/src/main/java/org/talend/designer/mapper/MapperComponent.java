@@ -465,7 +465,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         ExternalMapperData data = mapperMain.buildExternalData();
         if (mapperMain != null && data != null) {
             if (externalData != null) {
-                MapperHelper.saveDataToEmf(externalData, emfMapperData);
+                MapperHelper.saveDataToEmf(data, emfMapperData);
             }
         }
         return emfMapperData;

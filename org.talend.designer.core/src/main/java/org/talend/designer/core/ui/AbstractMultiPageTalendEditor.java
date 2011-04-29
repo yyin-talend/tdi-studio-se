@@ -508,7 +508,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 }
             }
 
-        } else if (newPageIndex == 2 && oldPageIndex == 0) {
+        } else if (newPageIndex == 2) {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
                 ICreateXtextProcessService convertJobtoScriptService = CorePlugin.getDefault().getCreateXtextProcessService();
 
