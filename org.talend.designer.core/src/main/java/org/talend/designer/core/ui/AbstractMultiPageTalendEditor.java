@@ -121,6 +121,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletUtil;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
@@ -1339,6 +1340,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             // fix for bug 12524 for db repository
             // property = repFactory.reload(property);
             repFactory.unlock(property.getItem());
+            new JobletUtil().makeSureUnlockJoblet(getProcess());
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         } catch (LoginException e) {

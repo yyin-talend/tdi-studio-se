@@ -1105,15 +1105,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     if (container instanceof JobletContainer) {
                         JobletContainer jobletCon = (JobletContainer) container;
                         saveNode(fileFact, processType, nList, cList, ((NodeContainer) container).getNode(), factory);
-                        if (!jobletCon.isCollapsed()) {
+                        // if (!jobletCon.isCollapsed()) {
 
-                            boolean needUpdate = checkModify(jobletCon);
-                            if (needUpdate) {
-                                saveJobletNode(jobletCon);
-                            }
-
-                            addNewJobletNode(jobletCon);
+                        boolean needUpdate = checkModify(jobletCon);
+                        if (needUpdate) {
+                            saveJobletNode(jobletCon);
                         }
+
+                        addNewJobletNode(jobletCon);
+                        // }
                     } else {
                         saveNode(fileFact, processType, nList, cList, container.getNode(), factory);
                     }
@@ -1122,12 +1122,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             if (element instanceof JobletContainer) {
                 JobletContainer jobletCon = (JobletContainer) element;
                 saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
-                if (!jobletCon.isCollapsed()) {
-                    boolean needUpdate = checkModify(jobletCon);
-                    if (needUpdate) {
-                        saveJobletNode(jobletCon);
-                    }
+                // if (!jobletCon.isCollapsed()) {
+                boolean needUpdate = checkModify(jobletCon);
+                if (needUpdate) {
+                    saveJobletNode(jobletCon);
                 }
+                // }
             } else if (element instanceof NodeContainer) {
                 saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
             } else if (element instanceof Note) {

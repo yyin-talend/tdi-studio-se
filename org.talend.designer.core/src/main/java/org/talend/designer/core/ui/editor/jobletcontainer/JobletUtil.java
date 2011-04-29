@@ -10,6 +10,9 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.process.EConnectionType;
@@ -26,6 +29,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.NodeConnector;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
@@ -318,6 +322,68 @@ public class JobletUtil {
         int height = location.y + size.height;
         Rectangle rec = new Rectangle(0, 0, width, height);
         return rec;
+    }
+
+    public void makeSureUnlockJoblet(IProcess2 process) {
+        List<? extends INode> nodeList = process.getGraphicalNodes();
+        for (INode node : nodeList) {
+            if (((Node) node).isJoblet()) {
+                if (!((Node) node).getNodeContainer().isCollapsed()) {
+                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                            IJobletProviderService.class);
+                    if (service != null) {
+                        service.unlockJoblet(node);
+                    }
+                }
+            }
+        }
+
+    }
+
+    public boolean needReadOnlyJoblet(JobletProcessItem jobletItem) {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IEditorPart[] editors = page.getEditors();
+        for (int i = 0; i < editors.length; i++) {
+            if (editors[i] instanceof AbstractMultiPageTalendEditor) {
+                List<? extends INode> nodeList = ((AbstractMultiPageTalendEditor) editors[i]).getProcess().getGraphicalNodes();
+                for (INode node : nodeList) {
+                    if (((Node) node).isJoblet() && jobletItem.getProperty() != null) {
+                        if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())) {
+                            boolean haveLock = jobletItem.getState().isLocked();
+                            if (haveLock) {
+                                return true;
+                            }
+
+                        }
+
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean openedInJob(JobletProcessItem jobletItem) {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IEditorPart[] editors = page.getEditors();
+        for (int i = 0; i < editors.length; i++) {
+            if (editors[i] instanceof AbstractMultiPageTalendEditor) {
+                List<? extends INode> nodeList = ((AbstractMultiPageTalendEditor) editors[i]).getProcess().getGraphicalNodes();
+                for (INode node : nodeList) {
+                    if (((Node) node).isJoblet() && jobletItem.getProperty() != null) {
+                        if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())) {
+                            boolean haveOpened = !((Node) node).getNodeContainer().isCollapsed();
+                            if (haveOpened) {
+                                return true;
+                            }
+
+                        }
+
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }
