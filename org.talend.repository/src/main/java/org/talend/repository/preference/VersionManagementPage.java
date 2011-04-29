@@ -74,6 +74,7 @@ import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
@@ -556,8 +557,13 @@ public class VersionManagementPage extends ProjectSettingPage {
                         object.getOldVersion(), RelationshipItemBuilder.JOB_RELATION);
 
                 for (RelationshipItemBuilder.Relation relation : relations) {
+                    IRepositoryViewObject obj = null;
                     try {
-                        IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
+                        if (RelationshipItemBuilder.ROUTINE_RELATION.equals(relation.getType())) {
+                            obj = RoutinesUtil.getRoutineFromName(relation.getId());
+                        } else {
+                            obj = factory.getLastVersion(relation.getId());
+                        }
                         if (obj != null) {
                             for (ItemVersionObject obj2 : versionObjects) {
                                 if (obj2.getItem() == obj.getProperty().getItem()) {
