@@ -1,22 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?NLS TYPE="org.eclipse.help.toc"?>
+<?xml version="1.0" encoding="ISO-8859-15"?>
 
-<toc label="Documentation utilisateur Talend">
-    <topic label="Ressources en ligne">
-            <topic label="Guide d'installation" href="http://talendforge.org/wiki/doku.php?id=doc:installation_guide"/>
-        <topic label="Guide d'utilisateur" href="http://www.talend.com/downloads-talend.htm#documentation" />
-        <topic label="Tutorial (flash)" href="http://www.talend.com/tos/tutorials/menu.php" />
-    </topic>
-
-    <topic label="Perl" href="guide/perl/perlfunc.html">
-        <anchor id="per_function"/>
-    </topic>
-
-    <topic label="Composants">
-  
+<topic label="Components">
   <topic label="tAccessBulkExec">
     <topic label="Properties" href="guide/components/fr/tAccessBulkExec_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tAccessBulkExec_Scenario.html"/>
+  </topic>
+  <topic label="tAccessCommit">
+    <topic label="Properties" href="guide/components/fr/tAccessCommit_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tAccessCommit_Scenario.html"/>
+  </topic>
+  <topic label="tAccessConnection">
+    <topic label="Properties" href="guide/components/fr/tAccessConnection_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tAccessConnection_Scenario.html"/>
   </topic>
   <topic label="tAccessInput">
     <topic label="Properties" href="guide/components/fr/tAccessInput_Prop.html"/>
@@ -34,6 +29,10 @@
     <topic label="Properties" href="guide/components/fr/tAccessOutputBulkExec_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tAccessOutputBulkExec_Scenario.html"/>
   </topic>
+  <topic label="tAccessRollback">
+    <topic label="Properties" href="guide/components/fr/tAccessRollback_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tAccessRollback_Scenario.html"/>
+  </topic>
   <topic label="tAccessRow">
     <topic label="Properties" href="guide/components/fr/tAccessRow_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tAccessRow_Scenario.html"/>
@@ -49,18 +48,6 @@
   <topic label="tAdvancedFileOutputXML">
     <topic label="Properties" href="guide/components/fr/tAdvancedFileOutputXML_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tAdvancedFileOutputXML_Scenario.html"/>
-  </topic>
-  <topic label="tAdvancedHash">
-    <topic label="Properties" href="guide/components/fr/tAdvancedHash_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tAdvancedHash_Scenario.html"/>
-  </topic>
-  <topic label="tAggregateIn">
-    <topic label="Properties" href="guide/components/fr/tAggregateIn_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tAggregateIn_Scenario.html"/>
-  </topic>
-  <topic label="tAggregateOut">
-    <topic label="Properties" href="guide/components/fr/tAggregateOut_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tAggregateOut_Scenario.html"/>
   </topic>
   <topic label="tAggregateRow">
     <topic label="Properties" href="guide/components/fr/tAggregateRow_Prop.html"/>
@@ -78,13 +65,9 @@
     <topic label="Properties" href="guide/components/fr/tApacheLogInput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tApacheLogInput_Scenario.html"/>
   </topic>
-  <topic label="tArray">
-    <topic label="Properties" href="guide/components/fr/tArray_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tArray_Scenario.html"/>
-  </topic>
-  <topic label="tArrayIn">
-    <topic label="Properties" href="guide/components/fr/tArrayIn_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tArrayIn_Scenario.html"/>
+  <topic label="tAS400CDC">
+    <topic label="Properties" href="guide/components/fr/tAS400CDC_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tAS400CDC_Scenario.html"/>
   </topic>
   <topic label="tAS400Close">
     <topic label="Properties" href="guide/components/fr/tAS400Close_Prop.html"/>
@@ -126,6 +109,14 @@
     <topic label="Properties" href="guide/components/fr/tAssertCatcher_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tAssertCatcher_Scenario.html"/>
   </topic>
+  <topic label="tBarChart">
+    <topic label="Properties" href="guide/components/fr/tBarChart_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tBarChart_Scenario.html"/>
+  </topic>
+  <topic label="tBlockedFuzzyJoin">
+    <topic label="Properties" href="guide/components/fr/tBlockedFuzzyJoin_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tBlockedFuzzyJoin_Scenario.html"/>
+  </topic>
   <topic label="tBonitaDeploy">
     <topic label="Properties" href="guide/components/fr/tBonitaDeploy_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tBonitaDeploy_Scenario.html"/>
@@ -134,13 +125,9 @@
     <topic label="Properties" href="guide/components/fr/tBonitaInstantiateProcess_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tBonitaInstantiateProcess_Scenario.html"/>
   </topic>
-  <topic label="tBufferedPipeRow">
-    <topic label="Properties" href="guide/components/fr/tBufferedPipeRow_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tBufferedPipeRow_Scenario.html"/>
-  </topic>
-  <topic label="tBufferedPipeRowOut">
-    <topic label="Properties" href="guide/components/fr/tBufferedPipeRowOut_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tBufferedPipeRowOut_Scenario.html"/>
+  <topic label="tBRMS">
+    <topic label="Properties" href="guide/components/fr/tBRMS_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tBRMS_Scenario.html"/>
   </topic>
   <topic label="tBufferInput">
     <topic label="Properties" href="guide/components/fr/tBufferInput_Prop.html"/>
@@ -193,6 +180,10 @@
   <topic label="tDB2BulkExec">
     <topic label="Properties" href="guide/components/fr/tDB2BulkExec_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tDB2BulkExec_Scenario.html"/>
+  </topic>
+  <topic label="tDB2CDC">
+    <topic label="Properties" href="guide/components/fr/tDB2CDC_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tDB2CDC_Scenario.html"/>
   </topic>
   <topic label="tDB2Close">
     <topic label="Properties" href="guide/components/fr/tDB2Close_Prop.html"/>
@@ -250,10 +241,6 @@
     <topic label="Properties" href="guide/components/fr/tDenormalize_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tDenormalize_Scenario.html"/>
   </topic>
-  <topic label="tDenormalizeOut">
-    <topic label="Properties" href="guide/components/fr/tDenormalizeOut_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tDenormalizeOut_Scenario.html"/>
-  </topic>
   <topic label="tDenormalizeSortedRow">
     <topic label="Properties" href="guide/components/fr/tDenormalizeSortedRow_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tDenormalizeSortedRow_Scenario.html"/>
@@ -266,29 +253,9 @@
     <topic label="Properties" href="guide/components/fr/tDTDValidator_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tDTDValidator_Scenario.html"/>
   </topic>
-  <topic label="tDummyRow">
-    <topic label="Properties" href="guide/components/fr/tDummyRow_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tDummyRow_Scenario.html"/>
-  </topic>
-  <topic label="tELT">
-    <topic label="Properties" href="guide/components/fr/tELT_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tELT_Scenario.html"/>
-  </topic>
-  <topic label="tELTAggregate">
-    <topic label="Properties" href="guide/components/fr/tELTAggregate_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tELTAggregate_Scenario.html"/>
-  </topic>
-  <topic label="tELTCommit">
-    <topic label="Properties" href="guide/components/fr/tELTCommit_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tELTCommit_Scenario.html"/>
-  </topic>
-  <topic label="tELTFilterColumns">
-    <topic label="Properties" href="guide/components/fr/tELTFilterColumns_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tELTFilterColumns_Scenario.html"/>
-  </topic>
-  <topic label="tELTFilterRows">
-    <topic label="Properties" href="guide/components/fr/tELTFilterRows_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tELTFilterRows_Scenario.html"/>
+  <topic label="tEDIFACTtoXML">
+    <topic label="Properties" href="guide/components/fr/tEDIFACTtoXML_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tEDIFACTtoXML_Scenario.html"/>
   </topic>
   <topic label="tELTJDBCInput">
     <topic label="Properties" href="guide/components/fr/tELTJDBCInput_Prop.html"/>
@@ -301,10 +268,6 @@
   <topic label="tELTJDBCOutput">
     <topic label="Properties" href="guide/components/fr/tELTJDBCOutput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tELTJDBCOutput_Scenario.html"/>
-  </topic>
-  <topic label="tELTMerge">
-    <topic label="Properties" href="guide/components/fr/tELTMerge_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tELTMerge_Scenario.html"/>
   </topic>
   <topic label="tELTMSSqlInput">
     <topic label="Properties" href="guide/components/fr/tELTMSSqlInput_Prop.html"/>
@@ -354,10 +317,6 @@
     <topic label="Properties" href="guide/components/fr/tELTPostgresqlOutput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tELTPostgresqlOutput_Scenario.html"/>
   </topic>
-  <topic label="tELTRollback">
-    <topic label="Properties" href="guide/components/fr/tELTRollback_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tELTRollback_Scenario.html"/>
-  </topic>
   <topic label="tELTSybaseInput">
     <topic label="Properties" href="guide/components/fr/tELTSybaseInput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tELTSybaseInput_Scenario.html"/>
@@ -385,6 +344,22 @@
   <topic label="tEmptyToNull">
     <topic label="Properties" href="guide/components/fr/tEmptyToNull_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tEmptyToNull_Scenario.html"/>
+  </topic>
+  <topic label="tESBConsumer">
+    <topic label="Properties" href="guide/components/fr/tESBConsumer_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tESBConsumer_Scenario.html"/>
+  </topic>
+  <topic label="tESBProviderFault">
+    <topic label="Properties" href="guide/components/fr/tESBProviderFault_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tESBProviderFault_Scenario.html"/>
+  </topic>
+  <topic label="tESBProviderRequest">
+    <topic label="Properties" href="guide/components/fr/tESBProviderRequest_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tESBProviderRequest_Scenario.html"/>
+  </topic>
+  <topic label="tESBProviderResponse">
+    <topic label="Properties" href="guide/components/fr/tESBProviderResponse_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tESBProviderResponse_Scenario.html"/>
   </topic>
   <topic label="tEXAInput">
     <topic label="Properties" href="guide/components/fr/tEXAInput_Prop.html"/>
@@ -426,10 +401,6 @@
     <topic label="Properties" href="guide/components/fr/tEXistXUpdate_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tEXistXUpdate_Scenario.html"/>
   </topic>
-  <topic label="tExternalSortOutput">
-    <topic label="Properties" href="guide/components/fr/tExternalSortOutput_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tExternalSortOutput_Scenario.html"/>
-  </topic>
   <topic label="tExternalSortRow">
     <topic label="Properties" href="guide/components/fr/tExternalSortRow_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tExternalSortRow_Scenario.html"/>
@@ -437,6 +408,10 @@
   <topic label="tExtractDelimitedFields">
     <topic label="Properties" href="guide/components/fr/tExtractDelimitedFields_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tExtractDelimitedFields_Scenario.html"/>
+  </topic>
+  <topic label="tExtractEDIField">
+    <topic label="Properties" href="guide/components/fr/tExtractEDIField_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tExtractEDIField_Scenario.html"/>
   </topic>
   <topic label="tExtractPositionalFields">
     <topic label="Properties" href="guide/components/fr/tExtractPositionalFields_Prop.html"/>
@@ -582,10 +557,6 @@
     <topic label="Properties" href="guide/components/fr/tFileOutputProperties_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tFileOutputProperties_Scenario.html"/>
   </topic>
-  <topic label="tFileOutputShadow">
-    <topic label="Properties" href="guide/components/fr/tFileOutputShadow_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tFileOutputShadow_Scenario.html"/>
-  </topic>
   <topic label="tFileOutputXML">
     <topic label="Properties" href="guide/components/fr/tFileOutputXML_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tFileOutputXML_Scenario.html"/>
@@ -613,6 +584,10 @@
   <topic label="tFilterRow">
     <topic label="Properties" href="guide/components/fr/tFilterRow_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tFilterRow_Scenario.html"/>
+  </topic>
+  <topic label="tFindRegexlibExpressions">
+    <topic label="Properties" href="guide/components/fr/tFindRegexlibExpressions_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFindRegexlibExpressions_Scenario.html"/>
   </topic>
   <topic label="tFirebirdClose">
     <topic label="Properties" href="guide/components/fr/tFirebirdClose_Prop.html"/>
@@ -642,6 +617,10 @@
     <topic label="Properties" href="guide/components/fr/tFirebirdRow_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tFirebirdRow_Scenario.html"/>
   </topic>
+  <topic label="tFirstnameMatch">
+    <topic label="Properties" href="guide/components/fr/tFirstnameMatch_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFirstnameMatch_Scenario.html"/>
+  </topic>
   <topic label="tFixedFlowInput">
     <topic label="Properties" href="guide/components/fr/tFixedFlowInput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tFixedFlowInput_Scenario.html"/>
@@ -661,6 +640,46 @@
   <topic label="tForeach">
     <topic label="Properties" href="guide/components/fr/tForeach_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tForeach_Scenario.html"/>
+  </topic>
+  <topic label="tFSAggregate">
+    <topic label="Properties" href="guide/components/fr/tFSAggregate_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFSAggregate_Scenario.html"/>
+  </topic>
+  <topic label="tFSCheck">
+    <topic label="Properties" href="guide/components/fr/tFSCheck_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFSCheck_Scenario.html"/>
+  </topic>
+  <topic label="tFSCode">
+    <topic label="Properties" href="guide/components/fr/tFSCode_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFSCode_Scenario.html"/>
+  </topic>
+  <topic label="tFSFilterColumns">
+    <topic label="Properties" href="guide/components/fr/tFSFilterColumns_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFSFilterColumns_Scenario.html"/>
+  </topic>
+  <topic label="tFSFilterRows">
+    <topic label="Properties" href="guide/components/fr/tFSFilterRows_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFSFilterRows_Scenario.html"/>
+  </topic>
+  <topic label="tFSJoin">
+    <topic label="Properties" href="guide/components/fr/tFSJoin_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFSJoin_Scenario.html"/>
+  </topic>
+  <topic label="tFSPartitionFile">
+    <topic label="Properties" href="guide/components/fr/tFSPartitionFile_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFSPartitionFile_Scenario.html"/>
+  </topic>
+  <topic label="tFSSort">
+    <topic label="Properties" href="guide/components/fr/tFSSort_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFSSort_Scenario.html"/>
+  </topic>
+  <topic label="tFSTransform">
+    <topic label="Properties" href="guide/components/fr/tFSTransform_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFSTransform_Scenario.html"/>
+  </topic>
+  <topic label="tFSUnique">
+    <topic label="Properties" href="guide/components/fr/tFSUnique_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFSUnique_Scenario.html"/>
   </topic>
   <topic label="tFTPConnection">
     <topic label="Properties" href="guide/components/fr/tFTPConnection_Prop.html"/>
@@ -698,9 +717,21 @@
     <topic label="Properties" href="guide/components/fr/tFTPTruncate_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tFTPTruncate_Scenario.html"/>
   </topic>
+  <topic label="tFuzzyJoin">
+    <topic label="Properties" href="guide/components/fr/tFuzzyJoin_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFuzzyJoin_Scenario.html"/>
+  </topic>
   <topic label="tFuzzyMatch">
     <topic label="Properties" href="guide/components/fr/tFuzzyMatch_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tFuzzyMatch_Scenario.html"/>
+  </topic>
+  <topic label="tFuzzyUniqRow">
+    <topic label="Properties" href="guide/components/fr/tFuzzyUniqRow_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tFuzzyUniqRow_Scenario.html"/>
+  </topic>
+  <topic label="tGenKey">
+    <topic label="Properties" href="guide/components/fr/tGenKey_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tGenKey_Scenario.html"/>
   </topic>
   <topic label="tGPGDecrypt">
     <topic label="Properties" href="guide/components/fr/tGPGDecrypt_Prop.html"/>
@@ -758,17 +789,13 @@
     <topic label="Properties" href="guide/components/fr/tGroovyFile_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tGroovyFile_Scenario.html"/>
   </topic>
-  <topic label="tHash">
-    <topic label="Properties" href="guide/components/fr/tHash_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tHash_Scenario.html"/>
+  <topic label="tHDFSGet">
+    <topic label="Properties" href="guide/components/fr/tHDFSGet_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tHDFSGet_Scenario.html"/>
   </topic>
-  <topic label="tHashInput">
-    <topic label="Properties" href="guide/components/fr/tHashInput_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tHashInput_Scenario.html"/>
-  </topic>
-  <topic label="tHashOutput">
-    <topic label="Properties" href="guide/components/fr/tHashOutput_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tHashOutput_Scenario.html"/>
+  <topic label="tHDFSPut">
+    <topic label="Properties" href="guide/components/fr/tHDFSPut_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tHDFSPut_Scenario.html"/>
   </topic>
   <topic label="tHiveClose">
     <topic label="Properties" href="guide/components/fr/tHiveClose_Prop.html"/>
@@ -801,6 +828,10 @@
   <topic label="tHSQLDbRow">
     <topic label="Properties" href="guide/components/fr/tHSQLDbRow_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tHSQLDbRow_Scenario.html"/>
+  </topic>
+  <topic label="tHttpRequest">
+    <topic label="Properties" href="guide/components/fr/tHttpRequest_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tHttpRequest_Scenario.html"/>
   </topic>
   <topic label="tInfiniteLoop">
     <topic label="Properties" href="guide/components/fr/tInfiniteLoop_Prop.html"/>
@@ -854,10 +885,6 @@
     <topic label="Properties" href="guide/components/fr/tInformixSP_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tInformixSP_Scenario.html"/>
   </topic>
-  <topic label="tIngresBulkExec">
-    <topic label="Properties" href="guide/components/fr/tIngresBulkExec_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tIngresBulkExec_Scenario.html"/>
-  </topic>
   <topic label="tIngresClose">
     <topic label="Properties" href="guide/components/fr/tIngresClose_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tIngresClose_Scenario.html"/>
@@ -877,14 +904,6 @@
   <topic label="tIngresOutput">
     <topic label="Properties" href="guide/components/fr/tIngresOutput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tIngresOutput_Scenario.html"/>
-  </topic>
-  <topic label="tIngresOutputBulk">
-    <topic label="Properties" href="guide/components/fr/tIngresOutputBulk_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tIngresOutputBulk_Scenario.html"/>
-  </topic>
-  <topic label="tIngresOutputBulkExec">
-    <topic label="Properties" href="guide/components/fr/tIngresOutputBulkExec_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tIngresOutputBulkExec_Scenario.html"/>
   </topic>
   <topic label="tIngresRollback">
     <topic label="Properties" href="guide/components/fr/tIngresRollback_Prop.html"/>
@@ -934,18 +953,6 @@
     <topic label="Properties" href="guide/components/fr/tIterateToFlow_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tIterateToFlow_Scenario.html"/>
   </topic>
-  <topic label="tIterateToFlowOut">
-    <topic label="Properties" href="guide/components/fr/tIterateToFlowOut_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tIterateToFlowOut_Scenario.html"/>
-  </topic>
-  <topic label="tJasperOutput">
-    <topic label="Properties" href="guide/components/fr/tJasperOutput_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tJasperOutput_Scenario.html"/>
-  </topic>
-  <topic label="tJasperOutputExec">
-    <topic label="Properties" href="guide/components/fr/tJasperOutputExec_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tJasperOutputExec_Scenario.html"/>
-  </topic>
   <topic label="tJava">
     <topic label="Properties" href="guide/components/fr/tJava_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tJava_Scenario.html"/>
@@ -969,6 +976,14 @@
   <topic label="tJavaRow">
     <topic label="Properties" href="guide/components/fr/tJavaRow_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tJavaRow_Scenario.html"/>
+  </topic>
+  <topic label="tJBossESBInput">
+    <topic label="Properties" href="guide/components/fr/tJBossESBInput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tJBossESBInput_Scenario.html"/>
+  </topic>
+  <topic label="tJBossESBOutput">
+    <topic label="Properties" href="guide/components/fr/tJBossESBOutput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tJBossESBOutput_Scenario.html"/>
   </topic>
   <topic label="tJDBCClose">
     <topic label="Properties" href="guide/components/fr/tJDBCClose_Prop.html"/>
@@ -1022,17 +1037,17 @@
     <topic label="Properties" href="guide/components/fr/tJoin_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tJoin_Scenario.html"/>
   </topic>
+  <topic label="tLastRegexlibExpressions">
+    <topic label="Properties" href="guide/components/fr/tLastRegexlibExpressions_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tLastRegexlibExpressions_Scenario.html"/>
+  </topic>
+  <topic label="tLaunchDQReports">
+    <topic label="Properties" href="guide/components/fr/tLaunchDQReports_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tLaunchDQReports_Scenario.html"/>
+  </topic>
   <topic label="tLDAPAttributesInput">
     <topic label="Properties" href="guide/components/fr/tLDAPAttributesInput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tLDAPAttributesInput_Scenario.html"/>
-  </topic>
-  <topic label="tLDAPClose">
-    <topic label="Properties" href="guide/components/fr/tLDAPClose_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tLDAPClose_Scenario.html"/>
-  </topic>
-  <topic label="tLDAPConnection">
-    <topic label="Properties" href="guide/components/fr/tLDAPConnection_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tLDAPConnection_Scenario.html"/>
   </topic>
   <topic label="tLDAPInput">
     <topic label="Properties" href="guide/components/fr/tLDAPInput_Prop.html"/>
@@ -1070,13 +1085,17 @@
     <topic label="Properties" href="guide/components/fr/tMap_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tMap_Scenario.html"/>
   </topic>
-  <topic label="tMapIn">
-    <topic label="Properties" href="guide/components/fr/tMapIn_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tMapIn_Scenario.html"/>
+  <topic label="tMarketoInput">
+    <topic label="Properties" href="guide/components/fr/tMarketoInput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tMarketoInput_Scenario.html"/>
   </topic>
-  <topic label="tMapOut">
-    <topic label="Properties" href="guide/components/fr/tMapOut_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tMapOut_Scenario.html"/>
+  <topic label="tMarketoOutput">
+    <topic label="Properties" href="guide/components/fr/tMarketoOutput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tMarketoOutput_Scenario.html"/>
+  </topic>
+  <topic label="tMatchGroup">
+    <topic label="Properties" href="guide/components/fr/tMatchGroup_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tMatchGroup_Scenario.html"/>
   </topic>
   <topic label="tMaxDBInput">
     <topic label="Properties" href="guide/components/fr/tMaxDBInput_Prop.html"/>
@@ -1106,10 +1125,6 @@
     <topic label="Properties" href="guide/components/fr/tMDMOutput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tMDMOutput_Scenario.html"/>
   </topic>
-  <topic label="tMDMReadConf">
-    <topic label="Properties" href="guide/components/fr/tMDMReadConf_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tMDMReadConf_Scenario.html"/>
-  </topic>
   <topic label="tMDMReceive">
     <topic label="Properties" href="guide/components/fr/tMDMReceive_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tMDMReceive_Scenario.html"/>
@@ -1126,21 +1141,17 @@
     <topic label="Properties" href="guide/components/fr/tMDMViewSearch_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tMDMViewSearch_Scenario.html"/>
   </topic>
-  <topic label="tMDMWriteConf">
-    <topic label="Properties" href="guide/components/fr/tMDMWriteConf_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tMDMWriteConf_Scenario.html"/>
-  </topic>
   <topic label="tMemorizeRows">
     <topic label="Properties" href="guide/components/fr/tMemorizeRows_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tMemorizeRows_Scenario.html"/>
   </topic>
-  <topic label="tMicrosoftCrmInput">
-    <topic label="Properties" href="guide/components/fr/tMicrosoftCrmInput_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tMicrosoftCrmInput_Scenario.html"/>
+  <topic label="tMicrosoftCRMInput">
+    <topic label="Properties" href="guide/components/fr/tMicrosoftCRMInput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tMicrosoftCRMInput_Scenario.html"/>
   </topic>
-  <topic label="tMicrosoftCrmOutput">
-    <topic label="Properties" href="guide/components/fr/tMicrosoftCrmOutput_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tMicrosoftCrmOutput_Scenario.html"/>
+  <topic label="tMicrosoftCRMOutput">
+    <topic label="Properties" href="guide/components/fr/tMicrosoftCRMOutput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tMicrosoftCRMOutput_Scenario.html"/>
   </topic>
   <topic label="tMicrosoftMQInput">
     <topic label="Properties" href="guide/components/fr/tMicrosoftMQInput_Prop.html"/>
@@ -1189,6 +1200,10 @@
   <topic label="tMSSqlBulkExec">
     <topic label="Properties" href="guide/components/fr/tMSSqlBulkExec_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tMSSqlBulkExec_Scenario.html"/>
+  </topic>
+  <topic label="tMSSqlCDC">
+    <topic label="Properties" href="guide/components/fr/tMSSqlCDC_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tMSSqlCDC_Scenario.html"/>
   </topic>
   <topic label="tMSSqlClose">
     <topic label="Properties" href="guide/components/fr/tMSSqlClose_Prop.html"/>
@@ -1246,9 +1261,17 @@
     <topic label="Properties" href="guide/components/fr/tMSSqlTableList_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tMSSqlTableList_Scenario.html"/>
   </topic>
+  <topic label="tMultiPatternCheck">
+    <topic label="Properties" href="guide/components/fr/tMultiPatternCheck_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tMultiPatternCheck_Scenario.html"/>
+  </topic>
   <topic label="tMysqlBulkExec">
     <topic label="Properties" href="guide/components/fr/tMysqlBulkExec_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tMysqlBulkExec_Scenario.html"/>
+  </topic>
+  <topic label="tMysqlCDC">
+    <topic label="Properties" href="guide/components/fr/tMysqlCDC_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tMysqlCDC_Scenario.html"/>
   </topic>
   <topic label="tMysqlClose">
     <topic label="Properties" href="guide/components/fr/tMysqlClose_Prop.html"/>
@@ -1270,6 +1293,10 @@
     <topic label="Properties" href="guide/components/fr/tMysqlInput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tMysqlInput_Scenario.html"/>
   </topic>
+  <topic label="tMysqlInvalidRows">
+    <topic label="Properties" href="guide/components/fr/tMysqlInvalidRows_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tMysqlInvalidRows_Scenario.html"/>
+  </topic>
   <topic label="tMysqlLastInsertId">
     <topic label="Properties" href="guide/components/fr/tMysqlLastInsertId_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tMysqlLastInsertId_Scenario.html"/>
@@ -1285,10 +1312,6 @@
   <topic label="tMysqlOutputBulkExec">
     <topic label="Properties" href="guide/components/fr/tMysqlOutputBulkExec_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tMysqlOutputBulkExec_Scenario.html"/>
-  </topic>
-  <topic label="tMysqlOutputUpdateBulkExec">
-    <topic label="Properties" href="guide/components/fr/tMysqlOutputUpdateBulkExec_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tMysqlOutputUpdateBulkExec_Scenario.html"/>
   </topic>
   <topic label="tMysqlRollback">
     <topic label="Properties" href="guide/components/fr/tMysqlRollback_Prop.html"/>
@@ -1314,9 +1337,9 @@
     <topic label="Properties" href="guide/components/fr/tMysqlTableList_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tMysqlTableList_Scenario.html"/>
   </topic>
-  <topic label="tMysqlUpdateBulkExec">
-    <topic label="Properties" href="guide/components/fr/tMysqlUpdateBulkExec_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tMysqlUpdateBulkExec_Scenario.html"/>
+  <topic label="tMysqlValidRows">
+    <topic label="Properties" href="guide/components/fr/tMysqlValidRows_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tMysqlValidRows_Scenario.html"/>
   </topic>
   <topic label="tNetezzaBulkExec">
     <topic label="Properties" href="guide/components/fr/tNetezzaBulkExec_Prop.html"/>
@@ -1354,10 +1377,6 @@
     <topic label="Properties" href="guide/components/fr/tNetezzaRow_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tNetezzaRow_Scenario.html"/>
   </topic>
-  <topic label="tNetezzaSCD">
-    <topic label="Properties" href="guide/components/fr/tNetezzaSCD_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tNetezzaSCD_Scenario.html"/>
-  </topic>
   <topic label="tNormalize">
     <topic label="Properties" href="guide/components/fr/tNormalize_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tNormalize_Scenario.html"/>
@@ -1374,6 +1393,10 @@
     <topic label="Properties" href="guide/components/fr/tOracleBulkExec_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tOracleBulkExec_Scenario.html"/>
   </topic>
+  <topic label="tOracleCDC">
+    <topic label="Properties" href="guide/components/fr/tOracleCDC_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tOracleCDC_Scenario.html"/>
+  </topic>
   <topic label="tOracleClose">
     <topic label="Properties" href="guide/components/fr/tOracleClose_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tOracleClose_Scenario.html"/>
@@ -1389,6 +1412,10 @@
   <topic label="tOracleInput">
     <topic label="Properties" href="guide/components/fr/tOracleInput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tOracleInput_Scenario.html"/>
+  </topic>
+  <topic label="tOracleInvalidRows">
+    <topic label="Properties" href="guide/components/fr/tOracleInvalidRows_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tOracleInvalidRows_Scenario.html"/>
   </topic>
   <topic label="tOracleOutput">
     <topic label="Properties" href="guide/components/fr/tOracleOutput_Prop.html"/>
@@ -1425,6 +1452,10 @@
   <topic label="tOracleTableList">
     <topic label="Properties" href="guide/components/fr/tOracleTableList_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tOracleTableList_Scenario.html"/>
+  </topic>
+  <topic label="tOracleValidRows">
+    <topic label="Properties" href="guide/components/fr/tOracleValidRows_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tOracleValidRows_Scenario.html"/>
   </topic>
   <topic label="tPaloCheckElements">
     <topic label="Properties" href="guide/components/fr/tPaloCheckElements_Prop.html"/>
@@ -1522,6 +1553,10 @@
     <topic label="Properties" href="guide/components/fr/tParAccelSCD_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tParAccelSCD_Scenario.html"/>
   </topic>
+  <topic label="tParallelize">
+    <topic label="Properties" href="guide/components/fr/tParallelize_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tParallelize_Scenario.html"/>
+  </topic>
   <topic label="tParseAddress">
     <topic label="Properties" href="guide/components/fr/tParseAddress_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tParseAddress_Scenario.html"/>
@@ -1534,29 +1569,65 @@
     <topic label="Properties" href="guide/components/fr/tParseRecordSet_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tParseRecordSet_Scenario.html"/>
   </topic>
-  <topic label="tParseXMLRow">
-    <topic label="Properties" href="guide/components/fr/tParseXMLRow_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tParseXMLRow_Scenario.html"/>
+  <topic label="tPatternCheck">
+    <topic label="Properties" href="guide/components/fr/tPatternCheck_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPatternCheck_Scenario.html"/>
+  </topic>
+  <topic label="tPatternExtract">
+    <topic label="Properties" href="guide/components/fr/tPatternExtract_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPatternExtract_Scenario.html"/>
   </topic>
   <topic label="tPerl">
     <topic label="Properties" href="guide/components/fr/tPerl_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tPerl_Scenario.html"/>
   </topic>
-  <topic label="tPerlConnection">
-    <topic label="Properties" href="guide/components/fr/tPerlConnection_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tPerlConnection_Scenario.html"/>
+  <topic label="tPetalsInput">
+    <topic label="Properties" href="guide/components/fr/tPetalsInput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPetalsInput_Scenario.html"/>
   </topic>
-  <topic label="tPerlFlex">
-    <topic label="Properties" href="guide/components/fr/tPerlFlex_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tPerlFlex_Scenario.html"/>
+  <topic label="tPetalsOutput">
+    <topic label="Properties" href="guide/components/fr/tPetalsOutput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPetalsOutput_Scenario.html"/>
   </topic>
-  <topic label="tPerlRow">
-    <topic label="Properties" href="guide/components/fr/tPerlRow_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tPerlRow_Scenario.html"/>
+  <topic label="tPigAggregate">
+    <topic label="Properties" href="guide/components/fr/tPigAggregate_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPigAggregate_Scenario.html"/>
   </topic>
-  <topic label="tPipeRow">
-    <topic label="Properties" href="guide/components/fr/tPipeRow_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tPipeRow_Scenario.html"/>
+  <topic label="tPigCode">
+    <topic label="Properties" href="guide/components/fr/tPigCode_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPigCode_Scenario.html"/>
+  </topic>
+  <topic label="tPigCross">
+    <topic label="Properties" href="guide/components/fr/tPigCross_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPigCross_Scenario.html"/>
+  </topic>
+  <topic label="tPigDistinct">
+    <topic label="Properties" href="guide/components/fr/tPigDistinct_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPigDistinct_Scenario.html"/>
+  </topic>
+  <topic label="tPigFilterColumns">
+    <topic label="Properties" href="guide/components/fr/tPigFilterColumns_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPigFilterColumns_Scenario.html"/>
+  </topic>
+  <topic label="tPigFilterRow">
+    <topic label="Properties" href="guide/components/fr/tPigFilterRow_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPigFilterRow_Scenario.html"/>
+  </topic>
+  <topic label="tPigJoin">
+    <topic label="Properties" href="guide/components/fr/tPigJoin_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPigJoin_Scenario.html"/>
+  </topic>
+  <topic label="tPigLoad">
+    <topic label="Properties" href="guide/components/fr/tPigLoad_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPigLoad_Scenario.html"/>
+  </topic>
+  <topic label="tPigSort">
+    <topic label="Properties" href="guide/components/fr/tPigSort_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPigSort_Scenario.html"/>
+  </topic>
+  <topic label="tPigStoreResult">
+    <topic label="Properties" href="guide/components/fr/tPigStoreResult_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPigStoreResult_Scenario.html"/>
   </topic>
   <topic label="tPivotToColumnsDelimited">
     <topic label="Properties" href="guide/components/fr/tPivotToColumnsDelimited_Prop.html"/>
@@ -1618,13 +1689,13 @@
     <topic label="Properties" href="guide/components/fr/tPostgresPlusSCDELT_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tPostgresPlusSCDELT_Scenario.html"/>
   </topic>
-  <topic label="tPostgresPlusUpdateBulkExec">
-    <topic label="Properties" href="guide/components/fr/tPostgresPlusUpdateBulkExec_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tPostgresPlusUpdateBulkExec_Scenario.html"/>
-  </topic>
   <topic label="tPostgresqlBulkExec">
     <topic label="Properties" href="guide/components/fr/tPostgresqlBulkExec_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tPostgresqlBulkExec_Scenario.html"/>
+  </topic>
+  <topic label="tPostgresqlCDC">
+    <topic label="Properties" href="guide/components/fr/tPostgresqlCDC_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPostgresqlCDC_Scenario.html"/>
   </topic>
   <topic label="tPostgresqlClose">
     <topic label="Properties" href="guide/components/fr/tPostgresqlClose_Prop.html"/>
@@ -1642,6 +1713,10 @@
     <topic label="Properties" href="guide/components/fr/tPostgresqlInput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tPostgresqlInput_Scenario.html"/>
   </topic>
+  <topic label="tPostgresqlInvalidRows">
+    <topic label="Properties" href="guide/components/fr/tPostgresqlInvalidRows_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPostgresqlInvalidRows_Scenario.html"/>
+  </topic>
   <topic label="tPostgresqlOutput">
     <topic label="Properties" href="guide/components/fr/tPostgresqlOutput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tPostgresqlOutput_Scenario.html"/>
@@ -1653,10 +1728,6 @@
   <topic label="tPostgresqlOutputBulkExec">
     <topic label="Properties" href="guide/components/fr/tPostgresqlOutputBulkExec_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tPostgresqlOutputBulkExec_Scenario.html"/>
-  </topic>
-  <topic label="tPostgresqlOutputUpdateBulkExec">
-    <topic label="Properties" href="guide/components/fr/tPostgresqlOutputUpdateBulkExec_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tPostgresqlOutputUpdateBulkExec_Scenario.html"/>
   </topic>
   <topic label="tPostgresqlRollback">
     <topic label="Properties" href="guide/components/fr/tPostgresqlRollback_Prop.html"/>
@@ -1674,9 +1745,9 @@
     <topic label="Properties" href="guide/components/fr/tPostgresqlSCDELT_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tPostgresqlSCDELT_Scenario.html"/>
   </topic>
-  <topic label="tPostgresqlUpdateBulkExec">
-    <topic label="Properties" href="guide/components/fr/tPostgresqlUpdateBulkExec_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tPostgresqlUpdateBulkExec_Scenario.html"/>
+  <topic label="tPostgresqlValidRows">
+    <topic label="Properties" href="guide/components/fr/tPostgresqlValidRows_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tPostgresqlValidRows_Scenario.html"/>
   </topic>
   <topic label="tPostjob">
     <topic label="Properties" href="guide/components/fr/tPostjob_Prop.html"/>
@@ -1685,6 +1756,30 @@
   <topic label="tPrejob">
     <topic label="Properties" href="guide/components/fr/tPrejob_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tPrejob_Scenario.html"/>
+  </topic>
+  <topic label="tQASAddressIncomplete">
+    <topic label="Properties" href="guide/components/fr/tQASAddressIncomplete_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tQASAddressIncomplete_Scenario.html"/>
+  </topic>
+  <topic label="tQASAddressRow">
+    <topic label="Properties" href="guide/components/fr/tQASAddressRow_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tQASAddressRow_Scenario.html"/>
+  </topic>
+  <topic label="tQASAddressUnknown">
+    <topic label="Properties" href="guide/components/fr/tQASAddressUnknown_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tQASAddressUnknown_Scenario.html"/>
+  </topic>
+  <topic label="tQASAddressVerified">
+    <topic label="Properties" href="guide/components/fr/tQASAddressVerified_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tQASAddressVerified_Scenario.html"/>
+  </topic>
+  <topic label="tQASBatchAddressRow">
+    <topic label="Properties" href="guide/components/fr/tQASBatchAddressRow_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tQASBatchAddressRow_Scenario.html"/>
+  </topic>
+  <topic label="tRecordMatching">
+    <topic label="Properties" href="guide/components/fr/tRecordMatching_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tRecordMatching_Scenario.html"/>
   </topic>
   <topic label="tReplace">
     <topic label="Properties" href="guide/components/fr/tReplace_Prop.html"/>
@@ -1698,6 +1793,10 @@
     <topic label="Properties" href="guide/components/fr/tReplicate_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tReplicate_Scenario.html"/>
   </topic>
+  <topic label="tREST">
+    <topic label="Properties" href="guide/components/fr/tREST_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tREST_Scenario.html"/>
+  </topic>
   <topic label="tRowGenerator">
     <topic label="Properties" href="guide/components/fr/tRowGenerator_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tRowGenerator_Scenario.html"/>
@@ -1710,9 +1809,21 @@
     <topic label="Properties" href="guide/components/fr/tRSSOutput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tRSSOutput_Scenario.html"/>
   </topic>
+  <topic label="tRules">
+    <topic label="Properties" href="guide/components/fr/tRules_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tRules_Scenario.html"/>
+  </topic>
   <topic label="tRunJob">
     <topic label="Properties" href="guide/components/fr/tRunJob_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tRunJob_Scenario.html"/>
+  </topic>
+  <topic label="tSageX3Input">
+    <topic label="Properties" href="guide/components/fr/tSageX3Input_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSageX3Input_Scenario.html"/>
+  </topic>
+  <topic label="tSageX3Output">
+    <topic label="Properties" href="guide/components/fr/tSageX3Output_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSageX3Output_Scenario.html"/>
   </topic>
   <topic label="tSalesforceBulkExec">
     <topic label="Properties" href="guide/components/fr/tSalesforceBulkExec_Prop.html"/>
@@ -1762,6 +1873,14 @@
     <topic label="Properties" href="guide/components/fr/tSAPConnection_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSAPConnection_Scenario.html"/>
   </topic>
+  <topic label="tSAPIDocInput">
+    <topic label="Properties" href="guide/components/fr/tSAPIDocInput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSAPIDocInput_Scenario.html"/>
+  </topic>
+  <topic label="tSAPIDocOutput">
+    <topic label="Properties" href="guide/components/fr/tSAPIDocOutput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSAPIDocOutput_Scenario.html"/>
+  </topic>
   <topic label="tSAPInput">
     <topic label="Properties" href="guide/components/fr/tSAPInput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSAPInput_Scenario.html"/>
@@ -1774,13 +1893,13 @@
     <topic label="Properties" href="guide/components/fr/tSAPRollback_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSAPRollback_Scenario.html"/>
   </topic>
-  <topic label="tSasInput">
-    <topic label="Properties" href="guide/components/fr/tSasInput_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tSasInput_Scenario.html"/>
+  <topic label="tSASInput">
+    <topic label="Properties" href="guide/components/fr/tSASInput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSASInput_Scenario.html"/>
   </topic>
-  <topic label="tSasOutput">
-    <topic label="Properties" href="guide/components/fr/tSasOutput_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tSasOutput_Scenario.html"/>
+  <topic label="tSASOutput">
+    <topic label="Properties" href="guide/components/fr/tSASOutput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSASOutput_Scenario.html"/>
   </topic>
   <topic label="tSchemaComplianceCheck">
     <topic label="Properties" href="guide/components/fr/tSchemaComplianceCheck_Prop.html"/>
@@ -1826,10 +1945,6 @@
     <topic label="Properties" href="guide/components/fr/tSendMail_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSendMail_Scenario.html"/>
   </topic>
-  <topic label="tServerAlive">
-    <topic label="Properties" href="guide/components/fr/tServerAlive_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tServerAlive_Scenario.html"/>
-  </topic>
   <topic label="tSetEnv">
     <topic label="Properties" href="guide/components/fr/tSetEnv_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSetEnv_Scenario.html"/>
@@ -1841,10 +1956,6 @@
   <topic label="tSetKeystore">
     <topic label="Properties" href="guide/components/fr/tSetKeystore_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSetKeystore_Scenario.html"/>
-  </topic>
-  <topic label="tSetProxy">
-    <topic label="Properties" href="guide/components/fr/tSetProxy_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tSetProxy_Scenario.html"/>
   </topic>
   <topic label="tSleep">
     <topic label="Properties" href="guide/components/fr/tSleep_Prop.html"/>
@@ -1861,14 +1972,6 @@
   <topic label="tSocketOutput">
     <topic label="Properties" href="guide/components/fr/tSocketOutput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSocketOutput_Scenario.html"/>
-  </topic>
-  <topic label="tSortIn">
-    <topic label="Properties" href="guide/components/fr/tSortIn_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tSortIn_Scenario.html"/>
-  </topic>
-  <topic label="tSortOut">
-    <topic label="Properties" href="guide/components/fr/tSortOut_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tSortOut_Scenario.html"/>
   </topic>
   <topic label="tSortRow">
     <topic label="Properties" href="guide/components/fr/tSortRow_Prop.html"/>
@@ -1918,13 +2021,57 @@
     <topic label="Properties" href="guide/components/fr/tSQLiteRow_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSQLiteRow_Scenario.html"/>
   </topic>
+  <topic label="tSQLTemplateAggregate">
+    <topic label="Properties" href="guide/components/fr/tSQLTemplateAggregate_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSQLTemplateAggregate_Scenario.html"/>
+  </topic>
+  <topic label="tSQLTemplateCommit">
+    <topic label="Properties" href="guide/components/fr/tSQLTemplateCommit_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSQLTemplateCommit_Scenario.html"/>
+  </topic>
+  <topic label="tSQLTemplateFilterColumns">
+    <topic label="Properties" href="guide/components/fr/tSQLTemplateFilterColumns_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSQLTemplateFilterColumns_Scenario.html"/>
+  </topic>
+  <topic label="tSQLTemplateFilterRows">
+    <topic label="Properties" href="guide/components/fr/tSQLTemplateFilterRows_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSQLTemplateFilterRows_Scenario.html"/>
+  </topic>
+  <topic label="tSQLTemplateMerge">
+    <topic label="Properties" href="guide/components/fr/tSQLTemplateMerge_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSQLTemplateMerge_Scenario.html"/>
+  </topic>
+  <topic label="tSQLTemplateRollback">
+    <topic label="Properties" href="guide/components/fr/tSQLTemplateRollback_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSQLTemplateRollback_Scenario.html"/>
+  </topic>
+  <topic label="tSqoopExport">
+    <topic label="Properties" href="guide/components/fr/tSqoopExport_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSqoopExport_Scenario.html"/>
+  </topic>
+  <topic label="tSqoopImport">
+    <topic label="Properties" href="guide/components/fr/tSqoopImport_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSqoopImport_Scenario.html"/>
+  </topic>
+  <topic label="tSqoopImportAllTables">
+    <topic label="Properties" href="guide/components/fr/tSqoopImportAllTables_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSqoopImportAllTables_Scenario.html"/>
+  </topic>
   <topic label="tSSH">
     <topic label="Properties" href="guide/components/fr/tSSH_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSSH_Scenario.html"/>
   </topic>
+  <topic label="tStandardizeRow">
+    <topic label="Properties" href="guide/components/fr/tStandardizeRow_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tStandardizeRow_Scenario.html"/>
+  </topic>
   <topic label="tStatCatcher">
     <topic label="Properties" href="guide/components/fr/tStatCatcher_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tStatCatcher_Scenario.html"/>
+  </topic>
+  <topic label="tStem">
+    <topic label="Properties" href="guide/components/fr/tStem_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tStem_Scenario.html"/>
   </topic>
   <topic label="tStewardshipTaskInput">
     <topic label="Properties" href="guide/components/fr/tStewardshipTaskInput_Prop.html"/>
@@ -1942,13 +2089,17 @@
     <topic label="Properties" href="guide/components/fr/tSugarCRMOutput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSugarCRMOutput_Scenario.html"/>
   </topic>
-  <topic label="tSVNLogInput">
-    <topic label="Properties" href="guide/components/fr/tSVNLogInput_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tSVNLogInput_Scenario.html"/>
+  <topic label="tSurviveFields">
+    <topic label="Properties" href="guide/components/fr/tSurviveFields_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSurviveFields_Scenario.html"/>
   </topic>
   <topic label="tSybaseBulkExec">
     <topic label="Properties" href="guide/components/fr/tSybaseBulkExec_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSybaseBulkExec_Scenario.html"/>
+  </topic>
+  <topic label="tSybaseCDC">
+    <topic label="Properties" href="guide/components/fr/tSybaseCDC_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSybaseCDC_Scenario.html"/>
   </topic>
   <topic label="tSybaseClose">
     <topic label="Properties" href="guide/components/fr/tSybaseClose_Prop.html"/>
@@ -2006,13 +2157,13 @@
     <topic label="Properties" href="guide/components/fr/tSybaseSP_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSybaseSP_Scenario.html"/>
   </topic>
+  <topic label="tSynonymOutput">
+    <topic label="Properties" href="guide/components/fr/tSynonymOutput_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tSynonymOutput_Scenario.html"/>
+  </topic>
   <topic label="tSystem">
     <topic label="Properties" href="guide/components/fr/tSystem_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tSystem_Scenario.html"/>
-  </topic>
-  <topic label="tSystemInput">
-    <topic label="Properties" href="guide/components/fr/tSystemInput_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tSystemInput_Scenario.html"/>
   </topic>
   <topic label="tTeradataClose">
     <topic label="Properties" href="guide/components/fr/tTeradataClose_Prop.html"/>
@@ -2062,17 +2213,13 @@
     <topic label="Properties" href="guide/components/fr/tTeradataTPump_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tTeradataTPump_Scenario.html"/>
   </topic>
+  <topic label="tThresholdViolationAlert">
+    <topic label="Properties" href="guide/components/fr/tThresholdViolationAlert_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tThresholdViolationAlert_Scenario.html"/>
+  </topic>
   <topic label="tUniqRow">
     <topic label="Properties" href="guide/components/fr/tUniqRow_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tUniqRow_Scenario.html"/>
-  </topic>
-  <topic label="tUniqRowIn">
-    <topic label="Properties" href="guide/components/fr/tUniqRowIn_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tUniqRowIn_Scenario.html"/>
-  </topic>
-  <topic label="tUniqRowOut">
-    <topic label="Properties" href="guide/components/fr/tUniqRowOut_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tUniqRowOut_Scenario.html"/>
   </topic>
   <topic label="tUnite">
     <topic label="Properties" href="guide/components/fr/tUnite_Prop.html"/>
@@ -2166,6 +2313,10 @@
     <topic label="Properties" href="guide/components/fr/tWarn_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tWarn_Scenario.html"/>
   </topic>
+  <topic label="tWebService">
+    <topic label="Properties" href="guide/components/fr/tWebService_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tWebService_Scenario.html"/>
+  </topic>
   <topic label="tWebServiceInput">
     <topic label="Properties" href="guide/components/fr/tWebServiceInput_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tWebServiceInput_Scenario.html"/>
@@ -2174,13 +2325,9 @@
     <topic label="Properties" href="guide/components/fr/tWriteXMLField_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tWriteXMLField_Scenario.html"/>
   </topic>
-  <topic label="tWriteXMLFieldIn">
-    <topic label="Properties" href="guide/components/fr/tWriteXMLFieldIn_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tWriteXMLFieldIn_Scenario.html"/>
-  </topic>
-  <topic label="tWriteXMLFieldOut">
-    <topic label="Properties" href="guide/components/fr/tWriteXMLFieldOut_Prop.html"/>
-    <topic label="Scenario" href="guide/components/fr/tWriteXMLFieldOut_Scenario.html"/>
+  <topic label="tXMLMap">
+    <topic label="Properties" href="guide/components/fr/tXMLMap_Prop.html"/>
+    <topic label="Scenario" href="guide/components/fr/tXMLMap_Scenario.html"/>
   </topic>
   <topic label="tXMLRPCInput">
     <topic label="Properties" href="guide/components/fr/tXMLRPCInput_Prop.html"/>
@@ -2194,5 +2341,4 @@
     <topic label="Properties" href="guide/components/fr/tXSLT_Prop.html"/>
     <topic label="Scenario" href="guide/components/fr/tXSLT_Scenario.html"/>
   </topic>
-    </topic>
-</toc>
+</topic>
