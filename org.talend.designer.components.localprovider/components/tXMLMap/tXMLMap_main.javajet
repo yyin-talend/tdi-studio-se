@@ -127,10 +127,10 @@ skeleton="tXMLMap_java.skeleton"
 			if(!tmpNode.getType().equals("id_Document")){
 				isPlainNode = true;
 			}
-
+			
+			matchXmlTreeExpr = new MatchXmlTreeExpr(tmpNode, cid);
 			if(("id_Document").equals(tmpNode.getType())) { // find the type:document node.
 				containDocType = true;
-				matchXmlTreeExpr = new MatchXmlTreeExpr(tmpNode, cid);
 				//find the loop path
 				FindNodeUtil findUtil = new FindNodeUtil();
 				TreeNode loopNode = findUtil.findLoopPathNode(tmpNode);
@@ -310,6 +310,7 @@ for(OutputTreeNode tableEntry : tableEntries) {
 
     for (OutputXmlTree table : outputTablesSortedByReject) {
         EList<OutputTreeNode> tableEntries = table.getNodes();
+
         if (tableEntries == null || nameToOutputConnection.get(table.getName()) == null) {
             continue;
         }
@@ -372,11 +373,7 @@ for(OutputTreeNode tableEntry : tableEntries) {
 <% } %>
 <%
 	for(OutputTreeNode tableEntry : tableEntries) {
-		
-%>
-		
-			
-<%		
+
 		if(("id_Document").equals(tableEntry.getType())){
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(tableEntry.getType(), tableEntry.isNullable());
 %>
@@ -387,10 +384,11 @@ for(OutputTreeNode tableEntry : tableEntries) {
 <%
 		} else {
 			String resultExpression = "";
-			if(matchXmlTreeExpr != null)
+			//if(matchXmlTreeExpr != null)
 				resultExpression = matchXmlTreeExpr.generateExprCode(tableEntry.getExpression());
 		if(resultExpression!=null && !("").equals(resultExpression)){
 %>
+			
 			<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = <%=resultExpression %>;
 <%	
 		}
