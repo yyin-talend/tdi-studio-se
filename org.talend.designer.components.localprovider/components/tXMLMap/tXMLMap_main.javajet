@@ -216,6 +216,7 @@ for(VarTable var : varTables) {
 	for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) { 
 		InputXmlTree nextInputTable = inputTables.get(iInputTable);
 %>
+
 		<%@ include file="tXMLMap_lookup.inc.javajet" %>
 <%
 	

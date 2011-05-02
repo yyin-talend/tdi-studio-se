@@ -154,7 +154,7 @@ skeleton="tXMLMap_java.skeleton"
 <%
 				}// end for aKeysNames
 %>
-<% if(iInputTable != sizeInputTables-1){%>
+<% if(iInputTable != sizeInputTables-1 && isXpathFromLookup){%>
 		<%= rejectedDocInnerJoin %> = false;
 <%}%>
 <%
