@@ -544,18 +544,15 @@ class TreeNode_API_<%=cid %> {
 	if(mainInputTable != null) {
 		String mainInputName = mainInputTable.getName();
 		for(TreeNode tmpNode : mainInputTable.getNodes()){
-			if(("id_Document").equals(tmpNode.getType())) { // find the type:document node.
-                // generate the method to get the correct type in the xml tree
-                generateMethodUtil.generateCode(tmpNode, cid); // begin part keep this part
+            generateMethodUtil.generateCode(tmpNode, cid); // begin part keep this part
 %>
 
-				TreeNode_API_<%=cid %> treeNodeAPI_<%=cid %> = new TreeNode_API_<%=cid %>();
-				int nb_line_<%=cid%> = 0; 
-				NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
+			TreeNode_API_<%=cid %> treeNodeAPI_<%=cid %> = new TreeNode_API_<%=cid %>();
+			int nb_line_<%=cid%> = 0; 
+			NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
 <%
-                break;
-            }
-        }
+			break;
+		}
     }
 
 %>
