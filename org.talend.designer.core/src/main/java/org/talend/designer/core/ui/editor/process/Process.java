@@ -1422,6 +1422,26 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         process.getParameters().getRoutinesParameter().addAll(routinesDependencies);
     }
 
+    public void addGeneratingRoutines(List<RoutinesParameterType> routinesParameters) {
+        if (routinesParameters != null) {
+            List<RoutinesParameterType> needList = new ArrayList<RoutinesParameterType>();
+            boolean found = false;
+            for (RoutinesParameterType type : routinesParameters) {
+                found = false;
+                for (RoutinesParameterType existedType : routinesDependencies) {
+                    if (type.getId().equals(existedType.getId()) || type.getName().equals(existedType.getName())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    needList.add(type);
+                }
+            }
+            routinesDependencies.addAll(needList);
+        }
+    }
+
     /**
      * DOC qzhang Comment method "createNodeType".
      * 

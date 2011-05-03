@@ -58,25 +58,33 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ByteArray;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -229,7 +237,9 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
      */
     private void generateJavaFile() {
         Node node = (Node) elem;
-        String jobName = node.getProcess().getName();
+
+        IProcess process = node.getProcess();
+        String jobName = process.getName();
         String nodeName = node.getUniqueName();
 
         String wsdlfile = (String) node.getPropertyValue("ENDPOINT"); //$NON-NLS-1$
@@ -273,14 +283,19 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
                 name = parentFileName;
             }
         }
+        List<RoutineItem> returnItemList = new ArrayList<RoutineItem>();
+
         while (iterator.hasNext()) {
             File javaFile = (File) iterator.next();
             String fileName = javaFile.getName();
             String label = fileName.substring(0, fileName.indexOf('.'));
             try {
                 RoutineItem returnItem = createRoutine(path, label, javaFile, name);
+                returnItemList.add(returnItem);
                 syncRoutine(returnItem, true, name);
+
                 refreshProject();
+
             } catch (IllegalArgumentException e) {
                 // nothing need to do for the duplicate label, there don't overwrite it.
             } catch (Exception e) {
@@ -288,6 +303,45 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
             }
         }
 
+        Project currentProject = ProjectManager.getInstance().getCurrentProject();
+        IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
+        IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
+        List<IRepositoryViewObject> all;
+        Item item = null;
+
+        try {
+            all = factory.getAll(currentProject, ERepositoryObjectType.PROCESS, true, true);
+            for (IRepositoryViewObject repositoryViewObject : all) {
+                if (repositoryViewObject.getLabel().equals(jobName)) {
+                    item = repositoryViewObject.getProperty().getItem();
+                }
+            }
+        } catch (PersistenceException ex) {
+            ExceptionHandler.process(ex);
+        }
+
+        try {
+            List<RoutinesParameterType> needList = new ArrayList<RoutinesParameterType>();
+            List<RoutinesParameterType> createJobRoutineDependencies = RoutinesUtil.createJobRoutineDependencies(false);
+            for (RoutineItem returnItem : returnItemList) {
+                for (RoutinesParameterType routinesParameterType : createJobRoutineDependencies) {
+                    if (routinesParameterType.getId().equals(returnItem.getProperty().getId())) {
+                        needList.add(routinesParameterType);
+                    }
+                }
+            }
+            if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
+                ((org.talend.designer.core.ui.editor.process.Process) process).addGeneratingRoutines(needList);
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+
+        // try {
+        // RoutinesUtil.createJobRoutineDependencies(false);
+        // } catch (PersistenceException e) {
+        // ExceptionHandler.process(e);
+        // }
         FilesUtils.removeFolder(dir, true);
 
     }
