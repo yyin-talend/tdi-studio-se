@@ -889,6 +889,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     @SuppressWarnings("unchecked")
     private void loadElementParameters(Element elemParam, EList listParamType) {
+        boolean flag = false;
         ElementParameterType pType;
 
         for (int j = 0; j < listParamType.size(); j++) {
@@ -908,8 +909,29 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         // it (this will prevent to overwrite the
                         // value)
                     }
-
+                    String name = param.getName();
                     String value = pType.getValue();
+
+                    if (name.equals("PROPERTY_TYPE") && value.equals("REPOSITORY")) {
+                        flag = true;
+                    }
+                    if (name.equals("FILENAME") && flag) {
+                        param.setRepositoryValueUsed(true);
+                    } else if (name.equals("ROWSEPARATOR") && flag) {
+                        param.setRepositoryValueUsed(true);
+                    } else if (name.equals("FIELDSEPARATOR") && flag) {
+                        param.setRepositoryValueUsed(true);
+                    } else if (name.equals("CSV_OPTION") && flag) {
+                        param.setRepositoryValueUsed(true);
+                    } else if (name.equals("HEADER") && flag) {
+                        param.setRepositoryValueUsed(true);
+                    } else if (name.equals("FOOTER") && flag) {
+                        param.setRepositoryValueUsed(true);
+                    } else if (name.equals("ESCAPE_CHAR") && flag) {
+                        param.setRepositoryValueUsed(true);
+                    } else if (name.equals("REMOVE_EMPTY_ROW") && flag) {
+                        param.setRepositoryValueUsed(true);
+                    }
                     if (param.getFieldType().equals(EParameterFieldType.CHECK)
                             || param.getFieldType().equals(EParameterFieldType.RADIO)) {
                         if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$
