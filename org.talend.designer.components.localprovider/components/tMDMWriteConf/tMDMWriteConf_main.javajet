@@ -9,6 +9,7 @@
     org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType    
+    org.talend.core.model.process.EConnectionType
     java.util.List
     java.util.Map
   "
@@ -39,6 +40,8 @@ String position = ElementParameterParser.getValue(node,"__POSITION__");
 String dataModule = ElementParameterParser.getValue(node, "__DATAMODEL__");
 String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
 
+boolean storeFlow = ("true").equals(ElementParameterParser.getValue(node, "__STORE_FLOW__"));
+
 List<IMetadataTable> metadatas = node.getMetadataList();
 
 if (destination != null && !"".equals(destination)) {
@@ -47,8 +50,13 @@ if (destination != null && !"".equals(destination)) {
 
 if (metadatas != null && metadatas.size()>0) { 
   IMetadataTable metadata = metadatas.get(0);
-
   if (metadata != null) { 
+  
+  	List<? extends IConnection> outputConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+  	IConnection outputConn = outputConns.get(0);
+  	IMetadataTable outputMetadata = outputConn.getMetadataTable();
+  	List<IMetadataColumn> outputColumnList = outputMetadata.getListColumns();
+  	
     String rejectConnName = null;
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
 
@@ -79,6 +87,45 @@ if (metadatas != null && metadatas.size()>0) {
     %>
       <%=outConnName %> = new <%=outConnName %>Struct();
       <%=outConnName %>.<%=xmlField %> = strXmlField_<%=cid %>;
+       <%if(storeFlow){%>
+      		java.util.Map<String,String> xmlFlow_<%=cid%> = xmlFlowList_<%=cid%>.get(flowNum_<%=cid%>);
+      		String valueStr_<%=cid%>;
+			<%
+			for( int i = 0; i < outputColumnList.size(); i++) {
+				IMetadataColumn column = outputColumnList.get(i);
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+				if(xmlField.equals(column.getLabel())){
+					continue;
+				}
+			%>
+ 			valueStr_<%=cid%> = xmlFlow_<%=cid%>.get("<%=column.getLabel()%>");
+  			if (valueStr_<%=cid%> != null){
+				<%
+				if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
+				%>
+					<%=outConnName%>.<%=column.getLabel()%> = valueStr_<%=cid%>;
+				<%
+				} else if(javaType == JavaTypesManager.DATE) { // Date
+				%>
+					<%=outConnName%>.<%=column.getLabel()%> = ParserUtils.parseTo_Date(valueStr_<%=cid%>, <%= patternValue %>);
+				<%
+				} else if(javaType == JavaTypesManager.BYTE_ARRAY) { // byte[]
+				%>
+					<%=outConnName%>.<%=column.getLabel()%> = valueStr_<%=cid%>.getBytes();
+				<%
+				} else  { // other
+				%>						
+					<%=outConnName%>.<%=column.getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(valueStr_<%=cid%>);
+				<%
+				}
+				%>			
+			} else {
+				<%=outConnName%>.<%=column.getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+			}
+      		<%}
+      }%>
     <%}%>
     input_<%=cid %> = strXmlField_<%=cid %>;
 
@@ -182,6 +229,47 @@ if (metadatas != null && metadatas.size()>0) {
             <%=outConnName %> = null;
           <%}%>
           <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+          
+          <%if(storeFlow){%>
+      		java.util.Map<String,String> rejectXmlFlow_<%=cid%> = xmlFlowList_<%=cid%>.get(flowNum_<%=cid%>);
+      		String rejectValueStr_<%=cid%>;
+			<%
+			for( int i = 0; i < outputColumnList.size(); i++) {
+				IMetadataColumn column = outputColumnList.get(i);
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+				if(xmlField.equals(column.getLabel())){
+					continue;
+				}
+			%>
+ 			rejectValueStr_<%=cid%> = rejectXmlFlow_<%=cid%>.get("<%=column.getLabel()%>");
+  			if (rejectValueStr_<%=cid%> != null){
+				<%
+				if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
+				%>
+					<%=rejectConnName%>.<%=column.getLabel()%> = rejectValueStr_<%=cid%>;
+				<%
+				} else if(javaType == JavaTypesManager.DATE) { // Date
+				%>
+					<%=rejectConnName%>.<%=column.getLabel()%> = ParserUtils.parseTo_Date(rejectValueStr_<%=cid%>, <%= patternValue %>);
+				<%
+				} else if(javaType == JavaTypesManager.BYTE_ARRAY) { // byte[]
+				%>
+					<%=rejectConnName%>.<%=column.getLabel()%> = rejectValueStr_<%=cid%>.getBytes();
+				<%
+				} else  { // other
+				%>						
+					<%=rejectConnName%>.<%=column.getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(rejectValueStr_<%=cid%>);
+				<%
+				}
+				%>			
+			} else {
+				<%=rejectConnName%>.<%=column.getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+			}
+      		<%}
+      	  }%>
+          
           <%=rejectConnName %>.<%=xmlField %> = strXmlField_<%=cid %>;
           <%=rejectConnName %>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
         <%} else {%>
@@ -189,6 +277,9 @@ if (metadatas != null && metadatas.size()>0) {
         <%}
       }%>
     }
+    <%if(storeFlow){%>
+    flowNum_<%=cid%>++;
+    <%}%>
     nb_line_<%=cid %>++;
   <%
   }

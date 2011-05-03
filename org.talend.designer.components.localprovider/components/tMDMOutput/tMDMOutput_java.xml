@@ -51,8 +51,8 @@
 	      NUM_ROW="11"
 	      CONTEXT="REJECT"
 	      SHOW="true">
-	      <TABLE READONLY="true">
-	        <COLUMN NAME="xml" TYPE="id_String" LENGTH="255" READONLY="true"/>
+	      <TABLE READONLY="false">
+	        <COLUMN NAME="xml" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
 	        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
 	        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
 	      </TABLE>
@@ -251,6 +251,10 @@
 			<DEFAULT>"ISO-8859-15"</DEFAULT>
 		</PARAMETER>
 		
+		<PARAMETER NAME="STORE_FLOW" FIELD="CHECK"
+			REQUIRED="false" NUM_ROW="100" SHOW='false'>
+			<DEFAULT>true</DEFAULT>
+		</PARAMETER>
 
 	</ADVANCED_PARAMETERS>
 
@@ -307,6 +311,10 @@
 			<TEMPLATE_PARAM SOURCE="self.SCHEMA" TARGET="In.SCHEMA" />
 			<TEMPLATE_PARAM SOURCE="self.SCHEMA" TARGET="Out.SCHEMA" />
 			<TEMPLATE_PARAM SOURCE="self.SCHEMA_REJECT" TARGET="In.SCHEMA_REJECT" />
+			
+			<TEMPLATE_PARAM SOURCE="self.STORE_FLOW" TARGET="Out.STORE_FLOW" />
+			<TEMPLATE_PARAM SOURCE="self.STORE_FLOW" TARGET="In.STORE_FLOW" />
+			
 		</TEMPLATES>
   </CODEGENERATION>
 
