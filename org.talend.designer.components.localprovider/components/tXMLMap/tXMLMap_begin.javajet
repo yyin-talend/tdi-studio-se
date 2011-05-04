@@ -309,42 +309,75 @@ class GenerateMethodUtil {
 	java.util.Map<String, String> pathTypeToGenMap = new java.util.HashMap<String, String>(); // Map<"/root/name","String">
 	
 	void generateExprCode(String expression){
-		StringBuilder strBuilder = new StringBuilder();
-		if(expression==null || ("").equals(expression)) {
-			return;
-		}
-//		System.out.println("expression=" + expression);
-		if(expression.indexOf("[")>-1 && (expression.indexOf(".") > expression.indexOf("[")) 
-			&& (expression.indexOf(".") < expression.indexOf(":")) && (expression.indexOf(":") < expression.indexOf("]")) ){
-			// has the input tree path expression: [row1.doc:/root/subRoot]
-			
-// here we need to use a loop to query all the xpath in the expression
-			
-			int index_start = expression.indexOf("[");
-			int index_end = expression.indexOf("]", index_start+1);
-			String tmpXpath = expression.substring(index_start + 1, index_end );
-//			System.out.println("tmpXpath=" + tmpXpath + " ::::"+pathTypeToGenMap.get(tmpXpath));
-			if(index_start>0){
-				strBuilder.append(expression.substring(0,index_start-1));
+			StringBuilder strBuilder = new StringBuilder();
+			if(expression==null || ("").equals(expression)) {
+				return;
 			}
-			if("id_String".equals(pathTypeMap.get(tmpXpath)) || "id_Object".equals(pathTypeMap.get(tmpXpath))){
-				strBuilder.append("treeNodeAPI_"+cid+".get_String(\""+ tmpXpath + "\")");
-			} else if("id_Date".equals(pathTypeMap.get(tmpXpath))) {
-				strBuilder.append("treeNodeAPI_"+cid+".get_Date(\""+ tmpXpath + "\" , \"" + pathPatternMap.get(tmpXpath) + "\")");
-			} else if("id_byte[]".equals(pathTypeMap.get(tmpXpath))) {
-				strBuilder.append("treeNodeAPI_"+cid+".get_Bytes(\""+ tmpXpath + "\")");
+	
+			String currentExpression = expression;
+			String tmpXpath = "";
+			java.util.regex.Pattern expressionFromDoc = java.util.regex.Pattern.compile("\\[.*\\..*:.*\\]");
+			java.util.regex.Matcher matcherFromDoc;
+			
+			boolean end = false;
+			
+			if(expression.indexOf("[")>-1) {
+				strBuilder.append(expression.substring(0, expression.indexOf("[")));
+				currentExpression = currentExpression.substring(currentExpression.indexOf("["), currentExpression.length());
+				
+				while(currentExpression.length()>0 && !end) {
+					expression = currentExpression.substring(0, currentExpression.indexOf("]")+1);
+					currentExpression = currentExpression.substring(expression.length(), currentExpression.length());
+					matcherFromDoc = expressionFromDoc.matcher(expression);
+					if(matcherFromDoc.matches()) {
+						tmpXpath = expression.substring(1, expression.length()-1);
+						if("id_String".equals(pathTypeMap.get(tmpXpath)) || "id_Object".equals(pathTypeMap.get(tmpXpath))){
+							strBuilder.append("treeNodeAPI.get_String(\""+ tmpXpath + "\")");
+						} else if("id_Date".equals(pathTypeMap.get(tmpXpath))) {
+							strBuilder.append("treeNodeAPI.get_Date(\""+ tmpXpath + "\" , \"" + pathPatternMap.get(tmpXpath) + "\")");
+						} else if("id_byte[]".equals(pathTypeMap.get(tmpXpath))) {
+							strBuilder.append("treeNodeAPI.get_Bytes(\""+ tmpXpath + "\")");
+						} else {
+							strBuilder.append("treeNodeAPI.get_" + pathTypeToGenMap.get(tmpXpath) + "(\""+ tmpXpath + "\")");
+						}				
+					} else {
+						strBuilder.append(expression);
+					}
+					if(currentExpression.indexOf("[")>-1) {
+						strBuilder.append(currentExpression.substring(0, currentExpression.indexOf("[")));
+						currentExpression = currentExpression.substring(currentExpression.indexOf("["), currentExpression.length());
+					} else {
+						strBuilder.append(currentExpression);
+						end=true;
+					}
+				
+				}
 			} else {
-				strBuilder.append("treeNodeAPI_"+cid+".get_" + pathTypeToGenMap.get(tmpXpath) + "(\""+ tmpXpath + "\")");
+				strBuilder.append(expression);
 			}
-			if(index_end+1 < expression.length()) {
-				strBuilder.append(expression.substring(index_end+1));
-			}
-		} else { // there is no xpath in the expression
-			strBuilder.append(expression);
+			%><%=strBuilder.toString()%><%
 		}
-%><%=strBuilder.toString() %>
-<%
-	}
+		
+		public List<TreeNode> getGroupByNodeList(TreeNode group) {
+			List<TreeNode> list = new ArrayList<TreeNode>();
+			for (TreeNode attri : group.getChildren()) {
+				if(NodeType.ATTRIBUT.equals(attri.getNodeType())) {
+					list.add(attri);
+				}
+			}
+			if (NodeType.ELEMENT.equals(group.getNodeType()) && group.getChildren().size()==0) {
+				list.add(group);
+			} else {
+				if(NodeType.ELEMENT.equals(group.getNodeType()))
+				for (TreeNode element : group.getChildren()) {
+					if (!element.isMain() && !element.isLoop()) {
+						list.addAll(getGroupByNodeList(element));
+					}
+				}
+			}
+			return list;
+		}
+
 	
 	void generateCode(TreeNode node, String cid){
 %>
@@ -565,6 +598,8 @@ class TreeNode_API_<%=cid %> {
 class GenerateToolByDom4j{
 	String cid = null;
 	GenerateMethodUtil generateMethodUtil = null;
+	java.util.List<TreeNode> groupList = new java.util.ArrayList<TreeNode>();
+	java.util.List<java.util.List<TreeNode>> groupbyNodeList = new java.util.ArrayList<java.util.List<TreeNode>>();
 	
 	void setAllMainNodes(TreeNode root) {
 		TreeNode loop = getLoopNode(root);
@@ -606,15 +641,17 @@ class GenerateToolByDom4j{
 //    		System.out.println("parent:" + ((OutputTreeNode)node).getName() + "===node:" + node.getName() );
     		if(!isRootEndMainNode(node)){
     			int index = 0;
-    			for(TreeNode child:node.getChildren()){
-    				generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName);
+				for(TreeNode child:node.getChildren()){
+					if(!child.isLoop() && !child.isMain())
+						generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName);
     			}
 			}
 		}
 	}
 	
 	private void createElement(String currEleName, OutputTreeNode node, String parentName){
-		int index = node.getName().indexOf(":");
+		int index = 0;
+		index = node.getName().indexOf(":");
 		if(index>0 && hasParent(node)){
 %>
 		org.dom4j.Element <%=currEleName%>;
@@ -625,15 +662,22 @@ class GenerateToolByDom4j{
         }
 <%
 		}else{
+			if(node.isMain() && node.isGroup()) {
 %>
-		org.dom4j.Element <%=currEleName%> = <%=parentName%>.addElement("<%=node.getName()%>");
+				org.dom4j.Element <%=currEleName%> = org.dom4j.DocumentHelper.createElement("<%=node.getName()%>");
+				<%=parentName%>.elements().add(0,<%=currEleName%>);
+<%
+			} else {
+%>
+				org.dom4j.Element <%=currEleName%> = <%=parentName%>.addElement("<%=node.getName()%>");
 		
 <%
+			}
 		}
 %>
 		
 <%
-		if(isRootEndMainNode(node)){
+		if(node.isGroup() || node.isMain()){
 %>
 		subTreeRootParent = <%=currEleName%>;
 <%
@@ -693,21 +737,74 @@ class GenerateToolByDom4j{
 		return false;
 	}
 	
-	private void generateGroupCmpCode(OutputTreeNode node) {
-		if(node.isLoop()) return;
-		if(node.isMain() && node.isGroup()){ // the group node
-%>if(isNewElememt 
-<%
-			for(TreeNode tmpNode : node.getChildren()){
-				if(tmpNode.getExpression()!=null && !("").equals(tmpNode.getExpression()) ) {
+	private void generateGroupCode() {
+		if(groupList.size()>0){
 %>
-treeNodeAPI.get()
+			isNewElement = false;
 <%
+			for(int i=0;i<groupList.size();i++){
+				TreeNode groupRootNode = groupList.get(i);
+%>
+					if(isNewElement || groupbyList.size()<=<%=i%> || groupbyList.get(<%=i%>)==null
+<%
+						for(int j=0;j<groupbyNodeList.get(i).size();j++){
+							TreeNode attr = groupbyNodeList.get(i).get(j);
+%>
+					|| ( groupbyList.get(<%=i%>).get(<%=j%>)!=null ? !groupbyList.get(<%=i%>).get(<%=j%>).equals(<%generateMethodUtil.generateExprCode(attr.getExpression());%>) : <%generateMethodUtil.generateExprCode(attr.getExpression());%>!=null )
+<% 
+						}
+			
+%>
+					){
+
+<%
+					generateCode((OutputTreeNode)groupList.get(i),"group"+i+"_","subTreeRootParent");
+					
+
+					/*if(groupRootNode.getNodeType()==NodeType.ELEMENT){
+						createElement("group"+i+"_",(OutputTreeNode)groupList.get(i),"subTreeRootParent");
+						setText("group"+i+"_",(OutputTreeNode)groupList.get(i));
+					}*/
+						
+%>	
+					if(groupbyList.size()<=<%=i%>){
+						groupbyList.add(new java.util.ArrayList<String>());
+					}else{
+						groupbyList.get(<%=i%>).clear();
+					}
+<% 
+					for(int j=0;j<groupbyNodeList.get(i).size();j++){
+						TreeNode attr = groupbyNodeList.get(i).get(j);
+%>
+						groupbyList.get(<%=i%>).add(<%generateMethodUtil.generateExprCode(attr.getExpression());%>);
+<% 
+					}
+%>
+					isNewElement=true;
+					if(groupElementList.size()<=<%=i%>){
+						groupElementList.add(group<%=i%>_);
+					}else{
+						groupElementList.set(<%=i%>,group<%=i%>_);
+					}
+			
+				}else{
+					subTreeRootParent=groupElementList.get(<%=i%>);
 				}
+
+			
+<% 
+		}
+	}
+}
+	
+	
+	private void generateGroupCmpCode(OutputTreeNode node) {
+		for(TreeNode tmpNode : node.getChildren()) {
+			if((tmpNode.isGroup()) && !tmpNode.isLoop()) {
+				groupbyNodeList.add(generateMethodUtil.getGroupByNodeList(tmpNode));
+				groupList.add(tmpNode);
+				generateGroupCmpCode((OutputTreeNode)tmpNode);
 			}
-%>
-) {
-<%
 		}
 	}
 }
@@ -773,7 +870,7 @@ for(OutputXmlTree outputTable : outputTables) {
 %>
 class GenerateDocument_<%=tableName %> {
 	
-	TreeNode_API_<%=cid %> treeNodeAPI_<%=cid %> = null;
+	TreeNode_API_<%=cid %> treeNodeAPI = null;
 	
 	org.dom4j.Document doc = null;
 	
@@ -784,6 +881,7 @@ class GenerateDocument_<%=tableName %> {
 	org.dom4j.io.OutputFormat format = null;
 	
 	java.util.List<java.util.List<String>> groupbyList = null;
+	java.util.List<org.dom4j.Element> groupElementList = null;
 	
 	boolean isFirst = true;
 	
@@ -799,6 +897,7 @@ class GenerateDocument_<%=tableName %> {
     	nestXMLTool = new NestXMLTool_<%=cid%>();
     	
     	groupbyList = new java.util.ArrayList<java.util.List<String>>();
+		groupElementList = new java.util.ArrayList<org.dom4j.Element>();
     	
     	doc = org.dom4j.DocumentHelper.createDocument();
     	format = org.dom4j.io.OutputFormat.createPrettyPrint();
@@ -824,9 +923,12 @@ class GenerateDocument_<%=tableName %> {
 	<%
 	}
 	%>) {
-	if(this.treeNodeAPI_<%=cid %>==null) {
-		this.treeNodeAPI_<%=cid %> = treeNodeAPI;
-	}
+	
+	java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
+	/*if(this.treeNodeAPI==null) {
+		this.treeNodeAPI = treeNodeAPI;
+	}*/
+	
 	org.dom4j.Element subTreeRootParent = null;
 // build root xml tree 
 if (needRoot) {
@@ -840,8 +942,14 @@ if (needRoot) {
 	}else{
 		subTreeRootParent=root4Group;
 	}
-	// build group xml tree 
-	boolean isNewElememt = false;
+	/* build group xml tree */
+	boolean isNewElement = false;
+<%
+generateToolByDom4j.groupList.clear();
+generateToolByDom4j.generateGroupCmpCode(root);
+generateToolByDom4j.generateGroupCode();
+%>
+		isNewElement = false;
 		if(!isInnerJoin){
 			<%
 			

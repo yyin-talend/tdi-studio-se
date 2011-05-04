@@ -374,9 +374,11 @@ for(OutputTreeNode tableEntry : tableEntries) {
 		alreadyMapped_<%=cid%> = true;
 <% } %>
 <%
+	boolean hasDocument = false;
 	for(OutputTreeNode tableEntry : tableEntries) {
 
 		if(("id_Document").equals(tableEntry.getType())){
+			hasDocument = true;
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(tableEntry.getType(), tableEntry.isNullable());
 %>
 			if(<%= tableName1 %>_tmp.<%=tableEntry.getName() %> == null){
@@ -400,6 +402,13 @@ for(OutputTreeNode tableEntry : tableEntries) {
 
 <%	
 }//for (OutputXmlTree table : outputTablesSortedByReject) {
+%>
+<%
+	if(hasDocument && !isPlainNode) {
+%>
+		if(nb_line_<%=cid%>>=nodeList_<%=cid%>.size())
+<%	
+	}
 %>
 <%= tableName1 %> = <%= tableName1 %>_tmp;
 <% if(table.isActivateExpressionFilter() && table.getExpressionFilter() != null && !("").equals(table.getExpressionFilter())){ %>
@@ -433,11 +442,9 @@ for(OutputTreeNode tableEntry : tableEntries) {
 <%	if(!isXpathFromLookup){%>
 	<%=rejectedInnerJoin %> = false;
 <% } %>
-
-
 <%
-if((!isXpathFromLookup || hasOutgoingConnection) && containDocType && isPlainNode){%>
-}	// end for xml loop
+if((isXpathFromLookup || hasOutgoingConnection) && containDocType && !isPlainNode){%>
+
 <% } %>
 
 <%
