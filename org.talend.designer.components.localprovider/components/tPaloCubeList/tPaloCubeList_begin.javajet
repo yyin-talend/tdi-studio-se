@@ -101,10 +101,10 @@ if(pDB_<%=cid %> == null){
 <%
 if (outputConnName != null || bIterate){
 %>
-for(int i=0;i<4;i++){
-	org.talend.jpalo.palocubes pCUBs_<%=cid %> = pDB_<%=cid %>.getCubes(i);
-	for(int j=0;j< pCUBs_<%=cid %>.getNumberOfCubes();j++){
-		org.talend.jpalo.palocube pCUB_<%=cid %>=pCUBs_<%=cid %>.getCube(j);
+for(int i_<%=cid %>=0;i_<%=cid %><4;i_<%=cid %>++){
+	org.talend.jpalo.palocubes pCUBs_<%=cid %> = pDB_<%=cid %>.getCubes(i_<%=cid %>);
+	for(int j_<%=cid %>=0;j_<%=cid %>< pCUBs_<%=cid %>.getNumberOfCubes();j_<%=cid %>++){
+		org.talend.jpalo.palocube pCUB_<%=cid %>=pCUBs_<%=cid %>.getCube(j_<%=cid %>);
 		NB_CUBES<%=cid%>++;
 <%
 		if(bData){

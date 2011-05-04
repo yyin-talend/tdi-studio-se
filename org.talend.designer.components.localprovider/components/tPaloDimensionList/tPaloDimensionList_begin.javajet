@@ -112,12 +112,12 @@ org.talend.jpalo.palodimension pDIM_<%=cid %> = null;
 <%
 if (outputConnName != null || bIterate){
 %>
-	for(int i=0;i<4;i++){
+	for(int i_<%=cid %>=0;i_<%=cid %><4;i_<%=cid %>++){
 		org.talend.jpalo.palodimensions pDIMs_<%=cid %>=null;
 <%
 	if(useRetriveFromCube){
 %>
-		org.talend.jpalo.palocube pCB_<%=cid %> = pDB_<%=cid %>.getCubes(i).getCube(<%=sCubeName%>);
+		org.talend.jpalo.palocube pCB_<%=cid %> = pDB_<%=cid %>.getCubes(i_<%=cid %>).getCube(<%=sCubeName%>);
 		
 		if(null!=pCB_<%=cid %>)	{
 		    pDIMs_<%=cid %> = pCB_<%=cid %>.getDimensions();
@@ -125,14 +125,14 @@ if (outputConnName != null || bIterate){
 <%
 	}else{
 %>
-		pDIMs_<%=cid %> = pDB_<%=cid %>.getDimensions(i);
+		pDIMs_<%=cid %> = pDB_<%=cid %>.getDimensions(i_<%=cid %>);
 <%
 	}
 %>		
 
 		if(null!=pDIMs_<%=cid %>){
-		for(int j=0;j< pDIMs_<%=cid %>.getNumberOfDimensions();j++){
-			pDIM_<%=cid %>=pDIMs_<%=cid %>.getDimension(j);
+		for(int j_<%=cid %>=0;j_<%=cid %>< pDIMs_<%=cid %>.getNumberOfDimensions();j_<%=cid %>++){
+			pDIM_<%=cid %>=pDIMs_<%=cid %>.getDimension(j_<%=cid %>);
 			NB_DIMENSIONS<%=cid%>++;
 <%
 		if(bData){

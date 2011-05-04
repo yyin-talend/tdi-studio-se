@@ -90,8 +90,8 @@ if (conns!=null) {
 if (outputConnName != null || bIterate){
 %>
 	org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
-	for(int j=0;j< pDBs_<%=cid %>.getNumberOfDatabases();j++){
-		org.talend.jpalo.palodatabase pDB_<%=cid %> = pDBs_<%=cid %>.getDatabase(j);
+	for(int j_<%=cid %>=0;j_<%=cid %>< pDBs_<%=cid %>.getNumberOfDatabases();j_<%=cid %>++){
+		org.talend.jpalo.palodatabase pDB_<%=cid %> = pDBs_<%=cid %>.getDatabase(j_<%=cid %>);
 		NB_DATABASES<%=cid%>++;
 <%
 		if(bData){
