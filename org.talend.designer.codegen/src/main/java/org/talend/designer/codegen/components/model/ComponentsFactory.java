@@ -259,7 +259,6 @@ public class ComponentsFactory implements IComponentsFactory {
         isCreated = hasComponentFile(installLocation) && !isNeedClean && !CommonsPlugin.isHeadless();
         if (isReset) {
             isCreated = false;
-            cache.getComponentEntryMap().clear();
         }
 
         if (isCreated) {
@@ -270,6 +269,8 @@ public class ComponentsFactory implements IComponentsFactory {
                 ExceptionHandler.process(e);
             }
             cache = loadCache;
+        } else {
+            cache.getComponentEntryMap().clear();
         }
         if (cache == null) {
             cache = ComponentCacheFactory.eINSTANCE.createComponentsCache();
