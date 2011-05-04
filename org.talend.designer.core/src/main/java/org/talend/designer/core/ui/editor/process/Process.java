@@ -909,28 +909,16 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         // it (this will prevent to overwrite the
                         // value)
                     }
-                    String name = param.getName();
                     String value = pType.getValue();
-
-                    if (name.equals("PROPERTY_TYPE") && value.equals("REPOSITORY")) {
-                        flag = true;
-                    }
-                    if (name.equals("FILENAME") && flag) {
-                        param.setRepositoryValueUsed(true);
-                    } else if (name.equals("ROWSEPARATOR") && flag) {
-                        param.setRepositoryValueUsed(true);
-                    } else if (name.equals("FIELDSEPARATOR") && flag) {
-                        param.setRepositoryValueUsed(true);
-                    } else if (name.equals("CSV_OPTION") && flag) {
-                        param.setRepositoryValueUsed(true);
-                    } else if (name.equals("HEADER") && flag) {
-                        param.setRepositoryValueUsed(true);
-                    } else if (name.equals("FOOTER") && flag) {
-                        param.setRepositoryValueUsed(true);
-                    } else if (name.equals("ESCAPE_CHAR") && flag) {
-                        param.setRepositoryValueUsed(true);
-                    } else if (name.equals("REMOVE_EMPTY_ROW") && flag) {
-                        param.setRepositoryValueUsed(true);
+                    String propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
+                    String repositoryValue = param.getRepositoryValue();
+                    if (param.isShow(elemParam.getElementParameters()) && (repositoryValue != null)
+                            && (!param.getName().equals(propertyTypeName))) {
+                        boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
+                        boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
+                        if (paramFlag == extraFlag) {
+                            param.setRepositoryValueUsed(true);
+                        }
                     }
                     if (param.getFieldType().equals(EParameterFieldType.CHECK)
                             || param.getFieldType().equals(EParameterFieldType.RADIO)) {
