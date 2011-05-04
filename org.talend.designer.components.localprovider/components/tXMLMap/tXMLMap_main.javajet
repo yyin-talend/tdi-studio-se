@@ -52,6 +52,7 @@ skeleton="tXMLMap_java.skeleton"
 	boolean isPlainNode = false;
 	boolean isPlainNodeInLookup = false;
 	int lookupTableCount = 0;
+	boolean hasDocumentGlobal = false;
 	
 	List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
 	Map<String, IConnection> nameToOutputConnection = new HashMap<String, IConnection>();
@@ -203,7 +204,6 @@ for(VarTable var : varTables) {
 		String resultExpression = "";
 		if(matchXmlTreeExpr != null)
 			resultExpression = matchXmlTreeExpr.generateExprCode(expression);
-		%><%=resultExpression%> <%=var%><%
 		if(resultExpression!=null && !("").equals(resultExpression)){
 %>	
 <%=varsTableName %>.<%=varNode.getName() %> = <%=resultExpression %>;
@@ -247,19 +247,7 @@ for(OutputTreeNode tableEntry : tableEntries) {
 	if(("id_Document").equals(tableEntry.getType())){
 		String typeToGenerate = JavaTypesManager.getTypeToGenerate(tableEntry.getType(), tableEntry.isNullable());
 %>
-		gen_Doc_<%=table.getName() %>_<%=cid %>.generateElements(treeNodeAPI_<%=cid %>,<%= rejectedDocInnerJoin %>
-		
-		<%
-		for (InputXmlTree inputTable: inputTables) {
-	
-		%>, <%=inputTable.getName() %>
-		<%
-	
-		}
-		for (VarTable var : varTables) {
-			%>, <%=var.getName()%><%
-		}
-		%>);
+		////////////////////////////////////////////////////////
 <%
 	}
 }
@@ -379,12 +367,29 @@ for(OutputTreeNode tableEntry : tableEntries) {
 
 		if(("id_Document").equals(tableEntry.getType())){
 			hasDocument = true;
+			hasDocumentGlobal = true;
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(tableEntry.getType(), tableEntry.isNullable());
 %>
+			gen_Doc_<%=table.getName() %>_<%=cid %>.generateElements(treeNodeAPI_<%=cid %>,<%= rejectedDocInnerJoin %>
+		
+		<%
+		for (InputXmlTree inputTable: inputTables) {
+	
+		%>, <%=inputTable.getName() %>
+		<%
+	
+		}
+		for (VarTable var : varTables) {
+			%>, <%=var.getName()%><%
+		}
+		%>);
+
 			if(<%= tableName1 %>_tmp.<%=tableEntry.getName() %> == null){
 				<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = new <%=typeToGenerate %>();
 				<%= tableName1 %>_tmp.<%=tableEntry.getName() %>.setDocument(gen_Doc_<%=table.getName() %>_<%=cid %>.getDocument());
 			}
+			
+			<%= tableName1 %>_save = <%= tableName1 %>_tmp;
 <%
 		} else {
 			String resultExpression = "";
@@ -452,4 +457,29 @@ if((isXpathFromLookup || hasOutgoingConnection) && containDocType && !isPlainNod
 }// if(maininputtable)
 	
 //========================the input xml part end=============================
+%>
+<%
+	if(hasDocumentGlobal && !isPlainNode) {
+%>
+		if(nb_line_<%=cid%> == nodeList_<%=cid%>.size()) {
+<%
+			for (OutputXmlTree table : outputTables) {
+        
+				EList<OutputTreeNode> tableEntries = table.getNodes();
+				if (tableEntries == null || nameToOutputConnection.get(table.getName()) == null) {
+					continue;
+				}
+				String tableName1 = table.getName();
+            
+				String instanceVarName = tableName1 + "__" + node.getUniqueName();
+				String className = tableName1 + "Struct";
+            
+%>
+				<%= tableName1 %> = <%= tableName1 %>_save;
+<%
+			}
+%>
+		}
+<%
+	}
 %>
