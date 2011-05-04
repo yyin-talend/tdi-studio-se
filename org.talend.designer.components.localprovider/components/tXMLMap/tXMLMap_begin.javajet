@@ -599,8 +599,8 @@ class TreeNode_API_<%=cid %> {
 class GenerateToolByDom4j{
 	String cid = null;
 	GenerateMethodUtil generateMethodUtil = null;
-	java.util.List<TreeNode> groupList = new java.util.ArrayList<TreeNode>();
-	java.util.List<java.util.List<TreeNode>> groupbyNodeList = new java.util.ArrayList<java.util.List<TreeNode>>();
+	java.util.List<java.util.List<TreeNode>> groupList = new java.util.ArrayList<java.util.List<TreeNode>>();
+	java.util.List<java.util.List<java.util.List<TreeNode>>> groupbyNodeList = new java.util.ArrayList(new java.util.ArrayList<java.util.List<TreeNode>>());
 	
 	void setAllMainNodes(TreeNode root) {
 		TreeNode loop = getLoopNode(root);
@@ -738,18 +738,18 @@ class GenerateToolByDom4j{
 		return false;
 	}
 	
-	private void generateGroupCode() {
-		if(groupList.size()>0){
+	private void generateGroupCode(int index) {
+		if(groupList.get(index).size()>0){
 %>
 			isNewElement = false;
 <%
-			for(int i=0;i<groupList.size();i++){
-				TreeNode groupRootNode = groupList.get(i);
+			for(int i=0;i<groupList.get(index).size();i++){
+				TreeNode groupRootNode = groupList.get(index).get(i);
 %>
 					if(isNewElement || groupbyList.size()<=<%=i%> || groupbyList.get(<%=i%>)==null
 <%
-						for(int j=0;j<groupbyNodeList.get(i).size();j++){
-							TreeNode attr = groupbyNodeList.get(i).get(j);
+						for(int j=0;j<groupbyNodeList.get(index).get(i).size();j++){
+							TreeNode attr = groupbyNodeList.get(index).get(i).get(j);
 %>
 					|| ( groupbyList.get(<%=i%>).get(<%=j%>)!=null ? !groupbyList.get(<%=i%>).get(<%=j%>).equals(<%generateMethodUtil.generateExprCode(attr.getExpression());%>) : <%generateMethodUtil.generateExprCode(attr.getExpression());%>!=null )
 <% 
@@ -759,7 +759,7 @@ class GenerateToolByDom4j{
 					){
 
 <%
-					generateCode((OutputTreeNode)groupList.get(i),"group"+i+"_","subTreeRootParent");
+					generateCode((OutputTreeNode)groupList.get(index).get(i),"group"+i+"_","subTreeRootParent");
 					
 
 					/*if(groupRootNode.getNodeType()==NodeType.ELEMENT){
@@ -774,8 +774,8 @@ class GenerateToolByDom4j{
 						groupbyList.get(<%=i%>).clear();
 					}
 <% 
-					for(int j=0;j<groupbyNodeList.get(i).size();j++){
-						TreeNode attr = groupbyNodeList.get(i).get(j);
+					for(int j=0;j<groupbyNodeList.get(index).get(i).size();j++){
+						TreeNode attr = groupbyNodeList.get(index).get(i).get(j);
 %>
 						groupbyList.get(<%=i%>).add(<%generateMethodUtil.generateExprCode(attr.getExpression());%>);
 <% 
@@ -799,12 +799,12 @@ class GenerateToolByDom4j{
 }
 	
 	
-	private void generateGroupCmpCode(OutputTreeNode node) {
+	private void generateGroupCmpCode(OutputTreeNode node, int index) {
 		for(TreeNode tmpNode : node.getChildren()) {
 			if((tmpNode.isGroup()) && !tmpNode.isLoop()) {
-				groupbyNodeList.add(generateMethodUtil.getGroupByNodeList(tmpNode));
-				groupList.add(tmpNode);
-				generateGroupCmpCode((OutputTreeNode)tmpNode);
+				groupbyNodeList.get(index).add(generateMethodUtil.getGroupByNodeList(tmpNode));
+				groupList.get(index).add(tmpNode);
+				generateGroupCmpCode((OutputTreeNode)tmpNode, index);
 			}
 		}
 	}
@@ -864,7 +864,9 @@ class NestXMLTool_<%=cid%>{
 	generateToolByDom4j.cid = cid;
 	generateToolByDom4j.generateMethodUtil = generateMethodUtil;
 // define the generate the output document class
+int index = -1;
 for(OutputXmlTree outputTable : outputTables) {
+	index+=1;
 	String tableName = outputTable.getName();
 	for(OutputTreeNode outputNode: outputTable.getNodes()) {
 		if(("id_Document").equals(outputNode.getType())){
@@ -897,7 +899,7 @@ class GenerateDocument_<%=tableName %> {
     	
     	nestXMLTool = new NestXMLTool_<%=cid%>();
     	
-    	groupbyList = new java.util.ArrayList<java.util.List<String>>();
+    	groupbyList =  new java.util.ArrayList<java.util.List<String>>();
 		groupElementList = new java.util.ArrayList<org.dom4j.Element>();
     	
     	doc = org.dom4j.DocumentHelper.createDocument();
@@ -925,7 +927,7 @@ class GenerateDocument_<%=tableName %> {
 	}
 	%>) {
 	
-	java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
+	
 	/*if(this.treeNodeAPI==null) {
 		this.treeNodeAPI = treeNodeAPI;
 	}*/
@@ -947,9 +949,10 @@ if (needRoot) {
 	boolean isNewElement = false;
 	if(!isInnerJoin || isInnerJoin){
 <%
-generateToolByDom4j.groupList.clear();
-generateToolByDom4j.generateGroupCmpCode(root);
-generateToolByDom4j.generateGroupCode();
+generateToolByDom4j.groupList.add(new java.util.ArrayList<TreeNode>());
+generateToolByDom4j.groupbyNodeList.add(new java.util.ArrayList<java.util.List<TreeNode>>());
+generateToolByDom4j.generateGroupCmpCode(root, index);
+generateToolByDom4j.generateGroupCode(index);
 %>
 		isNewElement = false;
 			<%
