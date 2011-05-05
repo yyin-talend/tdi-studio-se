@@ -31,7 +31,6 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
-import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
@@ -252,7 +251,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setNumRow(2);
             addElementParameter(param);
         }
-        
+
         if (lineStyle.equals(EConnectionType.ROUTE_CATCH)) {
 
             IElementParameter param = new ElementParameter(this);
@@ -1099,7 +1098,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             return null;
         }
     }
-    
+
     public String getExceptionList() {
         if (lineStyle.equals(EConnectionType.ROUTE_CATCH)) {
             return (String) getPropertyValue(EParameterName.EXCEPTIONLIST.getName());
@@ -1125,7 +1124,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             String tableName = table.getTableName();
             for (IConnection connection : tmpList) {
                 if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
-                        && connection.getMetadataTable() != null
+                        && connection.getMetadataTable() != null && connection.getMetadataTable().getTableName() != null
                         && connection.getMetadataTable().getTableName().equals(tableName)
                         && connection.getConnectorName().equals(table.getAttachedConnector())) {
                     connectionList.add(connection);
