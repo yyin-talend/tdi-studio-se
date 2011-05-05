@@ -666,7 +666,7 @@ class GenerateToolByDom4j{
 			if(node.isMain() && node.isGroup()) {
 %>
 				org.dom4j.Element <%=currEleName%> = org.dom4j.DocumentHelper.createElement("<%=node.getName()%>");
-				<%=parentName%>.elements().add(0,<%=currEleName%>);
+				<%=parentName%>.elements().add(order++,<%=currEleName%>);
 <%
 			} else {
 %>
@@ -759,14 +759,7 @@ class GenerateToolByDom4j{
 					){
 
 <%
-					generateCode((OutputTreeNode)groupList.get(index).get(i),"group"+i+"_","subTreeRootParent");
-					
-
-					/*if(groupRootNode.getNodeType()==NodeType.ELEMENT){
-						createElement("group"+i+"_",(OutputTreeNode)groupList.get(i),"subTreeRootParent");
-						setText("group"+i+"_",(OutputTreeNode)groupList.get(i));
-					}*/
-						
+					generateCode((OutputTreeNode)groupList.get(index).get(i),"group"+i+"_","subTreeRootParent");						
 %>	
 					if(groupbyList.size()<=<%=i%>){
 						groupbyList.add(new java.util.ArrayList<String>());
@@ -885,6 +878,7 @@ class GenerateDocument_<%=tableName %> {
 	
 	java.util.List<java.util.List<String>> groupbyList = null;
 	java.util.List<org.dom4j.Element> groupElementList = null;
+	int order = 0;
 	
 	boolean isFirst = true;
 	
@@ -947,7 +941,6 @@ if (needRoot) {
 	}
 	/* build group xml tree */
 	boolean isNewElement = false;
-	if(!isInnerJoin || isInnerJoin){
 <%
 generateToolByDom4j.groupList.add(new java.util.ArrayList<TreeNode>());
 generateToolByDom4j.groupbyNodeList.add(new java.util.ArrayList<java.util.List<TreeNode>>());
@@ -967,7 +960,7 @@ generateToolByDom4j.generateGroupCode(index);
 			%>
 		}
     }
-}
+
 <%
 		} // if(docuemnt)
 	}// for(outputNode)

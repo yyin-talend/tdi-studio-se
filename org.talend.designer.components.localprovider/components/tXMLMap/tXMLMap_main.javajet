@@ -190,28 +190,7 @@ skeleton="tXMLMap_java.skeleton"
 	   }// if(document)
 	}// for()
 %>
-<%
-for(VarTable var : varTables) {
-    String varsTableName = var.getName();
-    String instanceVarName = varsTableName + "__" + cid;
-    String className = instanceVarName + "__Struct";
-%>			
-<%=className + " " + varsTableName + " = " + instanceVarName + ";" %>
-<%
-	for(VarNode varNode : var.getNodes()){
-		String javaType = varNode.getType();
-		String expression = varNode.getExpression();
-		String resultExpression = "";
-		if(matchXmlTreeExpr != null)
-			resultExpression = matchXmlTreeExpr.generateExprCode(expression);
-		if(resultExpression!=null && !("").equals(resultExpression)){
-%>	
-<%=varsTableName %>.<%=varNode.getName() %> = <%=resultExpression %>;
-<%
-		}
-	}
-}
-%>
+
 <%
 	//	System.out.println("size of vartable begin:" + varTables.size());
 	for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) { 
@@ -256,7 +235,30 @@ for(OutputTreeNode tableEntry : tableEntries) {
 
 <%
 	if(varTables.size() > 0 ){
-%>{
+%>
+	{
+<%
+	for(VarTable var : varTables) {
+		String varsTableName = var.getName();
+		String instanceVarName = varsTableName + "__" + cid;
+		String className = instanceVarName + "__Struct";
+%>			
+		<%=className + " " + varsTableName + " = " + instanceVarName + ";" %>
+<%
+		for(VarNode varNode : var.getNodes()){
+			String javaType = varNode.getType();
+			String expression = varNode.getExpression();
+			String resultExpression = "";
+			if(matchXmlTreeExpr != null)
+				resultExpression = matchXmlTreeExpr.generateExprCode(expression);
+			if(resultExpression!=null && !("").equals(resultExpression)){
+%>	
+				<%=varsTableName %>.<%=varNode.getName() %> = <%=resultExpression %>;
+<%
+			}
+		}
+	}
+%>
 <%
 	}
 %>
