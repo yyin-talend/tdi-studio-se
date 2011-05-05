@@ -79,20 +79,20 @@ import org.talend.repository.ui.views.IRepositoryView;
  * DOC ytao class global comment. Detailled comment
  */
 public class GenerateGrammarController extends AbstractElementPropertySectionController {
-    
+
     public GenerateGrammarController(IDynamicProperty dp) {
         super(dp);
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        
+
     }
-    
+
     @Override
     public void refresh(IElementParameter param, boolean check) {
-        
+
     }
-    
+
     SelectionListener listenerSelection = new SelectionListener() {
 
         public void widgetDefaultSelected(SelectionEvent e) {
@@ -102,14 +102,14 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         public void widgetSelected(SelectionEvent e) {
             generateJavaFile();
 
-            IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                .getActivePage().findView(IRepositoryView.VIEW_ID);
-            
-            viewPart.refresh();
+            IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .findView(IRepositoryView.VIEW_ID);
+
+            viewPart.refreshView();
         }
 
     };
-    
+
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
@@ -123,20 +123,20 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
      * create a button and a listener
      */
     @Override
-    public Control createControl(Composite subComposite, IElementParameter param, int numInRow, 
-            int nbInRow, int top, Control lastControl) {
+    public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
+            Control lastControl) {
         Button btnEdit;
         btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
         FormData data;
         btnEdit.addSelectionListener(listenerSelection);
-        
+
         if (elem instanceof Node) {
             btnEdit.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName()); //$NON-NLS-1$
         data = new FormData();
-        
+
         if (lastControl != null) {
             data.left = new FormAttachment(lastControl, 0);
         } else {
@@ -144,7 +144,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         }
         data.top = new FormAttachment(0, top);
         labelLabel.setLayoutData(data);
-        
+
         if (numInRow != 1) {
             labelLabel.setAlignment(SWT.RIGHT);
         }
@@ -177,30 +177,30 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         hashCurControls.put(param.getName(), btnEdit);
         Point initialSize = btnEdit.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-        
+
         return btnEdit;
     }
 
-    
     /**
      * Generate java source file
      * 
      * DOC ytao Comment method "generateJavaFile".
      */
-    private void generateJavaFile(){
+    private void generateJavaFile() {
         Node node = (Node) elem;
-        
+
         final String PROJECT_NAME = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel().toLowerCase();
-        final String JOB_NAME =  node.getProcess().getName().toLowerCase();
+        final String JOB_NAME = node.getProcess().getName().toLowerCase();
         final String COMPONENT_NAME = node.getUniqueName().toLowerCase();
-        
-        String javaClassName = StringUtils.capitalize(PROJECT_NAME) + StringUtils.capitalize(JOB_NAME) + StringUtils.capitalize(COMPONENT_NAME);
+
+        String javaClassName = StringUtils.capitalize(PROJECT_NAME) + StringUtils.capitalize(JOB_NAME)
+                + StringUtils.capitalize(COMPONENT_NAME);
         ITDQItemService service = (ITDQItemService) GlobalServiceRegister.getDefault().getService(ITDQItemService.class);
         File fileCreated = service.fileCreatedInRoutines(node, javaClassName);
-        
-        if (fileCreated == null) 
-               return;
-        
+
+        if (fileCreated == null)
+            return;
+
         try {
             RoutineItem returnItem = persistInRoutine(new Path(JOB_NAME), fileCreated, javaClassName);
             addReferenceJavaFile(returnItem, true);
@@ -208,15 +208,16 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
-        
+
         // remove temporary files of grammar
         FilesUtils.removeFolder(new File(fileCreated.getParent()), true);
     }
-    
+
     /**
      * Persist item in routines
      * 
      * DOC ytao Comment method "persistInRoutine".
+     * 
      * @param path, sub folder named with job id
      * @param label, java file name without suffix
      * @param initFile, File handler
@@ -224,32 +225,32 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
      * @return
      */
     private RoutineItem persistInRoutine(IPath inFolder, File fileToFill, String label) {
-        
+
         // item property to be set
         Property property = PropertiesFactory.eINSTANCE.createProperty();
         property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
         property.setVersion(VersionUtils.DEFAULT_VERSION);
-        property.setStatusCode("");        
+        property.setStatusCode("");
         // Label must match pattern ^[a-zA-Z\_]+[a-zA-Z0-9\_]*$
         // Must be composed with JAVA_PORJECT_NAME + JOB NAME + COMPONENT NAME,
         // since all projects share with the same routines
         property.setLabel(label);
-        
+
         // add properties to item
         RoutineItem routineItem = PropertiesFactory.eINSTANCE.createRoutineItem();
         routineItem.setProperty(property);
-        
+
         // get the content of java file as byte array.
         ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
         InputStream stream = null;
-        
+
         try {
             stream = new FileInputStream(fileToFill);
             byte[] bytes = new byte[stream.available()];
             stream.read(bytes);
             byteArray.setInnerContent(bytes);
         } catch (IOException e) {
-            ExceptionHandler.process(e); 
+            ExceptionHandler.process(e);
         } finally {
             if (stream != null) {
                 try {
@@ -260,7 +261,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
             }
         }
         routineItem.setContent(byteArray);
-        
+
         // persist item in routines
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
 
@@ -270,21 +271,21 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
             repositoryFactory.createParentFoldersRecursively(ERepositoryObjectType.getItemType(routineItem), inFolder);
             // add the item
             repositoryFactory.create(routineItem, inFolder);
-        } catch (Exception e){
+        } catch (Exception e) {
             ExceptionHandler.process(e);
         }
-        
+
         // add required jar packages used to compile java file
         if (routineItem.eResource() != null) {
             addRequiredLib(routineItem);
         }
-        
+
         return routineItem;
     }
-    
+
     /**
-     * Store file to file system. Actually, it locates src/routines/xx
-     * DOC ytao Comment method "addReferenceJavaFile".
+     * Store file to file system. Actually, it locates src/routines/xx DOC ytao Comment method "addReferenceJavaFile".
+     * 
      * @param routineItem
      * @param copyToTemp
      * @return
@@ -292,18 +293,18 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
      */
     private IFile addReferenceJavaFile(RoutineItem routineItem, boolean copyToTemp) throws SystemException {
         FileOutputStream fos = null;
-        
+
         try {
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
             String label = routineItem.getProperty().getLabel();
-            
+
             IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$ //$NON-NLS-2$
                     + label + JavaUtils.JAVA_EXTENSION);
 
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
-                
+
                 if (!label.equals(ITalendSynchronizer.TEMPLATE)) {
                     routineContent = routineContent.replaceAll(ITalendSynchronizer.TEMPLATE, label);
                     File f = file.getLocation().toFile();
@@ -327,7 +328,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
             }
         }
     }
-    
+
     /**
      * refresh the project
      * 
@@ -347,32 +348,33 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
      * add required libraries to class path
      * 
      * DOC ytao Comment method "addRequiredLib".
+     * 
      * @param routineItem
      */
-    private void addRequiredLib(RoutineItem routineItem){
+    private void addRequiredLib(RoutineItem routineItem) {
         List<IMPORTType> listRequiredJar = new ArrayList<IMPORTType>();
         String javaLabPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath() + "/";
-        
+
         IMPORTType type1 = ComponentFactory.eINSTANCE.createIMPORTType();
         type1.setMODULE("antlr-3.3.jar");
         type1.setUrlPath(javaLabPath + "antlr-3.3.jar");
         type1.setREQUIRED(true);
         type1.setNAME(routineItem.getProperty().getLabel());
         listRequiredJar.add(type1);
-        
+
         IMPORTType type2 = ComponentFactory.eINSTANCE.createIMPORTType();
         type2.setMODULE("org.talend.dataquality.parser.jar");
         type2.setUrlPath(javaLabPath + "org.talend.dataquality.parser.jar");
         type2.setREQUIRED(true);
         type2.setNAME(routineItem.getProperty().getLabel());
         listRequiredJar.add(type2);
-        
+
         routineItem.getImports().addAll(listRequiredJar);
-    
+
         try {
             File url1 = new File(javaLabPath + "antlr-3.3.jar");
             File url2 = new File(javaLabPath + "org.talend.dataquality.parser.jar");
-            
+
             CorePlugin.getDefault().getLibrariesService().deployLibrary(url1.toURL());
             CorePlugin.getDefault().getLibrariesService().deployLibrary(url2.toURL());
             CorePlugin.getDefault().getProxyRepositoryFactory().save(routineItem);

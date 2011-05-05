@@ -577,7 +577,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
     private static void refreshRepositoryView() {
         IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                 .findView(IRepositoryView.VIEW_ID);
-        viewPart.refresh();
+        viewPart.refreshView();
     }
 
     protected String getTmpFolder() {
