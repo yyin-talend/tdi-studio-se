@@ -114,6 +114,7 @@ skeleton="tXMLMap_java.skeleton"
 				
 %>
 		    GenerateDocument_<%=outputTableName %> gen_Doc_<%=outputTableName %>_<%=cid %> = new GenerateDocument_<%=outputTableName %>();
+			<%=outputTableName %>_tmp.<%=outputNode.getName()%> = null;
 <%
 					break;
 				} // if(docuemnt)
@@ -157,8 +158,8 @@ skeleton="tXMLMap_java.skeleton"
     java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);	
     String str_<%=cid %> = null;
     org.dom4j.Node node_<%=cid%> = null;
-
-    for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
+	
+	for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
     	nb_line_<%=cid%>++;
     	<%= rejectedDocInnerJoin %> = false;
 		<%=mainRowRejected%>=false;
