@@ -121,9 +121,7 @@ public class MapperMain {
     }
 
     public void loadModelFromInternalData() {
-        if (this.mapperModel == null) {
-            this.mapperModel = new MapperModel(mapperManager.getInputTables(), mapperManager.getOutputTables());
-        }
+        this.mapperModel = new MapperModel(mapperManager.getInputTables(), mapperManager.getOutputTables());
     }
 
     /**

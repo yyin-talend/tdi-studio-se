@@ -83,9 +83,7 @@ public class DbMapComponent extends AbstractMapComponent {
      */
     public void initialize() {
         super.initialize();
-        if (mapperMain == null) {
-            initMapperMain();
-        }
+        initMapperMain(false);
         mapperMain.loadInitialParamters();
     }
 
@@ -101,8 +99,10 @@ public class DbMapComponent extends AbstractMapComponent {
         return this.externalData;
     }
 
-    private void initMapperMain() {
-        mapperMain = new MapperMain(this);
+    private void initMapperMain(boolean forceNew) {
+        if (forceNew || !forceNew && mapperMain == null) {
+            mapperMain = new MapperMain(this);
+        }
     }
 
     /*
@@ -113,7 +113,7 @@ public class DbMapComponent extends AbstractMapComponent {
     public int open(final Display display) {
         // TimeMeasure.start("Total open");
         // TimeMeasure.display = false;
-        initMapperMain();
+        initMapperMain(true);
         mapperMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
         Shell shell = mapperMain.createUI(display);
         // TimeMeasure.display = true;
@@ -374,7 +374,7 @@ public class DbMapComponent extends AbstractMapComponent {
     public AbstractExternalData getExternalEmfData() {
         final DBMapData emfMapperData = DbmapFactory.eINSTANCE.createDBMapData();
         if (mapperMain == null) {
-            initMapperMain();
+            initMapperMain(false);
         }
         mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
                 getMetadataList(), false);
@@ -516,7 +516,7 @@ public class DbMapComponent extends AbstractMapComponent {
     @Override
     public List<Problem> getProblems() {
         if (mapperMain == null) {
-            initMapperMain();
+            initMapperMain(false);
         }
         ProblemsAnalyser problemsAnalyser = new ProblemsAnalyser(mapperMain.getMapperManager());
         return problemsAnalyser.checkProblems(externalData);

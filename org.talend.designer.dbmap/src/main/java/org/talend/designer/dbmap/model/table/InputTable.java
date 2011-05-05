@@ -89,7 +89,7 @@ public class InputTable extends AbstractInOutTable {
             setMetadataTable(connection.getTable().clone());
         } else if (connection != null) {
             // dbmap table references a physical table
-            setMetadataTable(connection.getTable().clone());
+            setMetadataTable(connection.getTable());
         }
         super.initFromExternalData(externalMapperTable);
 
