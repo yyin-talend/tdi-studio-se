@@ -910,16 +910,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         // value)
                     }
                     String value = pType.getValue();
-                    String propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
-                    String repositoryValue = param.getRepositoryValue();
-                    if (param.isShow(elemParam.getElementParameters()) && (repositoryValue != null)
-                            && (!param.getName().equals(propertyTypeName))) {
-                        boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
-                        boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
-                        if (paramFlag == extraFlag) {
-                            param.setRepositoryValueUsed(true);
-                        }
-                    }
                     if (param.getFieldType().equals(EParameterFieldType.CHECK)
                             || param.getFieldType().equals(EParameterFieldType.RADIO)) {
                         if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$

@@ -491,16 +491,15 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                             ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
                             oldProcess.getProperty());
 
-                    IProcess2 newProcess = null;
-                    Item item = getProcess().getProperty().getItem();
+                    Item item = oldProcess.getProperty().getItem();
 
                     if (item instanceof ProcessItem) {
 
-                        ((Process) designerEditor.getProcess()).updateProcess(processType);
+                        ((Process) oldProcess).updateProcess(processType);
                     } else if (item instanceof JobletProcessItem) {
-                        ((Process) designerEditor.getProcess()).updateProcess(processType);
+                        ((Process) oldProcess).updateProcess(processType);
                     }
-
+                    oldProcess.getUpdateManager().updateAll();
                     designerEditor.setDirty(isDirty);
 
                 } catch (PersistenceException e) {
