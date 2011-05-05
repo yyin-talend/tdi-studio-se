@@ -101,6 +101,15 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER 
+      NAME="SCHEMA_DB"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REPOSITORY_VALUE="SCHEMA"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="ENCODING"
