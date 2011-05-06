@@ -15,6 +15,7 @@ package org.talend.designer.components;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.designer.core.ILocalProviderService;
 
 /**
@@ -31,4 +32,7 @@ public class LocalProviderService implements ILocalProviderService {
         return ResourceBundle.getBundle(label, Locale.getDefault(), new ResClassLoader(getClass().getClassLoader()));
     }
 
+    public AbstractUIPlugin getPlugin() {
+        return ComponentsLocalProviderPlugin.getDefault();
+    }
 }

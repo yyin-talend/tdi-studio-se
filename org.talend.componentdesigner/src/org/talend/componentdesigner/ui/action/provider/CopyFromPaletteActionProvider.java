@@ -27,7 +27,8 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.ui.dialog.ImportComponentDialog;
-import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.designer.core.ILocalProviderService;
 
 /**
  * DOC slanglois class global comment. Detailled comment
@@ -72,8 +73,10 @@ public class CopyFromPaletteActionProvider extends CommonActionProvider {
          * (non-Javadoc) Method declared on IAction.
          */
         public void run() {
-            URL url = CorePlugin.getDefault().getComponentsLocalProviderService().getPlugin().getBundle().getResource(
-                    "/components"); //$NON-NLS-1$
+            ILocalProviderService service = (ILocalProviderService) GlobalServiceRegister.getDefault().getService(
+                    ILocalProviderService.class);
+
+            URL url = service.getPlugin().getBundle().getResource("/components"); //$NON-NLS-1$
             try {
                 url = FileLocator.toFileURL(url);
             } catch (IOException e) {
