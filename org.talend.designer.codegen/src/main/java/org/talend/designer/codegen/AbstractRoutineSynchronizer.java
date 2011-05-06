@@ -173,8 +173,10 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
     }
 
     public void syncRoutine(RoutineItem routineItem) throws SystemException {
-        doSyncRoutine(routineItem, true);
-        setRoutineAsUptodate(routineItem);
+        if (routineItem != null) {
+            doSyncRoutine(routineItem, true);
+            setRoutineAsUptodate(routineItem);
+        }
     }
 
     public void syncBean(BeanItem beanItem, boolean copyToTemp) throws SystemException {
