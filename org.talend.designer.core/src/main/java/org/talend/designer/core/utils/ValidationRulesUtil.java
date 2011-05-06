@@ -359,7 +359,7 @@ public class ValidationRulesUtil {
 
     public static void removeRejectConnector(INode node) {
         for (INodeConnector connector : node.getListConnector()) {
-            if ("VALIDATION_REJECT".equals(connector.getName())) {
+            if ("VALIDATION_REJECT".equals(connector.getName())) { //$NON-NLS-1$
                 node.getListConnector().remove(connector);
                 return;
             }

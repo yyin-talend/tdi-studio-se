@@ -2062,16 +2062,27 @@ public class DataProcess {
         endNode = nodeUseValidationRule;
         DataNode filterNode = null;
         List<IConnection> validRuleConnections;
+        List<? extends IConnection> mainConnections;
         IMetadataTable rejectMetadataTable = null;
-        IConnection dataConnection = null;
+        DataConnection dataConnection = null;
         if (isOutput) {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getIncomingConnections();
-            dataConnection = nodeUseValidationRule.getIncomingConnections("FLOW").get(0);//$NON-NLS-1$
+            mainConnections = nodeUseValidationRule.getIncomingConnections("FLOW");
         } else {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getOutgoingConnections();
-            dataConnection = nodeUseValidationRule.getOutgoingConnections("FLOW").get(0);//$NON-NLS-1$
+            mainConnections = nodeUseValidationRule.getOutgoingConnections("FLOW");
         }
-        validRuleConnections.remove(dataConnection);
+
+        if (validRuleConnections == null || validRuleConnections.size() == 0)
+            return;
+
+        if (mainConnections != null && mainConnections.size() > 0) {
+            dataConnection = (DataConnection) mainConnections.get(0);
+        }
+
+        if (dataConnection != null) {
+            validRuleConnections.remove(dataConnection);
+        }
 
         // create tFilterRow
         IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow"); //$NON-NLS-1$
@@ -2081,13 +2092,32 @@ public class DataProcess {
         } else {
             typeStr = "input"; //$NON-NLS-1$
         }
-        String uniqueName = component.getName() + "_" + typeStr + "_" + dataConnection.getName(); //$NON-NLS-1$ //$NON-NLS-2$
+        String uniqueName = component.getName() + "_" + typeStr; //$NON-NLS-1$ 
+        if (dataConnection != null) {
+            uniqueName += "_" + dataConnection.getName(); //$NON-NLS-1$
+        }
         filterNode = new DataNode(component, uniqueName);
-        filterNode.setActivate(dataConnection.isActivate());
+        filterNode.setActivate(connection.isActivate());
         filterNode.setStart(false);
         filterNode.setDesignSubjobStartNode(null);
-        if (dataConnection.getMetadataTable() != null) {
-            IMetadataTable newMetadata = dataConnection.getMetadataTable().clone();
+        IMetadataTable filterNodeMetadataTable = null;
+        if (dataConnection != null) {
+            if (dataConnection.getMetadataTable() != null) {
+                filterNodeMetadataTable = dataConnection.getMetadataTable();
+            }
+        } else {
+            List<IMetadataTable> metadatas = nodeUseValidationRule.getMetadataList();
+            if (metadatas != null && metadatas.size() > 0) {
+                for (IMetadataTable metadataTable : metadatas) {
+                    if ("FLOW".equals(metadataTable.getAttachedConnector())) { //$NON-NLS-1$
+                        filterNodeMetadataTable = metadataTable;
+                        break;
+                    }
+                }
+            }
+        }
+        if (filterNodeMetadataTable != null) {
+            IMetadataTable newMetadata = filterNodeMetadataTable.clone();
             newMetadata.setTableName(uniqueName);
             filterNode.getMetadataList().remove(0);
             filterNode.getMetadataList().add(newMetadata);
@@ -2110,8 +2140,8 @@ public class DataProcess {
             }
         }
         ((List<INodeConnector>) filterNode.getListConnector()).add(rejectConnector);
-        List<IMetadataTable> metadataList = nodeUseValidationRule.getMetadataList();
 
+        List<IMetadataTable> metadataList = nodeUseValidationRule.getMetadataList();
         for (IMetadataTable metadataTable : metadataList) {
             if ("VALIDATION_REJECT".equals(metadataTable.getTableName()) && !filterNode.getMetadataList().contains(metadataTable)) { //$NON-NLS-1$
                 rejectMetadataTable = metadataTable;
@@ -2121,13 +2151,16 @@ public class DataProcess {
         }
 
         // set incomming or outgoing connection of the tFilterRow. add the current link
-        if (isOutput) {
-            incomingConnections.add(dataConnection);
-            ((DataConnection) dataConnection).setTarget(filterNode);
-        } else {
-            outgoingConnections.add(dataConnection);
-            ((DataConnection) dataConnection).setSource(filterNode);
-            ((DataConnection) dataConnection).setConnectorName("FILTER"); //$NON-NLS-1$
+        if (dataConnection != null) {
+            if (isOutput) {
+                incomingConnections.add(dataConnection);
+                dataConnection.setTarget(filterNode);
+            } else {
+                outgoingConnections.add(dataConnection);
+                dataConnection.setSource(filterNode);
+                dataConnection.setTarget(connection.getTarget());
+                dataConnection.setConnectorName("FILTER"); //$NON-NLS-1$
+            }
         }
 
         // create new link for output or input of tFilterRow.
