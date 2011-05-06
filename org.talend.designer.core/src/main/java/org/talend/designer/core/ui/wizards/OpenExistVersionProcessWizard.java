@@ -219,6 +219,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
                 } else if (item instanceof RoutineItem) {
                     RoutineItem routineItem = (RoutineItem) item;
                     ITalendSynchronizer routineSynchronizer = codeGenService.createRoutineSynchronizer();
+                    routineSynchronizer.syncRoutine(routineItem);
                     IFile file = routineSynchronizer.getFile(routineItem);
                     fileEditorInput = new RoutineEditorInput(file, routineItem);
                 } else if (item instanceof SQLPatternItem) {
