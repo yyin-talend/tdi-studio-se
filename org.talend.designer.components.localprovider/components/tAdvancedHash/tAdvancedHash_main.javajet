@@ -99,9 +99,15 @@
 			List<IMetadataColumn> listColumns = metadataTable.getListColumns();
             for (IMetadataColumn column : listColumns) {
                 String columnName = column.getLabel();
+				if("id_Dynamic".equals(column.getTalendType())) {
+				%>
+				<%=connectionName%>_HashRow.<%=columnName%> = <%=connectionName%>.<%=columnName%>.clone();
+				<%
+				} else {
 				%>
 				<%=connectionName%>_HashRow.<%=columnName%> = <%=connectionName%>.<%=columnName%>;
-				<%
+				<%	
+				}
             } 
 
 
