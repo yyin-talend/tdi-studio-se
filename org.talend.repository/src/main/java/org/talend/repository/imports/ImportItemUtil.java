@@ -111,7 +111,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.utils.FileCopyUtils;
 
 /**
@@ -263,19 +262,20 @@ public class ImportItemUtil {
                        * }
                        */
                 } else {
-                    // same id but different name
+                    // same id but different name,no need to care overwrite cause the item will be considered as a
+                    // different one,see bug 20445
                     itemRecord.setState(State.ID_EXISTED);
-                    if (overwrite) {
-                        result = true;
-                    } else {
-                        // see bug 0005222: [Import items] [Errors and Warnings]
-                        // id is already in use
-
-                        RepositoryNode nodeWithSameId = RepositoryNodeUtilities.getRepositoryNode(itemWithSameId);
-                        IPath path = getPath(nodeWithSameId);
-                        itemRecord.addError(Messages.getString(
-                                "RepositoryUtil.idUsed", itemWithSameId.getLabel(), path.toOSString())); //$NON-NLS-1$
-                    }
+                    // if (overwrite) {
+                    // result = true;
+                    // } else {
+                    // see bug 0005222: [Import items] [Errors and Warnings]
+                    // id is already in use
+                    result = true;
+                    // RepositoryNode nodeWithSameId = RepositoryNodeUtilities.getRepositoryNode(itemWithSameId);
+                    // IPath path = getPath(nodeWithSameId);
+                    // itemRecord.addError(Messages.getString(
+                    //                                "RepositoryUtil.idUsed", itemWithSameId.getLabel(), path.toOSString())); //$NON-NLS-1$
+                    // }
                 }
             } else {
                 if (idAvailable) {
@@ -552,7 +552,10 @@ public class ImportItemUtil {
                         }
                         overwriteDeletedItems.add(id);
                     }
-                    repFactory.forceDeleteObjectPhysical(lastVersion, itemRecord.getProperty().getVersion());
+                    /* only delete when name exsit rather than id exist */
+                    if (itemRecord.getState().equals(ItemRecord.State.NAME_EXISTED)) {
+                        repFactory.forceDeleteObjectPhysical(lastVersion, itemRecord.getProperty().getVersion());
+                    }
                     lastVersion = null;
 
                     // List<IRepositoryObject> list = cache.findObjectsByItem(itemRecord);
@@ -672,7 +675,22 @@ public class ImportItemUtil {
                     itemRecord.setItemId(itemRecord.getProperty().getId());
                     itemRecord.setItemVersion(itemRecord.getProperty().getVersion());
                     itemRecord.setImported(true);
-                } else if (VersionUtils.compareTo(lastVersion.getProperty().getVersion(), tmpItem.getProperty().getVersion()) < 0) {
+                } else if (itemRecord.getState().equals(ItemRecord.State.ID_EXISTED)) {
+                    /*
+                     * if id exsist then need to genrate new id for this job,in this case the job won't override the old
+                     * one
+                     */
+                    String newJobId = EcoreUtil.generateUUID();
+                    tmpItem.getProperty().setId(newJobId);
+                    repFactory.create(tmpItem, path, true);
+                    itemRecord.setImportPath(path.toPortableString());
+                    itemRecord.setRepositoryType(itemType);
+                    itemRecord.setItemId(newJobId);
+                    itemRecord.setItemVersion(itemRecord.getProperty().getVersion());
+                    itemRecord.setImported(true);
+                }
+
+                else if (VersionUtils.compareTo(lastVersion.getProperty().getVersion(), tmpItem.getProperty().getVersion()) < 0) {
                     repFactory.forceCreate(tmpItem, path);
                     itemRecord.setImportPath(path.toPortableString());
                     itemRecord.setItemId(itemRecord.getProperty().getId());
