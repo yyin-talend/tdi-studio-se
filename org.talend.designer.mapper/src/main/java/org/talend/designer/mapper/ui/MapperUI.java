@@ -248,6 +248,7 @@ public class MapperUI {
                     if (!closeWindow) {
                         e.doit = false;
                     } else {
+                        mapperManager.getAbstractMapComponent().setExternalData(mapperManager.getOriginalExternalData());
                         mapperManager.getUiManager().prepareClosing(SWT.CANCEL);
                     }
 
