@@ -1793,16 +1793,26 @@ public class DataProcess {
         AbstractNode nodeUseValidationRule = (AbstractNode) node;
         endNode = nodeUseValidationRule;
         List<IConnection> validRuleConnections;
+        List<? extends IConnection> mainConnections;
         IMetadataTable rejectMetadataTable = null;
-        IConnection dataConnection;
+        IConnection dataConnection = null;
         if (isOutput) {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getIncomingConnections();
-            dataConnection = nodeUseValidationRule.getIncomingConnections("FLOW").get(0);//$NON-NLS-1$
+            mainConnections = nodeUseValidationRule.getIncomingConnections("FLOW");//$NON-NLS-1$
         } else {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getOutgoingConnections();
-            dataConnection = nodeUseValidationRule.getOutgoingConnections("FLOW").get(0);//$NON-NLS-1$
+            mainConnections = nodeUseValidationRule.getOutgoingConnections("FLOW");//$NON-NLS-1$
         }
-        validRuleConnections.remove(dataConnection);
+        if (validRuleConnections == null || validRuleConnections.size() == 0)
+            return;
+
+        if (mainConnections != null && mainConnections.size() > 0) {
+            dataConnection = (DataConnection) mainConnections.get(0);
+        }
+
+        if (dataConnection != null) {
+            validRuleConnections.remove(dataConnection);
+        }
 
         // Change from Input => Ouptut, to Input => tJoin (with ref link) => Output
 
@@ -1814,15 +1824,36 @@ public class DataProcess {
         } else {
             typeStr = "input"; //$NON-NLS-1$
         }
-        String uniqueName = component.getName() + "_" + typeStr + "_" + dataConnection.getName(); //$NON-NLS-1$ //$NON-NLS-2$
+        String uniqueName = component.getName() + "_" + typeStr; //$NON-NLS-1$
+        if (dataConnection != null) {
+            uniqueName += "_" + dataConnection.getName(); //$NON-NLS-1$
+        }
         DataNode joinNode = new DataNode(component, uniqueName);
-        joinNode.setActivate(dataConnection.isActivate());
+        joinNode.setActivate(connection.isActivate());
         joinNode.setStart(false);
         joinNode.setDesignSubjobStartNode(null);
-        IMetadataTable newMetadata = dataConnection.getMetadataTable().clone();
-        newMetadata.setTableName(uniqueName);
-        joinNode.getMetadataList().remove(0);
-        joinNode.getMetadataList().add(newMetadata);
+        IMetadataTable joinNodeMetadataTable = null;
+        if (dataConnection != null) {
+            if (dataConnection.getMetadataTable() != null) {
+                joinNodeMetadataTable = dataConnection.getMetadataTable();
+            }
+        } else {
+            List<IMetadataTable> metadatas = nodeUseValidationRule.getMetadataList();
+            if (metadatas != null && metadatas.size() > 0) {
+                for (IMetadataTable metadataTable : metadatas) {
+                    if ("FLOW".equals(metadataTable.getAttachedConnector())) { //$NON-NLS-1$
+                        joinNodeMetadataTable = metadataTable;
+                        break;
+                    }
+                }
+            }
+        }
+        if (joinNodeMetadataTable != null) {
+            IMetadataTable newMetadata = joinNodeMetadataTable.clone();
+            newMetadata.setTableName(uniqueName);
+            joinNode.getMetadataList().remove(0);
+            joinNode.getMetadataList().add(newMetadata);
+        }
         joinNode.setSubProcessStart(false);
         joinNode.setProcess(node.getProcess());
         joinNode.setElementParameters(component.createElementParameters(joinNode));
@@ -1853,12 +1884,14 @@ public class DataProcess {
         }
 
         // set incomming or outgoing connection of the tJoin. add the current link
-        if (isOutput) {
-            tJoin_incomingConnections.add(dataConnection);
-            ((DataConnection) dataConnection).setTarget(joinNode);
-        } else {
-            tJoin_outgoingConnections.add(dataConnection);
-            ((DataConnection) dataConnection).setSource(joinNode);
+        if (dataConnection != null) {
+            if (isOutput) {
+                tJoin_incomingConnections.add(dataConnection);
+                ((DataConnection) dataConnection).setTarget(joinNode);
+            } else {
+                tJoin_outgoingConnections.add(dataConnection);
+                ((DataConnection) dataConnection).setSource(joinNode);
+            }
         }
 
         // create new link for output or input of tJoin.
@@ -1973,7 +2006,7 @@ public class DataProcess {
 
         // add a new hash node
         // (to replace by a Node maybe that will take the informations of an IComponent)
-        String baseConnector = inputNode.getConnectorFromName(connection.getConnectorName()).getBaseSchema();
+        String baseConnector = inputNode.getConnectorFromName("FLOW").getBaseSchema(); //$NON-NLS-1$
         INodeConnector connector = joinNode.getConnectorFromName(baseConnector);
         String hashComponent = connector.getConnectionProperty(EConnectionType.FLOW_REF).getLinkedComponent();
 
