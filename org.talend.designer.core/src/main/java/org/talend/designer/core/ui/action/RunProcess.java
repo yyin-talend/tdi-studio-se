@@ -21,9 +21,10 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.repository.model.BinRepositoryNode;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 
@@ -84,8 +85,8 @@ public class RunProcess extends AContextualAction {
             default:
                 canWork = false;
             }
-            RepositoryNode parent = node.getParent();
-            if (canWork && parent != null && parent instanceof BinRepositoryNode) {
+            if (canWork && node.getObject() != null
+                    && ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
                 canWork = false;
             }
         }

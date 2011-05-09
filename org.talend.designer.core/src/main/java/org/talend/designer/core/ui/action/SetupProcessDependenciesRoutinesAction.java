@@ -36,7 +36,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.routine.RoutineItemRecord;
 import org.talend.designer.core.ui.routine.SetupProcessDependenciesRoutinesDialog;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -82,8 +81,8 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
             default:
                 canWork = false;
             }
-            RepositoryNode parent = node.getParent();
-            if (canWork && parent != null && parent instanceof BinRepositoryNode) {
+            if (canWork && node.getObject() != null
+                    && ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
                 canWork = false;
             }
             if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {

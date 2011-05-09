@@ -23,11 +23,12 @@ import org.eclipse.ui.IWorkbench;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.BinRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizard;
 
 /**
@@ -59,8 +60,8 @@ public class ExportJobScriptAction extends AContextualAction {
                 canWork = false;
                 break;
             }
-            RepositoryNode parent = node.getParent();
-            if (canWork && parent != null && parent instanceof BinRepositoryNode) {
+            if (canWork && node.getObject() != null
+                    && ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
                 canWork = false;
                 break;
             }

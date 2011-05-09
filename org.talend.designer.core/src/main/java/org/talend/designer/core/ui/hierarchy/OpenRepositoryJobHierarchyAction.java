@@ -31,7 +31,7 @@ import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.model.BinRepositoryNode;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 
@@ -67,8 +67,9 @@ public class OpenRepositoryJobHierarchyAction extends AContextualAction {
 
         Property updatedProperty = null;
         try {
-            updatedProperty = ProxyRepositoryFactory.getInstance().getLastVersion(
-                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId()).getProperty();
+            updatedProperty = ProxyRepositoryFactory.getInstance()
+                    .getLastVersion(new Project(ProjectManager.getInstance().getProject(property.getItem())), property.getId())
+                    .getProperty();
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
@@ -111,8 +112,8 @@ public class OpenRepositoryJobHierarchyAction extends AContextualAction {
             default:
                 canWork = false;
             }
-            RepositoryNode parent = node.getParent();
-            if (canWork && parent != null && parent instanceof BinRepositoryNode) {
+            if (canWork && node.getObject() != null
+                    && ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
                 canWork = false;
             }
         }
