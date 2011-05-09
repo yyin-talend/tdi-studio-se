@@ -67,14 +67,37 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 int nb_line_<%=cid%> = 0;
 
-String fileName_<%=cid%> = <%=filename%>;
-
+String fileName_<%=cid%> = (new java.io.File(<%=filename%>)).getAbsolutePath().replace("\\","/");
+String fullName_<%=cid%> = null;
+String extension_<%=cid%> = null;
+String directory_<%=cid%> = null;
+if((fileName_<%=cid%>.indexOf("/") != -1)) {
+    if(fileName_<%=cid%>.lastIndexOf(".") < fileName_<%=cid%>.lastIndexOf("/")) {
+        fullName_<%=cid%> = fileName_<%=cid%>;
+        extension_<%=cid%> = "";
+    } else {
+        fullName_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("."));
+        extension_<%=cid%> = fileName_<%=cid%>.substring(fileName_<%=cid%>.lastIndexOf("."));
+    }           
+    directory_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("/"));            
+} else {
+    if(fileName_<%=cid%>.lastIndexOf(".") != -1) {
+        fullName_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("."));
+        extension_<%=cid%> = fileName_<%=cid%>.substring(fileName_<%=cid%>.lastIndexOf("."));
+    } else {
+        fullName_<%=cid%> = fileName_<%=cid%>;
+        extension_<%=cid%> = "";
+    }
+    directory_<%=cid%> = "";
+}
 <%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
 	 //create directory only if not exists
-	java.io.File createFile<%=cid%> = new java.io.File(fileName_<%=cid%>);
-	 if(!createFile<%=cid%>.exists()){
-	 	(new java.io.File(fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("/")))).mkdirs();
-	 }
+	if(directory_<%=cid%> != null && directory_<%=cid%>.trim().length() != 0) {
+	    java.io.File dir_<%=cid%> = new java.io.File(directory_<%=cid%>);
+	    if(!dir_<%=cid%>.exists()) {
+		dir_<%=cid%>.mkdirs();
+	    }
+	}
 <%
   }
 
