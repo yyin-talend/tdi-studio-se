@@ -404,9 +404,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.RENAME, parameterList,
                                 UpdateRepositoryUtils.getRepositorySourceName(item));
                         result.setJob(getProcess());
-                        if (!isOpenedProcess(getProcess())) {
-                            result.setItemProcess(getProcess());
-                        }
+                        // if (!isOpenedProcess(getProcess())) {
+                        // result.setItemProcess(getProcess());
+                        // }
 
                         setConfigrationForReadOnlyJob(result);
                         contextResults.add(result);

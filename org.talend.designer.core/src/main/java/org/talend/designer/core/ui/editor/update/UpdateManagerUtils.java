@@ -580,14 +580,15 @@ public final class UpdateManagerUtils {
                     IProcess2 process = (IProcess2) job;
                     process.getCommandStack().execute(command);
                     executed = true;
-                    // save updated process
-                    saveModifiedItem(result);
                 }
             }
             if (!executed) {
                 command.execute();
             }
-
+            if (result.isFromItem()) {
+                // save updated process
+                saveModifiedItem(result);
+            }
             subMonitor.worked(1);
 
         }

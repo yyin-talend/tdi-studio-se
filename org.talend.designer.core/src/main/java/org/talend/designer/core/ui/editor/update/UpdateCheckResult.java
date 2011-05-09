@@ -310,9 +310,9 @@ public class UpdateCheckResult extends UpdateResult {
                 }
             }
             String others = null;
-            // if (getItemProcess() != null) { // update item
-            // others = UpdatesConstants.START;
-            // }
+            if (isFromItem()) { // update item
+                others = UpdatesConstants.START;
+            }
             if (jobInfor != null) {
                 this.jobInfor = jobInfor + UpdatesConstants.SPACE + UpdateManagerUtils.addBrackets(others);
                 return;
