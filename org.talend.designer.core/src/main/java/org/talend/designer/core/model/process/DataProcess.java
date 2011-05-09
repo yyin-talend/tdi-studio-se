@@ -1002,7 +1002,7 @@ public class DataProcess {
                 AbstractNode subDataNodeStartSource = (AbstractNode) buildCheckMap.get(subNodeStartSource);
                 AbstractNode subDataNodeStartTarget = (AbstractNode) buildCheckMap.get(subNodeStartTarget);
 
-                if (subDataNodeStartSource == null) {
+                if (subDataNodeStartSource == null || subDataNodeStartTarget == null) {
                     // means the graphic process is not complete, so ignore it.
                     continue;
                 }
