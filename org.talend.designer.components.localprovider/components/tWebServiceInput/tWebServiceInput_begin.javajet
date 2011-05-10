@@ -35,7 +35,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         boolean needAuth = ("true").equals(ElementParameterParser.getValue(node,"__NEED_AUTH__"));
         String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
-        String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
+        String password = ElementParameterParser.getValue(node,"__PASS__");
         
         boolean winAuth = ("true").equals(ElementParameterParser.getValue(node,"__WIN_AUTH__"));
         String domain = ElementParameterParser.getValue(node,"__DOMAIN__");
@@ -48,7 +48,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         boolean needSSLtoTrustServer = ("true").equals(ElementParameterParser.getValue(node,"__NEED_SSL_TO_TRUSTSERVER__"));
         String trustStoreFile = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_TRUSTSTORE__");
-        String trustStorePassword = ElementParameterParser.getValue(node,"__PASS__");
+        String trustStorePassword = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_PASSWORD__");
         
         
         String timeoutStr = ElementParameterParser.getValue(node,"__TIMEOUT__");
