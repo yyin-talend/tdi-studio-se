@@ -263,9 +263,9 @@
 				<ITEM NAME="MAX"    VALUE="max"/>
 				<ITEM NAME="AVG"    VALUE="avg"/>
 				<ITEM NAME="SUM"    VALUE="sum"/>
-				<ITEM NAME="FIRST"    VALUE="first" SHOW_IF="DBTYPE!='MYSQL'"/>
-				<ITEM NAME="LAST"    VALUE="last" SHOW_IF="DBTYPE!='MYSQL'"/>
-				<ITEM NAME="LIST"    VALUE="list" SHOW_IF="DBTYPE!='MYSQL'"/>
+				<ITEM NAME="FIRST"    VALUE="first" SHOW_IF="(DBTYPE!='MYSQL') AND (DBTYPE!='DBORACLE')"/>
+				<ITEM NAME="LAST"    VALUE="last" SHOW_IF="(DBTYPE!='MYSQL') AND (DBTYPE!='DBORACLE')"/>
+				<ITEM NAME="LIST"    VALUE="list" SHOW_IF="(DBTYPE!='MYSQL') AND (DBTYPE!='DBORACLE')"/>
 				<ITEM NAME="DISTINCT"    VALUE="distinct" SHOW_IF="DBTYPE!='DBORACLE'"/>       
 				<ITEM NAME="COUNT_DISTINCT"    VALUE="count(distinct @COLUMN)"/>     
 			  </ITEMS>
