@@ -46,15 +46,12 @@ import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
-import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.component_cache.ComponentCacheFactory;
 import org.talend.core.model.component_cache.ComponentCachePackage;
 import org.talend.core.model.component_cache.ComponentInfo;
 import org.talend.core.model.component_cache.ComponentsCache;
@@ -106,8 +103,6 @@ public class ComponentsFactory implements IComponentsFactory {
     private IProgressMonitor monitor;
 
     private SubMonitor subMonitor;
-
-    private static ComponentsCache cache = ComponentManager.getInstance();
 
     private static Map<String, IComponent> componentsCache = new HashMap<String, IComponent>();
 
@@ -260,21 +255,18 @@ public class ComponentsFactory implements IComponentsFactory {
         if (isReset) {
             isCreated = false;
         }
-
+        ComponentsCache cache = ComponentManager.getInstance();
         if (isCreated) {
-            ComponentsCache loadCache = null;
             try {
-                loadCache = loadComponentResource(installLocation);
+                ComponentsCache loadCache = loadComponentResource(installLocation);
+                cache.getComponentEntryMap().putAll(loadCache.getComponentEntryMap());
             } catch (IOException e) {
                 ExceptionHandler.process(e);
             }
-            cache = loadCache;
         } else {
             cache.getComponentEntryMap().clear();
         }
-        if (cache == null) {
-            cache = ComponentCacheFactory.eINSTANCE.createComponentsCache();
-        }
+
         XsdValidationCacheManager.getInstance().load();
         // 1.Load Component from extension point: components_provider
         if (!isCreated) {
@@ -297,14 +289,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
         if (!isCreated) {
             XsdValidationCacheManager.getInstance().save();
-
-            try {
-                Resource resource = createComponentCacheResource(installLocation);
-                resource.getContents().add(cache);
-                EmfHelper.saveResource(cache.eResource());
-            } catch (PersistenceException e1) {
-                ExceptionHandler.process(e1);
-            }
+            ComponentManager.saveResource();
             isReset = false;
         }
         // TimeMeasure.step("initComponents", "createCache");
@@ -328,6 +313,7 @@ public class ComponentsFactory implements IComponentsFactory {
      * @throws BusinessException
      */
     private void reloadComponentsFromCache() throws BusinessException {
+        ComponentsCache cache = ComponentManager.getInstance();
         Iterator it = cache.getComponentEntryMap().entrySet().iterator();
         File pathFile = getComponentsLocation(IComponentsFactory.COMPONENTS_INNER_FOLDER);
         while (it.hasNext()) {
@@ -427,6 +413,21 @@ public class ComponentsFactory implements IComponentsFactory {
     private void loadComponentsFromComponentsProviderExtension() {
         ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
         for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
+            loadComponents(componentsProvider);
+        }
+    }
+
+    public void loadComponentsFromExtension(String id) {
+        ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
+        for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
+            if (componentsProvider.getId() != null && componentsProvider.getId().equals(id)) {
+                loadComponents(componentsProvider);
+            }
+        }
+    }
+
+    private void loadComponents(AbstractComponentsProvider componentsProvider) {
+        if (componentsProvider != null) {
             try {
                 componentsProvider.preComponentsLoad();
                 if (componentsProvider.getInstallationFolder().exists()) {
@@ -442,30 +443,24 @@ public class ComponentsFactory implements IComponentsFactory {
         ComponentsProviderManager.getInstance().getProviders();
         ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
         AbstractComponentsProvider componentsProvider = componentsProviderManager.loadUserComponentsProvidersFromExtension();
-        try {
-            componentsProvider.preComponentsLoad();
-            // remove old user components
-            if (this.userComponentList != null) {
-                for (IComponent component : userComponentList) {
-                    if (componentList != null && componentList.contains(component)) {
-                        componentList.remove(component);
-                    }
-                    if (customComponentList.contains(component)) {
-                        customComponentList.remove(component);
-                    }
-                    if (cache.getComponentEntryMap().get(component.getName()) != null) {
-                        cache.getComponentEntryMap().remove(component.getName());
-                    }
+        // remove old user components
+        if (this.userComponentList != null) {
+            ComponentsCache cache = ComponentManager.getInstance();
+            for (IComponent component : userComponentList) {
+                if (componentList != null && componentList.contains(component)) {
+                    componentList.remove(component);
+                }
+                if (customComponentList.contains(component)) {
+                    customComponentList.remove(component);
+                }
+                if (cache.getComponentEntryMap().get(component.getName()) != null) {
+                    cache.getComponentEntryMap().remove(component.getName());
                 }
             }
-            if (componentsProvider.getInstallationFolder().exists()) {
-                loadComponentsFromFolder(componentsProvider.getComponentsLocation(), componentsProvider);
-            }
-            if (!CommonsPlugin.isHeadless()) {
-                ComponentManager.saveResource();
-            }
-        } catch (IOException e) {
-            ExceptionHandler.process(e);
+        }
+        loadComponents(componentsProvider);
+        if (!CommonsPlugin.isHeadless()) {
+            ComponentManager.saveResource();
         }
     }
 
@@ -569,7 +564,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         String pathName = xmlMainFile.getAbsolutePath();
                         pathName = pathName.replace(replaceSource.getAbsolutePath(), "");
                         EmfComponent currentComp = new EmfComponent(pathName, xmlMainFile.getParentFile().getName(), pathSource,
-                                cache, isCreated);
+                                ComponentManager.getInstance(), isCreated);
                         // force to call some functions to update the cache. (to improve)
                         currentComp.isVisibleInComponentDefinition();
                         currentComp.isTechnical();

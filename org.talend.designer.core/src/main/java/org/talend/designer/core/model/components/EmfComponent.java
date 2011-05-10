@@ -201,8 +201,6 @@ public class EmfComponent extends AbstractComponent {
 
     private ComponentInfo info;
 
-    private ComponentsCache cache;
-
     private boolean isAlreadyLoad = false;
 
     // weak ref used so that memory is not used by a static ComponentResourceFactoryImpl instance
@@ -217,7 +215,6 @@ public class EmfComponent extends AbstractComponent {
         this.name = name;
         this.pathSource = pathSource;
         this.isAlreadyLoad = isload;
-        this.cache = cache;
         if (!isAlreadyLoad) {
             info = ComponentCacheFactory.eINSTANCE.createComponentInfo();
             load();
