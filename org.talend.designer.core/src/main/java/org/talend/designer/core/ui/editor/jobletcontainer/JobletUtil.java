@@ -10,11 +10,14 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -23,6 +26,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.model.components.EParameterName;
@@ -196,7 +200,19 @@ public class JobletUtil {
 
     public Node cloneNode(Node node, IProcess process, Boolean lock) {
         NodePart nodePart = new NodePart();
-        Node cloneNode = new Node(node.getComponent(), (IProcess2) process);
+        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                IJobletProviderService.class);
+        boolean isInOut = false;
+        if (service != null) {
+            isInOut = service.isJobletInOutComponent(node);
+        }
+        Node cloneNode = null;
+        if (isInOut) {
+            cloneNode = new Node(node.getComponent(), (IProcess2) process, node.getUniqueName());
+        } else {
+            cloneNode = new Node(node.getComponent(), (IProcess2) process);
+        }
+
         nodePart.setModel(cloneNode);
         if (lock == null) {
             cloneNode.setReadOnly(true);
@@ -328,13 +344,13 @@ public class JobletUtil {
         List<? extends INode> nodeList = process.getGraphicalNodes();
         for (INode node : nodeList) {
             if (((Node) node).isJoblet()) {
-                if (!((Node) node).getNodeContainer().isCollapsed()) {
-                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                            IJobletProviderService.class);
-                    if (service != null) {
-                        service.unlockJoblet(node);
-                    }
+                // if (!((Node) node).getNodeContainer().isCollapsed()) {
+                IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                        IJobletProviderService.class);
+                if (service != null) {
+                    service.unlockJoblet(node, false);
                 }
+                // }
             }
         }
 
@@ -384,6 +400,109 @@ public class JobletUtil {
             }
         }
         return false;
+    }
+
+    public boolean checkModify(JobletContainer jobletContainer) {
+        IProcess process = jobletContainer.getNode().getComponent().getProcess();
+        List<? extends INode> nodeList = process.getGraphicalNodes();
+        List<NodeContainer> containerList = jobletContainer.getNodeContainers();
+        for (NodeContainer nodeCon : containerList) {
+            Node node = nodeCon.getNode();
+            String jobletUnique = node.getJoblet_unique_name();
+            if (jobletUnique == null || "".equals(jobletUnique)) {
+                continue;
+            }
+            for (INode nodeOra : nodeList) {
+                if (nodeOra.getUniqueName().equals(jobletUnique)) {
+                    List<? extends IElementParameter> paras = node.getElementParameters();
+                    for (IElementParameter para : paras) {
+                        if (para == null) {
+                            continue;
+                        }
+                        String paraName = para.getName();
+                        if (paraName != null) {
+                            if (paraName.equals(EParameterName.UNIQUE_NAME.getName())) {
+                                continue;
+                            }
+                            if (paraName.equals(EParameterName.UPDATE_COMPONENTS.getName())) {
+                                continue;
+                            }
+                            IElementParameter paraOra = nodeOra.getElementParameter(paraName);
+                            if (paraOra == null || para == null) {
+                                continue;
+                            }
+
+                            if (para.getValue() != null) {
+                                if (paraOra.getValue() != null) {
+                                    if (!para.getValue().equals(paraOra.getValue())) {
+                                        return true;
+                                    }
+                                } else {
+                                    return true;
+                                }
+                            } else {
+                                if (paraOra.getValue() != null) {
+                                    return true;
+                                }
+                            }
+
+                            if (paraOra.getChildParameters() != null && para.getChildParameters() != null) {
+                                Map<String, IElementParameter> paraChild = para.getChildParameters();
+                                Map<String, IElementParameter> paraOraChild = paraOra.getChildParameters();
+                                Iterator<Entry<String, IElementParameter>> ite = paraChild.entrySet().iterator();
+                                while (ite.hasNext()) {
+                                    Entry<String, IElementParameter> entry = ite.next();
+                                    String key = entry.getKey();
+                                    IElementParameter c = entry.getValue();
+                                    if (key != null && c != null) {
+                                        IElementParameter oc = paraOraChild.get(key);
+
+                                        if (oc != null) {
+                                            if (c.getValue() != null) {
+                                                if (oc.getValue() != null) {
+                                                    if (!oc.getValue().equals(c.getValue())) {
+                                                        return true;
+                                                    }
+                                                } else {
+                                                    return true;
+                                                }
+                                            } else {
+                                                if (oc.getValue() != null) {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                    List<IMetadataTable> nodeTables = node.getMetadataList();
+                    List<IMetadataTable> oraTables = nodeOra.getMetadataList();
+                    if (nodeTables.size() != oraTables.size()) {
+                        return true;
+                    }
+
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean keepLockJoblet(Item item) {
+        if (item instanceof JobletProcessItem) {
+            boolean isOpen = openedInJob((JobletProcessItem) item);
+            if (isOpen) {
+                boolean flag = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Lock joblet",
+                        "The joblet is openes in a job,Do you want unlock it?");
+                return flag;
+            }
+
+        }
+        return true;
     }
 
 }

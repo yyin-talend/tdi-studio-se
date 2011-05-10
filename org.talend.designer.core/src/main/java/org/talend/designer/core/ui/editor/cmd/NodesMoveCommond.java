@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -46,6 +47,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -76,9 +78,9 @@ public class NodesMoveCommond extends Command {
 
     private List<EditPart> oldSelection;
 
-    private Node node;
+    private INode node;
 
-    private List<Node> nodes;
+    private List<INode> nodes;
 
     private List<IConnection> connections;
 
@@ -127,7 +129,7 @@ public class NodesMoveCommond extends Command {
         return this.isJobletRefactor;
     }
 
-    public NodesMoveCommond(List<Node> nodes, IProcess2 process, Point cursorLocation) {
+    public NodesMoveCommond(List<INode> nodes, IProcess2 process, Point cursorLocation) {
         this.process = process;
         node = nodes.get(0);
         setCursorLocation(cursorLocation);
@@ -174,27 +176,27 @@ public class NodesMoveCommond extends Command {
         return !process.isReadOnly();
     }
 
-    private void orderNodes(List<Node> nodes) {
-        this.nodes = new ArrayList<Node>();
+    private void orderNodes(List<INode> nodes) {
+        this.nodes = new ArrayList<INode>();
 
         Point curLocation;
 
-        Node toAdd = null;
+        INode toAdd = null;
 
-        List<Node> restToOrder = new ArrayList<Node>();
+        List<INode> restToOrder = new ArrayList<INode>();
         restToOrder.addAll(nodes);
 
-        for (Node copiedNode : nodes) {
+        for (INode copiedNode : nodes) {
             curLocation = null;
-            for (Node nodeToOrder : restToOrder) {
+            for (INode nodeToOrder : restToOrder) {
                 // IGraphicalNode copiedNode = (IGraphicalNode) nodeToOrder;
                 if (curLocation == null) {
-                    curLocation = (Point) copiedNode.getLocation();
+                    curLocation = (Point) ((Node) copiedNode).getLocation();
                     toAdd = nodeToOrder;
                 } else {
-                    if (curLocation.y >= ((Point) copiedNode.getLocation()).y) {
-                        if (curLocation.x >= ((Point) copiedNode.getLocation()).x) {
-                            curLocation = (Point) copiedNode.getLocation();
+                    if (curLocation.y >= ((Point) ((Node) copiedNode).getLocation()).y) {
+                        if (curLocation.x >= ((Point) ((Node) copiedNode).getLocation()).x) {
+                            curLocation = (Point) ((Node) copiedNode).getLocation();
                             toAdd = nodeToOrder;
                         }
                     }
@@ -329,8 +331,10 @@ public class NodesMoveCommond extends Command {
 
         // see bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
         Map<INode, SubjobContainer> mapping = new HashMap<INode, SubjobContainer>();
+        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                IJobletProviderService.class);
         // create the nodes
-        for (Node copiedNode : nodes) {
+        for (INode copiedNode : nodes) {
             // IGraphicalNode copiedNode = (IGraphicalNode) copiedNodePart.getModel();
             if (!containNodeInProcess(copiedNode)) {
                 continue;
@@ -345,12 +349,20 @@ public class NodesMoveCommond extends Command {
                 pastedNode.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), copiedNode.getUniqueName());
                 process.addUniqueNodeName(copiedNode.getUniqueName());
             }
+
+            if (service != null) {
+                if (service.isJobletInOutComponent(pastedNode)) {
+                    process.removeUniqueNodeName(pastedNode.getUniqueName());
+                    pastedNode.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), copiedNode.getUniqueName());
+                    process.addUniqueNodeName(copiedNode.getUniqueName());
+                }
+            }
             // for bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
             makeCopyNodeAndSubjobMapping(copiedNode, pastedNode, mapping);
 
             Point location = null;
             if (getCursorLocation() == null) {
-                location = (Point) copiedNode.getLocation();
+                location = (Point) ((Node) copiedNode).getLocation();
             } else {
                 location = getCursorLocation();
                 index = nodes.indexOf(copiedNode);
@@ -363,9 +375,9 @@ public class NodesMoveCommond extends Command {
                 tempVar = location.y / TalendEditor.GRID_SIZE;
                 location.y = tempVar * TalendEditor.GRID_SIZE;
             }
-            pastedNode
-                    .setLocation(findLocationForNode(location, (Dimension) copiedNode.getSize(), index, firstIndex, copiedNode));
-            pastedNode.setSize(copiedNode.getSize());
+            pastedNode.setLocation(findLocationForNode(location, (Dimension) ((Node) copiedNode).getSize(), index, firstIndex,
+                    ((Node) copiedNode)));
+            pastedNode.setSize(((Node) copiedNode).getSize());
 
             INodeConnector mainConnector;
             if (pastedNode.isELTComponent()) {
@@ -497,7 +509,7 @@ public class NodesMoveCommond extends Command {
         Map<String, String> oldToNewConnVarMap = new HashMap<String, String>();
 
         // add the connections
-        for (Node copiedNode : nodes) {
+        for (INode copiedNode : nodes) {
             // INode copiedNode = (INode) copiedNodePart.getModel();
             for (IConnection connection : (List<IConnection>) copiedNode.getOutgoingConnections()) {
                 INode pastedTargetNode = null, pastedSourceNode = null;

@@ -525,6 +525,14 @@ public class NodeContainer extends Element {
         return inputs;
     }
 
+    public void setInputs(Set<IConnection> inputs) {
+        this.inputs = inputs;
+    }
+
+    public void setOutputs(Set<IConnection> outputs) {
+        this.outputs = outputs;
+    }
+
     public void refreshInConnections(IConnection conn, INode target) {
         for (IConnection iconn : inputs) {
             if (!iconn.getTarget().getUniqueName().equals(target.getUniqueName())) {

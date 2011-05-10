@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
@@ -79,7 +80,9 @@ public class ConnectionReconnectCommand extends Command {
         oldLineStyle = connection.getLineStyle();
         newLineStyle = oldLineStyle;
         if (oldLineStyle.hasConnectionCategory(IConnectionCategory.DATA)) {
-            oldMetadataTable = connection.getMetadataTable().clone();
+            if (connection.getMetadataTable() != null) {
+                oldMetadataTable = connection.getMetadataTable().clone();
+            }
         }
         oldSourceSchemaType = (String) oldSource.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
     }
@@ -111,6 +114,12 @@ public class ConnectionReconnectCommand extends Command {
         if (!connection.isActivate()) {
             return false;
         }
+        if (oldSource.getJobletNode() != null) {
+            return false;
+        }
+        if (oldTarget.getJobletNode() != null) {
+            return false;
+        }
         if (newSource != null) {
             // remove the connection for the check
             connection.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
@@ -130,8 +139,8 @@ public class ConnectionReconnectCommand extends Command {
      * @return true / false
      */
     private boolean checkSourceReconnection() {
-        if (!ConnectionManager.canConnectToSource(oldSource, newSource, oldTarget, oldLineStyle, connectorName, connection
-                .getName())) {
+        if (!ConnectionManager.canConnectToSource(oldSource, newSource, oldTarget, oldLineStyle, connectorName,
+                connection.getName())) {
             return false;
         }
         newLineStyle = ConnectionManager.getNewConnectionType();
@@ -145,8 +154,8 @@ public class ConnectionReconnectCommand extends Command {
      * @return true / false
      */
     private boolean checkTargetReconnection() {
-        if (!ConnectionManager.canConnectToTarget(oldSource, oldTarget, newTarget, oldLineStyle, connectorName, connection
-                .getName())) {
+        if (!ConnectionManager.canConnectToTarget(oldSource, oldTarget, newTarget, oldLineStyle, connectorName,
+                connection.getName())) {
             return false;
         }
         newLineStyle = ConnectionManager.getNewConnectionType();
@@ -284,6 +293,19 @@ public class ConnectionReconnectCommand extends Command {
         } else {
             throw new IllegalStateException("Should not happen"); //$NON-NLS-1$
         }
+        if (oldSource instanceof Node) {
+            if (((Node) oldSource).isJoblet()) {
+                ((Node) oldSource).getNodeContainer().setInputs(new HashSet<IConnection>(((Node) oldSource).getInputs()));
+                ((Node) oldSource).getNodeContainer().setOutputs(new HashSet<IConnection>(((Node) oldSource).getOutputs()));
+            }
+
+        }
+        if (oldTarget instanceof Node) {
+            if (((Node) oldTarget).isJoblet()) {
+                ((Node) oldTarget).getNodeContainer().setInputs(new HashSet<IConnection>(((Node) oldTarget).getInputs()));
+                ((Node) oldTarget).getNodeContainer().setOutputs(new HashSet<IConnection>(((Node) oldTarget).getOutputs()));
+            }
+        }
     }
 
     public void undo() {
@@ -358,8 +380,8 @@ public class ConnectionReconnectCommand extends Command {
     }
 
     private boolean getPropagateDialog() {
-        return MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages
-                .getString("ChangeMetadataCommand.messageDialog.propagate"), //$NON-NLS-1$
+        return MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                Messages.getString("ChangeMetadataCommand.messageDialog.propagate"), //$NON-NLS-1$
                 Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-1$
 
     }

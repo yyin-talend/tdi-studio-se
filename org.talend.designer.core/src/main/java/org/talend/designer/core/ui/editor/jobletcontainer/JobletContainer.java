@@ -60,6 +60,8 @@ public class JobletContainer extends NodeContainer {
 
     private Boolean needLock = null;
 
+    private boolean needchangeLock = true;
+
     protected List<IElement> jobletElements = new ArrayList<IElement>();
 
     public JobletContainer(Node node) {
@@ -190,21 +192,23 @@ public class JobletContainer extends NodeContainer {
             for (IConnection conn : node.getIncomingConnections()) {
                 inputs.add(conn);
             }
-            if (!((Boolean) value)) {
-                IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                        IJobletProviderService.class);
-                if (service != null) {
-                    needLock = service.lockJoblet(this.getNode());
-                }
-            } else {
-                IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                        IJobletProviderService.class);
-                if (service != null) {
-                    service.unlockJoblet(node);
-                    needLock = null;
+            if (needchangeLock) {
+                if (!((Boolean) value)) {
+                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                            IJobletProviderService.class);
+                    if (service != null) {
+                        needLock = service.lockJoblet(this.getNode());
+                    }
+                } else {
+                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                            IJobletProviderService.class);
+                    if (service != null) {
+                        service.unlockJoblet(node, true);
+                        needLock = null;
+                    }
                 }
             }
-
+            needchangeLock = true;
             refreshJobletNodes(false, (Boolean) value);
             if (!canCollapse()) {
                 Shell shell = Display.getCurrent().getActiveShell();
@@ -419,11 +423,13 @@ public class JobletContainer extends NodeContainer {
                             JobletConnectionReconnectCommand reConnectCommand = new JobletConnectionReconnectCommand(conn);
                             reConnectCommand.setNewTarget(connNode);
                             reConnectCommand.execute();
+                            break;
                         } else if (getFlowInput(inputs).size() == 1 && !isTri
                                 && new JobletUtil().isJobletInput(connNode, this.getProcess())) {
                             JobletConnectionReconnectCommand reConnectCommand = new JobletConnectionReconnectCommand(conn);
                             reConnectCommand.setNewTarget(connNode);
                             reConnectCommand.execute();
+                            break;
                         }
                     }
                 }
@@ -538,5 +544,9 @@ public class JobletContainer extends NodeContainer {
 
     public Boolean isNeedLock() {
         return needLock;
+    }
+
+    public void setNeedchangeLock(boolean needchangeLock) {
+        this.needchangeLock = needchangeLock;
     }
 }

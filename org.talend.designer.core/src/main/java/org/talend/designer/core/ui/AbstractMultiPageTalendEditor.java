@@ -1338,8 +1338,14 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             }
             // fix for bug 12524 for db repository
             // property = repFactory.reload(property);
-            repFactory.unlock(property.getItem());
-            new JobletUtil().makeSureUnlockJoblet(getProcess());
+
+            JobletUtil jUtil = new JobletUtil();
+            jUtil.makeSureUnlockJoblet(getProcess());
+            Item item = getProcess().getProperty().getItem();
+            boolean keep = jUtil.keepLockJoblet(item);
+            if (keep) {
+                repFactory.unlock(property.getItem());
+            }
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         } catch (LoginException e) {

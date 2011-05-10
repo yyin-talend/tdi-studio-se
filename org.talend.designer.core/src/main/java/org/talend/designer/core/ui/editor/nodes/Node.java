@@ -221,6 +221,8 @@ public class Node extends Element implements IGraphicalNode {
 
     private Node jobletNode = null;
 
+    private String inOutUniqueName;
+
     private String joblet_unique_name;
 
     public boolean isGeneratedByJobscriptBool() {
@@ -322,6 +324,14 @@ public class Node extends Element implements IGraphicalNode {
         needlibrary = false;
     }
 
+    public Node(IComponent component, IProcess2 process, String inOutUniqueName) {
+        this.oldcomponent = component;
+        this.inOutUniqueName = inOutUniqueName;
+        this.process = process;
+        init(component);
+        needlibrary = false;
+    }
+
     private void init(IComponent newComponent) {
         this.component = newComponent;
         this.label = component.getName();
@@ -392,7 +402,11 @@ public class Node extends Element implements IGraphicalNode {
         listReturn = this.component.createReturns();
 
         if (!reloadingComponent && (uniqueName2 == null || "".equals(uniqueName2))) { //$NON-NLS-1$
-            uniqueName2 = ((Process) getProcess()).generateUniqueNodeName(this);
+            if (this.inOutUniqueName != null) {
+                uniqueName2 = inOutUniqueName;
+            } else {
+                uniqueName2 = ((Process) getProcess()).generateUniqueNodeName(this);
+            }
             ((Process) getProcess()).addUniqueNodeName(uniqueName2);
         }
 
@@ -1216,8 +1230,10 @@ public class Node extends Element implements IGraphicalNode {
         if (template) {
             cmdStack = process.getCommandStack();
         } else {
-            AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) process.getEditor()).getTalendEditor();
-            cmdStack = (CommandStack) talendEditor.getAdapter(CommandStack.class);
+            if (process.getEditor() != null) {
+                AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) process.getEditor()).getTalendEditor();
+                cmdStack = (CommandStack) talendEditor.getAdapter(CommandStack.class);
+            }
         }
 
         return cmdStack;
@@ -1302,6 +1318,14 @@ public class Node extends Element implements IGraphicalNode {
             jobletInputs.addAll(this.inputs);
         }
         return jobletInputs;
+    }
+
+    public List<? extends IConnection> getInputs() {
+        return this.inputs;
+    }
+
+    public List<? extends IConnection> getOutputs() {
+        return this.outputs;
     }
 
     public void setIncomingConnections(List<? extends IConnection> connections) {
@@ -3230,13 +3254,13 @@ public class Node extends Element implements IGraphicalNode {
                 }
             }
         }
-        if (isJobletNode) {
-            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                    IJobletProviderService.class);
-            if (service != null) {
-                service.reloadJobletProcess(this);
-            }
-        }
+        // if (isJobletNode) {
+        // IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+        // IJobletProviderService.class);
+        // if (service != null) {
+        // service.reloadJobletProcess(this);
+        // }
+        // }
         reloadingComponent = false;
     }
 

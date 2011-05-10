@@ -257,7 +257,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 }
             }
 
-            subMenu = new MenuManager("Add to joblet"); //$NON-NLS-1$
+            subMenu = new MenuManager("Move to joblet"); //$NON-NLS-1$
             menu.appendToGroup(GROUP_OTHER, subMenu);
             action = getMoveToJobletAction(part, null);
             if (action != null) {

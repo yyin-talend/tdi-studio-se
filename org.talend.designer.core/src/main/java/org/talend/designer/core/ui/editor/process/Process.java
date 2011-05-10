@@ -26,7 +26,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -133,6 +132,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletUtil;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.Note;
@@ -1095,7 +1095,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         EList nList = processType.getNode();
         EList cList = processType.getConnection();
         MetadataEmfFactory factory = new MetadataEmfFactory();
-
+        JobletUtil jutil = new JobletUtil();
         // save according to elem order to keep zorder (children insertion) in
         // diagram
         for (Element element : elem) {
@@ -1105,15 +1105,17 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     if (container instanceof JobletContainer) {
                         JobletContainer jobletCon = (JobletContainer) container;
                         saveNode(fileFact, processType, nList, cList, ((NodeContainer) container).getNode(), factory);
-                        // if (!jobletCon.isCollapsed()) {
-
-                        boolean needUpdate = checkModify(jobletCon);
-                        if (needUpdate) {
-                            saveJobletNode(jobletCon);
+                        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                                IJobletProviderService.class);
+                        boolean isReadOnly = false;
+                        if (service != null) {
+                            isReadOnly = service.isReadOnly(jobletCon.getNode());
                         }
-
-                        addNewJobletNode(jobletCon);
-                        // }
+                        if (!isReadOnly) {
+                            boolean needUpdate = jutil.checkModify(jobletCon);
+                            saveJobletNode(jobletCon, needUpdate);
+                        }
+                        // addNewJobletNode(jobletCon);
                     } else {
                         saveNode(fileFact, processType, nList, cList, container.getNode(), factory);
                     }
@@ -1123,10 +1125,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 JobletContainer jobletCon = (JobletContainer) element;
                 saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
                 // if (!jobletCon.isCollapsed()) {
-                boolean needUpdate = checkModify(jobletCon);
-                if (needUpdate) {
-                    saveJobletNode(jobletCon);
-                }
+                boolean needUpdate = jutil.checkModify(jobletCon);
+                saveJobletNode(jobletCon, needUpdate);
                 // }
             } else if (element instanceof NodeContainer) {
                 saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
@@ -3505,7 +3505,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         fireStructureChange(NEED_UPDATE_JOB, elem);
     }
 
-    private void saveJobletNode(JobletContainer jobletContainer) {
+    private void saveJobletNode(JobletContainer jobletContainer, boolean needUpdate) {
         INode jobletNode = jobletContainer.getNode();
         IProcess jobletProcess = jobletNode.getComponent().getProcess();
         if (jobletProcess instanceof IProcess2) {
@@ -3515,9 +3515,16 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                         IJobletProviderService.class);
                 if (service != null) {
-                    service.checkAddNodes(jobletContainer);
-                    service.checkDeleteNodes(jobletContainer);
-                    service.saveJobletNode(jobletItem, jobletContainer);
+                    List<INode> addNodes = service.checkAddNodes(jobletContainer);
+                    List<INode> deleteNodes = new ArrayList<INode>();
+                    if (addNodes.size() <= 0) {
+                        deleteNodes.addAll(service.checkDeleteNodes(jobletContainer));
+                    } else {
+                        return;
+                    }
+                    if (needUpdate || (deleteNodes.size() > 0)) {
+                        service.saveJobletNode(jobletItem, jobletContainer);
+                    }
                 }
             }
         }
@@ -3532,96 +3539,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             service.checkDeleteNodes(jobletContainer);
         }
 
-    }
-
-    private boolean checkModify(JobletContainer jobletContainer) {
-        IProcess process = jobletContainer.getNode().getComponent().getProcess();
-        List<? extends INode> nodeList = process.getGraphicalNodes();
-        List<NodeContainer> containerList = jobletContainer.getNodeContainers();
-        for (NodeContainer nodeCon : containerList) {
-            Node node = nodeCon.getNode();
-            String jobletUnique = node.getJoblet_unique_name();
-            if (jobletUnique == null || "".equals(jobletUnique)) {
-                continue;
-            }
-            for (INode nodeOra : nodeList) {
-                if (nodeOra.getUniqueName().equals(jobletUnique)) {
-                    List<? extends IElementParameter> paras = node.getElementParameters();
-                    for (IElementParameter para : paras) {
-                        if (para == null) {
-                            continue;
-                        }
-                        String paraName = para.getName();
-                        if (paraName != null) {
-                            if (paraName.equals(EParameterName.UNIQUE_NAME.getName())) {
-                                continue;
-                            }
-                            if (paraName.equals(EParameterName.UPDATE_COMPONENTS.getName())) {
-                                continue;
-                            }
-                            IElementParameter paraOra = nodeOra.getElementParameter(paraName);
-                            if (paraOra == null || para == null) {
-                                continue;
-                            }
-
-                            if (para.getValue() != null) {
-                                if (paraOra.getValue() != null) {
-                                    if (!para.getValue().equals(paraOra.getValue())) {
-                                        return true;
-                                    }
-                                } else {
-                                    return true;
-                                }
-                            } else {
-                                if (paraOra.getValue() != null) {
-                                    return true;
-                                }
-                            }
-
-                            if (paraOra.getChildParameters() != null && para.getChildParameters() != null) {
-                                Map<String, IElementParameter> paraChild = para.getChildParameters();
-                                Map<String, IElementParameter> paraOraChild = paraOra.getChildParameters();
-                                Iterator<Entry<String, IElementParameter>> ite = paraChild.entrySet().iterator();
-                                while (ite.hasNext()) {
-                                    Entry<String, IElementParameter> entry = ite.next();
-                                    String key = entry.getKey();
-                                    IElementParameter c = entry.getValue();
-                                    if (key != null && c != null) {
-                                        IElementParameter oc = paraOraChild.get(key);
-
-                                        if (oc != null) {
-                                            if (c.getValue() != null) {
-                                                if (oc.getValue() != null) {
-                                                    if (!oc.getValue().equals(c.getValue())) {
-                                                        return true;
-                                                    }
-                                                } else {
-                                                    return true;
-                                                }
-                                            } else {
-                                                if (oc.getValue() != null) {
-                                                    return true;
-                                                }
-                                            }
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-
-                    List<IMetadataTable> nodeTables = node.getMetadataList();
-                    List<IMetadataTable> oraTables = nodeOra.getMetadataList();
-                    if (nodeTables.size() != oraTables.size()) {
-                        return true;
-                    }
-
-                }
-            }
-        }
-        return false;
     }
 
     public Set<String> getNeededRoutines() {
