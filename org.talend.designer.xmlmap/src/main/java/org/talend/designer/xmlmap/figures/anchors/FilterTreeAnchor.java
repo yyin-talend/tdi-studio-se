@@ -28,13 +28,13 @@ import org.talend.designer.xmlmap.parts.LookupConnectionEditPart;
 /**
  * wchen class global comment. Detailled comment
  */
-public class FilterConnectionAnchor extends ChopboxAnchor {
+public class FilterTreeAnchor extends ChopboxAnchor {
 
     private ConnectionEditPart connectionPart;
 
     private AbstractInOutTreeEditPart treePart;
 
-    public FilterConnectionAnchor(IFigure owner, ConnectionEditPart connectionPart, AbstractInOutTreeEditPart treePart) {
+    public FilterTreeAnchor(IFigure owner, ConnectionEditPart connectionPart, AbstractInOutTreeEditPart treePart) {
         super(owner);
         this.connectionPart = connectionPart;
         this.treePart = treePart;

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
-import org.talend.designer.xmlmap.editor.XmlMapEditor;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -102,9 +102,9 @@ public class SetGroupAction extends SelectionAction {
 
     }
 
-    public void update() {
-        setSelection(((XmlMapEditor) getWorkbenchPart()).getViewer().getSelection());
-        if (getSelectedObjects().get(0) instanceof OutputTreeNodeEditPart) {
+    public void update(Object selection) {
+        setSelection(new StructuredSelection(selection));
+        if (selection instanceof OutputTreeNodeEditPart) {
             OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
             OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
             if (!model.isGroup()) {

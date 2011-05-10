@@ -16,9 +16,9 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchPart;
-import org.talend.designer.xmlmap.editor.XmlMapEditor;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -120,8 +120,8 @@ public class CreateAttributeAction extends SelectionAction {
         return false;
     }
 
-    public void update() {
-        setSelection(((XmlMapEditor) getWorkbenchPart()).getViewer().getSelection());
+    public void update(Object selection) {
+        setSelection(new StructuredSelection(selection));
     }
 
     public boolean isInput() {

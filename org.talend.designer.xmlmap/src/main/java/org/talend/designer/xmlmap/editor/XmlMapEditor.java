@@ -226,19 +226,24 @@ public class XmlMapEditor extends GraphicalEditor {
             // context menu should only display in the document tree
             List selectedEditParts = getGraphicalViewer().getSelectedEditParts();
             if (selectedEditParts != null && !selectedEditParts.isEmpty()) {
-                if (selectedEditParts.get(0) instanceof OutputTreeNodeEditPart) {
-                    OutputTreeNode model = (OutputTreeNode) ((OutputTreeNodeEditPart) selectedEditParts.get(0)).getModel();
+
+                // get last selected part in case there are two objects in the list , see the change in
+                // XmlMapGraphicViewer primDeselectAll()
+                Object object = selectedEditParts.get(selectedEditParts.size() - 1);
+
+                if (object instanceof OutputTreeNodeEditPart) {
+                    OutputTreeNode model = (OutputTreeNode) ((OutputTreeNodeEditPart) object).getModel();
                     if (XmlMapUtil.DOCUMENT.equals(model.getType()) || XmlMapUtil.getXPathLength(model.getXpath()) > 2) {
                         OutputImportTreeFromXml importAction = (OutputImportTreeFromXml) getActionRegistry().getAction(
                                 OutputImportTreeFromXml.ID);
-                        importAction.update();
+                        importAction.update(object);
                         if (importAction.isEnabled()) {
                             menu.add(importAction);
                         }
 
                         CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(
                                 CreateElementAction.ID);
-                        createElement.update();
+                        createElement.update(object);
                         createElement.setInput(false);
                         if (createElement.isEnabled()) {
                             menu.add(createElement);
@@ -246,7 +251,7 @@ public class XmlMapEditor extends GraphicalEditor {
 
                         CreateAttributeAction createAttribute = (CreateAttributeAction) getActionRegistry().getAction(
                                 CreateAttributeAction.ID);
-                        createAttribute.update();
+                        createAttribute.update(object);
                         createAttribute.setInput(false);
                         if (createAttribute.isEnabled()) {
                             menu.add(createAttribute);
@@ -254,49 +259,49 @@ public class XmlMapEditor extends GraphicalEditor {
 
                         CreateNameSpaceAction createNameSpace = (CreateNameSpaceAction) getActionRegistry().getAction(
                                 CreateNameSpaceAction.ID);
-                        createNameSpace.update();
+                        createNameSpace.update(object);
                         if (createNameSpace.isEnabled()) {
                             menu.add(createNameSpace);
                         }
 
                         FixValueAction fixValueAction = (FixValueAction) getActionRegistry().getAction(FixValueAction.ID);
-                        fixValueAction.update();
+                        fixValueAction.update(object);
                         if (fixValueAction.isEnabled()) {
                             menu.add(fixValueAction);
                         }
 
                         DeleteTreeNodeAction action = (DeleteTreeNodeAction) getActionRegistry().getAction(
                                 DeleteTreeNodeAction.ID);
-                        action.update();
+                        action.update(object);
                         action.setInput(false);
                         if (action.isEnabled()) {
                             menu.add(action);
                         }
 
                         SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
-                        loopAction.update();
+                        loopAction.update(object);
                         if (loopAction.isEnabled()) {
                             menu.add(loopAction);
                         }
 
                         SetGroupAction grouptAction = (SetGroupAction) getActionRegistry().getAction(SetGroupAction.ID);
-                        grouptAction.update();
+                        grouptAction.update(object);
                         if (grouptAction.isEnabled()) {
                             menu.add(grouptAction);
                         }
 
                         OutputImportTreeFromRepository importFromRepository = (OutputImportTreeFromRepository) getActionRegistry()
                                 .getAction(OutputImportTreeFromRepository.ID);
-                        importFromRepository.update();
+                        importFromRepository.update(object);
                         if (importFromRepository.isEnabled()) {
                             menu.add(importFromRepository);
                         }
 
                     }
 
-                } else if (selectedEditParts.get(0) instanceof TreeNodeEditPart) {
+                } else if (object instanceof TreeNodeEditPart) {
                     ImportTreeFromXml importAction = (ImportTreeFromXml) getActionRegistry().getAction(ImportTreeFromXml.ID);
-                    importAction.update();
+                    importAction.update(object);
                     if (importAction.isEnabled()) {
                         menu.add(importAction);
                     }
@@ -304,7 +309,7 @@ public class XmlMapEditor extends GraphicalEditor {
                     CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(
                             CreateElementAction.ID);
                     createElement.setInput(true);
-                    createElement.update();
+                    createElement.update(object);
                     if (createElement.isEnabled()) {
                         menu.add(createElement);
                     }
@@ -312,7 +317,7 @@ public class XmlMapEditor extends GraphicalEditor {
                     CreateAttributeAction createAttribute = (CreateAttributeAction) getActionRegistry().getAction(
                             CreateAttributeAction.ID);
                     createAttribute.setInput(true);
-                    createAttribute.update();
+                    createAttribute.update(object);
                     if (createAttribute.isEnabled()) {
                         menu.add(createAttribute);
                     }
@@ -320,20 +325,20 @@ public class XmlMapEditor extends GraphicalEditor {
                     DeleteTreeNodeAction deleteAction = (DeleteTreeNodeAction) getActionRegistry().getAction(
                             DeleteTreeNodeAction.ID);
                     deleteAction.setInput(true);
-                    deleteAction.update();
+                    deleteAction.update(object);
                     if (deleteAction.isEnabled()) {
                         menu.add(deleteAction);
                     }
 
                     SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
-                    loopAction.update();
+                    loopAction.update(object);
                     if (loopAction.isEnabled()) {
                         menu.add(loopAction);
                     }
 
                     ImportTreeFromRepository importFromRepository = (ImportTreeFromRepository) getActionRegistry().getAction(
                             ImportTreeFromRepository.ID);
-                    importFromRepository.update();
+                    importFromRepository.update(object);
                     if (importFromRepository.isEnabled()) {
                         menu.add(importFromRepository);
                     }

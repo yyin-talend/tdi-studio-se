@@ -89,6 +89,7 @@ public class InputXmlTreeEditPart extends AbstractInOutTreeEditPart {
             case XmlmapPackage.INPUT_XML_TREE__INNER_JOIN:
             case XmlmapPackage.INPUT_XML_TREE__PERSISTENT:
             case XmlmapPackage.INPUT_XML_TREE__MINIMIZED:
+            case XmlmapPackage.INPUT_XML_TREE__EXPRESSION_FILTER:
                 ((InputXmlTreeFigure) getFigure()).update(featureId);
                 break;
             }

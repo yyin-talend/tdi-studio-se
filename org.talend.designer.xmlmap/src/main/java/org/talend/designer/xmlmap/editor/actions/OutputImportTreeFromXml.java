@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
-import org.talend.designer.xmlmap.editor.XmlMapEditor;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -123,7 +123,7 @@ public class OutputImportTreeFromXml extends SelectionAction {
         return false;
     }
 
-    public void update() {
-        setSelection(((XmlMapEditor) getWorkbenchPart()).getViewer().getSelection());
+    public void update(Object selection) {
+        setSelection(new StructuredSelection(selection));
     }
 }

@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
@@ -26,7 +27,6 @@ import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlXPathLoopDescriptorImpl;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.designer.xmlmap.editor.XmlMapEditor;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -398,7 +398,7 @@ public class OutputImportTreeFromRepository extends SelectionAction {
         return false;
     }
 
-    public void update() {
-        setSelection(((XmlMapEditor) getWorkbenchPart()).getViewer().getSelection());
+    public void update(Object selection) {
+        setSelection(new StructuredSelection(selection));
     }
 }

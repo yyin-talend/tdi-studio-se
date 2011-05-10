@@ -1,8 +1,8 @@
 package org.talend.designer.xmlmap.editor.actions;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
-import org.talend.designer.xmlmap.editor.XmlMapEditor;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -50,8 +50,8 @@ public class SetLoopAction extends SelectionAction {
         return true;
     }
 
-    public void update() {
-        setSelection(((XmlMapEditor) getWorkbenchPart()).getViewer().getSelection());
+    public void update(Object selection) {
+        setSelection(new StructuredSelection(selection));
     }
 
     @Override

@@ -46,7 +46,7 @@ public class TreeBranchFigure extends Figure implements ITreeAction {
         manager.horizontalSpacing = 5;
         manager.verticalSpacing = 1;
         manager.marginHeight = 1;
-        manager.marginWidth = 1;
+        manager.marginWidth = 5;
         setLayoutManager(manager);
         nameFigure = new Label();
         nameFigure.setText(getTreeBranchName(node));

@@ -130,6 +130,7 @@ public class OutputZoneToolBar extends Figure {
                 isDieOnError = Boolean.valueOf(elementParameter.getValue().toString());
             }
             // /////////////////////////////// test
+            // isDieOnError should set true in default on component side , but this part is not done now
             isDieOnError = true;
             // ///////////////////////////////
             graphicViewer.getMapperManager().setDieOnError(isDieOnError);
@@ -422,6 +423,12 @@ public class OutputZoneToolBar extends Figure {
                                     mapData.getOutputTrees().remove(0);
                                     mapperComponent.getProcess().removeUniqueConnectionName(outputTree.getName());
                                     removeMetadataTableByName(outputTree.getName());
+                                    if (!mapData.getOutputTrees().isEmpty()) {
+                                        int indexOf = mapDataPart.getModelChildren().indexOf(mapData.getOutputTrees().get(0));
+                                        if (indexOf != -1) {
+                                            mapDataPart.getViewer().select((EditPart) mapDataPart.getChildren().get(indexOf));
+                                        }
+                                    }
                                 }
                             }
                         } else {

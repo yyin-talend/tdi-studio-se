@@ -44,7 +44,7 @@ public class DirectEditCommand extends Command {
 
     private AbstractNode model;
 
-    protected final String XPRESSION_PATTERN = "(\\[\\s*\\w+\\.\\w+\\s*:\\s*(/\\w+)+(/@\\w+)*\\s*\\])|((?!\\[)\\s*\\w+\\.\\w+(?!\\]))";
+    protected final String XPRESSION_PATTERN = "(\\[\\s*\\w+\\.\\w+\\s*:\\s*(/.+?)+(/@.+?)*\\s*\\])|((?!\\[)\\s*\\w+\\.\\w+(?!\\]))";
 
     private Object newValue;
 

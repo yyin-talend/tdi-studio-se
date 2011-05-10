@@ -40,6 +40,7 @@ import org.talend.designer.xmlmap.figures.TreeBranchFigure;
 import org.talend.designer.xmlmap.figures.TreeNodeFigure;
 import org.talend.designer.xmlmap.figures.XmlTreeBranch;
 import org.talend.designer.xmlmap.figures.anchors.ConnectionColumnAnchor;
+import org.talend.designer.xmlmap.figures.anchors.FilterColumnAnchor;
 import org.talend.designer.xmlmap.figures.anchors.LookupColumnAnchor;
 import org.talend.designer.xmlmap.figures.cells.IWidgetCell;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
@@ -154,11 +155,13 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         } else {
             figure = getFigure();
         }
-        if (connection instanceof LookupConnectionEditPart || connection instanceof FilterConnectionEditPart) {
+        if (connection instanceof LookupConnectionEditPart) {
             return new LookupColumnAnchor(figure, connection, this);
         }
+        if (connection instanceof FilterConnectionEditPart) {
+            return new FilterColumnAnchor(figure, connection, this);
+        }
         return new ConnectionColumnAnchor(figure, connection, this);
-        // return new ChopboxAnchor(getFigure());
     }
 
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
@@ -172,7 +175,6 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             return new LookupColumnAnchor(figure, connection, this);
         }
         return new ConnectionColumnAnchor(figure, connection, this);
-        // return new ChopboxAnchor(getFigure());
     }
 
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {

@@ -31,7 +31,7 @@ public class FilterTextArea extends Label implements ITextAreaCell {
     public FilterTextArea() {
         setBackgroundColor(ColorConstants.white);
         setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
-        setLabelAlignment(PositionConstants.LEFT | PositionConstants.TOP);
+        setLabelAlignment(PositionConstants.LEFT);
     }
 
     public void setDirectEditType(DirectEditType type) {

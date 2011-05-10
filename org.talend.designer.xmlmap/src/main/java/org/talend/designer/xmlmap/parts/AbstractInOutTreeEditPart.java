@@ -21,7 +21,7 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
-import org.talend.designer.xmlmap.figures.anchors.FilterConnectionAnchor;
+import org.talend.designer.xmlmap.figures.anchors.FilterTreeAnchor;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.policy.DragAndDropEditPolicy;
 import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
@@ -67,7 +67,7 @@ public class AbstractInOutTreeEditPart extends BaseEditPart implements NodeEditP
 
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
         if (connection instanceof FilterConnectionEditPart) {
-            return new FilterConnectionAnchor(getFigure(), connection, this);
+            return new FilterTreeAnchor(getFigure(), connection, this);
         }
         return null;
     }

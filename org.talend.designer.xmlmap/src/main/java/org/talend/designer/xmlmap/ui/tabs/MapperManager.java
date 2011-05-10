@@ -148,36 +148,39 @@ public class MapperManager implements ISelectionChangedListener {
 
     public void selectionChanged(SelectionChangedEvent event) {
         if (!event.getSelection().isEmpty() && event.getSelection() instanceof IStructuredSelection) {
-            Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
-            if (firstElement instanceof AbstractNodePart) {
-                AbstractNode model = (AbstractNode) ((AbstractNodePart) firstElement).getModel();
-                boolean isInputMain = false;
-                if (model instanceof OutputTreeNode) {
-                    OutputTreeNode outputTreeNodeRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) model);
-                    if (outputTreeNodeRoot != null && outputTreeNodeRoot.eContainer() instanceof OutputXmlTree) {
-                        selectOutputXmlTree((OutputXmlTree) outputTreeNodeRoot.eContainer());
+            Iterator iterator = ((IStructuredSelection) event.getSelection()).iterator();
+            while (iterator.hasNext()) {
+                Object firstElement = iterator.next();
+                if (firstElement instanceof AbstractNodePart) {
+                    AbstractNode model = (AbstractNode) ((AbstractNodePart) firstElement).getModel();
+                    boolean isInputMain = false;
+                    if (model instanceof OutputTreeNode) {
+                        OutputTreeNode outputTreeNodeRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) model);
+                        if (outputTreeNodeRoot != null && outputTreeNodeRoot.eContainer() instanceof OutputXmlTree) {
+                            selectOutputXmlTree((OutputXmlTree) outputTreeNodeRoot.eContainer());
 
-                        onSelectedEntries((IStructuredSelection) event.getSelection(), oldSelectedOut);
+                            onSelectedEntries((IStructuredSelection) event.getSelection(), oldSelectedOut);
+                        }
+                    } else if (model instanceof TreeNode) {
+                        TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) model);
+                        if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
+                            selectInputXmlTree((InputXmlTree) inputTreeNodeRoot.eContainer());
+                            isInputMain = !((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
+                            onSelectedEntries((IStructuredSelection) event.getSelection(), selectedInputTree);
+                        }
                     }
-                } else if (model instanceof TreeNode) {
-                    TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) model);
-                    if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
-                        selectInputXmlTree((InputXmlTree) inputTreeNodeRoot.eContainer());
-                        isInputMain = !((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
-                        onSelectedEntries((IStructuredSelection) event.getSelection(), selectedInputTree);
+                    if (!isInputMain) {
+                        refreshStyledTextEditor(model);
+                    } else {
+                        refreshStyledTextEditor(null);
                     }
-                }
-                if (!isInputMain) {
-                    refreshStyledTextEditor(model);
-                } else {
+                } else if (firstElement instanceof InputXmlTreeEditPart) {
+                    selectInputXmlTree((InputXmlTree) ((InputXmlTreeEditPart) firstElement).getModel());
+                    refreshStyledTextEditor(null);
+                } else if (firstElement instanceof OutputXmlTreeEditPart) {
+                    selectOutputXmlTree((OutputXmlTree) ((OutputXmlTreeEditPart) firstElement).getModel());
                     refreshStyledTextEditor(null);
                 }
-            } else if (firstElement instanceof InputXmlTreeEditPart) {
-                selectInputXmlTree((InputXmlTree) ((InputXmlTreeEditPart) firstElement).getModel());
-                refreshStyledTextEditor(null);
-            } else if (firstElement instanceof OutputXmlTreeEditPart) {
-                selectOutputXmlTree((OutputXmlTree) ((OutputXmlTreeEditPart) firstElement).getModel());
-                refreshStyledTextEditor(null);
             }
         } else {
             ExtendedTableModel<TreeSchemaTableEntry> oldModel = mapperUI.getTabFolderEditors().getInputTreeSchemaEditor()
@@ -289,7 +292,7 @@ public class MapperManager implements ISelectionChangedListener {
                 }
             }
             if (table != null) {
-                MetadataTableEditor editor = new MetadataTableEditor(table, table.getLabel());
+                MetadataTableEditor editor = new MetadataTableEditor(table, selectedInputTree.getName());
                 editor.setModifiedBeanListenable(inputMetaEditorView.getTableViewerCreator());
                 IModifiedBeanListener<IMetadataColumn> columnListener = new IModifiedBeanListener<IMetadataColumn>() {
 
