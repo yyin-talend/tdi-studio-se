@@ -170,7 +170,10 @@ public class LoginDialog extends TrayDialog {
         if (LoginComposite.isRestart) {
             super.okPressed();
         } else {
-            logIn(loginComposite.getProject());
+            boolean isLogInOk = logIn(loginComposite.getProject());
+            if (isLogInOk) {
+                super.okPressed();
+            }// else login failed so ignor the ok button.
         }
     }
 
@@ -184,12 +187,12 @@ public class LoginDialog extends TrayDialog {
      * @param project
      * @throws Exception
      */
-    protected void logIn(final Project project) {
+    protected boolean logIn(final Project project) {
         final ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         ConnectionBean connBean = loginComposite.getConnection();
         final boolean needRestartForLocal = loginComposite.needRestartForLocal();
         if (connBean == null || project == null || project.getLabel() == null) {
-            return;
+            return false;
         }
 
         // Save last used parameters
@@ -211,19 +214,19 @@ public class LoginDialog extends TrayDialog {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreTisService.class)) {
                 final ICoreTisService service = (ICoreTisService) GlobalServiceRegister.getDefault().getService(
                         ICoreTisService.class);
-                if (service != null) {
+                if (service != null) {// if in TIS then update the bundle status according to the project type
                     if (!service.validProject(project, needRestartForLocal)) {
                         LoginComposite.isRestart = true;
-                        super.okPressed();
-                        return;
+                        return true;
                     }
-                }
+                }// else not in TIS so ignor caus we may not have a licence so we do not know which bundles belong to
+                 // DI, DQ or MDM
             }
         } catch (PersistenceException e) {
             e.printStackTrace();
             loginComposite.populateProjectList();
             MessageDialog.openError(getShell(), getShell().getText(), e.getMessage());
-            return;
+            return false;
         }
 
         final Shell shell = this.getShell();
@@ -255,13 +258,13 @@ public class LoginDialog extends TrayDialog {
         } catch (InvocationTargetException e) {
             loginComposite.populateProjectList();
             MessageBoxExceptionHandler.process(e.getTargetException(), getShell());
-            return;
+            return false;
         } catch (InterruptedException e) {
             loginComposite.populateProjectList();
-            return;
+            return false;
         }
 
-        super.okPressed();
+        return true;
     }
 
     public void updateButtons() {
