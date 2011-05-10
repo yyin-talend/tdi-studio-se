@@ -18,6 +18,7 @@ Require-Bundle: org.talend.core.repository,
  org.talend.core,
  org.talend.commons
 Eclipse-LazyStart: true
+Bundle-ClassPath: .
 Export-Package: org.talend.designer.codegen,
  org.talend.designer.codegen.additionaljet,
  org.talend.designer.codegen.components.model,
