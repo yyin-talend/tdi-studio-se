@@ -444,14 +444,10 @@ public class XmlMapUtil {
     }
 
     public static List<IConnection> getAllNodeLookConnections(AbstractInOutTree abstractTree) {
-        List<? extends TreeNode> nodesList = null;
-        if (abstractTree instanceof InputXmlTree) {
-            nodesList = ((InputXmlTree) abstractTree).getNodes();
-        } else if (abstractTree instanceof OutputXmlTree) {
-            nodesList = ((OutputXmlTree) abstractTree).getNodes();
-        }
         List<IConnection> connections = new ArrayList<IConnection>();
-        getChildLookupConnections(connections, nodesList);
+        if (abstractTree instanceof InputXmlTree) {
+            getChildLookupConnections(connections, ((InputXmlTree) abstractTree).getNodes());
+        }
         return connections;
     }
 
@@ -461,6 +457,35 @@ public class XmlMapUtil {
             connections.addAll(outgoingConnections);
             if (!node.getChildren().isEmpty()) {
                 getChildLookupConnections(connections, node.getChildren());
+            }
+        }
+    }
+
+    /**
+     * 
+     * get filter connections with a InputXmlTree target
+     * 
+     * @param abstractTree
+     * @return
+     */
+    public static List<IConnection> getInputTreeFilterConnections(AbstractInOutTree abstractTree) {
+        List<IConnection> connections = new ArrayList<IConnection>();
+        if (abstractTree instanceof InputXmlTree) {
+            getChildFilterConnections(connections, ((InputXmlTree) abstractTree).getNodes());
+        }
+        return connections;
+    }
+
+    private static void getChildFilterConnections(List<IConnection> connections, List<? extends TreeNode> nodesList) {
+        for (TreeNode node : nodesList) {
+            EList<FilterConnection> outgoingConnections = node.getFilterOutGoingConnections();
+            for (FilterConnection conn : outgoingConnections) {
+                if (conn.getTarget() instanceof InputXmlTree) {
+                    connections.add(conn);
+                }
+            }
+            if (!node.getChildren().isEmpty()) {
+                getChildFilterConnections(connections, node.getChildren());
             }
         }
     }

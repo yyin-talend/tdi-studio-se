@@ -256,11 +256,11 @@ public class CreateNodeAndConnectionCommand extends Command {
             }
             treeModel.setExpressionFilter(expression);
             FilterConnection connection = XmlmapFactory.eINSTANCE.createFilterConnection();
-            sourceNode.getFilterOutGoingConnections().add(connection);
-            treeModel.getFilterIncomingConnections().add(connection);
-
             connection.setSource(sourceNode);
             connection.setTarget(treeModel);
+            treeModel.getFilterIncomingConnections().add(connection);
+            sourceNode.getFilterOutGoingConnections().add(connection);
+
             xmlMapData.getConnections().add(connection);
 
         }

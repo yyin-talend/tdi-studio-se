@@ -30,9 +30,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
+import org.talend.designer.xmlmap.commands.TreeSettingDirectEditCommand;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
+import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
+import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.ui.resource.ImageInfo;
 import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
 import org.talend.expressionbuilder.IExpressionBuilderDialogService;
@@ -44,6 +47,8 @@ public class FilterContainer extends Figure {
 
     private static final int DEFAULT_HEIGHT = 40;
 
+    private AbstractInOutTreeEditPart treePart;
+
     private AbstractInOutTree abstractTree;
 
     private ImageFigure button;
@@ -52,8 +57,9 @@ public class FilterContainer extends Figure {
 
     private Composite parent;
 
-    public FilterContainer(AbstractInOutTree outputTree, Composite parent) {
-        this.abstractTree = outputTree;
+    public FilterContainer(AbstractInOutTreeEditPart treePart, Composite parent) {
+        this.treePart = treePart;
+        this.abstractTree = (AbstractInOutTree) treePart.getModel();
         this.parent = parent;
         createContent();
     }
@@ -96,9 +102,11 @@ public class FilterContainer extends Figure {
                     if (Window.OK == parentDialog.open()) {
                         String expressionForTable = dialog.getExpressionForTable();
                         abstractTree.setExpressionFilter(expressionForTable);
+                        TreeSettingDirectEditCommand command = new TreeSettingDirectEditCommand(abstractTree,
+                                DirectEditType.EXPRESSION_FILTER, expressionForTable);
+                        treePart.getViewer().getEditDomain().getCommandStack().execute(command);
                     }
                 }
-
             }
 
             public void mouseReleased(MouseEvent me) {

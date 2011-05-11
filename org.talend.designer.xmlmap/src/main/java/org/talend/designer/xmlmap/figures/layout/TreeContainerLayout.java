@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.layout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.Border;
@@ -67,6 +66,7 @@ public class TreeContainerLayout extends ToolbarLayout {
         int totalMinHeight = 0;
         int prefMinSumHeight = 0;
         int connSize = 0;
+        boolean isLookupConnMax = true;
         for (int i = 0; i < numChildren; i++) {
             child = (IFigure) children.get(i);
 
@@ -79,10 +79,18 @@ public class TreeContainerLayout extends ToolbarLayout {
             if (child instanceof InputXmlTreeFigure) {
                 InputXmlTree inputModel = ((InputXmlTreeFigure) child).getInputXmlTree();
                 EList<TreeNode> nodeList = inputModel.getNodes();
-                List<IConnection> outConns = new ArrayList<IConnection>();
-                outConns.addAll(XmlMapUtil.getAllNodeLookConnections(inputModel));
-                if (connSize < outConns.size()) {
-                    connSize = outConns.size();
+                int maxSize = 0;
+                List<IConnection> lookConnections = XmlMapUtil.getAllNodeLookConnections(inputModel);
+                List<IConnection> filterConnections = XmlMapUtil.getInputTreeFilterConnections(inputModel);
+                if (lookConnections.size() < filterConnections.size()) {
+                    isLookupConnMax = false;
+                    maxSize = filterConnections.size();
+                } else {
+                    maxSize = lookConnections.size();
+                }
+
+                if (connSize < maxSize) {
+                    connSize = maxSize;
                 }
 
             }
@@ -90,6 +98,11 @@ public class TreeContainerLayout extends ToolbarLayout {
         totalHeight += (numChildren - 1) * spacing;
         totalMinHeight += (numChildren - 1) * spacing;
         prefMinSumHeight = totalHeight - totalMinHeight;
+
+        int defaultSize = XmlMapUtil.DEFAULT_OFFSET;
+        if (!isLookupConnMax) {
+            defaultSize = XmlMapUtil.DEFAULT_OFFSET_FILTER;
+        }
 
         for (int i = 0; i < numChildren; i++) {
             int amntShrinkCurrentHeight = 0;
@@ -99,8 +112,8 @@ public class TreeContainerLayout extends ToolbarLayout {
             int minWidth = minSizes[i].width;
             child = (IFigure) children.get(i);
             Rectangle newBounds = new Rectangle(x, y, prefWidth, prefHeight);
-            if (connSize > 3) {
-                newBounds = new Rectangle(x + (connSize - 3) * 5, y, prefWidth, prefHeight);
+            if (connSize > 0) {
+                newBounds = new Rectangle(x + (connSize - 1) * defaultSize, y, prefWidth, prefHeight);
             }
 
             Border border = parent.getBorder();
@@ -108,8 +121,8 @@ public class TreeContainerLayout extends ToolbarLayout {
 
             if (vBounds != null) {
                 newBounds.width = vBounds.width - insets.left - insets.right;
-                if (connSize > 3) {
-                    newBounds.width = newBounds.width - (connSize - 3) * 5;
+                if (connSize > 0) {
+                    newBounds.width = newBounds.width - (connSize - 1) * defaultSize;
                 }
             }
 

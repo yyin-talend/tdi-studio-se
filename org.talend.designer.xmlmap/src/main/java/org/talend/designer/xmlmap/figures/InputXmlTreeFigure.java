@@ -86,7 +86,7 @@ public class InputXmlTreeFigure extends AbstractInOutTreeFigure {
         if (xmlTree.isLookup()) {
             settingContainer = new InputTreeSettingContainer(xmlTree);
             this.add(settingContainer);
-            filterFigure = new FilterContainer(xmlTree, (Composite) xmlTreePart.getViewer().getControl());
+            filterFigure = new FilterContainer(xmlTreePart, (Composite) xmlTreePart.getViewer().getControl());
             this.add(filterFigure);
 
         }

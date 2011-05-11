@@ -13,7 +13,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.parts.BaseConnectionEditPart;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
-import org.talend.designer.xmlmap.parts.LookupConnectionEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 
 public class FilterColumnAnchor extends ChopboxAnchor {
@@ -77,10 +76,14 @@ public class FilterColumnAnchor extends ChopboxAnchor {
                 Rectangle bounds = treeBranch.getRoot().getBounds().getCopy();
                 elembounds.x = bounds.x;
                 elembounds.width = bounds.width;
-                if (treeBranch.getExpressionFigure() != null) {
-                    ref = treeBranch.getExpressionFigure().getBounds().getLeft();
+                if (loctionRight) {
+                    ref = elembounds.getRight();
                 } else {
-                    ref = elembounds.getLeft();
+                    if (treeBranch.getExpressionFigure() != null) {
+                        ref = treeBranch.getExpressionFigure().getBounds().getLeft();
+                    } else {
+                        ref = elembounds.getLeft();
+                    }
                 }
                 getOwner().translateToAbsolute(ref);
             } else {
@@ -91,11 +94,17 @@ public class FilterColumnAnchor extends ChopboxAnchor {
 
         if (inOutTreeEditPart != null && ref != null) {
             IFigure treeFigure = inOutTreeEditPart.getFigure();
-            int avialableX = treeFigure.getBounds().x;
-            if (ref.x < avialableX) {
-                ref.x = avialableX;
+            if (loctionRight) {
+                int avialableX = treeFigure.getBounds().getRight().x;
+                if (ref.x > avialableX) {
+                    ref.x = avialableX;
+                }
+            } else {
+                int avialableX = treeFigure.getBounds().x;
+                if (ref.x < avialableX) {
+                    ref.x = avialableX;
+                }
             }
-
         }
 
         if (connectionPart instanceof BaseConnectionEditPart && connectionPart.getFigure() instanceof PolylineConnection) {
@@ -106,27 +115,23 @@ public class FilterColumnAnchor extends ChopboxAnchor {
 
             if (ref != null) {
                 if (ref.y < 0) {
-                    if (!(baseConnectionPart instanceof LookupConnectionEditPart)) {
-                        ref.y = 0;
-                    }
-                    baseConnectionPart.setTargetContained(false);
+                    ref.y = 0;
+                    baseConnectionPart.setSourceConcained(false);
                     if (baseConnectionPart.isDOTStyle()) {
                         connFigure.setLineStyle(SWT.LINE_DASHDOTDOT);
                     } else {
                         connFigure.setLineStyle(SWT.LINE_SOLID);
                     }
                 } else if (ref.y > avilableSize.y) {
-                    if (!(baseConnectionPart instanceof LookupConnectionEditPart)) {
-                        ref.y = avilableSize.y;
-                    }
-                    baseConnectionPart.setTargetContained(false);
+                    ref.y = avilableSize.y;
+                    baseConnectionPart.setSourceConcained(false);
                     if (baseConnectionPart.isDOTStyle()) {
                         connFigure.setLineStyle(SWT.LINE_DASHDOTDOT);
                     } else {
                         connFigure.setLineStyle(SWT.LINE_SOLID);
                     }
                 } else {
-                    baseConnectionPart.setTargetContained(true);
+                    baseConnectionPart.setSourceConcained(true);
                     if (!baseConnectionPart.isDOTStyle()) {
                         connFigure.setLineStyle(SWT.LINE_SOLID);
                     }

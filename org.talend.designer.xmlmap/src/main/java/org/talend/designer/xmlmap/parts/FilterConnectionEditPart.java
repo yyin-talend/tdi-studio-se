@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.talend.designer.xmlmap.figures.routers.CurveConnectionRouter;
 import org.talend.designer.xmlmap.figures.routers.LookupConnectionRouter;
@@ -46,6 +45,18 @@ public class FilterConnectionEditPart extends BaseConnectionEditPart {
         connection.setTargetDecoration(new PolygonDecoration());
         connection.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_FILTER_LINK));
         connection.setLineWidth(2);
+        FilterConnection connectionModel = (FilterConnection) getModel();
+        if (connectionModel.getTarget() instanceof OutputXmlTree) {
+            if (curvrRouter == null) {
+                curvrRouter = new CurveConnectionRouter();
+                connection.setConnectionRouter(curvrRouter);
+            }
+        } else if (connectionModel.getTarget() instanceof InputXmlTree) {
+            if (cr == null) {
+                cr = new LookupConnectionRouter();
+                connection.setConnectionRouter(cr);
+            }
+        }
 
         return connection;
     }
@@ -57,13 +68,12 @@ public class FilterConnectionEditPart extends BaseConnectionEditPart {
             return 0;
         }
         TreeNode sourceTreeNode = (TreeNode) model.getSource();
+        TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(sourceTreeNode);
         List<IConnection> outConns = new ArrayList<IConnection>();
-        EObject eobj = sourceTreeNode.eContainer();
-        if (eobj instanceof InputXmlTree) {
-            InputXmlTree inputTree = (InputXmlTree) eobj;
-            EList<TreeNode> nodeList = inputTree.getNodes();
-            for (TreeNode node : nodeList) {
-                outConns.addAll(node.getFilterOutGoingConnections());
+        if (inputTreeNodeRoot != null) {
+            EObject eobj = inputTreeNodeRoot.eContainer();
+            if (eobj instanceof InputXmlTree) {
+                outConns.addAll(XmlMapUtil.getInputTreeFilterConnections((InputXmlTree) eobj));
             }
         }
         int indexOf = outConns.indexOf(model);
@@ -76,18 +86,6 @@ public class FilterConnectionEditPart extends BaseConnectionEditPart {
     @Override
     public IFigure getFigure() {
         PolylineConnection figure = (PolylineConnection) super.getFigure();
-        FilterConnection connectionModel = (FilterConnection) getModel();
-        if (connectionModel.getTarget() instanceof OutputXmlTree) {
-            if (curvrRouter == null) {
-                curvrRouter = new CurveConnectionRouter();
-                figure.setConnectionRouter(curvrRouter);
-            }
-        } else if (connectionModel.getTarget() instanceof InputXmlTree) {
-            if (cr == null) {
-                cr = new LookupConnectionRouter();
-                figure.setConnectionRouter(cr);
-            }
-        }
         if (cr != null) {
             cr.setOffset(calculateConnOffset());
         }

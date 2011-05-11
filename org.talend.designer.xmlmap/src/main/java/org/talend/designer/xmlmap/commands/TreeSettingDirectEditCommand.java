@@ -42,7 +42,7 @@ public class TreeSettingDirectEditCommand extends DirectEditCommand {
 
     private Object model;
 
-    private final String XPRESSION_PATTERN = "(\\[\\s*\\w+\\.\\w+\\s*:\\s*(/\\w+)+(/@\\w+)*\\s*\\])|((?!\\[)\\s*\\w+\\.\\w+(?!\\]))";
+    private final String XPRESSION_PATTERN = "(\\[\\s*\\w+\\.\\w+\\s*:\\s*(/.+?)+(/@.+?)*\\s*\\])|((?!\\[)\\s*\\w+\\.\\w+(?!\\]))";
 
     private Object newValue;
 
@@ -169,6 +169,18 @@ public class TreeSettingDirectEditCommand extends DirectEditCommand {
             }
             abstractTree.getFilterIncomingConnections().removeAll(copyOfConnections);
 
+        } else if (!connections.isEmpty()) {
+
+            for (FilterConnection connection : connections) {
+                if (connection.getSource() != null) {
+                    if (connection.getSource().getFilterOutGoingConnections().contains(connection)) {
+                        connection.getSource().getFilterOutGoingConnections().remove(connection);
+                        mapperData.getConnections().remove(connection);
+                    }
+                }
+            }
+
+            abstractTree.getFilterIncomingConnections().removeAll(connections);
         }
     }
 

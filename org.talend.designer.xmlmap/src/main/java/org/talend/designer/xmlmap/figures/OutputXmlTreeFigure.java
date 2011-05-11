@@ -84,7 +84,7 @@ public class OutputXmlTreeFigure extends AbstractInOutTreeFigure {
         settingContainer = new OutputTreeSettingContainer(xmlTree);
         this.add(settingContainer);
 
-        filterFigure = new FilterContainer(xmlTree, (Composite) treePart.getViewer().getControl());
+        filterFigure = new FilterContainer(treePart, (Composite) treePart.getViewer().getControl());
         this.add(filterFigure);
 
         tableColumnstitle = new ColumnTitleFigure();
