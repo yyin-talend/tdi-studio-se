@@ -189,8 +189,12 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         // String descriptionFilePath = new Path(url.getFile()).toOSString();
         // descriptionBrowser.setUrl(descriptionFilePath);
 
-        ECodeLanguage demoLanguage = this.demoProjectList.get(selectedDemoProjectIndex).getLanguage();
-        String demoDescription = CorePlugin.getDefault().getResourceService().getDemoDescription(demoLanguage);
+        // MOD gdbu 2011-5-10 bug : 21138
+        DemoProjectBean demoProjectBean = this.demoProjectList.get(selectedDemoProjectIndex);
+        ECodeLanguage demoLanguage = demoProjectBean.getLanguage();
+        String demoDescription = CorePlugin.getDefault().getResourceService()
+                .getDemoDescription(demoLanguage, demoProjectBean.getProjectName());
+        // ~21138
         descriptionBrowser.setText(demoDescription);
         // } catch (IOException e) {
         // ExceptionHandler.process(e);
