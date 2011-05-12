@@ -55,6 +55,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.IGraphicalNode;
 import org.talend.core.model.process.INode;
@@ -469,6 +470,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
     @Override
     public void performRequest(Request req) {
         Node node = (Node) getModel();
+        IExternalData oldExternalData = node.getExternalData();
         if (req.getType().equals("open")) { //$NON-NLS-1$
             IExternalNode externalNode = null;
             if (node.isExternalNode()) {
@@ -486,7 +488,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                         CommandStack cmdStack = (CommandStack) part.getAdapter(CommandStack.class);
                         cmdStack.execute(cmd);
                     } else {
-                        externalNode.setExternalData(node.getExternalData());
+                        externalNode.setExternalData(oldExternalData);
                     }
                 }
             } else {
