@@ -35,7 +35,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         boolean needAuth = ("true").equals(ElementParameterParser.getValue(node,"__NEED_AUTH__"));
         String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
-        String password = ElementParameterParser.getValue(node,"__PASS__");
+        String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
         
         boolean winAuth = ("true").equals(ElementParameterParser.getValue(node,"__WIN_AUTH__"));
         String domain = ElementParameterParser.getValue(node,"__DOMAIN__");
