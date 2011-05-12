@@ -21,15 +21,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -38,11 +41,8 @@ import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.repository.model.ILocalRepositoryFactory;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -54,6 +54,8 @@ import org.talend.repository.model.IRepositoryService;
 public class RemoveBinFolderMigrationTask extends AbstractItemMigrationTask {
 
     private Map<String, ERepositoryObjectType> pathToCheckIfDeleted = new HashMap<String, ERepositoryObjectType>();
+
+    private XmiResourceManager xmiResourceManager = new XmiResourceManager();
 
     @Override
     public List<ERepositoryObjectType> getTypes() {
@@ -106,69 +108,77 @@ public class RemoveBinFolderMigrationTask extends AbstractItemMigrationTask {
         // this migration should be only on local and svn repository, so check if instance of local repository.
         IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
         IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
-        IRepositoryViewObject object;
-        try {
-            object = factory.getLastVersion(item.getProperty().getId());
-            if (object == null) {
-                return ExecutionResult.FAILURE; // item not found !?
-            }
-            if (ProxyRepositoryFactory.getInstance().getRepositoryFactoryFromProvider() instanceof ILocalRepositoryFactory) {
-                if (!object.getProperty().getItem().getState().isDeleted()) {
-                    return ExecutionResult.SUCCESS_NO_ALERT;
-                }
-                item.getState().setDeleted(true);
-                // ensure that this item got deleted status, some versions only set deleted status to last version.
 
-                // item has been found, and is a deleted item, so move the item from bin folder to standard folder.
-                IProject fsProject = ResourceModelUtils.getProject(getProject());
+        for (ERepositoryObjectType type : (ERepositoryObjectType[]) ERepositoryObjectType.values()) {
+            IFolder folder = null;
+            if (type.hasFolder()) {
+                try {
+                    IProject fsProject = ResourceUtils.getProject(getProject().getTechnicalLabel());
+                    folder = ResourceUtils.getFolder(fsProject, ERepositoryObjectType.getFolderName(type), true);
+                    for (IResource current : ResourceUtils.getMembers(folder)) {
+                        if ((current instanceof IFolder) && ((IFolder) current).getName().equals("bin")) {
+                            for (IResource fileCurrent : ResourceUtils.getMembers((IFolder) current)) {
+                                if (fileCurrent instanceof IFile) {
+                                    if (xmiResourceManager.isPropertyFile((IFile) fileCurrent)) {
+                                        Property property = null;
+                                        try {
+                                            property = xmiResourceManager.loadProperty(fileCurrent);
+                                        } catch (RuntimeException e) {
+                                            // property will be null
+                                            ExceptionHandler.process(e);
+                                        }
+                                        if (property != null) {
+                                            List<Resource> resources = xmiResourceManager.getAffectedResources(property);
+                                            Collections.sort(resources, new Comparator<Resource>() {
 
-                ERepositoryObjectType repositoryType = ERepositoryObjectType.getItemType(item);
-                EcoreUtil.resolveAll(item);
+                                                public int compare(Resource o1, Resource o2) {
+                                                    if (o1.getURI().fileExtension().equals(".properties")) {
+                                                        return -1;
+                                                    }
+                                                    return 1;
+                                                }
+                                            });
+                                            // restore folder if doesn't exist anymore.
+                                            Item propertyItem = property.getItem();
+                                            propertyItem.getState().setDeleted(true);
+                                            String oldPath = propertyItem.getState().getPath();
+                                            IPath path = new Path(oldPath);
+                                            factory.createParentFoldersRecursively(getProject(), type, path, true);
 
-                Resource propertyResource = item.getProperty().eResource();
-                pathToCheckIfDeleted.put(item.getState().getPath(), repositoryType);
+                                            IFolder typeRootFolder = ResourceUtils.getFolder(fsProject,
+                                                    ERepositoryObjectType.getFolderName(type), true);
+                                            for (Resource resource : resources) {
+                                                IPath originalPath = URIHelper.convert(resource.getURI());
+                                                IPath finalPath = typeRootFolder.getFullPath().append(path)
+                                                        .append(originalPath.lastSegment());
+                                                ResourceUtils.moveResource(URIHelper.getFile(resource.getURI()), finalPath);
+                                                resource.setURI(URIHelper.convert(finalPath));
+                                                EmfHelper.saveResource(resource);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            IResource[] binFolder = ResourceUtils.getMembers((IFolder) current);
 
-                // check if imported item is in the bin folder or not, if not, no need to move anything.
-                if (propertyResource.getURI().segmentCount() > 2) {
-                    String parentFolder = propertyResource.getURI().segment(propertyResource.getURI().segmentCount() - 2);
-                    if (!parentFolder.equals("bin")) {
-                        return ExecutionResult.SUCCESS_NO_ALERT;
-                    }
-                } else {
-                    return ExecutionResult.SUCCESS_NO_ALERT;
-                }
-
-                XmiResourceManager xrm = new XmiResourceManager();
-                List<Resource> resources = xrm.getAffectedResources(item.getProperty());
-                Collections.sort(resources, new Comparator<Resource>() {
-
-                    public int compare(Resource o1, Resource o2) {
-                        if (o1.getURI().fileExtension().equals(".properties")) {
-                            return -1;
+                            if (binFolder.length == 0 || (binFolder.length == 1 && FilesUtils.isSVNFolder(binFolder[0]))) {
+                                try {
+                                    ((IFolder) current).delete(true, null);
+                                } catch (CoreException e) {
+                                    // not catched, not important if can delete or not
+                                }
+                            }
                         }
-                        return 1;
                     }
-                });
-                // restore folder if doesn't exist anymore.
-                String oldPath = item.getState().getPath();
-                IPath path = new Path(oldPath);
-                factory.createParentFoldersRecursively(getProject(), repositoryType, path, true);
-
-                IFolder typeRootFolder = ResourceUtils.getFolder(fsProject, ERepositoryObjectType.getFolderName(repositoryType),
-                        true);
-                for (Resource resource : resources) {
-                    IPath originalPath = URIHelper.convert(resource.getURI());
-                    IPath finalPath = typeRootFolder.getFullPath().append(path).append(originalPath.lastSegment());
-                    ResourceUtils.moveResource(URIHelper.getFile(resource.getURI()), finalPath);
-                    resource.setURI(URIHelper.convert(finalPath));
-                    EmfHelper.saveResource(resource);
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                    return ExecutionResult.FAILURE;
                 }
             }
-            return ExecutionResult.SUCCESS_NO_ALERT;
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-            return ExecutionResult.FAILURE;
+
         }
+        // }
+        return ExecutionResult.SUCCESS_NO_ALERT;
     }
 
     public Date getOrder() {

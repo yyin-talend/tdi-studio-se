@@ -24,7 +24,6 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
-import org.talend.core.repository.model.ILocalRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.migration.AbstractMigrationTask;
 import org.talend.migration.IProjectMigrationTask;
@@ -42,23 +41,24 @@ public class CleanFoldersMigrationTask extends AbstractMigrationTask implements 
      * @see org.talend.core.model.migration.IProjectMigrationTask#execute(org.talend.core.model.general.Project)
      */
     public ExecutionResult execute(Project project) {
-        if (ProxyRepositoryFactory.getInstance().getRepositoryFactoryFromProvider() instanceof ILocalRepositoryFactory) {
-            project.getEmfProject().getFolders().clear();
-            List<EObject> toRemove = new ArrayList<EObject>();
-            for (EObject object : project.getEmfProject().eResource().getContents()) {
-                if (object instanceof ItemState || object instanceof Property) {
-                    toRemove.add(object);
-                }
+        // if (ProxyRepositoryFactory.getInstance().getRepositoryFactoryFromProvider() instanceof
+        // ILocalRepositoryFactory) {
+        project.getEmfProject().getFolders().clear();
+        List<EObject> toRemove = new ArrayList<EObject>();
+        for (EObject object : project.getEmfProject().eResource().getContents()) {
+            if (object instanceof ItemState || object instanceof Property) {
+                toRemove.add(object);
             }
-            project.getEmfProject().eResource().getContents().removeAll(toRemove);
-            try {
-                ProxyRepositoryFactory.getInstance().saveProject(project);
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
-            return ExecutionResult.SUCCESS_NO_ALERT;
         }
-        return ExecutionResult.NOTHING_TO_DO;
+        project.getEmfProject().eResource().getContents().removeAll(toRemove);
+        try {
+            ProxyRepositoryFactory.getInstance().saveProject(project);
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        return ExecutionResult.SUCCESS_NO_ALERT;
+        // }
+        // return ExecutionResult.NOTHING_TO_DO;
     }
 
     /*
