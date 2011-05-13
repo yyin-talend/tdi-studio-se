@@ -13,11 +13,11 @@
 package org.talend.designer.runprocess.java;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -131,15 +131,27 @@ public class JavaProcessorUtilities {
     }
 
     private static void updateClasspath() throws CoreException {
+        updateClasspath(null);
+    }
+
+    private static void updateClasspath(Set<String> additionalNeededJars) throws CoreException {
         if (rootProject == null || javaProject == null) {
             initializeProject();
         }
+        boolean modified = false;
         IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
         IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY));
 
-        List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
-        classpath.add(jreClasspathEntry);
-        classpath.add(classpathEntry);
+        IClasspathEntry[] classpathEntryArray = javaProject.getRawClasspath();
+
+        if (!ArrayUtils.contains(classpathEntryArray, jreClasspathEntry)) {
+            classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, jreClasspathEntry);
+            modified = true;
+        }
+        if (!ArrayUtils.contains(classpathEntryArray, classpathEntry)) {
+            classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, classpathEntry);
+            modified = true;
+        }
 
         Set<String> listModulesReallyNeeded = new HashSet<String>();
         for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
@@ -156,18 +168,23 @@ public class JavaProcessorUtilities {
             listModulesReallyNeeded.add(moduleNeeded.getModuleName());
         }
 
+        listModulesReallyNeeded.addAll(additionalNeededJars);
+
         File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
-                    classpath.add(JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null));
+                    IClasspathEntry newEntry = JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null);
+                    if (!ArrayUtils.contains(classpathEntryArray, newEntry)) {
+                        classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, newEntry);
+                        modified = true;
+                    }
                 }
             }
         }
-
-        IClasspathEntry[] classpathEntryArray = classpath.toArray(new IClasspathEntry[classpath.size()]);
-
-        javaProject.setRawClasspath(classpathEntryArray, null);
+        if (modified) {
+            javaProject.setRawClasspath(classpathEntryArray, null);
+        }
 
         javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
     }
@@ -185,14 +202,14 @@ public class JavaProcessorUtilities {
                     Context.REPOSITORY_CONTEXT_KEY);
             Project project = repositoryContext.getProject();
             if (projectSetup == null || !projectSetup.equals(project.getTechnicalLabel())) {
-                updateClasspath();
+                updateClasspath(jobModuleList);
                 projectSetup = project.getTechnicalLabel();
             }
             // see bug 5633
             try {
                 sortClasspath(jobModuleList, process);
             } catch (BusinessException be) {
-                updateClasspath();
+                updateClasspath(jobModuleList);
                 try {
                     sortClasspath(jobModuleList, process);
                 } catch (BusinessException be1) {
