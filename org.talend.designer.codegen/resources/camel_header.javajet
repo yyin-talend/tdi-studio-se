@@ -15,6 +15,7 @@
 		java.util.List
 		java.util.ArrayList
 		java.util.Vector
+		java.util.Map
 		org.talend.core.model.process.IContextParameter
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.utils.NodeUtil
