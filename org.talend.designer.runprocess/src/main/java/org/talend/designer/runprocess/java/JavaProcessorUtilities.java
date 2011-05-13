@@ -149,6 +149,17 @@ public class JavaProcessorUtilities {
             modified = true;
         }
         if (!ArrayUtils.contains(classpathEntryArray, classpathEntry)) {
+            IClasspathEntry source = null;
+            for (IClasspathEntry entry : classpathEntryArray) {
+                if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+                    source = entry;
+                    break;
+                }
+            }
+            if (source != null) {
+                classpathEntryArray = (IClasspathEntry[]) ArrayUtils.remove(classpathEntryArray,
+                        ArrayUtils.indexOf(classpathEntryArray, source));
+            }
             classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, classpathEntry);
             modified = true;
         }
