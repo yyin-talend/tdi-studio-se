@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
@@ -64,6 +65,7 @@ public class FixProjectResourceLink extends AbstractItemMigrationTask {
                 }
             }
         }
+        EmfHelper.visitChilds(item);
         try {
             factory.save(item, true);
         } catch (PersistenceException e) {
