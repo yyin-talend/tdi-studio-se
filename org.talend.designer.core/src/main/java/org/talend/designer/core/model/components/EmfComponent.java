@@ -193,6 +193,8 @@ public class EmfComponent extends AbstractComponent {
 
     private Boolean useImport = null;
 
+    private Boolean useSchema = null;
+
     private Boolean visible = null;
 
     private Boolean technical = null;
@@ -2998,7 +3000,6 @@ public class EmfComponent extends AbstractComponent {
                 try {
                     load();
                 } catch (BusinessException e) {
-                    // TODO Auto-generated catch block
                     ExceptionHandler.process(e);
                 }
             }
@@ -3009,13 +3010,41 @@ public class EmfComponent extends AbstractComponent {
             listConnType = compType.getCONNECTORS().getCONNECTOR();
             for (int i = 0; i < listConnType.size(); i++) {
                 connType = (CONNECTORType) listConnType.get(i);
-                if (connType.getCTYPE().equals(EConnectionType.FLOW_MAIN.getName())) {
+                if (connType.getCTYPE().equals(EConnectionType.FLOW_MAIN.getName())
+                        && !(connType.isSetMAXINPUT() && connType.getMAXINPUT() == 0 && connType.isSetMAXOUTPUT()
+                                && connType.getMAXOUTPUT() == 0 || connType.isSetMININPUT() && connType.getMININPUT() == 0
+                                && connType.isSetMINOUTPUT() && connType.getMINOUTPUT() == 0)) {
                     useFlow = true;
                     break;
                 }
             }
         }
         return useFlow;
+    }
+
+    public boolean useSchema() {
+        if (useSchema == null) {
+            if (compType == null) {
+                isLoaded = false;
+                try {
+                    load();
+                } catch (BusinessException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+            useSchema = false;
+            PARAMETERType pType;
+            EList parameters = compType.getPARAMETERS().getPARAMETER();
+            for (Object parameter : parameters) {
+                pType = (PARAMETERType) parameter;
+                if ("SCHEMA".equals(pType.getNAME()) && "SCHEMA_TYPE".equals(pType.getFIELD()) && pType.isREQUIRED()
+                        && !pType.isREADONLY()) {
+                    useSchema = true;
+                    break;
+                }
+            }
+        }
+        return useSchema;
     }
 
     public boolean isMultiplyingOutputs() {

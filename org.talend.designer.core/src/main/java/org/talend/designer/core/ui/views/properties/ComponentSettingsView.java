@@ -606,7 +606,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         boolean hasFlow = false;
         if (node.getComponent() != null && node.getComponent() instanceof EmfComponent) {
             EmfComponent component = (EmfComponent) node.getComponent();
-            if (component.useLookup() || component.useMerge()) {
+            if (component.useLookup() || component.useMerge() || !component.useSchema()) {
                 return false;
             }
             if (component.useFlow()) {
