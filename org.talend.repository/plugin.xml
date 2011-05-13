@@ -1113,7 +1113,7 @@
              name="Clean all folders from project">
        </projecttask>
        <projecttask
-             beforeLogon="false"
+             beforeLogon="true"
              class="org.talend.repository.model.migration.RemoveBinFolderMigrationTask"
              description="Move all items who were in bin folders in previous project to standard folder."
              id="org.talend.repository.model.migration.RemoveBinFolderMigrationTask"

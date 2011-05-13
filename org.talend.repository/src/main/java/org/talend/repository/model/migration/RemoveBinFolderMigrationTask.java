@@ -13,13 +13,9 @@
 package org.talend.repository.model.migration;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -28,7 +24,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -37,13 +32,11 @@ import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractItemMigrationTask;
+import org.talend.core.model.migration.AbstractProjectMigrationTask;
 import org.talend.core.model.properties.FolderItem;
-import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -51,13 +44,8 @@ import org.talend.repository.model.IRepositoryService;
 /**
  * DOC nrousseau class global comment. Detailled comment
  */
-public class RemoveBinFolderMigrationTask extends AbstractItemMigrationTask {
+public class RemoveBinFolderMigrationTask extends AbstractProjectMigrationTask {
 
-    private Map<String, ERepositoryObjectType> pathToCheckIfDeleted = new HashMap<String, ERepositoryObjectType>();
-
-    private XmiResourceManager xmiResourceManager = new XmiResourceManager();
-
-    @Override
     public List<ERepositoryObjectType> getTypes() {
         List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
         toReturn.add(ERepositoryObjectType.BUSINESS_PROCESS);
@@ -103,17 +91,24 @@ public class RemoveBinFolderMigrationTask extends AbstractItemMigrationTask {
         return toReturn;
     }
 
-    @Override
-    public ExecutionResult execute(Item item) {
-        // this migration should be only on local and svn repository, so check if instance of local repository.
+    public Date getOrder() {
+        GregorianCalendar gc = new GregorianCalendar(2010, 3, 23, 12, 0, 0);
+        return gc.getTime();
+    }
+
+    public ExecutionResult execute(Project project) {
+        XmiResourceManager xmiResourceManager = new XmiResourceManager();
         IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
         IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
 
-        for (ERepositoryObjectType type : (ERepositoryObjectType[]) ERepositoryObjectType.values()) {
+        for (ERepositoryObjectType type : getTypes()) {
             IFolder folder = null;
             if (type.hasFolder()) {
                 try {
-                    IProject fsProject = ResourceUtils.getProject(getProject().getTechnicalLabel());
+                    IProject fsProject = ResourceUtils.getProject(project.getTechnicalLabel());
+                    if (!fsProject.getFolder(ERepositoryObjectType.getFolderName(type)).exists()) {
+                        continue;
+                    }
                     folder = ResourceUtils.getFolder(fsProject, ERepositoryObjectType.getFolderName(type), true);
                     for (IResource current : ResourceUtils.getMembers(folder)) {
                         if ((current instanceof IFolder) && ((IFolder) current).getName().equals("bin")) {
@@ -128,32 +123,31 @@ public class RemoveBinFolderMigrationTask extends AbstractItemMigrationTask {
                                             ExceptionHandler.process(e);
                                         }
                                         if (property != null) {
-                                            List<Resource> resources = xmiResourceManager.getAffectedResources(property);
-                                            Collections.sort(resources, new Comparator<Resource>() {
-
-                                                public int compare(Resource o1, Resource o2) {
-                                                    if (o1.getURI().fileExtension().equals(".properties")) {
-                                                        return -1;
-                                                    }
-                                                    return 1;
-                                                }
-                                            });
                                             // restore folder if doesn't exist anymore.
                                             Item propertyItem = property.getItem();
                                             propertyItem.getState().setDeleted(true);
+
+                                            EmfHelper.saveResource(propertyItem.eResource());
+
                                             String oldPath = propertyItem.getState().getPath();
                                             IPath path = new Path(oldPath);
-                                            factory.createParentFoldersRecursively(getProject(), type, path, true);
 
+                                            factory.createParentFoldersRecursively(project, type, path, true);
+
+                                            FolderItem folderItem = factory.getFolderItem(project, type, path);
+                                            propertyItem.setParent(folderItem);
+
+                                            String name = fileCurrent.getName().replace(".properties", "");
+                                            // take all the files starting by the same name
                                             IFolder typeRootFolder = ResourceUtils.getFolder(fsProject,
                                                     ERepositoryObjectType.getFolderName(type), true);
-                                            for (Resource resource : resources) {
-                                                IPath originalPath = URIHelper.convert(resource.getURI());
-                                                IPath finalPath = typeRootFolder.getFullPath().append(path)
-                                                        .append(originalPath.lastSegment());
-                                                ResourceUtils.moveResource(URIHelper.getFile(resource.getURI()), finalPath);
-                                                resource.setURI(URIHelper.convert(finalPath));
-                                                EmfHelper.saveResource(resource);
+                                            for (IResource filesToMove : ResourceUtils.getMembers((IFolder) current)) {
+                                                if (filesToMove.getName().startsWith(name)) {
+                                                    IPath originalPath = filesToMove.getFullPath();
+                                                    IPath finalPath = typeRootFolder.getFullPath().append(path)
+                                                            .append(originalPath.lastSegment());
+                                                    ResourceUtils.moveResource(filesToMove, finalPath);
+                                                }
                                             }
                                         }
                                     }
@@ -181,60 +175,4 @@ public class RemoveBinFolderMigrationTask extends AbstractItemMigrationTask {
         return ExecutionResult.SUCCESS_NO_ALERT;
     }
 
-    public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2010, 3, 23, 12, 0, 0);
-        return gc.getTime();
-    }
-
-    @Override
-    public ExecutionResult execute(Project project) {
-        ExecutionResult result = super.execute(project);
-        IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
-        IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
-
-        for (String curPath : pathToCheckIfDeleted.keySet()) {
-            FolderItem folderItem = factory.getFolderItem(getProject(), pathToCheckIfDeleted.get(curPath), new Path(curPath));
-            setPathToDeleteIfNeed(folderItem);
-        }
-        return result;
-    }
-
-    private boolean setPathToDeleteIfNeed(FolderItem folderItem) {
-        if (folderItem.getType().getValue() != FolderType.FOLDER) {
-            return false;
-        }
-        if (folderItem.getState().isDeleted()) {
-            return true;
-        }
-        boolean allDeleted = true;
-        for (Item item : (List<Item>) folderItem.getChildren()) {
-            if (item instanceof FolderItem) {
-                allDeleted = setPathToDeleteIfNeed((FolderItem) item);
-                if (!allDeleted) {
-                    break;
-                }
-            }
-            if (!item.getState().isDeleted()) {
-                allDeleted = false;
-                break;
-            }
-        }
-        if (allDeleted) {
-            folderItem.getState().setDeleted(true);
-            String fullPath = "";
-            FolderItem curItem = folderItem;
-            while (curItem.getParent() instanceof FolderItem && ((Item) curItem.getParent()).getParent() instanceof FolderItem
-                    && ((FolderItem) ((Item) curItem.getParent()).getParent()).getType().getValue() == FolderType.FOLDER) {
-                FolderItem parentFolder = (FolderItem) curItem.getParent();
-                if ("".equals(fullPath)) {
-                    fullPath = parentFolder.getProperty().getLabel() + fullPath;
-                } else {
-                    fullPath = parentFolder.getProperty().getLabel() + "/" + fullPath;
-                }
-                curItem = parentFolder;
-            }
-            folderItem.getState().setPath(fullPath);
-        }
-        return allDeleted;
-    }
 }
