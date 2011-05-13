@@ -53,6 +53,7 @@ import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.Note;
@@ -545,8 +546,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                         || propertyValue.equals(EConnectionType.ON_COMPONENT_ERROR)
                         || propertyValue.equals(EConnectionType.RUN_IF) || propertyValue.equals(EConnectionType.ON_SUBJOB_OK)
                         || propertyValue.equals(EConnectionType.ON_SUBJOB_ERROR)
-                        || propertyValue.equals(EConnectionType.ROUTE_WHEN)
-                        || propertyValue.equals(EConnectionType.ROUTE_CATCH)) {
+                        || propertyValue.equals(EConnectionType.ROUTE_WHEN) || propertyValue.equals(EConnectionType.ROUTE_CATCH)) {
 
                     int length = categories.length;
                     EComponentCategory[] newCategories;
@@ -581,23 +581,40 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 }
             }
             EComponentCategory[] categories = EElementType.ADVANCED_NODE.getCategories();
-            // TODO: add the condition of displaying the validation rule tab in tis.
-            if (PluginChecker.isValidationrulesPluginLoaded()) { // show
+            if (PluginChecker.isValidationrulesPluginLoaded() && isSupportValidationRuleNode((Node) elem)) { // show
                 EComponentCategory[] newCategories = new EComponentCategory[categories.length + 1];
                 System.arraycopy(categories, 0, newCategories, 0, categories.length);
                 newCategories[categories.length] = EComponentCategory.VALIDATION_RULES;
                 return newCategories;
             }
             return categories;
-            // } else {
-            // return EElementType.NODE.getCategories();
-            // }
         } else if (elem instanceof Note) {
             return EElementType.NOTE.getCategories();
         } else if (elem instanceof SubjobContainer) {
             return EElementType.SUBJOB.getCategories();
         }
         return null;
+    }
+
+    /**
+     * DOC ycbai Comment method "isSupportValidationRuleNode".
+     * 
+     * @param node
+     * @return
+     */
+    private boolean isSupportValidationRuleNode(Node node) {
+        boolean hasFlow = false;
+        if (node.getComponent() != null && node.getComponent() instanceof EmfComponent) {
+            EmfComponent component = (EmfComponent) node.getComponent();
+            if (component.useLookup() || component.useMerge()) {
+                return false;
+            }
+            if (component.useFlow()) {
+                hasFlow = true;
+            }
+        }
+
+        return hasFlow;
     }
 
     public Element getElement() {

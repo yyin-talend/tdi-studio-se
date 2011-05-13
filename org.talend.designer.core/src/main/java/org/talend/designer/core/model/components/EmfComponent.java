@@ -185,6 +185,8 @@ public class EmfComponent extends AbstractComponent {
 
     private List<ECodePart> codePartListX;
 
+    private Boolean useFlow = null;
+
     private Boolean useMerge = null;
 
     private Boolean useLookup = null;
@@ -2987,6 +2989,33 @@ public class EmfComponent extends AbstractComponent {
             }
         }
         return useMerge;
+    }
+
+    public boolean useFlow() {
+        if (useFlow == null) {
+            if (compType == null) {
+                isLoaded = false;
+                try {
+                    load();
+                } catch (BusinessException e) {
+                    // TODO Auto-generated catch block
+                    ExceptionHandler.process(e);
+                }
+            }
+            useFlow = false;
+            EList listConnType;
+            CONNECTORType connType;
+
+            listConnType = compType.getCONNECTORS().getCONNECTOR();
+            for (int i = 0; i < listConnType.size(); i++) {
+                connType = (CONNECTORType) listConnType.get(i);
+                if (connType.getCTYPE().equals(EConnectionType.FLOW_MAIN.getName())) {
+                    useFlow = true;
+                    break;
+                }
+            }
+        }
+        return useFlow;
     }
 
     public boolean isMultiplyingOutputs() {
