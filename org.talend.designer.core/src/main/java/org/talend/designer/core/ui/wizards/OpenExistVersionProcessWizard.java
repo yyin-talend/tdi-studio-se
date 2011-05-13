@@ -219,8 +219,15 @@ public class OpenExistVersionProcessWizard extends Wizard {
                 } else if (item instanceof RoutineItem) {
                     RoutineItem routineItem = (RoutineItem) item;
                     ITalendSynchronizer routineSynchronizer = codeGenService.createRoutineSynchronizer();
-                    routineSynchronizer.syncRoutine(routineItem);
-                    IFile file = routineSynchronizer.getFile(routineItem);
+                    IFile file = null;
+                    ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                    String lastVersion = factory.getLastVersion(routineItem.getProperty().getId()).getVersion();
+                    String curVersion = routineItem.getProperty().getVersion();
+                    if (curVersion != null && curVersion.equals(lastVersion)) {
+                        file = routineSynchronizer.getFile(routineItem);
+                    } else {
+                        file = routineSynchronizer.getRoutinesFile(routineItem);
+                    }
                     fileEditorInput = new RoutineEditorInput(file, routineItem);
                 } else if (item instanceof SQLPatternItem) {
                     SQLPatternItem patternItem = (SQLPatternItem) item;

@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.talend.commons.exception.SystemException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
@@ -289,6 +290,15 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
     public void deleteBeanfile(IRepositoryViewObject objToDelete) {
         // TODO Auto-generated method stub
 
+    }
+
+    public IFile getRoutinesFile(RoutineItem routineItem) {
+        try {
+            return getFile(routineItem);
+        } catch (SystemException e) {
+            ExceptionHandler.process(e);
+        }
+        return null;
     }
 
 }
