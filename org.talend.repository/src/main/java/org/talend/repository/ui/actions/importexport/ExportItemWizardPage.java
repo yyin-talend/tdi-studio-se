@@ -635,6 +635,40 @@ class ExportItemWizardPage extends WizardPage {
         });
     }
 
+    private void checkItemDependencies(Item item, List<IRepositoryViewObject> repositoryObjects) {
+        if (item == null) {
+            return;
+        }
+        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+        RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
+
+        List<RelationshipItemBuilder.Relation> relations = builder.getItemsRelatedTo(item.getProperty().getId(), item
+                .getProperty().getVersion(), RelationshipItemBuilder.JOB_RELATION);
+        for (RelationshipItemBuilder.Relation relation : relations) {
+            IRepositoryViewObject obj = null;
+            try {
+                if (RelationshipItemBuilder.ROUTINE_RELATION.equals(relation.getType())) {
+                    obj = RoutinesUtil.getRoutineFromName(relation.getId());
+                } else {
+                    obj = factory.getLastVersion(relation.getId());
+                }
+                if (obj != null) {
+                    RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(obj, false);
+                    if (repositoryNode != null) {
+                        if (!repositoryObjects.contains(obj)) {
+                            repositoryObjects.add(obj);
+                            checkAllVerSionLatest(repositoryObjects, obj);
+                            checkItemDependencies(obj.getProperty().getItem(), repositoryObjects);
+                        }
+                    }
+                }
+            } catch (PersistenceException et) {
+                ExceptionHandler.process(et);
+            }
+        }
+
+    }
+
     /**
      * DOC qwei Comment method "exportDependenciesSelected".
      */
@@ -657,37 +691,8 @@ class ExportItemWizardPage extends WizardPage {
                 Display.getDefault().syncExec(new Runnable() {
 
                     public void run() {
-                        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                        RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
                         for (Item item : selectedItems) {
-                            if (item == null) {
-                                continue;
-                            }
-                            List<RelationshipItemBuilder.Relation> relations = builder.getItemsRelatedTo(item.getProperty()
-                                    .getId(), item.getProperty().getVersion(), RelationshipItemBuilder.JOB_RELATION);
-                            for (RelationshipItemBuilder.Relation relation : relations) {
-                                IRepositoryViewObject obj = null;
-                                try {
-                                    if (RelationshipItemBuilder.ROUTINE_RELATION.equals(relation.getType())) {
-                                        obj = RoutinesUtil.getRoutineFromName(relation.getId());
-                                    } else {
-                                        obj = factory.getLastVersion(relation.getId());
-                                    }
-                                    if (obj != null) {
-                                        RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(obj, false);
-                                        if (repositoryNode != null) {
-                                            if (!repositoryObjects.contains(obj)) {
-                                                repositoryObjects.add(obj);
-                                                checkAllVerSionLatest(repositoryObjects, obj);
-                                            }
-                                            // break;
-                                        }
-                                    }
-                                } catch (PersistenceException et) {
-                                    ExceptionHandler.process(et);
-                                }
-                            }
-
+                            checkItemDependencies(item, repositoryObjects);
                         }
 
                     }
