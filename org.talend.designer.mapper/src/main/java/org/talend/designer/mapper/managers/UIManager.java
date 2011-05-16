@@ -427,7 +427,18 @@ public class UIManager extends AbstractUIManager {
                 }
             }
 
-            dataMapTableView.enableDiaplayViewer(abstractDataMapTable.isRepository());
+            boolean isMainSchemaRepository = false;
+            if (abstractDataMapTable instanceof OutputTable) {
+                OutputTable outputTable = (OutputTable) abstractDataMapTable;
+                if (outputTable.getIsJoinTableOf() != null || !"".equals(outputTable.getIsJoinTableOf())) {
+                    final OutputTable outputTableByName = mapperManager.getOutputTableByName(outputTable.getIsJoinTableOf());
+                    if (outputTableByName != null && outputTableByName.getId() != null) {
+                        isMainSchemaRepository = true;
+                    }
+                }
+            }
+
+            dataMapTableView.enableDiaplayViewer(abstractDataMapTable.isRepository() || isMainSchemaRepository);
         }
 
         if (selectAllEntries && currentZone == Zone.VARS) {

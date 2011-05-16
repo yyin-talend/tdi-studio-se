@@ -112,9 +112,11 @@ public class OutputDataMapTableView extends DataMapTableView {
         if (tableMapSettingEntriesModel != null) {
             tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, OUTPUT_REJECT, null));
             tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, LOOK_UP_INNER_JOIN_REJECT, null));
-            tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_TYPE, null));
-            if (getOutputTable().isRepository()) {
-                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_ID, null));
+            if (getOutputTable().getIsJoinTableOf() == null) {
+                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_TYPE, null));
+                if (getOutputTable().isRepository()) {
+                    tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_ID, null));
+                }
             }
         }
 
