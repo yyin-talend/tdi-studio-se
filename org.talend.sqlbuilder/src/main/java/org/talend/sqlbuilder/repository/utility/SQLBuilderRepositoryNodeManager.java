@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -1271,16 +1272,19 @@ public class SQLBuilderRepositoryNodeManager {
         }
         List<Query> displayQueries = builderDialog.getStructureComposite().getTreeLabelProvider().getDisplayQueries();
         for (Query activeQuery : displayQueries) {
-            CTabItem[] items = builderDialog.getEditorComposite().getTabFolder().getItems();
-            for (CTabItem item : items) {
-                final boolean b = (item.getData() instanceof Query)
-                        && item.getData(TextUtil.KEY) instanceof MultiPageSqlBuilderEditor && activeQuery != null;
-                Query data2 = (Query) item.getData();
-                if (b && data2.getLabel().equals(activeQuery.getLabel())) {
-                    data2.setValue(activeQuery.getValue());
-                    data2.setComment(activeQuery.getComment());
-                    data2.setLabel(activeQuery.getLabel());
-                    updateEditor(activeQuery, (MultiPageSqlBuilderEditor) item.getData("KEY")); //$NON-NLS-1$
+            CTabFolder tabFolder = builderDialog.getEditorComposite().getTabFolder();
+            if (tabFolder != null) {
+                CTabItem[] items = tabFolder.getItems();
+                for (CTabItem item : items) {
+                    final boolean b = (item.getData() instanceof Query)
+                            && item.getData(TextUtil.KEY) instanceof MultiPageSqlBuilderEditor && activeQuery != null;
+                    Query data2 = (Query) item.getData();
+                    if (b && data2.getLabel().equals(activeQuery.getLabel())) {
+                        data2.setValue(activeQuery.getValue());
+                        data2.setComment(activeQuery.getComment());
+                        data2.setLabel(activeQuery.getLabel());
+                        updateEditor(activeQuery, (MultiPageSqlBuilderEditor) item.getData("KEY")); //$NON-NLS-1$
+                    }
                 }
             }
         }

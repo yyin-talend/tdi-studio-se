@@ -68,6 +68,7 @@ import org.talend.sqlbuilder.actions.OpenNewEditorAction;
 import org.talend.sqlbuilder.actions.OpenQueryAction;
 import org.talend.sqlbuilder.actions.ShowQueryPropertyAction;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.UIUtils;
@@ -697,12 +698,25 @@ public class DBStructureComposite extends Composite {
         int updown = 1;
 
         public int compare(Viewer viewer, Object e1, Object e2) {
+            int result = 0;
             RepositoryNode t1 = (RepositoryNode) e1;
             RepositoryNode t2 = (RepositoryNode) e2;
+            // compare items should be same type.
+            IRepositoryViewObject o1 = t1.getObject();
+            IRepositoryViewObject o2 = t2.getObject();
+            if (o1.getClass() == o2.getClass()) {
+                String v1 = (o1.getLabel());
+                String v2 = (o2.getLabel());
+                if (o1 instanceof QueryRepositoryObject) {
+                    v1 = ((QueryRepositoryObject) o1).getQuery().getLabel();
+                    v2 = ((QueryRepositoryObject) o2).getQuery().getLabel();
+                }
+                if (v1 != null && v2 != null) {
+                    result = (col.compare(v1, v2)) * updown;
+                }
+            }
 
-            String v1 = (t1.getObject().getLabel());
-            String v2 = (t2.getObject().getLabel());
-            return (col.compare(v1, v2)) * updown;
+            return result;
         }
     }
 }
