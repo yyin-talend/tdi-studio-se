@@ -910,8 +910,10 @@ public class ImportItemUtil {
                                     itemRecord.setItemProject(project);
                                     // we can try to import item
                                     // and we will try to resolve user
-                                    User user = (User) project.eResource().getEObject(uri.fragment());
-                                    itemRecord.getProperty().setAuthor(user);
+                                    if (uri != null) {
+                                        User user = (User) project.eResource().getEObject(uri.fragment());
+                                        itemRecord.getProperty().setAuthor(user);
+                                    }
                                 }
                             } else {
                                 ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(itemRecord.getItem());
