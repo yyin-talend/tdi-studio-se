@@ -10,11 +10,12 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -22,6 +23,8 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalData;
+import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
@@ -41,6 +44,9 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.joblet.model.JobletNode;
 import org.talend.designer.joblet.model.JobletProcess;
+import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IProxyRepositoryService;
 
 public class JobletUtil {
 
@@ -198,7 +204,7 @@ public class JobletUtil {
         return cloneNodeContainer;
     }
 
-    public Node cloneNode(Node node, IProcess process, Boolean lock) {
+    public Node cloneNode(Node node, IProcess process, boolean lockByOther) {
         NodePart nodePart = new NodePart();
         IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                 IJobletProviderService.class);
@@ -214,14 +220,20 @@ public class JobletUtil {
         }
 
         nodePart.setModel(cloneNode);
-        if (lock == null) {
+        // if (lock == null) {
+        // cloneNode.setReadOnly(true);
+        // } else {
+        // if (lock) {
+        // cloneNode.setReadOnly(false);
+        // } else {
+        // cloneNode.setReadOnly(true);
+        // }
+        // }
+
+        if (lockByOther) {
             cloneNode.setReadOnly(true);
         } else {
-            if (lock) {
-                cloneNode.setReadOnly(false);
-            } else {
-                cloneNode.setReadOnly(true);
-            }
+            cloneNode.setReadOnly(false);
         }
 
         List<? extends IElementParameter> elementParas = node.getElementParameters();
@@ -237,14 +249,19 @@ public class JobletUtil {
                     cloneElement.setValue(elementPara.getValue());
                 }
 
-                if (lock == null) {
+                // if (lock == null) {
+                // cloneElement.setReadOnly(true);
+                // } else {
+                // if (lock) {
+                // cloneElement.setReadOnly(false);
+                // } else {
+                // cloneElement.setReadOnly(true);
+                // }
+                // }
+                if (lockByOther) {
                     cloneElement.setReadOnly(true);
                 } else {
-                    if (lock) {
-                        cloneElement.setReadOnly(false);
-                    } else {
-                        cloneElement.setReadOnly(true);
-                    }
+                    cloneElement.setReadOnly(false);
                 }
 
                 if (elementPara.getChildParameters() != null) {
@@ -259,16 +276,20 @@ public class JobletUtil {
                             IElementParameter cloneC = cloneElementChild.get(key);
                             if (cloneC != null) {
                                 cloneC.setValue(c.getValue());
-                                if (lock == null) {
+                                // if (lock == null) {
+                                // cloneC.setReadOnly(true);
+                                // } else {
+                                // if (lock) {
+                                // cloneC.setReadOnly(false);
+                                // } else {
+                                // cloneC.setReadOnly(true);
+                                // }
+                                // }
+                                if (lockByOther) {
                                     cloneC.setReadOnly(true);
                                 } else {
-                                    if (lock) {
-                                        cloneC.setReadOnly(false);
-                                    } else {
-                                        cloneC.setReadOnly(true);
-                                    }
+                                    cloneC.setReadOnly(false);
                                 }
-
                             }
                         }
                     }
@@ -288,9 +309,41 @@ public class JobletUtil {
         }
 
         cloneNode.setMetadataList(node.getMetadataList());
+        // cloneNode.setExternalNode(node.getExternalNode());
         cloneNode.setListConnector(node.getListConnector());
         cloneNode.setConnectionName(node.getConnectionName());
         cloneNode.setLocation(node.getLocation());
+
+        IExternalNode externalNode = cloneNode.getExternalNode();
+        if (externalNode != null) {
+            if (node.getExternalData() != null) {
+                try {
+                    externalNode.setExternalData(node.getExternalData().clone());
+                } catch (CloneNotSupportedException e) {
+                    ExceptionHandler.process(e);
+                }
+                ((Node) cloneNode).setExternalData(externalNode.getExternalData());
+            }
+            if (node.getExternalNode().getExternalEmfData() != null) {
+                externalNode.setExternalEmfData(EcoreUtil.copy(node.getExternalNode().getExternalEmfData()));
+            }
+
+            // for (IMetadataTable metaTable : node.getMetadataList()) {
+            // String oldName = metaTable.getTableName();
+            //                String newName = oldMetaToNewMeta.get(cloneNode.getUniqueName() + ":" + metaTable.getTableName()); //$NON-NLS-1$
+            // externalNode.renameOutputConnection(oldName, newName);
+            // CorePlugin.getDefault().getMapperService()
+            // .renameJoinTable(process, externalNode.getExternalData(), createdNames);
+            // }
+            // when copy a external node, should also copy screeshot
+            if (node.getExternalNode() != null) {
+                ImageDescriptor screenshot = node.getExternalNode().getScreenshot();
+                if (screenshot != null) {
+                    externalNode.setScreenshot(screenshot);
+                }
+            }
+        }
+
         return cloneNode;
     }
 
@@ -349,6 +402,7 @@ public class JobletUtil {
                         IJobletProviderService.class);
                 if (service != null) {
                     service.unlockJoblet(node, false);
+                    service.reloadJobletProcess(node);
                 }
                 // }
             }
@@ -379,12 +433,33 @@ public class JobletUtil {
         return false;
     }
 
-    public boolean openedInJob(JobletProcessItem jobletItem) {
+    public boolean openedInJob(JobletProcessItem jobletItem, Node currNode) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IEditorPart[] editors = page.getEditors();
         for (int i = 0; i < editors.length; i++) {
             if (editors[i] instanceof AbstractMultiPageTalendEditor) {
-                List<? extends INode> nodeList = ((AbstractMultiPageTalendEditor) editors[i]).getProcess().getGraphicalNodes();
+                IProcess2 pro = ((AbstractMultiPageTalendEditor) editors[i]).getProcess();
+                if (currNode != null) {
+                    IProcess2 currPro = (IProcess2) currNode.getProcess();
+                    if (currPro.getId().equals(pro.getId())) {
+                        List<? extends INode> currNodeList = currPro.getGraphicalNodes();
+                        for (INode node : currNodeList) {
+                            if (node == currNode) {
+                                continue;
+                            } else {
+                                if (((Node) node).isJoblet() && jobletItem.getProperty() != null) {
+                                    boolean haveOpened = !((Node) node).getNodeContainer().isCollapsed();
+                                    if (haveOpened) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                        continue;
+                    }
+                }
+
+                List<? extends INode> nodeList = pro.getGraphicalNodes();
                 for (INode node : nodeList) {
                     if (((Node) node).isJoblet() && jobletItem.getProperty() != null) {
                         if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())) {
@@ -485,6 +560,32 @@ public class JobletUtil {
                     if (nodeTables.size() != oraTables.size()) {
                         return true;
                     }
+                    IExternalNode OraExternalNode = nodeOra.getExternalNode();
+                    if (OraExternalNode != null) {
+                        IExternalNode externalNode = node.getExternalNode();
+                        if (externalNode == null) {
+                            return true;
+                        }
+                        IExternalData oraData = nodeOra.getExternalData();
+                        IExternalData data = node.getExternalData();
+                        if (oraData != null) {
+                            if (data == null) {
+                                return true;
+                            }
+                            List<IMetadataTable> oraMetaList = OraExternalNode.getMetadataList();
+                            List<IMetadataTable> metaList = externalNode.getMetadataList();
+                            if (oraMetaList != null) {
+                                if (metaList == null) {
+                                    return true;
+                                }
+                                if (oraMetaList.size() != metaList.size()) {
+                                    return true;
+                                }
+                            }
+
+                        }
+
+                    }
 
                 }
             }
@@ -494,15 +595,36 @@ public class JobletUtil {
 
     public boolean keepLockJoblet(Item item) {
         if (item instanceof JobletProcessItem) {
-            boolean isOpen = openedInJob((JobletProcessItem) item);
-            if (isOpen) {
-                boolean flag = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Lock joblet",
-                        "The joblet is openes in a job,Do you want unlock it?");
-                return flag;
-            }
+            boolean isOpen = openedInJob((JobletProcessItem) item, null);
+            return !isOpen;
+            // if (isOpen) {
+            // boolean flag = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Lock joblet",
+            // "The joblet is openes in a job,Do you want unlock it?");
+            // return flag;
+            // }
 
         }
         return true;
+    }
+
+    // public void reloadJobletComponent(IProcess2 process){
+    // IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+    // IJobletProviderService.class);
+    // if (service != null) {
+    // process.get
+    // service.reloadJobletProcess(this);
+    // }
+    // }
+
+    public boolean lockByOthers(Item item) {
+        IProxyRepositoryService service = (IProxyRepositoryService) GlobalServiceRegister.getDefault().getService(
+                IProxyRepositoryService.class);
+        IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
+        ERepositoryStatus repositoryStatus = factory.getStatus(item);
+        if (repositoryStatus == ERepositoryStatus.LOCK_BY_OTHER) {
+            return true;
+        }
+        return false;
     }
 
 }

@@ -1105,16 +1105,31 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     if (container instanceof JobletContainer) {
                         JobletContainer jobletCon = (JobletContainer) container;
                         saveNode(fileFact, processType, nList, cList, ((NodeContainer) container).getNode(), factory);
-                        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                                IJobletProviderService.class);
-                        boolean isReadOnly = false;
-                        if (service != null) {
-                            isReadOnly = service.isReadOnly(jobletCon.getNode());
-                        }
-                        if (!isReadOnly) {
-                            boolean needUpdate = jutil.checkModify(jobletCon);
-                            saveJobletNode(jobletCon, needUpdate);
-                        }
+                        // IJobletProviderService service = (IJobletProviderService)
+                        // GlobalServiceRegister.getDefault().getService(
+                        // IJobletProviderService.class);
+                        // boolean isReadOnly = false;
+                        // if (service != null) {
+                        // isReadOnly = service.isReadOnly(jobletCon.getNode());
+                        // }
+                        boolean needUpdate = jutil.checkModify(jobletCon);
+                        // if (!isReadOnly) {
+                        saveJobletNode(jobletCon, needUpdate);
+                        // } else {
+                        // if (service != null) {
+                        // if (needUpdate) {
+                        // service.reloadJobletProcess(jobletCon.getNode());
+                        // service.updateJobletCom(jobletCon.getNode());
+                        // } else {
+                        // needUpdate = service.checkModify(jobletCon);
+                        // if (needUpdate) {
+                        // service.reloadJobletProcess(jobletCon.getNode());
+                        // service.updateJobletCom(jobletCon.getNode());
+                        // }
+                        // }
+                        //
+                        // }
+                        // }
                         // addNewJobletNode(jobletCon);
                     } else {
                         saveNode(fileFact, processType, nList, cList, container.getNode(), factory);
@@ -1124,9 +1139,30 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             if (element instanceof JobletContainer) {
                 JobletContainer jobletCon = (JobletContainer) element;
                 saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
-                // if (!jobletCon.isCollapsed()) {
+
+                // IJobletProviderService service = (IJobletProviderService)
+                // GlobalServiceRegister.getDefault().getService(
+                // IJobletProviderService.class);
+                // boolean isReadOnly = false;
+                // if (service != null) {
+                // isReadOnly = service.isReadOnly(jobletCon.getNode());
+                // }
                 boolean needUpdate = jutil.checkModify(jobletCon);
+                // if (!isReadOnly) {
                 saveJobletNode(jobletCon, needUpdate);
+                // } else {
+                // if (service != null) {
+                // if (needUpdate) {
+                // service.reloadJobletProcess(jobletCon.getNode());
+                // service.updateJobletCom(jobletCon.getNode());
+                // } else {
+                // needUpdate = service.checkModify(jobletCon);
+                // if (needUpdate) {
+                // service.reloadJobletProcess(jobletCon.getNode());
+                // service.updateJobletCom(jobletCon.getNode());
+                // }
+                // }
+                // }
                 // }
             } else if (element instanceof NodeContainer) {
                 saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
@@ -3522,7 +3558,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     } else {
                         return;
                     }
-                    if (needUpdate || (deleteNodes.size() > 0)) {
+                    if (needUpdate && (addNodes.size() <= 0) && (deleteNodes.size() <= 0)) {
                         service.saveJobletNode(jobletItem, jobletContainer);
                     }
                 }

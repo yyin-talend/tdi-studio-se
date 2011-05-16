@@ -1046,9 +1046,21 @@ public class Connection extends Element implements IConnection, IPerformance {
             INodeConnector sourceNodeConnector = getSourceNodeConnector();
             if (sourceNodeConnector != null) {
                 if (sourceNodeConnector.isMultiSchema()) {
-                    return source.getMetadataTable(metaName);
+                    IMetadataTable table = source.getMetadataTable(metaName);
+                    if (table == null && source.getJobletNode() != null) {
+                        if (source.getMetadataList().size() > 0) {
+                            table = source.getMetadataList().get(0);
+                        }
+                    }
+                    return table;
                 } else {
-                    return source.getMetadataFromConnector(sourceNodeConnector.getName());
+                    IMetadataTable table = source.getMetadataFromConnector(sourceNodeConnector.getName());
+                    if (table == null && source.getJobletNode() != null) {
+                        if (source.getMetadataList().size() > 0) {
+                            table = source.getMetadataList().get(0);
+                        }
+                    }
+                    return table;
                 }
             }
         }

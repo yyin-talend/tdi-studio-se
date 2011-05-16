@@ -235,12 +235,13 @@ public class JobletContainerPart extends NodeContainerPart {
                     editPart = editPart.getParent();
                 }
                 if (editPart instanceof SubjobContainerPart) {
-                    Node node = ((NodeContainer) getModel()).getNode();
-                    Rectangle rec = new Rectangle(node.getLocation(), node.getSize());
+                    // Node node = ((NodeContainer) getModel()).getNode();
+                    NodeContainer nc = (NodeContainer) getModel();
+                    // Rectangle rec = new Rectangle(node.getLocation(), node.getSize());
                     boolean isCollapse = ((JobletContainer) this.getModel()).isCollapsed();
                     int changewidth = ((JobletContainer) this.getModel()).getChangeWidth();
                     int changeheight = ((JobletContainer) this.getModel()).getChangeHeight();
-                    ((SubjobContainer) editPart.getModel()).refreshNodesLocation(isCollapse, rec, changewidth, changeheight);
+                    ((SubjobContainer) editPart.getModel()).refreshNodesLocation(isCollapse, nc, changewidth, changeheight);
                     editPart.refresh();
                 }
             }

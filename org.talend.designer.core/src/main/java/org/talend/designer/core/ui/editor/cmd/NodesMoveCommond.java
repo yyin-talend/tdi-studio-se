@@ -173,7 +173,7 @@ public class NodesMoveCommond extends Command {
      */
     @Override
     public boolean canExecute() {
-        return !process.isReadOnly();
+        return true;
     }
 
     private void orderNodes(List<INode> nodes) {

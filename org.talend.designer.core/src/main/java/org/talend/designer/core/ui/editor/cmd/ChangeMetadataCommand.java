@@ -322,11 +322,21 @@ public class ChangeMetadataCommand extends Command {
                                     && targetNode.getMetadataList().size() > 0) {
                                 IMetadataTable tmpClone;
                                 if (sourceIsBuiltIn) {
-                                    tmpClone = node.getMetadataTable(currentIO.getConnection().getMetadataTable().getTableName())
-                                            .clone(true);
+                                    IMetadataTable tab = node.getMetadataTable(currentIO.getConnection().getMetadataTable()
+                                            .getTableName());
+                                    if (tab == null && node.getJobletNode() != null) {
+                                        tab = node.getJobletNode().getMetadataTable(
+                                                currentIO.getConnection().getMetadataTable().getTableName());
+                                    }
+                                    tmpClone = tab.clone(true);
                                 } else {
-                                    tmpClone = node.getMetadataFromConnector(currentIO.getConnection().getConnectorName()).clone(
-                                            true);
+                                    IMetadataTable tab = node.getMetadataFromConnector(currentIO.getConnection()
+                                            .getConnectorName());
+                                    if (tab == null && node.getJobletNode() != null) {
+                                        tab = node.getJobletNode().getMetadataFromConnector(
+                                                currentIO.getConnection().getConnectorName());
+                                    }
+                                    tmpClone = tab.clone(true);
                                 }
                                 IMetadataTable toCopy = newOutputMetadata.clone();
 

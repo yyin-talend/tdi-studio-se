@@ -58,8 +58,6 @@ public class JobletContainer extends NodeContainer {
 
     private boolean hasChange;
 
-    private Boolean needLock = null;
-
     private boolean needchangeLock = true;
 
     protected List<IElement> jobletElements = new ArrayList<IElement>();
@@ -197,14 +195,13 @@ public class JobletContainer extends NodeContainer {
                     IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                             IJobletProviderService.class);
                     if (service != null) {
-                        needLock = service.lockJoblet(this.getNode());
+                        service.lockJoblet(this.getNode());
                     }
                 } else {
                     IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                             IJobletProviderService.class);
                     if (service != null) {
                         service.unlockJoblet(node, true);
-                        needLock = null;
                     }
                 }
             }
@@ -243,6 +240,11 @@ public class JobletContainer extends NodeContainer {
             IProcess jobletProcess = this.getNode().getComponent().getProcess();
             Set<IConnection> conns = new HashSet<IConnection>();
             List<? extends INode> jobletNodes = jobletProcess.getGraphicalNodes();
+            boolean lockByOther = false;
+            if (jobletProcess instanceof IProcess2) {
+                lockByOther = util.lockByOthers(((IProcess2) jobletProcess).getProperty().getItem());
+            }
+
             // List<NodeContainer> temList = new ArrayList<NodeContainer>(nodeContainers);
             for (NodeContainer nc : nodeContainers) {
                 if (this.node.getProcess() instanceof IProcess2) {
@@ -261,7 +263,7 @@ public class JobletContainer extends NodeContainer {
                     // if (canAdd) {
                     conns.addAll(temNode.getIncomingConnections());
                     conns.addAll(temNode.getOutgoingConnections());
-                    Node jnode = util.cloneNode(temNode, this.node.getProcess(), needLock);
+                    Node jnode = util.cloneNode(temNode, this.node.getProcess(), lockByOther);
                     NodeContainer nodeContainer = util.cloneNodeContainer(temNode.getNodeContainer(), jnode);
                     jnode.setJobletnode(this.node);
                     jnode.setJoblet_unique_name(temNode.getUniqueName());
@@ -542,9 +544,9 @@ public class JobletContainer extends NodeContainer {
         return finputs;
     }
 
-    public Boolean isNeedLock() {
-        return needLock;
-    }
+    // public Boolean isNeedLock() {
+    // return needLock;
+    // }
 
     public void setNeedchangeLock(boolean needchangeLock) {
         this.needchangeLock = needchangeLock;

@@ -274,29 +274,41 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         return totalRectangle;
     }
 
-    public void refreshNodesLocation(boolean jobletCollapsed, Rectangle nodeRec, int changewidth, int changeheight) {
+    public void refreshNodesLocation(boolean jobletCollapsed, NodeContainer nc, int changewidth, int changeheight) {
         JobletUtil util = new JobletUtil();
+        Node node = nc.getNode();
+        Rectangle nodeRec = new Rectangle(node.getLocation(), node.getSize());
+        // Rectangle nodeConRec = nc.getNodeContainerRectangle();
         for (NodeContainer container : nodeContainers) {
+            if (container.getNode().getUniqueName().equals(nc.getNode().getUniqueName())) {
+                continue;
+            }
             Point nodePoint = container.getNode().getLocation().getCopy();
             Rectangle jRec = util.getExpandRectangle(nodeRec);
-            Rectangle pointrec = util.getExpandRectangle(container.getNodeContainerRectangle());
+            // Rectangle jNodeConRec = util.getExpandRectangle(nodeConRec);
+            // Rectangle pointrec = util.getExpandRectangle(container.getNodeContainerRectangle());
             jRec.width = jRec.width + changewidth;
             jRec.height = jRec.height + changeheight;
-            if (pointrec.contains(jRec) || jRec.contains(pointrec)) {
-                if (!jobletCollapsed) {
-                    if (nodePoint.x > nodeRec.x) {
-                        nodePoint.x = nodePoint.x + changewidth;
-                    }
-                    if (nodePoint.y > nodeRec.y) {
-                        nodePoint.y = nodePoint.y + changeheight;
-                    }
-                } else {
-                    if (nodePoint.x > nodeRec.x && nodePoint.x > changewidth) {
-                        nodePoint.x = nodePoint.x - changewidth;
-                    }
-                    if (nodePoint.y > nodeRec.y && nodePoint.y > changeheight) {
+            // jNodeConRec.width = jNodeConRec.width + changewidth;
+            // jNodeConRec.height = jNodeConRec.height + changeheight;
+            if (!jobletCollapsed) {
+                if (nodePoint.x > nodeRec.x) {
+                    nodePoint.x = nodePoint.x + changewidth;
+                }
+                if (nodePoint.y > nodeRec.y) {
+                    nodePoint.y = nodePoint.y + changeheight;
+                }
+            } else {
+                if (nodePoint.x > nodeRec.x && nodePoint.x > changewidth) {
+                    nodePoint.x = nodePoint.x - changewidth;
+                }
+                if (nodePoint.y > nodeRec.y && nodePoint.y > changeheight) {
+                    if ((nodePoint.y - changeheight) > (nodeRec.y + 64)) {
                         nodePoint.y = nodePoint.y - changeheight;
+                    } else {
+                        nodePoint.y = nodeRec.y + 64;
                     }
+
                 }
             }
             container.getNode().setLocation(nodePoint);
