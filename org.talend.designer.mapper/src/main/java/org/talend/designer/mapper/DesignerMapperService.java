@@ -254,6 +254,35 @@ public class DesignerMapperService implements IDesignerMapperService {
         }
     }
 
+    public void renameMapperTable(IExternalData nodeData, String schemaId, String newSchemaId, IMetadataTable metadataTable) {
+        if (nodeData == null || schemaId == null || metadataTable == null)
+            return;
+        if (nodeData != null && nodeData instanceof ExternalMapperData) {
+            ExternalMapperData mapperData = (ExternalMapperData) nodeData;
+            List<ExternalMapperTable> inputTables = mapperData.getInputTables();
+            if (inputTables != null && inputTables.size() > 0) {
+                for (ExternalMapperTable inputTable : inputTables) {
+                    if (!schemaId.equals(inputTable.getId())) {
+                        continue;
+                    }
+                    inputTable.setId(newSchemaId);
+                    updateEntriesByMetaColumns(newSchemaId, metadataTable, inputTable);
+                }
+            }
+            List<ExternalMapperTable> outputTables = mapperData.getOutputTables();
+            if (outputTables != null && outputTables.size() > 0) {
+                for (ExternalMapperTable outputTable : outputTables) {
+                    if (!schemaId.equals(outputTable.getId())) {
+                        continue;
+                    }
+                    outputTable.setId(newSchemaId);
+                    updateEntriesByMetaColumns(newSchemaId, metadataTable, outputTable);
+                }
+            }
+        }
+
+    }
+
     public boolean isSameMetadata(IExternalData nodeData, String schemaId, IMetadataTable metadataTable) {
         boolean isSame = true;
         if (nodeData == null || schemaId == null || metadataTable == null)

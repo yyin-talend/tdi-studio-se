@@ -1223,6 +1223,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             List<String> schemaIds = service.getRepositorySchemaIds(externalData);
             if (schemaIds.size() > 0) {
                 for (String schemaId : schemaIds) {
+                    UpdateCheckResult result = null;
                     String[] names = UpdateManagerUtils.getSourceIdAndChildName(schemaId);
                     ConnectionItem connectionItem = null;
                     String schemaName = null;
@@ -1230,22 +1231,50 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(names[0]);
                         schemaName = names[1];
                     }
-                    IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, schemaName);
-                    String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
-                    if (table != null) {
-                        final IMetadataTable copyOfrepositoryMetadata = table.clone();
-                        if (onlySimpleShow || !service.isSameMetadata(externalData, schemaId, copyOfrepositoryMetadata)) {
+                    String newSourceId = getSchemaRenamedMap().get(schemaId);
+                    // rename metadat
+                    if (newSourceId != null && !newSourceId.equals(schemaId)) {
+                        String[] newSourceIdAndName = UpdateManagerUtils.getSourceIdAndChildName(newSourceId);
+                        if (newSourceIdAndName != null) {
                             List<Object> parameter = new ArrayList<Object>();
-                            parameter.add(copyOfrepositoryMetadata);
-                            parameter.add(schemaId);
-                            parameter.add("tMap"); //$NON-NLS-1$
-                            UpdateCheckResult result = new UpdateCheckResult(node);
-                            result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE, parameter, source);
-                            result.setContextModeConnectionItem(connectionItem);
-                            result.setJob(getProcess());
-                            setConfigrationForReadOnlyJob(result);
-                            schemaResults.add(result);
+                            IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, newSourceIdAndName[1]);
+                            if (table != null) {
+                                String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
+
+                                final IMetadataTable copyOfrepositoryMetadata = table.clone();
+
+                                parameter = new ArrayList<Object>();
+                                parameter.add(copyOfrepositoryMetadata);
+                                parameter.add(schemaId);
+                                parameter.add(newSourceId);
+
+                                result = new UpdateCheckResult(node);
+                                result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.RENAME, parameter, source);
+                            }
                         }
+                    } else {
+                        IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, schemaName);
+                        String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
+                        if (table != null) {
+                            final IMetadataTable copyOfrepositoryMetadata = table.clone();
+                            if (onlySimpleShow || !service.isSameMetadata(externalData, schemaId, copyOfrepositoryMetadata)) {
+                                List<Object> parameter = new ArrayList<Object>();
+                                parameter.add(copyOfrepositoryMetadata);
+                                parameter.add(schemaId);
+                                result = new UpdateCheckResult(node);
+                                result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE, parameter, source);
+                                result.setContextModeConnectionItem(connectionItem);
+                                result.setJob(getProcess());
+                                setConfigrationForReadOnlyJob(result);
+                                schemaResults.add(result);
+                            }
+                        }
+                    }
+
+                    if (result != null) {
+                        result.setJob(getProcess());
+                        setConfigrationForReadOnlyJob(result);
+                        schemaResults.add(result);
                     }
                 }
             }

@@ -164,13 +164,14 @@ public class InputDataMapTableView extends DataMapTableView {
                 tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, MATCH_MODEL_SETTING, null));
                 tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, JOIN_MODEL_SETTING, null));
                 tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, PERSISTENCE_MODEL_SETTING, null));
-                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_TYPE, null));
+                // remove schema type in input tables
+                // tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_TYPE, null));
             } else {
-                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_TYPE, null));
+                // tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_TYPE, null));
             }
-            if (getInputTable().isRepository()) {
-                tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_ID, null));
-            }
+            // if (getInputTable().isRepository()) {
+            // tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, SCHEMA_ID, null));
+            // }
         }
 
         mapSettingViewerCreator = extendedTableViewerForMapSetting.getTableViewerCreator();
@@ -670,46 +671,46 @@ public class InputDataMapTableView extends DataMapTableView {
     protected boolean addToolItems() {
 
         // TODO: unlock this tentatively.
-        // if (!getInputTable().isMainConnection()) {
+        if (!getInputTable().isMainConnection()) {
 
-        final InputTable table = getInputTable();
-        // condensed Item
-        condensedItem = new ToolItem(toolBarActions, SWT.CHECK);
-        condensedItem.setEnabled(!mapperManager.componentIsReadOnly());
-        condensedItem.setSelection(table.isActivateCondensedTool());
-        condensedItem.setToolTipText("tMap settings");
-        initCondensedItemImage();
-        condensedItem.addSelectionListener(new SelectionAdapter() {
+            final InputTable table = getInputTable();
+            // condensed Item
+            condensedItem = new ToolItem(toolBarActions, SWT.CHECK);
+            condensedItem.setEnabled(!mapperManager.componentIsReadOnly());
+            condensedItem.setSelection(table.isActivateCondensedTool());
+            condensedItem.setToolTipText("tMap settings");
+            initCondensedItemImage();
+            condensedItem.addSelectionListener(new SelectionAdapter() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                table.setActivateCondensedTool(condensedItem.getSelection());
-                showTableMapSetting(condensedItem.getSelection());
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    table.setActivateCondensedTool(condensedItem.getSelection());
+                    showTableMapSetting(condensedItem.getSelection());
+                }
+
+            });
+
+            if (mapperManager.isPersistentMap()) {
+                TMAP_LOOKUP_MODE lookupMode = (TMAP_LOOKUP_MODE) table.getLookupMode();
+
+                switch (lookupMode) {
+                case LOAD_ONCE:
+                case LOAD_ONCE_AND_UPDATE:
+                case RELOAD:
+                    persistentCheckEditable = true;
+                    previousValidPersistentMode = table.isPersistent();
+                    break;
+                case CACHE_OR_RELOAD:
+                    persistentCheckEditable = false;
+                    getInputTable().setPersistent(false);
+
+                    break;
+                default:
+                    break;
+                }
             }
 
-        });
-
-        if (mapperManager.isPersistentMap()) {
-            TMAP_LOOKUP_MODE lookupMode = (TMAP_LOOKUP_MODE) table.getLookupMode();
-
-            switch (lookupMode) {
-            case LOAD_ONCE:
-            case LOAD_ONCE_AND_UPDATE:
-            case RELOAD:
-                persistentCheckEditable = true;
-                previousValidPersistentMode = table.isPersistent();
-                break;
-            case CACHE_OR_RELOAD:
-                persistentCheckEditable = false;
-                getInputTable().setPersistent(false);
-
-                break;
-            default:
-                break;
-            }
         }
-
-        // }
 
         createActivateFilterCheck();
 

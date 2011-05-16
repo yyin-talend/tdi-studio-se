@@ -213,12 +213,20 @@ public class ExternalDataConverter {
                     inputTable.initFromExternalData(persistentTable);
                     inputDataMapTables.add(inputTable);
                     remainingConnections.remove(connection);
+                    // remove table settings in main ,set false in case the value is true in previous version
+                    if (EConnectionType.FLOW_MAIN == connection.getConnectionType()) {
+                        inputTable.setActivateCondensedTool(false);
+                    }
                 }
             }
             for (IOConnection connection : remainingConnections) {
                 InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
                 inputTable.initFromExternalData(null);
                 inputDataMapTables.add(inputTable);
+                // remove table settings in main ,set false in case the value is true in previous version
+                if (EConnectionType.FLOW_MAIN == connection.getConnectionType()) {
+                    inputTable.setActivateCondensedTool(false);
+                }
             }
         }
 

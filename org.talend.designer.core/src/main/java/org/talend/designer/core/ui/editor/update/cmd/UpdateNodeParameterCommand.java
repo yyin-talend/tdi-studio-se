@@ -438,9 +438,8 @@ public class UpdateNodeParameterCommand extends Command {
                                 return;
                             IExternalData externalData = node.getExternalNode().getExternalData();
                             List<Object> parameter = (List<Object>) result.getParameter();
-                            if (parameter.size() == 3) {
-                                String type = (String) parameter.get(2);
-                                if ("tMap".equals(type)) { //$NON-NLS-1$
+                            if (parameter.size() == 2) {
+                                if (node.getComponent() != null && "tMap".equals(node.getComponent().getName())) { //$NON-NLS-1$
                                     IMetadataTable newTable = (IMetadataTable) parameter.get(0);
                                     String schemaId = (String) parameter.get(1);
                                     service.updateMapperTableEntries(externalData, schemaId, newTable);
@@ -540,6 +539,26 @@ public class UpdateNodeParameterCommand extends Command {
                             }
                         }
                     }
+
+                    // for tmap
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
+                        IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault().getService(
+                                IDesignerMapperService.class);
+                        if (service == null || node.getExternalNode() == null || node.getExternalNode().getExternalData() == null)
+                            return;
+                        IExternalData externalData = node.getExternalNode().getExternalData();
+                        parameter = (List<Object>) result.getParameter();
+                        if (parameter.size() == 3) {
+                            if (node.getComponent() != null && "tMap".equals(node.getComponent().getName())) { //$NON-NLS-1$
+                                newTable = (IMetadataTable) parameter.get(0);
+                                String schemaId = (String) parameter.get(1);
+                                String newSchemaId = (String) parameter.get(2);
+                                service.renameMapperTable(externalData, schemaId, newSchemaId, newTable);
+                            }
+                        }
+                        return;
+                    }
+
                     String schemaParamName = UpdatesConstants.SCHEMA + UpdatesConstants.COLON
                             + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
                     IElementParameter repositoryParam = node.getElementParameter(schemaParamName);
