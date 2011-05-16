@@ -73,9 +73,12 @@ skeleton="tXMLMap_java.skeleton"
 						if (expressionKey != null && !"".equals(expressionKey.trim())) {
 							
 						    keysNames.add(columnName);
+
 						    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+
 						    String resultExpression = null;
 						    if(matchXmlTreeExpr != null){
+								
 						    	resultExpression = matchXmlTreeExpr.generateExprCode(expressionKey);
 						    }
 						    if(resultExpression != null && !("").equals(resultExpression)){

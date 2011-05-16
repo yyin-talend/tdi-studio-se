@@ -859,10 +859,10 @@ class NestXMLTool_<%=cid%>{
 // define the generate the output document class
 int index = -1;
 for(OutputXmlTree outputTable : outputTables) {
-	index+=1;
 	String tableName = outputTable.getName();
 	for(OutputTreeNode outputNode: outputTable.getNodes()) {
 		if(("id_Document").equals(outputNode.getType())){
+			index+=1;
 %>
 class GenerateDocument_<%=tableName %> {
 	

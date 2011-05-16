@@ -466,20 +466,29 @@ if((isXpathFromLookup || hasOutgoingConnection) && containDocType && !isPlainNod
 %>
 		if(nb_line_<%=cid%> == nodeList_<%=cid%>.size()) {
 <%
-			for (OutputXmlTree table : outputTables) {
-        
+			boolean flat = true;
+			for (OutputXmlTree table : outputTables) {        
 				EList<OutputTreeNode> tableEntries = table.getNodes();
 				if (tableEntries == null || nameToOutputConnection.get(table.getName()) == null) {
 					continue;
 				}
+				for(OutputTreeNode tableEntry : tableEntries) {
+					if(("id_Document").equals(tableEntry.getType())){
+						flat = false;
+						break;
+					}
+				}
+				
 				String tableName1 = table.getName();
             
 				String instanceVarName = tableName1 + "__" + node.getUniqueName();
 				String className = tableName1 + "Struct";
+				if(!flat) {
             
 %>
-				<%= tableName1 %> = <%= tableName1 %>_save;
+					<%= tableName1 %> = <%= tableName1 %>_save;
 <%
+				}
 			}
 %>
 		}

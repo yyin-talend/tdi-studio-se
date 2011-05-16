@@ -15,7 +15,7 @@ public class CLASS {
 		}
 		
 		private void init(TreeNode node) {
-			if(node.getOutgoingConnections().size()>0){
+			if(node.getOutgoingConnections().size()>0 || node.getLookupOutgoingConnections().size()>0){
 				String talendType = node.getType();
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(talendType);
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(talendType, node.isNullable());
@@ -102,7 +102,7 @@ public class CLASS {
 		}
 		
 		void findXpathArray(TreeNode node, String loopPath, List<String> resultList, java.util.Map<String, String> map) {
-			if(node.getOutgoingConnections().size()>0){
+			if(node.getOutgoingConnections().size()>0 || node.getLookupOutgoingConnections().size()>0){
 				String xpath = node.getXpath();
 				String result = null;
 				if(xpath==null || ("").equals(xpath)){
