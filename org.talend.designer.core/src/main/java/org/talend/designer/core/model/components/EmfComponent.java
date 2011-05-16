@@ -185,15 +185,11 @@ public class EmfComponent extends AbstractComponent {
 
     private List<ECodePart> codePartListX;
 
-    private Boolean useFlow = null;
-
     private Boolean useMerge = null;
 
     private Boolean useLookup = null;
 
     private Boolean useImport = null;
-
-    private Boolean useSchema = null;
 
     private Boolean visible = null;
 
@@ -2994,54 +2990,49 @@ public class EmfComponent extends AbstractComponent {
     }
 
     public boolean useFlow() {
-        if (useFlow == null) {
-            if (compType == null) {
-                isLoaded = false;
-                try {
-                    load();
-                } catch (BusinessException e) {
-                    ExceptionHandler.process(e);
-                }
+        boolean useFlow = false;
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                ExceptionHandler.process(e);
             }
-            useFlow = false;
-            EList listConnType;
-            CONNECTORType connType;
+        }
+        EList listConnType;
+        CONNECTORType connType;
 
-            listConnType = compType.getCONNECTORS().getCONNECTOR();
-            for (int i = 0; i < listConnType.size(); i++) {
-                connType = (CONNECTORType) listConnType.get(i);
-                if (connType.getCTYPE().equals(EConnectionType.FLOW_MAIN.getName())
-                        && !(connType.isSetMAXINPUT() && connType.getMAXINPUT() == 0 && connType.isSetMAXOUTPUT()
-                                && connType.getMAXOUTPUT() == 0 || connType.isSetMININPUT() && connType.getMININPUT() == 0
-                                && connType.isSetMINOUTPUT() && connType.getMINOUTPUT() == 0)) {
-                    useFlow = true;
-                    break;
-                }
+        listConnType = compType.getCONNECTORS().getCONNECTOR();
+        for (int i = 0; i < listConnType.size(); i++) {
+            connType = (CONNECTORType) listConnType.get(i);
+            if (connType.getCTYPE().equals(EConnectionType.FLOW_MAIN.getName())
+                    && !(connType.isSetMAXINPUT() && connType.getMAXINPUT() == 0 && connType.isSetMAXOUTPUT()
+                            && connType.getMAXOUTPUT() == 0 || connType.isSetMININPUT() && connType.getMININPUT() == 0
+                            && connType.isSetMINOUTPUT() && connType.getMINOUTPUT() == 0)) {
+                useFlow = true;
+                break;
             }
         }
         return useFlow;
     }
 
     public boolean useSchema() {
-        if (useSchema == null) {
-            if (compType == null) {
-                isLoaded = false;
-                try {
-                    load();
-                } catch (BusinessException e) {
-                    ExceptionHandler.process(e);
-                }
+        boolean useSchema = false;
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                ExceptionHandler.process(e);
             }
-            useSchema = false;
-            PARAMETERType pType;
-            EList parameters = compType.getPARAMETERS().getPARAMETER();
-            for (Object parameter : parameters) {
-                pType = (PARAMETERType) parameter;
-                if ("SCHEMA".equals(pType.getNAME()) && "SCHEMA_TYPE".equals(pType.getFIELD()) && pType.isREQUIRED()
-                        && !pType.isREADONLY()) {
-                    useSchema = true;
-                    break;
-                }
+        }
+        PARAMETERType pType;
+        EList parameters = compType.getPARAMETERS().getPARAMETER();
+        for (Object parameter : parameters) {
+            pType = (PARAMETERType) parameter;
+            if ("SCHEMA".equals(pType.getNAME()) && "SCHEMA_TYPE".equals(pType.getFIELD()) && !pType.isREADONLY()) { //$NON-NLS-1$ //$NON-NLS-2$
+                useSchema = true;
+                break;
             }
         }
         return useSchema;
