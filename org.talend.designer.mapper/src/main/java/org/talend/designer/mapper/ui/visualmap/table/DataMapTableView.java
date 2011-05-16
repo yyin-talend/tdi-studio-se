@@ -16,7 +16,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -153,6 +155,7 @@ import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
+import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
@@ -3051,6 +3054,8 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
 
         private CellValueType type;
 
+        private Map<String, String> oldMappingMap = new HashMap<String, String>();
+
         public CustomDialogCellEditor() {
             type = CellValueType.BOOL;
         }
@@ -3090,8 +3095,43 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                                 .getMetadataEditorView(getZone());
                         ExtendedTableModel<IMetadataColumn> extendedTableModel = metadataEditorView.getExtendedTableModel();
                         List<IMetadataColumn> copyedAllList = new ArrayList<IMetadataColumn>(extendedTableModel.getBeansList());
+
+                        List<OutputTable> outputtables = mapperManager.getOutputTables();
+                        for (OutputTable outputTable : outputtables) {
+                            List<IColumnEntry> oldOuputEntries = outputTable.getDataMapTableEntries();
+                            if (oldOuputEntries != null) {
+                                for (IColumnEntry entry : oldOuputEntries) {
+                                    if (entry instanceof OutputColumnTableEntry) {
+                                        OutputColumnTableEntry outputEntry = (OutputColumnTableEntry) entry;
+                                        String expression = outputEntry.getExpression();
+                                        String columnname = outputEntry.getName();
+                                        if (expression != null) {
+                                            oldMappingMap.put(columnname, expression);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         extendedTableModel.removeAll(copyedAllList);
                         extendedTableModel.addAll(columns);
+                        for (OutputTable outputTable : outputtables) {
+                            List<IColumnEntry> oldOuputEntries = outputTable.getDataMapTableEntries();
+                            if (oldOuputEntries != null) {
+                                for (IColumnEntry entry : oldOuputEntries) {
+                                    if (entry instanceof OutputColumnTableEntry) {
+                                        OutputColumnTableEntry outputEntry = (OutputColumnTableEntry) entry;
+                                        String columnname = outputEntry.getName();
+                                        String expression = oldMappingMap.get(columnname);
+                                        if (expression != null && !"".equals(expression)) {
+                                            outputEntry.setExpression(expression);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        mapperManager.getUiManager().parseAllExpressionsForAllTables();
+                        oldMappingMap.clear();
                         return value;
                     }
                 }

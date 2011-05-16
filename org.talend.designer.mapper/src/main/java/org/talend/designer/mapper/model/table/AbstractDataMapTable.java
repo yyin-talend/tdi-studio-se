@@ -41,7 +41,7 @@ public abstract class AbstractDataMapTable implements IDataMapTable {
 
     private boolean readOnly;
 
-    protected final List<IColumnEntry> dataMapTableEntries = new ArrayList<IColumnEntry>();
+    protected List<IColumnEntry> dataMapTableEntries = new ArrayList<IColumnEntry>();
 
     /**
      * DOC amaumont DataMapTable constructor comment.
@@ -57,8 +57,7 @@ public abstract class AbstractDataMapTable implements IDataMapTable {
         if (name == null) {
             throw new IllegalArgumentException("Name's AbstractDataMapTable can't be null"); //$NON-NLS-1$
         }
-        this.tableColumnsEntriesModel = new ExtendedTableModel<IColumnEntry>(
-                name + " : model for Columns", dataMapTableEntries); //$NON-NLS-1$
+        this.tableColumnsEntriesModel = new ExtendedTableModel<IColumnEntry>(name + " : model for Columns", dataMapTableEntries); //$NON-NLS-1$
 
     }
 
@@ -149,24 +148,26 @@ public abstract class AbstractDataMapTable implements IDataMapTable {
         this.readOnly = readOnly;
     }
 
-    
     /**
      * Getter for sizeState.
+     * 
      * @return the sizeState
      */
     public SIZE_STATE getSizeState() {
         return this.sizeState;
     }
 
-    
     /**
      * Sets the sizeState.
+     * 
      * @param sizeState the sizeState to set
      */
     public void setSizeState(SIZE_STATE sizeState) {
         this.sizeState = sizeState;
     }
 
-    
-    
+    public List<IColumnEntry> getDataMapTableEntries() {
+        return dataMapTableEntries;
+    }
+
 }
