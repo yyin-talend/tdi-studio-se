@@ -70,7 +70,7 @@ public class JobSettingProjectSettingPage extends ProjectSettingPage {
 
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (factory.isUserReadOnlyOnCurrentProject()) {
-            group.setEnabled(false);
+            parent.setEnabled(false);
         }
 
         return group;
