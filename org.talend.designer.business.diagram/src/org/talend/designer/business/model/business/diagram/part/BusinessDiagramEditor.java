@@ -505,4 +505,13 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         saveAsAction.run();
     }
 
+    @Override
+    public boolean isSaveAsAllowed() {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            return false;
+        }
+        return true;
+    }
+
 }
