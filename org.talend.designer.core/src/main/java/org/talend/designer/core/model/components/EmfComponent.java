@@ -225,6 +225,7 @@ public class EmfComponent extends AbstractComponent {
             getVersion();
             getPluginDependencies();
             getTranslatedFamilyName();
+            getRepositoryType();
             info.setUriString(uriString);
             info.setPathSource(pathSource);
             cache.getComponentEntryMap().put(getName(), info);
@@ -3288,7 +3289,7 @@ public class EmfComponent extends AbstractComponent {
      * @return
      */
     public String getRepositoryType() {
-        if (compType == null) {
+        if (!isAlreadyLoad) {
             isLoaded = false;
             try {
                 load();
@@ -3296,10 +3297,15 @@ public class EmfComponent extends AbstractComponent {
                 // TODO Auto-generated catch block
                 ExceptionHandler.process(e);
             }
-        }
-        for (PARAMETERType pType : (List<PARAMETERType>) compType.getPARAMETERS().getPARAMETER()) {
-            if (pType.getFIELD().equals("PROPERTY_TYPE")) { //$NON-NLS-1$
-                return pType.getREPOSITORYVALUE();
+            for (PARAMETERType pType : (List<PARAMETERType>) compType.getPARAMETERS().getPARAMETER()) {
+                if (pType.getFIELD().equals("PROPERTY_TYPE")) { //$NON-NLS-1$
+                    info.setRepositoryType(pType.getREPOSITORYVALUE());
+                    return pType.getREPOSITORYVALUE();
+                }
+            }
+        } else {
+            if (info != null) {
+                return info.getRepositoryType();
             }
         }
         return null;
