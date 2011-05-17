@@ -25,6 +25,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.core.model.temp.ETypeGen;
 
 /**
  * A process is cut out in a list of NodesSubTree. Each Subtrees are traversed to generate code.
@@ -104,6 +105,17 @@ public class NodesSubTree {
         }
 
     }
+    
+    public NodesSubTree(INode node, List<? extends INode> nodes, ETypeGen typeGen) {
+        this.rootNode = node;
+        this.name = node.getUniqueName();
+        this.nodes = new ArrayList<INode>();
+        this.visitedNodesMainCode = new HashMap<INode, Integer>();
+        allMainSubTreeConnections = new ArrayList<IConnection>();
+
+        buildCamelSubTree(node, false);
+    }
+    
 
     /**
      * unite all the relative merge nodes to this subTree
@@ -133,6 +145,20 @@ public class NodesSubTree {
      * 
      * @param nodes
      */
+
+    private void buildCamelSubTree(INode node, boolean breakWhenMerge) {
+        if (DEBUG) {
+            System.out.print(node.getUniqueName());
+        }
+        for (IConnection connection : node.getOutgoingCamelSortedConnections()) {
+            if (connection.getTarget().isActivate()) {
+                buildCamelSubTree(connection.getTarget(), breakWhenMerge);
+            }
+        }
+        visitedNodesMainCode.put(node, 0);
+        nodes.add(node);
+    }
+
     private void buildSubTree(INode node, boolean breakWhenMerge) {
         if (DEBUG) {
             System.out.print(node.getUniqueName());

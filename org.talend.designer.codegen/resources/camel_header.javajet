@@ -51,8 +51,7 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 	protected void doStart() throws Exception {
 		super.doStart();
 		postProcessContext();
-		
-				java.net.URLClassLoader sysloader = (java.net.URLClassLoader) ClassLoader.getSystemClassLoader();
+		java.net.URLClassLoader sysloader = (java.net.URLClassLoader) ClassLoader.getSystemClassLoader();
 		java.lang.reflect.Method method = java.net.URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { java.net.URL.class });
 		method.setAccessible(true);
 		String[] libPaths = new String[] { 
@@ -82,7 +81,6 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 			method.invoke(sysloader, new Object[] { new java.io.File(jarFile).toURL() });
 		}
 	}
-		
 		getCamelContexts().get(0).addRoutes(new org.apache.camel.builder.RouteBuilder() {
 			public void configure() throws Exception {
 <%	

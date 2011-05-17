@@ -26,10 +26,9 @@
 <%
 
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-NodesSubTree subTree = (NodesSubTree) codeGenArgument.getArgument();
 
+INode node = (INode) codeGenArgument.getArgument();
 
-INode node = subTree.getRootNode();
 List< ? extends IConnection> connsIf = node.getIncomingConnections();
 if(connsIf.size()>0) {
 	if(connsIf.get(0).getLineStyle()==EConnectionType.ROUTE_WHEN) {

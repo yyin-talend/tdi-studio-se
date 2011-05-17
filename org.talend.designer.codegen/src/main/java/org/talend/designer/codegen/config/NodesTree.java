@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.temp.ETypeGen;
 
 /**
  * A NodesTree is the Code Gerator Implementation of a process. A NodesTree is built using the Nodes of the Process.
@@ -46,10 +47,30 @@ public class NodesTree {
             buildSubTrees(true);
         }
     }
+    
+    public NodesTree(IProcess process, List<? extends INode> treeNodes, boolean init, ETypeGen typeGen) {
+        this.nodes = treeNodes;
+        buildRootNodes(process);
+        if (init) {
+            buildCamelSubTrees(true);
+        }
+    }
 
     /**
      * Build SubTrees List. Note: the param init=false, when it is called in generateComponentCodeWithRows().
      */
+
+    public void buildCamelSubTrees(boolean init) {
+        subTrees = new ArrayList<NodesSubTree>();
+        for (INode node : nodes) {
+            if (((node.isStart()) && (node.isActivate())) || (rootNodes.contains(node))) {
+
+                subTrees.add(new NodesSubTree(node, nodes, ETypeGen.CAMEL));
+
+            }
+        }
+    }
+
     public void buildSubTrees(boolean init) {
         subTrees = new ArrayList<NodesSubTree>();
         for (INode node : nodes) {
@@ -57,7 +78,6 @@ public class NodesTree {
 
                 // need to unite the merge branches to one subStree
                 if (node.isThereLinkWithMerge() && init) {
-
                     Map<INode, Integer> mergeInfo = node.getLinkedMergeInfo();
                     if (mergeInfo != null && mergeInfo.values().toArray()[0].equals(1)) {
                         // add the first merge branch
