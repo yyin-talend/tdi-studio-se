@@ -371,9 +371,12 @@ public class UpdateNodeParameterCommand extends Command {
                                     }
                                 }
                             }
-                            param.setRepositoryValueUsed(true);
-                            param.setReadOnly(true);
-                            update = true;
+                            if (!("tMDMReceive".equals(node.getComponent().getName()) && "XPATH_PREFIX".equals(param //$NON-NLS-1$ //$NON-NLS-2$
+                                    .getRepositoryValue()))) {
+                                param.setRepositoryValueUsed(true);
+                                param.setReadOnly(true);
+                                update = true;
+                            }
                         }
                     }
                 }

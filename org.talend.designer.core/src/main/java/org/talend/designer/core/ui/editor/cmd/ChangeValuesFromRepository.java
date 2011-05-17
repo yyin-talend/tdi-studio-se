@@ -230,7 +230,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
         if (propertyName.split(":")[1].equals(propertyTypeName) && (EmfComponent.BUILTIN.equals(value))) { //$NON-NLS-1$
             for (IElementParameter param : elem.getElementParameters()) {
-
                 boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
                 boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyName.split(":")[0]); //$NON-NLS-1$
                 if (paramFlag == extraFlag) {
@@ -452,6 +451,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             map2.put("VALUE", TalendTextUtils.addQuotes(object.toString())); //$NON-NLS-1$
                             table.add(map2);
                         }
+                        param.setRepositoryValueUsed(true);
+                    } else if (param.getFieldType().equals(EParameterFieldType.TEXT)
+                            && "XPATH_QUERY".equals(param.getRepositoryValue())) { //$NON-NLS-1$
                         param.setRepositoryValueUsed(true);
                     } else {
                         // For SAP
