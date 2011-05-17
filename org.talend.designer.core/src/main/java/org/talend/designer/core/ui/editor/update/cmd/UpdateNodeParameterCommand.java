@@ -45,6 +45,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
+import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
@@ -405,6 +406,7 @@ public class UpdateNodeParameterCommand extends Command {
 
             boolean builtIn = true;
 
+            final IExternalNode externalNode = node.getExternalNode();
             if (result.getResultType() == EUpdateResult.UPDATE) {
                 if (result.isChecked()) {
                     if (result.getParameter() instanceof List) {
@@ -433,16 +435,16 @@ public class UpdateNodeParameterCommand extends Command {
                         if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
                             IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault()
                                     .getService(IDesignerMapperService.class);
-                            if (service == null || node.getExternalNode() == null
-                                    || node.getExternalNode().getExternalData() == null)
+                            if (service == null || externalNode == null || externalNode.getExternalData() == null)
                                 return;
-                            IExternalData externalData = node.getExternalNode().getExternalData();
                             List<Object> parameter = (List<Object>) result.getParameter();
                             if (parameter.size() == 2) {
                                 if (node.getComponent() != null && "tMap".equals(node.getComponent().getName())) { //$NON-NLS-1$
                                     IMetadataTable newTable = (IMetadataTable) parameter.get(0);
                                     String schemaId = (String) parameter.get(1);
-                                    service.updateMapperTableEntries(externalData, schemaId, newTable);
+                                    service.updateMapperTableEntries(externalNode, schemaId, newTable);
+                                    node.setMetadataList(externalNode.getMetadataList());
+                                    syncSchemaForTMap(node);
                                 }
                             }
                             return;
@@ -544,16 +546,18 @@ public class UpdateNodeParameterCommand extends Command {
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
                         IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault().getService(
                                 IDesignerMapperService.class);
-                        if (service == null || node.getExternalNode() == null || node.getExternalNode().getExternalData() == null)
+                        if (service == null || externalNode == null || externalNode.getExternalData() == null)
                             return;
-                        IExternalData externalData = node.getExternalNode().getExternalData();
+                        IExternalData externalData = externalNode.getExternalData();
                         parameter = (List<Object>) result.getParameter();
                         if (parameter.size() == 3) {
                             if (node.getComponent() != null && "tMap".equals(node.getComponent().getName())) { //$NON-NLS-1$
                                 newTable = (IMetadataTable) parameter.get(0);
                                 String schemaId = (String) parameter.get(1);
                                 String newSchemaId = (String) parameter.get(2);
-                                service.renameMapperTable(externalData, schemaId, newSchemaId, newTable);
+                                service.renameMapperTable(externalNode, schemaId, newSchemaId, newTable);
+                                node.setMetadataList(externalNode.getMetadataList());
+                                syncSchemaForTMap(node);
                             }
                         }
                         return;
@@ -694,6 +698,28 @@ public class UpdateNodeParameterCommand extends Command {
                     ChangeMetadataCommand cmd = new ChangeMetadataCommand(target, schemaTypeParam, null, metadataTable);
                     cmd.setRepositoryMode(true);
                     cmd.execute(true);
+                }
+            }
+        }
+    }
+
+    private void syncSchemaForTMap(Node node) {
+        for (IConnection conn : node.getOutgoingConnections()) {
+            if (conn.getLineStyle() == EConnectionType.FLOW_MAIN) {
+                IMetadataTable metadataTable = null;
+                for (IMetadataTable table : node.getMetadataList()) {
+                    if (table.getTableName() != null && table.getTableName().equals(conn.getMetadataTable().getTableName())) {
+                        metadataTable = table;
+                    }
+                }
+                if (metadataTable != null) {
+                    Node target = (Node) conn.getTarget();
+                    IElementParameter schemaTypeParam = target.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                    if (schemaTypeParam != null) {
+                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(target, schemaTypeParam, null, metadataTable);
+                        cmd.setRepositoryMode(true);
+                        cmd.execute(true);
+                    }
                 }
             }
         }

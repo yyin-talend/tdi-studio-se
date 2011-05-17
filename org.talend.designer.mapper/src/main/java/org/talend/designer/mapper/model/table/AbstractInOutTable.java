@@ -121,7 +121,7 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
         if (isRepository) {
             IMetadataTable table = MetadataTool.getMetadataFromRepository(id);
-            if (table == null || this.metadataTable != null && !this.metadataTable.sameMetadataAs(table)) {
+            if (table == null) {
                 this.id = null;
                 this.isRepository = false;
             } else {

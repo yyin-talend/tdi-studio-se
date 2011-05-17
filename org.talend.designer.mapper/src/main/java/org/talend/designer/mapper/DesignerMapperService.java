@@ -20,6 +20,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalData;
+import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.service.IDesignerMapperService;
@@ -234,92 +235,102 @@ public class DesignerMapperService implements IDesignerMapperService {
         return schemaIds;
     }
 
-    public void updateMapperTableEntries(IExternalData nodeData, String schemaId, IMetadataTable metadataTable) {
-        if (nodeData == null || schemaId == null || metadataTable == null)
+    public void updateMapperTableEntries(IExternalNode externalNode, String schemaId, IMetadataTable metadataTable) {
+        if (externalNode == null || schemaId == null || metadataTable == null) {
             return;
-        if (nodeData != null && nodeData instanceof ExternalMapperData) {
-            ExternalMapperData mapperData = (ExternalMapperData) nodeData;
-            List<ExternalMapperTable> inputTables = mapperData.getInputTables();
-            if (inputTables != null && inputTables.size() > 0) {
-                for (ExternalMapperTable inputTable : inputTables) {
-                    updateEntriesByMetaColumns(schemaId, metadataTable, inputTable);
-                }
-            }
-            List<ExternalMapperTable> outputTables = mapperData.getOutputTables();
-            if (outputTables != null && outputTables.size() > 0) {
-                for (ExternalMapperTable outputTable : outputTables) {
-                    updateEntriesByMetaColumns(schemaId, metadataTable, outputTable);
+        }
+        if (externalNode instanceof MapperComponent) {
+            MapperComponent component = (MapperComponent) externalNode;
+            IExternalData nodeData = externalNode.getExternalData();
+            if (nodeData != null && nodeData instanceof ExternalMapperData) {
+                ExternalMapperData mapperData = (ExternalMapperData) nodeData;
+
+                List<ExternalMapperTable> outputTables = mapperData.getOutputTables();
+                if (outputTables != null && outputTables.size() > 0) {
+                    for (ExternalMapperTable outputTable : outputTables) {
+                        updateEntriesByMetaColumns(schemaId, metadataTable, outputTable, component);
+
+                    }
                 }
             }
         }
     }
 
-    public void renameMapperTable(IExternalData nodeData, String schemaId, String newSchemaId, IMetadataTable metadataTable) {
-        if (nodeData == null || schemaId == null || metadataTable == null)
+    public void renameMapperTable(IExternalNode externalNode, String schemaId, String newSchemaId, IMetadataTable metadataTable) {
+        if (externalNode == null || schemaId == null || metadataTable == null)
             return;
-        if (nodeData != null && nodeData instanceof ExternalMapperData) {
-            ExternalMapperData mapperData = (ExternalMapperData) nodeData;
-            List<ExternalMapperTable> inputTables = mapperData.getInputTables();
-            if (inputTables != null && inputTables.size() > 0) {
-                for (ExternalMapperTable inputTable : inputTables) {
-                    if (!schemaId.equals(inputTable.getId())) {
-                        continue;
+        if (externalNode instanceof MapperComponent) {
+            MapperComponent component = (MapperComponent) externalNode;
+            IExternalData nodeData = externalNode.getExternalData();
+
+            if (nodeData != null && nodeData instanceof ExternalMapperData) {
+                ExternalMapperData mapperData = (ExternalMapperData) nodeData;
+                List<ExternalMapperTable> outputTables = mapperData.getOutputTables();
+                if (outputTables != null && outputTables.size() > 0) {
+                    for (ExternalMapperTable outputTable : outputTables) {
+                        if (!schemaId.equals(outputTable.getId())) {
+                            continue;
+                        }
+                        outputTable.setId(newSchemaId);
+                        updateEntriesByMetaColumns(newSchemaId, metadataTable, outputTable, component);
                     }
-                    inputTable.setId(newSchemaId);
-                    updateEntriesByMetaColumns(newSchemaId, metadataTable, inputTable);
-                }
-            }
-            List<ExternalMapperTable> outputTables = mapperData.getOutputTables();
-            if (outputTables != null && outputTables.size() > 0) {
-                for (ExternalMapperTable outputTable : outputTables) {
-                    if (!schemaId.equals(outputTable.getId())) {
-                        continue;
-                    }
-                    outputTable.setId(newSchemaId);
-                    updateEntriesByMetaColumns(newSchemaId, metadataTable, outputTable);
                 }
             }
         }
-
     }
 
-    public boolean isSameMetadata(IExternalData nodeData, String schemaId, IMetadataTable metadataTable) {
+    public boolean isSameMetadata(IExternalNode externalNode, String schemaId, IMetadataTable metadataTable) {
         boolean isSame = true;
-        if (nodeData == null || schemaId == null || metadataTable == null)
+        if (externalNode == null || schemaId == null || metadataTable == null)
             return false;
-        List<ExternalMapperTable> extTables = new ArrayList<ExternalMapperTable>();
-        if (nodeData != null && nodeData instanceof ExternalMapperData) {
-            ExternalMapperData mapperData = (ExternalMapperData) nodeData;
-            List<ExternalMapperTable> inputTables = mapperData.getInputTables();
-            if (inputTables != null && inputTables.size() > 0) {
-                for (ExternalMapperTable inputTable : inputTables) {
-                    if (schemaId.equals(inputTable.getId()) && !extTables.contains(inputTable)) {
-                        extTables.add(inputTable);
+
+        if (externalNode instanceof MapperComponent) {
+            MapperComponent component = (MapperComponent) externalNode;
+            IExternalData nodeData = externalNode.getExternalData();
+            if (nodeData != null && nodeData instanceof ExternalMapperData) {
+                ExternalMapperData mapperData = (ExternalMapperData) nodeData;
+
+                List<ExternalMapperTable> outputTables = mapperData.getOutputTables();
+                if (outputTables != null && outputTables.size() > 0) {
+                    for (ExternalMapperTable outputTable : outputTables) {
+                        if (schemaId.equals(outputTable.getId())) {
+                            final IMetadataTable mapperTable = getMetadataTable(component, outputTable.getName());
+                            if (mapperTable == null || !mapperTable.sameMetadataAs(metadataTable, IMetadataColumn.OPTIONS_NONE)) {
+                                return false;
+                            }
+                        }
                     }
                 }
-            }
-            List<ExternalMapperTable> outputTables = mapperData.getOutputTables();
-            if (outputTables != null && outputTables.size() > 0) {
-                for (ExternalMapperTable outputTable : outputTables) {
-                    if (schemaId.equals(outputTable.getId()) && !extTables.contains(outputTable)) {
-                        extTables.add(outputTable);
-                    }
-                }
-            }
-            for (ExternalMapperTable extTable : extTables) {
-                isSame = isMetadataSame(extTable, metadataTable);
-                if (!isSame)
-                    return isSame;
+                // for (ExternalMapperTable extTable : extTables) {
+                // isSame = isMetadataSame(extTable, metadataTable);
+                // if (!isSame)
+                // return isSame;
+                // }
             }
         }
         return isSame;
     }
 
-    private void updateEntriesByMetaColumns(String schemaId, IMetadataTable metadataTable, ExternalMapperTable table) {
+    private IMetadataTable getMetadataTable(MapperComponent component, String name) {
+        if (component.getMetadataList() != null) {
+            for (IMetadataTable table : component.getMetadataList()) {
+                if (table.getTableName() != null && table.getTableName().equals(name)) {
+                    return table;
+                }
+            }
+        }
+
+        return null;
+
+    }
+
+    private void updateEntriesByMetaColumns(String schemaId, IMetadataTable metadataTable, ExternalMapperTable table,
+            MapperComponent component) {
         String id = table.getId();
         if (schemaId.equals(id)) {
             List<ExternalMapperTableEntry> mapperTableEntries = table.getMetadataTableEntries();
-            mapperTableEntries.clear();
+            List<ExternalMapperTableEntry> newTableEntries = new ArrayList<ExternalMapperTableEntry>();
+
             List<IMetadataColumn> columns = metadataTable.getListColumns();
             if (columns != null) {
                 for (IMetadataColumn metadataColumn : columns) {
@@ -327,37 +338,33 @@ public class DesignerMapperService implements IDesignerMapperService {
                     tableEntry.setName(metadataColumn.getLabel());
                     tableEntry.setType(metadataColumn.getTalendType());
                     tableEntry.setNullable(metadataColumn.isNullable());
-                    mapperTableEntries.add(tableEntry);
-                }
-            }
-        }
-    }
 
-    private boolean isMetadataSame(ExternalMapperTable extTable, IMetadataTable metadataTable) {
-        if (extTable == null || metadataTable == null)
-            return false;
-        List<ExternalMapperTableEntry> extTableColumns = extTable.getMetadataTableEntries();
-        List<IMetadataColumn> tableColumns = metadataTable.getListColumns();
-        if (extTableColumns == null && tableColumns == null) {
-            return true;
-        } else if (extTableColumns != null && tableColumns != null) {
-            if (extTableColumns.size() != tableColumns.size()) {
-                return false;
-            }
-            boolean isSame = true;
-            for (ExternalMapperTableEntry extColumn : extTableColumns) {
-                for (IMetadataColumn column : tableColumns) {
-                    if (extColumn != null && column != null && extColumn.getName() != null
-                            && extColumn.getName().equals(column.getLabel())) {
-                        isSame = isMetacolumnSame(extColumn, column);
-                        if (!isSame)
-                            return isSame;
+                    ExternalMapperTableEntry sameEntry = null;
+                    for (ExternalMapperTableEntry oldEntry : mapperTableEntries) {
+                        if (oldEntry.getName().equals(metadataColumn.getLabel())) {
+                            sameEntry = oldEntry;
+                        }
                     }
+                    if (sameEntry != null) {
+                        tableEntry.setExpression(sameEntry.getExpression());
+                        tableEntry.setOperator(sameEntry.getOperator());
+                    }
+                    newTableEntries.add(tableEntry);
                 }
             }
-            return isSame;
+            mapperTableEntries.clear();
+            table.setMetadataTableEntries(newTableEntries);
+            final IMetadataTable mapperTabel = getMetadataTable(component, table.getName());
+            if (mapperTabel != null) {
+                if (mapperTabel.getListColumns() != null) {
+                    mapperTabel.getListColumns().clear();
+                    mapperTabel.getListColumns().addAll(metadataTable.getListColumns());
+                } else {
+                    mapperTabel.setListColumns(metadataTable.getListColumns());
+                }
+            }
         }
-        return false;
+
     }
 
     public boolean isMetacolumnSame(ExternalMapperTableEntry extColumn, IMetadataColumn column) {
