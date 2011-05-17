@@ -282,7 +282,7 @@ public class TextController extends AbstractElementPropertySectionController {
      */
     private boolean isPasswordParam(final IElementParameter parameter) {
         return parameter.getName().equals(EParameterName.PASS.getName())
-                || (parameter.getRepositoryValue() != null && parameter.getRepositoryValue().equals("PASSWORD")); //$NON-NLS-1$
+                || (parameter.getRepositoryValue() != null && parameter.getRepositoryValue().contains("PASSWORD")); //$NON-NLS-1$
     }
 
 }
