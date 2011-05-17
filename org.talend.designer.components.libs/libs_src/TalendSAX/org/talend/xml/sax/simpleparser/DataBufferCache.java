@@ -43,11 +43,14 @@ public class DataBufferCache {
 
     public void setIsEnd() {
         synchronized (buffers) {
-            if (currentWriteBuff != null) {
-                buffers.add(currentWriteBuff);
-            }
-            this.isEnd = true;
-            this.buffers.notifyAll();
+        	try {
+	            if (currentWriteBuff != null) {
+	                buffers.add(currentWriteBuff);
+	            }
+	            this.isEnd = true;
+        	} finally {
+        		this.buffers.notifyAll();
+        	}
         }
     }
 
@@ -79,18 +82,20 @@ public class DataBufferCache {
         if (currentReadBuff != null && currentReadBuff.hasNext())
             return;
         synchronized (this.buffers) {
-            while (!this.isEnd && buffers.size() < 1) {
-                try {
-                    buffers.wait();
-                } catch (InterruptedException ex) {
-                    System.err.println(ex.getMessage());
-                }
-            }
-            if (buffers.size() > 0) {
-                currentReadBuff = buffers.remove();
-            }
-
-            this.buffers.notifyAll();
+        	try {
+		        while (!this.isEnd && buffers.size() < 1) {
+		            try {
+		                buffers.wait();
+		            } catch (InterruptedException ex) {
+		                System.err.println(ex.getMessage());
+		            }
+		        }
+		        if (buffers.size() > 0) {
+		            currentReadBuff = buffers.remove();
+		        }
+        	} finally {
+        		this.buffers.notifyAll();
+        	}
         }
     }
 
@@ -103,19 +108,21 @@ public class DataBufferCache {
         } else {
             currentWriteBuff.add(map);
             synchronized (buffers) {
-                while (buffers.size() > bufferNum) {
-                    try {
-                        buffers.wait();
-                    } catch (InterruptedException ex) {
-                        System.err.println(ex.getMessage());
-                    }
-                }
-                if (currentWriteBuff.size() > 0) {
-                    this.buffers.add(currentWriteBuff);
-                }
-                currentWriteBuff = null;
-
-                this.buffers.notifyAll();
+            	try {
+	                while (buffers.size() > bufferNum) {
+	                    try {
+	                        buffers.wait();
+	                    } catch (InterruptedException ex) {
+	                        System.err.println(ex.getMessage());
+	                    }
+	                }
+	                if (currentWriteBuff.size() > 0) {
+	                    this.buffers.add(currentWriteBuff);
+	                }
+	                currentWriteBuff = null;
+            	} finally {
+            		this.buffers.notifyAll();
+            	}
             }
 
         }
