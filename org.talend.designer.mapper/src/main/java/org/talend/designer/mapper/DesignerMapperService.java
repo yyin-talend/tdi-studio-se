@@ -13,7 +13,9 @@
 package org.talend.designer.mapper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -40,6 +42,9 @@ import org.talend.designer.mapper.utils.MapperHelper;
  * 
  */
 public class DesignerMapperService implements IDesignerMapperService {
+
+    /* bug 21080 */
+    private Map<String, String> oldMappingMap = new HashMap<String, String>();
 
     /*
      * (non-Javadoc)
@@ -330,7 +335,14 @@ public class DesignerMapperService implements IDesignerMapperService {
         if (schemaId.equals(id)) {
             List<ExternalMapperTableEntry> mapperTableEntries = table.getMetadataTableEntries();
             List<ExternalMapperTableEntry> newTableEntries = new ArrayList<ExternalMapperTableEntry>();
-
+            /* bug 21080 */
+            for (ExternalMapperTableEntry oldEntry : mapperTableEntries) {
+                String expression = oldEntry.getExpression();
+                String columnname = oldEntry.getName();
+                if (expression != null) {
+                    oldMappingMap.put(columnname, expression);
+                }
+            }
             List<IMetadataColumn> columns = metadataTable.getListColumns();
             if (columns != null) {
                 for (IMetadataColumn metadataColumn : columns) {
@@ -348,6 +360,10 @@ public class DesignerMapperService implements IDesignerMapperService {
                     if (sameEntry != null) {
                         tableEntry.setExpression(sameEntry.getExpression());
                         tableEntry.setOperator(sameEntry.getOperator());
+                        String oldExpression = oldMappingMap.get(tableEntry.getName());
+                        if (oldExpression != null) {
+                            tableEntry.setExpression(oldExpression);
+                        }
                     }
                     newTableEntries.add(tableEntry);
                 }

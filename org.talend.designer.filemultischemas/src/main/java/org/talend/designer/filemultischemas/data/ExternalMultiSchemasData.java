@@ -46,7 +46,18 @@ public class ExternalMultiSchemasData implements IExternalData {
      * @see org.talend.core.model.process.IExternalData#getJoinTableNames(java.lang.String)
      */
     public List<String> getJoinedTableNames(String mainTable) {
-        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<? extends IExternalMapTable> getOutputTables() {
+        return null;
+    }
+
+    public List<? extends IExternalMapTable> getInputTables() {
+        return null;
+    }
+
+    public List<? extends IExternalMapTable> getVarsTables() {
         return null;
     }
 
