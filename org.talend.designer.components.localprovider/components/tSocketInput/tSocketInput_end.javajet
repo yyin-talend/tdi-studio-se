@@ -22,9 +22,15 @@
 %>
 		        }//end of while(readRecord)
             //in<%=cid %>.close(); 
-            socket<%=cid %>.close();
-            done<%=cid %> = false;
-
+            } finally {
+            	if(socket<%=cid %> != null && !socket<%=cid %>.isClosed()) {
+            		socket<%=cid %>.close();
+            	}
+            	done<%=cid %> = false;
+			}
+        }
+        if(ss<%=cid%> !=null && !ss<%=cid%>.isClosed()) {
+        	ss<%=cid%>.close();
         }
         globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
 <%
