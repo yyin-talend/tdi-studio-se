@@ -109,7 +109,7 @@ public class RunProcessContext {
     private ITargetExecutionConfig selectedTargetExecutionConfig;
 
     /** Performance monitoring activated. */
-    private boolean monitorPerf;
+    public boolean monitorPerf;
 
     /** Trace monitoring activated. */
     private boolean monitorTrace;
