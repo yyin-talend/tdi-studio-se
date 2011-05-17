@@ -116,7 +116,14 @@ public class QueryGuessCommand extends Command {
         if (this.realTableId != null && this.dbNameAndDbTypeMap.containsKey(this.realTableId)) {
             dbType = this.dbNameAndDbTypeMap.get(this.realTableId);
         }
-
+        if (dbType == null || dbType.equals("")) { //$NON-NLS-1$
+            IElementParameter ptParam = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (ptParam != null && ptParam.getRepositoryValue() != null) {
+                if (ptParam.getRepositoryValue().endsWith(EDatabaseTypeName.GENERAL_JDBC.getProduct())) {
+                    dbType = EDatabaseTypeName.GENERAL_JDBC.getDisplayName();
+                }
+            }
+        }
         // hywang add for bug 7575
         if (dbType != null && dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
             String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString(); //$NON-NLS-N$
@@ -184,17 +191,17 @@ public class QueryGuessCommand extends Command {
                         if (item != null && item instanceof DatabaseConnectionItem) {
 
                             if (isTeradata) {
-                                schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
-                                        .getConnection(), "SID", null); //$NON-NLS-1$
+                                schema = (String) RepositoryToComponentProperty.getValue(
+                                        ((DatabaseConnectionItem) item).getConnection(), "SID", null); //$NON-NLS-1$
                             } else {
-                                schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
-                                        .getConnection(), "SCHEMA", null); //$NON-NLS-1$
+                                schema = (String) RepositoryToComponentProperty.getValue(
+                                        ((DatabaseConnectionItem) item).getConnection(), "SCHEMA", null); //$NON-NLS-1$
                             }
                             schema = TalendTextUtils.removeQuotes(schema);
                         }
                     }
                 } catch (PersistenceException e) {
-                    // 
+                    //
                 }
             }
 
