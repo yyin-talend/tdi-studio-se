@@ -68,8 +68,8 @@ import org.talend.designer.core.utils.DetectContextVarsUtils;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.preference.ProjectSettingPage;
 import org.talend.repository.ui.wizards.metadata.ShowAddedContextdialog;
 
@@ -116,6 +116,10 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
         mComposite = new ProjectSettingMultipleThreadDynamicComposite(composite, SWT.V_SCROLL | SWT.BORDER, getCategory(), elem,
                 true, getRepositoryPropertyName());
         mComposite.setLayoutData(createFormData());
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            composite.setEnabled(false);
+        }
         return composite;
     }
 
@@ -393,7 +397,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
                 }
             }
         }
-        // 
+        //
 
         final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
@@ -495,7 +499,7 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
             LoadProjectSettingsCommand command = new LoadProjectSettingsCommand(process, getParameterName().getName(),
                     Boolean.TRUE);
             exeCommand(process, command);
-            // 
+            //
             IElementParameter ptParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
             if (ptParam != null) {
                 IElementParameter propertyElem = ptParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName());

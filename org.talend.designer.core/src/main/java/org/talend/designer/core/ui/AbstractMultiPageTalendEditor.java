@@ -102,6 +102,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.IRepositoryWorkUnitListener;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.service.IDesignerPerlService;
 import org.talend.core.ui.ICreateXtextProcessService;
@@ -1011,6 +1012,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      */
     @Override
     public boolean isSaveAsAllowed() {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            return false;
+        }
         return true;
     }
 

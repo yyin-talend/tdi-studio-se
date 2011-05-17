@@ -72,9 +72,9 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.preference.ProjectSettingPage;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -148,6 +148,11 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         repositoryView = RepositoryManager.getRepositoryView();
         createImplicitcontextTree(composite);
         createStatTree(composite);
+
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            composite.setEnabled(false);
+        }
         return composite;
     }
 
@@ -350,8 +355,8 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         ProcessItem pItem = (ProcessItem) property.getItem();
         ParametersType pType = pItem.getProcess().getParameters();
 
-        String statB = ElementParameter2ParameterType.getParameterValue(pType, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS
-                .getName());
+        String statB = ElementParameter2ParameterType.getParameterValue(pType,
+                EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName());
         if (statB != null && "true".equals(statB)) { //$NON-NLS-1$
             return true;
         } else {
@@ -554,9 +559,8 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
             public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                monitor
-                        .beginTask(
-                                Messages.getString("StatLogsAndImplicitcontextTreeViewPage.SaveProjectSettings"), (addedObjects.size() + statAddedObjects.size()) * 100); //$NON-NLS-1$                
+                monitor.beginTask(
+                        Messages.getString("StatLogsAndImplicitcontextTreeViewPage.SaveProjectSettings"), (addedObjects.size() + statAddedObjects.size()) * 100); //$NON-NLS-1$                
                 addContext = false;
                 statsLogAddContextModel = false;
                 implicitAddContextModel = false;

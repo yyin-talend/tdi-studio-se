@@ -22,8 +22,10 @@ import org.eclipse.swt.widgets.Group;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ImplicitContextSettings;
 import org.talend.core.model.properties.StatAndLogsSettings;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.preference.ProjectSettingPage;
 
 /**
@@ -65,6 +67,11 @@ public class JobSettingProjectSettingPage extends ProjectSettingPage {
         layout.marginHeight = 0;
         layout.horizontalSpacing = 8;
         composite.setLayout(layout);
+
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            group.setEnabled(false);
+        }
 
         return group;
     }

@@ -108,6 +108,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     @Override
     public boolean isSaveAsAllowed() {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            return false;
+        }
         return getRepositoryFactory().getStatus(item).isEditable();
     }
 
