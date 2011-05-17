@@ -75,6 +75,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
@@ -120,6 +121,10 @@ public class VersionManagementPage extends ProjectSettingPage {
         gridData.heightHint = 400;
         gridData.widthHint = 570;
         composite.setLayoutData(gridData);
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            compositesSachForm.setEnabled(false);
+        }
 
         //
         addRepositoryTreeViewer(compositesSachForm.getLeftComposite());

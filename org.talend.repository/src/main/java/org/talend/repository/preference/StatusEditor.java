@@ -28,8 +28,10 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.talend.commons.ui.swt.preferences.TableEditor;
 import org.talend.core.model.properties.helper.StatusHelper;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -57,11 +59,15 @@ public class StatusEditor extends TableEditor {
         contextTable.setHeaderVisible(true);
 
         TableColumn colName = new TableColumn(contextTable, SWT.NONE);
-        colName.setText(Messages.getString("StatusEditor.codeColumnTitle"));  //$NON-NLS-1$
+        colName.setText(Messages.getString("StatusEditor.codeColumnTitle")); //$NON-NLS-1$
         colName.setWidth(60);
         TableColumn colValue = new TableColumn(contextTable, SWT.NONE);
         colValue.setText(Messages.getString("StatusEditor.labelColumnTitle")); //$NON-NLS-1$
         colValue.setWidth(150);
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            contextTable.setEnabled(false);
+        }
         return contextTable;
     }
 

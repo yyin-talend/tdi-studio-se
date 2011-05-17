@@ -50,6 +50,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.components.preference.labelformat.TalendPaletteLabelProvider;
 import org.talend.designer.components.preference.labelformat.TalendPaletteTreeProvider;
 import org.talend.repository.ProjectManager;
@@ -107,6 +108,10 @@ public class PaletteSettingPage extends ProjectSettingPage {
         GridData gridData = new GridData(GridData.FILL_BOTH);
         composite.setLayoutData(gridData);
         addTreeViewer(compositesSachForm);
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            compositesSachForm.setEnabled(false);
+        }
 
         return composite;
     }
@@ -115,8 +120,8 @@ public class PaletteSettingPage extends ProjectSettingPage {
         // this.project = pro;
         List<ComponentSetting> c = getComponentsFromProject(project);
         for (ComponentSetting componentSetting : c) {
-            statusBackup.put(componentSetting.getFamily() + FAMILY_SPEARATOR + componentSetting.getName(), !componentSetting
-                    .isHidden());
+            statusBackup.put(componentSetting.getFamily() + FAMILY_SPEARATOR + componentSetting.getName(),
+                    !componentSetting.isHidden());
         }
     }
 

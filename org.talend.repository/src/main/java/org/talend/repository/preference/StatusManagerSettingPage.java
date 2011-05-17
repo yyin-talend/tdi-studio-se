@@ -157,7 +157,10 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         gridData.heightHint = 400;
         gridData.widthHint = 570;
         composite.setLayoutData(gridData);
-
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            compositesSachForm.setEnabled(false);
+        }
         //
         addRepositoryTreeViewer(compositesSachForm.getLeftComposite());
 

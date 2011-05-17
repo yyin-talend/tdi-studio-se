@@ -69,6 +69,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.properties.CustomComponentSetting;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -112,6 +113,11 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
         composite.setLayoutData(gridData);
         addTreeViewer(compositesSachForm);
         init();
+
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            composite.setEnabled(false);
+        }
         return composite;
     }
 

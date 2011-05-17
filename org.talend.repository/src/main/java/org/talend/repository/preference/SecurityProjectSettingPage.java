@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -44,6 +45,10 @@ public class SecurityProjectSettingPage extends ProjectSettingPage {
         button.setText(Messages.getString("SecurityProjectSettingPage.hidePass")); //$NON-NLS-1$
 
         button.setSelection(pro.getEmfProject().isHidePassword());
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            composite.setEnabled(false);
+        }
         return composite;
     }
 
