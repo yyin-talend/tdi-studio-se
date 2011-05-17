@@ -89,6 +89,8 @@ public class NodesPasteCommand extends Command {
 
     private boolean multipleCommand;
 
+    private Map<IGraphicalNode, IGraphicalNode> nodeMap = null;
+
     Point cursorLocation = null;
 
     private List<SubjobContainerPart> subjobParts;
@@ -347,6 +349,9 @@ public class NodesPasteCommand extends Command {
                 component = copiedNode.getComponent();
             }
             IGraphicalNode pastedNode = new Node(component, process);
+            if (nodeMap != null) {
+                nodeMap.put(copiedNode, pastedNode);
+            }
             if (isJobletRefactor()) { // keep original for joblet refactor.
                 process.removeUniqueNodeName(pastedNode.getUniqueName());
                 pastedNode.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), copiedNode.getUniqueName());
@@ -869,5 +874,13 @@ public class NodesPasteCommand extends Command {
      */
     public void setSelectedSubjobs(List<SubjobContainerPart> subjobParts) {
         this.subjobParts = subjobParts;
+    }
+
+    public Map<IGraphicalNode, IGraphicalNode> getNodeMap() {
+        return nodeMap;
+    }
+
+    public void setNodeMap(Map<IGraphicalNode, IGraphicalNode> nodeMap) {
+        this.nodeMap = nodeMap;
     }
 }
