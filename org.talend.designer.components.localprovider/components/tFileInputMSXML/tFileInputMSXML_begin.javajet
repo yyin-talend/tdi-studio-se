@@ -287,6 +287,8 @@ java.util.List<org.dom4j.Element> nodeList_<%=cid %> = (java.util.List<org.dom4j
 XML_API_<%=cid %> xml_api_<%=cid %> = new XML_API_<%=cid %>();
 String str_<%=cid %> = "";
 org.dom4j.Node node_<%=cid %> = null;
+boolean isSingleNode_<%=cid %> = true;
+Object obj_<%=cid %> = null;
 
 for (org.dom4j.Element loop_<%=cid %>: nodeList_<%=cid %>) {
 
@@ -463,7 +465,13 @@ looper_<%=cid%>.parse(<%=filename %>);
 %>
 		org.dom4j.XPath xTmp<%=conn.getName() + i %>_<%=cid %> = temp_<%=cid %>.createXPath(nsTool_<%=cid %>.addDefaultNSPrefix(<%=query %>, subLoop_<%=conn.getName() %>));
 	    xTmp<%=conn.getName() + i %>_<%=cid %>.setNamespaceURIs(xmlNameSpaceMap_<%=cid %>); 
-	    node_<%=cid %> = xTmp<%=conn.getName() + i %>_<%=cid %>.selectSingleNode(temp_<%=cid %>);
+	    obj_<%=cid %> = xTmp<%=conn.getName() + i %>_<%=cid %>.evaluate(temp_<%=cid %>);
+	    if(obj_<%=cid %> instanceof org.dom4j.Node) {
+	    	node_<%=cid %> = (org.dom4j.Node)obj_<%=cid %>;
+	    	isSingleNode_<%=cid %> = true;
+	    } else {
+	    	isSingleNode_<%=cid %> = false;
+	    }
 	    str_<%=cid %> = xTmp<%=conn.getName() + i %>_<%=cid %>.valueOf(temp_<%=cid %>)<%=trimAll?".trim()":""%>;
 <%
 					}else if(("SAX").equals(mode)){
@@ -498,19 +506,19 @@ looper_<%=cid%>.parse(<%=filename %>);
 							if(javaType == JavaTypesManager.STRING){
 								if(column.isNullable()){
 %>
-									if(xml_api_<%=cid %>.isDefNull(node_<%=cid %>)){
+									if(isSingleNode_<%=cid %> && xml_api_<%=cid %>.isDefNull(node_<%=cid %>)){
 											<%=conn.getName() %>.<%=column.getLabel() %> =null;
-									}else if(xml_api_<%=cid %>.isEmpty(node_<%=cid %>)){
+									}else if(isSingleNode_<%=cid %> && xml_api_<%=cid %>.isEmpty(node_<%=cid %>)){
 										<%=conn.getName() %>.<%=column.getLabel() %> ="";
-									}else if(xml_api_<%=cid %>.isMissing(node_<%=cid %> )){ 
+									}else if(isSingleNode_<%=cid %> && xml_api_<%=cid %>.isMissing(node_<%=cid %> )){ 
 										<%=conn.getName() %>.<%=column.getLabel() %> =<%=isNotSetDefault?null:column.getDefault() %>;
 									}else{
 <% 
 								}else{ // column.isNullable()
 %>
-									if(xml_api_<%=cid %>.isEmpty(node_<%=cid %>)){
+									if(isSingleNode_<%=cid %> && xml_api_<%=cid %>.isEmpty(node_<%=cid %>)){
 										<%=conn.getName() %>.<%=column.getLabel() %> ="";
-									}else if(xml_api_<%=cid %>.isMissing(node_<%=cid %> )){ 
+									}else if(isSingleNode_<%=cid %> && xml_api_<%=cid %>.isMissing(node_<%=cid %> )){ 
 										<%=conn.getName() %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault() %>;
 									}else{
 <% 
@@ -518,15 +526,15 @@ looper_<%=cid%>.parse(<%=filename %>);
 							}else{ // other type
 								if(column.isNullable()){
 %>	
-										if(xml_api_<%=cid %>.isDefNull(node_<%=cid %>)){
+										if(isSingleNode_<%=cid %> && xml_api_<%=cid %>.isDefNull(node_<%=cid %>)){
 											<%=conn.getName() %>.<%=column.getLabel() %> =null;
-										}else if(xml_api_<%=cid %>.isEmpty(node_<%=cid %>) || xml_api_<%=cid %>.isMissing(node_<%=cid %>)){
+										}else if(isSingleNode_<%=cid %> && (xml_api_<%=cid %>.isEmpty(node_<%=cid %>) || xml_api_<%=cid %>.isMissing(node_<%=cid %>))){
 											<%=conn.getName() %>.<%=column.getLabel() %>=<%=isNotSetDefault?null:column.getDefault()%>;
 										}else{
 <%
 							  	}else{ // column.isNullable()
 %>
-										if(xml_api_<%=cid %>.isMissing(node_<%=cid %>) || xml_api_<%=cid %>.isEmpty(node_<%=cid %>)){
+										if(isSingleNode_<%=cid %> && (xml_api_<%=cid %>.isMissing(node_<%=cid %>) || xml_api_<%=cid %>.isEmpty(node_<%=cid %>))){
 											<%=conn.getName() %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault() %>;
 										}else{
 <%
