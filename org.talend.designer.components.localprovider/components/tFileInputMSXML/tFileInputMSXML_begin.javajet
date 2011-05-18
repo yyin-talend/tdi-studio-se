@@ -393,6 +393,7 @@ String[] arrLoop_<%=cid%> = new String[]{<%=builderLoops.toString() %>};
 String[][] arrQuery_<%=cid %> =new String[][]{<%=builderQueries.toString() %>};
 String str_<%=cid %> = "";
 String[] node_<%=cid%> = null;
+boolean isSingleNode_<%=cid %> = true;
 org.talend.xml.sax.SAXLooper looper_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=rootpath%>,arrLoop_<%=cid %>,arrQuery_<%=cid %>);
 looper_<%=cid%>.setEncoding(<%=encoding %>);
 looper_<%=cid%>.parse(<%=filename %>);
