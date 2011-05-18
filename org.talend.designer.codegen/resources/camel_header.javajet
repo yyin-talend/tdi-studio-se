@@ -61,7 +61,7 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 	List<Map<String, String>> dependencies = null;
 	for (INode node : processNodes) {
 		if (node.isActivate()) {
-			if (node.getComponent().getName().equals("cMessageEndpoint")) {
+			if (node.getComponent().getName().equals("cMessagingEndpoint")) {
 				dependencies = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HOTLIBS__");
 				for(Map<String, String> dependencie : dependencies){
 					String librarieJar = dependencie.get("LIBPATH");

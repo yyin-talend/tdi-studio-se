@@ -238,7 +238,7 @@ public class CodeGenerator implements ICodeGenerator {
                             generateHeaders = false;
                         }
 
-                        if ("cMessageEndpoint"
+                        if ("cMessagingEndpoint"
                                 .equals(subTree.getRootNode().getSubProcessStartNode(true).getComponent().getName())) {
                             nodeSubTreeList.add(subTree);
                         } else {
