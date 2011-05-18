@@ -3455,4 +3455,8 @@ public class Node extends Element implements IGraphicalNode {
         this.joblet_unique_name = joblet_unique_name;
     }
 
+    public List<? extends IConnection> getOutgoingCamelSortedConnections() {
+        return org.talend.core.model.utils.NodeUtil.getOutgoingCamelSortedConnections(this);
+    }
+
 }
