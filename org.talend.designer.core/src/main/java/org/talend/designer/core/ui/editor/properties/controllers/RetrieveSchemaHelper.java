@@ -59,10 +59,11 @@ public class RetrieveSchemaHelper {
             }
         SAXReader saxReader = new SAXReader();
         Document document;
-        AutoApi a = new AutoApi();
+        AutoApi a = null;
         try {
 
             // get the schema file from server
+            a = new AutoApi();
             String hostName = TalendTextUtils.removeQuotes(node.getElementParameter("HOSTNAME").getValue().toString());
             int port = Integer.parseInt(TalendTextUtils.removeQuotes(node.getElementParameter("PORT").getValue().toString()));
             String mandant = TalendTextUtils.removeQuotes(node.getElementParameter("MANDANT").getValue().toString());
