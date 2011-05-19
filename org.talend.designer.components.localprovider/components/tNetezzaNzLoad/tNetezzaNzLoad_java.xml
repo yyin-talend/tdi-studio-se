@@ -222,7 +222,7 @@
 			SHOW_IF="USE_EXISTING_CLT_FILE == 'false'"
 		>
 			<ITEMS DEFAULT="NONE">
-				<ITEM NAME="NONE" VALUE="NONE" />
+				<ITEM NAME="NONE" VALUE="NO" />
 				<ITEM NAME="SINGLE_QUOTE" VALUE="SINGLE"/>
 				<ITEM NAME="DOUBLE_QUOTE" VALUE="DOUBLE"/>
 			</ITEMS>
@@ -262,7 +262,7 @@
 						<ITEM NAME="REQUIRE_QUOTES" VALUE="-requireQuotes"/>
 						<ITEM NAME="NULL_VALUE" VALUE="-nullValue"/>
 						<ITEM NAME="FILL_RECORDS" VALUE="-fillRecord"/>
-						<!-- <ITEM NAME="ESCAPE_CHAR" VALUE="-escapeChar"/> -->
+						<ITEM NAME="ESCAPE_CHAR" VALUE="-escapeChar"/>
 						<ITEM NAME="CTRL_CHARS" VALUE="-ctrlChars"/>
 						<ITEM NAME="CR_IN_STRING" VALUE="-crInString"/>
 						<ITEM NAME="TRUNC_STRING" VALUE="-truncString"/>
@@ -316,6 +316,24 @@
 		</PARAMETER>
 		
 		<PARAMETER
+			NAME="PRINT_COMMAND"
+			FIELD="CHECK"
+			NUM_ROW="60"
+			REQUIRED="true"
+		>
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER
+			NAME="SHOW_LOG"
+			FIELD="CHECK"
+			NUM_ROW="60"
+			REQUIRED="true"
+		>
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER
 			NAME="NZLOAD_PATH"
 			FIELD="FILE"
 			NUM_ROW="70"
@@ -329,9 +347,9 @@
 	<CODEGENERATION> 
 		<IMPORTS> 
 			<IMPORT MODULE="namedpipe-1.0.jar" NAME="namedpipe-1.0.jar" REQUIRED="true"/> 
-			<IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="true" />
-			<IMPORT MODULE="namedpipe_jni_64bit.dll" NAME="namedpipe_jni_64bit.dll" REQUIRED="true"/> 
-			<IMPORT MODULE="namedpipe_jni.dll" NAME="namedpipe_jni.dll" REQUIRED="true"/> 
+			<IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="false" />
+			<IMPORT MODULE="namedpipe_jni_64bit.dll" NAME="namedpipe_jni_64bit.dll" REQUIRED="false"/> 
+			<IMPORT MODULE="namedpipe_jni.dll" NAME="namedpipe_jni.dll" REQUIRED="false"/> 
 		</IMPORTS> 
 	</CODEGENERATION>
 	

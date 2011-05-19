@@ -109,7 +109,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			//------------------------------------------------------------------
 			// if NO quoted values
 			//------------------------------------------------------------------
-			if ("NONE".equals(quoteFields)) {
+			if ("NO".equals(quoteFields)) {
 				if (!isPrimitive) {
 					%>
 					if (<%=inputRowName%>.<%=column.getLabel()%> == null)

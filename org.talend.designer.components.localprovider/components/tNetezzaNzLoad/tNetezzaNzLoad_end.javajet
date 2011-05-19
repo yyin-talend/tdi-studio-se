@@ -16,6 +16,11 @@ imports="
     java.lang.StringBuilder
     java.util.Map
     java.util.HashMap
+    java.io.DataInputStream
+	java.io.BufferedReader
+	java.io.FileInputStream
+	java.io.InputStreamReader
+
 " 
 skeleton="../templates/db_output_bulk.skeleton"
 %>
@@ -42,6 +47,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	List<Map<String, String>> options = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPTIONS__");
 	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+	boolean showLog = ("true").equals(ElementParameterParser.getValue(node,"__SHOW_LOG__"));
 	List<IMetadataColumn> columnList = getColumnList(node);
 	List<Column> stmtStructure = null;
 	if (columnList != null && columnList.size() > 0) {
@@ -79,6 +85,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		if (useNamedPiped) { // wait for nzload thread to finish
 			%>
 			nzloadThread_<%=cid%>.join(0);
+			//TODO: clean up named pipe
 			<%
 		} else { // start the nzload thread and wait
 			%>
@@ -88,3 +95,36 @@ skeleton="../templates/db_output_bulk.skeleton"
 		}
 	}
 %>
+				// added "show log output" feature
+				<%
+				for(Map<String, String> option : options) {
+					 String option_key = option.get("KEY");
+					 String file_location = option.get("VALUE");
+					if( "-lf".equals(option_key) && showLog == true ) {
+					%>
+					
+						// System.out.println("reading log file :" + <%=file_location%> );
+						try {
+							// Open the file and print contents 
+							 java.io.FileInputStream fstream = new java.io.FileInputStream(<%=file_location%>);
+							 java.io.DataInputStream in = new java.io.DataInputStream(fstream);
+							 java.io.BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(in));
+							 String strLine;
+							
+							while ((strLine = br.readLine()) != null)   {
+								System.out.println (strLine);
+							}
+							
+							in.close();
+						}
+						catch (Exception e) {
+							// System.err.println("Error Reading Log File " + e.getMessage());
+							
+						}
+					
+					<%
+					}
+				}
+				%>
+				// end "show log output"
+				

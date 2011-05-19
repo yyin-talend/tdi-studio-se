@@ -16,6 +16,10 @@ imports="
     java.lang.StringBuilder
     java.util.Map
     java.util.HashMap
+	java.io.DataInputStream
+	java.io.BufferedReader
+	java.io.FileInputStream
+	java.io.InputStreamReader
 " 
 skeleton="../templates/db_output_bulk.skeleton"
 %>
@@ -45,6 +49,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String nzloadExePath = ElementParameterParser.getValue(node, "__NZLOAD_PATH__");
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
+	boolean printCommand = ("true").equals(ElementParameterParser.getValue(node,"__PRINT_COMMAND__"));
+	boolean showLog = ("true").equals(ElementParameterParser.getValue(node,"__SHOW_LOG__"));
 	List<IMetadataColumn> columnList = getColumnList(node);
 	List<Column> stmtStructure = null;
 	if (columnList != null && columnList.size() > 0) {
@@ -277,6 +283,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
 	final StringBuilder nzloadOutput_<%=cid%> = new StringBuilder(200);
 	//final 
+	
 	Thread nzloadThread_<%=cid%> = new Thread() {
 		public void run() {
 			try {
@@ -286,11 +293,32 @@ skeleton="../templates/db_output_bulk.skeleton"
 							%>,<%=parametersList.get(i)%><%
 						}
 						%>};
+				
+				// added "print command" feature
+				<% if (printCommand == true) { %>
+				    System.out.println("INFO: executing nzload command:");
+				    for( String cmd : cmds ) {
+					       System.out.print(cmd + " ");
+					 }
+				<% } %>
+				
 				Runtime rt = Runtime.getRuntime();
 				final Process ps = rt.exec(cmds, envp);
+				
+
 				java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps.getInputStream()));
+				// fixed no showing of error messages
+				java.io.BufferedReader errReader = new java.io.BufferedReader(new java.io.InputStreamReader(ps.getErrorStream()));
+				
 				String line = "";
+				String errLine = "";
 				while ((line = reader.readLine()) != null) {
+					if((errLine = errReader.readLine()) != null) {
+						nzloadOutput_<%=cid%>.append(errLine);
+						<% if (true) { %>
+								System.out.println(errLine);
+						<% } %>
+					}
 					nzloadOutput_<%=cid%>.append(line);
 					<% if (true) { %>
 					System.out.println(line);
