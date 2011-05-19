@@ -420,7 +420,6 @@ public class Node extends Element implements IGraphicalNode {
                     && (table.getAttachedConnector().equals(EConnectionType.FLOW_MAIN.getName()) || table.getAttachedConnector()
                             .equals(EConnectionType.TABLE.getName()))) {
                 table.setTableName(uniqueName2);
-                table.setNeedSource(true);
             } else {
                 table.setTableName(table.getAttachedConnector());
             }
