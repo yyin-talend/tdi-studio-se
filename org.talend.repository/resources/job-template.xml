@@ -10,6 +10,7 @@
     <service ref="job" interface="routines.system.api.TalendJob">
         <service-properties>
             <entry key="name" value="@JOBNAME@"/>
+            <entry key="type" value="@TYPE@"/>
         </service-properties>
     </service>
 

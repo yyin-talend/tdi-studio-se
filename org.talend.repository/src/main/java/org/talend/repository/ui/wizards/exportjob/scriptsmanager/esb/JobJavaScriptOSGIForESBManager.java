@@ -179,7 +179,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
             String line = br.readLine();
             while (line != null) {
-                line = line.replace("@JOBNAME@", jobName).replace("@JOBCLASSNAME@", jobClassName); //$NON-NLS-1$ //$NON-NLS-2$
+                line = line.replace("@JOBNAME@", jobName).replace("@TYPE@", "job").replace("@JOBCLASSNAME@", jobClassName); //$NON-NLS-1$ //$NON-NLS-2$
                 bw.write(line + "\n"); //$NON-NLS-1$
                 line = br.readLine();
             }
