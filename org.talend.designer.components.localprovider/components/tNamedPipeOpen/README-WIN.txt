@@ -2,6 +2,8 @@ Instructions for Windows (w32, x64):
 
 To use this component in named-pipe mode on Windows follow these instruction:
 
+*** PLEASE REFER TO tNamedPiptOutput DIRECTORY FOR THE FILES MENTIONED BELOW ****
+
 The directory directory contains 2 DDLs: namedpipe_jni.dll, namedpipe_jni_64bit.dll.
 The first of which is for 32bit system and second for 64bit.
 
