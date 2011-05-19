@@ -49,7 +49,7 @@ public class RetrieveSchemaHelper {
         IElementParameter outParam = node.getElementParameter("SCHEMA_OUT");
         IMetadataTable outputMeta = node.getMetadataFromConnector(outParam.getContext());
         IMetadataTable outputMetaCopy = outputMeta.clone(true);
-
+        
         File xmlFile = new File(TalendTextUtils.removeQuotes(node.getElementParameter("PATH_JOBDEF").getValue().toString()));
         if (!xmlFile.exists())
             try {
@@ -59,10 +59,10 @@ public class RetrieveSchemaHelper {
             }
         SAXReader saxReader = new SAXReader();
         Document document;
+        AutoApi a = new AutoApi();
         try {
 
             // get the schema file from server
-            AutoApi a = new AutoApi();
             String hostName = TalendTextUtils.removeQuotes(node.getElementParameter("HOSTNAME").getValue().toString());
             int port = Integer.parseInt(TalendTextUtils.removeQuotes(node.getElementParameter("PORT").getValue().toString()));
             String mandant = TalendTextUtils.removeQuotes(node.getElementParameter("MANDANT").getValue().toString());
@@ -73,7 +73,6 @@ public class RetrieveSchemaHelper {
             String jobDef = TalendTextUtils.removeQuotes(node.getElementParameter("PATH_JOBDEF").getValue().toString());
             a.openConnection(hostName, port, mandant, userName, passWord);
             a.getJobDefinitionFile(jobDir, jobName, jobDef);
-            a.closeConnection();
 
             document = saxReader.read(xmlFile);
             List inputList = document.selectNodes("//Job//Lines//Line//Steps//Input//Sources//Source//Format//Fields//Field");
@@ -166,7 +165,15 @@ public class RetrieveSchemaHelper {
             node.getElementParameter("OUT_MODE").setValue(de.attribute("Mode").getValue());
         } catch (Exception e) {
             ExceptionHandler.process(e);
+        } finally{
+            try
+            {
+                a.closeConnection();
+            }catch (Exception e){
+                ExceptionHandler.process(e);
+            }                    
         }
+
         CompoundCommand cc = new CompoundCommand();
         cc.add(new ChangeMetadataCommand(node, param, inputMeta, inputMetaCopy));
         cc.add(new ChangeMetadataCommand(node, param, outputMeta, outputMetaCopy));
