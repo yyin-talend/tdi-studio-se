@@ -108,8 +108,8 @@ if (hasInputRow && columnList != null) {
 			Thread.sleep(10000);
 		}
 	<% } else { %>
-		String pipeName_<%=cid%> = (String)globalMap.get("<%=existingPipe%>_PIPE_NAME");
-		String pipeNativeName_<%=cid%> = (String)globalMap.get("<%=existingPipe%>_PIPE_NATIVE_NAME");
+		String namedPipeName_<%=cid%> = (String)globalMap.get("<%=existingPipe%>_PIPE_NAME");
+		String namedPipeNativeName_<%=cid%> = (String)globalMap.get("<%=existingPipe%>_PIPE_NATIVE_NAME");
 		com.infobright.io.NamedPipe outputStream_<%=cid%> = (com.infobright.io.NamedPipe)globalMap.get("<%=existingPipe%>_PIPE_OUTPUTSTREAM");
 	<% } %>
 
