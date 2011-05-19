@@ -3311,6 +3311,7 @@
 			<IMPORT NAME="partner" MODULE="partnerBulk.jar" REQUIRED="true" />
 			<IMPORT NAME="wsc" MODULE="wsc-19.jar"
 				REQUIRED="true" />
+			<IMPORT NAME="CsvWriter" MODULE="javacsv.jar" REQUIRED="true" />
 			
 		</IMPORTS>
 	</CODEGENERATION>
