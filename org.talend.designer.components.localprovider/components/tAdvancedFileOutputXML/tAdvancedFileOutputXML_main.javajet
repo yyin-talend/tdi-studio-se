@@ -172,6 +172,9 @@ class GenerateToolByDom4j{
 				}else{
 %>
 			orders_<%=cid %>[<%=currPos %>] = <%=node.getNodeInsertIndex() %>;
+			if(orders_<%=cid %>[<%=currPos %>] == 0 && <%=parentName%>_<%=cid%>.elements().size() != 0) {
+				orders_<%=cid %>[<%=currPos %>] = <%=parentName%>_<%=cid%>.elements().size();
+			}
 <%
 				}
 %>
