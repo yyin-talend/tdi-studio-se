@@ -246,9 +246,15 @@ if(outConns!=null){
 							}
 							
 							if(("true").equals(nodeCheck)){
+								if(!("id_Document".equals(column.getTalendType()))) { 
 %>
-				<%=firstConnName %>.<%=column.getLabel() %> = str_<%=cid %>;
+									<%=firstConnName %>.<%=column.getLabel() %> = str_<%=cid %>;
 <%
+								} else {
+%>
+									<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Document(str_<%=cid %>);
+<%
+								}
 	            				continue;
 	            			}
 							if(javaType == JavaTypesManager.STRING){
