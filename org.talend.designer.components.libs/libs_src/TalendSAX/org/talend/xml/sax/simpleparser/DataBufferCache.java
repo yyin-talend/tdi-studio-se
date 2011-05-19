@@ -130,7 +130,7 @@ public class DataBufferCache {
     }
     
     public void notifyErrorOccurred() {
-    	this.buffers.notifyAll();
+    	setIsEnd();
     }
 
     class Buffer {
