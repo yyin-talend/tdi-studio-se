@@ -44,7 +44,7 @@ public class DataBufferCache {
     public void setIsEnd() {
         synchronized (buffers) {
         	try {
-	            if (currentWriteBuff != null) {
+	            if (!isEnd && currentWriteBuff != null) {
 	                buffers.add(currentWriteBuff);
 	            }
 	            this.isEnd = true;
