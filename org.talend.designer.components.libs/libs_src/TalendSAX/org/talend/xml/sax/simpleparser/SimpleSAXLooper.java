@@ -118,6 +118,8 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+        	bcache.notifyErrorOccurred();
         }
     }
 

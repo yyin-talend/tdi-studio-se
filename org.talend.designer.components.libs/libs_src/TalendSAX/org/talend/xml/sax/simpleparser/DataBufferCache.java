@@ -128,6 +128,10 @@ public class DataBufferCache {
         }
 
     }
+    
+    public void notifyErrorOccurred() {
+    	this.buffers.notifyAll();
+    }
 
     class Buffer {
 
