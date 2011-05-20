@@ -131,6 +131,7 @@ import org.talend.commons.ui.runtime.image.ImageUtils;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -143,6 +144,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ITalendEditor;
 import org.talend.designer.core.model.components.EParameterName;
@@ -1436,7 +1438,30 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                     }
                                 }
                                 ConnectionCreateCommand.setCreatingConnection(true);
+                                // System.out.println("old: " + targetConnection.getSource().getUniqueName() + "-----"
+                                // + targetConnection.getUniqueName() + "----->"
+                                // + targetConnection.getTarget().getUniqueName());
+
+                                // FIXME perhaps, this is not good fix, need check it later
+                                // bug 21411
+                                if (PluginChecker.isJobLetPluginLoaded()) {
+                                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault()
+                                            .getService(IJobletProviderService.class);
+                                    if (service != null && service.isJobletComponent(targetConnection.getTarget())) {
+                                        if (targetConnection.getTarget() instanceof Node) {
+                                            NodeContainer jobletContainer = ((Node) targetConnection.getTarget())
+                                                    .getNodeContainer();
+                                            // remove the old connection in the container
+                                            jobletContainer.getInputs().remove(targetConnection);
+                                        }
+                                    }
+                                }
                                 targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_MAIN);
+
+                                // System.out.print("new: " + targetConnection.getSource().getUniqueName() + "-----"
+                                // + targetConnection.getUniqueName() + "----->"
+                                // + targetConnection.getTarget().getUniqueName() + "(new)");
+
                                 INodeConnector nodeConnector = node.getConnectorFromName(targetConnector.getName());
                                 nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
                                 List<Object> nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(targetConnection, node);
@@ -1447,6 +1472,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                         .getTargetNodeConnector().getName());
                                 originalNodeConnector.setCurLinkNbInput(originalNodeConnector.getCurLinkNbInput() - 1);
                                 execCommandStack(nodeCmd);
+
+                                // System.out.println("-----" + nodeCmd.getConnection().getUniqueName() + "(new)----->"
+                                // + originalTarget.getUniqueName());
+
                                 if (node.getComponent().getName().equals("tMap")) {
                                     CreateComponentOnLinkHelper.setupTMap(node);
                                 }

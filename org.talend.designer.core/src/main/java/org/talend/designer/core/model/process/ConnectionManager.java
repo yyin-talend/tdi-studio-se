@@ -243,6 +243,16 @@ public class ConnectionManager {
             // if the new source don't contain the kind of link, then we can't connect the link.
             return false;
         }
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
+                // can't connect to joblet's node, , bug 21411
+                if (service.isJobletComponent(oldSource.getJobletNode()) || service.isJobletComponent(target.getJobletNode())) {
+                    return false;
+                }
+            }
+        }
         int maxOutput = newSource.getConnectorFromName(connectorName).getMaxLinkOutput();
         if (maxOutput != -1 && (newSource.getConnectorFromName(connectorName).getCurLinkNbOutput() >= maxOutput)) {
             return false;
@@ -292,6 +302,10 @@ public class ConnectionManager {
                     IJobletProviderService.class);
             if (service != null) {
                 if (service.isTriggerNode(newTarget) && !service.canConnectTriggerNode(newTarget, lineStyle)) {
+                    return false;
+                }
+                // can't connect from joblet's node, bug 21411
+                if (service.isJobletComponent(source.getJobletNode())) {
                     return false;
                 }
             }
