@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections.BidiMap;
-import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -47,6 +47,8 @@ import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyleRange;
@@ -106,6 +108,7 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
@@ -119,7 +122,6 @@ import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.RunprocessConstants;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
 import org.talend.designer.runprocess.ui.actions.SaveJobBeforeRunAction;
@@ -134,6 +136,8 @@ import org.talend.designer.runprocess.ui.views.ProcessView;
  * 
  */
 public class ProcessComposite extends ScrolledComposite implements IDynamicProperty {
+
+    private static Logger log = Logger.getLogger(ProcessComposite.class);
 
     private static final int BUTTON_SIZE = 100;
 
@@ -627,10 +631,17 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         });
 
         // see feature 0004895: Font size of the output console are very small
-        if (!setConsoleFont()) {
-            Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
-            consoleText.setFont(font);
-        }
+        setConsoleFont();
+        IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
+        preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
+
+            public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent event) {
+                if (TalendDesignerPrefConstants.CONSOLT_TEXT_FONT.endsWith(event.getProperty())) {
+                    setConsoleFont();
+                }
+
+            }
+        });
 
         // execScroll.setMinSize(execContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         // sash.setSashWidth(1);
@@ -1127,7 +1138,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             return;
         }
         // see feature 0004895: Font size of the output console are very small
-        setConsoleFont();
+        // setConsoleFont();
 
         String[] rows = message.getContent().split("\n"); //$NON-NLS-1$
         int rowLimit = getConsoleRowLimit();
@@ -1200,24 +1211,24 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
     /**
      * DOC chuang Comment method "setConsoleFont".
      */
-    private boolean setConsoleFont() {
+    private void setConsoleFont() {
         IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
-        String fontType = preferenceStore.getString(RunProcessPrefsConstants.CONSOLE_FONT);
-        if (StringUtils.isNotEmpty(fontType)) {
-            FontData fontData = new FontData(fontType);
+        FontData fontData = PreferenceConverter.getFontData(preferenceStore, TalendDesignerPrefConstants.CONSOLT_TEXT_FONT);
+        if (fontData != null) {
             if (consoleText.getFont() != null) {
                 FontData oldFont = consoleText.getFont().getFontData()[0];
                 // font is same
-                if (oldFont.equals(fontData)) {
-                    return false;
-                }
+                if (!oldFont.equals(fontData)) {
+                    Font font = new Font(this.getDisplay(), fontData);
+                    consoleText.setFont(font);
+                } // else no need to change the font it is the same
+            } else {
+                Font font = new Font(this.getDisplay(), fontData);
+                consoleText.setFont(font);
             }
-            Font font = new Font(this.getDisplay(), fontData);
-            consoleText.setFont(font);
-            return true;
-
+        } else {// should never happend
+            log.info("Could not find default font for the console");
         }
-        return false;
     }
 
     protected void fillConsole(Collection<IProcessMessage> messages) {
