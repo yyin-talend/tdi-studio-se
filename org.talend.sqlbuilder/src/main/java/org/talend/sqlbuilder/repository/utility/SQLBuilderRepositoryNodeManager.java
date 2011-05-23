@@ -835,7 +835,7 @@ public class SQLBuilderRepositoryNodeManager {
                 }
             }
         }
-        deleteNouseTables(item.getConnection());
+        // deleteNouseTables(item.getConnection());
         saveMetaData(item);
     }
 

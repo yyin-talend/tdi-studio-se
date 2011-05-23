@@ -115,8 +115,8 @@ public class EditQueriesAction extends AContextualAction {
         connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);
         dial.open();
-        // RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_CONNECTIONS);
-        RepositoryManager.getRepositoryView().refreshView();
+        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_CONNECTIONS);
+        // RepositoryManager.getRepositoryView().refreshView();
     }
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
