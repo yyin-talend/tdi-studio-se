@@ -57,8 +57,10 @@ import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.relational.TdColumn;
+import org.talend.cwm.relational.impl.TdTableImpl;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.ProjectNodeHelper;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.sqlbuilder.Messages;
@@ -833,13 +835,38 @@ public class SQLBuilderRepositoryNodeManager {
                 }
             }
         }
-
+        deleteNouseTables(item.getConnection());
         saveMetaData(item);
+    }
+
+    private void deleteNouseTables(Connection connection) {
+        if (!(connection instanceof DatabaseConnection)) {
+            return;
+        }
+        List<MetadataTable> tableList = new ArrayList<MetadataTable>(ConnectionHelper.getTables(connection));
+        List<MetadataTable> tList = new ArrayList<MetadataTable>(tableList);
+        for (MetadataTable t : tableList) {
+            if (t instanceof TdTableImpl) {
+                tList.remove(t);
+            }
+        }
+        Catalog catalog = (Catalog) ConnectionHelper.getPackage(((DatabaseConnection) connection).getSID(), connection,
+                Catalog.class);
+        Schema schema = (Schema) ConnectionHelper.getPackage(((DatabaseConnection) connection).getUiSchema(), connection,
+                Schema.class);
+        String c = "";
+        String s = "";
+        if (catalog != null) {
+            c = catalog.getName();
+        }
+        if (schema != null) {
+            s = schema.getName();
+        }
+        ProjectNodeHelper.removeTablesFromCurrentCatalogOrSchema(c, s, (DatabaseConnection) connection, tList);
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void saveQuery(RepositoryNode repositoryNode, Query query, String oldQuery) {
-
         saveEMFQuery(repositoryNode.getObject().getId(), query, oldQuery);
         DatabaseConnectionItem item = getItem(repositoryNode);
         if (query != null) {
