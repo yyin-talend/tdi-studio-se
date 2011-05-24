@@ -649,7 +649,18 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         String scriptValue = "";
         try {
             IProject currentProject = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
-            IFile file = currentProject.getFolder("temp").getFile(getEditorInput().getName() + ".jobscript");
+            String jobScriptVersion = "";
+            if (getEditorInput() != null && getEditorInput() instanceof RepositoryEditorInput) {
+                Item item = ((RepositoryEditorInput) getEditorInput()).getItem();
+                if (item != null) {
+                    Property property = item.getProperty();
+                    if (property != null) {
+                        jobScriptVersion = "_" + property.getVersion();
+                    }
+                }
+            }
+            IFile file = currentProject.getFolder("temp").getFile(getEditorInput().getName() + jobScriptVersion + ".jobscript");
+
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(scriptValue.getBytes());
             if (file.exists()) {
                 file.setContents(byteArrayInputStream, 0, null);
