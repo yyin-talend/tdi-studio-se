@@ -26,9 +26,11 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.jobsettings.tabs.ProcessVersionComposite;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * DOC xye class global comment. Detailled comment
@@ -90,6 +92,10 @@ public class OpenExistVersionProcessPage extends WizardPage {
         createNewVersionButton = new Button(parent, SWT.CHECK);
         createNewVersionButton.setText(Messages.getString("OpenExistVersionProcessPage.textContent")); //$NON-NLS-1$
         createNewVersionButton.setEnabled(!alreadyEditedByUser && !isContainedRefProject());
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            createNewVersionButton.setEnabled(false);
+        }
 
         Composite bc = new Composite(parent, SWT.NULL);
         bc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -201,7 +207,7 @@ public class OpenExistVersionProcessPage extends WizardPage {
     }
 
     public boolean isContainedRefProject() {
-        return !ProjectManager.getInstance().getProject(this.getProperty()).getTechnicalLabel().equals(
-                ProjectManager.getInstance().getCurrentProject().getEmfProject().getTechnicalLabel());
+        return !ProjectManager.getInstance().getProject(this.getProperty()).getTechnicalLabel()
+                .equals(ProjectManager.getInstance().getCurrentProject().getEmfProject().getTechnicalLabel());
     }
 }
