@@ -19,7 +19,7 @@
 		</xsl:if>
 		<xsl:for-each select="$rootTable">
 			<b class="FONTSTYLE">
-				<xsl:value-of select="/project/@i18n.mapper.table.for" />
+				<xsl:value-of select="/externalNode/@i18n.mapper.table.for" />
 				<xsl:value-of select="/externalNode/@name" />
 				(
 				<xsl:value-of select="@type" />
@@ -34,7 +34,7 @@
 						<td width="15"></td>
 						<td>
 							<b class="FONTSTYLE">
-								<xsl:value-of select="/project/@i18n.mapper.table.properties" />
+								<xsl:value-of select="/externalNode/@i18n.mapper.table.properties" />
 								(
 								<xsl:value-of select="@name" />
 								):
@@ -46,17 +46,17 @@
 								<tr>
 									<th align="left" width="30%"
 										class="TABLECOLUMNSTYLE">
-										<xsl:value-of select="/project/@i18n.job.properties" />
+										<xsl:value-of select="/externalNode/@i18n.job.properties" />
 									</th>
 									<th align="left"
 										class="TABLECOLUMNSTYLE">
-										<xsl:value-of select="/project/@i18n.job.values" />
+										<xsl:value-of select="/externalNode/@i18n.job.values" />
 									</th>
 								</tr>
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										<xsl:value-of select="/project/@i18n.job.name" />
+										<xsl:value-of select="/externalNode/@i18n.job.name" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -66,7 +66,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										<xsl:value-of select="/project/@i18n.mapper.table.name" />
+										<xsl:value-of select="/externalNode/@i18n.mapper.table.name" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -77,7 +77,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										<xsl:value-of select="/project/@i18n.mapper.table.alias" />
+										<xsl:value-of select="/externalNode/@i18n.mapper.table.alias" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -87,7 +87,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										<xsl:value-of select="/project/@i18n.mapper.table.join.type" />
+										<xsl:value-of select="/externalNode/@i18n.mapper.table.join.type" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -99,7 +99,7 @@
 								<tr>
 									<td class="FONTSTYLE"
 										align="left">
-										<xsl:value-of select="/project/@i18n.mapper.table.isminimized" />
+										<xsl:value-of select="/externalNode/@i18n.mapper.table.isminimized" />
 									</td>
 									<td class="FONTSTYLE"
 										align="left">
@@ -111,7 +111,7 @@
 							<br />
 							<br />
 							<b class="FONTSTYLE">
-								<xsl:value-of select="/project/@i18n.mapper.table.metadata.entries" />(
+								<xsl:value-of select="/externalNode/@i18n.mapper.table.metadata.entries" />(
 								<xsl:value-of select="@name" />
 								):
 							</b>
@@ -123,19 +123,19 @@
 								<tr class="profont">
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										<xsl:value-of select="/project/@i18n.job.name" />
+										<xsl:value-of select="/externalNode/@i18n.job.name" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										<xsl:value-of select="/project/@i18n.mapper.table.expression" />
+										<xsl:value-of select="/externalNode/@i18n.mapper.table.expression" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										<xsl:value-of select="/project/@i18n.mapper.table.operator" />
+										<xsl:value-of select="/externalNode/@i18n.mapper.table.operator" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										<xsl:value-of select="/project/@i18n.mapper.table.isJoin" />
+										<xsl:value-of select="/externalNode/@i18n.mapper.table.isJoin" />
 									</th>
 								</tr>
 								<xsl:for-each
@@ -162,7 +162,7 @@
 							</table>
 							<br />
 							<b class="FONTSTYLE">
-								<xsl:value-of select="/project/@i18n.mapper.table.condition.entries" />(
+								<xsl:value-of select="/externalNode/@i18n.mapper.table.condition.entries" />(
 								<xsl:value-of select="@name" />
 								):
 							</b>
@@ -173,19 +173,19 @@
 								<tr class="profont">
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										<xsl:value-of select="/project/@i18n.job.name" />
+										<xsl:value-of select="/externalNode/@i18n.job.name" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										<xsl:value-of select="/project/@i18n.mapper.table.expression" />
+										<xsl:value-of select="/externalNode/@i18n.mapper.table.expression" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										<xsl:value-of select="/project/@i18n.mapper.table.operator" />
+										<xsl:value-of select="/externalNode/@i18n.mapper.table.operator" />
 									</th>
 									<th class="TABLECOLUMNSTYLE"
 										width="25%">
-										<xsl:value-of select="/project/@i18n.mapper.table.isJoin" />
+										<xsl:value-of select="/externalNode/@i18n.mapper.table.isJoin" />
 									</th>
 								</tr>
 								<xsl:for-each

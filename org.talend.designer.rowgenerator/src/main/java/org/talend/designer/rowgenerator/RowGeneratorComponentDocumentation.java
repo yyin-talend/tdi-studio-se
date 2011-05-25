@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.i18n.Messages;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.genhtml.HTMLDocUtils;
@@ -135,6 +136,7 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
     private void generateXMLInfo(INode externalNode) {
         document = DocumentHelper.createDocument();
         Element externalNodeElement = document.addElement("externalNode"); //$NON-NLS-1$
+        generateMessages(externalNodeElement);
         externalNodeElement.addAttribute("name", HTMLDocUtils.checkString(this.componentName)); //$NON-NLS-1$
         externalNodeElement.addAttribute("preview", HTMLDocUtils.checkString(this.previewPicPath)); //$NON-NLS-1$
 
@@ -143,6 +145,24 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
         generateParameters(parametersElement, elementParameterList);
 
         generateColumnInfo(externalNodeElement);
+    }
+
+    private void generateMessages(Element element) {
+        // tRowgenerator.xsl
+        element.addAttribute("i18n.job.component.parameters", Messages.getString("HTMLDocGenerator.component_parameters")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.properties", Messages.getString("HTMLDocGenerator.properties")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.values", Messages.getString("HTMLDocGenerator.values")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.rowgenerator.info.for", Messages.getString("HTMLDocGenerator.row_generator_info")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.column", Messages.getString("HTMLDocGenerator.column")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.key", Messages.getString("HTMLDocGenerator.key")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.type", Messages.getString("HTMLDocGenerator.type")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.nullable", Messages.getString("HTMLDocGenerator.nullable")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.length", Messages.getString("HTMLDocGenerator.length")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.precision", Messages.getString("HTMLDocGenerator.precision")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.rowgenerator.default", Messages.getString("HTMLDocGenerator.row_default")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.comment", Messages.getString("HTMLDocGenerator.comment")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.rowgenerator.functions", Messages.getString("HTMLDocGenerator.row_functions")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.rowgenerator.parameters", Messages.getString("HTMLDocGenerator.row_parameters")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void generateParameters(Element parametersElement, List elementParameterList) {

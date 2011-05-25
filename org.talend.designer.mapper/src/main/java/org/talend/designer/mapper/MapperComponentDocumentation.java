@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.i18n.Messages;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.genhtml.HTMLDocUtils;
@@ -133,6 +134,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
     private void generateXMLInfo(INode externalNode) {
         document = DocumentHelper.createDocument();
         Element externalNodeElement = document.addElement("externalNode"); //$NON-NLS-1$
+        generateMessages(externalNodeElement);
         externalNodeElement.addAttribute("name", HTMLDocUtils.checkString(this.componentName)); //$NON-NLS-1$
         externalNodeElement.addAttribute("preview", HTMLDocUtils.checkString(this.previewPicPath)); //$NON-NLS-1$
 
@@ -147,6 +149,27 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
         handleMapperTablesInfo(inputTables, externalNodeElement, IHTMLDocConstants.MAPPER_TABLE_INPUT);
         handleMapperTablesInfo(outputTables, externalNodeElement, IHTMLDocConstants.MAPPER_TABLE_OUPUT);
         handleMapperTablesInfo(varTables, externalNodeElement, IHTMLDocConstants.MAPPER_TABLE_VAR);
+    }
+
+    private void generateMessages(Element element) {
+        // tMap.xsl
+        element.addAttribute("i18n.job.component.parameters", Messages.getString("HTMLDocGenerator.component_parameters")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.properties", Messages.getString("HTMLDocGenerator.properties")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.values", Messages.getString("HTMLDocGenerator.values")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.mapper.table.for", Messages.getString("HTMLDocGenerator.mapper.table.for")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.mapper.table.properties", Messages.getString("HTMLDocGenerator.mapper.table.properties")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.name", Messages.getString("HTMLDocGenerator.name")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.tmap.matching.mode", Messages.getString("HTMLDocGenerator.tmap.matching.mode")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.mapper.table.isminimized", Messages.getString("HTMLDocGenerator.mapper.iaminimized")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.tmap.isreject", Messages.getString("HTMLDocGenerator.tmap.isreject")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.tmap.isrejectinnnerjoin", Messages.getString("HTMLDocGenerator.tmap.isrejectinner")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.tmap.isinnerjoin", Messages.getString("HTMLDocGenerator.tmap.isinnerjoin")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute(
+                "i18n.mapper.table.metadata.entries", Messages.getString("HTMLDocGenerator.mapper.metadatatable.entries")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.type", Messages.getString("HTMLDocGenerator.type")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.mapper.table.expression", Messages.getString("HTMLDocGenerator.mapper.expression")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.tmap.isnullable", Messages.getString("HTMLDocGenerator.tmap.isnullable")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.tmap.constraint.entries", Messages.getString("HTMLDocGenerator.tmap.constraint.entries")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void generateParameters(Element parametersElement, List elementParameterList) {
