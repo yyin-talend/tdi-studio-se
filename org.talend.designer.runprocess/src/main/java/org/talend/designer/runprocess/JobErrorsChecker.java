@@ -37,8 +37,8 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
 import org.talend.core.model.properties.Item;
 import org.talend.core.service.IDesignerPerlService;
-import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.codegen.ITalendSynchronizer;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -108,7 +108,7 @@ public class JobErrorsChecker {
 
     }
 
-    public static boolean checkExportErrors(IStructuredSelection selection) {
+    public static boolean checkExportErrors(IStructuredSelection selection, boolean isJob) {
         if (!selection.isEmpty()) {
             boolean isPerl = false;
             if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
@@ -122,7 +122,15 @@ public class JobErrorsChecker {
             for (RepositoryNode node : nodes) {
                 Item item = node.getObject().getProperty().getItem();
                 try {
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                        ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                                .getService(ICamelDesignerCoreService.class);
+                        if (service.isInstanceofCamel(item)) {
+                            synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createCamelBeanSynchronizer();
+                        }
+                    }
                     IFile sourceFile = synchronizer.getFile(item);
+
                     if (isPerl) {
                         // check syntax error in perl. java use auto build to check syntax
                         validatePerlScript(sourceFile);
@@ -145,10 +153,7 @@ public class JobErrorsChecker {
             List<JobErrorEntry> input = builder.createTreeInput(errors, jobNames);
             if (input.size() > 0) {
                 String label = ((JobErrorEntry) input.get(0)).getLabel();
-                IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                        IBrandingService.class);
-                String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
-                if (!processLabel.equals("Routes")) {
+                if (isJob) {
                     MessageDialog.openError(Display.getDefault().getActiveShell(),
                             Messages.getString("JobErrorsChecker_compile_errors"), //$NON-NLS-1$
                             Messages.getString("JobErrorsChecker_compile_error_content", label)); //$NON-NLS-1$

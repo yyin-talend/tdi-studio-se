@@ -22,7 +22,9 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.AbstractComponentsProvider;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.codegen.i18n.Messages;
 
 /***/
@@ -57,6 +59,12 @@ public final class ComponentsProviderManager {
             for (IConfigurationElement configurationElement : configurationElements) {
                 String id = configurationElement.getAttribute("id"); //$NON-NLS-1$
                 String folderName = configurationElement.getAttribute("folderName"); //$NON-NLS-1$
+                IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                        IBrandingService.class);
+                if (!breaningService.isPoweredOnlyCamel()
+                        && id.equals("org.talend.designer.camel.components.localprovider.CamelLocalComponentsProvider")) {
+                    folderName = "camel";
+                }
                 try {
                     AbstractComponentsProvider componentsProvider = (AbstractComponentsProvider) configurationElement
                             .createExecutableExtension("class"); //$NON-NLS-1$

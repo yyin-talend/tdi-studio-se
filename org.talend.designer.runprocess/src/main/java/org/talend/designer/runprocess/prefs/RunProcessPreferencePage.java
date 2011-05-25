@@ -306,8 +306,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         String text = "RunProcessPreferencePage.vmArgument";
         IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
-        if (processLabel.equals("Routes")) {
+        if (breaningService.isPoweredOnlyCamel()) {
             text = "RunProcessPreferencePage.RouteVmArgument";
         }
         VMArgumentsViewer argumentsViewer = new VMArgumentsViewer(RunProcessPrefsConstants.VMARGUMENTS, Messages.getString(text), //$NON-NLS-1$

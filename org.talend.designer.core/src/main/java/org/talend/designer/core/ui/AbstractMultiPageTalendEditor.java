@@ -112,6 +112,7 @@ import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IMultiPageTalendEditor;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.i18n.Messages;
@@ -194,8 +195,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
     };
 
-    public abstract boolean showExtraPaletteEntry();
-
     protected boolean propertyIsDirty = false;
 
     protected AbstractDecoratedTextEditor codeEditor;
@@ -208,11 +207,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     protected boolean keepPropertyLocked; // used only if the user try to open more than one editor at a time.
 
-    private JobEditorInput processEditorInput;
+    protected JobEditorInput processEditorInput;
 
     protected AbstractTalendEditor designerEditor;
 
-    private List propertyInformation;
+    protected List propertyInformation;
 
     protected boolean useCodeView = true;
 
@@ -220,7 +219,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     public String revisionNumStr = null;
 
-    private Display display;
+    protected Display display;
 
     private IPartListener partListener = new IPartListener() {
 
@@ -333,12 +332,17 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             setReadOnly(true);
             revisionChanged = true;
         }
-        if (processEditorInput.getItem() instanceof ProcessItem) {
-            if (ERepositoryObjectType.getItemType(processEditorInput.getItem()) == ERepositoryObjectType.ROUTES) {
-                RepositoryManager.refresh(ERepositoryObjectType.ROUTES);
-            } else {
-                RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            boolean isCamel = camelService.isInstanceofCamelRoutes(processEditorInput.getItem());
+            ERepositoryObjectType repositoryNodeType = camelService.getRoutes();
+            if (isCamel) {
+                RepositoryManager.refresh(repositoryNodeType);
             }
+        }
+        if (processEditorInput.getItem() instanceof ProcessItem) {
+            RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
         } else {
             RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
         }
@@ -676,6 +680,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             EditorReference ref = new EditorReference(page.getEditorManager(), new FileEditorInput(file), (EditorDescriptor) desc);
 
             IEditorPart editorPart = ref.getEditor(true);
+
             if (editorPart != null) {
                 int index = addPage(editorPart, editorInput);
                 setPageText(index, "Jobscript");
@@ -754,10 +759,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 ICreateXtextProcessService convertJobtoScriptService = CorePlugin.getDefault().getCreateXtextProcessService();
 
                 Item item = getDesignerEditor().getProcess().getProperty().getItem();
-                ProcessType processType;
+                ProcessType processType = null;
+
                 if (item instanceof ProcessItem) {
                     processType = ((ProcessItem) item).getProcess();
-                } else {
+                } else if (item instanceof JobletProcessItem) {
                     processType = ((JobletProcessItem) item).getJobletProcess();
                 }
 
@@ -843,12 +849,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             propertyInformation = new ArrayList(processEditorInput.getItem().getProperty().getInformations());
             propertyIsDirty = false;
             firePropertyChange(IEditorPart.PROP_DIRTY);
+
             if (processEditorInput.getItem() instanceof ProcessItem) {
-                if (ERepositoryObjectType.getItemType(processEditorInput.getItem()) == ERepositoryObjectType.ROUTES) {
-                    RepositoryManager.refresh(ERepositoryObjectType.ROUTES);
-                } else {
-                    RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
-                }
+                RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+
             } else {
                 RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
             }
@@ -1372,10 +1376,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
         } else {
             RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
-            RepositoryManager.refresh(ERepositoryObjectType.ROUTES);
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                        .getService(ICamelDesignerCoreService.class);
+                RepositoryManager.refresh(camelService.getRoutes());
+            }
         }
         processEditorInput.setLoadedProcess(null);
-
         processEditorInput = null;
         designerEditor = null;
         codeEditor = null;

@@ -35,7 +35,6 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ImplicitContextSettings;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.StatAndLogsSettings;
@@ -277,7 +276,6 @@ public class ProjectSettingManager extends Utils {
             }
         }
         if (bImplicit) {
-            ProcessItem pItem = (ProcessItem) process.getProperty().getItem();
             ElementParameter2ParameterType.setParameterValue(process,
                     EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), bImplicit);
             reloadImplicitValuesFromProjectSettings(process, ProjectManager.getInstance().getCurrentProject(), null);

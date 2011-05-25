@@ -22,6 +22,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
@@ -77,6 +78,20 @@ public class CodeGeneratorService implements ICodeGeneratorService {
             return createPerlRoutineSynchronizer();
         } else if (lan.equals(ECodeLanguage.JAVA)) {
             return createJavaRoutineSynchronizer();
+        }
+        throw new IllegalArgumentException(Messages.getString("CodeGeneratorService.invalidLanguage1")); //$NON-NLS-1$
+    }
+
+    public ITalendSynchronizer createCamelBeanSynchronizer() {
+        ECodeLanguage lan = LanguageManager.getCurrentLanguage();
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (lan.equals(ECodeLanguage.PERL)) {
+                return service.createCamelPerlSynchronizer();
+            } else if (lan.equals(ECodeLanguage.JAVA)) {
+                return service.createCamelJavaSynchronizer();
+            }
         }
         throw new IllegalArgumentException(Messages.getString("CodeGeneratorService.invalidLanguage1")); //$NON-NLS-1$
     }

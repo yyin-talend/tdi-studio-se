@@ -321,8 +321,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
             IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                     IBrandingService.class);
-            String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
-            if (processLabel.equals("Routes")) {
+            if (breaningService.isPoweredOnlyCamel()) {
                 componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
             }
             JetBean jetBean = new JetBean(componentsPath, templateURI, component.getName(), component.getVersion(),

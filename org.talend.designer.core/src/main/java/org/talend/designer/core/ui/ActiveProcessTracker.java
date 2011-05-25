@@ -24,6 +24,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.ISQLBuilderService;
 import org.talend.designer.business.diagram.custom.IDiagramModelService;
 import org.talend.designer.core.DesignerPlugin;
@@ -55,6 +56,8 @@ public class ActiveProcessTracker implements IPartListener {
 
     private static IProcess2 lastProcessOpened;
 
+    private static boolean changedProcess;
+
     public IProcess2 getJobFromActivatedEditor(IWorkbenchPart part) {
         IWorkbenchPart testedPart = part;
         if (!(part instanceof AbstractMultiPageTalendEditor)) {
@@ -79,25 +82,13 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
      */
     public void partActivated(final IWorkbenchPart part) {
-        if (part instanceof AbstractMultiPageTalendEditor) {
-            ComponentUtilities.setExtraEntryVisible(((AbstractMultiPageTalendEditor) part).showExtraPaletteEntry());
+        if (changedProcess) {
+            if (part instanceof AbstractMultiPageTalendEditor) {
+                ComponentUtilities.updateFromRepositoryType(ERepositoryObjectType
+                        .getItemType(((AbstractMultiPageTalendEditor) part).getProcess().getProperty().getItem()));
+            }
         }
-        // else if (part instanceof TalendPaletteView) {
-        // ComponentUtilities.updatePalette(true);
-        // } else if (part instanceof PaletteView) {
-        // ComponentUtilities.updatePalette(false);
-        // }
-
-        // IProcess process = getJobFromActivatedEditor(part);
-        // if (process != null) {
-        // currentProcess = process;
-        // if (process instanceof Process) {
-        // Process p = (Process) process;
-        // if (!p.isReadOnly() && p.isActivate()) {
-        // p.checkDifferenceWithRepository();
-        // }
-        // }
-        // }
+        changedProcess = false;
     }
 
     /*
@@ -108,6 +99,7 @@ public class ActiveProcessTracker implements IPartListener {
     public void partBroughtToTop(IWorkbenchPart part) {
         IProcess2 process = getJobFromActivatedEditor(part);
         if (process != null && currentProcess != process) {
+            changedProcess = true;
             currentProcess = process;
             setContextsView(process);
             // setStatsAndLogsView(process);

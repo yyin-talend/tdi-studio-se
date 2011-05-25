@@ -26,12 +26,15 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.codegen.ITalendSynchronizer;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -113,7 +116,15 @@ public class JavaCompilationParticipant extends CompilationParticipant {
             for (IRepositoryViewObject repositoryObject : routineObjectList) {
                 Property property = repositoryObject.getProperty();
                 ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
-                IFile currentFile = synchronizer.getFile(property.getItem());
+                Item item = property.getItem();
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                    ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                            .getService(ICamelDesignerCoreService.class);
+                    if (service.isInstanceofCamel(item)) {
+                        synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createCamelBeanSynchronizer();
+                    }
+                }
+                IFile currentFile = synchronizer.getFile(item);
                 if (fileName.equals(currentFile.getName()) && currentFile.exists()) {
                     Problems.addRoutineFile(currentFile, property);
                     break;

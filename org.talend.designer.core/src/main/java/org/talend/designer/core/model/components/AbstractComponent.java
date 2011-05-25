@@ -19,6 +19,8 @@ import org.talend.core.model.components.IComponent;
  */
 public abstract class AbstractComponent implements IComponent {
 
+    private String paletteType;
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -49,6 +51,14 @@ public abstract class AbstractComponent implements IComponent {
             return false;
         }
         return true;
+    }
+
+    public String getPaletteType() {
+        return paletteType;
+    }
+
+    public void setPaletteType(String paletteType) {
+        this.paletteType = paletteType;
     }
 
 }

@@ -33,13 +33,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.codegen.ITalendSynchronizer;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.ui.views.problems.Problems;
 
@@ -136,8 +139,15 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                                 ExceptionHandler.process(e);
                             }
                         }
-                        List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(property.getItem()),
-                                property, true);
+                        Item item = property.getItem();
+                        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                                    .getService(ICamelDesignerCoreService.class);
+                            if (service.isInstanceofCamel(item)) {
+                                synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createCamelBeanSynchronizer();
+                            }
+                        }
+                        List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(item), property, true);
 
                         // save error status
                         property.getInformations().clear();

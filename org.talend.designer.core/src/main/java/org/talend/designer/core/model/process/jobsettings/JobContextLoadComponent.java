@@ -538,4 +538,23 @@ public class JobContextLoadComponent implements IComponent {
         // TODO Auto-generated method stub
         return null;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getPaletteType()
+     */
+    public String getPaletteType() {
+        return "HIDDEN";
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#setPaletteType(java.lang.String)
+     */
+    public void setPaletteType(String paletteType) {
+        // TODO Auto-generated method stub
+
+    }
 }

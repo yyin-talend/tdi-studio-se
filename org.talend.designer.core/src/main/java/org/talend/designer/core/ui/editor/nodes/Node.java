@@ -473,8 +473,7 @@ public class Node extends Element implements IGraphicalNode {
         String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
         IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
-        if (processLabel.equals("Routes")) {
+        if (breaningService.isPoweredOnlyCamel()) {
             componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
         }
         if (!pluginFullName.equals(componentsPath)) {

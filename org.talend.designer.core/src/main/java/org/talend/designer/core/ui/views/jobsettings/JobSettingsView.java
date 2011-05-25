@@ -514,7 +514,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 }
             } else {
                 IDiagramModelService diagramModelService = CorePlugin.getDefault().getDiagramModelService();
-                if (diagramModelService.isBusinessDiagramEditor(activeEditor)) {
+                if (diagramModelService != null && diagramModelService.isBusinessDiagramEditor(activeEditor)) {
                     this.selectedPrimary = true;
                     this.cleaned = force;
                     IRepositoryViewObject object = retrieveBusiness(activeEditor);

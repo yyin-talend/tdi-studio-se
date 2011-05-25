@@ -47,7 +47,6 @@ import org.talend.repository.ui.actions.metadata.CreateFileRegexpAction;
 import org.talend.repository.ui.actions.metadata.CreateFileXmlAction;
 import org.talend.repository.ui.actions.metadata.CreateGenericSchemaAction;
 import org.talend.repository.ui.actions.metadata.CreateLDAPSchemaAction;
-import org.talend.repository.ui.actions.metadata.CreateSalesforceModulesAction;
 import org.talend.repository.ui.actions.metadata.CreateSalesforceSchemaAction;
 import org.talend.repository.ui.actions.metadata.CreateWSDLSchemaAction;
 import org.talend.repository.ui.actions.routines.CreateRoutineAction;
@@ -154,10 +153,7 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
             addToMenu(menu, CorePlugin.getDefault().getDesignerCoreService().getCreateProcessAction(true), -1);
             addSeparator(menu);
         }
-        if (repositoryView.containsRepositoryType(ERepositoryObjectType.ROUTES)) {
-            addToMenu(menu, CorePlugin.getDefault().getDesignerCoreService().getCreateProcessAction(true), -1);
-            // addSeparator(menu);
-        }
+
         if (repositoryView.containsRepositoryType(ERepositoryObjectType.BUSINESS_PROCESS)) {
             addToMenu(menu, CorePlugin.getDefault().getDiagramModelService().getCreateDiagramAction(true), -1);
             addSeparator(menu);

@@ -287,7 +287,7 @@ public class DefaultRunProcessService implements IRunProcessService {
         return RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext().getProcess();
     }
 
-    public boolean checkExportProcess(IStructuredSelection selection) {
-        return JobErrorsChecker.checkExportErrors(selection);
+    public boolean checkExportProcess(IStructuredSelection selection, boolean isJob) {
+        return JobErrorsChecker.checkExportErrors(selection, isJob);
     }
 }

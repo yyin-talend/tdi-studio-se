@@ -50,10 +50,6 @@ public class RepositoryNameSorter extends ViewerSorter {
                 return 0;
             } else if (contentType == ERepositoryObjectType.PROCESS) {
                 return 5;
-            } else if (contentType == ERepositoryObjectType.BEANS) {
-                return 16;
-            } else if (contentType == ERepositoryObjectType.ROUTES) {
-                return 5;
             } else if (contentType == ERepositoryObjectType.JOBLET) {
                 return 6;
             } else if (contentType == ERepositoryObjectType.CONTEXT) {

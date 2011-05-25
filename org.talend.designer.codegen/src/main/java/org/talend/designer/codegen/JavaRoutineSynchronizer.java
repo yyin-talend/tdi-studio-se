@@ -39,7 +39,6 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.JobInfo;
-import org.talend.core.model.properties.BeanItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
@@ -97,11 +96,11 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
     }
 
     public void syncAllBeans() throws SystemException {
-        for (IRepositoryViewObject routine : getBeans()) {
-            BeanItem beanItem = (BeanItem) routine.getProperty().getItem();
-            // syncRoutine(routineItem, true);
-            syncBean(beanItem, true);
-        }
+        // for (IRepositoryViewObject routine : getBeans()) {
+        // BeanItem beanItem = (BeanItem) routine.getProperty().getItem();
+        // // syncRoutine(routineItem, true);
+        // syncBean(beanItem, true);
+        // }
 
         // try {
         // ILibrariesService jms = CorePlugin.getDefault().getLibrariesService();
@@ -187,52 +186,8 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncRoutine(org.talend .core.model.properties.RoutineItem)
      */
     @Override
-    protected void doSyncBean(BeanItem beanItem, boolean copyToTemp) throws SystemException {
-        FileOutputStream fos = null;
-        try {
-            IFile file = getBeanFile(beanItem);
-            if (beanItem.getProperty().getModificationDate() != null) {
-                long modificationItemDate = beanItem.getProperty().getModificationDate().getTime();
-                long modificationFileDate = file.getModificationStamp();
-                if (modificationItemDate <= modificationFileDate) {
-                    return;
-                }
-            } else {
-                beanItem.getProperty().setModificationDate(new Date());
-            }
+    protected void doSyncBean(Item beanItem, boolean copyToTemp) throws SystemException {
 
-            if (copyToTemp) {
-                String beanContent = new String(beanItem.getContent().getInnerContent());
-                // see 14713
-                String version = CodeGeneratorActivator.getDefault().getVersion();
-                if (beanContent.contains("%GENERATED_LICENSE%")) { //$NON-NLS-1$
-                    IService service = GlobalServiceRegister.getDefault().getService(IBrandingService.class);
-                    if (service instanceof AbstractBrandingService) {
-                        String routineHeader = ((AbstractBrandingService) service).getRoutineLicenseHeader(version);
-                        beanContent = beanContent.replace("%GENERATED_LICENSE%", routineHeader); //$NON-NLS-1$
-                    }
-                }// end
-                String label = beanItem.getProperty().getLabel();
-                if (!label.equals(ITalendSynchronizer.BEAN_TEMPLATE) && beanContent != null) {
-                    beanContent = beanContent.replaceAll(ITalendSynchronizer.BEAN_TEMPLATE, label);
-                    File f = file.getLocation().toFile();
-                    fos = new FileOutputStream(f);
-                    fos.write(beanContent.getBytes());
-                    fos.close();
-                }
-            }
-            file.refreshLocal(1, null);
-        } catch (CoreException e) {
-            throw new SystemException(e);
-        } catch (IOException e) {
-            throw new SystemException(e);
-        } finally {
-            try {
-                fos.close();
-            } catch (Exception e) {
-                // ignore me even if i'm null
-            }
-        }
     }
 
     /**
@@ -276,7 +231,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
-    private IFile getBeanFile(BeanItem beanItem) throws SystemException {
+    private IFile getBeanFile(Item beanItem) throws SystemException {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
@@ -443,8 +398,6 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
             return getRoutineFile((RoutineItem) item);
         } else if (item instanceof ProcessItem) {
             return getProcessFile((ProcessItem) item);
-        } else if (item instanceof BeanItem) {
-            return getBeanFile((BeanItem) item);
         }
         return null;
     }
@@ -479,16 +432,8 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      * RoutineItem, java.lang.String)
      */
     @Override
-    public void renameBeanClass(BeanItem beanItem) {
-        if (beanItem == null) {
-            return;
-        }
-        String routineContent = new String(beanItem.getContent().getInnerContent());
-        String label = beanItem.getProperty().getLabel();
-        //
-        String regexp = "public(\\s)+class(\\s)+\\w+(\\s)+\\{";//$NON-NLS-1$
-        routineContent = routineContent.replaceFirst(regexp, "public class " + label + " {");//$NON-NLS-1$//$NON-NLS-2$
-        beanItem.getContent().setInnerContent(routineContent.getBytes());
+    public void renameBeanClass(Item beanItem) {
+
     }
 
     public void deleteRoutinefile(IRepositoryViewObject objToDelete) {
@@ -523,26 +468,30 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
-    public IFile getRoutinesFile(RoutineItem routineItem) throws SystemException {
+    public IFile getRoutinesFile(Item item) throws SystemException {
         try {
-            ProjectManager projectManager = ProjectManager.getInstance();
-            org.talend.core.model.properties.Project project = projectManager.getProject(routineItem);
-            IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project.getTechnicalLabel());
-            String repositoryPath = ERepositoryObjectType.getFolderName(ERepositoryObjectType.ROUTINES);
-            String folderPath = RepositoryNodeUtilities.getPath(routineItem.getProperty().getId()).toString();
-            String fileName = routineItem.getProperty().getLabel() + "_" + routineItem.getProperty().getVersion()
-                    + JavaUtils.ITEM_EXTENSION;
-            String path = null;
-            if (folderPath != null && !folderPath.trim().equals("")) {
-                path = repositoryPath + "/" + folderPath + "/" + fileName;
-            } else {
-                path = repositoryPath + "/" + fileName;
-            }
+            if (item instanceof RoutineItem) {
+                RoutineItem routineItem = (RoutineItem) item;
+                ProjectManager projectManager = ProjectManager.getInstance();
+                org.talend.core.model.properties.Project project = projectManager.getProject(routineItem);
+                IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project.getTechnicalLabel());
+                String repositoryPath = ERepositoryObjectType.getFolderName(ERepositoryObjectType.ROUTINES);
+                String folderPath = RepositoryNodeUtilities.getPath(routineItem.getProperty().getId()).toString();
+                String fileName = routineItem.getProperty().getLabel() + "_" + routineItem.getProperty().getVersion()
+                        + JavaUtils.ITEM_EXTENSION;
+                String path = null;
+                if (folderPath != null && !folderPath.trim().equals("")) {
+                    path = repositoryPath + "/" + folderPath + "/" + fileName;
+                } else {
+                    path = repositoryPath + "/" + fileName;
+                }
 
-            IFile file = iProject.getFile(path);
-            return file;
+                IFile file = iProject.getFile(path);
+                return file;
+            }
         } catch (Exception e) {
             throw new SystemException(e);
         }
+        return null;
     }
 }

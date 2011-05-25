@@ -14,7 +14,6 @@ package org.talend.designer.codegen;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -38,6 +37,7 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.temp.ETypeGen;
 import org.talend.core.ui.branding.IBrandingService;
@@ -53,6 +53,7 @@ import org.talend.designer.codegen.exception.CodeGeneratorException;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.codegen.proxy.JetProxy;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -147,14 +148,25 @@ public class CodeGenerator implements ICodeGenerator {
                 System.out.println(Messages.getString("CodeGenerator.getGraphicalNode2")); //$NON-NLS-1$
                 printForDebug();
             }
-            
-            if("tcs".equals(service.getAcronym()))
-                processTree = new NodesTree(process, nodes, true, ETypeGen.CAMEL);
-            else
+
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                        .getService(ICamelDesignerCoreService.class);
+                if (process != null && process instanceof IProcess2) {
+                    IProcess2 process2 = (IProcess2) process;
+                    if (camelService.isInstanceofCamelRoutes(process2.getProperty().getItem())) {
+                        processTree = new NodesTree(process, nodes, true, ETypeGen.CAMEL);
+                    } else {
+                        processTree = new NodesTree(process, nodes, true);
+                    }
+                }
+            } else {
                 processTree = new NodesTree(process, nodes, true);
+            }
             RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                     Context.REPOSITORY_CONTEXT_KEY);
             language = repositoryContext.getProject().getLanguage();
+
         }
     }
 
@@ -209,13 +221,23 @@ public class CodeGenerator implements ICodeGenerator {
 
             headerArgument.add(CodeGeneratorActivator.getDefault().getBundle().getHeaders()
                     .get(org.osgi.framework.Constants.BUNDLE_VERSION));
-            IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
-            if ("tcs".equals(service.getAcronym()))
-                componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER_ROUTE, headerArgument));
-            else
+            boolean isCamel = false;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                        .getService(ICamelDesignerCoreService.class);
+                if (process != null && process instanceof IProcess2) {
+                    IProcess2 process2 = (IProcess2) process;
+                    if (camelService.isInstanceofCamelRoutes(process2.getProperty().getItem())) {
+                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER_ROUTE, headerArgument));
+                        isCamel = true;
+                    } else {
+                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
+                    }
+                }
+            } else {
                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
-
-            if ("tcs".equals(service.getAcronym())) {
+            }
+            if (isCamel) {
                 if ((processTree.getSubTrees() != null) && (processTree.getSubTrees().size() > 0)) {
 
                     // sortSubTree(processTree.getSubTrees());
@@ -238,8 +260,8 @@ public class CodeGenerator implements ICodeGenerator {
                             generateHeaders = false;
                         }
 
-                        if ("cMessagingEndpoint"
-                                .equals(subTree.getRootNode().getSubProcessStartNode(true).getComponent().getName())) {
+                        if ("cMessagingEndpoint".equals(subTree.getRootNode().getSubProcessStartNode(true).getComponent()
+                                .getName())) {
                             nodeSubTreeList.add(subTree);
                         } else {
                             componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
@@ -254,7 +276,13 @@ public class CodeGenerator implements ICodeGenerator {
                                 ETypeGen.CAMEL)); // And generate the component par of code
                         componentsCode.append(";");
                     }
-                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_FOOTER, lastSubtree)); // Close the last route in the CamelContext
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_FOOTER, lastSubtree)); // Close
+                                                                                                                    // the
+                                                                                                                    // last
+                                                                                                                    // route
+                                                                                                                    // in
+                                                                                                                    // the
+                                                                                                                    // CamelContext
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER_ROUTE, lastSubtree));
                 }
             } else {
@@ -300,7 +328,7 @@ public class CodeGenerator implements ICodeGenerator {
             Vector footerArgument = new Vector(2);
             footerArgument.add(process);
             footerArgument.add(processTree.getRootNodes());
-            if ("tcs".equals(service.getAcronym()))
+            if (isCamel)
                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER_ROUTE, footerArgument));
             else
                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER, footerArgument));
@@ -831,8 +859,7 @@ public class CodeGenerator implements ICodeGenerator {
                     String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
                     IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                             IBrandingService.class);
-                    String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
-                    if (processLabel.equals("Routes")) {
+                    if (breaningService.isPoweredOnlyCamel()) {
                         componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
                     }
                     jetBean.setJetPluginRepository(componentsPath);

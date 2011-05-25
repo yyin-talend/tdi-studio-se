@@ -127,6 +127,7 @@ import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForHL7Command
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForSAPCommand;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -445,6 +446,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
         }
 
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (getTargetEditPart().getModel() != null && (getTargetEditPart().getModel() instanceof Process)
+                    && camelService.isCamelMulitPageEditor(((Process) getTargetEditPart().getModel()).getEditor())) {
+                return;
+            }
+        }
         List<Object> sources = getSelectSource();
         if (containsContextSource(sources)) {
             createContext(sources);
@@ -740,6 +749,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     // RulesItem
                     return;
                 }
+
                 TempStore store = new TempStore();
 
                 store.seletetedNode = sourceNode;

@@ -239,7 +239,7 @@ public class RunProcessService implements IRunProcessService {
         return RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext().getProcess();
     }
 
-    public boolean checkExportProcess(IStructuredSelection selection) {
-        return delegateService.checkExportProcess(selection);
+    public boolean checkExportProcess(IStructuredSelection selection, boolean isJob) {
+        return delegateService.checkExportProcess(selection, isJob);
     }
 }

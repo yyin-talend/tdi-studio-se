@@ -37,6 +37,7 @@ import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -156,7 +157,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             String inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/job-template.xml"), null)) //$NON-NLS-1$
                     .getFile();
             String targetFile = getTmpFolder() + PATH_SEPARATOR + "job.xml"; //$NON-NLS-1$
-            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobClassName);
+            String itemType = null;
+            // only for camel route,tos process.
+            ERepositoryObjectType type = ERepositoryObjectType.getItemType(processItem);
+            if (type.equals(ERepositoryObjectType.PROCESS)) {
+                itemType = "job";
+            } else {
+                itemType = "route";
+            }
+            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobClassName, itemType);
             files.add(targetFile);
         } catch (IOException e) {
             ExceptionHandler.process(e);
@@ -168,7 +177,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return OSGI_INF.concat(PATH_SEPARATOR).concat(BLUEPRINT);
     }
 
-    protected void readAndReplaceInXmlTemplate(String inputFile, String outputFile, String jobName, String jobClassName) {
+    protected void readAndReplaceInXmlTemplate(String inputFile, String outputFile, String jobName, String jobClassName,
+            String itemType) {
         FileReader fr = null;
         try {
             fr = new FileReader(inputFile);
@@ -179,7 +189,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
             String line = br.readLine();
             while (line != null) {
-                line = line.replace("@JOBNAME@", jobName).replace("@TYPE@", "job").replace("@JOBCLASSNAME@", jobClassName); //$NON-NLS-1$ //$NON-NLS-2$
+                line = line.replace("@JOBNAME@", jobName).replace("@TYPE@", itemType).replace("@JOBCLASSNAME@", jobClassName); //$NON-NLS-1$ //$NON-NLS-2$
                 bw.write(line + "\n"); //$NON-NLS-1$
                 line = br.readLine();
             }

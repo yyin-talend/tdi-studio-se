@@ -516,4 +516,13 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     public String getCombine() {
         return null;
     }
+
+    public String getPaletteType() {
+        return "HIDDEN";
+    }
+
+    public void setPaletteType(String paletteType) {
+        // TODO Auto-generated method stub
+
+    }
 }

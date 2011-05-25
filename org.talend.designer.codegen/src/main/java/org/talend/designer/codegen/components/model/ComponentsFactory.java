@@ -65,6 +65,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.codegen.i18n.Messages;
+import org.talend.designer.core.ITisLocalProviderService;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
@@ -400,6 +401,12 @@ public class ComponentsFactory implements IComponentsFactory {
                 currentComp.setVisible(false);
                 currentComp.setTechnical(true);
             }
+            if (currentComp.getPathSource().contains("camel")) {
+                currentComp.setPaletteType("CAMEL");
+            } else {
+                currentComp.setPaletteType("DI");
+            }
+
             if (!componentList.contains(currentComp)) {
                 ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
                 currentComp.setResourceBundle(getComponentResourceBundle(currentComp, info.getPathSource(),
@@ -485,7 +492,8 @@ public class ComponentsFactory implements IComponentsFactory {
         if (componentsProvider != null) {
             try {
                 componentsProvider.preComponentsLoad();
-                if (componentsProvider.getInstallationFolder().exists()) {
+                File componentFile = componentsProvider.getInstallationFolder();
+                if (componentFile.exists()) {
                     loadComponentsFromFolder(componentsProvider.getComponentsLocation(), componentsProvider);
                 }
             } catch (IOException e) {
@@ -653,6 +661,11 @@ public class ComponentsFactory implements IComponentsFactory {
                             currentComp.setVisible(false);
                             currentComp.setTechnical(true);
                         }
+                        if (provider.getId().contains("Camel")) {
+                            currentComp.setPaletteType("CAMEL");
+                        } else {
+                            currentComp.setPaletteType("DI");
+                        }
 
                         if (componentList.contains(currentComp)) {
                             log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version."); //$NON-NLS-1$ //$NON-NLS-2$
@@ -710,8 +723,7 @@ public class ComponentsFactory implements IComponentsFactory {
         String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
         IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
-        if (processLabel.equals("Routes")) {
+        if (breaningService.isPoweredOnlyCamel()) {
             componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
         }
         Bundle b = Platform.getBundle(componentsPath);
@@ -734,7 +746,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private ResourceBundle getComponentResourceBundle(IComponent currentComp, String source, AbstractComponentsProvider provider) {
         String label = ComponentFilesNaming.getInstance().getBundleName(currentComp.getName(), source);
-        // Bundle bundle4 = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
+
         // Class eclass = null;
         // try {
         // eclass = bundle4.loadClass("org.talend.designer.components.ComponentsLocalProviderPlugin");
@@ -744,7 +756,16 @@ public class ComponentsFactory implements IComponentsFactory {
         // return ResourceBundle.getBundle(label, Locale.getDefault(), classLoader);
         // ResourceBundle bundle = ResourceBundle.getBundle(label, Locale.getDefault(), new
         // ResClassLoader(getClass().getClassLoader()))
-        ResourceBundle bundle = provider.getResourceBundle(label);
+        ResourceBundle bundle = null;
+        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        if (breaningService.isPoweredOnlyCamel()) {
+            bundle = provider.getResourceBundle(label);
+        } else {
+            ITisLocalProviderService service = (ITisLocalProviderService) GlobalServiceRegister.getDefault().getService(
+                    ITisLocalProviderService.class);
+            bundle = service.getResourceBundle(label);
+        }
         return bundle;
     }
 
@@ -827,8 +848,7 @@ public class ComponentsFactory implements IComponentsFactory {
         String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
         IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
-        if (processLabel.equals("Routes")) {
+        if (breaningService.isPoweredOnlyCamel()) {
             componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
         }
         Bundle b = Platform.getBundle(componentsPath);

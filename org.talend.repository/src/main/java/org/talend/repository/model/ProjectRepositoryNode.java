@@ -100,6 +100,7 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.cwm.helper.TableHelper;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
@@ -114,8 +115,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
             metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode, metadataFTPConnectionNode,
             metadataEbcdicConnectionNode, metadataHL7ConnectionNode, metadataMDMConnectionNode, metadataRulesNode,
-            metadataHeaderFooterConnectionNode, jobscriptsNode, beanNode, metadataBRMSConnectionNode,
-            metadataValidationRulesNode, metadataEDIFactConnectionNode;
+            metadataHeaderFooterConnectionNode, jobscriptsNode, metadataBRMSConnectionNode, metadataValidationRulesNode,
+            metadataEDIFactConnectionNode;
 
     private RepositoryNode jobletNode;
 
@@ -124,8 +125,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private RepositoryNode metadataNode;
 
     private RepositoryNode refProject;
-
-    private RepositoryNode routesNode;
 
     private boolean mergeRefProject;
 
@@ -138,6 +137,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private org.talend.core.model.general.Project project;
 
     private Map<Object, List<Project>> nodeAndProject;
+
+    private Map<ERepositoryObjectType, RepositoryNode> repositoryNodeMap = new HashMap<ERepositoryObjectType, RepositoryNode>();
 
     /**
      * DOC nrousseau ProjectRepositoryNode constructor comment.
@@ -300,25 +301,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         nodes.add(recBinNode);
         IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        String processLabel = breaningService.getBrandingConfiguration().getJobDesignName();
         // PTODO need refactor later, this is not good, I think
-        if (processLabel.equals("Routes")) { //$NON-NLS-1$ 
-            routesNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            routesNode.setProperties(EProperties.LABEL, ERepositoryObjectType.ROUTES);
-            routesNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTES);
-            nodes.add(routesNode);
-
-            codeNode = new StableRepositoryNode(this,
-                    Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON); //$NON-NLS-1$
-            codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
-            nodes.add(codeNode);
-
-            beanNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            beanNode.setProperties(EProperties.LABEL, ERepositoryObjectType.BEANS);
-            beanNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.BEANS);
-            codeNode.getChildren().add(beanNode);
-
-        } else {
+        if (!breaningService.isPoweredOnlyCamel()) {
             // 1. Business process
             businessProcessNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
             businessProcessNode.setProperties(EProperties.LABEL, ERepositoryObjectType.BUSINESS_PROCESS);
@@ -344,13 +328,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             contextNode.setProperties(EProperties.LABEL, ERepositoryObjectType.CONTEXT);
             contextNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.CONTEXT);
             nodes.add(contextNode);
-
-            // 4. Code
-            codeNode = new StableRepositoryNode(this,
-                    Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON); //$NON-NLS-1$
-            codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
-            nodes.add(codeNode);
-
+        }
+        // 4. Code
+        codeNode = new StableRepositoryNode(this,
+                Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON); //$NON-NLS-1$
+        codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
+        nodes.add(codeNode);
+        if (!breaningService.isPoweredOnlyCamel()) {
             // 4.1. Routines
             routineNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
             routineNode.setProperties(EProperties.LABEL, ERepositoryObjectType.ROUTINES);
@@ -558,15 +542,16 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 refProject.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
                 nodes.add(refProject);
             }
-            // *init the repository node from extension
-            initExtensionRepositoryNodes(nodes);
         }
+        // *init the repository node from extension
+        initExtensionRepositoryNodes(nodes);
 
         // hide hidden nodes;
         hideHiddenNodes();
     }
 
     private void initExtensionRepositoryNodes(List<IRepositoryNode> nodes) {
+        repositoryNodeMap.clear();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IConfigurationElement[] configurationElements = registry
                 .getConfigurationElementsFor("org.talend.core.repository.repository_node_provider"); //$NON-NLS-1$
@@ -597,10 +582,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         dynamicNode.setProperties(EProperties.CONTENT_TYPE, repositoryNodeType);
                     }
                     dynamicNode.setIcon(icon);
+                    repositoryNodeMap.put(repositoryNodeType, dynamicNode);
                     IRepositoryNode parentNode = findParentNodeByLabel(nodes, parentNodeType);
                     if (parentNode != null) {
                         parentNode.getChildren().add(dynamicNode);
-                        dynamicNode.setParent((RepositoryNode) parentNode);
+                        // dynamicNode.setParent((RepositoryNode) parentNode);
                     } else {
                         nodes.add(dynamicNode);
                     }
@@ -673,18 +659,12 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == processNode) {
                 convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.PROCESS, true), processNode,
                         ERepositoryObjectType.PROCESS, recBinNode);
-            } else if (parent == routesNode) {
-                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.ROUTES, true), routesNode,
-                        ERepositoryObjectType.ROUTES, recBinNode);
             } else if (parent == jobletNode) {
                 convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.JOBLET, true), jobletNode,
                         ERepositoryObjectType.JOBLET, recBinNode);
             } else if (parent == routineNode) {
                 convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.ROUTINES, true), routineNode,
                         ERepositoryObjectType.ROUTINES, recBinNode);
-            } else if (parent == beanNode) {
-                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.BEANS, true), beanNode,
-                        ERepositoryObjectType.BEANS, recBinNode);
             } else if (parent == jobscriptsNode) {
                 convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.JOB_SCRIPT, true), jobscriptsNode,
                         ERepositoryObjectType.JOB_SCRIPT, recBinNode);
@@ -778,6 +758,17 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         addItemToRecycleBin(recBinNode, folder, foldersList);
                     }
                 }
+            } else if (parent instanceof RepositoryNode) {
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                    ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                            .getService(ICamelDesignerCoreService.class);
+                    RepositoryNode repositoryNode = (RepositoryNode) parent;
+                    if (service.isCamelRepObjType(repositoryNode.getContentType())) {
+                        convert(newProject, factory.getMetadata(newProject, repositoryNode.getContentType(), true),
+                                repositoryNode, repositoryNode.getContentType(), recBinNode);
+                    }
+                }
+
             }
         } catch (PersistenceException e) {
             RuntimeExceptionHandler.process(e);
@@ -1082,7 +1073,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                             break;
                         }
                     }
-                    if (!existSystemFolder) {
+                    IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                            IBrandingService.class);
+
+                    if (!existSystemFolder && !breaningService.isPoweredOnlyCamel()) {
                         folder = new StableRepositoryNode(parent, RepositoryConstants.SYSTEM_DIRECTORY,
                                 ECoreImage.FOLDER_CLOSE_ICON);
                         parent.getChildren().add(folder);
@@ -2050,12 +2044,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             return this.businessProcessNode;
         } else if (type == ERepositoryObjectType.PROCESS) {
             return this.processNode;
-        } else if (type == ERepositoryObjectType.ROUTES) {
-            return this.routesNode;
         } else if (type == ERepositoryObjectType.CONTEXT) {
             return this.contextNode;
-        } else if (type == ERepositoryObjectType.BEANS) {
-            return this.beanNode;
         } else if (type == ERepositoryObjectType.ROUTINES) {
             return this.routineNode;
         } else if (type == ERepositoryObjectType.JOB_SCRIPT) {
@@ -2126,8 +2116,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             return this.jobletNode;
         } else if (type == ERepositoryObjectType.SVN_ROOT) {
             return this.svnRootNode;
+        } else {
+            return repositoryNodeMap.get(type);
         }
-        return null;
     }
 
     /*

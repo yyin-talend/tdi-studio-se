@@ -107,6 +107,7 @@ import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
@@ -1479,8 +1480,18 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     protected ProcessType getProcessType() {
-        ProcessItem item = (ProcessItem) property.getItem();
-        ProcessType processType = item.getProcess();
+        ProcessType processType = null;
+        Item processItem = property.getItem();
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            processType = camelService.getCamelProcessType(processItem);
+        }
+        if (processItem instanceof ProcessItem) {
+            ProcessItem item = (ProcessItem) processItem;
+            processType = item.getProcess();
+        }
+
         return processType;
     }
 

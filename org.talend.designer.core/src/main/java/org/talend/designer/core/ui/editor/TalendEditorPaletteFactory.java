@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.CreationToolEntry;
 import org.eclipse.gef.palette.PaletteContainer;
@@ -37,10 +38,14 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.TalendPaletteGroup;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IPaletteFilter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.NoteCreationFactory;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
@@ -90,6 +95,24 @@ public final class TalendEditorPaletteFactory {
             componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
         }
         List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
+
+        IProcess process = ActiveProcessTracker.getCurrentProcess();
+        ERepositoryObjectType type = null;
+        if (process != null && process instanceof IProcess2 && ((IProcess2) process).getProperty() != null) {
+            type = ERepositoryObjectType.getItemType(((IProcess2) process).getProperty().getItem());
+        }
+
+        if (type == null) {
+            return;
+        }
+
+        Iterator<IComponent> iterator = componentList.iterator();
+        while (iterator.hasNext()) {
+            IComponent comp = iterator.next();
+            if (!ArrayUtils.contains(type.getProducts(), comp.getPaletteType())) {
+                iterator.remove();
+            }
+        }
 
         Collections.sort(componentList, new Comparator<IComponent>() {
 
@@ -280,6 +303,24 @@ public final class TalendEditorPaletteFactory {
             componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
         }
         List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
+
+        IProcess process = ActiveProcessTracker.getCurrentProcess();
+        ERepositoryObjectType type = null;
+        if (process != null && process instanceof IProcess2 && ((IProcess2) process).getProperty() != null) {
+            type = ERepositoryObjectType.getItemType(((IProcess2) process).getProperty().getItem());
+        }
+
+        if (type == null) {
+            return;
+        }
+
+        Iterator<IComponent> iterator = componentList.iterator();
+        while (iterator.hasNext()) {
+            IComponent comp = iterator.next();
+            if (!ArrayUtils.contains(type.getProducts(), comp.getPaletteType())) {
+                iterator.remove();
+            }
+        }
 
         Collections.sort(componentList, new Comparator<IComponent>() {
 
@@ -707,5 +748,16 @@ public final class TalendEditorPaletteFactory {
             }
         }
 
+    }
+
+    /**
+     * DOC guanglong.du Comment method "createEmptyPalette".
+     * 
+     * @return
+     */
+    public static PaletteRoot createEmptyPalette() {
+        palette = new PaletteRoot();
+        palette.add(createToolsGroup());
+        return palette;
     }
 }
