@@ -76,6 +76,8 @@ public class DropContextAnalyzer {
 
     private boolean isCursorOverExpressionCell;
 
+    private boolean isCursorOverHeader;
+
     private boolean overwriteExpression;
 
     private boolean mapOneToOneAuthorized;
@@ -223,18 +225,27 @@ public class DropContextAnalyzer {
         }
 
         IDataMapTable dataMapTable = dataMapTableViewTarget.getDataMapTable();
-        if (zoneTarget == Zone.OUTPUTS && ((OutputTable) dataMapTable).isErrorRejectTable()) {
-            if (currentTableTarget != null && event != null) {
-                if (event.item instanceof TableItem) {
-                    Object data = event.item.getData();
-                    if (data instanceof OutputColumnTableEntry) {
-                        String label = ((OutputColumnTableEntry) data).getName();
-                        if (mapperManager.ERROR_REJECT_MESSAGE.equals(label)
-                                || mapperManager.ERROR_REJECT_STACK_TRACE.equals(label)) {
-                            return false;
+        if (zoneTarget == Zone.OUTPUTS) {
+            OutputTable outputTable = (OutputTable) dataMapTable;
+            if (outputTable.isErrorRejectTable()) {
+                if (currentTableTarget != null && event != null) {
+                    if (event.item instanceof TableItem) {
+                        Object data = event.item.getData();
+                        if (data instanceof OutputColumnTableEntry) {
+                            String label = ((OutputColumnTableEntry) data).getName();
+                            if (mapperManager.ERROR_REJECT_MESSAGE.equals(label)
+                                    || mapperManager.ERROR_REJECT_STACK_TRACE.equals(label)) {
+                                return false;
+                            }
                         }
                     }
                 }
+            }
+            // forbiden dnd if use reposiotry metadat
+            boolean useRepositoryMeta = outputTable.getId() != null && !"".equals(outputTable.getId());
+
+            if (useRepositoryMeta && isCursorOverHeader || useRepositoryMeta && !isCursorOverExpressionCell) {
+                return false;
             }
         }
 
@@ -299,6 +310,12 @@ public class DropContextAnalyzer {
                 break;
             }
             width += widthColumn;
+        }
+
+        if (pointCursor.y < currentTableTarget.getHeaderHeight()) {
+            isCursorOverHeader = true;
+        } else {
+            isCursorOverHeader = false;
         }
 
         List<TableViewerCreatorColumnNotModifiable> viewerColumns = tableViewerCreator.getColumns();
