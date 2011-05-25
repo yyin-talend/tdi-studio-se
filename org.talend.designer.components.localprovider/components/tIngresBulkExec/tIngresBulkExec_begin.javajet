@@ -323,7 +323,16 @@
 		try {
 		      java.text.SimpleDateFormat timestampFormatter = new java.text.SimpleDateFormat("yyyyMMddHHmmss");
                   timestamp = timestampFormatter.format(new java.util.Date());
-                  fileNameAndPath = tempDirectoryPath + "ingres_sql_" + timestamp;
+			  /*
+			  *Under solaris and windows value of "java.io.tmpdir" ends with 
+			  *system-dependent default name-separator character. But under linux
+			  *the value does not contain trailing name-separator.
+	          */
+	          if(System.getProperty("java.io.tmpdir").endsWith(System.getProperty("file.separator"))){
+	         	 fileNameAndPath = tempDirectoryPath + "ingres_sql_" + timestamp;
+	          }else{
+	          	 fileNameAndPath = tempDirectoryPath + System.getProperty("file.separator") + "ingres_sql_" + timestamp;
+	          }
 
 			sqlFileAndPath     = fileNameAndPath + ".sql";
 			executableFilePath = fileNameAndPath + executableExtension;
@@ -358,6 +367,9 @@
 	/***********************************************************************/
 		
 		Runtime runtime_<%=cid%> = Runtime.getRuntime();
+		if(System.getProperty("os.name").toLowerCase().indexOf("linux")!=-1){
+     	 	runtime_<%=cid%>.exec("chmod a+x "+ executableFilePath);
+     	}
 		final Process ps_<%=cid %> = runtime_<%=cid%>.exec(executableFilePath);          
 		<%
 	}	
