@@ -32,7 +32,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 		//System.out.println(content);
 		boolean loadResult_<%=cid%> = taskLoadClient_<%=cid%>.doLoad(content);
 		if(!loadResult_<%=cid%>){
-			System.err.println("Connect server false!");
+			System.err.println("An error occured while uploading tasks.");
 		}
 	}
 <%

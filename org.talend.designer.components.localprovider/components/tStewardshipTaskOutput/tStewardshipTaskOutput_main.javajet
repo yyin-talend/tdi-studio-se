@@ -98,7 +98,7 @@ if(!taskFlag_<%=cid%>.equals(<%=dataUtil.getValueExpression(conn.getName(),loopi
 		//System.out.println(content);
 		boolean loadResult_<%=cid%> = taskLoadClient_<%=cid%>.doLoad(content);
 		if(!loadResult_<%=cid%>){
-			System.err.println("Connect server false!");
+			System.err.println("An error occured while uploading tasks.");
 		}
 	}
 	task_<%=cid%> = tasks_<%=cid%>.addTask();
