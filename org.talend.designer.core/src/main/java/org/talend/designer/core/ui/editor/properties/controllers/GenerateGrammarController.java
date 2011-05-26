@@ -106,6 +106,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
                     .findView(IRepositoryView.VIEW_ID);
 
             viewPart.refreshView();
+            refreshProject();
         }
 
     };
