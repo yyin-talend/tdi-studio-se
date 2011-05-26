@@ -59,14 +59,11 @@ public class MSSqlGenerateTimestampUtil {
                 return new java.util.Date(java.sql.Date.valueOf(rs.getString(index)).getTime());
             case STRING_TO_JAVA_SQL_TIME:
                 String tempDateString = rs.getString(index);
-                tempDateString = tempDateString.indexOf(".") == -1 ? tempDateString : tempDateString.substring(0, tempDateString
-                        .indexOf("."));
+                tempDateString = tempDateString.indexOf(".") == -1 ? tempDateString : tempDateString.substring(0,
+                        tempDateString.indexOf("."));
                 return new java.util.Date(java.sql.Time.valueOf(tempDateString).getTime());
             case STRING_TO_JAVA_SQL_TIMESTAMP:
-                String tempDateString1 = rs.getString(index);
-                tempDateString1 = tempDateString1.indexOf(".") == -1 ? tempDateString1 : tempDateString1.substring(0,
-                        tempDateString1.indexOf("."));
-                return new java.util.Date(java.sql.Timestamp.valueOf(tempDateString1).getTime());
+                return new java.util.Date(java.sql.Timestamp.valueOf(rs.getString(index)).getTime());
             case JAVA_SQL_DATE:
                 return new java.util.Date(rs.getTimestamp(index).getTime());
             default:
@@ -87,7 +84,7 @@ public class MSSqlGenerateTimestampUtil {
                         return new java.util.Date(java.sql.Time.valueOf(tempDateString).getTime());
                     } catch (java.lang.IllegalArgumentException iae2) {
                         columnDBTypeMapping.put(index, STRING_TO_JAVA_SQL_TIMESTAMP);
-                        return new java.util.Date(java.sql.Timestamp.valueOf(tempDateString).getTime());
+                        return new java.util.Date(java.sql.Timestamp.valueOf(rs.getString(index)).getTime());
                     }
                 }
 
