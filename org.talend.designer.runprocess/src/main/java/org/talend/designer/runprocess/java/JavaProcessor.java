@@ -34,10 +34,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -73,7 +75,6 @@ import org.eclipse.jface.text.formatter.FormattingContextProperties;
 import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.jface.text.formatter.MultiPassContentFormatter;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorPart;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -104,7 +105,6 @@ import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.runprocess.Processor;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -148,6 +148,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     private IJavaProcessorStates states;
 
     private ISyntaxCheckableEditor checkableEditor;
+
+    private String formatedCode;
 
     /**
      * Matchs placeholder in subprocess_header.javajet, it will be replaced by the size of method code.
@@ -385,7 +387,44 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             IFile codeFile = this.project.getFile(this.codePath);
 
             // format the code before save the file.
-            processCode = formatCode(processCode);
+            final String toFormat = processCode;
+            // fix for 21320
+            final Job job = new Job("t") {
+
+                @Override
+                protected IStatus run(IProgressMonitor monitor) {
+                    monitor.beginTask("Format code", IProgressMonitor.UNKNOWN);
+                    formatedCode = formatCode(toFormat);
+                    monitor.done();
+                    return Status.OK_STATUS;
+                }
+            };
+            long time1 = System.currentTimeMillis();
+
+            job.setSystem(true);
+            job.schedule();
+            boolean f = true;
+            while (f) {
+                long time2 = System.currentTimeMillis();
+                if (time2 - time1 > 30000) {
+                    if (job.getResult() == null || !job.getResult().isOK()) {
+                        f = false;
+                        job.done(Status.OK_STATUS);
+                        job.cancel();
+                    } else {
+                        processCode = formatedCode;
+                        f = false;
+                    }
+                } else {
+                    if (job.getResult() != null && job.getResult().isOK()) {
+                        processCode = formatedCode;
+                        f = false;
+                    }
+                }
+
+            }
+            formatedCode = null;
+
             // see feature 4610:option to see byte length of each code method
             processCode = computeMethodSizeIfNeeded(processCode);
             InputStream codeStream = new ByteArrayInputStream(processCode.getBytes());
