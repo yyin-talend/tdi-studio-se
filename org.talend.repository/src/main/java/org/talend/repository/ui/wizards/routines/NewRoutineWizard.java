@@ -34,6 +34,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -111,6 +112,7 @@ public class NewRoutineWizard extends Wizard {
     public boolean performFinish() {
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
+            updateRoutineContent();
             property.setId(repositoryFactory.getNextId());
             repositoryFactory.create(routineItem, mainPage.getDestinationPath());
         } catch (PersistenceException e) {
@@ -128,5 +130,20 @@ public class NewRoutineWizard extends Wizard {
      */
     public RoutineItem getRoutine() {
         return this.routineItem;
+    }
+
+    private void updateRoutineContent() {
+        if (routineItem == null) {
+            return;
+        }
+        ByteArray content = routineItem.getContent();
+        if (content != null) {
+            String routineContent = new String(content.getInnerContent());
+            String label = routineItem.getProperty().getLabel();
+            if (routineContent != null && !label.equals(ITalendSynchronizer.TEMPLATE)) {
+                routineContent = routineContent.replaceAll(ITalendSynchronizer.TEMPLATE, label);
+                content.setInnerContent(routineContent.getBytes());
+            }
+        }
     }
 }

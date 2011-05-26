@@ -141,6 +141,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         }
 
         try {
+            RepositoryManager.getRepositoryView().refresh(rEditorInput.getRepositoryNode());
             // see bug 1321
             item = (FileItem) rEditorInput.getItem();
             if (!rEditorInput.isReadOnly()) {
@@ -157,8 +158,6 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         rEditorInput.getFile().refreshLocal(IResource.DEPTH_ONE, null);
         super.doSetInput(rEditorInput);
         setName();
-
-        RepositoryManager.getRepositoryView().refresh(rEditorInput.getRepositoryNode());
     }
 
     private void setName() {
