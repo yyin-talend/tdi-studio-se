@@ -148,18 +148,19 @@ public class CodeGenerator implements ICodeGenerator {
                 System.out.println(Messages.getString("CodeGenerator.getGraphicalNode2")); //$NON-NLS-1$
                 printForDebug();
             }
-
+            boolean isCamel = false;
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
                 ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
                         .getService(ICamelDesignerCoreService.class);
                 if (process != null && process instanceof IProcess2) {
                     IProcess2 process2 = (IProcess2) process;
                     if (camelService.isInstanceofCamelRoutes(process2.getProperty().getItem())) {
-                        processTree = new NodesTree(process, nodes, true, ETypeGen.CAMEL);
-                    } else {
-                        processTree = new NodesTree(process, nodes, true);
+                        isCamel = true;
                     }
                 }
+            }
+            if (isCamel) {
+                processTree = new NodesTree(process, nodes, true, ETypeGen.CAMEL);
             } else {
                 processTree = new NodesTree(process, nodes, true);
             }
@@ -228,12 +229,12 @@ public class CodeGenerator implements ICodeGenerator {
                 if (process != null && process instanceof IProcess2) {
                     IProcess2 process2 = (IProcess2) process;
                     if (camelService.isInstanceofCamelRoutes(process2.getProperty().getItem())) {
-                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER_ROUTE, headerArgument));
                         isCamel = true;
-                    } else {
-                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
                     }
                 }
+            }
+            if (isCamel) {
+                componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER_ROUTE, headerArgument));
             } else {
                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
             }
