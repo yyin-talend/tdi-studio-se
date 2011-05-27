@@ -79,6 +79,7 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -90,6 +91,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.components.IComponentsLocalProviderService;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.model.utils.emf.component.ADVANCEDPARAMETERSType;
@@ -980,20 +982,27 @@ public class EmfComponent extends AbstractComponent {
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
-
-        boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME) != null;
-        param = new ElementParameter(node);
-        param.setName(EParameterName.TSTATCATCHER_STATS.getName());
-        param.setValue(new Boolean(compType.getHEADER().isTSTATCATCHERSTATS()));
-        param.setDisplayName(EParameterName.TSTATCATCHER_STATS.getDisplayName());
-        param.setFieldType(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.ADVANCED);
-        param.setNumRow(99);
-        param.setReadOnly(false);
-        param.setRequired(false);
-        param.setShow(tStatCatcherAvailable);
-        listParam.add(param);
-
+        boolean isCamel = false;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (node.getProcess() != null && node.getProcess() instanceof IProcess2)
+                isCamel = service.isInstanceofCamel(((IProcess2) node.getProcess()).getProperty().getItem());
+        }
+        if (!isCamel) {
+            boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME) != null;
+            param = new ElementParameter(node);
+            param.setName(EParameterName.TSTATCATCHER_STATS.getName());
+            param.setValue(new Boolean(compType.getHEADER().isTSTATCATCHERSTATS()));
+            param.setDisplayName(EParameterName.TSTATCATCHER_STATS.getDisplayName());
+            param.setFieldType(EParameterFieldType.CHECK);
+            param.setCategory(EComponentCategory.ADVANCED);
+            param.setNumRow(99);
+            param.setReadOnly(false);
+            param.setRequired(false);
+            param.setShow(tStatCatcherAvailable);
+            listParam.add(param);
+        }
         param = new ElementParameter(node);
         param.setName(EParameterName.HELP.getName());
         param.setValue(getTranslatedValue(PROP_HELP));
