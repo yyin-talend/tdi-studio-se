@@ -28,11 +28,17 @@ String exportedFile= ElementParameterParser.getValue(node, "__EXPORTED_FILE__");
 String separator= ElementParameterParser.getValue(node, "__FIELD_SEPARATOR__");
 String errorFile= ElementParameterParser.getValue(node, "__ERROR_FILE__");
 
+//windows line separator as default
+String lineSeparator = "\\r\\n";
+
 if(!scriptPath.endsWith("/\"")){
 	scriptPath = scriptPath+	"+\"/\"";
 }
 if(exportedFile.indexOf("/") !=0 && ("Windows").equals(execution)){
 	exportedFile = exportedFile.replaceAll("/", "\\\\\\\\");
+} else {
+	//Unix line separator
+	lineSeparator = "\\n";
 }
 
 String dbmsId = "teradata_id";
@@ -52,33 +58,33 @@ java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=scriptPath%>+<%=tabl
 <%//build script---------------------------------------------------------%>
 
 StringBuilder script_<%=cid%> = new StringBuilder();
-fw_<%=cid %>.write(".LOGTABLE "+<%=dbname%>+"."+<%=table%>+"_lt;\r\n");
-fw_<%=cid %>.write(".LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";\r\n");
+fw_<%=cid %>.write(".LOGTABLE "+<%=dbname%>+"."+<%=table%>+"_lt;" + "<%=lineSeparator%>");
+fw_<%=cid %>.write(".LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";"+ "<%=lineSeparator%>");
 
 <%//Layout---------------------------------------------------------------%>
-fw_<%=cid %>.write(".BEGIN EXPORT SESSIONS 8;\r\n");
-fw_<%=cid %>.write("SELECT \r\n");
+fw_<%=cid %>.write(".BEGIN EXPORT SESSIONS 8;"+"<%=lineSeparator%>");
+fw_<%=cid %>.write("SELECT "+"<%=lineSeparator%>");
 <%
 if(columnList!=null){
 	int counter = 1;
 	for(IMetadataColumn column:columnList){	
 		if( columnList.size() != counter){	%>
-		fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>)),\r\n");
+		fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>)),"+"<%=lineSeparator%>");
 	<%
 		} else {
 	%>
-		fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>))\r\n");
+		fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>))"+"<%=lineSeparator%>");
 	<% } 
 		counter++;
 	}
 }
 %>
-fw_<%=cid %>.write("FROM "+ <%=dbname%> + "." + <%=table%>+";\r\n");
+fw_<%=cid %>.write("FROM "+ <%=dbname%> + "." + <%=table%>+";"+"<%=lineSeparator%>");
 
 <%//Export file----------------------------------------------------------%>
-fw_<%=cid %>.write(".EXPORT OUTFILE \""+<%=exportedFile%>+".data\" FORMAT TEXT mode record;\r\n");
-fw_<%=cid %>.write(".END EXPORT;\r\n");
-fw_<%=cid %>.write(".LOGOFF;\r\n");
+fw_<%=cid %>.write(".EXPORT OUTFILE \""+<%=exportedFile%>+".data\" FORMAT TEXT mode record;"+"<%=lineSeparator%>");
+fw_<%=cid %>.write(".END EXPORT;"+"<%=lineSeparator%>");
+fw_<%=cid %>.write(".LOGOFF;"+"<%=lineSeparator%>");
 
 <%//write script to file-------------------------------------------------%>
 fw_<%=cid %>.close();
