@@ -86,9 +86,10 @@ public class ActiveProcessTracker implements IPartListener {
             if (part instanceof AbstractMultiPageTalendEditor) {
                 ComponentUtilities.updateFromRepositoryType(ERepositoryObjectType
                         .getItemType(((AbstractMultiPageTalendEditor) part).getProcess().getProperty().getItem()));
+                changedProcess = false;
             }
         }
-        changedProcess = false;
+
     }
 
     /*
