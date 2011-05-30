@@ -84,7 +84,7 @@ org.apache.xmlrpc.client.XmlRpcClient client<%=cid%> = new org.apache.xmlrpc.cli
                 for (java.util.Iterator iter_<%=cid %> = values_<%=cid %>.iterator(); iter_<%=cid %>.hasNext() && k_<%=cid %> < len_<%=cid %>; k_<%=cid %>++) {
                     results_<%=cid %>[k_<%=cid %>] =iter_<%=cid %>.next();
                     if(results_<%=cid %>[k_<%=cid %>] instanceof Object[] ){
-                    	//java.util.List<Object> val_<%=cid%> = new java.util.ArrayList();
+                    	java.util.List<Object> val_<%=cid%> = new java.util.ArrayList<Object>();
                     	//results_<%=cid %> = org.talend.rpc.util.ArrayUtilities.dumpMapInArray((Object[])results_<%=cid %>[k_<%=cid %>], val_<%=cid%>).toArray();
                     	results_<%=cid %>[k_<%=cid %>] = org.talend.rpc.util.ArrayUtilities.dumpMapInArray((Object[])results_<%=cid %>[k_<%=cid %>], val_<%=cid%>).toArray();
 
