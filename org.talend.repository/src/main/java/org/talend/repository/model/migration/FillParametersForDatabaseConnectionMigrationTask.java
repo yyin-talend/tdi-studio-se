@@ -53,19 +53,16 @@ public class FillParametersForDatabaseConnectionMigrationTask extends AbstractIt
         if (item instanceof DatabaseConnectionItem) {
             DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
             Connection connection = dbItem.getConnection();
-            // for bug 18985
-            if (connection instanceof DatabaseConnection) {
-                DatabaseConnection dbconn = (DatabaseConnection) connection;
-                EList<orgomg.cwm.objectmodel.core.Package> pkgs = dbconn.getDataPackage();
-                fillParametersForColumns(pkgs); // get all tdtables and set sqldatatype
-                dbconn.setName(dbItem.getProperty().getLabel());
-                try {
-                    factory.save(dbItem, true);
-                    return ExecutionResult.SUCCESS_WITH_ALERT;
-                } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
-                    return ExecutionResult.FAILURE;
-                }
+            DatabaseConnection dbconn = (DatabaseConnection) connection;
+            EList<orgomg.cwm.objectmodel.core.Package> pkgs = dbconn.getDataPackage();
+            fillParametersForColumns(pkgs); // get all tdtables and set sqldatatype
+            dbconn.setName(dbItem.getProperty().getLabel());
+            try {
+                factory.save(dbItem, true);
+                return ExecutionResult.SUCCESS_WITH_ALERT;
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+                return ExecutionResult.FAILURE;
             }
         }
         return ExecutionResult.SUCCESS_NO_ALERT;
