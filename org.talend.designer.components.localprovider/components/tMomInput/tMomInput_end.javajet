@@ -55,6 +55,9 @@
 		}	
 		System.out.println("Closing connection");
 		remoteQ<%=cid%>.close();
+		<%if("true".equals(ElementParameterParser.getValue(node, "__ROLLBACK__")) && ("false".equals(kListen)) && ("false".equals(ElementParameterParser.getValue(node, "__COMMIT__")))){%>
+		qMgr<%=cid%>.backout();
+		<%}%>
 		qMgr<%=cid%>.disconnect();
 	
 	}
