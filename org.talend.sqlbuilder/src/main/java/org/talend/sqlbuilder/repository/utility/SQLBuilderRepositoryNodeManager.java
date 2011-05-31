@@ -57,7 +57,6 @@ import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.relational.TdColumn;
-import org.talend.cwm.relational.impl.TdTableImpl;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProjectNodeHelper;
@@ -88,6 +87,8 @@ public class SQLBuilderRepositoryNodeManager {
     private static List<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
 
     private static List<RepositoryNode> repositoryNodes2 = new ArrayList<RepositoryNode>();
+
+    private static List<MetadataTable> tList = new ArrayList<MetadataTable>();
 
     /**
      * dev Comment method "isChangeElementColor".
@@ -523,7 +524,8 @@ public class SQLBuilderRepositoryNodeManager {
         tablesFromEMF = sortTableColumn(tablesFromEMF);
         // ConnectionHelper.getTables(connection).clear();
         // ConnectionHelper.getTables(connection).addAll(tablesFromEMF);
-
+        tList.clear();
+        tList.addAll(ConnectionHelper.getTables(connection));
         Catalog c = (Catalog) ConnectionHelper.getPackage(connection.getSID(), connection, Catalog.class);
         Schema s = (Schema) ConnectionHelper.getPackage(connection.getSID(), connection, Schema.class);
         Schema schema = (Schema) ConnectionHelper.getPackage(connection.getUiSchema(), connection, Schema.class);
@@ -844,12 +846,7 @@ public class SQLBuilderRepositoryNodeManager {
             return;
         }
         List<MetadataTable> tableList = new ArrayList<MetadataTable>(ConnectionHelper.getTables(connection));
-        List<MetadataTable> tList = new ArrayList<MetadataTable>(tableList);
-        for (MetadataTable t : tableList) {
-            if (t instanceof TdTableImpl) {
-                tList.remove(t);
-            }
-        }
+        tableList.removeAll(tList);
         Catalog catalog = (Catalog) ConnectionHelper.getPackage(((DatabaseConnection) connection).getSID(), connection,
                 Catalog.class);
         Schema schema = (Schema) ConnectionHelper.getPackage(((DatabaseConnection) connection).getUiSchema(), connection,
@@ -862,7 +859,7 @@ public class SQLBuilderRepositoryNodeManager {
         if (schema != null) {
             s = schema.getName();
         }
-        ProjectNodeHelper.removeTablesFromCurrentCatalogOrSchema(c, s, (DatabaseConnection) connection, tList);
+        ProjectNodeHelper.removeTablesFromCurrentCatalogOrSchema(c, s, (DatabaseConnection) connection, tableList);
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
