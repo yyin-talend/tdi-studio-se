@@ -91,7 +91,7 @@ try{
 		    				if(c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null){
 		    					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",true);
 		    				}
-		    			}catch(com.jcraft.jsch.SftpException se) {
+		    			}catch(com.jcraft.jsch.SftpException e_<%=cid%>) {
 		                	globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
 		                	if(c_<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null){
 		                		globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",true);
@@ -99,7 +99,7 @@ try{
 		            <%
         				if(("true").equals(dieOnError)){
 					%>
-           					throw(se);
+           					throw(e_<%=cid%>);
 					<%
 						}else{
 					%>
@@ -107,13 +107,13 @@ try{
 					<%
 						}
 					%>     
-		                }catch(Exception e){
-		                   if(!(e instanceof com.jcraft.jsch.SftpException)) {
+		                }catch(Exception e_<%=cid%>){
+		                   if(!(e_<%=cid%> instanceof com.jcraft.jsch.SftpException)) {
 		                		msg_<%=cid%>.add("file " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + " not found?");
 		                   		
 		                		globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",false);
 		                	}
-		                   	throw e;
+		                   	throw e_<%=cid%>;
 		                }
 						nb_file_<%=cid%>++;
 	      			}
@@ -127,9 +127,9 @@ try{
 		    	try{
 		   			c_<%=cid%>.rename(<%=remotedir %>+"/"+key<%=cid %>, <%=remotedir %>+"/"+map<%=cid %>.get(key<%=cid %>));
 		   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
-		   		}catch(com.jcraft.jsch.SftpException se){
+		   		}catch(com.jcraft.jsch.SftpException e_<%=cid%>){
 		   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename fail.");
-		   			throw se;
+		   			throw e_<%=cid%>;
 	   			}
    			}  
 	    }
@@ -256,14 +256,14 @@ try{
 		            		<%}%>
 		            		nb_file_<%=cid%>++;
 		      			}
-		      		}catch(com.enterprisedt.net.ftp.FTPException e){
+		      		}catch(com.enterprisedt.net.ftp.FTPException e_<%=cid%>){
 		      				
 	  					msg_<%=cid%>.add("file " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + " not found?");
 	  					
 	  					currentStatus_<%=cid %> = "File rename fail.";
 	  					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(listings<%=cid %>[m<%=cid %>].getName()));
 	  					
-	  					throw e;
+	  					throw e_<%=cid%>;
 		      		}
 	    		}
 	    	}else{
@@ -274,15 +274,15 @@ try{
     	globalMap.put("<%=cid %>_CURRENT_STATUS", currentStatus_<%=cid %>);
  
  <%}%>
- 	}catch(Exception e){
+ 	}catch(Exception e_<%=cid%>){
 <%
         if(("true").equals(dieOnError)){
 %>
-            throw(e);
+            throw(e_<%=cid%>);
 <%
 		}else{
 %>
-			System.err.print(e.getMessage());
+			System.err.print(e_<%=cid%>.getMessage());
 <%
 		}
 %>
