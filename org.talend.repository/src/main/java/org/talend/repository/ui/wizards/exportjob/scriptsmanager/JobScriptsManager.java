@@ -732,7 +732,7 @@ public abstract class JobScriptsManager {
                 metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
 
                 String basePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
-                        + typeFolderPath.toOSString();
+                        + typeFolderPath.toString();
                 if (itemPath != null && !"".equals(itemPath)) { //$NON-NLS-1$
                     basePath = basePath + PATH_SEPARATOR + itemPath;
                 }
