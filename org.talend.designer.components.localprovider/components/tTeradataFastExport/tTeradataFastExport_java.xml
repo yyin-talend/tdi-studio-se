@@ -52,10 +52,19 @@
     	</ITEMS>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="HOST"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REPOSITORY_VALUE="SERVER_NAME"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="10"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
     >
@@ -65,7 +74,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="15"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
     >
@@ -75,7 +84,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="20"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
     >
@@ -85,7 +94,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="5"
+      NUM_ROW="25"
       REQUIRED="true"
     >
       <DEFAULT>"mytable"</DEFAULT>
@@ -94,7 +103,40 @@
      <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="30"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="USE_QUERY"
+      FIELD="CHECK"
+      NUM_ROW="35"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER 
+    	NAME="QUERY"
+    	FIELD="MEMO_SQL" 
+    	NUM_ROW="40"
+    	SHOW_IF="USE_QUERY=='true'"
+    >
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+    
+    <PARAMETER
+      NAME="LOG_DB"
+      FIELD="TEXT"
+      NUM_ROW="45"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="LOG_TABLE"
+      FIELD="TEXT"
+      NUM_ROW="50"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -102,7 +144,7 @@
     <PARAMETER
       NAME="SCRIPT_PATH"
       FIELD="DIRECTORY"
-      NUM_ROW="7"
+      NUM_ROW="55"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/"</DEFAULT>
     </PARAMETER>
@@ -110,7 +152,7 @@
 	<PARAMETER
       NAME="EXPORTED_FILE"
       FIELD="FILE"
-      NUM_ROW="10"
+      NUM_ROW="60"
       REQUIRED="true"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/test.csv"</DEFAULT>
@@ -119,7 +161,7 @@
 	<PARAMETER
       NAME="FIELD_SEPARATOR"
       FIELD="TEXT"
-      NUM_ROW="12"
+      NUM_ROW="65"
       REQUIRED="true"
     >
       <DEFAULT>";"</DEFAULT>
@@ -128,7 +170,7 @@
  	<PARAMETER
       NAME="ERROR_FILE"
       FIELD="FILE"
-      NUM_ROW="14"
+      NUM_ROW="70"
       REQUIRED="true"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/error.log"</DEFAULT>

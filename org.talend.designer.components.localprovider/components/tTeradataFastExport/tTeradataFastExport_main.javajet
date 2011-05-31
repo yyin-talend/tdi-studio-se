@@ -17,10 +17,21 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
+String host = ElementParameterParser.getValue(node, "__HOST__");
 String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
 String dbuser= ElementParameterParser.getValue(node, "__USER__");
 String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 String table= ElementParameterParser.getValue(node, "__TABLE__");
+String logDB = ElementParameterParser.getValue(node, "__LOG_DB__");
+String logTable = ElementParameterParser.getValue(node, "__LOG_TABLE__");
+
+boolean needHost = ("".equals(host) || "\"\"".equals(host)) ? false : true;
+logDB = ("".equals(logDB) || "\"\"".equals(logDB)) ? dbname : logDB;
+logTable = ("".equals(logTable) || "\"\"".equals(logTable)) ? table + "+\"_lt\"" : logTable;
+
+boolean useQuery = "true".equals(ElementParameterParser.getValue(node, "__USE_QUERY__"));
+String query = ElementParameterParser.getValue(node, "__QUERY__"); 
+query = query.replaceAll("\n"," ").replaceAll("\r"," ");
 
 String execution= ElementParameterParser.getValue(node, "__EXECUTION__");
 String scriptPath= ElementParameterParser.getValue(node, "__SCRIPT_PATH__");
@@ -58,28 +69,33 @@ java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=scriptPath%>+<%=tabl
 <%//build script---------------------------------------------------------%>
 
 StringBuilder script_<%=cid%> = new StringBuilder();
-fw_<%=cid %>.write(".LOGTABLE "+<%=dbname%>+"."+<%=table%>+"_lt;" + "<%=lineSeparator%>");
-fw_<%=cid %>.write(".LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";"+ "<%=lineSeparator%>");
+fw_<%=cid %>.write(".LOGTABLE "+<%=logDB%>+"."+<%=logTable%>+";" + "<%=lineSeparator%>");
+fw_<%=cid %>.write(".LOGON "+<%if(needHost) {%><%=host%>+"/"<%} else {%> "" <%}%>+<%=dbuser%>+","+<%=dbpwd%>+";"+ "<%=lineSeparator%>");
 
 <%//Layout---------------------------------------------------------------%>
 fw_<%=cid %>.write(".BEGIN EXPORT SESSIONS 8;"+"<%=lineSeparator%>");
-fw_<%=cid %>.write("SELECT "+"<%=lineSeparator%>");
-<%
-if(columnList!=null){
-	int counter = 1;
-	for(IMetadataColumn column:columnList){	
-		if( columnList.size() != counter){	%>
-		fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>)),"+"<%=lineSeparator%>");
+<%if(!useQuery) {%>
+	fw_<%=cid %>.write("SELECT "+"<%=lineSeparator%>");
 	<%
-		} else {
-	%>
-		fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>))"+"<%=lineSeparator%>");
-	<% } 
-		counter++;
+	if(columnList!=null){
+		int counter = 1;
+		for(IMetadataColumn column:columnList){	
+			if( columnList.size() != counter){	%>
+			fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>)),"+"<%=lineSeparator%>");
+		<%
+			} else {
+		%>
+			fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>))"+"<%=lineSeparator%>");
+		<% } 
+			counter++;
+		}
 	}
-}
-%>
-fw_<%=cid %>.write("FROM "+ <%=dbname%> + "." + <%=table%>+";"+"<%=lineSeparator%>");
+	%>
+
+	fw_<%=cid %>.write("FROM "+ <%=dbname%> + "." + <%=table%>+";"+"<%=lineSeparator%>");
+<%} else {%>
+	fw_<%=cid %>.write(<%=query%> +";"+"<%=lineSeparator%>");
+<%}%>
 
 <%//Export file----------------------------------------------------------%>
 fw_<%=cid %>.write(".EXPORT OUTFILE \""+<%=exportedFile%>+".data\" FORMAT TEXT mode record;"+"<%=lineSeparator%>");
