@@ -88,7 +88,7 @@ public class SQLBuilderRepositoryNodeManager {
 
     private static List<RepositoryNode> repositoryNodes2 = new ArrayList<RepositoryNode>();
 
-    private static List<MetadataTable> tList = new ArrayList<MetadataTable>();
+    private static List<MetadataTable> tList = null;
 
     /**
      * dev Comment method "isChangeElementColor".
@@ -524,7 +524,7 @@ public class SQLBuilderRepositoryNodeManager {
         tablesFromEMF = sortTableColumn(tablesFromEMF);
         // ConnectionHelper.getTables(connection).clear();
         // ConnectionHelper.getTables(connection).addAll(tablesFromEMF);
-        tList.clear();
+        tList = new ArrayList<MetadataTable>();
         tList.addAll(ConnectionHelper.getTables(connection));
         Catalog c = (Catalog) ConnectionHelper.getPackage(connection.getSID(), connection, Catalog.class);
         Schema s = (Schema) ConnectionHelper.getPackage(connection.getSID(), connection, Schema.class);
@@ -845,6 +845,9 @@ public class SQLBuilderRepositoryNodeManager {
         if (!(connection instanceof DatabaseConnection)) {
             return;
         }
+        if (tList == null) {
+            return;
+        }
         List<MetadataTable> tableList = new ArrayList<MetadataTable>(ConnectionHelper.getTables(connection));
         tableList.removeAll(tList);
         Catalog catalog = (Catalog) ConnectionHelper.getPackage(((DatabaseConnection) connection).getSID(), connection,
@@ -860,6 +863,7 @@ public class SQLBuilderRepositoryNodeManager {
             s = schema.getName();
         }
         ProjectNodeHelper.removeTablesFromCurrentCatalogOrSchema(c, s, (DatabaseConnection) connection, tableList);
+        tList = null;
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
