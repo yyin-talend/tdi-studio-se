@@ -52,7 +52,8 @@ try{
 
 <%}else{%>//normal ftp
 	 	
-    	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet(); 
+    	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
+		String tmp_<%=cid%> = pid + System.currentTimeMillis();
     	try{  
     	for (String key<%=cid %> : keySet<%=cid %>)
    		{
@@ -63,15 +64,15 @@ try{
      			
      		    if (!fromFile_<%=cid%>.equals(toFile_<%=cid%>)){
      		      if(ftp_<%=cid%>.exists(fromFile_<%=cid%>)){
-     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
-     		    		ftp_<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
+     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%> + "." + tmp_<%=cid%>)){
+     		    		ftp_<%=cid%>.delete(toFile_<%=cid%> + "." + tmp_<%=cid%>);
      		    	}
      		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%>)){
-		     			ftp_<%=cid %>.rename(toFile_<%=cid%>, toFile_<%=cid%> + ".tmp");
+		     			ftp_<%=cid %>.rename(toFile_<%=cid%>, toFile_<%=cid%> + "." + tmp_<%=cid%>);
      		    	}
 	     			ftp_<%=cid %>.rename(fromFile_<%=cid%>, toFile_<%=cid%>);
-	     			if(ftp_<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
-		     			ftp_<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
+	     			if(ftp_<%=cid%>.exists(toFile_<%=cid%> + "." + tmp_<%=cid%>)){
+		     			ftp_<%=cid%>.delete(toFile_<%=cid%> + "." + tmp_<%=cid%>);
 	     			}
 	     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 	     			nb_file_<%=cid%>++;
@@ -97,15 +98,15 @@ try{
 		     			String fromFile_<%=cid%> = key<%=cid %>;
 		     			String toFile_<%=cid%> = map<%=cid %>.get(key<%=cid %>);
 						if(ftp_<%=cid%>.exists(fromFile_<%=cid%>)){
-		     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
-		     		    		ftp_<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
+		     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%> + "." + tmp_<%=cid%>)){
+		     		    		ftp_<%=cid%>.delete(toFile_<%=cid%> + "." + tmp_<%=cid%>);
 		     		    	}
 		     		    	if(ftp_<%=cid%>.exists(toFile_<%=cid%>)){
-				     			ftp_<%=cid %>.rename(toFile_<%=cid%>, toFile_<%=cid%> + ".tmp");
+				     			ftp_<%=cid %>.rename(toFile_<%=cid%>, toFile_<%=cid%> + "." + tmp_<%=cid%>);
 		     		    	}
 			     			ftp_<%=cid %>.rename(fromFile_<%=cid%>, toFile_<%=cid%>);
-			     			if(ftp_<%=cid%>.exists(toFile_<%=cid%> + ".tmp")){
-				     			ftp_<%=cid%>.delete(toFile_<%=cid%> + ".tmp");
+			     			if(ftp_<%=cid%>.exists(toFile_<%=cid%> + "." + tmp_<%=cid%>)){
+				     			ftp_<%=cid%>.delete(toFile_<%=cid%> + "." + tmp_<%=cid%>);
 			     			}
 			     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 			     			nb_file_<%=cid%>++;
