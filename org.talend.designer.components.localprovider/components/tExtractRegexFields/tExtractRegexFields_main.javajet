@@ -126,6 +126,11 @@ if(inConn!=null){
 		    while(<%="".equals(rejectConnName)?"":"isNotMatch_"+cid + "||" %> matcher_<%= cid %>.find()){
     
 <%
+			if(outConns.size()<1){
+%>
+			}			
+<%			
+			}
             break;
         }
     }
