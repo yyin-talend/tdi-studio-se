@@ -29,6 +29,7 @@ String validMessage = ElementParameterParser.getValue(node, "__VALID_MESSAGE__")
 String invalidMessage = ElementParameterParser.getValue(node, "__INVALID_MESSAGE__");
 String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 String mode = ElementParameterParser.getValue(node, "__MODE__");
+String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 
 %>
 
@@ -141,7 +142,7 @@ if("FLOW_MODE".equals(mode)){
 							} else {
 								schema<%=cid %> = factory<%=cid %>.newSchema(new java.io.File(location<%=cid%>));
 							}
-							xmlfile<%=cid %> = new ByteArrayInputStream(((String)<%=inConnName%>.<%=outLabel%>).getBytes());
+							xmlfile<%=cid %> = new ByteArrayInputStream(((String)<%=inConnName%>.<%=outLabel%>).getBytes(<%=encoding%>));
 							javax.xml.validation.Validator validator<%=cid %> = schema<%=cid %>.newValidator();
 							javax.xml.transform.Source source<%=cid %> = new javax.xml.transform.stream.StreamSource(xmlfile<%=cid %>);
 							validator<%=cid %>.setErrorHandler(errorHandler_<%=cid %>);
