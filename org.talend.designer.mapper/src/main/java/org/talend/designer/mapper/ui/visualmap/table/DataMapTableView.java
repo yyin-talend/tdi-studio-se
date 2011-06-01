@@ -1287,7 +1287,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
      */
     public void enableDiaplayViewer(boolean isRepository) {
         MetadataTableEditorView metadataEditorView = mapperManager.getUiManager().getMetadataEditorView(getZone());
-        metadataEditorView.getMainComposite().setEnabled(!isRepository);
+        metadataEditorView.setReadOnly(isRepository);
     }
 
     /**
@@ -3113,23 +3113,14 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                             }
                         }
                         extendedTableModel.removeAll(copyedAllList);
-                        extendedTableModel.addAll(columns);
-                        for (OutputTable outputTable : outputtables) {
-                            List<IColumnEntry> oldOuputEntries = outputTable.getDataMapTableEntries();
-                            if (oldOuputEntries != null) {
-                                for (IColumnEntry entry : oldOuputEntries) {
-                                    if (entry instanceof OutputColumnTableEntry) {
-                                        OutputColumnTableEntry outputEntry = (OutputColumnTableEntry) entry;
-                                        String columnname = outputEntry.getName();
-                                        String expression = oldMappingMap.get(columnname);
-                                        if (expression != null && !"".equals(expression)) {
-                                            outputEntry.setExpression(expression);
-                                        }
-                                    }
-                                }
+                        for (IMetadataColumn metaColumnToAdd : columns) {
+                            String label = metaColumnToAdd.getLabel();
+                            String expression = oldMappingMap.get(label);
+                            if (expression != null && !"".equals(expression)) {
+                                metaColumnToAdd.setExpression(expression);
                             }
                         }
-
+                        extendedTableModel.addAll(columns);
                         mapperManager.getUiManager().parseAllExpressionsForAllTables();
                         oldMappingMap.clear();
                         return value;

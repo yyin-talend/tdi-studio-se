@@ -457,7 +457,12 @@ public class MapperManager extends AbstractMapperManager {
         if (dataMapTableView.getZone() == Zone.INPUTS) {
             dataMapTableEntry = new InputColumnTableEntry(abstractDataMapTable, metadataColumn);
         } else if (dataMapTableView.getZone() == Zone.OUTPUTS) {
-            dataMapTableEntry = new OutputColumnTableEntry(abstractDataMapTable, metadataColumn);
+            String expression = metadataColumn.getExpression();
+            if (expression != null && !"".equals(expression)) { //$NON-NLS-N$
+                dataMapTableEntry = new OutputColumnTableEntry(abstractDataMapTable, metadataColumn, expression);
+            } else {
+                dataMapTableEntry = new OutputColumnTableEntry(abstractDataMapTable, metadataColumn);
+            }
         } else {
             throw new IllegalArgumentException(Messages.getString("MapperManager.exceptionMessage.useOtherSignature")); //$NON-NLS-1$
         }

@@ -27,6 +27,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IEbcdicConstant;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
@@ -49,6 +50,7 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.node.IExternalMapTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -448,6 +450,31 @@ public class UpdateNodeParameterCommand extends Command {
                                     service.updateMapperTableEntries(externalNode, schemaId, newTable);
                                     node.setMetadataList(externalNode.getMetadataList());
                                     syncSchemaForTMap(node);
+                                    // update metadataList,or it will cause bug 21080
+                                    for (IExternalMapTable latestTable : externalNode.getExternalData().getOutputTables()) {
+                                        for (IMetadataTable tableExsit : node.getMetadataList()) {
+                                            // find table,and update the table
+                                            if (latestTable.getName().equals(tableExsit.getTableName())) {
+                                                List<IMetadataColumn> newColumns = newTable.getListColumns();
+                                                for (IMetadataColumn column : tableExsit.getListColumns()) {
+                                                    for (IMetadataColumn newColumn : newColumns) {
+                                                        if (newColumn.getLabel().equals(column.getLabel())) {
+                                                            column.setTalendType(newColumn.getTalendType());
+                                                            column.setNullable(newColumn.isNullable());
+                                                            column.setComment(newColumn.getComment());
+                                                            column.setDefault(newColumn.getDefault());
+                                                            column.setLength(newColumn.getLength());
+                                                            column.setType(newColumn.getType());
+                                                            column.setKey(newColumn.isKey());
+                                                            column.setPrecision(newColumn.getPrecision());
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             return;
