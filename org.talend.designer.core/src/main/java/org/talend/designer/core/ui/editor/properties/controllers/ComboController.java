@@ -619,6 +619,10 @@ public class ComboController extends AbstractElementPropertySectionController {
                 stringToDisplay.add(originalList[i]);
             }
         }
-        return stringToDisplay.toArray(new String[0]);
+        // MOD gdbu 2011-6-1 bug : 19836
+        String[] toArray = stringToDisplay.toArray(new String[0]);
+        Arrays.sort(toArray, String.CASE_INSENSITIVE_ORDER);
+        return toArray;
+        // ~19836
     }
 }
