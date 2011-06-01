@@ -419,8 +419,8 @@
 		<IMPORTS> 
 			<IMPORT MODULE="namedpipe-1.0.jar" NAME="namedpipe-1.0.jar" REQUIRED="true"/> 
 			<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
-			<IMPORT MODULE="namedpipe_jni_64bit.dll" NAME="namedpipe_jni_64bit.dll" REQUIRED="true"/> 
-			<IMPORT MODULE="namedpipe_jni.dll" NAME="namedpipe_jni.dll" REQUIRED="true"/> 
+			<IMPORT MODULE="namedpipe_jni_64bit.dll" NAME="namedpipe_jni_64bit.dll" REQUIRED="false"/> 
+			<IMPORT MODULE="namedpipe_jni.dll" NAME="namedpipe_jni.dll" REQUIRED="false"/> 
 		</IMPORTS> 
 	</CODEGENERATION>
 	
