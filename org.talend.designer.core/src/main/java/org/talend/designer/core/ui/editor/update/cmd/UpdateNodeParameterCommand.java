@@ -704,6 +704,10 @@ public class UpdateNodeParameterCommand extends Command {
                             }
                         }
                         if (index >= 0) {
+                            IMetadataTable oldTable = tablesInNode.get(index);
+                            /* dbms and Connector should be transfer when reloaded the table,20024 */
+                            tableToReload.setAttachedConnector(oldTable.getAttachedConnector());
+                            tableToReload.setDbms(oldTable.getDbms());
                             tablesInNode.remove(index);
                             tablesInNode.add(index, tableToReload);
                         }
