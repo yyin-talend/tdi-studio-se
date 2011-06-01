@@ -83,6 +83,7 @@ import org.talend.core.model.general.IEcosystemService;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.imports.TreeBuilder.IContainerNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -755,8 +756,19 @@ class ImportItemWizardPage extends WizardPage {
 
         errors.clear();
         for (ItemRecord itemRecord : items) {
-            for (String error : itemRecord.getErrors()) {
-                errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
+            // bug 21738
+            if (itemRecord.getExistingItemWithSameId() != null
+                    && itemRecord.getExistingItemWithSameId() instanceof RepositoryViewObject) {
+                RepositoryViewObject reObject = (RepositoryViewObject) itemRecord.getExistingItemWithSameId();
+                if (itemRecord.getProperty() != null && reObject != null) {
+                    if (itemRecord.getProperty().getId().equals(reObject.getId())
+                            && itemRecord.getProperty().getLabel().equals(reObject.getLabel())
+                            && itemRecord.getProperty().getVersion().equals(reObject.getVersion())) {
+                        for (String error : itemRecord.getErrors()) {
+                            errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                    }
+                }
             }
         }
         if (errorsList != null) {
