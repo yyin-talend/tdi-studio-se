@@ -51,11 +51,15 @@
 
 <%		
 	}else{
+		boolean isCommit = ("true").equals(ElementParameterParser.getValue(node, "__COMMIT__"));
+		boolean isBrowse = ("true").equals(ElementParameterParser.getValue(node,"__BROWSE__"));
+		boolean isRollback = ("true").equals(ElementParameterParser.getValue(node, "__ROLLBACK__"));
+		isRollback = isRollback && ("false".equals(kListen)) && !isCommit && !isBrowse;
 %>
 		}	
 		System.out.println("Closing connection");
 		remoteQ<%=cid%>.close();
-		<%if("true".equals(ElementParameterParser.getValue(node, "__ROLLBACK__")) && ("false".equals(kListen)) && ("false".equals(ElementParameterParser.getValue(node, "__COMMIT__")))){%>
+		<%if(isRollback){%>
 		qMgr<%=cid%>.backout();
 		<%}%>
 		qMgr<%=cid%>.disconnect();
