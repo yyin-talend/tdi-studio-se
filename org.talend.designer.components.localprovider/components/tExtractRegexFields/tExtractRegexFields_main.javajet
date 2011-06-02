@@ -73,17 +73,12 @@ if(outConns!=null){
 }
 
 //get field column
-if(inConn!=null){
+//========= Bug 19723 add outConn!=null =========
+if(inConn!=null && outConn!=null){
     IMetadataTable inputMetadataTable = inConn.getMetadataTable();
-    IMetadataTable outputMetadataTable = null;
-//========= Bug 19723 START =========
-	//when there's no output component we don't use "outConn" 
-    if(outConn!=null){
-	   outputMetadataTable = outConn.getMetadataTable();
-    }
+    IMetadataTable outputMetadataTable = outConn.getMetadataTable();
     //outCols below is nerver used after definition
     //int outCols = outputMetadataTable.getListColumns().size();
-//========= Bug 19723 END =========
     for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
         if(inputCol.getLabel().equals(field)){
 %>
@@ -99,9 +94,7 @@ if(inConn!=null){
 <%
 //========= Bug 15631 START =========
 //output rows to reject
-//========= Bug 19723 START =========
 //when there's no output component,we can't get "outputMetadataTable" through "out conn"
-		if(outputMetadataTable!=null){
                     for (IMetadataColumn outputRejCol : outputMetadataTable.getListColumns()) {
                         for (IMetadataColumn inputRejCol : inputMetadataTable.getListColumns()) {
                             if( outputRejCol.getLabel().equals( inputRejCol.getLabel()) ){
@@ -112,8 +105,6 @@ if(inConn!=null){
                             }
                         }
                     }
-         }
-//========= Bug 19723 END =========
 //========= Bug 15631 END =========
 %>
 			    }
@@ -124,13 +115,8 @@ if(inConn!=null){
     
 		    int groupCount_<%=cid %> = matcher_<%= cid %>.groupCount();
 		    while(<%="".equals(rejectConnName)?"":"isNotMatch_"+cid + "||" %> matcher_<%= cid %>.find()){
-    
-<%
-			if(outConns.size()<1){
-%>
-			}			
+		
 <%			
-			}
             break;
         }
     }
