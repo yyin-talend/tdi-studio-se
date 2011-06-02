@@ -341,36 +341,43 @@ public class Problems {
         boolean hasWarning = false;
         boolean hasError = false;
         boolean hasInfo = false;
-
+        IProcess process = node.getProcess();
         for (Problem problem : problemList) {
-            if (problem.getNodeName() == null) {
-                continue;
-            } else if (problem.getNodeName() != null && (!problem.getNodeName().equals(node.getLabel()))) {
-                continue;
-            }
-            if (problem.getStatus().equals(ProblemStatus.INFO)) {
-                hasInfo = true;
-                node.addStatus(Process.INFO_STATUS);
-            } else if (problem.getStatus().equals(ProblemStatus.WARNING)) {
-                hasWarning = true;
-                node.addStatus(Process.WARNING_STATUS);
-            } else if (problem.getStatus().equals(ProblemStatus.ERROR)) {
-                hasError = true;
-                node.addStatus(Process.ERROR_STATUS);
+
+            /* use id and version to filter the problems,see bug 20560 */
+            if (problem.getJobInfo().getJobId().equals(process.getId())) {
+                if (problem.getJobInfo().getJobVersion().equals(process.getVersion())) {
+                    if (problem.getNodeName() == null) {
+                        continue;
+                    } else if (problem.getNodeName() != null && (!problem.getNodeName().equals(node.getUniqueName()))) {
+                        continue;
+                    }
+                    if (problem.getStatus().equals(ProblemStatus.INFO)) {
+                        hasInfo = true;
+                        node.addStatus(Process.INFO_STATUS);
+                    } else if (problem.getStatus().equals(ProblemStatus.WARNING)) {
+                        hasWarning = true;
+                        node.addStatus(Process.WARNING_STATUS);
+                    } else if (problem.getStatus().equals(ProblemStatus.ERROR)) {
+                        hasError = true;
+                        node.addStatus(Process.ERROR_STATUS);
+                    }
+                }
+
+                if (!hasWarning) {
+                    node.removeStatus(Process.WARNING_STATUS);
+                }
+                if (!hasError) {
+                    node.removeStatus(Process.ERROR_STATUS);
+                }
+                if (!hasInfo) {
+                    node.removeStatus(Process.INFO_STATUS);
+                }
+
+                node.updateStatus();
             }
         }
 
-        if (!hasWarning) {
-            node.removeStatus(Process.WARNING_STATUS);
-        }
-        if (!hasError) {
-            node.removeStatus(Process.ERROR_STATUS);
-        }
-        if (!hasInfo) {
-            node.removeStatus(Process.INFO_STATUS);
-        }
-
-        node.updateStatus();
     }
 
     /**
