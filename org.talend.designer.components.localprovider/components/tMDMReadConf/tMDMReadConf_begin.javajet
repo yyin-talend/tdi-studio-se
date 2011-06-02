@@ -125,33 +125,37 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 					int recordsPerPage_<%=cid%> = <%=bufferSize%>;
 					int skip_<%=cid%> = <%=skip%>;
 					
-		            int pages_<%=cid%> = limit_<%=cid%> > 0 ? ((limit_<%=cid%> + recordsPerPage_<%=cid%> - 1) / recordsPerPage_<%=cid%>) : -1;
-					int readRecordsSize_<%=cid%> = recordsPerPage_<%=cid%>;
+					if (skip_<%=cid%> < 0)
+		                skip_<%=cid%> = 0;
+		
+		            if (recordsPerPage_<%=cid%> <= 0)
+		                recordsPerPage_<%=cid%> = -1;// read whole records in one time
+		
+		            if (limit_<%=cid%> <= 0)
+		                limit_<%=cid%> = -1;// no limit
 					
+		            int retrievedCount_<%=cid%> = 0;
+           			int readRecordsSize_<%=cid%> = limit_<%=cid%> == -1 ? recordsPerPage_<%=cid%> : (recordsPerPage_<%=cid%> == -1 ? limit_<%=cid%> : (recordsPerPage_<%=cid%> > limit_<%=cid%> ? limit_<%=cid%>
+                    : recordsPerPage_<%=cid%>));
+
 					org.talend.mdm.webservice.WSGetItems getitems_<%=cid %>=null;
 					
-					int currentPage_<%=cid%> = 1;
             		boolean continueFlag_<%=cid%> = true;
             		while (continueFlag_<%=cid%>) {
-            			if (pages_<%=cid%> != -1) {
-		                    if (currentPage_<%=cid%> == pages_<%=cid%>) {
-		                        readRecordsSize_<%=cid%> = limit_<%=cid%> - ((currentPage_<%=cid%> - 1) * recordsPerPage_<%=cid%>);
-		                    }
-		                    if (currentPage_<%=cid%> > pages_<%=cid%>)
-		                        break;
-		                }
-		                
+            					                
 		                getitems_<%=cid%>=new org.talend.mdm.webservice.WSGetItems(dataCluster_<%=cid%>, <%=concept%>, wsItem_<%=cid%>,
 									    	<%=spellThrehold%>,  //spell Threshold
-											skip_<%=cid%> + (currentPage_<%=cid%> - 1) * recordsPerPage_<%=cid%>,
+											skip_<%=cid%> + retrievedCount_<%=cid%>,
 											readRecordsSize_<%=cid%>);
-						
-						currentPage_<%=cid%>++;
 						
 						String[] items_<%=cid%> = xtentisWS_<%=cid%>.getItems(getitems_<%=cid%>);
 						
-						if (items_<%=cid%>.length < readRecordsSize_<%=cid%>)
-                    		continueFlag_<%=cid%> = false;
+						retrievedCount_<%=cid%> += items_<%=cid%>.length;
+						if (recordsPerPage_<%=cid%> == -1 || items_<%=cid%>.length < readRecordsSize_<%=cid%> || limit_<%=cid%> == retrievedCount_<%=cid%>) {
+		                    continueFlag_<%=cid%> = false;
+		                } else if (limit_<%=cid%> != -1 && limit_<%=cid%> < retrievedCount_<%=cid%> + readRecordsSize_<%=cid%>) {
+		                    readRecordsSize_<%=cid%> = limit_<%=cid%> - retrievedCount_<%=cid%>;
+		                }
                     	
                     	for(String item_<%=cid%> : items_<%=cid%>){
 							nb_line_<%=cid%> ++;
