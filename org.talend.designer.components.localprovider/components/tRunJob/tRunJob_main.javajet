@@ -16,6 +16,8 @@ imports="
   org.talend.core.model.process.IConnectionCategory
   java.util.Map
   java.util.List
+  java.util.Set
+  java.util.HashSet
 "
 %>
 <%
@@ -175,12 +177,28 @@ java.util.Map<String, Object> parentContextMap_<%=cid %> = new java.util.HashMap
 
 <%
 if(transmitWholeContext){//111111
+%>
+<% 
+	//bug21906
+	Set<IConnection> iterateConnSet =  new HashSet<IConnection>();
+	List<? extends IConnection> iterateConns = node.getIncomingConnections(EConnectionType.ITERATE);
+	if(iterateConns != null)  { 
+		iterateConnSet.addAll(iterateConns);
+	}
+	boolean parallelIterate = false;
+	for (IConnection iterateConn : iterateConnSet) {
+		parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
+	}
+	String localContext = "context";
+	if(parallelIterate) {
+		localContext = "localContext";
+	}
 %> 
-  context.synchronizeContext();
-  java.util.Enumeration<?> propertyNames_<%=cid %> = context.propertyNames();
+  <%=localContext%>.synchronizeContext();
+  java.util.Enumeration<?> propertyNames_<%=cid %> = <%=localContext%>.propertyNames();
   while (propertyNames_<%=cid %>.hasMoreElements()) {
     String key_<%=cid %> = (String) propertyNames_<%=cid %>.nextElement();
-    Object value_<%=cid %> = (Object) context.get(key_<%=cid %>);       
+    Object value_<%=cid %> = (Object) <%=localContext%>.get(key_<%=cid %>);       
     paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
   }
   
@@ -189,7 +207,7 @@ if(transmitWholeContext){//111111
     for (IContextParameter ctxParam :params){
     	String ctxParamName = ctxParam.getName();
  %>  
-		    parentContextMap_<%=cid %>.put("<%=ctxParamName %>", context.<%=ctxParamName %>);
+		    parentContextMap_<%=cid %>.put("<%=ctxParamName %>", <%=localContext%>.<%=ctxParamName %>);
  <%}
 
 }//111111

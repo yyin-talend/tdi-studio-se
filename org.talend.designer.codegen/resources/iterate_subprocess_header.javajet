@@ -12,10 +12,12 @@
   org.talend.designer.codegen.config.CodeGeneratorArgument
   org.talend.designer.codegen.config.NodesSubTree
   org.talend.core.model.process.IProcess
-  org.talend.core.model.utils.NodeUtil  
+  org.talend.core.model.utils.NodeUtil
+  org.talend.core.model.process.IContextParameter  
   java.util.List
   java.util.Set
   java.util.HashSet
+  java.util.ArrayList
  "
   class="IterateSubProcessHeader"
   skeleton="subprocess_header_java.skeleton"     
@@ -23,6 +25,7 @@
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean isRunJob = "tRunJob".equals(node.getComponent().getName());
 IProcess process = node.getProcess();
  
 NodesSubTree subTree = (NodesSubTree) codeGenArgument.getSubTree();
@@ -38,6 +41,9 @@ Set<IConnection> iterateConnSet =  new HashSet<IConnection>();
 iterateConnSet.addAll(node.getIncomingConnections(EConnectionType.ITERATE));
 
 String iterateNodeName = node.getUniqueName();
+
+List<IContextParameter> params = new ArrayList<IContextParameter>();
+params = process.getContextManager().getDefaultContext().getContextParameterList();
 
 List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeConnections();
 boolean parallelIterate = false;
@@ -74,7 +80,9 @@ for (IConnection iterateConn : iterateConnSet) { //1
 				}
 			}
 		}	
-
+	<% if(isRunJob) {%>
+		private final ContextProperties localContext = new ContextProperties();
+	<% } %>
 		private java.util.Map<String, Object> globalMap = null;
 		boolean isRunning = false;
 		String iterateId = "";
@@ -133,9 +141,22 @@ for (IConnection iterateConn : iterateConnSet) { //1
 				this.globalMap = java.util.Collections.synchronizedMap(new ThreadedMap(globalMap));
 			}
 			iterateId = "." + threadID;
+	<%if(isRunJob) {%>
+			//bug21906 copy context to local for mutilthread
+			context.synchronizeContext();
+			java.util.Enumeration<?> propertyNames = context.propertyNames();
+			while(propertyNames.hasMoreElements()) {
+				String propertyName = (String)propertyNames.nextElement();
+				String propertyValue = context.getProperty(propertyName);
+				localContext.setProperty(propertyName, propertyValue);
+			}
+		<% for (IContextParameter ctxParam : params){%>
+			localContext.<%=ctxParam.getName()%> = context.<%=ctxParam.getName()%>;
+		<% } %>
+	<% } %>
 		}
 
-		
+
 		public void run() {		
 
 			java.util.Map threadRunResultMap = new java.util.HashMap();
