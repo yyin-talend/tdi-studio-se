@@ -368,8 +368,69 @@
 		
 		Runtime runtime_<%=cid%> = Runtime.getRuntime();
 		if(System.getProperty("os.name").toLowerCase().indexOf("windows")==-1){
-     	 	runtime_<%=cid%>.exec("chmod a+x "+ executableFilePath);
+     	 	final Process chmod_<%=cid %> = runtime_<%=cid%>.exec("chmod a+x "+ executableFilePath);
+     	 	
+     	 	/***********************************************************************/
+			/** Create two threads to monitor above process without blocking      **/
+			/** logic executing. One thread prints standard console output, the   **/
+			/** other prints the error stream.                                    **/
+			/***********************************************************************/
+     	 	
+			// chmodstandard output monitor 
+			Thread chmodnormal_<%=cid %> = new Thread() {
+				public void run() {
+					try {
+						java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(chmod_<%=cid %>.getInputStream()));
+						String line = "";
+						try {
+							while((line = reader.readLine()) != null) {
+							
+							}
+						} finally {
+							reader.close();
+						}
+					} catch(java.io.IOException ioe) {
+						ioe.printStackTrace();
+					}
+				}
+			};
+			chmodnormal_<%=cid%>.start();
+		
+			// chmoderror output monitor
+			Thread chmoderror_<%=cid%> = new Thread() {
+				public void run() {
+					try {
+						java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(chmod_<%=cid %>.getErrorStream()));
+						String line = "";
+						try {
+							while((line = reader.readLine()) != null) {
+							    <%
+							    if (("OUTPUT_TO_CONSOLE").equals(outputAction)) {
+							        %>
+							        System.err.println(line);
+							        <%
+							    } else if (("RETRIEVE_OUTPUT").equals(outputAction)) {
+							        %>
+							        globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+							        <%
+							    }
+							    %>
+							}
+						} finally {
+							reader.close();
+						}
+					} catch(java.io.IOException ioe) {
+						ioe.printStackTrace();
+					}
+				}
+			};
+			chmoderror_<%=cid%>.start();
+		
+			chmod_<%=cid %>.waitFor();
+			chmodnormal_<%=cid%>.interrupt();
+			chmoderror_<%=cid%>.interrupt();
      	}
+     	
 		final Process ps_<%=cid %> = runtime_<%=cid%>.exec(executableFilePath);          
 		<%
 	}	
