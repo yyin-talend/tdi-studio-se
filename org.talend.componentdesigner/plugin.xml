@@ -22,10 +22,6 @@
 	<extension point="org.eclipse.ui.perspectiveExtensions">
 		<perspectiveExtension
 			targetID="org.talend.componentdesigner.perspective">
-			<view
-				id="org.talend.componentdesigner.ui.view.ComponentNavigator"
-				relative="org.eclipse.ui.editorss" relationship="left" ratio="0.30"
-				closeable="true" />
 				
 				<actionSet
                		id="org.talend.debug.ui.launchActionSet">
@@ -38,9 +34,6 @@
          		</actionSet>
          		<actionSet
                		id="org.talend.repository.localprovider.actionSet">
-         		</actionSet>
-         		<actionSet
-         			id="org.talend.repository.bootTalendActionSet">
          		</actionSet>
 		</perspectiveExtension>
 	</extension>
