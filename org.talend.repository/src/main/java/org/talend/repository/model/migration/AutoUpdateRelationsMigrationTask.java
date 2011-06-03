@@ -20,6 +20,8 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryObject;
 
 /**
  * This migration task must be run each time, not only one time. Not standard migration task. This is to try to keep the
@@ -47,5 +49,13 @@ public class AutoUpdateRelationsMigrationTask extends AbstractJobMigrationTask {
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2050, 02, 12, 12, 0, 0);
         return gc.getTime();
+    }
+
+    @Override
+    public void unloadObject(IRepositoryViewObject object) {
+        if (object instanceof RepositoryObject) {
+            RepositoryObject obj = (RepositoryObject) object;
+            obj.unload();
+        }
     }
 }
