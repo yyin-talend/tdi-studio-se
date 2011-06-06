@@ -8,6 +8,11 @@
 			org.talend.designer.xmlmap.XmlMapComponent
 			org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData
 			org.eclipse.emf.common.util.EList
+			
+			org.talend.designer.xmlmap.generation.GenerationManagerFactory
+			org.talend.designer.xmlmap.generation.GenerationManager
+			org.talend.core.model.process.BlockCode
+			
 			org.talend.designer.xmlmap.model.emf.xmlmap.VarNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.VarTable
 			org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree
@@ -33,6 +38,7 @@ skeleton="tXMLMap_java.skeleton"
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	XmlMapComponent node = (XmlMapComponent) codeGenArgument.getArgument();
+	GenerationManager gm =  (GenerationManager)node.initGenerationManager();
 	String cid = node.getUniqueName();
 	XmlMapData xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
 	
@@ -159,7 +165,7 @@ skeleton="tXMLMap_java.skeleton"
     String str_<%=cid %> = null;
     org.dom4j.Node node_<%=cid%> = null;
 	
-	for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
+	for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) { // G_TXM_M_001
     	nb_line_<%=cid%>++;
     	<%= rejectedDocInnerJoin %> = false;
 		<%=mainRowRejected%>=false;
@@ -463,6 +469,7 @@ if((isXpathFromLookup || hasOutgoingConnection) && containDocType && !isPlainNod
 %>
 <%
 	if(hasDocumentGlobal && !isPlainNode) {
+		gm.addBlocksCodeToClose(new BlockCode("G_TXM_M_001 close"));
 %>
 		if(nb_line_<%=cid%> == nodeList_<%=cid%>.size()) {
 <%

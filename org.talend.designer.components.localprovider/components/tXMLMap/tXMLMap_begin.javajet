@@ -9,6 +9,9 @@
 			org.talend.core.model.metadata.MetadataTalendType
 			org.talend.core.model.metadata.types.JavaTypesManager
 			org.talend.core.model.metadata.types.JavaType
+			
+			org.talend.designer.xmlmap.generation.GenerationManagerFactory
+			org.talend.designer.xmlmap.generation.GenerationManager
 
 			org.talend.core.model.process.AbstractExternalNode
 			org.talend.designer.xmlmap.XmlMapComponent
@@ -37,6 +40,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	XmlMapComponent node = (XmlMapComponent) codeGenArgument.getArgument();
+	GenerationManager gm = (GenerationManager) GenerationManagerFactory.getInstance().getGenerationManager();
 	String cid = node.getUniqueName();
 	XmlMapData xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
 	

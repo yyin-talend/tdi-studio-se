@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.cursor.CursorHelper;
 import org.talend.core.model.process.AbstractExternalNode;
+import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.HashConfiguration;
 import org.talend.core.model.process.HashableColumn;
 import org.talend.core.model.process.IComponentDocumentation;
@@ -35,6 +36,8 @@ import org.talend.core.model.process.IMatchingMode;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
+import org.talend.designer.xmlmap.generation.GenerationManager;
+import org.talend.designer.xmlmap.generation.GenerationManagerFactory;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -50,6 +53,8 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
     private AbstractExternalData emfMapData;
 
     private MapperMain mapprMain;
+    
+    private GenerationManager generationManager;
 
     public XmlMapComponent() {
     }
@@ -201,6 +206,22 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         }
 
         return hashConfigurationForMapper;
+    }
+    
+    public GenerationManager initGenerationManager() {
+        this.generationManager = GenerationManagerFactory.getInstance().getGenerationManager();
+        return this.generationManager;
+    }
+
+    public GenerationManager getGenerationManager() {
+        return this.generationManager;
+    }
+
+    public List<BlockCode> getBlocksCodeToClose() {
+        if (generationManager == null) {
+            throw new IllegalStateException(); //$NON-NLS-1$
+        }
+        return this.generationManager.getBlocksCodeToClose();
     }
 
 }
