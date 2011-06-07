@@ -26,6 +26,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.repository.editor.RepositoryEditorInput;
@@ -94,8 +95,16 @@ public abstract class AbstractRoutineAction extends AContextualAction {
 
         if (!found) {
             routineSynchronizer.syncRoutine(routineItem, true);
-            IFile file = routineSynchronizer.getFile(routineItem);
-
+            // need open from item file with multiple version
+            IFile file = null;
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            String lastVersion = factory.getLastVersion(routineItem.getProperty().getId()).getVersion();
+            String curVersion = routineItem.getProperty().getVersion();
+            if (curVersion != null && curVersion.equals(lastVersion)) {
+                file = routineSynchronizer.getFile(routineItem);
+            } else {
+                file = routineSynchronizer.getRoutinesFile(routineItem);
+            }
             RepositoryEditorInput input = new RoutineEditorInput(file, routineItem);
             input.setReadOnly(readOnly);
             talendEditor = page.openEditor(input, talendEditorID); //$NON-NLS-1$            
