@@ -364,19 +364,19 @@ public class Problems {
                     }
                 }
 
-                if (!hasWarning) {
-                    node.removeStatus(Process.WARNING_STATUS);
-                }
-                if (!hasError) {
-                    node.removeStatus(Process.ERROR_STATUS);
-                }
-                if (!hasInfo) {
-                    node.removeStatus(Process.INFO_STATUS);
-                }
-
-                node.updateStatus();
             }
         }
+        if (!hasWarning) {
+            node.removeStatus(Process.WARNING_STATUS);
+        }
+        if (!hasError) {
+            node.removeStatus(Process.ERROR_STATUS);
+        }
+        if (!hasInfo) {
+            node.removeStatus(Process.INFO_STATUS);
+        }
+
+        node.updateStatus();
 
     }
 
