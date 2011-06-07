@@ -44,11 +44,11 @@ public class ID implements org.apache.axis2.databinding.ADBBean {
      */
     public void setID(java.lang.String param) {
 
-        if (org.apache.axis2.databinding.utils.ConverterUtil.convertToString(param).matches("[a-zA-Z0-9]{18}")) {
-            this.localID = param;
-        } else {
-            throw new java.lang.RuntimeException();
-        }
+        // if (org.apache.axis2.databinding.utils.ConverterUtil.convertToString(param).matches("[a-zA-Z0-9]{18}")) {
+        this.localID = param;
+        // } else {
+        // throw new java.lang.RuntimeException();
+        // }
 
     }
 
