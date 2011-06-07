@@ -7,7 +7,6 @@ public class CLASS {
 	
 	
 		public String createSignature(INode node, boolean force) {
-			String toReturn = "TITI ";
 			for(IConnection conn : node.getIncomingConnections()) {
 				if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE) || conn.getLineStyle().equals(EConnectionType.FLOW_REF)) {
 					if ((force)|| conn.getLineStyle().equals(EConnectionType.FLOW_REF) ||(conn.getSource().isSubProcessStart() || !(NodeUtil.isDataAutoPropagated(conn.getSource())))) {
