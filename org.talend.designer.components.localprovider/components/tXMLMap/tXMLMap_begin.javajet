@@ -18,6 +18,7 @@
 			org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData
 			org.eclipse.emf.common.util.EList
 			org.talend.core.model.metadata.IMetadataTable
+			org.talend.core.model.utils.NodeUtil
 			org.talend.designer.xmlmap.model.emf.xmlmap.VarNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.VarTable
 			org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree
@@ -31,11 +32,14 @@
             java.util.Map
             java.util.HashMap
             java.util.List
+			java.util.HashSet
+			java.util.Set
             java.util.ArrayList
             org.talend.core.model.metadata.types.JavaTypesManager
         	org.talend.core.model.metadata.types.JavaType
         	org.talend.core.model.process.IHashableInputConnections;
 	" 
+	skeleton="tXMLMap_java.skeleton"
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -890,6 +894,9 @@ class GenerateDocument_<%=tableName %> {
 <%
 //Integer groupSize = new Integer(0);
 //getGroupSize(outputNode, groupSize);
+
+XMLMapUtil xmu = new XMLMapUtil();
+
 %>
 	
     public GenerateDocument_<%=tableName %>(){
@@ -910,13 +917,9 @@ class GenerateDocument_<%=tableName %> {
     }
 	
     void generateElements(TreeNode_API_<%=cid %> treeNodeAPI,boolean isInnerJoin<%
-	for (InputXmlTree inputTable: inputTables) {
+		%><%=xmu.createSignature(node, false) %><%
 	
-	%>, <%=inputTable.getName() %>Struct <%=inputTable.getName() %>
-	<%
-		
-	}
-	for (VarTable var : varTables) {
+		for (VarTable var : varTables) {
 			String tableName1 = var.getName();
 	        String instanceVarName = tableName1 + "__" + cid;
 	        String className = instanceVarName + "__Struct";
