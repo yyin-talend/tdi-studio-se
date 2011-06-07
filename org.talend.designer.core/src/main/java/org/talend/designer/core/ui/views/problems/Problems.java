@@ -345,8 +345,9 @@ public class Problems {
         for (Problem problem : problemList) {
 
             /* use id and version to filter the problems,see bug 20560 */
-            if (problem.getJobInfo().getJobId().equals(process.getId())) {
-                if (problem.getJobInfo().getJobVersion().equals(process.getVersion())) {
+            if (problem.getJobInfo().getJobId() != null && problem.getJobInfo().getJobId().equals(process.getId())) {
+                if (problem.getJobInfo().getJobVersion() != null
+                        && problem.getJobInfo().getJobVersion().equals(process.getVersion())) {
                     if (problem.getNodeName() == null) {
                         continue;
                     } else if (problem.getNodeName() != null && (!problem.getNodeName().equals(node.getUniqueName()))) {
