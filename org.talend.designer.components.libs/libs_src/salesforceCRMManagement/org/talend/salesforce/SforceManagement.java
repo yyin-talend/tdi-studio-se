@@ -40,9 +40,15 @@ public interface SforceManagement {
     public boolean login(String endpoint, String username, String password, int timeout, boolean needCompression)
             throws Exception;
 
+    public boolean login(String endpoint, String username, String password, String timeout, boolean needCompression)
+            throws Exception;
+
     public void login(SforceServiceStub stub, SessionHeader sh) throws Exception;
 
     public boolean login(String endpoint, String username, String password, int timeout, boolean needCompression,
+            int commitLevel, boolean exceptionForErrors, String errorLogFile) throws Exception;
+
+    public boolean login(String endpoint, String username, String password, String timeout, boolean needCompression,
             int commitLevel, boolean exceptionForErrors, String errorLogFile) throws Exception;
 
     public void login(SforceServiceStub stub, SessionHeader sh, int commitLevel, boolean exceptionForErrors, String errorLogFile)

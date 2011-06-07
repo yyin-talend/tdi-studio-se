@@ -78,6 +78,11 @@ public class SforceManagementImpl implements SforceManagement {
         // options.setProperty(HTTPConstants.SO_TIMEOUT, timeout);
     }
 
+    public boolean login(String endpoint, String username, String password, String timeout, boolean needCompression)
+            throws Exception {
+        return login(endpoint, username, password, Integer.parseInt(timeout), needCompression);
+    }
+
     public boolean login(String endpoint, String username, String password, int timeout, boolean needCompression)
             throws Exception {
         if (endpoint == null || endpoint.trim().length() == 0)
@@ -129,7 +134,12 @@ public class SforceManagementImpl implements SforceManagement {
         this.updateItems = new ArrayList<SObject>(commitLevel * 2);
         this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
         this.upsertKeyColumn = "";
-
+        if (stub == null) {
+            throw new RuntimeException("SforceServiceStub is null! Connection is unavailable!");
+        }
+        if (sh == null) {
+            throw new RuntimeException("SessionHeader is null! Connection is unavailable!");
+        }
         this.stub = stub;
         this.sh = sh;
     }
@@ -149,6 +159,12 @@ public class SforceManagementImpl implements SforceManagement {
     private ArrayList<SObject> updateItems;
 
     private String upsertKeyColumn;
+
+    public boolean login(String endpoint, String username, String password, String timeout, boolean needCompression,
+            int commitLevel, boolean exceptionForErrors, String errorLogFile) throws Exception {
+        return login(endpoint, username, password, Integer.parseInt(timeout), needCompression, commitLevel, exceptionForErrors,
+                errorLogFile);
+    }
 
     public boolean login(String endpoint, String username, String password, int timeout, boolean needCompression,
             int commitLevel, boolean exceptionForErrors, String errorLogFile) throws Exception {
@@ -220,7 +236,12 @@ public class SforceManagementImpl implements SforceManagement {
         this.updateItems = new ArrayList<SObject>(commitLevel * 2);
         this.upsertItems = new ArrayList<SObject>(commitLevel * 2);
         this.upsertKeyColumn = "";
-
+        if (stub == null) {
+            throw new RuntimeException("SforceServiceStub is null! Connection is unavailable!");
+        }
+        if (sh == null) {
+            throw new RuntimeException("SessionHeader is null! Connection is unavailable!");
+        }
         this.stub = stub;
         this.sh = sh;
     }
