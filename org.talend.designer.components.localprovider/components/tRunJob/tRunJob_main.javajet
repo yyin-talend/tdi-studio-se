@@ -176,19 +176,19 @@ paraList_<%=cid %>.add("--parent_part_launcher=JOB:" + jobName + "/NODE:<%=cid %
 java.util.Map<String, Object> parentContextMap_<%=cid %> = new java.util.HashMap<String, Object>();
 
 <%
+boolean parallelIterate = false;
+Set<IConnection> iterateConnSet =  new HashSet<IConnection>();
+List<? extends IConnection> iterateConns = node.getIncomingConnections(EConnectionType.ITERATE);
+if(iterateConns != null)  { 
+	iterateConnSet.addAll(iterateConns);
+}
+for (IConnection iterateConn : iterateConnSet) {
+	parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
+}
 if(transmitWholeContext){//111111
 %>
 <% 
 	//bug21906
-	Set<IConnection> iterateConnSet =  new HashSet<IConnection>();
-	List<? extends IConnection> iterateConns = node.getIncomingConnections(EConnectionType.ITERATE);
-	if(iterateConns != null)  { 
-		iterateConnSet.addAll(iterateConns);
-	}
-	boolean parallelIterate = false;
-	for (IConnection iterateConn : iterateConnSet) {
-		parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
-	}
 	String localContext = "context";
 	if(parallelIterate) {
 		localContext = "localContext";
@@ -220,6 +220,10 @@ for (int i=0; i<contextParams.size(); i++) {
   Map<String, String> contextParam = contextParams.get(i);
   String name = contextParam.get("PARAM_NAME_COLUMN");
   String value = contextParam.get("PARAM_VALUE_COLUMN");
+  //bug22181
+  if(parallelIterate && value!=null && value.trim().contains("context.")) {
+  	value = value.replaceFirst("context","localContext");
+  }
 %>
   obj_<%=cid%> = <%=value %>;
   paraList_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(obj_<%=cid%>));
