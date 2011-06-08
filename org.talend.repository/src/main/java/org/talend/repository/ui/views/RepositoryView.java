@@ -291,12 +291,13 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         viewer.setInput(viewSite);
         getSite().setSelectionProvider(viewer);
         addFilters();
-        /* need to expand so that all folderItem will be created */
-        viewer.expandAll();
-        viewer.collapseAll();
+
         if (isFromFake) {
             refresh();
         }
+        /* need to expand so that all folderItem will be created */
+        viewer.expandAll();
+        viewer.collapseAll();
         // This only tree listener aim is to change open/close icons on folders :
         viewer.addTreeListener(new ITreeViewerListener() {
 
@@ -1206,9 +1207,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             if (rootNode.getParent() instanceof ProjectRepositoryNode) {
                 ((ProjectRepositoryNode) rootNode.getParent()).clearNodeAndProjectCash();
             }
+
             // refresh content of recyclebin
-            contentProvider.getChildren(rootNode); // retrieve child
-            viewer.refresh(rootNode);
             // user A and B in svn,if user A delete some jobs,B create job,the recyle bin can't refresh,
             // so need refresh recyle bin. if empty recyle bin,must delete job documents,don't need refresh recyle bin.
             // if refresh throw exception.
@@ -1216,8 +1216,12 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 root.getRecBinNode().setInitialized(false);
                 root.getRecBinNode().getChildren().clear();
                 contentProvider.getChildren(root.getRecBinNode());
-                viewer.refresh(root.getRecBinNode());
+
             }
+            contentProvider.getChildren(rootNode); // retrieve child
+            viewer.refresh(rootNode);
+            viewer.refresh(root.getRecBinNode());
+
         }
     }
 

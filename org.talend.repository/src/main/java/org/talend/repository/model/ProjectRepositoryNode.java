@@ -882,24 +882,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 ExceptionHandler.process(e);
             }
 
-        } else { // bug 17768
-            if (item instanceof ConnectionItem) {
-                Connection connection = ((ConnectionItem) item).getConnection();
-
-                for (MetadataTable table : ConnectionHelper.getTables(connection)) {
-                    if (SubItemHelper.isDeleted(table)) {
-                        MetadataTableRepositoryObject modelObj = new MetadataTableRepositoryObject(new RepositoryViewObject(
-                                item.getProperty()), table);
-                        RepositoryNode tableNode = new RepositoryNode(modelObj, currentParentNode, ENodeType.REPOSITORY_ELEMENT);
-                        tableNode.setProperties(EProperties.LABEL, modelObj.getLabel());
-                        tableNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CON_TABLE);
-                        currentParentNode.getChildren().add(tableNode);
-                        tableNode.setParent(currentParentNode);
-                    }
-                }
-
-            }
         }
+
     }
 
     /**
@@ -1514,11 +1498,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             while (metadataTables.hasNext()) {
                 org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) metadataTables
                         .next();
-
-                // bug 17768
-                if (SubItemHelper.isDeleted(metadataTable)) {
-                    continue;
-                }
 
                 String typeTable = null;
                 if (metadataTable != null && metadataTable.getTableType() != null) {
