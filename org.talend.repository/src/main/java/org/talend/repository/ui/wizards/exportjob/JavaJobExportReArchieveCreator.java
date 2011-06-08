@@ -58,6 +58,8 @@ public class JavaJobExportReArchieveCreator {
 
     private static final String RULES_ROOT = "Rules"; //ruleRoot folder hywang add //$NON-NLS-N$ //$NON-NLS-1$
 
+    String needModuleJarStrs = "";
+
     public JavaJobExportReArchieveCreator(String zipFile, String jobFolderName) {
         this.zipFile = zipFile;
         this.jobFolerName = jobFolderName;
@@ -69,13 +71,7 @@ public class JavaJobExportReArchieveCreator {
             // ZipToFile.unZipFile(zipFile, tmpFoler);
             // init jobFolder File
             initJobFolder();
-            if (jobFolder == null) {
-                return;
-            }
-            String newJarPath = jobFolder.getAbsolutePath() + "/" + CLASSPATH_JAR; //$NON-NLS-1$
-            NewJarBuilder jarBuilder = new NewJarBuilder(tmpFoler, newJarPath);
-            jarBuilder.buildJar();
-
+            // bug 21473
             // change the .bat file & .sh file
             if (batFile != null) {
                 changeScriptFile(batFile);
@@ -83,6 +79,15 @@ public class JavaJobExportReArchieveCreator {
             if (shFile != null) {
                 changeScriptFile(shFile);
             }
+            if (jobFolder == null) {
+                return;
+            }
+            if (jobFolder == null) {
+                return;
+            }
+            String newJarPath = jobFolder.getAbsolutePath() + "/" + CLASSPATH_JAR; //$NON-NLS-1$
+            NewJarBuilder jarBuilder = new NewJarBuilder(tmpFoler, newJarPath);
+            jarBuilder.buildJar();
 
             // delete non used jar files
             // deleteNonUsedJar();
@@ -148,6 +153,8 @@ public class JavaJobExportReArchieveCreator {
                     strs[pos + 1] = CLASSPATH_JAR + ":"; //$NON-NLS-1$
                 }
                 if (file.getName().endsWith(".bat")) { //$NON-NLS-1$
+                    // bug 21473
+                    needModuleJarStrs = strs[pos + 1];
                     strs[pos + 1] = CLASSPATH_JAR + ";"; //$NON-NLS-1$
                 }
             }
@@ -300,13 +307,18 @@ public class JavaJobExportReArchieveCreator {
         for (int i = 0; i < fs.length; i++) {
             sb.append(fs[i] + " "); //$NON-NLS-1$
         }
-        String[] fn = getLibJarFilenames();
-        if (fn != null) {
-            for (int i = 0; i < fn.length; i++) {
-                sb.append("../" + LIB + "/" + fn[i] + " "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        // bug 21473
+        if (needModuleJarStrs != null && !needModuleJarStrs.equals("")) {
+            String[] needjars = needModuleJarStrs.split(";");
+            if (needjars != null) {
+                for (int i = 0; i < needjars.length; i++) {
+                    if (".".equals(needjars[i])) {
+                        break;
+                    }
+                    sb.append(needjars[i] + " "); //$NON-NLS-3$
+                }
             }
         }
-
         // hywang add for set drl path in classpass.jar
         // String[] drls = getDrlFilenames();
         // String[] xlss = getXLSFilenames();
