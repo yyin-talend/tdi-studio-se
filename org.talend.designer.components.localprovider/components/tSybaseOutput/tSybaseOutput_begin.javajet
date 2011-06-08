@@ -61,9 +61,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
 	
 	String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
+	
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	
 	boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
+	
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 %>
 
@@ -138,8 +140,10 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
 if(useExistingConn){
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
+	String schema = "dbschema_" + connection;
 	%>
 	java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+	dbschema_<%=cid%>= (String)globalMap.get("<%=schema%>");
 	<%
 } else {
     %> 

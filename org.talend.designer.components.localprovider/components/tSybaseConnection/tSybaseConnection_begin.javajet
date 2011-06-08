@@ -43,3 +43,4 @@ imports="
 	globalMap.put("db_<%=cid%>", <%=dbname%>);
 	globalMap.put("user_<%=cid%>", <%=dbuser%>);
 	globalMap.put("pass_<%=cid%>", <%=dbpass%>);
+	globalMap.put("dbschema_<%=cid%>", <%=dbschema%>);

@@ -115,6 +115,17 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="DB_SCHEMA"
+      FIELD="TEXT"
+      NUM_ROW="40"
+      REPOSITORY_VALUE="SCHEMA"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="TABLE"

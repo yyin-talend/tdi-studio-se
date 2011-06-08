@@ -34,16 +34,18 @@ String dataFile  = ElementParameterParser.getValue(node, "__FILENAME__");
 String fieldTerminator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATOR__");
 String rowTerminator =  ElementParameterParser.getValue(node, "__ROW_TERMINATOR__");
 String headRow =  ElementParameterParser.getValue(node, "__HEAD__");
-String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
 boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 List<IMetadataColumn> columnList = getColumnList(node);
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 boolean convertToUppercase = false; // not active this function
 %>
 int deletedCount_<%=cid%>=0;
+String dbschema_<%=cid%>= <%=dbschema%>; 
+String tableName_<%=cid%> = <%=table%>;
 <%
 if(("UPDATE").equals(dataAction)) {
     if(columnList != null && columnList.size() > 0) {
@@ -62,17 +64,18 @@ if(("UPDATE").equals(dataAction)) {
     }
 }
 %>
-String tableName_<%=cid%> = <%=dbtable%>;
 <%
 if(useExistingConnection) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
+	String schema = "dbschema_" + connection;
 	%>
     String host_<%=cid%> = (String)globalMap.get("host_<%=connection%>");
     String port_<%=cid%> = (String)globalMap.get("port_<%=connection%>");
     String db_<%=cid%> = (String)globalMap.get("db_<%=connection%>");
     String user_<%=cid%> = (String)globalMap.get("user_<%=connection%>");
-    String pass_<%=cid%> = (String)globalMap.get("pass_<%=connection%>");		
+    String pass_<%=cid%> = (String)globalMap.get("pass_<%=connection%>");
+    dbschema_<%=cid%>= (String)globalMap.get("<%=schema%>");		
 	java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
 	<%
 } else {       
@@ -97,6 +100,11 @@ if(useExistingConnection) {
     java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, user_<%=cid%>, pass_<%=cid%>);
     <%
 }
+%>
+if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() != 0) {
+	tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=table%>;
+} 
+<%
 Manager manager = null;
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {

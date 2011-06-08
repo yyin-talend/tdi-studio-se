@@ -44,6 +44,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     String dbuser= ElementParameterParser.getValue(node, "__USER__");
     String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
     String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+    String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
@@ -63,12 +64,15 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     int nb_line_update_<%=cid%> = 0;
     int nb_line_inserted_<%=cid%> = 0;
     String tableName_<%=cid%> = <%=dbtable%>;
+    String dbschema_<%=cid%>= <%=dbschema%>; 
     <%
     if(useExistingConn){
         String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
         String conn = "conn_" + connection;
+        String schema = "dbschema_" + connection;
         %>
         java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+        dbschema_<%=cid%>= (String)globalMap.get("<%=schema%>");
         <%
     } else {
         %>
@@ -88,6 +92,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         <%
     }
     %>
+    if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() != 0) {
+		tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=dbtable%>;
+	} 
     java.sql.Timestamp timestamp_<%=cid%> = null;
     String tmpValue_<%=cid%> = null;    
     <%
