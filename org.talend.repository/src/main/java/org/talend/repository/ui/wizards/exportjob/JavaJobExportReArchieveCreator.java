@@ -82,9 +82,6 @@ public class JavaJobExportReArchieveCreator {
             if (jobFolder == null) {
                 return;
             }
-            if (jobFolder == null) {
-                return;
-            }
             String newJarPath = jobFolder.getAbsolutePath() + "/" + CLASSPATH_JAR; //$NON-NLS-1$
             NewJarBuilder jarBuilder = new NewJarBuilder(tmpFoler, newJarPath);
             jarBuilder.buildJar();
