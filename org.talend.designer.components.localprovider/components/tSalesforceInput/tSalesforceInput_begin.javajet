@@ -32,6 +32,7 @@ String cid = node.getUniqueName();
 
 int nb_line_<%=cid%> = 0;
 int limit_<%=cid %> = <%=limit %>;
+System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 
 <%
 if(useProxy){
