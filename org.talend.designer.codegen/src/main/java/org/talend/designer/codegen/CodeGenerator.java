@@ -579,6 +579,12 @@ public class CodeGenerator implements ICodeGenerator {
                         }
                     }
                     codeComponent.append(generateComponentCode(subProcess, node, ECodePart.MAIN, incomingName, typeGen));
+                    if (ETypeGen.CAMEL == typeGen) {
+                        if(node.getIncomingConnections().size()<1)
+                            codeComponent.append(".routeId(\""+node.getUniqueName()+"\")");
+                        else
+                            codeComponent.append(".id(\""+node.getUniqueName()+"\")");
+                    }
                     codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
                 }
                 break;

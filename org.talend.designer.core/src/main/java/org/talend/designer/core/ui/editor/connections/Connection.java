@@ -737,6 +737,14 @@ public class Connection extends Element implements IConnection, IPerformance {
                 labelText = linkName + " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             updateName = true;
+        } else if (getLineStyle().equals(EConnectionType.ROUTE)) {
+            String linkName = sourceNodeConnector.getLinkName();
+            if (getUniqueName() != null) {
+                linkName = getUniqueName();
+                labelText = linkName;
+                this.setName(linkName);
+            }
+            updateName = true;
         } else if (getLineStyle().equals(EConnectionType.SYNCHRONIZE)) {
             IElementParameter synchroType = this.getSource().getElementParameter("WAIT_FOR"); //$NON-NLS-1$
             if (synchroType != null) {
@@ -830,6 +838,11 @@ public class Connection extends Element implements IConnection, IPerformance {
                 // see 3680, the iterate link must have a unique name.
                 if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_ITERATE_CONNECTION_NAME)) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_ITERATE_CONNECTION_NAME);
+                }
+            } else if (lineStyle.equals(EConnectionType.ROUTE)) {
+                // see 3680, the iterate link must have a unique name.
+                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_ROUTE_CONNECTION_NAME) || !source.getProcess().checkValidConnectionName(uniqueName)) {
+                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_ROUTE_CONNECTION_NAME);
                 }
             } else if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                     EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF,
