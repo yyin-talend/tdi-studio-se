@@ -72,6 +72,13 @@ imports="
 		    List<IMetadataColumn> columnList = metadata.getListColumns();
 		    boolean isDynamic = metadata.isDynamicSchema();
 		    if(isDynamic){
+		    	String DynamicDatePattern = "\"dd-MM-yyyy\"";
+		    	for(IMetadataColumn column : columnList) {
+		    		if("id_Dynamic".equals(column.getTalendType())) {
+		    			DynamicDatePattern = column.getPattern();
+		    			break;
+		    		}
+		    	}
 		    %>
 		    routines.system.Dynamic dcg_<%=cid%> =  new routines.system.Dynamic();
 		    dcg_<%=cid%>.setDbmsId("<%=dbms %>");
@@ -89,6 +96,7 @@ imports="
                 	dcm_<%=cid%>.setDbName(rsmd_<%=cid%>.getColumnName(i));
                 	dcm_<%=cid%>.setType(routines.system.Dynamic.getTalendTypeFromDBType("<%=dbms %>", rsmd_<%=cid%>.getColumnTypeName(i).toUpperCase(), rsmd_<%=cid%>.getPrecision(i), rsmd_<%=cid%>.getScale(i)));
                 	dcm_<%=cid%>.setDbType(rsmd_<%=cid%>.getColumnTypeName(i));
+                	dcm_<%=cid%>.setFormat(<%=DynamicDatePattern%>);
                 	dcm_<%=cid%>.setLength(rsmd_<%=cid%>.getPrecision(i));
                 	dcm_<%=cid%>.setPrecision(rsmd_<%=cid%>.getScale(i));
                 	dcm_<%=cid%>.setNullable(rsmd_<%=cid%>.isNullable(i) == 0 ? false : true);
