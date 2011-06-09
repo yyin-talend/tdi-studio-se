@@ -77,6 +77,11 @@ if(inRefCon != null){//exist lookup
 	
 	<%=outputConnName %> = new <%=outputConnName %>Struct();	
 <%
+		//fix bug 22095,put all labels of preColumns in a Hashset.
+		java.util.Set<String> inputCols = new java.util.HashSet<String>();
+		for (IMetadataColumn inputCol : preColumns) {
+			inputCols.add(inputCol.getLabel());
+		}
 		//first, iterate with minSize
 		for (int i = 0; i < minSize; i++) {//4
 			IMetadataColumn column = columns.get(i);
@@ -93,9 +98,13 @@ if(inRefCon != null){//exist lookup
             }
             
             if(!isLookup) {
+            //fix bug 22095,when the label name of current columns is contained in preColumns,we use the label name.
+            //Use the label name but not the column index to save parameters.
+           		if (inputCols.contains(column.getLabel())) {
 %>					
-	<%=outputConnName %>.<%=column.getLabel() %> = <%=incomingName %>.<%=preColumn.getLabel() %>;			
+	<%=outputConnName %>.<%=column.getLabel() %> = <%=incomingName %>.<%=column.getLabel() %>;			
 <%
+				}
 			}
 		} //4
 	}
