@@ -96,7 +96,9 @@ imports="
                 	dcm_<%=cid%>.setDbName(rsmd_<%=cid%>.getColumnName(i));
                 	dcm_<%=cid%>.setType(routines.system.Dynamic.getTalendTypeFromDBType("<%=dbms %>", rsmd_<%=cid%>.getColumnTypeName(i).toUpperCase(), rsmd_<%=cid%>.getPrecision(i), rsmd_<%=cid%>.getScale(i)));
                 	dcm_<%=cid%>.setDbType(rsmd_<%=cid%>.getColumnTypeName(i));
+                <% if((DynamicDatePattern!=null) && (!"".equals(DynamicDatePattern)) && (!"\"\"".equals(DynamicDatePattern))) {%>
                 	dcm_<%=cid%>.setFormat(<%=DynamicDatePattern%>);
+                <% } %>
                 	dcm_<%=cid%>.setLength(rsmd_<%=cid%>.getPrecision(i));
                 	dcm_<%=cid%>.setPrecision(rsmd_<%=cid%>.getScale(i));
                 	dcm_<%=cid%>.setNullable(rsmd_<%=cid%>.isNullable(i) == 0 ? false : true);
