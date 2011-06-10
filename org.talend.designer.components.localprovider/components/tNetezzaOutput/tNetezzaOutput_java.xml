@@ -39,9 +39,16 @@
 
   <PARAMETERS>
     <PARAMETER
+      NAME="NOTE"
+      FIELD="LABEL"
+      NUM_ROW="1"
+    >
+    	<DEFAULT>(To use this component, you need first to add nzjdbc.jar in the Modules view)</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
-      NUM_ROW="1"
+      NUM_ROW="2"
       REPOSITORY_VALUE="DATABASE:NETEZZA"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
@@ -49,7 +56,7 @@
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
-      NUM_ROW="2"
+      NUM_ROW="3"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>    
@@ -58,14 +65,14 @@
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tNetezzaConnection"
-      NUM_ROW="2"
+      NUM_ROW="3"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />    
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
@@ -74,7 +81,7 @@
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="SERVER_NAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -85,7 +92,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="PORT"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -96,7 +103,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -107,7 +114,7 @@
 	<PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="6"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -118,7 +125,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="6"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -129,7 +136,7 @@
     <PARAMETER	
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -137,7 +144,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="7"
+      NUM_ROW="8"
       NOT_SHOW_IF="PARALLELIZE == 'true'"
     >
       <ITEMS DEFAULT="NONE">
@@ -154,7 +161,7 @@
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT" />
@@ -335,7 +342,7 @@
 
   <CODEGENERATION>
     <IMPORTS>
-        <IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="true" />
+        <IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="false" />
     </IMPORTS>
   </CODEGENERATION>
    

@@ -34,6 +34,14 @@
 	<PARAMETERS>
 	
 		<PARAMETER
+	      NAME="NOTE"
+	      FIELD="LABEL"
+	      NUM_ROW="1"
+	    >
+	    	<DEFAULT>(To use this component, you need first to add nzjdbc.jar in the Modules view)</DEFAULT>
+	    </PARAMETER>
+	    
+		<PARAMETER
 			NAME="MAPPING"
 			FIELD="MAPPING_TYPE"
 			NUM_ROW="18"
@@ -45,14 +53,14 @@
 		<PARAMETER 
 			NAME="PROPERTY"
 			FIELD="PROPERTY_TYPE"
-			NUM_ROW="1"
+			NUM_ROW="2"
 			REPOSITORY_VALUE="DATABASE:NETEZZA"
 		/>
 
 		<PARAMETER
 			NAME="TYPE"
 			FIELD="TEXT"
-			NUM_ROW="1"
+			NUM_ROW="2"
 			SHOW="false"
 			REPOSITORY_VALUE="TYPE"
 		>

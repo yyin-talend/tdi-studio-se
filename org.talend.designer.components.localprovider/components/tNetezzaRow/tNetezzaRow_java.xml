@@ -35,9 +35,16 @@
 
   <PARAMETERS>
     <PARAMETER
+      NAME="NOTE"
+      FIELD="LABEL"
+      NUM_ROW="1"
+    >
+    	<DEFAULT>(To use this component, you need first to add nzjdbc.jar in the Modules view)</DEFAULT>
+    </PARAMETER>  
+    <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
-      NUM_ROW="1"
+      NUM_ROW="2"
       REPOSITORY_VALUE="DATABASE:NETEZZA"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
@@ -45,7 +52,7 @@
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
-      NUM_ROW="2"
+      NUM_ROW="3"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER> 
@@ -54,7 +61,7 @@
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tNetezzaConnection"
-      NUM_ROW="2"
+      NUM_ROW="3"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />     
@@ -62,7 +69,7 @@
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="SERVER_NAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -73,7 +80,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="PORT"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -84,7 +91,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -95,7 +102,7 @@
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
@@ -105,7 +112,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="6"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -116,7 +123,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="6"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -127,7 +134,7 @@
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -136,7 +143,7 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="6"
+      NUM_ROW="7"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
@@ -148,7 +155,7 @@
 	<PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -156,7 +163,7 @@
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -164,7 +171,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="8"
+      NUM_ROW="9"
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
@@ -172,7 +179,7 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="9"
+      NUM_ROW="10"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -263,7 +270,7 @@
 
   <CODEGENERATION>
     <IMPORTS>
-       <IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="true" />    
+       <IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="false" />    
     </IMPORTS>
   </CODEGENERATION>
 

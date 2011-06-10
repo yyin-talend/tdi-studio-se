@@ -34,19 +34,25 @@
   </CONNECTORS>
 
   <PARAMETERS>
-
+    <PARAMETER
+      NAME="NOTE"
+      FIELD="LABEL"
+      NUM_ROW="1"
+    >
+    	<DEFAULT>(To use this component, you need first to add nzjdbc.jar in the Modules view)</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="1"
+      NUM_ROW="2"
       REPOSITORY_VALUE="DATABASE:NETEZZA"
     />
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
       REPOSITORY_VALUE="SERVER_NAME"
     >
       <DEFAULT>""</DEFAULT>
@@ -55,7 +61,7 @@
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
@@ -65,7 +71,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
       REPOSITORY_VALUE="PORT"
     >
       <DEFAULT>"5480"</DEFAULT>
@@ -74,7 +80,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
     >
@@ -84,7 +90,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
     >
@@ -94,14 +100,14 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="5" REPOSITORY_VALUE="PROPERTIES_STRING">
+	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="6" REPOSITORY_VALUE="PROPERTIES_STRING">
 		<DEFAULT>""</DEFAULT>
 	</PARAMETER>
 	
@@ -143,7 +149,7 @@
 
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="false" />
      </IMPORTS>
    </CODEGENERATION>
 
