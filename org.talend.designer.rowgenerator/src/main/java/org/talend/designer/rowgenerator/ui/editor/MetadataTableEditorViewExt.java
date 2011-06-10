@@ -314,7 +314,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
                     ext.setFunction(functionManager.getDefaultFunction(ext, value));
                     ext.setChanged(true);
                 }
-                bean.setPattern(MetadataTableEditorViewExt.this.getJavaDateTypeForDefaultPattern(bean));
+                bean.setPattern(MetadataTableEditorViewExt.this.getJavaDateOrDynTypeForDefaultPattern(bean));
 
             }
 
