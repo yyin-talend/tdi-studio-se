@@ -30,6 +30,8 @@
 	IProcess process = (IProcess)v.get(0);
     String version = (String)v.get(1);
 	
+	boolean stats = codeGenArgument.isStatistics();
+	
 	List< ? extends INode> processNodes = (List< ? extends INode>)process.getGeneratingNodes();
 %>
 
@@ -50,7 +52,18 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 
 	protected void doStart() throws Exception {
 		super.doStart();
+		
+		org.apache.camel.management.JmxNotificationEventNotifier notifier = new org.apache.camel.management.JmxNotificationEventNotifier();
+		notifier.setSource("MyCamel");
+		notifier.setIgnoreCamelContextEvents(true);
+		notifier.setIgnoreRouteEvents(true);
+		notifier.setIgnoreServiceEvents(true);
+		
 		postProcessContext();
+		
+		getCamelContexts().get(0).getManagementStrategy().addEventNotifier(notifier);
+
+		
 		java.net.URLClassLoader sysloader = (java.net.URLClassLoader) ClassLoader.getSystemClassLoader();
 		java.lang.reflect.Method method = java.net.URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { java.net.URL.class });
 		method.setAccessible(true);

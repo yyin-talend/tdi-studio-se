@@ -6,12 +6,40 @@
 		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.Vector
 	"
 %>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	
+	boolean stats = codeGenArgument.isStatistics();
+%>
+
 		}
 			});
-
+						
 			getCamelContexts().get(0).start();
+
+<%
+			if(stats) {
+%>			
+
+			CamelStat runStat = new CamelStat(getCamelContexts().get(0));
+						
+			runStat.setParams();
+			
+			runStat.openSocket(true);
+			runStat.setAllPID(rootPid, fatherPid, pid, jobName);
+			runStat.startThreadStat(clientHost, portStats);
+			runStat.updateStatOnJob(RunStat.JOBSTART, "");
+			
+			MyStatThread statsThread = new MyStatThread(runStat);
+			statsThread.run();
+<%
+			} //if stats
+%>
+
+			
 		}
 
 		protected void doStop() throws Exception {

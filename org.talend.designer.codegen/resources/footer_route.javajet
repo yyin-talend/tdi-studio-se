@@ -29,6 +29,9 @@
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
     params=process.getContextManager().getDefaultContext().getContextParameterList();
     String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
+	
+	boolean stats = codeGenArgument.isStatistics();
+	
 %>
 	public String resuming_logs_dir_path = null;
 	public String resuming_checkpoint_path = null;
@@ -50,6 +53,8 @@
 	public String fatherNode = null;
 	public long startTime = 0;
 	public boolean isChildJob = false;
+	
+	private boolean execStat = true;
 	
 	private java.util.Properties context_param = new java.util.Properties();
     public java.util.Map<String, Object> parentContextMap = new java.util.HashMap<String, Object>();
@@ -84,6 +89,41 @@
                 lastStr = "";
             }
         }
+		
+		if(clientHost == null) {
+    		clientHost = defaultClientHost;
+    	}
+    	
+    	if(pid == null || "0".equals(pid)) {
+	    	pid = TalendString.getAsciiRandomString(6);
+	    }
+
+    	if (rootPid==null) {
+    		rootPid = pid;
+    	}
+    	if (fatherPid==null) {    	 	
+    		fatherPid = pid;    		
+    	}else{
+    		isChildJob = true;
+    	}
+
+<%
+		if (stats) {
+%>    	
+			if (portStats != null) {
+				// portStats = -1; //for testing
+				if (portStats < 0 || portStats > 65535) {
+					// issue:10869, the portStats is invalid, so this client socket can't open
+					System.err.println("The statistics socket port " + portStats + " is invalid.");
+					execStat = false;
+				}
+			}else{
+				execStat = false;
+			}            	
+<%
+		}
+%> 
+		
 		
 		try {
 			java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/"+contextStr+".properties");
