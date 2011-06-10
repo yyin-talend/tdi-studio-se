@@ -18,6 +18,9 @@ public class CLASS {
                 "SQLPATTERN_VALUE");
 
         Set<String> tableParamSet = new java.util.HashSet<String>();
+        //fix bug 22221,if use hive DB,change addBatch() method to execute().
+        String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");
+		boolean isHive=dbType.equalsIgnoreCase("HIVE");
 
         StringBuilder resultBuilder = new StringBuilder();
         if (list != null) {
@@ -438,7 +441,12 @@ public class CLASS {
                                 }
                                 codeStringBuilder.append("String tempSQLSentence_").append(cid).append("_"+sql_id).append(" = ").append(sqlSentence).append(";\n");
                                 codeStringBuilder.append("globalMap.put(\"").append(cid).append("_QUERY\", tempSQLSentence_").append(cid).append("_"+sql_id).append(");\n");
-                                codeStringBuilder.append("stmt_").append(cid).append(".addBatch(tempSQLSentence_").append(cid).append("_"+sql_id).append(");\n");
+                                //fix bug 22221,if use hive DB,change addBatch() method to execute().
+                                if(!isHive){
+									codeStringBuilder.append("stmt_").append(cid).append(".addBatch(tempSQLSentence_").append(cid).append("_"+sql_id).append(");\n");
+				                }else{
+									codeStringBuilder.append("stmt_").append(cid).append(".execute(tempSQLSentence_").append(cid).append("_"+sql_id).append(");\n");
+								}
                                 sqlQueryBuilder.delete(0, sqlQueryBuilder.length()).append("\"");
                             } else {
                                 sqlQueryBuilder.append(" ");
@@ -446,9 +454,13 @@ public class CLASS {
                             line = null;
                         }
                     } while (true);
-                    resultBuilder.append("//execute sqlPattern: ").append(key).append("\nstmt_").append(cid).append(
-                            ".clearBatch();\n");
-                    resultBuilder.append(codeStringBuilder.toString()).append("\nstmt_").append(cid).append(".executeBatch();\n");
+                    //fix bug 22221,if use hive DB,do not use clearBatch() and executeBatch(),because the hive jar doesn't support these methods.
+                    if(!isHive){
+						resultBuilder.append("//execute sqlPattern: ").append(key).append("\nstmt_").append(cid).append(".clearBatch();\n");
+					    resultBuilder.append(codeStringBuilder.toString()).append("\nstmt_").append(cid).append(".executeBatch();\n");
+				    }else{
+						resultBuilder.append(codeStringBuilder.toString());
+				    }
                 }
             }
         }
