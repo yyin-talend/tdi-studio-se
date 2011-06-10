@@ -15,9 +15,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -60,7 +58,6 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.cwm.helper.ConnectionHelper;
@@ -79,11 +76,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * 
  */
 public class ComboController extends AbstractElementPropertySectionController {
-
-    /**
-     * 
-     */
-    private static final String JAVA = "java";
 
     /**
      * DOC dev ColumnListController constructor comment.
@@ -493,23 +485,13 @@ public class ComboController extends AbstractElementPropertySectionController {
             } catch (RuntimeException e) {
                 // nothing to do
             }
-            if (service != null && elem instanceof Node) {
-                String dbtype = JAVA;
+            if (service != null && elem instanceof Node && isPatternList) {
 
                 Node node = (Node) elem;
 
-                IElementParameter propertyParam = node.getElementParameter("TYPE");
-                if (propertyParam != null) {
-                    dbtype = propertyParam.getValue().toString();
-                }
-                if (isPatternList) { //$NON-NLS-1$
-                    String[][][] tdqPatterns = service.retrieveTDQPatterns();
-                    if (tdqPatterns != null) {
-                        Map<String, String> patternMap = retrievePattern(dbtype, tdqPatterns);
-                        // set into paramlist
-                        addPatternToComponent(param, patternMap);
-                    }
-                }
+                IElementParameter typeParam = node.getElementParameter("TYPE");
+
+                service.overridePatternList(typeParam, param);
             }
 
         } catch (Exception e) {
@@ -535,11 +517,12 @@ public class ComboController extends AbstractElementPropertySectionController {
                 combo.setItems(paramItems);
             }
             // bug 19837
-            if (isPatternList) { 
-            	combo.setText("".equals(strValue) ? (String)value : strValue);
+            if (isPatternList) {
+                combo.setText("".equals(strValue) ? (String) value : strValue);
             } else {
                 combo.setText(strValue);
             }
+
             combo.setVisible(true);
         }
 
@@ -548,59 +531,6 @@ public class ComboController extends AbstractElementPropertySectionController {
             combo.setEnabled(false);
         }
 
-    }
-
-    /**
-     * DOC bZhou Comment method "addPatternToComponent".
-     * 
-     * @param param
-     * @param patternMap
-     */
-    private void addPatternToComponent(IElementParameter param, Map<String, String> patternMap) {
-        param.setListItemsDisplayCodeName(patternMap.keySet().toArray(new String[patternMap.size()]));
-        param.setListItemsValue(patternMap.values().toArray(new String[patternMap.size()]));
-        param.setListItemsDisplayName(patternMap.keySet().toArray(new String[patternMap.size()]));
-        param.setListItemsNotShowIf(new String[patternMap.size()]);
-        param.setListItemsShowIf(new String[patternMap.size()]);
-    }
-
-    /**
-     * DOC bZhou Comment method "retrievePattern".
-     * 
-     * @param dbtype
-     * @param tdqPatterns
-     * @return
-     */
-    private Map<String, String> retrievePattern(String dbtype, String[][][] tdqPatterns) {
-        Map<String, String> patternMap = new HashMap<String, String>();
-
-        for (String[][] pattern : tdqPatterns) {
-            String properExpression = null;
-            String label = pattern[0][3] + pattern[0][0];
-            for (String[] expression : pattern) {
-                if (StringUtils.equalsIgnoreCase(expression[2], dbtype)) {
-                    properExpression = expression[1];
-                }
-            }
-
-            if (properExpression == null) {
-                for (String[] expression : pattern) {
-                    if (StringUtils.equalsIgnoreCase(expression[2], "sql")) {
-                        properExpression = expression[1];
-                    }
-                }
-            }
-
-            if (properExpression != null) {
-                if (StringUtils.equalsIgnoreCase(dbtype, JAVA)) {
-                    properExpression = properExpression.substring(1, properExpression.length() - 1);
-                    properExpression = TalendTextUtils.addQuotes(properExpression);
-                }
-
-                patternMap.put(label, properExpression);
-            }
-        }
-        return patternMap;
     }
 
     private String[] getListToDisplay(IElementParameter param) {
