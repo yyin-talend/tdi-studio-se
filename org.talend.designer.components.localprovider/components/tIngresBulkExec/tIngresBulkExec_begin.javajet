@@ -367,7 +367,7 @@
 	/***********************************************************************/
 		
 		Runtime runtime_<%=cid%> = Runtime.getRuntime();
-		if(System.getProperty("os.name").toLowerCase().indexOf("windows")==-1){
+		if(OS.indexOf("windows") < 0 && OS.indexOf("nt") < 0 ){
      	 	final Process chmod_<%=cid %> = runtime_<%=cid%>.exec("chmod a+x "+ executableFilePath);
      	 	
      	 	/***********************************************************************/
