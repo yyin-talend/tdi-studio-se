@@ -211,9 +211,6 @@ public class ImportItemUtil {
                 }
                 if (itemRecord.getProperty().getId().equalsIgnoreCase(current.getId())) {
                     itemWithSameId = current;
-                    if (!nameAvailable) {
-                        break;
-                    }
                 }
             }
             itemRecord.setExistingItemWithSameId(itemWithSameId);
@@ -291,8 +288,16 @@ public class ImportItemUtil {
 
                 } else {
                     // same name and same id
-                    itemRecord.setState(State.ID_EXISTED);
+                    itemRecord.setState(State.NAME_EXISTED);
                     if (overwrite) {
+                        result = true;
+                    }
+                    if (!isSystem && overwrite
+                            && !itemWithSameName.getProperty().getLabel().equals(itemWithSameId.getProperty().getLabel())) {
+                        // if anything system, don't replace the source item if same name.
+                        // if not from system, can overwrite.
+                        itemRecord.setExistingItemWithSameId(itemWithSameName);
+                        itemRecord.setState(State.NAME_AND_ID_EXISTED);
                         result = true;
                     }
                 }
@@ -369,6 +374,31 @@ public class ImportItemUtil {
                 final IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
                 // bug 10520
                 final Set<String> overwriteDeletedItems = new HashSet<String>();
+
+                Map<String, String> nameToIdMap = new HashMap<String, String>();
+
+                for (ItemRecord itemRecord : itemRecords) {
+                    if (!monitor.isCanceled()) {
+                        if (itemRecord.isValid()) {
+                            if (itemRecord.getState() == State.ID_EXISTED || itemRecord.getState() == State.NAME_AND_ID_EXISTED) {
+                                String id = nameToIdMap.get(itemRecord.getProperty().getLabel()
+                                        + ERepositoryObjectType.getItemType(itemRecord.getProperty().getItem()).toString());
+                                if (id == null) {
+                                    /*
+                                     * if id exsist then need to genrate new id for this job,in this case the job won't
+                                     * override the old one
+                                     */
+                                    id = EcoreUtil.generateUUID();
+                                    nameToIdMap.put(
+                                            itemRecord.getProperty().getLabel()
+                                                    + ERepositoryObjectType.getItemType(itemRecord.getProperty().getItem())
+                                                            .toString(), id);
+                                }
+                                itemRecord.getProperty().setId(id);
+                            }
+                        }
+                    }
+                }
 
                 for (ItemRecord itemRecord : itemRecords) {
                     if (!monitor.isCanceled()) {
@@ -542,9 +572,11 @@ public class ImportItemUtil {
                 String id = itemRecord.getProperty().getId();
 
                 IRepositoryViewObject lastVersion = itemRecord.getExistingItemWithSameId();
-                if (lastVersion != null && overwrite && !itemRecord.isLocked()
-                        && (itemRecord.getState() == State.ID_EXISTED || itemRecord.getState() == State.NAME_EXISTED)
-                        && !deletedItems.contains(id)) {
+                if (lastVersion != null
+                        && overwrite
+                        && !itemRecord.isLocked()
+                        && (itemRecord.getState() == State.ID_EXISTED || itemRecord.getState() == State.NAME_EXISTED || itemRecord
+                                .getState() == State.NAME_AND_ID_EXISTED) && !deletedItems.contains(id)) {
                     if (!overwriteDeletedItems.contains(id)) { // bug 10520.
                         ERepositoryStatus status = repFactory.getStatus(lastVersion);
                         if (status == ERepositoryStatus.DELETED) {
@@ -553,7 +585,8 @@ public class ImportItemUtil {
                         overwriteDeletedItems.add(id);
                     }
                     /* only delete when name exsit rather than id exist */
-                    if (itemRecord.getState().equals(ItemRecord.State.NAME_EXISTED)) {
+                    if (itemRecord.getState().equals(ItemRecord.State.NAME_EXISTED)
+                            || itemRecord.getState().equals(ItemRecord.State.NAME_AND_ID_EXISTED)) {
                         repFactory.forceDeleteObjectPhysical(lastVersion, itemRecord.getProperty().getVersion());
                     }
                     lastVersion = null;
@@ -636,7 +669,7 @@ public class ImportItemUtil {
 
                 }
 
-                if (lastVersion == null) {
+                if (lastVersion == null || itemRecord.getState().equals(ItemRecord.State.ID_EXISTED)) {
                     // import has not been developed to cope with migration in mind
                     // so some model may not be able to load like the ConnectionItems
                     // in that case items needs to be copied before migration
@@ -675,22 +708,7 @@ public class ImportItemUtil {
                     itemRecord.setItemId(itemRecord.getProperty().getId());
                     itemRecord.setItemVersion(itemRecord.getProperty().getVersion());
                     itemRecord.setImported(true);
-                } else if (itemRecord.getState().equals(ItemRecord.State.ID_EXISTED)) {
-                    /*
-                     * if id exsist then need to genrate new id for this job,in this case the job won't override the old
-                     * one
-                     */
-                    String newJobId = EcoreUtil.generateUUID();
-                    tmpItem.getProperty().setId(newJobId);
-                    repFactory.create(tmpItem, path, true);
-                    itemRecord.setImportPath(path.toPortableString());
-                    itemRecord.setRepositoryType(itemType);
-                    itemRecord.setItemId(newJobId);
-                    itemRecord.setItemVersion(itemRecord.getProperty().getVersion());
-                    itemRecord.setImported(true);
-                }
-
-                else if (VersionUtils.compareTo(lastVersion.getProperty().getVersion(), tmpItem.getProperty().getVersion()) < 0) {
+                } else if (VersionUtils.compareTo(lastVersion.getProperty().getVersion(), tmpItem.getProperty().getVersion()) < 0) {
                     repFactory.forceCreate(tmpItem, path);
                     itemRecord.setImportPath(path.toPortableString());
                     itemRecord.setItemId(itemRecord.getProperty().getId());

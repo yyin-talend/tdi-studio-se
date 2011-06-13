@@ -151,7 +151,8 @@ public class ItemRecord {
     public enum State {
         NAME_EXISTED,
         ID_EXISTED,
-        NON_EXISTED
+        NON_EXISTED,
+        NAME_AND_ID_EXISTED
     }
 
     public State getState() {
