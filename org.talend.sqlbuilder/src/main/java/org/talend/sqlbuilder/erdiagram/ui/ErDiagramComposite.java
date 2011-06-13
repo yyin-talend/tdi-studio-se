@@ -36,6 +36,7 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.sqlbuilder.util.TextUtil;
@@ -225,7 +226,12 @@ public class ErDiagramComposite extends SashForm {
     private String getCurrentDbType() {
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) rootNode.getObject().getProperty().getItem())
                 .getConnection();
-        return connection.getDatabaseType();
+
+        String dbType = ExtractMetaDataUtils.getDbTypeByClassName(connection.getDriverClass());
+        if (dbType == null) {
+            dbType = connection.getDatabaseType();
+        }
+        return dbType;
     }
 
     private String getSchema() {
