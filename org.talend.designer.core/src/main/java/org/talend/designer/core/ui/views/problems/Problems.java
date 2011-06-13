@@ -342,10 +342,13 @@ public class Problems {
         boolean hasError = false;
         boolean hasInfo = false;
         IProcess process = node.getProcess();
+        if (process == null) {
+            return;
+        }
         for (Problem problem : problemList) {
-
             /* use id and version to filter the problems,see bug 20560 */
-            if (problem.getJobInfo().getJobId() != null && problem.getJobInfo().getJobId().equals(process.getId())) {
+            if (problem.getJobInfo() != null && problem.getJobInfo().getJobId() != null
+                    && problem.getJobInfo().getJobId().equals(process.getId())) {
                 if (problem.getJobInfo().getJobVersion() != null
                         && problem.getJobInfo().getJobVersion().equals(process.getVersion())) {
                     if (problem.getNodeName() == null) {
@@ -390,6 +393,8 @@ public class Problems {
 
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
+            if (problem == null || problem instanceof TalendProblem)
+                continue;
             if (problem.getJobInfo() != null
                     && (problem.getJobInfo().getJobName().equals(process.getName()) && problem.getJobInfo().getJobVersion()
                             .equals(process.getVersion()))) {
