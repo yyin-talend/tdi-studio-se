@@ -224,7 +224,7 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
         if (PluginChecker.isSVNProviderPluginLoaded()) {
             try {
                 if (!instance.isLocalConnectionProvider()) {
-                    instance.getRepositoryFactoryFromProvider().reloadProject(currentProject);
+                    // instance.getRepositoryFactoryFromProvider().reloadProject(currentProject);
                 }
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
