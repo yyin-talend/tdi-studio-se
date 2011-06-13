@@ -79,7 +79,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                 normalizeRecord_<%=cid%> = new String[1];
             }
             for(int i_<%=cid%> = 0 ; i_<%=cid%> < normalizeRecord_<%=cid%>.length ; i_<%=cid%>++) {
-                currentRecord_<%=cid%> = new StringBuilder();               
+                currentRecord_<%=cid%> = new StringBuilder();
+                nb_line_<%=cid%>++;               
                 <%
                 if(("true").equals(deduplicate)) {//check deduplicate start
                     for(int i = 0 ; i < metadataColumns.size() ; i++) {
