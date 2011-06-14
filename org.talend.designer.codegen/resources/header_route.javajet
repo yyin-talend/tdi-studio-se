@@ -54,6 +54,7 @@ import routines.<%=routine%>;
 <%	}
 }%>
 import routines.system.*;
+import routines.system.api.*; 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -91,7 +92,7 @@ import java.util.Comparator;
  * @version <%=version %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */                                
- public class <%=process.getName()%> {
+ public class <%=process.getName()%> implements TalendJob { 
  		
 	private final String jobVersion = "<%=process.getVersion() %>";
 	private final String jobName = "<%=codeGenArgument.getJobName() %>";
