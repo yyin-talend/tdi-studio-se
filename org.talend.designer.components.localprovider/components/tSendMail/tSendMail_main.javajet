@@ -84,11 +84,13 @@ boolean isDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DI
 	}
 %>
 	java.util.List<String> attachments_<%=cid %> = new java.util.ArrayList<String>();
+	java.util.List<String> contentTransferEncoding_<%=cid %> = new java.util.ArrayList<String>();
 <%
 	for (int i = 0; i < tableValues.size(); i++) {
     	Map<String,String> attachment = tableValues.get(i);
 %>
-		attachments_<%=cid %>.add(<%=attachment.get("FILE") %>);	
+		attachments_<%=cid %>.add(<%=attachment.get("FILE") %>);
+		contentTransferEncoding_<%=cid %>.add("<%=attachment.get("CONTENT_TRANSFER_ENCODING") %>");	
 <%
 	}
 	//end of the former begin part
@@ -167,6 +169,9 @@ try {
           mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart();
           mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
           mbpFile_<%=cid %>.setFileName(javax.mail.internet.MimeUtility.encodeText(fds_<%=cid %>.getName()));
+          if(contentTransferEncoding_<%=cid %>.get(i_<%=cid %>).equalsIgnoreCase("base64")){
+	      	mbpFile_<%=cid %>.setHeader("Content-Transfer-Encoding", "base64");
+	      }
           mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
         }
       }
@@ -175,6 +180,9 @@ try {
       fds_<%=cid %> = new javax.activation.FileDataSource(filename_<%=cid %>);
       mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>)); 
       mbpFile_<%=cid %>.setFileName(javax.mail.internet.MimeUtility.encodeText(fds_<%=cid %>.getName()));
+      if(contentTransferEncoding_<%=cid %>.get(i_<%=cid %>).equalsIgnoreCase("base64")){
+      	mbpFile_<%=cid %>.setHeader("Content-Transfer-Encoding", "base64");
+      }
       mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
     }
   }
