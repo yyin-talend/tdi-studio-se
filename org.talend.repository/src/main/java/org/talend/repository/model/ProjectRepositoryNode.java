@@ -882,19 +882,68 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 ExceptionHandler.process(e);
             }
 
-        } else { // bug 17768
+        } else {// bug 17768
             if (item instanceof ConnectionItem) {
                 Connection connection = ((ConnectionItem) item).getConnection();
 
+                // for sap
+                if (connection instanceof SAPConnection) {
+                    SAPConnection sapConnection = (SAPConnection) connection;
+                    EList<SAPFunctionUnit> funtions = sapConnection.getFuntions();
+                    if (funtions != null) {
+                        for (int i = 0; i < funtions.size(); i++) {
+                            SAPFunctionUnit unit = (SAPFunctionUnit) funtions.get(i);
+                            if (SubItemHelper.isDeleted(unit)) {
+                                RepositoryNode tableNode = createSAPNode(new RepositoryViewObject(item.getProperty()),
+                                        currentParentNode, unit);
+                                currentParentNode.getChildren().add(tableNode);
+                                tableNode.setParent(currentParentNode);
+                            } else {
+                                for (MetadataTable table : ConnectionHelper.getTables(connection, unit)) {
+                                    if (SubItemHelper.isDeleted(table)) {
+                                        RepositoryNode tableNode = createMetatableNode(currentParentNode,
+                                                new RepositoryViewObject(item.getProperty()), table,
+                                                ERepositoryObjectType.METADATA_CON_TABLE);
+                                        currentParentNode.getChildren().add(tableNode);
+                                        tableNode.setParent(currentParentNode);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    EList<SAPIDocUnit> iDocs = sapConnection.getIDocs();
+                    if (iDocs != null) {
+                        for (int i = 0; i < iDocs.size(); i++) {
+                            SAPIDocUnit unit = (SAPIDocUnit) iDocs.get(i);
+                            if (SubItemHelper.isDeleted(unit)) {
+                                RepositoryNode tableNode = createSAPNode(new RepositoryViewObject(item.getProperty()),
+                                        currentParentNode, unit);
+                                currentParentNode.getChildren().add(tableNode);
+                                tableNode.setParent(currentParentNode);
+                            }
+                        }
+                    }
+                    return;
+                }
+
                 for (MetadataTable table : ConnectionHelper.getTables(connection)) {
                     if (SubItemHelper.isDeleted(table)) {
-                        MetadataTableRepositoryObject modelObj = new MetadataTableRepositoryObject(new RepositoryViewObject(
-                                item.getProperty()), table);
-                        RepositoryNode tableNode = new RepositoryNode(modelObj, currentParentNode, ENodeType.REPOSITORY_ELEMENT);
-                        tableNode.setProperties(EProperties.LABEL, modelObj.getLabel());
-                        tableNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CON_TABLE);
+                        RepositoryNode tableNode = createMetatableNode(currentParentNode,
+                                new RepositoryViewObject(item.getProperty()), table, ERepositoryObjectType.METADATA_CON_TABLE);
                         currentParentNode.getChildren().add(tableNode);
                         tableNode.setParent(currentParentNode);
+                    }
+                }
+
+                QueriesConnection queriesConnection = connection.getQueries();
+                if (queriesConnection != null) {
+                    for (Query query : queriesConnection.getQuery()) {
+                        if (SubItemHelper.isDeleted(query)) {
+                            RepositoryNode queryNode = createQueryNode(currentParentNode,
+                                    new RepositoryViewObject(item.getProperty()), query);
+                            currentParentNode.getChildren().add(queryNode);
+                            queryNode.setParent(currentParentNode);
+                        }
                     }
                 }
 
@@ -1358,7 +1407,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 Query query = (Query) currentTable;
                 RepositoryNode queryNode = createQueryNode(node, repObj, query);
                 if (SubItemHelper.isDeleted(query)) {
-                    recBinNode.getChildren().add(queryNode);
+                    // recBinNode.getChildren().add(queryNode);
                 } else {
                     node.getChildren().add(queryNode);
                 }
@@ -1642,7 +1691,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
             createTables(recBin, tableNode, rebObj, unit.getTables(), ERepositoryObjectType.METADATA_CON_TABLE);
             if (SubItemHelper.isDeleted(unit)) {
-                recBin.getChildren().add(tableNode);
+                // recBin.getChildren().add(tableNode);
             } else {
                 functionNode.getChildren().add(tableNode);
             }
@@ -1670,7 +1719,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
             // createTables(recBin, tableNode, rebObj, unit.getTables(), ERepositoryObjectType.METADATA_CON_TABLE);
             if (SubItemHelper.isDeleted(unit)) {
-                recBin.getChildren().add(tableNode);
+                // recBin.getChildren().add(tableNode);
             } else {
                 iDocNode.getChildren().add(tableNode);
             }
