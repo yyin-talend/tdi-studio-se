@@ -20,11 +20,13 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -109,7 +111,14 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 if (item instanceof ConnectionItem) {
                     for (IElementParameter param : node.getElementParameters()) {
                         if (param.getRepositoryValue() != null && !param.getRepositoryValue().equals("")) {
-                            if (param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
+                            boolean isCustomSfConn = false;
+                            if (item instanceof SalesforceSchemaConnectionItem) {
+                                SalesforceSchemaConnection sfConn = (SalesforceSchemaConnection) ((SalesforceSchemaConnectionItem) item)
+                                        .getConnection();
+                                isCustomSfConn = sfConn.isUseCustomModuleName();
+                            }
+                            if (param.getRepositoryValue().equals("TYPE") //$NON-NLS-1$
+                                    || (param.getRepositoryValue().equals("MODULENAME") && item instanceof SalesforceSchemaConnectionItem && !isCustomSfConn)) { //$NON-NLS-1$
                                 continue;
                             }
                             if (param.getFieldType().equals(EParameterFieldType.TABLE)

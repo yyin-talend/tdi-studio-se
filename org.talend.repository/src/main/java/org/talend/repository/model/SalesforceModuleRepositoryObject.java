@@ -14,10 +14,10 @@ package org.talend.repository.model;
 
 import java.util.Iterator;
 
+import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
-import org.talend.core.model.metadata.builder.connection.SAPConnection;
-import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SalesforceModuleUnit;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
@@ -28,7 +28,6 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.model.ISubRepositoryObject;
 import org.talend.cwm.helper.SubItemHelper;
-
 import orgomg.cwm.objectmodel.core.ModelElement;
 
 /**
@@ -162,6 +161,20 @@ public class SalesforceModuleRepositoryObject extends RepositoryObject implement
 
     public ModelElement getModelElement() {
         return this.moduleUnit;
+    }
+
+    public MetadataTable getDefaultTable() {
+        if (this.moduleUnit != null) {
+            EList<MetadataTable> tables = moduleUnit.getTables();
+            for (MetadataTable table : tables) {
+                if (table.getLabel().equals(moduleUnit.getLabel())) {
+                    return table;
+                }
+            }
+            return tables.get(0);
+        }
+        return null;
+
     }
 
 }

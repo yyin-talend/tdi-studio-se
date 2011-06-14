@@ -84,6 +84,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
+import org.talend.core.model.metadata.builder.connection.SalesforceModuleUnit;
 import org.talend.core.model.metadata.builder.connection.XMLFileNode;
 import org.talend.core.model.metadata.builder.connection.impl.BRMSConnectionImpl;
 import org.talend.core.model.metadata.builder.connection.impl.HL7ConnectionImpl;
@@ -112,6 +113,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
+import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
@@ -165,7 +167,9 @@ import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.SAPIDocRepositoryObject;
+import org.talend.repository.model.SalesforceModuleRepositoryObject;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
+import orgomg.cwm.objectmodel.core.ModelElement;
 
 /**
  * Performs a native Drop for the talendEditor. see feature
@@ -749,6 +753,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     // RulesItem
                     return;
                 }
+                if (item instanceof SalesforceSchemaConnectionItem && type == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
+                    return;
+                }
 
                 TempStore store = new TempStore();
 
@@ -1143,6 +1150,22 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
                     }
                 }
+                // for salesForce module
+                SalesforceModuleRepositoryObject sfObject = null;
+                if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SALESFORCE_MODULE) {
+                    sfObject = (SalesforceModuleRepositoryObject) selectedNode.getObject();
+                } else if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
+                    IRepositoryViewObject object = selectedNode.getParent().getObject();
+                    if (object instanceof SalesforceModuleRepositoryObject) {
+                        sfObject = (SalesforceModuleRepositoryObject) object;
+                    }
+                }
+                if (sfObject != null) {
+                    ModelElement modelElement = sfObject.getModelElement();
+                    if (modelElement instanceof SalesforceModuleUnit) {
+                        command1.setSalesForceModuleUnit((SalesforceModuleUnit) modelElement);
+                    }
+                }
                 list.add(command1);
             }
 
@@ -1241,8 +1264,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
      * @param connectionItem
      */
     private Command getChangeMetadataCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
-        if ((selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE || selectedNode
-                .getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION)) {
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE
+                || selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION
+                || selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SALESFORCE_MODULE) {
             String etlSchema = null;
             if (connectionItem.getConnection() instanceof DatabaseConnection) {
                 DatabaseConnection connection = (DatabaseConnection) connectionItem.getConnection();
@@ -1268,52 +1292,56 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 table = ((MetadataTableRepositoryObject) object).getTable();
             } else if (object instanceof SAPFunctionRepositoryObject) {
                 table = (MetadataTable) ((SAPFunctionRepositoryObject) object).getAdapter(MetadataTable.class);
+            } else if (object instanceof SalesforceModuleRepositoryObject) {
+                table = ((SalesforceModuleRepositoryObject) object).getDefaultTable();
             }
-            String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
-            IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-            IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
-            if (queryParam != null) {
-                queryParam = queryParam.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName());
+            if (table != null) {
+                String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
+                IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
                 if (queryParam != null) {
-                    queryParam.setValue(EmfComponent.BUILTIN);
+                    queryParam = queryParam.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName());
+                    if (queryParam != null) {
+                        queryParam.setValue(EmfComponent.BUILTIN);
+                    }
                 }
-            }
-            // for SAP
-            if (PluginChecker.isSAPWizardPluginLoaded() && connectionItem instanceof SAPConnectionItem
-                    && object instanceof MetadataTableRepositoryObject) {
-                if (table.eContainer() instanceof SAPFunctionUnit) {
-                    SAPFunctionUnit functionUnit = (SAPFunctionUnit) table.eContainer();
-                    Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
-                            table.getLabel(), ConvertionHelper.convert(table), functionUnit);
-                    return sapCmd;
-                } else {
-                    Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
-                            table.getLabel(), ConvertionHelper.convert(table));
-                    return sapCmd;
+                // for SAP
+                if (PluginChecker.isSAPWizardPluginLoaded() && connectionItem instanceof SAPConnectionItem
+                        && object instanceof MetadataTableRepositoryObject) {
+                    if (table.eContainer() instanceof SAPFunctionUnit) {
+                        SAPFunctionUnit functionUnit = (SAPFunctionUnit) table.eContainer();
+                        Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
+                                table.getLabel(), ConvertionHelper.convert(table), functionUnit);
+                        return sapCmd;
+                    } else {
+                        Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
+                                table.getLabel(), ConvertionHelper.convert(table));
+                        return sapCmd;
+                    }
                 }
-            }
 
-            // for EBCDIC (bug 5860)
-            if (PluginChecker.isEBCDICPluginLoaded() && connectionItem instanceof EbcdicConnectionItem) {
-                Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
-                        table.getLabel(), ConvertionHelper.convert(table));
-                return ebcdicCmd;
+                // for EBCDIC (bug 5860)
+                if (PluginChecker.isEBCDICPluginLoaded() && connectionItem instanceof EbcdicConnectionItem) {
+                    Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
+                            table.getLabel(), ConvertionHelper.convert(table));
+                    return ebcdicCmd;
+                }
+                if (PluginChecker.isHL7PluginLoaded() && connectionItem instanceof HL7ConnectionItem) {
+                    Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IEbcdicConstant.TABLE_SCHEMAS,
+                            table.getLabel(), ConvertionHelper.convert(table));
+                    return hl7Cmd;
+                }
+                if (schemaParam == null) {
+                    return null;
+                }
+                if (node.isELTComponent()) {
+                    node.setPropertyValue(EParameterName.LABEL.getName(), "__ELT_TABLE_NAME__");
+                }
+                schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":" //$NON-NLS-1$
+                        + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table), null);
+                return command2;
             }
-            if (PluginChecker.isHL7PluginLoaded() && connectionItem instanceof HL7ConnectionItem) {
-                Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IEbcdicConstant.TABLE_SCHEMAS, table.getLabel(),
-                        ConvertionHelper.convert(table));
-                return hl7Cmd;
-            }
-            if (schemaParam == null) {
-                return null;
-            }
-            if (node.isELTComponent()) {
-                node.setPropertyValue(EParameterName.LABEL.getName(), "__ELT_TABLE_NAME__");
-            }
-            schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
-            RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":" //$NON-NLS-1$
-                    + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table), null);
-            return command2;
         }
         return null;
     }

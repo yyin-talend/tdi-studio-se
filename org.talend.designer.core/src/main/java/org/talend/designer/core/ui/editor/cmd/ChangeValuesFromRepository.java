@@ -33,6 +33,8 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
+import org.talend.core.model.metadata.builder.connection.SalesforceModuleUnit;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
@@ -107,6 +109,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     private String currentTableName;
 
     private IMetadataTable table;
+
+    private SalesforceModuleUnit moduleUnit;
 
     public ChangeValuesFromRepository(IElement elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
@@ -282,6 +286,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
                         objectValue = RepositoryToComponentProperty.getXmlAndXSDFileValue((XmlFileConnection) connection,
                                 repositoryValue);
+                    } else if (connection instanceof SalesforceSchemaConnection && this.moduleUnit != null
+                            && "MODULENAME".equals(repositoryValue)) { //$NON-NLS-1$ 
+                        objectValue = moduleUnit.getModuleName();
                     } else {
                         objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table);
                     }
@@ -1023,5 +1030,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     public void setCurrentTableName(String currentTableName) {
         this.currentTableName = currentTableName;
+    }
+
+    public void setSalesForceModuleUnit(SalesforceModuleUnit moduleUnit) {
+        this.moduleUnit = moduleUnit;
     }
 }

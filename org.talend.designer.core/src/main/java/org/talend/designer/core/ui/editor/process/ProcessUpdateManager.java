@@ -47,6 +47,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.ValidationRulesConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlFileConnectionImpl;
@@ -1460,7 +1461,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         if ((repositoryValue != null)
                                 && (param.isShow(node.getElementParameters()) || (node instanceof INode && ((INode) node)
                                         .getComponent().getName().equals("tAdvancedFileOutputXML")))) { //$NON-NLS-1$
-                            if (param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath) {
+                            if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
+                                    || (repositoryConnection instanceof SalesforceSchemaConnection
+                                            && "MODULENAME".equals(repositoryValue) && !((SalesforceSchemaConnection) repositoryConnection)
+                                            .isUseCustomModuleName())) {
                                 continue;
                             }
                             IMetadataTable table = null;
