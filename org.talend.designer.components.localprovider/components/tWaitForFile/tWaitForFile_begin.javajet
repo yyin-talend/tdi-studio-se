@@ -180,21 +180,14 @@
            	<%	
            		if(waitRelease){
            	%>
+           				//fix bug 22123,if the length of the file is not change after 0.2 second,the file is complete writed.
+           				long tempfilesize=0;
                     	while(true){
-                        	java.io.FileInputStream fis_<%=cid %> = null;
-                        	try{
-                            	fis_<%=cid %> = new java.io.FileInputStream(file_<%=cid %>.getAbsolutePath());
-                        	}catch(java.io.FileNotFoundException e){
-                            	Thread.sleep(3000);
-                            	continue;
+                        	Thread.sleep(200);
+                        	if(tempfilesize==file_<%=cid %>.length()){
+                        		break;
                         	}
-                        	if(fis_<%=cid %> != null){
-	                    		try {
-	                    			fis_<%=cid %>.close();
-	                    		} catch(Exception ex) {
-	                    		}
-                        	}
-                        	break;
+                        	tempfilesize=file_<%=cid %>.length();
                     	}
             <%
             	}
@@ -276,21 +269,14 @@
            	<%	
            		if(waitRelease){
            	%>
+           				//fix bug 22123,if the length of the file is not change after 0.2 second,the file is complete writed.
+           				long tempfilesize=0;
                     	while(true){
-                        	java.io.FileInputStream fis_<%=cid %> = null;
-                        	try{
-                            	fis_<%=cid %> = new java.io.FileInputStream(file_<%=cid %>.getAbsolutePath());
-                        	}catch(java.io.FileNotFoundException e){
-                            	Thread.sleep(3000);
-                            	continue;
+                        	Thread.sleep(200);
+                        	if(tempfilesize==file_<%=cid %>.length()){
+                        		break;
                         	}
-                        	if(fis_<%=cid %> != null){
-	                    		try {
-	                    			fis_<%=cid %>.close();
-	                    		} catch(Exception ex) {
-	                    		}
-                        	}
-                        	break;
+                        	tempfilesize=file_<%=cid %>.length();
                     	}
             <%
             	}
