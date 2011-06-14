@@ -223,8 +223,8 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setCategory(EComponentCategory.BASIC);
             param.setName(EParameterName.ROUTETYPE.getName());
             param.setDisplayName(EParameterName.ROUTETYPE.getDisplayName());
-            String[] strList = { "el", "groovy", "javascript", "jxpath", "mvel", "ognl", "php", "python", "ruby", "simple",
-                    "sql", "xpath", "xquery" };
+            String[] strList = { "constant", "el", "groovy", "header", "javascript", "josql", "jxpath", "mvel", "ognl", "php", "property", "python", "ruby", "simple",
+                    "spel", "sql", "xpath", "xquery" };
             param.setListItemsValue(strList); //$NON-NLS-1$
             param.setListItemsDisplayName(strList);
             param.setListItemsDisplayCodeName(strList);
@@ -706,14 +706,31 @@ public class Connection extends Element implements IConnection, IPerformance {
                 labelText += " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             updateName = true;
-        } else if (getLineStyle().equals(EConnectionType.ROUTE_WHEN) && (!sourceNodeConnector.getLinkName().equals(name))) {
-            labelText = sourceNodeConnector.getLinkName() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (getLineStyle().equals(EConnectionType.ROUTE_WHEN)/*
+                                                                     * &&
+                                                                     * (!sourceNodeConnector.getLinkName().equals(name))
+                                                                     */) {
+            if (getUniqueName() != null) {
+                String linkName = getUniqueName();
+                labelText = linkName;
+                this.setName(linkName);
+            }
+            //labelText = labelText + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             if (outputId >= 0) {
                 labelText += " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             updateName = true;
-        } else if (getLineStyle().equals(EConnectionType.ROUTE_CATCH) && (!sourceNodeConnector.getLinkName().equals(name))) {
-            labelText = sourceNodeConnector.getLinkName() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (getLineStyle().equals(EConnectionType.ROUTE_CATCH)/*
+                                                                      * &&
+                                                                      * (!sourceNodeConnector.getLinkName().equals(name
+                                                                      * ))
+                                                                      */) {
+            if (getUniqueName() != null) {
+                String linkName = getUniqueName();
+                labelText = linkName;
+                this.setName(linkName);
+            }
+            //labelText = labelText + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             if (outputId >= 0) {
                 labelText += " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -737,7 +754,9 @@ public class Connection extends Element implements IConnection, IPerformance {
                 labelText = linkName + " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             updateName = true;
-        } else if (getLineStyle().equals(EConnectionType.ROUTE)) {
+        } else if (getLineStyle().equals(EConnectionType.ROUTE) || getLineStyle().equals(EConnectionType.ROUTE_ENDBLOCK)
+                || getLineStyle().equals(EConnectionType.ROUTE_TRY) || getLineStyle().equals(EConnectionType.ROUTE_FINALLY)
+                || getLineStyle().equals(EConnectionType.ROUTE_OTHER)) {
             String linkName = sourceNodeConnector.getLinkName();
             if (getUniqueName() != null) {
                 linkName = getUniqueName();
@@ -839,14 +858,44 @@ public class Connection extends Element implements IConnection, IPerformance {
                 if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_ITERATE_CONNECTION_NAME)) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_ITERATE_CONNECTION_NAME);
                 }
-            } else if (lineStyle.equals(EConnectionType.ROUTE)) {
+            } else if (lineStyle.equals(EConnectionType.ROUTE) || lineStyle.equals(EConnectionType.ROUTE_ENDBLOCK)) {
                 // see 3680, the iterate link must have a unique name.
-                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_ROUTE_CONNECTION_NAME) || !source.getProcess().checkValidConnectionName(uniqueName)) {
+                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_ROUTE_CONNECTION_NAME)
+                        || !source.getProcess().checkValidConnectionName(uniqueName)) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_ROUTE_CONNECTION_NAME);
                 }
+            } else if (lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
+                // see 3680, the iterate link must have a unique name.
+                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_WHEN_CONNECTION_NAME)
+                        || !source.getProcess().checkValidConnectionName(uniqueName)) {
+                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_WHEN_CONNECTION_NAME);
+                }
+            } else if (lineStyle.equals(EConnectionType.ROUTE_OTHER)) {
+                // see 3680, the iterate link must have a unique name.
+                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_OTHER_CONNECTION_NAME)
+                        || !source.getProcess().checkValidConnectionName(uniqueName)) {
+                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_OTHER_CONNECTION_NAME);
+                }
+            } else if (lineStyle.equals(EConnectionType.ROUTE_CATCH)) {
+                // see 3680, the iterate link must have a unique name.
+                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_CATCH_CONNECTION_NAME)
+                        || !source.getProcess().checkValidConnectionName(uniqueName)) {
+                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_CATCH_CONNECTION_NAME);
+                }
+            } else if (lineStyle.equals(EConnectionType.ROUTE_FINALLY)) {
+                // see 3680, the iterate link must have a unique name.
+                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_FINALLY_CONNECTION_NAME)
+                        || !source.getProcess().checkValidConnectionName(uniqueName)) {
+                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_FINALLY_CONNECTION_NAME);
+                }
+            } else if (lineStyle.equals(EConnectionType.ROUTE_TRY)) {
+                // see 3680, the iterate link must have a unique name.
+                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_TRY_CONNECTION_NAME)
+                        || !source.getProcess().checkValidConnectionName(uniqueName)) {
+                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_TRY_CONNECTION_NAME);
+                }
             } else if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
-                    EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF,
-                    EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_CATCH)) {
+                    EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)) {
                 // see 3443, these links should have unique name
                 if (uniqueName == null || uniqueName.equals(lineStyle.getDefaultLinkName())) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(lineStyle.getDefaultLinkName());
