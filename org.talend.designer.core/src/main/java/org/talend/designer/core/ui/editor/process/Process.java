@@ -3550,6 +3550,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         setActivate(true);
         checkStartNodes();
         fireStructureChange(NEED_UPDATE_JOB, elem);
+        checkProcess();
     }
 
     private void saveJobletNode(JobletContainer jobletContainer, boolean needUpdate) {
