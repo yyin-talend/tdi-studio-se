@@ -286,9 +286,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
                         objectValue = RepositoryToComponentProperty.getXmlAndXSDFileValue((XmlFileConnection) connection,
                                 repositoryValue);
-                    } else if (connection instanceof SalesforceSchemaConnection && this.moduleUnit != null
-                            && "MODULENAME".equals(repositoryValue)) { //$NON-NLS-1$ 
-                        objectValue = moduleUnit.getModuleName();
+                    } else if (connection instanceof SalesforceSchemaConnection && "MODULENAME".equals(repositoryValue)) { //$NON-NLS-1$ 
+                        if (this.moduleUnit != null) {
+                            objectValue = moduleUnit.getModuleName();
+                        } else {
+                            objectValue = null;
+                        }
                     } else {
                         objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table);
                     }

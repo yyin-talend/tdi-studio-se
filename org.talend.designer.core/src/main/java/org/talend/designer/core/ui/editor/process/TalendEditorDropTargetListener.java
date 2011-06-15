@@ -113,7 +113,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
-import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
@@ -753,10 +752,6 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     // RulesItem
                     return;
                 }
-                if (item instanceof SalesforceSchemaConnectionItem && type == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
-                    return;
-                }
-
                 TempStore store = new TempStore();
 
                 store.seletetedNode = sourceNode;
