@@ -46,6 +46,7 @@ import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.PasswordHelper;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -456,13 +457,21 @@ public class RepositoryService implements IRepositoryService {
 
                 repositoryFactory.logOnProject(project, new NullProgressMonitor());
             } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
+                MessageBoxExceptionHandler.process(e, new Shell());
+                repositoryFactory.logOffProject();
+                return false;
             } catch (LoginException e) {
-                ExceptionHandler.process(e);
+                MessageBoxExceptionHandler.process(e, new Shell());
+                repositoryFactory.logOffProject();
+                return false;
             } catch (BusinessException e) {
-                ExceptionHandler.process(e);
+                MessageBoxExceptionHandler.process(e, new Shell());
+                repositoryFactory.logOffProject();
+                return false;
             } catch (CoreException e) {
-                ExceptionHandler.process(e);
+                MessageBoxExceptionHandler.process(e, new Shell());
+                repositoryFactory.logOffProject();
+                return false;
             }
 
             return true;
