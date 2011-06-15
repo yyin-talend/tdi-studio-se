@@ -54,7 +54,6 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.ui.runtime.image.ImageUtils;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -859,7 +858,8 @@ public class UIManager extends AbstractUIManager {
         // String previewFilePath = mapperManager.getPreviewFilePath();
         // if (previewFilePath != null) {
         Image image = ImageCapture.capture(mapperUI.getDatasFlowViewSashForm());
-        image = ImageUtils.scale(image, 50);
+        // avoid to scale to make the pic more clear
+        // image = ImageUtils.scale(image, 50);
         // add by hshen 7410
         ImageDescriptor imagedes = ImageDescriptor.createFromImage(image);
         mapperManager.getAbstractMapComponent().setScreenshot(imagedes);
