@@ -111,6 +111,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.actions.RestoreFolderUtil;
 import org.talend.repository.utils.FileCopyUtils;
 
 /**
@@ -138,6 +139,8 @@ public class ImportItemUtil {
     private boolean implicitSettingsReloaded = false;
 
     private static boolean hasJoblets = false;
+
+    private RestoreFolderUtil restoreFolder;
 
     public void clear() {
         deletedItems.clear();
@@ -353,6 +356,7 @@ public class ImportItemUtil {
         hasJoblets = false;
         statAndLogsSettingsReloaded = false;
         implicitSettingsReloaded = false;
+        restoreFolder = new RestoreFolderUtil();
 
         Collections.sort(itemRecords, new Comparator<ItemRecord>() {
 
@@ -724,6 +728,33 @@ public class ImportItemUtil {
 
                 if (tmpItem != null) {
                     RelationshipItemBuilder.getInstance().addOrUpdateItem(tmpItem);
+                    if (tmpItem.getState() != null) {
+                        if (itemType != null) {
+                            final Set<String> folders = restoreFolder.getFolders(itemType);
+                            if (folders != null) {
+                                for (String folderPath : folders) {
+                                    if (folderPath != null && folderPath.equals(path.toString())) {
+                                        FolderItem folderItem = repFactory.getFolderItem(ProjectManager.getInstance()
+                                                .getCurrentProject(), itemType, path);
+                                        if (folderItem != null) {
+                                            folderItem.getState().setDeleted(false);
+
+                                            while (!(folderItem.getParent() instanceof Project)) {
+                                                folderItem = (FolderItem) folderItem.getParent();
+                                                if (folderItem.getType() == FolderType.SYSTEM_FOLDER_LITERAL) {
+                                                    break;
+                                                }
+                                                folderItem.getState().setDeleted(false);
+                                            }
+
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
                 }
 
             } catch (Exception e) {
