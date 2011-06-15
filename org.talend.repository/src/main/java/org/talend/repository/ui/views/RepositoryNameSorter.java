@@ -54,6 +54,8 @@ public class RepositoryNameSorter extends ViewerSorter {
                 return 6;
             } else if (contentType == ERepositoryObjectType.CONTEXT) {
                 return 10;
+            } else if (contentType == ERepositoryObjectType.CODE) {
+                return 15;
             } else if (contentType == ERepositoryObjectType.ROUTINES) {
                 return 15;
             } else if (contentType == ERepositoryObjectType.METADATA) {

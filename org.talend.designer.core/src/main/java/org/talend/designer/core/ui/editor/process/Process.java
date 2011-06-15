@@ -3693,4 +3693,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     public void setRoutineDependencies(List<RoutinesParameterType> routinesDependencies) {
         this.routinesDependencies = routinesDependencies;
     }
+
+    public boolean isSubjobEnabled() {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (camelService.isInstanceofCamelRoutes(getProperty().getItem())) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

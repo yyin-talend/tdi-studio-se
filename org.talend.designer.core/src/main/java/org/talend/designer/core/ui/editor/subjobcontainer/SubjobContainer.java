@@ -485,6 +485,9 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.DISPLAY_SUBJOBS)) {
             return false;
         }
+        if (!process.isSubjobEnabled()) {
+            return false;
+        }
         return (Boolean) getPropertyValue(EParameterName.SUBJOB_DISPLAYED.getName());
     }
 

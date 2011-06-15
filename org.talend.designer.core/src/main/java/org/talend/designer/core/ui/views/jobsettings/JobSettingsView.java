@@ -51,6 +51,7 @@ import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.designer.business.diagram.custom.IDiagramModelService;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -413,14 +414,28 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
         if (obj instanceof Process) {
             Process process = (Process) obj;
+            boolean route = false;
+
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                        .getService(ICamelDesignerCoreService.class);
+                if (camelService.isInstanceofCamelRoutes(process.getProperty().getItem())) {
+                    route = true;
+                }
+            }
+
             category.add(EComponentCategory.MAIN);
-            category.add(EComponentCategory.EXTRA);
+            if (!route) {
+                category.add(EComponentCategory.EXTRA);
+            }
             boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(process);
-            if (!isJoblet) {
+            if (!isJoblet && !route) {
                 category.add(EComponentCategory.STATSANDLOGS);
             }
             category.add(EComponentCategory.VERSIONS);
-            category.add(EComponentCategory.HEADERFOOTER);
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
+                category.add(EComponentCategory.HEADERFOOTER);
+            }
 
             // if svn remote connection, added by nma
             if (service != null && service.isProjectInSvnMode()) {

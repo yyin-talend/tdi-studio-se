@@ -881,14 +881,16 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         IAction snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer());
         getActionRegistry().registerAction(snapAction);
 
-        // toggle subjobs action
-        IAction toggleSubjobsAction = ToggleSubjobsAction.getDefault();
-        getActionRegistry().registerAction(toggleSubjobsAction);
+        if (getProcess().isSubjobEnabled()) {
+            // toggle subjobs action
+            IAction toggleSubjobsAction = ToggleSubjobsAction.getDefault();
+            getActionRegistry().registerAction(toggleSubjobsAction);
 
-        for (Iterator iterator = getSelectionActions().iterator(); iterator.hasNext();) {
-            String actionID = (String) iterator.next();
-            IAction action = getActionRegistry().getAction(actionID);
-            setAction(actionID, action);
+            for (Iterator iterator = getSelectionActions().iterator(); iterator.hasNext();) {
+                String actionID = (String) iterator.next();
+                IAction action = getActionRegistry().getAction(actionID);
+                setAction(actionID, action);
+            }
         }
     }
 

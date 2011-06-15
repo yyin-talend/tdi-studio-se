@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProjectRepositoryNode;
@@ -107,7 +108,15 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     private void initialize() {
         root = (ProjectRepositoryNode) view.getRoot();
 
-        root.initialize();
+        String currentPerspective = IBrandingConfiguration.PERSPECTIVE_DI_ID;
+
+        try {
+            currentPerspective = view.getSite().getPage().getPerspective().getId();
+        } catch (Exception e) {
+            // do nothing
+            // this exception is just in case, since for some specific cases, page can be null (shouldn't happen but..)
+        }
+        root.initialize(currentPerspective);
     }
 
     /**
