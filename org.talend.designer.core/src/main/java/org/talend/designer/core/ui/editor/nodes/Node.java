@@ -1376,9 +1376,9 @@ public class Node extends Element implements IGraphicalNode {
                     if ((schemaParam == null || !schemaParam.isReadOnly()) && originTable != null && originTable.isReadOnly()) {
                         List<IMetadataColumn> columnToSave = new ArrayList<IMetadataColumn>();
                         for (IMetadataColumn column : originTable.getListColumns()) {
-                            if (column.isCustom()) {
-                                columnToSave.add(column);
-                            }
+                            // if (column.isCustom()) {
+                            columnToSave.add(column);
+                            // }
                         }
                         // statement cause added for major 2635.
                         if (!originTable.getTableName().equals("REJECT")) { //$NON-NLS-1$
