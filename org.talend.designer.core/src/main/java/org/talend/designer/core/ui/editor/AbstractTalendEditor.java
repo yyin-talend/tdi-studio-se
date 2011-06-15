@@ -1458,7 +1458,13 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                         }
                                     }
                                 }
-                                targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_MAIN);
+                                // bug 22272:if add a tUnite component onto a flow,the flow style should be
+                                // FLOW_MERGE,not FLOW_MAIN
+                                if (node.getComponent().getName().equals("tUnite")) {
+                                    targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_MERGE);
+                                } else {
+                                    targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_MAIN);
+                                }
 
                                 // System.out.print("new: " + targetConnection.getSource().getUniqueName() + "-----"
                                 // + targetConnection.getUniqueName() + "----->"
