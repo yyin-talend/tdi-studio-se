@@ -180,14 +180,14 @@
            	<%	
            		if(waitRelease){
            	%>
-           				//fix bug 22123,if the length of the file is not change after 0.2 second,the file is complete writed.
-           				long tempfilesize=0;
+           				//fix bug 22123,if we can rename the filename,that means no other program is using the file.
+           				java.io.File tempfile=new java.io.File(file_<%=cid %>.getAbsolutePath()+".tempfile");
                     	while(true){
                         	Thread.sleep(200);
-                        	if(tempfilesize==file_<%=cid %>.length()){
+                        	if(file_<%=cid %>.renameTo(tempfile)){
+                        		tempfile.renameTo(file_<%=cid %>);
                         		break;
                         	}
-                        	tempfilesize=file_<%=cid %>.length();
                     	}
             <%
             	}
@@ -269,14 +269,14 @@
            	<%	
            		if(waitRelease){
            	%>
-           				//fix bug 22123,if the length of the file is not change after 0.2 second,the file is complete writed.
-           				long tempfilesize=0;
+           				//fix bug 22123,if we can rename the filename,that means no other program is using the file.
+           				java.io.File tempfile=new java.io.File(file_<%=cid %>.getAbsolutePath()+".tempfile");
                     	while(true){
                         	Thread.sleep(200);
-                        	if(tempfilesize==file_<%=cid %>.length()){
+                        	if(file_<%=cid %>.renameTo(tempfile)){
+                        		tempfile.renameTo(file_<%=cid %>);
                         		break;
                         	}
-                        	tempfilesize=file_<%=cid %>.length();
                     	}
             <%
             	}

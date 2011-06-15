@@ -121,6 +121,7 @@
       NAME="WAIT_RELEASE"
       FIELD="CHECK"
       NUM_ROW="5"
+      SHOW_IF="(ACTION_ON == 'FILE_NEW') or (ACTION_ON == 'FILE_ALL')"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
