@@ -29,8 +29,9 @@ body = body.replaceAll("[\r\n]", " ");
 
 		com.sun.jersey.api.client.Client restClient_<%=cid%> = com.sun.jersey.api.client.Client.create();
 		com.sun.jersey.api.client.WebResource restResource_<%=cid%>;
-		if(<%=url%>!=null && !<%=url%>.equals("")){
-			restResource_<%=cid%> = restClient_<%=cid%>.resource(<%=url%>);
+		String endpoint_<%=cid%> = <%=url%>;
+		if(endpoint_<%=cid%>!=null && !("").equals(endpoint_<%=cid%>)){
+			restResource_<%=cid%> = restClient_<%=cid%>.resource(endpoint_<%=cid%>);
 		}else{
 			throw new IllegalArgumentException("url can't be empty!");
 		}
