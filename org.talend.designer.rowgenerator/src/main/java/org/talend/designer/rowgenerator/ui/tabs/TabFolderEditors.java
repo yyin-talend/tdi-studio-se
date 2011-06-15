@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.i18n.Messages;
+import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorViewExt;
 
@@ -207,8 +208,10 @@ public class TabFolderEditors extends CTabFolder {
      */
     public List<List<String>> getItemsByRunJob(String number) {
         List<List<String>> items = new ArrayList<List<String>>();
-        items = generatorUI.getGeneratorManager().getRowGeneratorComponent().getCodeGenMain().run(refreshButton,
-                number);
+        UIManager uiManager = generatorUI.getGeneratorManager().getUiManager();
+        FunParaTableView2 editor = uiManager.getGeneratorUI().getTabFolderEditors().getParameterEditor();
+        editor.notifyOkPressed();
+        items = generatorUI.getGeneratorManager().getRowGeneratorComponent().getCodeGenMain().run(refreshButton, number);
         return items;
     }
 
