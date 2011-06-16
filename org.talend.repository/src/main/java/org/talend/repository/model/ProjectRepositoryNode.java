@@ -851,6 +851,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         RepositoryNode currentParentNode = parentNode;
         if (item instanceof FolderItem) {
             itemType = getFolderContentType((FolderItem) item);
+            if (itemType == null || !ArrayUtils.contains(itemType.getProducts(), getCurrentRepositoryType())) {
+                // item not for the current product, so do nothing
+                return;
+            }
+
             // MOD qiongli 2011-1-21 filter TDQ root folder.
             if (itemType != null && itemType.isDQItemType() && !itemType.isSharedType()) {
                 return;
@@ -870,6 +875,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         break;
                     }
                 }
+
                 if (folderNode == null) {
                     folderNode = new RepositoryNode(folder, parentNode, ENodeType.SIMPLE_FOLDER);
                     folderNode.setProperties(EProperties.CONTENT_TYPE, itemType);
