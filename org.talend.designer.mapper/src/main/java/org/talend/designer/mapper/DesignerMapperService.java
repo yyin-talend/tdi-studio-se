@@ -415,4 +415,22 @@ public class DesignerMapperService implements IDesignerMapperService {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.core.service.IDesignerMapperService#getExpressionFilter(org.talend.core.model.process.IExternalNode)
+     */
+    public List<String> getExpressionFilter(IExternalData nodeData) {
+        List<String> ret = new ArrayList<String>();
+        if (nodeData instanceof ExternalMapperData) {
+            ExternalMapperData mapperData = (ExternalMapperData) nodeData;
+            List<ExternalMapperTable> mapperTables = (List<ExternalMapperTable>) mapperData.getInputTables();
+            for (ExternalMapperTable mapperTable : mapperTables) {
+                ret.add(mapperTable.getExpressionFilter());
+            }
+        }
+        return ret;
+    }
+
 }

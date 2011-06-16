@@ -83,12 +83,15 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
+import org.talend.core.model.process.node.IExternalMapEntry;
+import org.talend.core.model.process.node.IExternalMapTable;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
@@ -103,6 +106,7 @@ import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.update.IUpdateManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.service.IDesignerMapperService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.utils.KeywordsValidator;
@@ -1359,6 +1363,54 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
             // check possible routines to setup in nodes
             for (INode node : ((List<INode>) getGraphicalNodes())) {
+                String unique = node.getUniqueName();
+                if (unique.startsWith("tMap")) {
+                    for (String routine : possibleRoutines) {
+                        IExternalData data = node.getExternalData();
+                        List<IExternalMapTable> listOutput = (List<IExternalMapTable>) data.getOutputTables();
+                        for (IExternalMapTable outTable : listOutput) {
+                            List<IExternalMapEntry> listOutEntry = (List<IExternalMapEntry>) outTable.returnTableEntries();
+                            for (IExternalMapEntry outEntry : listOutEntry) {
+                                String expression = outEntry.getExpression();
+                                if (!routinesToAdd.contains(routine) && expression.contains(routine + additionalString)) {
+                                    routinesToAdd.add(routine);
+                                }
+                            }
+                        }
+                        List<IExternalMapTable> listInput = (List<IExternalMapTable>) data.getInputTables();
+                        for (IExternalMapTable inputTable : listInput) {
+                            List<IExternalMapEntry> listInEntry = (List<IExternalMapEntry>) inputTable.returnTableEntries();
+                            for (IExternalMapEntry inEntry : listInEntry) {
+                                String expression = inEntry.getExpression();
+                                if (null != expression) {
+                                    if (!routinesToAdd.contains(routine) && expression.contains(routine + additionalString)) {
+                                        routinesToAdd.add(routine);
+                                    }
+                                }
+                            }
+                        }
+                        List<IExternalMapTable> listVar = (List<IExternalMapTable>) data.getVarsTables();
+                        for (IExternalMapTable varTable : listVar) {
+                            List<IExternalMapEntry> listVarEntry = (List<IExternalMapEntry>) varTable.returnTableEntries();
+                            for (IExternalMapEntry varEntry : listVarEntry) {
+                                String expression = varEntry.getExpression();
+                                if (!routinesToAdd.contains(routine) && expression.contains(routine + additionalString)) {
+                                    routinesToAdd.add(routine);
+                                }
+                            }
+                        }
+                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
+                            IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault()
+                                    .getService(IDesignerMapperService.class);
+                            List<String> ExperssionFilters = service.getExpressionFilter(data);
+                            for (String experssion : ExperssionFilters) {
+                                if (!routinesToAdd.contains(routine) && experssion.contains(routine + additionalString)) {
+                                    routinesToAdd.add(routine);
+                                }
+                            }
+                        }
+                    }
+                }
                 for (IElementParameter param : (List<IElementParameter>) node.getElementParametersWithChildrens()) {
                     for (String routine : possibleRoutines) {
                         if (!routinesToAdd.contains(routine) && param.getValue() != null && param.getValue() instanceof String
