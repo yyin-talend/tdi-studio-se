@@ -143,6 +143,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 }
             }
         }
+        node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
     }
 
     @Override
