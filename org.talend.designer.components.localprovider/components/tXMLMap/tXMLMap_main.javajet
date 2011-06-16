@@ -147,16 +147,16 @@ skeleton="tXMLMap_java.skeleton"
 				FindNodeUtil findUtil = new FindNodeUtil();
 				TreeNode loopNode = findUtil.findLoopPathNode(tmpNode);
 				if(loopNode==null){
-%>
-					throw new Exception("Please define the loop node for the main input Table!");
-<%
+					stringBuffer.delete(0,stringBuffer.length());
+					stringBuffer.append("if(true){throw new Exception(\"Loop element is missing in the input Table:" + mainInputTable.getName() +"!\");}");
+					return stringBuffer.toString();
 				} else {
 					String loopPath = loopNode.getXpath();
 					loopPath = loopPath.substring(loopPath.indexOf(":") + 1);
 %>
 					String xPathLoop_<%=cid %> = "<%=loopPath %>";
 <%
-				}
+				//}
 %>
 	org.dom4j.Document doc_<%=cid%> = <%=mainInputName %>.<%=tmpNode.getName() %>.getDocument(); 
 	nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
@@ -195,6 +195,7 @@ skeleton="tXMLMap_java.skeleton"
 		    }
 		    treeNodeAPI_<%=cid %>.put("<%=xpathTypeMap.get(str) %>", str_<%=cid %>);
 <%
+		}
 		}
 		
 	   }// if(document)

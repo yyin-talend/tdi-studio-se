@@ -899,7 +899,7 @@ XMLMapUtil xmu = new XMLMapUtil();
 
 %>
 	
-    public GenerateDocument_<%=tableName %>(){
+    public GenerateDocument_<%=tableName %>() {
 //    	this.treeNodeAPI = treeNodeAPI;
     	
     	nestXMLTool = new NestXMLTool_<%=cid%>();
@@ -916,7 +916,7 @@ XMLMapUtil xmu = new XMLMapUtil();
     	return this.doc;
     }
 	
-    void generateElements(TreeNode_API_<%=cid %> treeNodeAPI,boolean isInnerJoin<%
+    void generateElements (TreeNode_API_<%=cid %> treeNodeAPI,boolean isInnerJoin<%
 		%><%=xmu.createSignature(node, false) %><%
 	
 		for (VarTable var : varTables) {
@@ -955,16 +955,19 @@ generateToolByDom4j.generateGroupCmpCode(root, index);
 generateToolByDom4j.generateGroupCode(index);
 %>
 		isNewElement = false;
-			<%
+<%
 			
 			OutputTreeNode loop = (OutputTreeNode)generateToolByDom4j.getLoopNode(root);
-			//if(loop==null){
-			//	System.out.println("Loop is empty");
-			//}else {
-				
+			if(loop==null){
+%>
+				if(true){
+					throw new Exception("Loop element is missing in the output Table:<%=outputTable.getName()%>!");
+				}
+<%
+			} else {
 				generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
-			//}
-			%>
+			}
+%>
 		}
     }
 
