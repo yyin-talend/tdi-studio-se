@@ -170,6 +170,10 @@ public enum EParameterName {
     PORT(Messages.getString("EParameterName.port")), //$NON-NLS-1$
     DBNAME(Messages.getString("EParameterName.dbName")), //$NON-NLS-1$
     SCHEMA_DB(Messages.getString("EParameterName.schemaDb")), //$NON-NLS-1$
+    SCHEMA_DB_ORACLE("SCHEMA_DB"), //$NON-NLS-1$
+    SCHEMA_DB_DB2("TABLESCHEMA"), //$NON-NLS-1$
+    SCHEMA_DB_MSSQL("DB_SCHEMA"), //$NON-NLS-1$
+    SCHEMA_JOB("SCHEMA_DB"), //$NON-NLS-1$
     LOCAL_SERVICE_NAME(Messages.getString("EParameterName.service_name")), //$NON-NLS-1$
     USER(Messages.getString("EParameterName.user")), //$NON-NLS-1$
     PASS(Messages.getString("EParameterName.password")), //$NON-NLS-1$

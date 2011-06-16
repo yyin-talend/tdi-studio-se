@@ -555,9 +555,25 @@ public class StatsAndLogsManager {
             connectionNode.getElementParameter(EParameterName.PORT.getName()).setValue(
                     process.getElementParameter(EParameterName.PORT.getName()).getValue());
         }
+        // schema for common database component
         if (connectionNode.getElementParameter(EParameterName.SCHEMA_DB.getName()) != null) {
             connectionNode.getElementParameter(EParameterName.SCHEMA_DB.getName()).setValue(
                     process.getElementParameter(EParameterName.SCHEMA_DB.getName()).getValue());
+        }
+        // schema for Oracle,PostGre,Vertica,Greenplum
+        if (connectionNode.getElementParameter(EParameterName.SCHEMA_DB_ORACLE.getName()) != null) {
+            connectionNode.getElementParameter(EParameterName.SCHEMA_DB_ORACLE.getName()).setValue(
+                    process.getElementParameter(EParameterName.SCHEMA_JOB.getName()).getValue());
+        }
+        // schema for DB2
+        if (connectionNode.getElementParameter(EParameterName.SCHEMA_DB_DB2.getName()) != null) {
+            connectionNode.getElementParameter(EParameterName.SCHEMA_DB_DB2.getName()).setValue(
+                    process.getElementParameter(EParameterName.SCHEMA_JOB.getName()).getValue());
+        }
+        // schema for MSSQL
+        if (connectionNode.getElementParameter(EParameterName.SCHEMA_DB_MSSQL.getName()) != null) {
+            connectionNode.getElementParameter(EParameterName.SCHEMA_DB_MSSQL.getName()).setValue(
+                    process.getElementParameter(EParameterName.SCHEMA_JOB.getName()).getValue());
         }
         if (connectionNode.getElementParameter(EParameterName.DBNAME.getName()) != null) {
             connectionNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
@@ -764,8 +780,7 @@ public class StatsAndLogsManager {
         param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(2);
-        param
-                .setShowIf("((ON_CONSOLE_FLAG == 'true' or ON_CONSOLE_FLAG == 'false') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
+        param.setShowIf("((ON_CONSOLE_FLAG == 'true' or ON_CONSOLE_FLAG == 'false') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
         paramList.add(param);
     }
 
@@ -794,8 +809,7 @@ public class StatsAndLogsManager {
         param.setDisplayName(EParameterName.FILE_PATH.getDisplayName());
         param.setFieldType(EParameterFieldType.DIRECTORY);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param
-                .setShowIf("(ON_FILES_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(ON_FILES_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         param.setNumRow(11);
         paramList.add(param);
 
@@ -910,8 +924,7 @@ public class StatsAndLogsManager {
         param.setNumRow(51);
         param.setFieldType(EParameterFieldType.TECHNICAL);
         param.setRepositoryValue(ERepositoryCategoryType.DATABASE.getName());
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
 
         param.setParentParameter(parentPropertyType);
         // paramList.add(param);
@@ -948,8 +961,7 @@ public class StatsAndLogsManager {
         param.setNumRow(52);
         param.setRepositoryValue("TYPE"); //$NON-NLS-1$
         param.setRequired(true);
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
 
         // dbVersion
@@ -966,8 +978,7 @@ public class StatsAndLogsManager {
             param.setNumRow(52);
             param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
             param.setRequired(true);
-            param
-                    .setShowIf("(ON_DATABASE_FLAG == 'true') and (DB_TYPE == 'OCLE' or DB_TYPE == 'ACCESS' or DB_TYPE == 'OCLE_OCI' or DB_TYPE == 'MYSQL') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+            param.setShowIf("(ON_DATABASE_FLAG == 'true') and (DB_TYPE == 'OCLE' or DB_TYPE == 'ACCESS' or DB_TYPE == 'OCLE_OCI' or DB_TYPE == 'MYSQL') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
             paramList.add(param);
         }
 
@@ -980,8 +991,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(53);
         param.setRepositoryValue("URL"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // jdbc child param
@@ -1016,8 +1026,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("DRIVER_JAR"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // class name for jdbc
@@ -1029,8 +1038,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(57);
         param.setRepositoryValue("DRIVER_CLASS"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE=='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // host
@@ -1042,8 +1050,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(53);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='OCLE_OCI' and DB_TYPE!='JDBC') "); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='OCLE_OCI' and DB_TYPE!='JDBC') "); //$NON-NLS-1$
         paramList.add(param);
 
         // port
@@ -1055,8 +1062,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(53);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE!='OCLE_OCI'  and DB_TYPE!='JDBC') "); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE!='OCLE_OCI'  and DB_TYPE!='JDBC') "); //$NON-NLS-1$
         paramList.add(param);
 
         // databaseSource
@@ -1069,8 +1075,7 @@ public class StatsAndLogsManager {
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.DATASOURCE.getName())));
         param.setNumRow(53);
         param.setRepositoryValue("DATASOURCE"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')and (DB_TYPE =='INFORMIX' or DB_TYPE =='GODBC' or DB_TYPE =='MSODBC') "); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')and (DB_TYPE =='INFORMIX' or DB_TYPE =='GODBC' or DB_TYPE =='MSODBC') "); //$NON-NLS-1$
         paramList.add(param);
 
         // dbName
@@ -1082,8 +1087,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE != 'OCLE_OCI'  and DB_TYPE!='JDBC')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD' and DB_TYPE != 'OCLE_OCI'  and DB_TYPE!='JDBC')"); //$NON-NLS-1$
         paramList.add(param);
 
         // local service name
@@ -1095,8 +1099,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and DB_TYPE =='OCLE_OCI'"); //$NON-NLS-1$ //and (DB_TYPE == 'OCLE_OCI'
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and DB_TYPE =='OCLE_OCI'"); //$NON-NLS-1$ //and (DB_TYPE == 'OCLE_OCI'
         paramList.add(param);
 
         // additional parameters
@@ -1108,8 +1111,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("PROPERTIES_STRING"); //$NON-NLS-1$
-        param
-                .setShowIf("(DB_TYPE=='MSSQL' or DB_TYPE=='MYSQL' or DB_TYPE=='INFORMIX' or DB_TYPE=='OCLE' or DB_TYPE=='OCLE_OCI' or DB_TYPE=='SYBASE') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(DB_TYPE=='MSSQL' or DB_TYPE=='MYSQL' or DB_TYPE=='INFORMIX' or DB_TYPE=='OCLE' or DB_TYPE=='OCLE_OCI' or DB_TYPE=='SYBASE') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
 
         // schema
@@ -1121,8 +1123,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
-        param
-                .setShowIf("(DB_TYPE=='OCLE' or DB_TYPE=='POSTGRESQL' or DB_TYPE=='POSTGRESPLUS' or DB_TYPE=='OCLE_OCI' or DB_TYPE=='MSSQL' or DB_TYPE=='INFORMIX' ) and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(DB_TYPE=='OCLE' or DB_TYPE=='POSTGRESQL' or DB_TYPE=='POSTGRESPLUS' or DB_TYPE=='OCLE_OCI' or DB_TYPE=='MSSQL' or DB_TYPE=='INFORMIX' or DB_TYPE=='IBM_DB2' ) and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
 
         // username
@@ -1135,8 +1136,7 @@ public class StatsAndLogsManager {
         param.setNumRow(55);
         param.setRequired(true);
         param.setRepositoryValue("USERNAME"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')and (DB_TYPE!='SQLITE')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')and (DB_TYPE!='SQLITE')"); //$NON-NLS-1$
         paramList.add(param);
 
         // password
@@ -1149,8 +1149,7 @@ public class StatsAndLogsManager {
         param.setNumRow(55);
         param.setRequired(true);
         param.setRepositoryValue("PASSWORD"); //$NON-NLS-1$
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE')"); //$NON-NLS-1$
+        param.setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE')"); //$NON-NLS-1$
         paramList.add(param);
         // databse file path
         param = new ElementParameter(process);
@@ -1161,8 +1160,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(56);
         param.setRepositoryValue("FILE"); //$NON-NLS-1$
-        param
-                .setShowIf("(DB_TYPE=='SQLITE' or DB_TYPE=='ACCESS' or DB_TYPE=='FIREBIRD') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(DB_TYPE=='SQLITE' or DB_TYPE=='ACCESS' or DB_TYPE=='FIREBIRD') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
         // Stats table
         param = new ElementParameter(process);
@@ -1224,8 +1222,7 @@ public class StatsAndLogsManager {
         param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(90);
-        param
-                .setShowIf("((CATCH_RUNTIME_ERRORS == 'true' or CATCH_RUNTIME_ERRORS == 'false') and (ON_LOGCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
+        param.setShowIf("((CATCH_RUNTIME_ERRORS == 'true' or CATCH_RUNTIME_ERRORS == 'false') and (ON_LOGCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
         paramList.add(param);
 
         // Catch user errors
@@ -1259,8 +1256,7 @@ public class StatsAndLogsManager {
         param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(91);
-        param
-                .setShowIf("((CATCH_REALTIME_STATS == 'true' or CATCH_REALTIME_STATS == 'false') and (ON_STATCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
+        param.setShowIf("((CATCH_REALTIME_STATS == 'true' or CATCH_REALTIME_STATS == 'false') and (ON_STATCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
         paramList.add(param);
 
     }
