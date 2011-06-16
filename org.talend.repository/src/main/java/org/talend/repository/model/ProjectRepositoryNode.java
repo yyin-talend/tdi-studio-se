@@ -786,8 +786,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 }
             } else if (parent instanceof RepositoryNode) {
                 RepositoryNode repositoryNode = (RepositoryNode) parent;
-                convert(newProject, factory.getMetadata(newProject, repositoryNode.getContentType(), true), repositoryNode,
-                        repositoryNode.getContentType(), recBinNode);
+                if (repositoryNode.getContentType().isResourceItem()) {
+                    convert(newProject, factory.getMetadata(newProject, repositoryNode.getContentType(), true), repositoryNode,
+                            repositoryNode.getContentType(), recBinNode);
+                }
             }
         } catch (PersistenceException e) {
             RuntimeExceptionHandler.process(e);
