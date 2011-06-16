@@ -1017,7 +1017,7 @@ public class DataProcess {
 
                 if (runAfter) {
                     boolean isParall = false;
-                    for (IConnection conn : subDataNodeStartSource.getOutgoingConnections()) {
+                    for (IConnection conn : graphicalNode.getOutgoingConnections()) {
                         if (conn.getTarget().getComponent().getName().equals("tMap")) {
                             IElementParameter elePara = conn.getTarget().getElementParameter("LKUP_PARALLELIZE");
                             isParall = (Boolean) elePara.getValue();
