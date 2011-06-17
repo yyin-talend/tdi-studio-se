@@ -47,6 +47,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
+import org.talend.core.model.metadata.builder.connection.SalesforceModuleUnit;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.ValidationRulesConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -1455,8 +1456,35 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         }
                     }
 
+                    // if salesforce modul is deleted from repository , change to build-in , no need to check other
+                    // ElementParameters
+                    boolean needBuildIn = false;
+                    if (repositoryConnection instanceof SalesforceSchemaConnection
+                            && !((SalesforceSchemaConnection) repositoryConnection).isUseCustomModuleName()) {
+                        IElementParameter param = node.getElementParameter("MODULENAME");
+                        if (param != null) {
+                            boolean found = false;
+                            SalesforceSchemaConnection salesforceConnection = (SalesforceSchemaConnection) repositoryConnection;
+                            List<SalesforceModuleUnit> units = salesforceConnection.getModules();
+                            for (SalesforceModuleUnit unit : units) {
+                                if (unit.getLabel() != null && unit.getLabel().equals(param.getValue())) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                result = new UpdateCheckResult(node);
+                                result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN);
+                                needBuildIn = true;
+                            }
+                        }
+                    }
+
                     // if the repository connection exists then test the values
                     for (IElementParameter param : node.getElementParameters()) {
+                        if (needBuildIn) {
+                            break;
+                        }
                         String repositoryValue = param.getRepositoryValue();
                         if ((repositoryValue != null)
                                 && (param.isShow(node.getElementParameters()) || (node instanceof INode && ((INode) node)
