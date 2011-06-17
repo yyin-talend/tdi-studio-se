@@ -69,9 +69,6 @@ public class JobScriptsManagerFactory {
             case OSGI:
                 manager = new JobJavaScriptOSGIForESBManager();
                 break;
-            case ROUTE:
-                manager = new JobJavaScriptsManager();
-                break;
             default:
                 throw new RuntimeException("Export type [" + jobExportType + "] not handled."); //$NON-NLS-1$ //$NON-NLS-2$
             }

@@ -83,7 +83,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      * */
     public static enum JobExportType {
         POJO("Autonomous Job"), //$NON-NLS-1$ 
-        ROUTE("Autonomous Route"), //$NON-NLS-1$
         WSWAR("Axis WebService (WAR)"), //$NON-NLS-1$
         WSZIP("Axis WebService (ZIP)"), //$NON-NLS-1$
         JBOSSESB("JBoss ESB"), //$NON-NLS-1$
@@ -125,25 +124,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     }
 
-    //    public static final String EXPORTTYPE_POJO = "Autonomous Job"; //$NON-NLS-1$
-
-    // public static final String EXPORTTYPE_ROUTE = "Autonomous Route";
-
-    //    public static final String EXPORTTYPE_WSWAR = "Axis WebService (WAR)"; //$NON-NLS-1$
-
-    //    public static final String EXPORTTYPE_WSZIP = "Axis WebService (ZIP)"; //$NON-NLS-1$
-
-    //    public static final String EXPORTTYPE_JBOSSESB = "JBoss ESB"; //$NON-NLS-1$
-
-    //    public static final String EXPORTTYPE_JBI = "JBI (JSR 208)"; //$NON-NLS-1$
-
     public static final String ESBTYPE_JBOSS_MQ = "JBoss MQ"; //$NON-NLS-1$
 
     public static final String ESBTYPE_JBOSS_MESSAGING = "JBoss Messaging"; //$NON-NLS-1$
-
-    //    public static final String EXPORTTYPE_PETALSESB = "Petals ESB"; //$NON-NLS-1$
-
-    //    public static final String EXPORTTYPE_OSGI = "OSGI Bundle For ESB"; //$NON-NLS-1$
 
     protected Combo exportTypeCombo;
 
@@ -329,26 +312,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         gd.horizontalSpan = 1;
         exportTypeCombo.setLayoutData(gd);
 
-        if (!Boolean.getBoolean("talend.export.job.2.pojo.hide")) { //$NON-NLS-1$
-            exportTypeCombo.add(JobExportType.POJO.label);
+        for (JobExportType exportType : JobExportType.values()) {
+            if (!Boolean.getBoolean("talend.export.job.2." + exportType.toString() + ".hide")) {
+                exportTypeCombo.add(exportType.label);
+            }
         }
-        if (!Boolean.getBoolean("talend.export.job.2.war.hide")) { //$NON-NLS-1$
-            exportTypeCombo.add(JobExportType.WSWAR.label);
-        }
-        if (!Boolean.getBoolean("talend.export.job.2.zip.hide")) { //$NON-NLS-1$
-            exportTypeCombo.add(JobExportType.WSZIP.label);
-        }
-        if (!Boolean.getBoolean("talend.export.job.2.jboss.hide")) { //$NON-NLS-1$
-            exportTypeCombo.add(JobExportType.JBOSSESB.label);
-        }
-        if (!Boolean.getBoolean("talend.export.job.2.petals.hide")) { //$NON-NLS-1$
-            exportTypeCombo.add(JobExportType.PETALSESB.label);
-        }
-        if (!Boolean.getBoolean("talend.export.job.2.osgi.hide")) { //$NON-NLS-1$
-            exportTypeCombo.add(JobExportType.OSGI.label);
-        }
-        // exportTypeCombo.add("JBI (JSR 208)");
-
         exportTypeCombo.setText(getCurrentExportType().label);
         if (exportTypeFixed != null) {
             left.setVisible(false);
