@@ -288,25 +288,14 @@ public class SAXLoopHandler extends DefaultHandler {
             // }
             // System.out.println();
             currentRow[currentRow.length - 1] = Integer.toString(subLoopCount);
-            if (isNotNull(currentRow, currentRowHaveValue, currentRow.length - 1)) {
-                entry.getRows().add(currentRow);
-                // ===========add for bug7632==========================
-                if (this.entry.getOriginalLoopPath() != null) {
-                    this.saxLooper.addLoopOrder(this.entry.getOriginalLoopPath());
-                }
-                // =================end================================
+            entry.getRows().add(currentRow);
+            // ===========add for bug7632==========================
+            if (this.entry.getOriginalLoopPath() != null) {
+                this.saxLooper.addLoopOrder(this.entry.getOriginalLoopPath());
             }
+            // =================end================================
         }
         currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
     }
 
-    private boolean isNotNull(String[] os, boolean[] bs, int length) {
-
-        for (int i = 0; i < length; i++) {
-            if (os[i] != null || bs[i]==true) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
