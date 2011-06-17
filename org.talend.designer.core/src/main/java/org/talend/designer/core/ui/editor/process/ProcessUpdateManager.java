@@ -1131,23 +1131,25 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
                                 EUpdateResult status = deletedOrReselect.get(propertyValue);
                                 // deleted
-                                if (status.equals(EUpdateResult.DELETE)) {
-                                    // if reselect,need to reload the table for the refrence job.
-                                    parameter = new ArrayList<Object>();
-                                    String tableName = propertyValue.split(UpdatesConstants.SEGMENT_LINE)[1];
-                                    parameter.add(tableName);
-                                    parameter.add(status);
-                                    result = new UpdateCheckResult(node);
-                                    result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.DELETE, parameter, source);
-                                    builtIn = false;
-                                } else if (status.equals(EUpdateResult.RELOAD)) {
-                                    parameter = new ArrayList<Object>();
-                                    String tableName = propertyValue.split(UpdatesConstants.SEGMENT_LINE)[1];
-                                    parameter.add(tableName);
-                                    parameter.add(status);
-                                    result = new UpdateCheckResult(node);
-                                    result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.RELOAD, parameter, source);
-                                    builtIn = false;
+                                if (status != null) {
+                                    if (status.equals(EUpdateResult.DELETE)) {
+                                        // if reselect,need to reload the table for the refrence job.
+                                        parameter = new ArrayList<Object>();
+                                        String tableName = propertyValue.split(UpdatesConstants.SEGMENT_LINE)[1];
+                                        parameter.add(tableName);
+                                        parameter.add(status);
+                                        result = new UpdateCheckResult(node);
+                                        result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.DELETE, parameter, source);
+                                        builtIn = false;
+                                    } else if (status.equals(EUpdateResult.RELOAD)) {
+                                        parameter = new ArrayList<Object>();
+                                        String tableName = propertyValue.split(UpdatesConstants.SEGMENT_LINE)[1];
+                                        parameter.add(tableName);
+                                        parameter.add(status);
+                                        result = new UpdateCheckResult(node);
+                                        result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.RELOAD, parameter, source);
+                                        builtIn = false;
+                                    }
                                 }
 
                             } else {
