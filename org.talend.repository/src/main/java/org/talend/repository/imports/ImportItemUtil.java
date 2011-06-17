@@ -673,7 +673,14 @@ public class ImportItemUtil {
                     }
 
                 }
-
+                boolean isCamel = false;
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                    ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                            .getService(ICamelDesignerCoreService.class);
+                    if (service.isInstanceofCamel(tmpItem)) {
+                        isCamel = true;
+                    }
+                }
                 if (lastVersion == null || itemRecord.getState().equals(ItemRecord.State.ID_EXISTED)) {
                     // import has not been developed to cope with migration in mind
                     // so some model may not be able to load like the ConnectionItems
@@ -682,14 +689,7 @@ public class ImportItemUtil {
                     boolean isConnectionEmptyBeforeMigration = tmpItem instanceof ConnectionItem
                             && ((ConnectionItem) tmpItem).getConnection().eResource() == null
                             && !itemRecord.getMigrationTasksToApply().isEmpty();
-                    boolean isCamel = false;
-                    if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                        ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-                                .getService(ICamelDesignerCoreService.class);
-                        if (service.isInstanceofCamel(tmpItem)) {
-                            isCamel = true;
-                        }
-                    }
+
                     if (isCamel) {
                         repFactory.createCamel(tmpItem, path, true);
                     } else {
@@ -726,7 +726,11 @@ public class ImportItemUtil {
                     itemRecord.setItemVersion(itemRecord.getProperty().getVersion());
                     itemRecord.setImported(true);
                 } else if (VersionUtils.compareTo(lastVersion.getProperty().getVersion(), tmpItem.getProperty().getVersion()) < 0) {
-                    repFactory.forceCreate(tmpItem, path);
+                    if (isCamel) {
+                        repFactory.createCamel(tmpItem, path);
+                    } else {
+                        repFactory.forceCreate(tmpItem, path);
+                    }
                     itemRecord.setImportPath(path.toPortableString());
                     itemRecord.setItemId(itemRecord.getProperty().getId());
                     itemRecord.setRepositoryType(itemType);
