@@ -14,7 +14,7 @@ package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage;
+import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptESBManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptOSGIForESBManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJobJavaScriptsManager;
@@ -46,24 +46,34 @@ public class JobScriptsManagerFactory {
         return manager;
     }
 
-    public JobScriptsManager createManagerInstance(ECodeLanguage language, String exportType) {
+    public JobScriptsManager createManagerInstance(ECodeLanguage language, JobExportType jobExportType) {
 
         JobScriptsManager manager = null;
         if (language == ECodeLanguage.JAVA) {
-            if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_POJO)) {
+            switch (jobExportType) {
+            case POJO:
                 manager = new JobJavaScriptsManager();
-            } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_WSWAR)) {
+                break;
+            case WSWAR:
                 manager = new JobJavaScriptsWSManager();
-            } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_WSZIP)) {
+                break;
+            case WSZIP:
                 manager = new JobJavaScriptsWSManager();
-            } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_JBOSSESB)) {
+                break;
+            case JBOSSESB:
                 manager = new JobJavaScriptESBManager();
-            } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_PETALSESB)) {
+                break;
+            case PETALSESB:
                 manager = new PetalsJobJavaScriptsManager();
-            } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_OSGI)) {
+                break;
+            case OSGI:
                 manager = new JobJavaScriptOSGIForESBManager();
-            } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_ROUTE)) {
+                break;
+            case ROUTE:
                 manager = new JobJavaScriptsManager();
+                break;
+            default:
+                throw new RuntimeException("Export type [" + jobExportType + "] not handled."); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
         } else if (language == ECodeLanguage.PERL) {
@@ -71,5 +81,4 @@ public class JobScriptsManagerFactory {
         }
         return manager;
     }
-
 }
