@@ -644,7 +644,11 @@ class GenerateToolByDom4j{
 			setText(currEleName,node);
 		
     		// add namespace support here in the future
-    		//
+    		for(TreeNode child: node.getChildren()) {
+    			if(child.getNodeType()==NodeType.NAME_SPACE) { // namespaces
+    				addNameSpace(currEleName, (OutputTreeNode)child);
+    			}
+    		}
     		
     		addAttribute(currEleName, node);
 //    		System.out.println("parent:" + ((OutputTreeNode)node).getName() + "===node:" + node.getName() );
@@ -654,6 +658,30 @@ class GenerateToolByDom4j{
 					if(!child.isLoop() && !child.isMain())
 						generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName);
     			}
+			}
+		}
+	}
+	
+	private void addNameSpace(String currEleName, OutputTreeNode node) {
+		if(node.getDefaultValue()==null || ("").equals(node.getDefaultValue())) {
+%>
+<%=currEleName%>.addNamespace("<%=node.getName() %>", TalendString.replaceSpecialCharForXML( <%generateMethodUtil.generateExprCode(node.getExpression() ); %>));
+<%
+			if(node.getName()==null || ("").equals(node.getName().trim()) ) {
+%>
+        	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>.getName(),
+        	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML(<%generateMethodUtil.generateExprCode(node.getExpression() ); %>))));
+<%
+			}
+		} else {
+%>
+<%=currEleName%>.addNamespace("<%=node.getName() %>", TalendString.replaceSpecialCharForXML("<%generateMethodUtil.generateExprCode(((OutputTreeNode)node).getDefaultValue()); %>"));
+<%
+			if(node.getName()==null || ("").equals(node.getName().trim()) ) {
+%>
+        	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>.getName(),
+        	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML("<%generateMethodUtil.generateExprCode(((OutputTreeNode)node).getDefaultValue()); %>"))));
+<%
 			}
 		}
 	}
