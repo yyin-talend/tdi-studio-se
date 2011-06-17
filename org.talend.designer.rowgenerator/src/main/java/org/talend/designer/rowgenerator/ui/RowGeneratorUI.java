@@ -12,9 +12,7 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.ui;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -40,7 +38,6 @@ import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.Function;
@@ -86,6 +83,8 @@ public class RowGeneratorUI {
 
     private final FunctionManagerExt functionManager;
 
+    private UIManager uiManager;
+
     private Map<String, String> changedNameColumns = new HashMap<String, String>();
 
     public Map<String, String> getChangedNameColumns() {
@@ -108,7 +107,7 @@ public class RowGeneratorUI {
      * @param fromDialog
      */
     public void init(boolean fromDialog) {
-        final UIManager uiManager = generatorManager.getUiManager();
+        uiManager = generatorManager.getUiManager();
         final ExternalRowGeneratorUiProperties uiProperties = uiManager.getUiProperties();
         addParentListeners(uiManager, uiProperties);
 
@@ -201,7 +200,7 @@ public class RowGeneratorUI {
      */
     private void createSchemaComposite() {
         outputMetaTable = externalNode.getMetadataList().get(0);
-        convert(outputMetaTable);
+        uiManager.convert(externalNode, outputMetaTable, functionManager);
         metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, ""); //$NON-NLS-1$
         metadataTableEditor.setRowGenUI(this);
 
@@ -240,47 +239,6 @@ public class RowGeneratorUI {
         }
         dataTableView.getTable().getColumn(0).setWidth(0);
 
-    }
-
-    /**
-     * qzhang Comment method "convert".
-     * 
-     * @param outputMetaTable2
-     * @return TODO
-     */
-    public void convert(IMetadataTable outputMetaTable2) {
-        List<IMetadataColumn> exts = new ArrayList<IMetadataColumn>();
-        for (int j = 0; j < outputMetaTable2.getListColumns().size(); j++) {
-            IMetadataColumn column = outputMetaTable2.getListColumns().get(j);
-            if (column instanceof MetadataColumnExt) {
-                exts.add(column.clone());
-            } else if (column instanceof MetadataColumn) {
-                MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) column);
-                List<Function> funs = functionManager.getFunctionByName(ext.getTalendType());
-                String[] arrayTalendFunctions2 = new String[funs.size()];
-                List<String> list = new ArrayList<String>();
-                // for feature 10676
-                for (int i = 0; i < funs.size(); i++) {
-                    String name = funs.get(i).getName();
-                    if (list.contains(name)) {
-                        int indexOf = list.indexOf(name);
-                        arrayTalendFunctions2[indexOf] = funs.get(indexOf).getClassName() + "." + name;//$NON-NLS-1$
-
-                        String className = funs.get(i).getClassName();
-                        arrayTalendFunctions2[i] = className + "." + name;//$NON-NLS-1$
-                    } else {
-                        arrayTalendFunctions2[i] = name;
-                        list.add(name);
-                    }
-                }
-                ext.setArrayFunctions(arrayTalendFunctions2);
-                if (!funs.isEmpty()) {
-                    ext.setFunction(functionManager.getFuntionFromArray(ext, externalNode, j));
-                }
-                exts.add(ext);
-            }
-        }
-        outputMetaTable2.setListColumns(exts);
     }
 
     /**

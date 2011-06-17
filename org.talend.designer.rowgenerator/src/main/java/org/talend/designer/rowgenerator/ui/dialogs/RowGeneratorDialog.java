@@ -178,7 +178,6 @@ public class RowGeneratorDialog extends Dialog {
      */
     @Override
     protected void okPressed() {
-
         UIManager uiManager = rowGenMain.getRowGenManager().getUiManager();
         FunParaTableView2 editor = uiManager.getGeneratorUI().getTabFolderEditors().getParameterEditor();
         editor.notifyOkPressed();

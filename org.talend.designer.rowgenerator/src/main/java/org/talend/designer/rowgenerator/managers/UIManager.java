@@ -23,8 +23,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
+import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
 import org.talend.designer.rowgenerator.i18n.Messages;
@@ -124,8 +127,8 @@ public class UIManager {
         boolean containsAll2 = currentColumnDataList.containsAll(originalColumnDataList);
         boolean containsAll = containsAll1 && containsAll2;
         if (hasColumns && !containsAll && response == SWT.CANCEL) {
-            boolean isNotSaveSetting = MessageDialog.openQuestion(parent.getShell(), Messages
-                    .getString("UIManager.MessageBox.title"), Messages.getString("UIManager.MessageBox.Content")); //$NON-NLS-1$ //$NON-NLS-2$
+            boolean isNotSaveSetting = MessageDialog.openQuestion(parent.getShell(),
+                    Messages.getString("UIManager.MessageBox.title"), Messages.getString("UIManager.MessageBox.Content")); //$NON-NLS-1$ //$NON-NLS-2$
             if (isNotSaveSetting) {
                 reductAllData();
             } else {
@@ -155,6 +158,7 @@ public class UIManager {
     private List<Map<String, Object>> getCurrentColumnData() {
         List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
         MetadataTable table = (MetadataTable) rgManager.getRowGeneratorComponent().getMetadataList().get(0);
+        convert(rgManager.getRowGeneratorComponent(), table, new FunctionManagerExt());
         for (IMetadataColumn col : table.getListColumns()) {
             MetadataColumnExt ext = (MetadataColumnExt) col;
             Map<String, Object> value = new HashMap<String, Object>();
@@ -218,5 +222,46 @@ public class UIManager {
 
     public static boolean isJavaProject() {
         return FunctionManagerExt.isJavaProject();
+    }
+
+    /**
+     * qzhang Comment method "convert".
+     * 
+     * @param outputMetaTable2
+     * @return TODO
+     */
+    public void convert(RowGeneratorComponent externalNode, IMetadataTable outputMetaTable2, FunctionManagerExt functionManager) {
+        List<IMetadataColumn> exts = new ArrayList<IMetadataColumn>();
+        for (int j = 0; j < outputMetaTable2.getListColumns().size(); j++) {
+            IMetadataColumn column = outputMetaTable2.getListColumns().get(j);
+            if (column instanceof MetadataColumnExt) {
+                exts.add(column.clone());
+            } else if (column instanceof MetadataColumn) {
+                MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) column);
+                List<Function> funs = functionManager.getFunctionByName(ext.getTalendType());
+                String[] arrayTalendFunctions2 = new String[funs.size()];
+                List<String> list = new ArrayList<String>();
+                // for feature 10676
+                for (int i = 0; i < funs.size(); i++) {
+                    String name = funs.get(i).getName();
+                    if (list.contains(name)) {
+                        int indexOf = list.indexOf(name);
+                        arrayTalendFunctions2[indexOf] = funs.get(indexOf).getClassName() + "." + name;//$NON-NLS-1$
+
+                        String className = funs.get(i).getClassName();
+                        arrayTalendFunctions2[i] = className + "." + name;//$NON-NLS-1$
+                    } else {
+                        arrayTalendFunctions2[i] = name;
+                        list.add(name);
+                    }
+                }
+                ext.setArrayFunctions(arrayTalendFunctions2);
+                if (!funs.isEmpty()) {
+                    ext.setFunction(functionManager.getFuntionFromArray(ext, externalNode, j));
+                }
+                exts.add(ext);
+            }
+        }
+        outputMetaTable2.setListColumns(exts);
     }
 }
