@@ -92,6 +92,7 @@ import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
@@ -681,7 +682,19 @@ public class ImportItemUtil {
                     boolean isConnectionEmptyBeforeMigration = tmpItem instanceof ConnectionItem
                             && ((ConnectionItem) tmpItem).getConnection().eResource() == null
                             && !itemRecord.getMigrationTasksToApply().isEmpty();
-                    repFactory.create(tmpItem, path, true);
+                    boolean isCamel = false;
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                        ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                                .getService(ICamelDesignerCoreService.class);
+                        if (service.isInstanceofCamel(tmpItem)) {
+                            isCamel = true;
+                        }
+                    }
+                    if (isCamel) {
+                        repFactory.createCamel(tmpItem, path, true);
+                    } else {
+                        repFactory.create(tmpItem, path, true);
+                    }
                     if (isConnectionEmptyBeforeMigration) {// copy the file before migration, this is bad because it
                         // should not refer to Filesytem
                         // but this is a quick hack and anyway the migration task only works on files
