@@ -162,6 +162,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     private Property property;
 
+    private String exportAsOSGI;
+
     /**
      * Set current status.
      * 
@@ -310,6 +312,20 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * will be created.
      * 
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
+     * boolean, boolean, boolean)
+     */
+    @SuppressWarnings("restriction")
+    @Override
+    public void generateCode(boolean statistics, boolean trace, boolean javaProperties, boolean exportAsOSGI) throws ProcessorException {
+        this.exportAsOSGI = exportAsOSGI?"true":"false";
+        generateCode(statistics, trace, javaProperties);
+    }
+    
+    /*
+     * Append the generated java code form context into java file wihtin the project. If the file not existed new one
+     * will be created.
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
      * boolean, boolean)
      */
     @SuppressWarnings("restriction")
@@ -328,7 +344,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 String javaContext = getContextPath().toOSString();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
-                        currentJavaProject);
+                        currentJavaProject, exportAsOSGI);
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }

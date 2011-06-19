@@ -545,8 +545,13 @@ public abstract class JobScriptsManager {
      */
     protected IProcess generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics,
             boolean trace, boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
+        return generateJobFiles(process, contextName, version, statistics, trace, applyContextToChildren, false, monitor);
+    }
+    
+    protected IProcess generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics,
+            boolean trace, boolean applyContextToChildren, boolean isExportAsOSGI, IProgressMonitor monitor) throws ProcessorException {
         LastGenerationInfo.getInstance().getUseDynamicMap().clear();
-        return ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, monitor)
+        return ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, isExportAsOSGI, monitor)
                 .getProcess();
     }
 

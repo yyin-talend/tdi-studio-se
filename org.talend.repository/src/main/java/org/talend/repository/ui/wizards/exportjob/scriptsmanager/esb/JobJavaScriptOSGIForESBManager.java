@@ -111,7 +111,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 generateJobFiles(processItem, contextName, jobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
+                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren), true /* isExportAsOSGI */,
                         progressMonitor);
             }
 

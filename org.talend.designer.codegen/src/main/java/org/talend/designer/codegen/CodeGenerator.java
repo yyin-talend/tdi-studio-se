@@ -94,12 +94,14 @@ public class CodeGenerator implements ICodeGenerator {
 
     private NodesTree processTree;
 
+    private String exportAsOSGI = "false";
+
     private static final long INIT_TIMEOUT = 15000; // 15s
 
     private static final long INIT_PAUSE = 1000; // 1s
 
     private static final boolean DEBUG = false;
-
+   
     /**
      * Constructor : use the process and laguage to initialize internal components.
      * 
@@ -124,7 +126,13 @@ public class CodeGenerator implements ICodeGenerator {
             this.contextName = process.getContextManager().getDefaultContext().getName();
             this.checkingSyntax = false;
 
-            if ((options != null) && (options.length == 4)) {
+            if ((options != null) && (options.length == 5)) {
+                this.interpreterPath = options[0];
+                this.libPath = options[1];
+                this.runtimeFilePath = options[2];
+                this.currentProjectName = options[3];
+                this.exportAsOSGI = options[4];
+            } else if ((options != null) && (options.length == 4)) {
                 this.interpreterPath = options[0];
                 this.libPath = options[1];
                 this.runtimeFilePath = options[2];
@@ -217,11 +225,12 @@ public class CodeGenerator implements ICodeGenerator {
             throw new CodeGeneratorException(Messages.getString("CodeGenerator.JET.TimeOut")); //$NON-NLS-1$
         } else {
             // ####0005204: Cannot Call SubJob with RunJob Component
-            Vector headerArgument = new Vector(2);
+            Vector headerArgument = new Vector(3);
             headerArgument.add(process);
 
             headerArgument.add(CodeGeneratorActivator.getDefault().getBundle().getHeaders()
                     .get(org.osgi.framework.Constants.BUNDLE_VERSION));
+            headerArgument.add(exportAsOSGI);
             boolean isCamel = false;
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
                 ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
