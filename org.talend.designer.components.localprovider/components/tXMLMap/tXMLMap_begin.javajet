@@ -651,14 +651,14 @@ class GenerateToolByDom4j{
     		}
     		
     		addAttribute(currEleName, node);
-//    		System.out.println("parent:" + ((OutputTreeNode)node).getName() + "===node:" + node.getName() );
-    		if(!isRootEndMainNode(node)){
-    			int index = 0;
-				for(TreeNode child:node.getChildren()){
-					if(!child.isLoop() && !child.isMain())
-						generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName);
-    			}
+    		
+			int index = 0;
+			for(TreeNode child:node.getChildren()){
+				if(!child.isGroup() && !child.isLoop()) {
+					generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName);
+				}
 			}
+
 		}
 	}
 
@@ -701,32 +701,6 @@ class GenerateToolByDom4j{
         	org.dom4j.DocumentHelper.createNamespace("<%=node.getName() %>",TalendString.replaceSpecialCharForXML("<%generateMethodUtil.generateExprCode(((OutputTreeNode)node).getDefaultValue()); %>"))));
 <%
 				}
-			}
-		}
-	}
-	
-	private void addNameSpace1(String currEleName, OutputTreeNode node) {
-		int index = 0;
-		index = node.getName().indexOf(":");
-		if(node.getDefaultValue()==null || ("").equals(node.getDefaultValue())) {
-%>
-<%=currEleName%>.addNamespace("<%=node.getName() %>", TalendString.replaceSpecialCharForXML( <%generateMethodUtil.generateExprCode(node.getExpression() ); %>));
-<%
-			if(node.getName()==null || ("").equals(node.getName().trim()) ) {
-%>
-        	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>.getName(),
-        	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML(<%generateMethodUtil.generateExprCode(node.getExpression() ); %>))));
-<%
-			}
-		} else {
-%>
-<%=currEleName%>.addNamespace("<%=node.getName() %>", TalendString.replaceSpecialCharForXML("<%generateMethodUtil.generateExprCode(((OutputTreeNode)node).getDefaultValue()); %>"));
-<%
-			if(node.getName()==null || ("").equals(node.getName().trim()) ) {
-%>
-        	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>.getName(),
-        	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML("<%generateMethodUtil.generateExprCode(((OutputTreeNode)node).getDefaultValue()); %>"))));
-<%
 			}
 		}
 	}
@@ -794,7 +768,7 @@ class GenerateToolByDom4j{
 		}
 		return false;
 	}
-	
+	// judge if the current main element has a group or loop element as his child node
 	private boolean isRootEndMainNode(OutputTreeNode node){
 //		System.out.println(node.getName() + ":main=" + node.isMain() + ":Loop=" + node.isLoop() + ":group=" + node.isGroup());
 		if(!node.isMain() || node.isLoop() || node.isGroup()){
