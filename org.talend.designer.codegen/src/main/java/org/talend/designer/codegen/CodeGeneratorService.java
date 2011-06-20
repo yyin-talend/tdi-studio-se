@@ -93,7 +93,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
                 return service.createCamelJavaSynchronizer();
             }
         }
-        throw new IllegalArgumentException(Messages.getString("CodeGeneratorService.invalidLanguage1")); //$NON-NLS-1$
+        return null;
     }
 
     public ISQLPatternSynchronizer getSQLPatternSynchronizer() {
