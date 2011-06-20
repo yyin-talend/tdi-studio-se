@@ -304,7 +304,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 			if("Dynamic".equals(typeToGenerate)) {
 			%>
-				int count_dyn_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, count<%=cid%>-1);
+				int count_dyn_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, count<%=cid%>-1, "<%=dbmsId%>");
 				count<%=cid%>+=count_dyn_<%=cid%>;
 			<%
 			}
