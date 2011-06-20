@@ -30,7 +30,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.images.OverlayImageProvider;
-import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
@@ -141,14 +140,6 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
             Item item = process2.getProperty().getItem();
             if (item instanceof JobletProcessItem) {
                 title = "MultiPageTalendEditor.Joblet";//$NON-NLS-1$
-            }
-        }
-
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                    ICamelDesignerCoreService.class);
-            if (camelService.isInstanceofCamelRoutes(process2.getProperty().getItem())) {
-                title = "MultiPageTalendEditor.Route";
             }
         }
 
