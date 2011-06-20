@@ -259,7 +259,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         a.put(new Attributes.Name("Bundle-Version"), jobVersion); //$NON-NLS-1$
         a.put(new Attributes.Name("Bundle-ManifestVersion"), "2"); //$NON-NLS-1$ //$NON-NLS-2$
         a.put(new Attributes.Name("Export-Package"), packageName); //$NON-NLS-1$
-        a.put(new Attributes.Name("Import-Package"), "routines.system.api;resolution:=optional,org.dom4j;resolution:=optional,org.dom4j.io;resolution:=optional,org.dom4j.tree;resolution:=optional,org.jaxen;resolution:=optional"); //$NON-NLS-1$ //$NON-NLS-2$
+        a.put(new Attributes.Name("Import-Package"), "routines.system.api;resolution:=optional,org.dom4j;resolution:=optional,org.dom4j.io;resolution:=optional,org.dom4j.tree;resolution:=optional,org.jaxen;resolution:=optional,javax.xml.soap;resolution:=optional"); //$NON-NLS-1$ //$NON-NLS-2$
         a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
 
         return manifest;
