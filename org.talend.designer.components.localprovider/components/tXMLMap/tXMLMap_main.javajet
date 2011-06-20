@@ -58,7 +58,7 @@ skeleton="tXMLMap_java.skeleton"
 	boolean isExpressionEmpty = true;
 	boolean hasOutgoingConnection = false;
 	boolean containDocType = false;
-	boolean isPlainNode = false;
+	boolean isPlainNode = true;
 	boolean isPlainNodeInLookup = false;
 	int lookupTableCount = 0;
 	boolean hasDocumentGlobal = false;
@@ -136,8 +136,8 @@ skeleton="tXMLMap_java.skeleton"
 			boolean isInnerJoin = true;
 			currentMainNode = tmpNode;
 
-			if(!tmpNode.getType().equals("id_Document")){
-				isPlainNode = true;
+			if(tmpNode.getType().equals("id_Document")){
+				isPlainNode = false;
 			}
 			
 			matchXmlTreeExpr = new MatchXmlTreeExpr(tmpNode, cid);
@@ -472,7 +472,11 @@ if((isXpathFromLookup || hasOutgoingConnection) && containDocType && !isPlainNod
 //========================the input xml part end=============================
 %>
 <%
-	if(hasDocumentGlobal && !isPlainNode) {
+	if((!hasDocumentGlobal && isPlainNode) || (hasDocumentGlobal && isPlainNode)) {
+		// Nothing to generate
+	}
+	
+	if((!isPlainNode && !hasDocumentGlobal) || (hasDocumentGlobal && !isPlainNode)) {
 		gm.addBlocksCodeToClose(new BlockCode("G_TXM_M_001 close"));
 %>
 		if(nb_line_<%=cid%> == nodeList_<%=cid%>.size()) {

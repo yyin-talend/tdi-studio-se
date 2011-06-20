@@ -70,8 +70,16 @@ for (OutputXmlTree table : outputTables) {
 %>
 
 
-<% if(!isPlainNode && !outputHasDocument){%>
-} // for input xml loop 
-<%}%>
+<%
+	if((!outputHasDocument && isPlainNode) || (!isPlainNode &&  !outputHasDocument) || (isPlainNode && outputHasDocument) || (!isPlainNode && outputHasDocument)) {
+		// Nothing to generate
+	}
+
+	if(false){
+%>
+		} // for input xml loop 
+<%
+	}
+%>
 
 
