@@ -42,6 +42,11 @@ public class TemplateUtil {
         this.resourceName = template.getTemplateName();
         this.version = template.getVersion();
     }
+    
+    public TemplateUtil(String resourceName, String version) {
+        this.resourceName = resourceName;
+        this.version = version;
+    }
 
     /**
      * Getter for resourceName.
@@ -77,5 +82,22 @@ public class TemplateUtil {
      */
     public void setVersion(String version) {
         this.version = version;
+    }
+    
+    @Override
+    public boolean equals(Object arg0) {
+        if (arg0!=null) {
+            try {
+                TemplateUtil t = (TemplateUtil) arg0;
+                if (t.getResourceName() !=null) {
+                    if ( (t.getResourceName().equals(this.getResourceName())) & (t.getVersion().equals(this.getVersion())) ) {
+                        return true;
+                    }
+                }
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return false;
     }
 }

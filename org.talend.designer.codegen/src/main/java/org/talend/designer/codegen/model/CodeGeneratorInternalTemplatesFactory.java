@@ -93,20 +93,38 @@ public class CodeGeneratorInternalTemplatesFactory {
     }
 
     private void loadSystemFrame() {
-        for (EInternalTemplate utilTemplate : EInternalTemplate.values()) {
-            URL url = FileLocator.find(Platform.getBundle(CodeGeneratorActivator.PLUGIN_ID), new Path("resources"), null);
-            File file;
-            try {
+        templates.clear();
+        URL url = FileLocator.find(Platform.getBundle(CodeGeneratorActivator.PLUGIN_ID), new Path("resources"), null);
+        File file;
+        try {
+            for (EInternalTemplate utilTemplate : EInternalTemplate.values()) {
                 file = new File(FileLocator.toFileURL(url).getPath() + utilTemplate.getTemplateName() + TemplateUtil.EXT_SEP
                         + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
                 if (file.exists()) {
                     TemplateUtil template = new TemplateUtil(utilTemplate);
                     templates.add(template);
                 }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                ExceptionHandler.process(e);
             }
+            // Add all additional headers
+            file = new File(FileLocator.toFileURL(url).getPath());
+            for (File f : file.listFiles(new FileFilter() {
+                
+                @Override
+                public boolean accept(File pathname) {
+                    if (pathname.getName().contains(EInternalTemplate.HEADER_ADDITIONAL.toString()))
+                        if (pathname.getName().contains(language.getExtension() + TemplateUtil.TEMPLATE_EXT))
+                            return true;
+                    return false;
+                }
+            })) {
+                if (f.exists()) {
+                    TemplateUtil template = new TemplateUtil(f.getName().substring(0,f.getName().lastIndexOf(".")),"0.0.1");
+                    if (!templates.contains(template)) templates.add(template);
+                }
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            ExceptionHandler.process(e);
         }
     }
 

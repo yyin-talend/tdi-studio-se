@@ -52,6 +52,8 @@ import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.exception.CodeGeneratorException;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
+import org.talend.designer.codegen.model.CodeGeneratorInternalTemplatesFactory;
+import org.talend.designer.codegen.model.CodeGeneratorInternalTemplatesFactoryProvider;
 import org.talend.designer.codegen.proxy.JetProxy;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -101,7 +103,7 @@ public class CodeGenerator implements ICodeGenerator {
     private static final long INIT_PAUSE = 1000; // 1s
 
     private static final boolean DEBUG = false;
-   
+
     /**
      * Constructor : use the process and laguage to initialize internal components.
      * 
@@ -490,9 +492,26 @@ public class CodeGenerator implements ICodeGenerator {
         codeGenArgument.setPauseTime(CorePlugin.getDefault().getRunProcessService().getPauseTime());
         JetBean jetBean = initializeJetBean(codeGenArgument);
 
-        jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + type + TemplateUtil.EXT_SEP
-                + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
+        StringBuffer content = new StringBuffer();
+        if (type == EInternalTemplate.HEADER_ADDITIONAL) {
+            // loop over all HEADER_ADDITIONAL previously loaded
+            List<TemplateUtil> allTemplates = CodeGeneratorInternalTemplatesFactoryProvider.getInstance().getTemplates();
+            for (TemplateUtil template : allTemplates) {
+                if (template.getResourceName().contains(EInternalTemplate.HEADER_ADDITIONAL.toString())) {
+                    jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + template.getResourceName() + TemplateUtil.EXT_SEP
+                            + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
+                    content.append(instantiateJetProxy(jetBean));
+                }
+            }
+        } else {
+            jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + type + TemplateUtil.EXT_SEP
+                    + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
+            content.append(instantiateJetProxy(jetBean));
+        }
+        return content;
+    }
 
+    private StringBuffer instantiateJetProxy(JetBean jetBean) throws CodeGeneratorException {
         JetProxy proxy = new JetProxy(jetBean);
         StringBuffer content = new StringBuffer();
         try {
@@ -589,10 +608,10 @@ public class CodeGenerator implements ICodeGenerator {
                     }
                     codeComponent.append(generateComponentCode(subProcess, node, ECodePart.MAIN, incomingName, typeGen));
                     if (ETypeGen.CAMEL == typeGen) {
-                        if(node.getIncomingConnections().size()<1)
-                            codeComponent.append(".routeId(\""+node.getUniqueName()+"\")");
+                        if (node.getIncomingConnections().size() < 1)
+                            codeComponent.append(".routeId(\"" + node.getUniqueName() + "\")");
                         else
-                            codeComponent.append(".id(\""+node.getUniqueName()+"\")");
+                            codeComponent.append(".id(\"" + node.getUniqueName() + "\")");
                     }
                     codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
                 }
