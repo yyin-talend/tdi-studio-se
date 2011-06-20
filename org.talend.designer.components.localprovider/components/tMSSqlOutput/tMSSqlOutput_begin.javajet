@@ -70,7 +70,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
 
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
-    
+    boolean usingStatsLogs=cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB");
     String useBatchSize = ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__");
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 %>
@@ -209,13 +209,14 @@ if(!isDynamic) {
         String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
 <%
 //to fixed: bug8422
-if(!(cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){%>
+if(!usingStatsLogs){%>
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 <%}%>
         
 <%
 //to fixed: bug8422
-if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){ %>
+//to fixed: bug18928,in bug 8422 if a statement is created,it will be used for many times,but it's not thread-safty.
+if(usingStatsLogs){ %>
 		java.sql.PreparedStatement pstmt_<%=cid %> = null;         
         // [%connection%][psmt][tableName]
         String keyPsmt_<%=cid %> = conn_<%=cid%> + "[psmt]" + "[" + <%=table%> + "]";
@@ -225,6 +226,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 		}else{
 			pstmt_<%=cid %> = (java.sql.PreparedStatement)GlobalResource.resourceMap.get(keyPsmt_<%=cid %>);				
 		}
+		synchronized(pstmt_<%=cid %>){//synchronized begin
 <%}%>
         <%
     } else if (("UPDATE").equals(dataAction)) {
