@@ -78,7 +78,6 @@ public class CodeGeneratorInternalTemplatesFactory {
             installationFolder = new File(FileLocator.toFileURL(url).getPath());
 
             final FileFilter sourceFolderFilter = new FileFilter() {
-                @Override
                 public boolean accept(File pathname) {
                     return false;
                 }
@@ -108,8 +107,6 @@ public class CodeGeneratorInternalTemplatesFactory {
             // Add all additional headers
             file = new File(FileLocator.toFileURL(url).getPath());
             for (File f : file.listFiles(new FileFilter() {
-                
-                @Override
                 public boolean accept(File pathname) {
                     if (pathname.getName().contains(EInternalTemplate.HEADER_ADDITIONAL.toString()))
                         if (pathname.getName().contains(language.getExtension() + TemplateUtil.TEMPLATE_EXT))
