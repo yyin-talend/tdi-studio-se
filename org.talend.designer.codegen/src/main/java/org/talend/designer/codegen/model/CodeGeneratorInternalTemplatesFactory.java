@@ -78,7 +78,7 @@ public class CodeGeneratorInternalTemplatesFactory {
             installationFolder = new File(FileLocator.toFileURL(url).getPath());
 
             final FileFilter sourceFolderFilter = new FileFilter() {
-
+                @Override
                 public boolean accept(File pathname) {
                     return false;
                 }
