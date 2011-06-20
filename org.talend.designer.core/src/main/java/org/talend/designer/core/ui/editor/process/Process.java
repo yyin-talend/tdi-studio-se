@@ -1363,27 +1363,31 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
             // check possible routines to setup in nodes
             for (INode node : ((List<INode>) getGraphicalNodes())) {
-                String unique = node.getUniqueName();
-                if (unique.startsWith("tMap")) {
+                String componentName = node.getComponent().getName();
+                if (componentName.equals("tMap")) { //$NON-NLS-N$
+                    IExternalData data = node.getExternalData();
                     for (String routine : possibleRoutines) {
-                        IExternalData data = node.getExternalData();
                         List<IExternalMapTable> listOutput = (List<IExternalMapTable>) data.getOutputTables();
                         for (IExternalMapTable outTable : listOutput) {
                             List<IExternalMapEntry> listOutEntry = (List<IExternalMapEntry>) outTable.returnTableEntries();
-                            for (IExternalMapEntry outEntry : listOutEntry) {
-                                String expression = outEntry.getExpression();
-                                if (!routinesToAdd.contains(routine) && expression.contains(routine + additionalString)) {
-                                    routinesToAdd.add(routine);
+                            if (listOutEntry != null && !listOutEntry.isEmpty()) {
+                                for (IExternalMapEntry outEntry : listOutEntry) {
+                                    String expression = outEntry.getExpression();
+                                    if (expression != null && !routinesToAdd.contains(routine)
+                                            && expression.contains(routine + additionalString)) {
+                                        routinesToAdd.add(routine);
+                                    }
                                 }
                             }
                         }
                         List<IExternalMapTable> listInput = (List<IExternalMapTable>) data.getInputTables();
                         for (IExternalMapTable inputTable : listInput) {
                             List<IExternalMapEntry> listInEntry = (List<IExternalMapEntry>) inputTable.returnTableEntries();
-                            for (IExternalMapEntry inEntry : listInEntry) {
-                                String expression = inEntry.getExpression();
-                                if (null != expression) {
-                                    if (!routinesToAdd.contains(routine) && expression.contains(routine + additionalString)) {
+                            if (listInEntry != null && !listInEntry.isEmpty()) {
+                                for (IExternalMapEntry inEntry : listInEntry) {
+                                    String expression = inEntry.getExpression();
+                                    if (expression != null && !routinesToAdd.contains(routine)
+                                            && expression.contains(routine + additionalString)) {
                                         routinesToAdd.add(routine);
                                     }
                                 }
@@ -1392,10 +1396,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         List<IExternalMapTable> listVar = (List<IExternalMapTable>) data.getVarsTables();
                         for (IExternalMapTable varTable : listVar) {
                             List<IExternalMapEntry> listVarEntry = (List<IExternalMapEntry>) varTable.returnTableEntries();
-                            for (IExternalMapEntry varEntry : listVarEntry) {
-                                String expression = varEntry.getExpression();
-                                if (!routinesToAdd.contains(routine) && expression.contains(routine + additionalString)) {
-                                    routinesToAdd.add(routine);
+                            if (listVarEntry != null && !listVarEntry.isEmpty()) {
+                                for (IExternalMapEntry varEntry : listVarEntry) {
+                                    String expression = varEntry.getExpression();
+                                    if (expression != null && !routinesToAdd.contains(routine)
+                                            && expression.contains(routine + additionalString)) {
+                                        routinesToAdd.add(routine);
+                                    }
                                 }
                             }
                         }
@@ -1403,9 +1410,12 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                             IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault()
                                     .getService(IDesignerMapperService.class);
                             List<String> ExperssionFilters = service.getExpressionFilter(data);
-                            for (String experssion : ExperssionFilters) {
-                                if (!routinesToAdd.contains(routine) && experssion.contains(routine + additionalString)) {
-                                    routinesToAdd.add(routine);
+                            if (!ExperssionFilters.isEmpty()) {
+                                for (String experssion : ExperssionFilters) {
+                                    if (experssion != null && !routinesToAdd.contains(routine)
+                                            && experssion.contains(routine + additionalString)) {
+                                        routinesToAdd.add(routine);
+                                    }
                                 }
                             }
                         }
