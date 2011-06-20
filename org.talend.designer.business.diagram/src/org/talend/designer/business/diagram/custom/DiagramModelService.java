@@ -191,7 +191,7 @@ public class DiagramModelService implements IDiagramModelService {
     }
 
     public void openBusinessDiagramEditor(IWorkbenchPage page, IEditorInput input) throws PartInitException {
-        page.openEditor(input, BusinessDiagramEditor.ID, false);
+        page.openEditor(input, BusinessDiagramEditor.ID, true);
     }
 
     public IFile getDiagramFileAndUpdateResource(IWorkbenchPage page, BusinessProcessItem businessProcessItem) {

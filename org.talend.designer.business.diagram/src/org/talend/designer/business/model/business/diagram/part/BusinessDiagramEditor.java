@@ -79,6 +79,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
     protected boolean keepPropertyLocked; // used only if the user try to open more than one editor at a time.
 
+    private Boolean readOnly;
+
     /**
      * @generated
      */
@@ -233,12 +235,19 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             if (repositoryEditorInput.isReadOnly()) {
                 return false;
             }
-
-            Item item = repositoryEditorInput.getItem();
-            IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-            return repositoryFactory.isEditableAndLockIfPossible(item) && isLastVersion(item);
+            return !checkReadOnly();
         }
         return super.isEditable();
+    }
+
+    // fix for bug 22597
+    private boolean checkReadOnly() {
+        if (readOnly == null) {
+            Item item = repositoryEditorInput.getItem();
+            IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+            readOnly = !isLastVersion(item) || !repositoryFactory.isEditableAndLockIfPossible(item);
+        }
+        return readOnly;
     }
 
     @Override

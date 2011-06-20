@@ -147,7 +147,13 @@ public class OpenExistVersionProcessWizard extends Wizard {
             }
 
             try {
-                ProxyRepositoryFactory.getInstance().lock(processObject);
+                Item newCreated = null;
+                if (processObject.getProperty() != null && processObject.getProperty().getItem() != null) {
+                    newCreated = processObject.getProperty().getItem();
+                }
+                if (!(newCreated instanceof BusinessProcessItem)) {
+                    ProxyRepositoryFactory.getInstance().lock(processObject);
+                }
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             } catch (LoginException e) {
