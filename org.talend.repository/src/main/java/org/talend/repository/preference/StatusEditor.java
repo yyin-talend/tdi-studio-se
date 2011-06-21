@@ -66,7 +66,7 @@ public class StatusEditor extends TableEditor {
         colValue.setWidth(150);
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (factory.isUserReadOnlyOnCurrentProject()) {
-            contextTable.setEnabled(false);
+            parent.setEnabled(false);
         }
         return contextTable;
     }
