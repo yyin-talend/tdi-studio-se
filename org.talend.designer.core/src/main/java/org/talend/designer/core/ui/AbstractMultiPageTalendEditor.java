@@ -15,7 +15,6 @@ package org.talend.designer.core.ui;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -70,9 +69,7 @@ import org.eclipse.ui.internal.registry.EditorDescriptor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.rulers.IColumnSupport;
-import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
@@ -528,17 +525,17 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                         ((AbstractDecoratedTextEditor) getEditor(2)).getDocumentProvider()
                                 .getDocument(getEditor(2).getEditorInput()).set(scriptValue);
 
-                        IProxyRepositoryFactory rFactory = ProxyRepositoryFactory.getInstance();
-                        if (rFactory.isUserReadOnlyOnCurrentProject()) {
-                            IDocumentProvider provider = ((XtextEditor) getEditor(2)).getDocumentProvider();
-                            Class p = provider.getClass();
-                            Class[] type = new Class[1];
-                            type[0] = Boolean.TYPE;
-                            Object[] para = new Object[1];
-                            para[0] = Boolean.TRUE;
-                            Method method = p.getMethod("setReadOnly", type);
-                            method.invoke(provider, para);
-                        }
+                        // IProxyRepositoryFactory rFactory = ProxyRepositoryFactory.getInstance();
+                        // if (rFactory.isUserReadOnlyOnCurrentProject()) {
+                        // IDocumentProvider provider = ((XtextEditor) getEditor(2)).getDocumentProvider();
+                        // Class p = provider.getClass();
+                        // Class[] type = new Class[1];
+                        // type[0] = Boolean.TYPE;
+                        // Object[] para = new Object[1];
+                        // para[0] = Boolean.TRUE;
+                        // Method method = p.getMethod("setReadOnly", type);
+                        // method.invoke(provider, para);
+                        // }
 
                         IAction action = ((AbstractDecoratedTextEditor) getEditor(2)).getAction("FoldingRestore"); //$NON-NLS-1$
                         action.run();
@@ -553,14 +550,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 } catch (IOException e) {
                     ExceptionHandler.process(e);
                 } catch (SecurityException e) {
-                    ExceptionHandler.process(e);
-                } catch (NoSuchMethodException e) {
-                    ExceptionHandler.process(e);
-                } catch (IllegalArgumentException e) {
-                    ExceptionHandler.process(e);
-                } catch (IllegalAccessException e) {
-                    ExceptionHandler.process(e);
-                } catch (InvocationTargetException e) {
                     ExceptionHandler.process(e);
                 }
             }
