@@ -65,6 +65,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private String jobVersion;
 
+    private String itemType = null;
+
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
             throws ProcessorException {
@@ -87,8 +89,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(true, process);
-        libResource.addResources(talendLibraries);
-
+        ERepositoryObjectType type = ERepositoryObjectType.getItemType(process[0].getItem());
+        if (type.equals(ERepositoryObjectType.PROCESS)) {
+            libResource.addResources(talendLibraries);
+            itemType = "job";
+        } else {
+            itemType = "route";
+        }
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             jobName = processItem.getProperty().getLabel();
@@ -111,8 +118,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 generateJobFiles(processItem, contextName, jobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren), true /* isExportAsOSGI */,
-                        progressMonitor);
+                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
+                        true /* isExportAsOSGI */, progressMonitor);
             }
 
             // generate jar file for job
@@ -157,14 +164,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             String inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/job-template.xml"), null)) //$NON-NLS-1$
                     .getFile();
             String targetFile = getTmpFolder() + PATH_SEPARATOR + "job.xml"; //$NON-NLS-1$
-            String itemType = null;
-            // only for camel route,tos process.
-            ERepositoryObjectType type = ERepositoryObjectType.getItemType(processItem);
-            if (type.equals(ERepositoryObjectType.PROCESS)) {
-                itemType = "job";
-            } else {
-                itemType = "route";
-            }
             readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobClassName, itemType);
             files.add(targetFile);
         } catch (IOException e) {
@@ -259,15 +258,27 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         a.put(new Attributes.Name("Bundle-Version"), jobVersion); //$NON-NLS-1$
         a.put(new Attributes.Name("Bundle-ManifestVersion"), "2"); //$NON-NLS-1$ //$NON-NLS-2$
         a.put(new Attributes.Name("Export-Package"), packageName); //$NON-NLS-1$
-        a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
-                "routines.system.api;resolution:=optional" + //$NON-NLS-1$
-                ",org.dom4j;resolution:=optional" + //$NON-NLS-1$
-                ",org.dom4j.io;resolution:=optional" + //$NON-NLS-1$
-                ",org.dom4j.tree;resolution:=optional" + //$NON-NLS-1$
-                ",org.jaxen;resolution:=optional" + //$NON-NLS-1$
-                ",javax.xml.soap;resolution:=optional" + //$NON-NLS-1$
-                ",javax.xml.ws.soap;resolution:=optional"); //$NON-NLS-1$
+        if ("route".equals(itemType)) {
+            a.put(new Attributes.Name("Import-Package"), "javax.xml.bind,org.apache.camel;version=\"[2.7,3)\",org.apache.camel.builder;" + //$NON-NLS-1$
+                            "version=\"[2.7,3)\",org.apache.camel.impl;version=\"[2.7,3)\",org.apache.camel.management;version=\"[2.7,3)\","
+                            + //$NON-NLS-1$
+                            "org.apache.camel.model;version=\"[2.7,3)\",org.apache.camel.osgi;version=\"[2.7,3)\"," + //$NON-NLS-1$
+                            "org.apache.camel.spi;version=\"[2.7,3)\",org.apache.camel.view;version=\"[2.7,3)\"," + //$NON-NLS-1$
+                            "org.osgi.framework;version=\"[1.5,2)\"," + //$NON-NLS-1$
+                            "org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\",routines.system.api"); //$NON-NLS-1$
+        } else {
+            a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
+                    "routines.system.api;resolution:=optional" + //$NON-NLS-1$
+                    ",org.dom4j;resolution:=optional" + //$NON-NLS-1$
+                    ",org.dom4j.io;resolution:=optional" + //$NON-NLS-1$
+                    ",org.dom4j.tree;resolution:=optional" + //$NON-NLS-1$
+                    ",org.jaxen;resolution:=optional" + //$NON-NLS-1$
+                    ",javax.xml.soap;resolution:=optional" + //$NON-NLS-1$
+                    ",javax.xml.ws.soap;resolution:=optional"); //$NON-NLS-1$
+        }
+
         a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
+        a.put(new Attributes.Name("Export-Service"), "routines.system.api.TalendJob;name=" + jobName + ";type=" + itemType); //$NON-NLS-1$
 
         return manifest;
     }
