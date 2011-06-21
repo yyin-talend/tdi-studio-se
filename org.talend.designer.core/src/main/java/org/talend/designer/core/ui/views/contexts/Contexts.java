@@ -16,6 +16,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.ui.branding.IBrandingConfiguration;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -49,7 +50,9 @@ public class Contexts {
         // seem 16594
         if (page != null) {
             String perId = page.getPerspective().getId();
-            if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
+            if ((!"".equals(perId) || null != perId)
+                    && (perId.equalsIgnoreCase(PERSPECTIVE_DI_ID) || perId
+                            .equalsIgnoreCase(IBrandingConfiguration.PERSPECTIVE_CAMEL_ID))) {
                 IViewPart view = page.findView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
                 if (view == null) {
                     try {
