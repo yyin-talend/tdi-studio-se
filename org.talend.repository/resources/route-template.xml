@@ -3,7 +3,9 @@
 
 	<!-- Talend Job OSGi blueprint descriptor -->
 
-	<bean id="job" class="@JOBCLASSNAME@" />
+	<bean id="job" class="@JOBCLASSNAME@">
+		<property name="bundleContext" ref="blueprintBundleContext" />
+	</bean>
 
 	<service ref="job" interface="routines.system.api.TalendJob">
 		<service-properties>

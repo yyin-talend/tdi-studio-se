@@ -51,7 +51,15 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsM
  */
 public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
-    private static Logger logger = Logger.getLogger(JobJavaScriptOSGIForESBManager.class);
+    private static final String PACKAGE_SEPARATOR = ".";
+
+	private static final String JAVA = "java";
+
+	private static final String ROUTE = "route";
+
+	private static final String JOB = "job";
+
+	private static Logger logger = Logger.getLogger(JobJavaScriptOSGIForESBManager.class);
 
     private static final String BLUEPRINT = "blueprint"; //$NON-NLS-1$
 
@@ -85,24 +93,24 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         // set export config mode now only to be sure that the libraries will be setup for an export mode, and not
         // editor mode.
-        ProcessorUtilities.setExportConfig("java", "", ""); //$NON-NLS-1$
+        ProcessorUtilities.setExportConfig(JAVA, "", ""); //$NON-NLS-1$
 
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(true, process);
         ERepositoryObjectType type = ERepositoryObjectType.getItemType(process[0].getItem());
         if (type.equals(ERepositoryObjectType.PROCESS)) {
             libResource.addResources(talendLibraries);
-            itemType = "job";
+            itemType = JOB;
         } else {
-            itemType = "route";
+            itemType = ROUTE;
         }
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             jobName = processItem.getProperty().getLabel();
-            packageName = JavaResourcesHelper.getProjectFolderName(processItem) + "." //$NON-NLS-1$
+            packageName = JavaResourcesHelper.getProjectFolderName(processItem) + PACKAGE_SEPARATOR
                     + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
                             .getVersion());
-            jobClassName = packageName + "." + jobName;
+            jobClassName = packageName + PACKAGE_SEPARATOR + jobName;
 
             jobVersion = processItem.getProperty().getVersion();
             if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
@@ -113,8 +121,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
             String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
-            ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
+                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + PACKAGE_SEPARATOR; //$NON-NLS-1$
+            ProcessorUtilities.setExportConfig(JAVA, standardJars, libPath); //$NON-NLS-1$
 
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 generateJobFiles(processItem, contextName, jobVersion, statisticPort != IProcessor.NO_STATISTICS,
@@ -161,7 +169,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         List<String> files = new ArrayList<String>();
         final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
         try {
-            String inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/job-template.xml"), null)) //$NON-NLS-1$
+        	if(itemType == null)
+        		itemType = JOB;
+            String inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/"+itemType+"-template.xml"), null)) //$NON-NLS-1$
                     .getFile();
             String targetFile = getTmpFolder() + PATH_SEPARATOR + "job.xml"; //$NON-NLS-1$
             readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobClassName, itemType);
@@ -258,7 +268,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         a.put(new Attributes.Name("Bundle-Version"), jobVersion); //$NON-NLS-1$
         a.put(new Attributes.Name("Bundle-ManifestVersion"), "2"); //$NON-NLS-1$ //$NON-NLS-2$
         a.put(new Attributes.Name("Export-Package"), packageName); //$NON-NLS-1$
-        if ("route".equals(itemType)) {
+        if (ROUTE.equals(itemType)) {
         	a.put(new Attributes.Name("Require-Bundle"), "org.apache.camel.camel-core");
             a.put(new Attributes.Name("Import-Package"), "javax.xml.bind,org.apache.camel;version=\"[2.7,3)\",org.apache.camel.builder;" + //$NON-NLS-1$
                             "version=\"[2.7,3)\",org.apache.camel.impl;version=\"[2.7,3)\",org.apache.camel.management;version=\"[2.7,3)\","
@@ -286,7 +296,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private String getClassPath(ExportFileResource libResource) {
         StringBuffer libBuffer = new StringBuffer();
-        libBuffer.append(".").append(","); //$NON-NLS-1$ //$NON-NLS-2$
+        libBuffer.append(PACKAGE_SEPARATOR).append(","); //$NON-NLS-1$ //$NON-NLS-2$
         Set<String> relativePathList = libResource.getRelativePathList();
         for (String path : relativePathList) {
             Set<URL> resources = libResource.getResourcesByRelativePath(path);
