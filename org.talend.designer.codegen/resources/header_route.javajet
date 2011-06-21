@@ -101,6 +101,19 @@ import java.util.Comparator;
 	private String currentComponent = "";
 	
 	
+<%
+	boolean messagingEndpoint = !process.getNodesOfType("cMessagingEndpoint").isEmpty();
+	if (messagingEndpoint) { 
+%>
+	private org.osgi.framework.BundleContext bundleContext;
+
+	public void setBundleContext(org.osgi.framework.BundleContext bundleContext) {
+		this.bundleContext = bundleContext;
+	}
+<%
+	}
+%>
+	
 	private java.util.Properties defaultProps = new java.util.Properties();
 	
 	public class ContextProperties extends java.util.Properties {
@@ -160,6 +173,8 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 	public ContextProperties getContext() {
 		return this.context;
 	}
+	
+	
 
 <%
 	if(stats) {

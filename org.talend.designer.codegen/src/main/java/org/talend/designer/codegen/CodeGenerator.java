@@ -288,13 +288,13 @@ public class CodeGenerator implements ICodeGenerator {
                                 ETypeGen.CAMEL)); // And generate the component par of code
                         componentsCode.append(";");
                     }
-                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_FOOTER, lastSubtree)); // Close
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_FOOTER, headerArgument)); // Close
                                                                                                                     // the
                                                                                                                     // last
                                                                                                                     // route
                                                                                                                     // in
                                                                                                                     // the
-                                                                                                                    // CamelContext
+                                                                                                                   // CamelContext
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER_ROUTE, lastSubtree));
                 }
             } else {
