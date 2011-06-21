@@ -259,6 +259,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         a.put(new Attributes.Name("Bundle-ManifestVersion"), "2"); //$NON-NLS-1$ //$NON-NLS-2$
         a.put(new Attributes.Name("Export-Package"), packageName); //$NON-NLS-1$
         if ("route".equals(itemType)) {
+        	a.put(new Attributes.Name("Require-Bundle"), "org.apache.camel.camel-core");
             a.put(new Attributes.Name("Import-Package"), "javax.xml.bind,org.apache.camel;version=\"[2.7,3)\",org.apache.camel.builder;" + //$NON-NLS-1$
                             "version=\"[2.7,3)\",org.apache.camel.impl;version=\"[2.7,3)\",org.apache.camel.management;version=\"[2.7,3)\","
                             + //$NON-NLS-1$
