@@ -78,7 +78,7 @@
   <CODEGENERATION>
 	<IMPORTS>
       <IMPORT NAME="CsvWriter" MODULE="javacsv.jar" REQUIRED="true" />
-      <IMPORT NAME="Jasper" MODULE="jasperreports-3.7.0.jar" REQUIRED="true" />
+      <IMPORT NAME="Jasper" MODULE="jasperreports-4.0.2.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsDigester" MODULE="commons-digester-1.7.jar" REQUIRED="true" />
 	  <IMPORT NAME="JdtCompiler" MODULE="jdt-compiler-3.1.1.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsCollections" MODULE="commons-collections-3.2.jar" REQUIRED="true" />
