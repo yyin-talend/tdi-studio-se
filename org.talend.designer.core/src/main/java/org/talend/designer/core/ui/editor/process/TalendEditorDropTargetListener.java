@@ -1135,6 +1135,17 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 if (selectedNode.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.METADATA_CON_QUERY) {
                     command1.setGuessQuery(true);
                 }
+
+                if (selectedNode.getParent() != null
+                        && selectedNode.getParent().getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
+                    IRepositoryViewObject functionObject = selectedNode.getParent().getObject();
+                    if (functionObject instanceof SAPFunctionRepositoryObject) {
+                        SAPFunctionRepositoryObject sapObj = (SAPFunctionRepositoryObject) functionObject;
+
+                        command1.setSapFunctionLabel(((SAPFunctionUnit) sapObj.getAbstractMetadataObject()).getLabel());
+                    }
+                }
+
                 if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
                     IRepositoryViewObject selectedObj = selectedNode.getObject();
                     if (selectedObj instanceof SAPFunctionRepositoryObject) {

@@ -981,7 +981,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             }
             SAPConnection sapConn = (SAPConnection) connection;
             if (sapConn.getFuntions() != null && !sapConn.getFuntions().isEmpty()) {
-                return ((SAPFunctionUnit) sapConn.getFuntions().get(0)).getName();
+                return ((SAPFunctionUnit) sapConn.getFuntions().get(0)).getLabel();
             }
         }
         return this.sapFunctionLabel;

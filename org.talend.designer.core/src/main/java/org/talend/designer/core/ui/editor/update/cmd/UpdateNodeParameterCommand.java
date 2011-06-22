@@ -174,7 +174,7 @@ public class UpdateNodeParameterCommand extends Command {
                     if (result.getParameter() instanceof SAPFunctionUnit) {
                         SAPFunctionUnit unit = (SAPFunctionUnit) result.getParameter();
                         for (IElementParameter param : node.getElementParameters()) {
-                            SAPParametersUtils.retrieveSAPParams(node, unit.getConnection(), param, unit.getName());
+                            SAPParametersUtils.retrieveSAPParams(node, unit.getConnection(), param, unit.getLabel());
                         }
                         builtin = false;
                     }
