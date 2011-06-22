@@ -46,6 +46,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -76,6 +77,7 @@ import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.jface.text.formatter.MultiPassContentFormatter;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
@@ -94,15 +96,22 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.runprocess.Processor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
@@ -316,11 +325,12 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      */
     @SuppressWarnings("restriction")
     @Override
-    public void generateCode(boolean statistics, boolean trace, boolean javaProperties, boolean exportAsOSGI) throws ProcessorException {
-        this.exportAsOSGI = exportAsOSGI?"true":"false";
+    public void generateCode(boolean statistics, boolean trace, boolean javaProperties, boolean exportAsOSGI)
+            throws ProcessorException {
+        this.exportAsOSGI = exportAsOSGI ? "true" : "false";
         generateCode(statistics, trace, javaProperties);
     }
-    
+
     /*
      * Append the generated java code form context into java file wihtin the project. If the file not existed new one
      * will be created.
@@ -904,6 +914,32 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                     neededLibraries.add(moduleNeeded.getModuleName());
                 }
             }
+        }
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (camelService.isInstanceofCamel(property.getItem())) {
+                ERepositoryObjectType beansType = camelService.getBeansType();
+                List<IRepositoryViewObject> collectedBeans = new ArrayList<IRepositoryViewObject>();
+                try {
+                    collectedBeans = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory().getAll(beansType);
+                    for (IRepositoryViewObject object : collectedBeans) {
+                        Item item = object.getProperty().getItem();
+                        if (item instanceof RoutineItem) {
+                            RoutineItem routine = (RoutineItem) item;
+                            EList imports = routine.getImports();
+                            for (Object o : imports) {
+                                IMPORTType type = (IMPORTType) o;
+                                neededLibraries.add(type.getMODULE());
+                            }
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+
+            }
+
         }
 
         boolean exportingJob = ProcessorUtilities.isExportConfig();

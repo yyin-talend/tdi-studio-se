@@ -1085,7 +1085,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         List<IRepositoryViewObject> allRoutines = new ArrayList<IRepositoryViewObject>();
 
         for (IRepositoryViewObject object : collectRoutines) {
-            allRoutines.add(object);
+            Item item = object.getProperty().getItem();
+            if (item instanceof RoutineItem && (((RoutineItem) item).isBuiltIn() == system)) {
+                allRoutines.add(object);
+            }
         }
 
         return allRoutines;
