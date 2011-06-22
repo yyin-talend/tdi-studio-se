@@ -547,12 +547,13 @@ public abstract class JobScriptsManager {
             boolean trace, boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
         return generateJobFiles(process, contextName, version, statistics, trace, applyContextToChildren, false, monitor);
     }
-    
+
     protected IProcess generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics,
-            boolean trace, boolean applyContextToChildren, boolean isExportAsOSGI, IProgressMonitor monitor) throws ProcessorException {
+            boolean trace, boolean applyContextToChildren, boolean isExportAsOSGI, IProgressMonitor monitor)
+            throws ProcessorException {
         LastGenerationInfo.getInstance().getUseDynamicMap().clear();
-        return ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, isExportAsOSGI, monitor)
-                .getProcess();
+        return ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren,
+                isExportAsOSGI, monitor).getProcess();
     }
 
     protected IResource[] sourceResouces = null;
@@ -662,7 +663,7 @@ public abstract class JobScriptsManager {
 
     protected IPath getEmfFileRootPath(Item item) throws Exception {
         IPath root = getCorrespondingProjectRootPath(item).append(
-                ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
+                ERepositoryObjectType.getFolderName(ERepositoryObjectType.getItemType(item)));
         return root;
     }
 

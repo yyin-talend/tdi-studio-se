@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,7 +61,9 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IRulesProviderService;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -87,6 +90,8 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * 
  */
 public class JobJavaScriptsManager extends JobScriptsManager {
+
+    private static final String USER_BEANS_PATH = "beans"; //$NON-NLS-1$
 
     private static final String USER_ROUTINES_PATH = "routines"; //$NON-NLS-1$
 
@@ -518,7 +523,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             }
 
             List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
-            collectRoutines.addAll(collectRoutines(process));
+            boolean useBeans = false;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                        .getService(ICamelDesignerCoreService.class);
+                if (camelService.isInstanceofCamel(process[0].getItem())) {
+                    useBeans = true;
+                }
+            }
+
+            collectRoutines.addAll(collectRoutines(process, useBeans));
 
             Set<String> dependedRoutines = new HashSet<String>();
             for (IRepositoryViewObject obj : collectRoutines) {
@@ -526,7 +540,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         + ECodeLanguage.JAVA.getExtension());
             }
 
-            rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY);
+            if (useBeans) {
+                rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + USER_BEANS_PATH);
+            } else {
+                rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY);
+            }
             List<URL> userRoutinesFileUrls = new ArrayList<URL>();
             if (rep.exists()) {
                 for (IResource fileResource : rep.members()) {
@@ -537,8 +555,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     }
                 }
 
-                resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY,
-                        userRoutinesFileUrls);
+                if (useBeans) {
+                    resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + USER_BEANS_PATH, userRoutinesFileUrls);
+                } else {
+                    resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY,
+                            userRoutinesFileUrls);
+                }
             }
 
         } catch (Exception e) {
@@ -709,7 +731,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         // jar from routines
         List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
-        collectRoutines.addAll(collectRoutines(process));
+        boolean useBeans = false;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (camelService.isInstanceofCamel(process[0].getItem())) {
+                useBeans = true;
+            }
+        }
+
+        collectRoutines.addAll(collectRoutines(process, useBeans));
 
         for (IRepositoryViewObject object : collectRoutines) {
             Item item = object.getProperty().getItem();
@@ -940,7 +971,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             // make a jar file of system routine classes
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
             jarbuilder.setIncludeDir(include);
-            jarbuilder.setIncludeRoutines(getRoutineDependince(process, true));
+            jarbuilder.setIncludeRoutines(getRoutineDependince(process, true, false));
             jarbuilder.buildJar();
 
             File jarFile = new File(jarPath);
@@ -966,18 +997,31 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         try {
             String classRoot = getClassRootLocation();
             List<String> include = new ArrayList<String>();
-            include.add(USER_ROUTINES_PATH);
+            boolean useBeans = false;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                        ICamelDesignerCoreService.class);
+                if (service.isInstanceofCamel(process[0].getItem())) {
+                    useBeans = true;
+                }
+            }
+            if (useBeans) {
+                include.add(USER_BEANS_PATH);
+            } else {
+                include.add(USER_ROUTINES_PATH);
+            }
 
             List<String> excludes = new ArrayList<String>();
             excludes.add(SYSTEM_ROUTINES_PATH);
             excludes.add(USER_ROUTINES_PATH); // remove all
+            excludes.add(USER_BEANS_PATH);
 
             String jarPath = getTmpFolder() + PATH_SEPARATOR + USERROUTINE_JAR;
 
             // make a jar file of user routine classes
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
             jarbuilder.setIncludeDir(include);
-            jarbuilder.setIncludeRoutines(getRoutineDependince(process, false));
+            jarbuilder.setIncludeRoutines(getRoutineDependince(process, false, useBeans));
             jarbuilder.setExcludeDir(excludes);
             jarbuilder.buildJar();
 
@@ -990,20 +1034,24 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return list;
     }
 
-    private List<File> getRoutineDependince(ExportFileResource[] process, boolean system) {
+    private List<File> getRoutineDependince(ExportFileResource[] process, boolean system, boolean useBeans) {
         List<File> userRoutines = null;
         try {
             String classRoot = getClassRootLocation();
-            userRoutines = getAllFiles(classRoot, USER_ROUTINES_PATH);
+            if (useBeans) {
+                userRoutines = getAllFiles(classRoot, USER_BEANS_PATH);
+            } else {
+                userRoutines = getAllFiles(classRoot, USER_ROUTINES_PATH);
+            }
 
-            List<IRepositoryViewObject> collectRoutines = collectRoutines(process, system);
+            List<IRepositoryViewObject> collectRoutines = collectRoutines(process, system, useBeans);
 
             Iterator<File> iterator = userRoutines.iterator();
             while (iterator.hasNext()) {
                 File file = (File) iterator.next();
                 boolean found = false;
                 for (IRepositoryViewObject object : collectRoutines) {
-                    RoutineItem item = (RoutineItem) object.getProperty().getItem();
+                    Item item = object.getProperty().getItem();
                     /*
                      * only support like "ABC.class", "ABC$1.class" and "ABC$XYZ.class",
                      * 
@@ -1029,56 +1077,58 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     }
 
-    protected List<IRepositoryViewObject> collectRoutines(ExportFileResource[] process, boolean system) {
-        Collection<IRepositoryViewObject> collectRoutines = collectRoutines(process);
+    protected List<IRepositoryViewObject> collectRoutines(ExportFileResource[] process, boolean system, boolean useBeans) {
+        Collection<IRepositoryViewObject> collectRoutines = null;
+
+        collectRoutines = collectRoutines(process, useBeans);
 
         List<IRepositoryViewObject> allRoutines = new ArrayList<IRepositoryViewObject>();
 
         for (IRepositoryViewObject object : collectRoutines) {
-            Item item = object.getProperty().getItem();
-            if (item instanceof RoutineItem && (((RoutineItem) item).isBuiltIn() == system)) {
-                allRoutines.add(object);
-            }
+            allRoutines.add(object);
         }
 
         return allRoutines;
     }
 
-    protected Collection<IRepositoryViewObject> collectRoutines(ExportFileResource[] process) {
-        Set<String> allRoutinesNames = new HashSet<String>();
-        for (ExportFileResource resource : process) {
-            if (resource.getItem() instanceof ProcessItem) {
-                Set<String> routinesNeededForJob = LastGenerationInfo.getInstance().getRoutinesNeededWithSubjobPerJob(
-                        resource.getItem().getProperty().getId(), resource.getItem().getProperty().getVersion());
-                if (routinesNeededForJob != null) {
-                    allRoutinesNames.addAll(routinesNeededForJob);
-                }
+    protected Collection<IRepositoryViewObject> collectRoutines(ExportFileResource[] process, boolean useBeans) {
+        List<IRepositoryViewObject> toReturn = new ArrayList<IRepositoryViewObject>();
+        if (useBeans) {
+            ERepositoryObjectType beansType = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                        ICamelDesignerCoreService.class);
+                beansType = service.getBeansType();
             }
 
-        }
-
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-
-        List<IRepositoryViewObject> toReturn = new ArrayList<IRepositoryViewObject>();
-
-        if (allRoutinesNames.isEmpty()) {
-            toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
-        } else {
-            List<IRepositoryViewObject> availableRoutines;
             try {
-                availableRoutines = factory.getAll(ProjectManager.getInstance().getCurrentProject(),
-                        ERepositoryObjectType.ROUTINES);
-                for (IRepositoryViewObject object : availableRoutines) {
-                    if (allRoutinesNames.contains(object.getLabel())) {
-                        allRoutinesNames.remove(object.getLabel());
-                        toReturn.add(object);
+                toReturn = ProxyRepositoryFactory.getInstance().getAll(beansType);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+                toReturn = Collections.emptyList();
+            }
+        } else {
+            Set<String> allRoutinesNames = new HashSet<String>();
+            for (ExportFileResource resource : process) {
+                if (resource.getItem() instanceof ProcessItem) {
+                    Set<String> routinesNeededForJob = LastGenerationInfo.getInstance().getRoutinesNeededWithSubjobPerJob(
+                            resource.getItem().getProperty().getId(), resource.getItem().getProperty().getVersion());
+                    if (routinesNeededForJob != null) {
+                        allRoutinesNames.addAll(routinesNeededForJob);
                     }
                 }
-                if (allRoutinesNames.isEmpty()) {
-                    return toReturn;
-                }
-                for (org.talend.core.model.general.Project project : ProjectManager.getInstance().getAllReferencedProjects()) {
-                    for (IRepositoryViewObject object : factory.getAll(project, ERepositoryObjectType.ROUTINES)) {
+
+            }
+
+            IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+            if (allRoutinesNames.isEmpty()) {
+                toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
+            } else {
+                List<IRepositoryViewObject> availableRoutines;
+                try {
+                    availableRoutines = factory.getAll(ProjectManager.getInstance().getCurrentProject(),
+                            ERepositoryObjectType.ROUTINES);
+                    for (IRepositoryViewObject object : availableRoutines) {
                         if (allRoutinesNames.contains(object.getLabel())) {
                             allRoutinesNames.remove(object.getLabel());
                             toReturn.add(object);
@@ -1087,10 +1137,21 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     if (allRoutinesNames.isEmpty()) {
                         return toReturn;
                     }
+                    for (org.talend.core.model.general.Project project : ProjectManager.getInstance().getAllReferencedProjects()) {
+                        for (IRepositoryViewObject object : factory.getAll(project, ERepositoryObjectType.ROUTINES)) {
+                            if (allRoutinesNames.contains(object.getLabel())) {
+                                allRoutinesNames.remove(object.getLabel());
+                                toReturn.add(object);
+                            }
+                        }
+                        if (allRoutinesNames.isEmpty()) {
+                            return toReturn;
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                    toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
                 }
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-                toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
             }
         }
         return toReturn;

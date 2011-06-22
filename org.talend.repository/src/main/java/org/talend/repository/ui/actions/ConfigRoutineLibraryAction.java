@@ -20,9 +20,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -58,7 +60,23 @@ public class ConfigRoutineLibraryAction extends AContextualAction {
                     RepositoryNode node = (RepositoryNode) o;
                     switch (node.getType()) {
                     case REPOSITORY_ELEMENT:
-                        if (node.getObjectType() == ERepositoryObjectType.ROUTINES) {
+                        ERepositoryObjectType beanType = null;
+
+                        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+                            ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+                                    .getService(ICamelDesignerCoreService.class);
+                            beanType = service.getBeansType();
+                        }
+                        if (beanType != null && node.getObjectType() == beanType) {
+                            this.setText("Edit Bean Libraries");
+                        } else {
+                            String label = org.talend.repository.i18n.Messages
+                                    .getString("ConfigRoutineLibraryAction.actionLabel"); //$NON-NLS-1$
+                            this.setText(label);
+                        }
+
+                        if (node.getObjectType() == ERepositoryObjectType.ROUTINES
+                                || (beanType != null && node.getObjectType() == beanType)) {
                             IRepositoryViewObject repObj = node.getObject();
                             IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
                             ERepositoryStatus status = repFactory.getStatus(repObj);

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,13 +34,26 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.common.util.EList;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.io.FilesUtils;
+import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.general.ILibrariesService;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.designer.core.ICamelDesignerCoreService;
+import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
@@ -53,13 +67,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static final String PACKAGE_SEPARATOR = ".";
 
-	private static final String JAVA = "java";
+    private static final String JAVA = "java";
 
-	private static final String ROUTE = "route";
+    private static final String ROUTE = "route";
 
-	private static final String JOB = "job";
+    private static final String JOB = "job";
 
-	private static Logger logger = Logger.getLogger(JobJavaScriptOSGIForESBManager.class);
+    private static Logger logger = Logger.getLogger(JobJavaScriptOSGIForESBManager.class);
 
     private static final String BLUEPRINT = "blueprint"; //$NON-NLS-1$
 
@@ -96,18 +110,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         ProcessorUtilities.setExportConfig(JAVA, "", ""); //$NON-NLS-1$
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(true, process);
-        ERepositoryObjectType type = ERepositoryObjectType.getItemType(process[0].getItem());
-        if (type.equals(ERepositoryObjectType.PROCESS)) {
-            libResource.addResources(talendLibraries);
-            itemType = JOB;
-        } else {
-            itemType = ROUTE;
-        }
+
+        Set<String> neededLibraries = null;
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             jobName = processItem.getProperty().getLabel();
-            packageName = JavaResourcesHelper.getProjectFolderName(processItem) + PACKAGE_SEPARATOR
+            packageName = JavaResourcesHelper.getProjectFolderName(processItem)
+                    + PACKAGE_SEPARATOR
                     + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
                             .getVersion());
             jobClassName = packageName + PACKAGE_SEPARATOR + jobName;
@@ -116,18 +125,34 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
                 jobVersion = this.getSelectedJobVersion();
             }
+            ERepositoryObjectType type = ERepositoryObjectType.getItemType(processItem);
+            if (type.equals(ERepositoryObjectType.PROCESS)) {
+                itemType = JOB;
+            } else {
+                itemType = ROUTE;
+            }
 
             // generate the source files
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
             String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + PACKAGE_SEPARATOR; //$NON-NLS-1$
+                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
+                    + PACKAGE_SEPARATOR; //$NON-NLS-1$
             ProcessorUtilities.setExportConfig(JAVA, standardJars, libPath); //$NON-NLS-1$
 
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
+                if (neededLibraries == null) {
+                    neededLibraries = new HashSet<String>();
+                }
                 generateJobFiles(processItem, contextName, jobVersion, statisticPort != IProcessor.NO_STATISTICS,
                         tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
                         true /* isExportAsOSGI */, progressMonitor);
+                neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
+                        processItem.getProperty().getId(), jobVersion));
+            } else {
+                LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId(),
+                        processItem.getProperty().getVersion(), neededLibraries);
+                LastGenerationInfo.getInstance().setLastMainJob(null);
             }
 
             // generate jar file for job
@@ -137,6 +162,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             addXmlMapping(process[i], isOptionChoosed(exportChoice, ExportChoice.needSourceCode));
 
         }
+
+        // Gets talend libraries
+        List<URL> talendLibraries = getExternalLibraries(true, process, neededLibraries);
+        libResource.addResources(talendLibraries);
 
         List<String> esbFiles = generateESBFiles(process[0].getItem(), contextName);
 
@@ -169,9 +198,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         List<String> files = new ArrayList<String>();
         final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
         try {
-        	if(itemType == null)
-        		itemType = JOB;
-            String inputFile = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/"+itemType+"-template.xml"), null)) //$NON-NLS-1$
+            if (itemType == null)
+                itemType = JOB;
+            String inputFile = FileLocator.toFileURL(
+                    FileLocator.find(b, new Path("resources/" + itemType + "-template.xml"), null)) //$NON-NLS-1$
                     .getFile();
             String targetFile = getTmpFolder() + PATH_SEPARATOR + "job.xml"; //$NON-NLS-1$
             readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobClassName, itemType);
@@ -269,7 +299,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         a.put(new Attributes.Name("Bundle-ManifestVersion"), "2"); //$NON-NLS-1$ //$NON-NLS-2$
         a.put(new Attributes.Name("Export-Package"), packageName); //$NON-NLS-1$
         if (ROUTE.equals(itemType)) {
-        	a.put(new Attributes.Name("Require-Bundle"), "org.apache.camel.camel-core");
+            a.put(new Attributes.Name("Require-Bundle"), "org.apache.camel.camel-core");
             a.put(new Attributes.Name("Import-Package"), "javax.xml.bind,org.apache.camel;version=\"[2.7,3)\",org.apache.camel.builder;" + //$NON-NLS-1$
                             "version=\"[2.7,3)\",org.apache.camel.impl;version=\"[2.7,3)\",org.apache.camel.management;version=\"[2.7,3)\","
                             + //$NON-NLS-1$
@@ -280,12 +310,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         } else {
             a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
                     "routines.system.api;resolution:=optional" + //$NON-NLS-1$
-                    ",org.dom4j;resolution:=optional" + //$NON-NLS-1$
-                    ",org.dom4j.io;resolution:=optional" + //$NON-NLS-1$
-                    ",org.dom4j.tree;resolution:=optional" + //$NON-NLS-1$
-                    ",org.jaxen;resolution:=optional" + //$NON-NLS-1$
-                    ",javax.xml.soap;resolution:=optional" + //$NON-NLS-1$
-                    ",javax.xml.ws.soap;resolution:=optional"); //$NON-NLS-1$
+                            ",org.dom4j;resolution:=optional" + //$NON-NLS-1$
+                            ",org.dom4j.io;resolution:=optional" + //$NON-NLS-1$
+                            ",org.dom4j.tree;resolution:=optional" + //$NON-NLS-1$
+                            ",org.jaxen;resolution:=optional" + //$NON-NLS-1$
+                            ",javax.xml.soap;resolution:=optional" + //$NON-NLS-1$
+                            ",javax.xml.ws.soap;resolution:=optional"); //$NON-NLS-1$
         }
 
         a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
@@ -307,5 +337,88 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         libBuffer.deleteCharAt(libBuffer.length() - 1);
         return libBuffer.toString();
+    }
+
+    @Override
+    protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process, Set<String> neededLibraries) {
+        List<URL> list = new ArrayList<URL>();
+        if (!needLibraries) {
+            return list;
+        }
+        // jar from routines
+        List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
+        boolean useBeans = false;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (camelService.isInstanceofCamel(process[0].getItem())) {
+                useBeans = true;
+            }
+        }
+        // Lists all the needed jar files
+        Set<String> listModulesReallyNeeded = new HashSet<String>();
+        ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
+        String path = librariesService.getLibrariesPath();
+        File file = new File(path);
+        File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
+
+        if (!useBeans) {
+            // Gets all the jar files
+            if (neededLibraries == null) {
+                // in case export as been done with option "not recompile", then libraires can't be retrieved when
+                // build.
+                IDesignerCoreService designerService = RepositoryPlugin.getDefault().getDesignerCoreService();
+                for (int i = 0; i < process.length; i++) {
+                    ExportFileResource resource = process[i];
+                    ProcessItem item = (ProcessItem) resource.getItem();
+                    String version = item.getProperty().getVersion();
+                    if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
+                        version = this.getSelectedJobVersion();
+                    }
+                    ProcessItem selectedProcessItem;
+                    if (resource.getNode() != null) {
+                        selectedProcessItem = ItemCacheManager.getProcessItem(resource.getNode().getRoot().getProject(), item
+                                .getProperty().getId(), version);
+                    } else {
+                        // if no node given, take in the current project only
+                        selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
+                    }
+                    IProcess iProcess = designerService.getProcessFromProcessItem(selectedProcessItem);
+                    neededLibraries = iProcess.getNeededLibraries(true);
+                    if (neededLibraries != null) {
+                        listModulesReallyNeeded.addAll(neededLibraries);
+                    }
+                }
+            } else {
+                listModulesReallyNeeded.addAll(neededLibraries);
+            }
+        }
+
+        collectRoutines.addAll(collectRoutines(process, useBeans));
+
+        for (IRepositoryViewObject object : collectRoutines) {
+            Item item = object.getProperty().getItem();
+            if (item instanceof RoutineItem) {
+                RoutineItem routine = (RoutineItem) item;
+                EList imports = routine.getImports();
+                for (Object o : imports) {
+                    IMPORTType type = (IMPORTType) o;
+                    listModulesReallyNeeded.add(type.getMODULE());
+                }
+            }
+        }
+
+        for (int i = 0; i < files.length; i++) {
+            File tempFile = files[i];
+            try {
+                if (listModulesReallyNeeded.contains(tempFile.getName())) {
+                    list.add(tempFile.toURL());
+                }
+            } catch (MalformedURLException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+
+        return list;
     }
 }
