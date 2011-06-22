@@ -18,6 +18,7 @@ public class CLASS {
     public static final String DB2 = "ibmdb2_id";
     public static final String FIREBIRD = "firebird_id";
     public static final String HSQLDB = "hsqldb_id";
+	public static final String HIVE = "hive_id";
     public static final String INFORMIX = "informix_id";
     public static final String INGRES = "ingres_id";
     public static final String VECTORWISE = "vectorwise_id";
@@ -1595,6 +1596,42 @@ public class CLASS {
         }
         protected String getRProtectedChar(String keyword) {
         	if (isHSQLDBKeyword(keyword)){
+        		return "\\\"";
+        	}
+        	return getRProtectedChar();
+        }  
+    }
+	
+	public class HiveManager extends Manager {
+    	String [] hiveKeyWords = {};
+        public HiveManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return HIVE;
+        }   
+        protected String getLProtectedChar() {
+            return "";
+        }
+        protected String getRProtectedChar() {
+            return "";
+        }     
+        protected boolean isHiveKeyword (String keyword) {
+            for (int i=0 ; i < hiveKeyWords.length ; i++){
+                if (hiveKeyWords[i].equalsIgnoreCase(keyword)) {
+                	return true;
+                }
+            }
+        	return false;
+        }
+        protected String getLProtectedChar(String keyword) {
+        	if (isHiveKeyword(keyword)){
+        		return "\\\"";
+        	}
+        	return getLProtectedChar();
+        }
+        protected String getRProtectedChar(String keyword) {
+        	if (isHiveKeyword(keyword)){
         		return "\\\"";
         	}
         	return getRProtectedChar();
@@ -3236,6 +3273,8 @@ public class CLASS {
                 manager = new FirebirdManager(cid);
             } else if(dbmsId.equalsIgnoreCase(HSQLDB)) {
                 manager = new HSQLDBManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(HIVE)) {
+                manager = new HiveManager(cid);
             } else if(dbmsId.equalsIgnoreCase(INFORMIX)) {
                 manager = new InformixManager(cid);
             } else if(dbmsId.equalsIgnoreCase(INGRES)) {
