@@ -37,7 +37,6 @@ import org.talend.core.model.metadata.builder.connection.HL7Connection;
 import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
-import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
@@ -261,6 +260,11 @@ public class RepositoryDoubleClickAction extends Action {
         final ERepositoryObjectType nodeType = (ERepositoryObjectType) obj.getProperties(EProperties.CONTENT_TYPE);
 
         for (ITreeContextualAction current : contextualsActions) {
+
+            if (current.getClassForDoubleClick() == null) {
+                return null;
+            }
+
             // for cdc
             if (isCDC) {
                 if (current.getClassForDoubleClick().equals(CDCConnection.class)) {
@@ -323,14 +327,9 @@ public class RepositoryDoubleClickAction extends Action {
                 }
 
             } else if (obj.getObject() != null
-                    && current.getClassForDoubleClick().isInstance(obj.getObject().getProperty().getItem())) {
-                if (obj.getObject().getProperty().getItem() instanceof JobletProcessItem) {
-                    if (current.getClassForDoubleClick().equals(JobletProcessItem.class)) {
-                        return current;
-                    }
-                } else {
-                    return current;
-                }
+                    && current.getClassForDoubleClick().getSimpleName()
+                            .equals(obj.getObject().getProperty().getItem().eClass().getName())) {
+                return current;
             }
         }
         return null;
