@@ -732,7 +732,7 @@ if(groupTable.size()>0){					//init the generate tool.
 				int j=0;
 				for(j=0;j<listNodes.size();j++){
 					org.dom4j.Element tempElem =listNodes.get(j);
-					if(("<%=groupNode.path%>").equals(tempElem.getPath())){
+					if(("<%=groupNode.path%>").equals(tempElem.getPath()!=null ? tempElem.getPath().replace("*[name()='","").replace("']", "") : "")){
 						if(<%generateExprCmpByDom4j.generateCode(groupNode, "tempElem"); %>){
 							subTreeRootParent_<%=cid %> =  tempElem;
 							break;
