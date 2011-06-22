@@ -30,6 +30,7 @@ try {
 		//For different jobs, job name must be different, but classpath and JVM arguments are possbilely different
 		java.util.Map<String,List> childJob_commandLine_Mapper_<%=cid%> = new java.util.HashMap<String,List>();
 		java.util.List<String> childJob_commandLine_<%=cid%> = null;
+		String classpathSeparator_<%=cid%> = System.getProperty("path.separator");
 		<%
 		if(process!=null && !process.equals("")){
 			String[] childJobIds = process.split(";");
@@ -54,9 +55,9 @@ try {
 				  } else if (j > 0){
 				    if (commandLine[j].indexOf("\"") >= 0){
 				      %>
-				      childJob_commandLine_<%=cid%>.add(<%=commandLine[j] %>);
+				      childJob_commandLine_<%=cid%>.add(<%=commandLine[j] %>.replaceAll(";",classpathSeparator_<%=cid%>));
 				    <%}else{%>
-				      childJob_commandLine_<%=cid%>.add("<%=commandLine[j] %>");
+				      childJob_commandLine_<%=cid%>.add("<%=commandLine[j] %>".replaceAll(";",classpathSeparator_<%=cid%>));
 				    <%}
 				  }
 				}
