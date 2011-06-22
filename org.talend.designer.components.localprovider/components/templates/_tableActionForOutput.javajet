@@ -83,14 +83,9 @@ if (!isParallelize) {
 		    String keyCheckTable_<%=cid %> = conn_<%=cid%> + "[checktable]" + "[" + <%=table%> + "]";
 		    
 			if(GlobalResource.resourceMap.get(keyCheckTable_<%=cid %>)== null){
-<%
-				// fix the bug:22677 start
-				if(MSSQL.equalsIgnoreCase(dbmsId) || MYSQL.equalsIgnoreCase(dbmsId)) {
-%>
+			
 				synchronized (GlobalResource.resourceLockMap.get(keyCheckTable_<%=cid %>)) {
 					if(GlobalResource.resourceMap.get(keyCheckTable_<%=cid %>)== null){
-<%				}// fix the bug:22677 end
-%>
 <%
 			}
 %>              
@@ -226,15 +221,9 @@ if (!isParallelize) {
 			if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
 %>
 				GlobalResource.resourceMap.put(keyCheckTable_<%=cid %>, true);
-<%
-				// fix the bug:22677 start
-				if(MSSQL.equalsIgnoreCase(dbmsId) || MYSQL.equalsIgnoreCase(dbmsId)) {
-%>
-				} // end of if
-			} // end synchronized
-<%
-				} // fix the bug:22677 end
-%>
+
+					} // end of if
+				} // end synchronized
 			}
 <%
 			}
