@@ -28,6 +28,8 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 	String password = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
 	String timeout = ElementParameterParser.getValue(node, "__TIMEOUT__");
 	String cookieDir = ElementParameterParser.getValue(node, "__COOKIE_DIR__");
+	String cookiePolicy = ElementParameterParser.getValue(node,"__COOKIE_POLICY__");
+	boolean singleCookie = "true".equals(ElementParameterParser.getValue(node, "__SINGLE_COOKIE__"));
 	String proxyHost = ElementParameterParser.getValue(node, "__PROXY_HOST__");
 	String proxyPort = ElementParameterParser.getValue(node, "__PROXY_PORT__");
 	String proxyUser = ElementParameterParser.getValue(node, "__PROXY_USERNAME__");
@@ -126,7 +128,10 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 	<%}%>
 	org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
 	client_<%=cid %>.getHttpConnectionManager().getParams().setConnectionTimeout(<%=timeout %>);
-
+	client_<%=cid %>.getParams().setCookiePolicy(org.apache.commons.httpclient.cookie.CookiePolicy.<%=cookiePolicy %>);
+	<%if(singleCookie){%>
+	client_<%=cid%>.getParams().setBooleanParameter(org.apache.commons.httpclient.params.HttpMethodParams.SINGLE_COOKIE_HEADER, true);
+	<%}%>
 	<%if (readCookie) {%>
 		List<org.apache.commons.httpclient.Cookie> cookieList_<%=cid%> = null;
 		java.io.FileInputStream fis_<%=cid%> = null;
