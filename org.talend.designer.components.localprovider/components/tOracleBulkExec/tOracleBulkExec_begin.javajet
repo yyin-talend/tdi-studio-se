@@ -310,9 +310,9 @@ if(("true").equals(use_existing_ctl_file)) {
     	}else{
     		flag = true;
     	}
-    	optionClause.append(key).append("=").append(parametersMap.get(key));
+    	optionClause.append(key).append("=\"+").append(parametersMap.get(key));
     }
-    optionClause.append(")");
+    optionClause.append("+\")");
 	//options clause end
 	//encoding begin
     String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
