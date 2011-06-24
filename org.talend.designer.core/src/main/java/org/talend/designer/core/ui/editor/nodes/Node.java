@@ -77,7 +77,9 @@ import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.designer.core.CheckNodeManager;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ICheckNodesService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -224,6 +226,8 @@ public class Node extends Element implements IGraphicalNode {
     private String inOutUniqueName;
 
     private String joblet_unique_name;
+
+    private ICheckNodesService checkNodeService;
 
     public boolean isGeneratedByJobscriptBool() {
         return this.generatedByJobscriptBool;
@@ -2901,7 +2905,11 @@ public class Node extends Element implements IGraphicalNode {
             checkMultiComponents();
             checkStartLinks();
             checkParallelizeStates();
-
+            // feature 2,add a new extension point to intercept the validation action for Uniserv
+            List<ICheckNodesService> checkNodeServices = CheckNodeManager.getCheckNodesService();
+            for (ICheckNodesService checkService : checkNodeServices) {
+                checkService.checkNode(this);
+            }
             if (externalNode != null) {
                 List<Problem> problems = externalNode.getProblems();
                 if (problems != null) {
