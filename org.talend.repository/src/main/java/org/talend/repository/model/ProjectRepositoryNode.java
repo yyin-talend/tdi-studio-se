@@ -568,6 +568,47 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
         // hide hidden nodes;
         hideHiddenNodes();
+
+        hideHiddenNodesDependsUserRight();
+    }
+
+    private String[] getUserAuthorization() {
+        String[] userRights = { "R1" };
+        return userRights;
+    }
+
+    private void hideHiddenNodesDependsUserRight() {
+        String[] userRights = getUserAuthorization();
+        List<IRepositoryNode> nodes = new ArrayList<IRepositoryNode>(this.getChildren());
+        for (IRepositoryNode node : nodes) {
+            ERepositoryObjectType contentType = node.getContentType();
+            if (contentType == null) {
+                continue;
+            }
+            String[] contentRight = contentType.getUserRight();
+            if (contentRight != null && contentRight.length > 0 && userRights != null && userRights.length > 0) {
+                for (int i = 0; i < contentRight.length; i++) {
+                    if (!ArrayUtils.contains(userRights, contentRight[i])) {
+                        removeNode(this, node);
+                        removeContentType(contentType);
+                    }
+                }
+            }
+
+        }
+        // hideHiddenNodesDependsUserRight(this, currentRepositoryType);
+    }
+
+    private void hideHiddenNodesDependsUserRight(IRepositoryNode container, String currentRepositoryType) {
+        for (IRepositoryNode node : new ArrayList<IRepositoryNode>(container.getChildren())) {
+            ERepositoryObjectType contentType = node.getContentType();
+            if (contentType != null && !ArrayUtils.contains(contentType.getProducts(), currentRepositoryType)) {
+                removeNode(this, node);
+                removeContentType(contentType);
+            } else {
+                hideNodesFromOtherProduct(node, currentRepositoryType);
+            }
+        }
     }
 
     private void initExtensionRepositoryNodes(List<IRepositoryNode> nodes) {
