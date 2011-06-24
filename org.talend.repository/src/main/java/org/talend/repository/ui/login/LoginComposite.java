@@ -1030,7 +1030,7 @@ public class LoginComposite extends Composite {
                         String errorMsg = loginConncetion.checkConnectionValidation(bean.getName(), bean.getDescription(),
                                 bean.getUser(), bean.getPassword(), bean.getWorkSpace(),
                                 bean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
-                        if (errorMsg.equals("") && bean.isComplete()) {
+                        if (errorMsg != null && errorMsg.equals("") && bean.isComplete()) {
                             lastRemoteConnections.add(bean);
                         }
                     }
