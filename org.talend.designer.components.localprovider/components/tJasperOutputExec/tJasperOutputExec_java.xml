@@ -85,7 +85,7 @@
 	  <IMPORT NAME="CommonsLogging" MODULE="commons-logging-1.1.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsBeanutils" MODULE="commons-beanutils-1.7.jar" REQUIRED="true" />
 	  <IMPORT NAME="Itext" MODULE="iText-2.1.4.jar" REQUIRED="true" />
-	  <IMPORT NAME="Poi" MODULE="poi-3.2-FINAL-20081019.jar" REQUIRED="true" />
+	  <IMPORT NAME="Poi" MODULE="poi-3.6.jar" REQUIRED="true" />
 	  <IMPORT NAME="Jfreechart" MODULE="jfreechart-1.0.13.jar" REQUIRED="true" />
 	  <IMPORT NAME="Jcommon" MODULE="jcommon-1.0.6.jar" REQUIRED="true" />
     </IMPORTS>
