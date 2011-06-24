@@ -79,6 +79,8 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.prefs.PreferenceManipulator;
+import org.talend.core.repository.ILoginConnectionService;
+import org.talend.core.repository.LoginConnectionManager;
 import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
@@ -1003,6 +1005,9 @@ public class LoginComposite extends Composite {
         // PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         //
         // List<ConnectionBean> storedConnections = prefManipulator.readConnections();
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        boolean isOnlyRemoteConnection = brandingService.getBrandingConfiguration().isOnlyRemoteConnection();
         for (ConnectionBean bean : storedConnections) {
             String user2 = bean.getUser();
             String repositoryId2 = bean.getRepositoryId();
@@ -1013,7 +1018,29 @@ public class LoginComposite extends Composite {
                 bean.setComplete(true);
             }
         }
-        connectionsViewer.setInput(storedConnections);
+        if (!isOnlyRemoteConnection) {
+            connectionsViewer.setInput(storedConnections);
+        } else {
+            // feature 8,hide error remote connection for Uniserv after their login validate
+            List<ILoginConnectionService> loginConnectionServices = LoginConnectionManager.getRemoteConnectionService();
+            List<ConnectionBean> lastRemoteConnections = new ArrayList<ConnectionBean>();
+            if (loginConnectionServices.size() > 0) {
+                for (ILoginConnectionService loginConncetion : loginConnectionServices) {
+                    for (ConnectionBean bean : storedConnections) {
+                        String errorMsg = loginConncetion.checkConnectionValidation(bean.getName(), bean.getDescription(),
+                                bean.getUser(), bean.getPassword(), bean.getWorkSpace(),
+                                bean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
+                        if (errorMsg.equals("") && bean.isComplete()) {
+                            lastRemoteConnections.add(bean);
+                        }
+                    }
+                }
+            }
+            if (lastRemoteConnections.size() > 0) {
+                storedConnections = lastRemoteConnections;
+            }
+            connectionsViewer.setInput(storedConnections);
+        }
 
         // Check number of connection available.
         if (storedConnections.size() == 0) {
