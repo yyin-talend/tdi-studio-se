@@ -88,9 +88,8 @@ public class MSSqlGenerateTimestampUtil {
                     }
                 }
 
-            } else if ("datetime".equals(rsmd.getColumnTypeName(index)) || "smalldatetime".equals(rsmd.getColumnTypeName(index))
-                    || "timestamp".equals(rsmd.getColumnTypeName(index))) {
-                columnDBTypeMapping.put(index, JAVA_SQL_DATE);
+            } else if ("datetime".equals(rsmd.getColumnTypeName(index)) || "smalldatetime".equals(rsmd.getColumnTypeName(index))) {
+            	columnDBTypeMapping.put(index, JAVA_SQL_DATE);
                 return new java.util.Date(rs.getTimestamp(index).getTime());
             }
         }
