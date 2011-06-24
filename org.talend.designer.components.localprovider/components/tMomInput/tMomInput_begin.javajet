@@ -400,8 +400,7 @@ class="MomInput"
 <%		
 		if ("Text".equals(msgBobyType)) {
 %>
-		//	String msg_<%=cid%>=inMessage<%=cid%>.readStringOfCharLength(inMessage<%=cid%>.getMessageLength());
-		String msg_<%=cid%>=inMessage<%=cid%>.readObject().toString();
+		    String msg_<%=cid%>=inMessage<%=cid%>.readStringOfByteLength(inMessage<%=cid%>.getMessageLength());
 <%
 		} else if ("Bytes".equals(msgBobyType)) {
 %>
