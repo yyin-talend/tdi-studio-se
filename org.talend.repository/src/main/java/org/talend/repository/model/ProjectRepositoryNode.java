@@ -83,6 +83,7 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.ValidationRulesConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
@@ -102,6 +103,8 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.cwm.helper.TableHelper;
+import org.talend.json.JSONException;
+import org.talend.json.JSONObject;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
@@ -569,15 +572,34 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         // hide hidden nodes;
         hideHiddenNodes();
 
-        hideHiddenNodesDependsUserRight();
+        try {
+            hideHiddenNodesDependsUserRight();
+        } catch (JSONException e) {
+            ExceptionHandler.process(e);
+        }
     }
 
-    private String[] getUserAuthorization() {
-        String[] userRights = { "R1" };
-        return userRights;
+    private String[] getUserAuthorization() throws JSONException {
+        User currentUser = ProxyRepositoryFactory.getInstance().getRepositoryContext().getUser();
+        String addData = currentUser.getAdditionnalData();
+        if (addData == null) {
+            String[] userRights = {};
+            return userRights;
+        }
+        JSONObject o = new JSONObject(addData);
+        List<String> rightsAsList = new ArrayList<String>();
+        Iterator<String> it = o.sortedKeys();
+        for (String key = it.next(); it.hasNext(); key = it.next()) {
+            if (o.getBoolean(key)) {
+                rightsAsList.add(key);
+            }
+        }
+        String[] rights = rightsAsList.toArray(new String[] {});
+        return rights;
+
     }
 
-    private void hideHiddenNodesDependsUserRight() {
+    private void hideHiddenNodesDependsUserRight() throws JSONException {
         String[] userRights = getUserAuthorization();
         List<IRepositoryNode> nodes = new ArrayList<IRepositoryNode>(this.getChildren());
         for (IRepositoryNode node : nodes) {
