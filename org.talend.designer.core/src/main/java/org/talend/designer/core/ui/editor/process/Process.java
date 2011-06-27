@@ -83,15 +83,13 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.IExternalData;
+import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
-import org.talend.core.model.process.node.IExternalMapEntry;
-import org.talend.core.model.process.node.IExternalMapTable;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
@@ -106,7 +104,6 @@ import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.update.IUpdateManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.service.IDesignerMapperService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.utils.KeywordsValidator;
@@ -1363,62 +1360,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
             // check possible routines to setup in nodes
             for (INode node : ((List<INode>) getGraphicalNodes())) {
-                String componentName = node.getComponent().getName();
-                if (componentName.equals("tMap")) { //$NON-NLS-N$
-                    IExternalData data = node.getExternalData();
-                    for (String routine : possibleRoutines) {
-                        List<IExternalMapTable> listOutput = (List<IExternalMapTable>) data.getOutputTables();
-                        for (IExternalMapTable outTable : listOutput) {
-                            List<IExternalMapEntry> listOutEntry = (List<IExternalMapEntry>) outTable.returnTableEntries();
-                            if (listOutEntry != null && !listOutEntry.isEmpty()) {
-                                for (IExternalMapEntry outEntry : listOutEntry) {
-                                    String expression = outEntry.getExpression();
-                                    if (expression != null && !routinesToAdd.contains(routine)
-                                            && expression.contains(routine + additionalString)) {
-                                        routinesToAdd.add(routine);
-                                    }
-                                }
-                            }
-                        }
-                        List<IExternalMapTable> listInput = (List<IExternalMapTable>) data.getInputTables();
-                        for (IExternalMapTable inputTable : listInput) {
-                            List<IExternalMapEntry> listInEntry = (List<IExternalMapEntry>) inputTable.returnTableEntries();
-                            if (listInEntry != null && !listInEntry.isEmpty()) {
-                                for (IExternalMapEntry inEntry : listInEntry) {
-                                    String expression = inEntry.getExpression();
-                                    if (expression != null && !routinesToAdd.contains(routine)
-                                            && expression.contains(routine + additionalString)) {
-                                        routinesToAdd.add(routine);
-                                    }
-                                }
-                            }
-                        }
-                        List<IExternalMapTable> listVar = (List<IExternalMapTable>) data.getVarsTables();
-                        for (IExternalMapTable varTable : listVar) {
-                            List<IExternalMapEntry> listVarEntry = (List<IExternalMapEntry>) varTable.returnTableEntries();
-                            if (listVarEntry != null && !listVarEntry.isEmpty()) {
-                                for (IExternalMapEntry varEntry : listVarEntry) {
-                                    String expression = varEntry.getExpression();
-                                    if (expression != null && !routinesToAdd.contains(routine)
-                                            && expression.contains(routine + additionalString)) {
-                                        routinesToAdd.add(routine);
-                                    }
-                                }
-                            }
-                        }
-                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
-                            IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault()
-                                    .getService(IDesignerMapperService.class);
-                            List<String> ExperssionFilters = service.getExpressionFilter(data);
-                            if (!ExperssionFilters.isEmpty()) {
-                                for (String experssion : ExperssionFilters) {
-                                    if (experssion != null && !routinesToAdd.contains(routine)
-                                            && experssion.contains(routine + additionalString)) {
-                                        routinesToAdd.add(routine);
-                                    }
-                                }
-                            }
-                        }
+                if (node.isExternalNode()) {
+                    IExternalNode eNode = node.getExternalNode();
+                    List<String> needToadd = eNode.checkNeededRoutines(possibleRoutines, additionalString);
+                    if (needToadd != null) {
+                        routinesToAdd.addAll(needToadd);
                     }
                 }
                 for (IElementParameter param : (List<IElementParameter>) node.getElementParametersWithChildrens()) {

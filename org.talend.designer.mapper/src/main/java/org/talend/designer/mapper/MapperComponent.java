@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.cursor.CursorHelper;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.BlockCode;
@@ -43,8 +44,11 @@ import org.talend.core.model.process.IHashableInputConnections;
 import org.talend.core.model.process.ILookupMode;
 import org.talend.core.model.process.IMatchingMode;
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.node.IExternalMapEntry;
+import org.talend.core.model.process.node.IExternalMapTable;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.service.IDesignerMapperService;
 import org.talend.designer.abstractmap.AbstractMapComponent;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
@@ -827,5 +831,65 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
             }
         }
         return false;
+    }
+
+    public List<String> checkNeededRoutines(List<String> possibleRoutines, String additionalString) {
+        List<String> routinesToAdd = new ArrayList<String>();
+        for (String routine : possibleRoutines) {
+            List<ExternalMapperTable> listOutput = (List<ExternalMapperTable>) this.getExternalData().getOutputTables();
+            for (ExternalMapperTable outTable : listOutput) {
+                List<IExternalMapEntry> listOutEntry = (List<IExternalMapEntry>) outTable.returnTableEntries();
+                if (listOutEntry != null && !listOutEntry.isEmpty()) {
+                    for (IExternalMapEntry outEntry : listOutEntry) {
+                        String expression = outEntry.getExpression();
+                        if (expression != null && !routinesToAdd.contains(routine)
+                                && expression.contains(routine + additionalString)) {
+                            routinesToAdd.add(routine);
+                        }
+                    }
+                }
+            }
+            List<ExternalMapperTable> listInput = (List<ExternalMapperTable>) this.getExternalData().getInputTables();
+            for (ExternalMapperTable inputTable : listInput) {
+                List<IExternalMapEntry> listInEntry = (List<IExternalMapEntry>) inputTable.returnTableEntries();
+                if (listInEntry != null && !listInEntry.isEmpty()) {
+                    for (IExternalMapEntry inEntry : listInEntry) {
+                        String expression = inEntry.getExpression();
+                        if (expression != null && !routinesToAdd.contains(routine)
+                                && expression.contains(routine + additionalString)) {
+                            routinesToAdd.add(routine);
+                        }
+                    }
+                }
+            }
+            List<ExternalMapperTable> listVar = (List<ExternalMapperTable>) this.getExternalData().getVarsTables();
+            for (IExternalMapTable varTable : listVar) {
+                List<IExternalMapEntry> listVarEntry = (List<IExternalMapEntry>) varTable.returnTableEntries();
+                if (listVarEntry != null && !listVarEntry.isEmpty()) {
+                    for (IExternalMapEntry varEntry : listVarEntry) {
+                        String expression = varEntry.getExpression();
+                        if (expression != null && !routinesToAdd.contains(routine)
+                                && expression.contains(routine + additionalString)) {
+                            routinesToAdd.add(routine);
+                        }
+                    }
+                }
+            }
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
+                IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault().getService(
+                        IDesignerMapperService.class);
+                List<String> experssionFilters = service.getExpressionFilter(this.getExternalData());
+                if (!experssionFilters.isEmpty()) {
+                    for (String experssion : experssionFilters) {
+                        if (experssion != null && !routinesToAdd.contains(routine)
+                                && experssion.contains(routine + additionalString)) {
+                            routinesToAdd.add(routine);
+                        }
+                    }
+                }
+            }
+        }
+        return routinesToAdd;
+
     }
 }

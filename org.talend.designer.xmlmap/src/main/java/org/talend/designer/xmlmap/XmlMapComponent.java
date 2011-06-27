@@ -39,8 +39,11 @@ import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 import org.talend.designer.xmlmap.generation.GenerationManager;
 import org.talend.designer.xmlmap.generation.GenerationManagerFactory;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -48,12 +51,12 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
 /**
  * wchen class global comment. Detailled comment
  */
-public class XmlMapComponent extends AbstractExternalNode implements IHashableInputConnections{
+public class XmlMapComponent extends AbstractExternalNode implements IHashableInputConnections {
 
     private AbstractExternalData emfMapData;
 
     private MapperMain mapprMain;
-    
+
     private GenerationManager generationManager;
 
     public XmlMapComponent() {
@@ -153,7 +156,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
     public void setExternalEmfData(AbstractExternalData emfMapData) {
         this.emfMapData = emfMapData;
     }
-    
+
     public IHashConfiguration getHashConfiguration(String connectionName) {
 
         IHashConfiguration hashConfigurationForMapper = null;
@@ -162,12 +165,12 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         List<IHashableColumn> hashableColumns = new ArrayList<IHashableColumn>();
         for (InputXmlTree inputTable : inputTables) {
             if (inputTable.getName().equals(connectionName)) {
-            
+
                 List<TreeNode> metadataTableEntries = inputTable.getNodes();
                 if (metadataTableEntries != null) {
                     int metadataTableEntriesListSize = metadataTableEntries.size();
                     for (int i = 0; i < metadataTableEntriesListSize; i++) {
-                    	TreeNode entry = metadataTableEntries.get(i);
+                        TreeNode entry = metadataTableEntries.get(i);
                         if (entry.getExpression() != null && !entry.getExpression().trim().equals("")) { //$NON-NLS-1$
                             hashableColumns.add(new HashableColumn(entry.getName(), i));
                         }
@@ -207,7 +210,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
 
         return hashConfigurationForMapper;
     }
-    
+
     public GenerationManager initGenerationManager() {
         this.generationManager = GenerationManagerFactory.getInstance().getGenerationManager();
         return this.generationManager;
@@ -224,4 +227,62 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         return this.generationManager.getBlocksCodeToClose();
     }
 
+    public List<String> checkNeededRoutines(List<String> possibleRoutines, String additionalString) {
+        List<String> routinesToAdd = new ArrayList<String>();
+        XmlMapData xmlMapData = null;
+        if (this.getExternalEmfData() instanceof XmlMapData) {
+            xmlMapData = (XmlMapData) this.getExternalEmfData();
+        }
+        for (String routine : possibleRoutines) {
+            List<OutputXmlTree> listOutput = xmlMapData.getOutputTrees();
+            for (OutputXmlTree outTable : listOutput) {
+                List<OutputTreeNode> listOutEntry = (List<OutputTreeNode>) outTable.getNodes();
+                if (listOutEntry != null && !listOutEntry.isEmpty()) {
+                    for (OutputTreeNode outEntry : listOutEntry) {
+                        String expression = outEntry.getExpression();
+                        if (expression != null && !routinesToAdd.contains(routine)
+                                && expression.contains(routine + additionalString)) {
+                            routinesToAdd.add(routine);
+                        }
+                    }
+                }
+                String filter = outTable.getExpressionFilter();
+                if (filter != null && !routinesToAdd.contains(routine) && filter.contains(routine + additionalString)) {
+                    routinesToAdd.add(routine);
+                }
+            }
+            List<InputXmlTree> listInput = (List<InputXmlTree>) xmlMapData.getInputTrees();
+            for (InputXmlTree inputTable : listInput) {
+                List<TreeNode> listInEntry = (List<TreeNode>) inputTable.getNodes();
+                if (listInEntry != null && !listInEntry.isEmpty()) {
+                    for (TreeNode inEntry : listInEntry) {
+                        String expression = inEntry.getExpression();
+                        if (expression != null && !routinesToAdd.contains(routine)
+                                && expression.contains(routine + additionalString)) {
+                            routinesToAdd.add(routine);
+                        }
+                    }
+                }
+                String filter = inputTable.getExpressionFilter();
+                if (filter != null && !routinesToAdd.contains(routine) && filter.contains(routine + additionalString)) {
+                    routinesToAdd.add(routine);
+                }
+            }
+            List<VarTable> listVar = (List<VarTable>) xmlMapData.getVarTables();
+            for (VarTable varTable : listVar) {
+                List<VarNode> listVarEntry = (List<VarNode>) varTable.getNodes();
+                if (listVarEntry != null && !listVarEntry.isEmpty()) {
+                    for (VarNode varEntry : listVarEntry) {
+                        String expression = varEntry.getExpression();
+                        if (expression != null && !routinesToAdd.contains(routine)
+                                && expression.contains(routine + additionalString)) {
+                            routinesToAdd.add(routine);
+                        }
+                    }
+                }
+            }
+        }
+        return routinesToAdd;
+
+    }
 }
