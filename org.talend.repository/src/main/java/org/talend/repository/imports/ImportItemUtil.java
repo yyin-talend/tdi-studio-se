@@ -729,7 +729,7 @@ public class ImportItemUtil {
                 }
 
                 if (tmpItem != null) {
-                    RelationshipItemBuilder.getInstance().addOrUpdateItem(tmpItem);
+                    RelationshipItemBuilder.getInstance().addOrUpdateItem(tmpItem, true);
                     if (tmpItem.getState() != null) {
                         if (itemType != null) {
                             final Set<String> folders = restoreFolder.getFolders(itemType);
