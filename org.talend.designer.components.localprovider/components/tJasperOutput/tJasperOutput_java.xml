@@ -81,13 +81,29 @@
   <CODEGENERATION>
 	<IMPORTS>
       <IMPORT NAME="CsvWriter" MODULE="javacsv.jar" REQUIRED="true" />
-      <IMPORT NAME="Jasper" MODULE="jasperreports-4.0.2.jar" REQUIRED="true" />
+      <IMPORT NAME="Jasper" MODULE="jasperreports-3.7.3.jar" REQUIRED="true" />   
+      <IMPORT NAME="Barcode4j" MODULE="barcode4j-2.0.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikBridge" MODULE="batik-bridge-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikSsvgDom" MODULE="batik-svg-dom-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikDom" MODULE="batik-dom-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikUtil" MODULE="batik-util-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikCSS" MODULE="batik-css-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikExt" MODULE="batik-ext-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikXml" MODULE="batik-xml-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikParser" MODULE="batik-parser-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikAdmin" MODULE="batik-anim-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikScript" MODULE="batik-script-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikGvt" MODULE="batik-gvt-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikAwt" MODULE="batik-awt-util-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="BatikSvggen" MODULE="batik-svggen-1.7.jar" REQUIRED="true" />
+	  <IMPORT NAME="XmlApisExt" MODULE="xml-apis-ext-1.4.jar" REQUIRED="true" />
+	  <IMPORT NAME="Barbecue" MODULE="barbecue-1.5-beta1.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsDigester" MODULE="commons-digester-1.7.jar" REQUIRED="true" />
 	  <IMPORT NAME="JdtCompiler" MODULE="jdt-compiler-3.1.1.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsCollections" MODULE="commons-collections-3.2.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsLogging" MODULE="commons-logging-1.1.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsBeanutils" MODULE="commons-beanutils-1.7.jar" REQUIRED="true" />
-	  <IMPORT NAME="Itext" MODULE="iText-2.1.4.jar" REQUIRED="true" />
+	  <IMPORT NAME="Itext" MODULE="iText-2.1.7.jar" REQUIRED="true" />
 	  <IMPORT NAME="Poi" MODULE="poi-3.6.jar" REQUIRED="true" />
 	  <IMPORT NAME="Jfreechart" MODULE="jfreechart-1.0.13.jar" REQUIRED="true" />
 	  <IMPORT NAME="Jcommon" MODULE="jcommon-1.0.6.jar" REQUIRED="true" />
