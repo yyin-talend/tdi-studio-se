@@ -316,9 +316,11 @@ public class ConnectionFormComposite extends Composite {
         boolean isOnlyRemoteConnection = brandingService.getBrandingConfiguration().isOnlyRemoteConnection();
         boolean usesMailCheck = brandingService.getBrandingConfiguration().isUseMailLoginCheck();
         LabelText emptyUrl = null;
-        for (LabelText currentUrlLabel : dynamicRequiredControls.get(getRepository()).values()) {
-            if (valid && currentUrlLabel.getText().length() == 0) {
-                emptyUrl = currentUrlLabel;
+        if (getRepository() != null) {
+            for (LabelText currentUrlLabel : dynamicRequiredControls.get(getRepository()).values()) {
+                if (valid && currentUrlLabel.getText().length() == 0) {
+                    emptyUrl = currentUrlLabel;
+                }
             }
         }
         if (valid && getRepository() == null) {
