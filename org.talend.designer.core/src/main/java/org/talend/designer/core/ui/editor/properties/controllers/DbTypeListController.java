@@ -275,7 +275,7 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
 
     public static void updateDbTypeList(INode node, List<ColumnNameChanged> columnsChanged) {
         String dbmsId = getCurrentDbms(node);
-        if (dbmsId == null) {
+        if (dbmsId == null || "".equals(dbmsId)) {
             return;
         }
         String[] columnNameList = MetadataTalendType.getDbTypes(dbmsId);
