@@ -87,8 +87,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
          
         org.talend.sugarws.Get_entry_list_result getEntryListResult_<%=cid %> = sugarManagement_<%=cid %>.getRecordswithQuery(modulename_<%=cid %>, condition_<%=cid %>, filedArr_<%=cid %>, 0, 100); 
 
+		if(getEntryListResult_<%=cid %>.getResult_count() < 0 ){
+			System.err.println("Error Code:"+getEntryListResult_<%=cid %>.getError().getNumber());
+			System.err.println(getEntryListResult_<%=cid %>.getError().getName());
+			System.err.println(getEntryListResult_<%=cid %>.getError().getDescription());
+		}
         // read the record from remote, one time 100 records.
-        while (getEntryListResult_<%=cid %>.getResult_count() != 0) {
+        while (getEntryListResult_<%=cid %>.getResult_count() > 0) {
             org.talend.sugarws.Entry_value[] entry_value_<%=cid %> = getEntryListResult_<%=cid %>.getEntry_list();
             // get every record
             for (int i_<%=cid %> = 0; i_<%=cid %> < entry_value_<%=cid %>.length; i_<%=cid %>++) {
