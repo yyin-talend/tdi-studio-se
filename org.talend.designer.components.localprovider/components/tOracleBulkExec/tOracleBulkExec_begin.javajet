@@ -290,30 +290,74 @@ if(("true").equals(use_existing_ctl_file)) {
         if(("").equals(value)){
         	continue;
         }
-        if(("SILENT").equals(key) && value.contains(",")){
-        	value = "(" + value + ")";
-        }
-        
         if ("PARALLEL".equals(key) && "true".equalsIgnoreCase(value)) {
         	parametersMap.remove("ROWS");
         }
         parametersMap.put(key, value);
     }
     
-    java.lang.StringBuilder optionClause = new java.lang.StringBuilder();
     java.util.Set<String> keySet = parametersMap.keySet();
     boolean flag = false;
-    optionClause.append("OPTIONS (");
+    String tempvalue=null;
+    %>
+    java.lang.StringBuilder optionClause_<%=cid %> = new java.lang.StringBuilder();
+    optionClause_<%=cid %>.append("OPTIONS (");
+    <%
     for(String key : keySet){
     	if(flag){
-    		optionClause.append(", ");
+    		%>
+    		optionClause_<%=cid %>.append(", ");
+    		<%
     	}else{
     		flag = true;
     	}
-    	optionClause.append(key).append("=\"+").append(parametersMap.get(key));
-	    optionClause.append("+\"");
+    	tempvalue=parametersMap.get(key);
+	    
+    	if("SILENT".equals(key)) {
+    		if("HEADER,FEEDBACK,ERRORS,DISCARDS,PARTITIONS,ALL".contains(tempvalue.split(",")[0])) { // check whether the input value is exist 
+    			if(tempvalue.split(",").length>1){//if the length of the input array is bigger than 1 and "( )"
+    				%>
+    				optionClause_<%=cid %>.append("<%=key%>=(<%=tempvalue%>)");
+    				<%
+    			}else{
+    				%>
+    				optionClause_<%=cid %>.append("<%=key%>=<%=tempvalue%>");
+    				<%
+    			}
+    		} else { // if the in put value is not exist,the value is a context value or from a globlaMap,tempvalue need to be a field
+    		%>
+    			if(<%=tempvalue%>.split(",").length>1){
+    				optionClause_<%=cid %>.append("<%=key%>=("+<%=tempvalue%>+")");
+    			}else{
+    				optionClause_<%=cid %>.append("<%=key%>="+<%=tempvalue%>);
+    			}
+    		<%
+    		}
+    	} else if ("RESUMABLE_NAME".equals(key)) {
+    		if(tempvalue.startsWith("'")) {
+    			%>
+    			optionClause_<%=cid %>.append("<%=key%>=<%=tempvalue%>");
+    			<%
+    		} else { 
+		    	%>
+		    	optionClause_<%=cid %>.append("<%=key%>='"+<%=tempvalue%>+"'");
+		    	<%
+    		}
+    	} else {
+    		if("TRUE,FALSE".contains(tempvalue)) {
+    			%>
+    			optionClause_<%=cid %>.append("<%=key%>=<%=tempvalue%>");
+    			<%
+    		} else { 
+		   		%>
+		    	optionClause_<%=cid %>.append("<%=key%>="+<%=tempvalue%>);
+		    	<%
+    		}
+    	}
     }
-    optionClause.append(")");
+    %>
+    optionClause_<%=cid %>.append(")");
+    <%
 	//options clause end
 	//encoding begin
     String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
@@ -355,7 +399,7 @@ if(("true").equals(use_existing_ctl_file)) {
     java.io.BufferedWriter bw_<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(ctlf_<%=cid %>));
     java.io.PrintWriter pw_<%=cid%> = new java.io.PrintWriter(bw_<%=cid%> ,false) ;
     
-    pw_<%=cid%>.println("<%=optionClause.toString() %>");
+    pw_<%=cid%>.println(optionClause_<%=cid %>.toString());
   
     pw_<%=cid%>.println("LOAD DATA");
     pw_<%=cid%>.println("CHARACTERSET <%=encoding %>") ;
