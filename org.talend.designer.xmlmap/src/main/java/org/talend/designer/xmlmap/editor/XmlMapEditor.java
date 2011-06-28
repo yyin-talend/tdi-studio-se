@@ -115,7 +115,8 @@ public class XmlMapEditor extends GraphicalEditor {
         getActionRegistry().registerAction(deleteAction);
         getSelectionActions().add(deleteAction.getId());
 
-        IAction loopAction = new SetLoopAction(this);
+        SetLoopAction loopAction = new SetLoopAction(this);
+        loopAction.setMapperManager(mapperManager);
         getActionRegistry().registerAction(loopAction);
         getSelectionActions().add(loopAction.getId());
 

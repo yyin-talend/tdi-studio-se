@@ -15,6 +15,7 @@ package org.talend.designer.xmlmap.editor.actions;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -107,6 +108,11 @@ public class DeleteTreeNodeAction extends SelectionAction {
                     if (docRoot != null && docRoot.eContainer() instanceof OutputXmlTree) {
                         mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) docRoot.eContainer());
                     }
+                }
+
+                if (docRoot != null && docRoot.eContainer() instanceof AbstractInOutTree) {
+                    mapperManager.getProblemsAnalyser().checkLoopProblems((AbstractInOutTree) docRoot.eContainer());
+                    mapperManager.getMapperUI().updateStatusBar();
                 }
 
             }

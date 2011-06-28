@@ -27,6 +27,7 @@ import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlXPathLoopDescriptorImpl;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -79,6 +80,10 @@ public class OutputImportTreeFromRepository extends SelectionAction {
             nodeMap.clear();
             if (mapperManager != null && parentNode.eContainer() instanceof OutputXmlTree) {
                 mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
+            }
+            if (treeNodeRoot.eContainer() instanceof AbstractInOutTree) {
+                mapperManager.getProblemsAnalyser().checkLoopProblems((AbstractInOutTree) treeNodeRoot.eContainer());
+                mapperManager.getMapperUI().updateStatusBar();
             }
         }
     }

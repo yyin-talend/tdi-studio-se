@@ -33,6 +33,7 @@ import org.talend.core.model.process.IHashableColumn;
 import org.talend.core.model.process.IHashableInputConnections;
 import org.talend.core.model.process.ILookupMode;
 import org.talend.core.model.process.IMatchingMode;
+import org.talend.core.model.process.Problem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
@@ -55,7 +56,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
 
     private AbstractExternalData emfMapData;
 
-    private MapperMain mapprMain;
+    private MapperMain mapperMain;
 
     private GenerationManager generationManager;
 
@@ -68,13 +69,13 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         // TimeMeasure.display = false;
 
         Shell parentShell = display.getActiveShell();
-        mapprMain = new MapperMain(this);
+        mapperMain = new MapperMain(this);
 
         CursorHelper.changeCursor(parentShell, SWT.CURSOR_WAIT);
 
         Shell shell = null;
         try {
-            shell = mapprMain.createUI(display);
+            shell = mapperMain.createUI(display);
 
         } finally {
             parentShell.setCursor(null);
@@ -89,7 +90,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
             }
         }
 
-        return mapprMain.getMapperDialogResponse();
+        return mapperMain.getMapperDialogResponse();
     }
 
     public void initialize() {
@@ -284,5 +285,16 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         }
         return routinesToAdd;
 
+    }
+
+    public List<Problem> getProblems() {
+        initMapperMain();
+        return mapperMain.getMapperManager().getProblemsAnalyser().getProblems();
+    }
+
+    private void initMapperMain() {
+        if (mapperMain == null) {
+            mapperMain = new MapperMain(this);
+        }
     }
 }

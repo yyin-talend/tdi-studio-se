@@ -69,8 +69,10 @@ public class MapperMain {
         List<IMetadataTable> outputMetadataTables = mapperComponent.getMetadataList();
         if (mapperComponent.getExternalEmfData() != null) {
             copyOfMapData = EcoreUtil.copy((XmlMapData) mapperComponent.getExternalEmfData());
-            prepareModelInputs(ioDataContainer.getInputs());
-            prepareModelOutputs(ioDataContainer.getOuputs(), outputMetadataTables);
+            if (ioDataContainer != null) {
+                prepareModelInputs(ioDataContainer.getInputs());
+                prepareModelOutputs(ioDataContainer.getOuputs(), outputMetadataTables);
+            }
         }
     }
 
@@ -279,6 +281,10 @@ public class MapperMain {
 
     public int getMapperDialogResponse() {
         return mapperUI.getMapperDialogResponse();
+    }
+
+    public MapperManager getMapperManager() {
+        return this.mapperManager;
     }
 
 }

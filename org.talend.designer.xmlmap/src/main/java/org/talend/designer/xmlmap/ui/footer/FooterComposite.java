@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.xmlmap.ui;
+package org.talend.designer.xmlmap.ui.footer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -20,6 +20,9 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.designer.xmlmap.ui.MapperUI;
+import org.talend.designer.xmlmap.ui.footer.StatusBar.STATUS;
+import org.talend.designer.xmlmap.util.problem.ProblemsAnalyser;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -30,6 +33,8 @@ import org.eclipse.swt.widgets.Composite;
 public class FooterComposite extends Composite {
 
     private MapperUI mapperUi;
+
+    private StatusBar statusBar;
 
     public FooterComposite(Composite parent, MapperUI mapperUi) {
         super(parent, SWT.NONE);
@@ -60,6 +65,12 @@ public class FooterComposite extends Composite {
             }
 
         });
+
+        statusBar = new StatusBar(this, SWT.NONE);
+        final ProblemsAnalyser problemsAnalyser = mapperUi.getMapperManager().getProblemsAnalyser();
+        if (!problemsAnalyser.getProblems().isEmpty()) {
+            statusBar.setValues(STATUS.ERROR, problemsAnalyser.getErrorMessage());
+        }
 
         Button okButton = new Button(this, SWT.NONE);
         okButton.setEnabled(!mapperUi.getMapperComponent().isReadOnly());
@@ -99,6 +110,10 @@ public class FooterComposite extends Composite {
         okFormData.right = new FormAttachment(cancelButton, -5);
         applyFormData.right = new FormAttachment(okButton, -5);
 
+    }
+
+    public StatusBar getStatusBar() {
+        return statusBar;
     }
 
 }

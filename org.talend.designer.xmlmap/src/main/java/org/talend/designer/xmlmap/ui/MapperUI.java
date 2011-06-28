@@ -57,6 +57,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.ui.footer.FooterComposite;
+import org.talend.designer.xmlmap.ui.footer.StatusBar.STATUS;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
 import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
@@ -85,6 +87,8 @@ public class MapperUI {
     private MapperManager mapperManager;
 
     private XmlMapEditor editor;
+
+    private FooterComposite footerComposite;
 
     private boolean closeWithoutPrompt;
 
@@ -171,7 +175,7 @@ public class MapperUI {
         selectFirstInOutTree();
         mainSashForm.setWeights(new int[] { 70, 30 });
 
-        FooterComposite footerComposite = new FooterComposite(mapperShell, this);
+        footerComposite = new FooterComposite(mapperShell, this);
         footerComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         mapperShell.addDisposeListener(new DisposeListener() {
@@ -323,6 +327,21 @@ public class MapperUI {
             return id.getValue();
         }
         return null;
+    }
+
+    public MapperManager getMapperManager() {
+        return this.mapperManager;
+    }
+
+    public void updateStatusBar() {
+        if (footerComposite != null && footerComposite.getStatusBar() != null) {
+            final String errorMessage = mapperManager.getProblemsAnalyser().getErrorMessage();
+            if (errorMessage != null) {
+                footerComposite.getStatusBar().setValues(STATUS.ERROR, errorMessage);
+            } else {
+                footerComposite.getStatusBar().setValues(STATUS.EMPTY, "");
+            }
+        }
     }
 
 }

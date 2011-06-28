@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -67,6 +68,10 @@ public class ImportTreeFromXml extends SelectionAction {
             prepareEmfTreeNode(list, parentNode);
             if (mapperManager != null && parentNode.eContainer() instanceof InputXmlTree) {
                 mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
+            }
+            if (treeNodeRoot.eContainer() instanceof AbstractInOutTree) {
+                mapperManager.getProblemsAnalyser().checkLoopProblems((AbstractInOutTree) treeNodeRoot.eContainer());
+                mapperManager.getMapperUI().updateStatusBar();
             }
         }
 

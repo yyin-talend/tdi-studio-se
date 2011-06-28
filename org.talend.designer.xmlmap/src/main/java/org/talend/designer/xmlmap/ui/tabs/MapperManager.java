@@ -52,6 +52,7 @@ import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.MapperUI;
 import org.talend.designer.xmlmap.ui.tabs.table.TreeSchemaTableEntry;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
+import org.talend.designer.xmlmap.util.problem.ProblemsAnalyser;
 
 /**
  * wchen class global comment. Detailled comment
@@ -68,6 +69,8 @@ public class MapperManager implements ISelectionChangedListener {
 
     private OutputXmlTree oldSelectedOut;
 
+    private ProblemsAnalyser problemsAnalyser;
+
     private boolean isDieOnError;
 
     public static final String ERROR_REJECT = "ErrorReject";//$NON-NLS-1$
@@ -79,6 +82,8 @@ public class MapperManager implements ISelectionChangedListener {
     public MapperManager(XmlMapComponent mapperComponent, XmlMapData copyOfMapData) {
         this.mapperComponent = mapperComponent;
         this.copyOfMapData = copyOfMapData;
+        problemsAnalyser = new ProblemsAnalyser(this);
+        problemsAnalyser.checkProblems();
     }
 
     public XmlMapComponent getMapperComponent() {
@@ -323,7 +328,8 @@ public class MapperManager implements ISelectionChangedListener {
                                                 createTreeNode.getName(), createTreeNode.getNodeType()));
                                         treeNode.getChildren().add(createTreeNode);
                                     }
-
+                                    problemsAnalyser.checkLoopProblems(selectedInputTree);
+                                    mapperUI.updateStatusBar();
                                 }
                             }
                         } else if (AbstractMetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
@@ -475,7 +481,8 @@ public class MapperManager implements ISelectionChangedListener {
                                                 createTreeNode.getName(), createTreeNode.getNodeType()));
                                         treeNode.getChildren().add(createTreeNode);
                                     }
-
+                                    problemsAnalyser.checkLoopProblems(oldSelectedOut);
+                                    mapperUI.updateStatusBar();
                                 }
                             }
                         } else if (AbstractMetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
@@ -567,4 +574,9 @@ public class MapperManager implements ISelectionChangedListener {
     public void setDieOnError(boolean isDieOnError) {
         this.isDieOnError = isDieOnError;
     }
+
+    public ProblemsAnalyser getProblemsAnalyser() {
+        return this.problemsAnalyser;
+    }
+
 }
