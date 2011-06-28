@@ -725,6 +725,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
                                     // bug 17980
                                     wapperDriver = sessionTreeNode.getWapperDriver();
+                                    // bug 22619
+                                    ExtractMetaDataUtils.closeConnection();
                                     if (wapperDriver != null) {
                                         try {
                                             wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
