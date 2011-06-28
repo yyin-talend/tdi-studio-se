@@ -399,6 +399,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         boolean isSkeletonChanged = JetSkeletonManager.updateSkeletonPersistenceData();
         // if there is one skeleton changed, there need generate all jet--->java again. so, it won't load the
         // JetPersistenceJAVA
+
         if (!isSkeletonChanged) {
             try {
                 alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
@@ -595,7 +596,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         lightBean = mapOnName.get(myLightJetBean.getTemplateRelativeUri().substring(
                                 myLightJetBean.getTemplateRelativeUri().lastIndexOf("/"))); //$NON-NLS-1$
                     }
-                    if (lightBean != null) {
+                    if (lightBean != null && lightBean.getCrc() == unit.getCrc()) {
                         unit.setClassName(lightBean.getClassName());
                         try {
                             Method method = loadMethod(url, lightBean.getMethodName(), unit);
