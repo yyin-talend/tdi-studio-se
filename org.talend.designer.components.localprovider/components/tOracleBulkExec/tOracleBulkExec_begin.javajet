@@ -47,6 +47,7 @@ boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSe
 String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
 String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__"); 
 decimalSeparator = decimalSeparator.trim();
+String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
 if(decimalSeparator.length() > 2){
 	decimalSeparator = String.valueOf(decimalSeparator.charAt(1));
 }else{
@@ -151,7 +152,11 @@ if(useExistingConnection) {
         <%
     }
     %>
-    java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
+	<%if("ojdbc5-11g.jar".equals(dbVersion) || "ojdbc6-11g.jar".equals(dbVersion) ){%>
+    	java.lang.Class.forName("oracle.jdbc.OracleDriver");	
+    <%}else {%>
+		java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");	
+	<%}%>
 <%
 	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>

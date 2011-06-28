@@ -26,6 +26,7 @@ imports="
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	
 	String use_NB_Line = ElementParameterParser.getValue(node, "__USE_NB_LINE__");
+	String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__");
 %>
 
 java.sql.Connection conn_<%=cid%> = null;
@@ -39,7 +40,11 @@ if(("true").equals(useExistingConn)) {
 	<%
 } else {   
 	%>
-	java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
+	<%if("ojdbc5-11g.jar".equals(dbVersion) || "ojdbc6-11g.jar".equals(dbVersion) ){%>
+    	java.lang.Class.forName("oracle.jdbc.OracleDriver");	
+    <%}else {%>
+		java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");	
+	<%}%>
 	<%
 	String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
 	if(("ORACLE_SID").equals(connectionType)) {

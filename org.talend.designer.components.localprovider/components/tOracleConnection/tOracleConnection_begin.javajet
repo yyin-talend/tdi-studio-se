@@ -39,7 +39,12 @@ imports="
 		}
 
 		public String getDirverClassName(INode node){
-			return "oracle.jdbc.driver.OracleDriver";
+			String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
+			if("ojdbc5-11g.jar".equals(dbVersion) || "ojdbc6-11g.jar".equals(dbVersion) ){
+			    return "oracle.jdbc.OracleDriver";	
+			}else {
+				return "oracle.jdbc.driver.OracleDriver";	
+			}
 		}	
 	
 		
