@@ -38,7 +38,7 @@ List<IMetadataColumn> columnList = getColumnList(node);
 %>
 String tableName_<%=cid%> = null;
 String dbschema_<%=cid %> = null;
-
+java.io.FileInputStream fis_<%=cid %> = null;
 java.sql.Connection conn_<%=cid%> = null;
 	<%
 	if(useExistingConnection) {
@@ -77,6 +77,9 @@ if(columnList != null && columnList.size()>0) {
 <%    
 }
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
+%>
+try{
+<%
 if(("UPDATE").equals(dataAction)) {
     if(columnList != null && columnList.size() > 0) {
         int keyCount = 0;
@@ -126,7 +129,7 @@ if(("UPDATE").equals(dataAction)) {
     while (rs_<%=cid %>.next()) {
     	nbLineBeforeLoad_<%=cid %> = rs_<%=cid %>.getInt(1);
 	}
-    java.io.FileInputStream fis_<%=cid %> = new java.io.FileInputStream(new java.io.File(<%=file%>));
+    fis_<%=cid %> = new java.io.FileInputStream(new java.io.File(<%=file%>));
     ((com.vertica.PGStatement) stmt_<%=cid %>).startCopyIn(sql_<%=cid %>, fis_<%=cid %>);
     ((com.vertica.PGStatement) stmt_<%=cid %>).addStreamToCopyIn(fis_<%=cid %>);
     ((com.vertica.PGStatement) stmt_<%=cid %>).finishCopyIn();
@@ -139,10 +142,7 @@ if(("UPDATE").equals(dataAction)) {
 <%
 	if(exitOnNoRows){
 %>stmt_<%=cid %>.close();
-conn_<%=cid %>.close();
-if(true){
 	throw new RuntimeException("No record was loaded in component <%=cid %>");
-}
 <%
 	}
 %>
@@ -152,7 +152,11 @@ if(true){
     <%
 }
 %>
-conn_<%=cid %>.close();
+}finally{
+	if(fis_<%=cid %>!=null)
+		fis_<%=cid%>.close();
+	conn_<%=cid%>.close();
+}
 
 
 
