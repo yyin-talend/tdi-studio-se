@@ -79,8 +79,8 @@ if (!isParallelize) {
 			//to fixed: bug8422
 			if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
 %>	         
-		    // [%connection%][checktable][tableName]
-		    String keyCheckTable_<%=cid %> = conn_<%=cid%> + "[checktable]" + "[" + <%=table%> + "]";
+		    // [%jobName%][checktable][tableName]
+		    String keyCheckTable_<%=cid %> = jobName + "[checktable]" + "[" + <%=table%> + "]";
 		    
 			if(GlobalResource.resourceMap.get(keyCheckTable_<%=cid %>)== null){
 			
