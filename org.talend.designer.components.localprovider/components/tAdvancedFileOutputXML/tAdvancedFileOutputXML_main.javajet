@@ -370,7 +370,7 @@ class GenerateExprCmpByDom4j{
 <%=parentName %>
 <%
 		for(int i=1;arrNames != null && i<arrNames.length; i++){
-%>.element("<%=arrNames[i]%>")
+%>.element(<%=parentName%>.getQName("<%=arrNames[i]%>"))
 <%
 		}
 	}
@@ -713,6 +713,14 @@ if(groupTable.size()>0){					//init the generate tool.
 		
 		if(subTreeRootParent_<%=cid %>==null){
 			subTreeRootParent_<%=cid %> = (org.dom4j.Element)doc_<%=cid %>.selectSingleNode("<%=firstGroupPath.substring(0,firstGroupPath.lastIndexOf("/")) %>");
+			if(subTreeRootParent_<%=cid %>==null) {
+				System.err.println("WARN : the root tag is not same when appending");
+			} else { 
+				String subRootPath = subTreeRootParent_<%=cid %>.getPath().replace("*[name()='","").replace("']", "");
+				if(!"<%=firstGroupPath.substring(0,firstGroupPath.lastIndexOf("/")) %>".equals(subRootPath)) {
+					System.err.println("WARN : the root tag is not same on namespace prefix when appending");
+				}
+			}
 		}else{
 			subTreeRootParent_<%=cid %> =subTreeRootParent_<%=cid %>.getParent();
 		}
