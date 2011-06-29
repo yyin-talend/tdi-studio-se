@@ -629,10 +629,20 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                 }
             }
         }
-
-        //
-
+        deleteNoUseTable();
         super.okPressed();
+    }
+
+    private void deleteNoUseTable() {
+
+        if (SQLBuilderRepositoryNodeManager.tList == null) {
+            return;
+        }
+        IRepositoryViewObject repositoryObject = node.getObject();
+        Item item = repositoryObject.getProperty().getItem();
+        if (item instanceof DatabaseConnectionItem) {
+            manager.deleteNouseTables(((DatabaseConnectionItem) item).getConnection());
+        }
     }
 
     /*

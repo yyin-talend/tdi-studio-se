@@ -88,7 +88,7 @@ public class SQLBuilderRepositoryNodeManager {
 
     private static List<RepositoryNode> repositoryNodes2 = new ArrayList<RepositoryNode>();
 
-    private static List<MetadataTable> tList = null;
+    public static List<MetadataTable> tList = null;
 
     /**
      * dev Comment method "isChangeElementColor".
@@ -841,7 +841,7 @@ public class SQLBuilderRepositoryNodeManager {
         saveMetaData(item);
     }
 
-    private void deleteNouseTables(Connection connection) {
+    public void deleteNouseTables(Connection connection) {
         if (!(connection instanceof DatabaseConnection)) {
             return;
         }
