@@ -1701,7 +1701,29 @@ class ValidationRuleTypeProcessor implements ITypeProcessor {
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
                 RepositoryNode node = (RepositoryNode) element;
-                if (node.getContentType() == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
+                if (node.getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS) {
+                    return true;
+                }
+                ProjectManager pManager = ProjectManager.getInstance();
+                if (!pManager.isInCurrentMainProject(node)) {
+                    if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
+                        return false;
+                    }
+                    if (node.getType() == ENodeType.SYSTEM_FOLDER) {
+                        return true;
+                    }
+                }
+                if (node.getObject() == null || node.getObject().getProperty().getItem() == null) {
+                    return false;
+                }
+                if (node.getObject() instanceof MetadataTable) {
+                    return false;
+                }
+                Item item = node.getObject().getProperty().getItem();
+                if (item instanceof FolderItem) {
+                    return true;
+                }
+                if (node.getObjectType() == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
                     return true;
                 }
                 return false;
