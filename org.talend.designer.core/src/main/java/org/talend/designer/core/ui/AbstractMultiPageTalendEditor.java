@@ -691,6 +691,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(scriptValue.getBytes());
             if (file.exists()) {
+                file.delete(true, null);
+                file.create(byteArrayInputStream, true, null);
                 file.setContents(byteArrayInputStream, 0, null);
             } else
                 file.create(byteArrayInputStream, true, null);
