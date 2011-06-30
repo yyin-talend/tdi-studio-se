@@ -9,8 +9,10 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 %>
- 	stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
- 	
+	<%if(!useExistingConn){%>
+ 		stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
+ 	<%}%>
  	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);             
             

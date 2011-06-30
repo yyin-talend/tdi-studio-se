@@ -18,6 +18,7 @@ imports="
 	if(destination!=null && !"".equals(destination)){
 		cid = destination;
 	}
+	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) {
@@ -35,17 +36,18 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 				boolean useWhere = ("true").equals(ElementParameterParser.getValue(node, "__USE_ITEMS__"));
 				if(useWhere){
-%>
-	}
-} 
-<%
+				%>
+						}
+					} 
+				<%
 				}
-%>
+				%>
 
-stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
- 	
-globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);   
-<%
+				<%if(!useExistingConn){%>
+					stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
+				<%}%>
+				globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);   
+			<%
 			}
 		}
 	}

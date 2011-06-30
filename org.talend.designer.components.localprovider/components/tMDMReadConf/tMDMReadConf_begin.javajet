@@ -35,6 +35,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { //4
 	
+				boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+				String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+				String conn = "xtentisWS_" + connection;
 				String mdmUrl = ElementParameterParser.getValue(node, "__MDMURL__");
 				String username = ElementParameterParser.getValue(node, "__USERNAME__");
 				String password = ElementParameterParser.getValue(node, "__PASSWORD__");
@@ -62,20 +65,23 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 				}
 				%>       
 				int nb_line_<%=cid %> = 0;
-				
-				org.talend.mdm.webservice.XtentisServiceLocator xtentisService_<%=cid %> = new org.talend.mdm.webservice.XtentisServiceLocator();
-				xtentisService_<%=cid %>.setXtentisPortEndpointAddress(<%=mdmUrl %>);
-				org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = xtentisService_<%=cid %>.getXtentisPort();    
-				org.talend.mdm.webservice.XtentisBindingStub stub_<%=cid %> = (org.talend.mdm.webservice.XtentisBindingStub)xtentisWS_<%=cid %>;
-
-				// Authentification
-				<%if(universe==null || ("").equals(universe.trim())){%>
-					stub_<%=cid %>.setUsername(<%=username %>);
+				<%if(!useExistingConn){%>
+					org.talend.mdm.webservice.XtentisServiceLocator xtentisService_<%=cid %> = new org.talend.mdm.webservice.XtentisServiceLocator();
+					xtentisService_<%=cid %>.setXtentisPortEndpointAddress(<%=mdmUrl %>);
+					org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = xtentisService_<%=cid %>.getXtentisPort();    
+					org.talend.mdm.webservice.XtentisBindingStub stub_<%=cid %> = (org.talend.mdm.webservice.XtentisBindingStub)xtentisWS_<%=cid %>;
+	
+					// Authentification
+					<%if(universe==null || ("").equals(universe.trim())){%>
+						stub_<%=cid %>.setUsername(<%=username %>);
+					<%}else{%>
+						stub_<%=cid %>.setUsername(<%=universe%> + "/" + <%=username %>);
+					<%}%>
+					stub_<%=cid %>.setPassword(<%=password %>);
 				<%}else{%>
-					stub_<%=cid %>.setUsername(<%=universe%> + "/" + <%=username %>);
+					org.talend.mdm.webservice.XtentisPort xtentisWS_<%=cid %> = (org.talend.mdm.webservice.XtentisPort)globalMap.get("<%=conn%>");
 				<%}%>
-				stub_<%=cid %>.setPassword(<%=password %>);
-
+				
 				org.talend.mdm.webservice.WSDataClusterPK dataCluster_<%=cid %> = new org.talend.mdm.webservice.WSDataClusterPK(<%=dataCluster %>);
 
 				<%if(!isSingle){//item%>

@@ -23,11 +23,11 @@
 
 	<PARAMETERS>
 
-	   <PARAMETER
+		<PARAMETER
 	      NAME="SCHEMA"
 	      FIELD="SCHEMA_TYPE"
 	      REQUIRED="true"
-	      NUM_ROW="10"
+	      NUM_ROW="1"
 	    >
 	    </PARAMETER>
 	
@@ -35,27 +35,42 @@
 	      NAME="XMLFIELD"
 	      FIELD="COLUMN_LIST"
 	      REQUIRED="true"
-	      NUM_ROW="15"
+	      NUM_ROW="5"
 	    >
 	    </PARAMETER>
-
+	    
+		<PARAMETER
+	      NAME="USE_EXISTING_CONNECTION"
+	      FIELD="CHECK"
+	      NUM_ROW="10"
+	   >
+	      <DEFAULT>false</DEFAULT>
+	   </PARAMETER>  
+	   <PARAMETER
+	      NAME="CONNECTION"
+	      FIELD="COMPONENT_LIST"
+	      FILTER="tMDMConnection"
+	      NUM_ROW="15"
+	      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+	    />
+	    
 		<PARAMETER NAME="MDMURL" FIELD="TEXT" NUM_ROW="20"
-			REQUIRED="true">
+			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"http://localhost:8080/talend/TalendPort"</DEFAULT>
 		</PARAMETER>
 		
 		<PARAMETER NAME="USERNAME" FIELD="TEXT" REQUIRED="true"
-			NUM_ROW="30">
+			NUM_ROW="30" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"userName"</DEFAULT>
 		</PARAMETER>	
 			
 		<PARAMETER NAME="PASSWORD" FIELD="TEXT" REQUIRED="true"
-			NUM_ROW="30">
+			NUM_ROW="30" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"password"</DEFAULT>
 		</PARAMETER>
 		
 		<PARAMETER NAME="UNIVERSE" FIELD="TEXT"
-			NUM_ROW="30">
+			NUM_ROW="30" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT></DEFAULT>
 		</PARAMETER>
 	

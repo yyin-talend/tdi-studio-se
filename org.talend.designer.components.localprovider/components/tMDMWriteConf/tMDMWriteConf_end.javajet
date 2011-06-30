@@ -13,6 +13,7 @@ imports="
 	if(destination!=null && !"".equals(destination)){
 		cid = destination;
 	}
+	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	
 	boolean isMassInsert =("true").equals(ElementParameterParser.getValue(node,"__EXTENDINSERT__"));
 	boolean withReport = ("true").equals(ElementParameterParser.getValue(node,"__WITHREPORT__"));
@@ -53,8 +54,9 @@ if(!usePartialUpdate){
 		}
 	}
 }%>
- 	
- 	stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
+ 	<%if(!useExistingConn){%>
+ 		stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
+ 	<%}%>
  	
  	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);             
             
