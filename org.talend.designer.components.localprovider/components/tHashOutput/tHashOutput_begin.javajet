@@ -157,7 +157,10 @@
 		}
 	}
 %>
-
+<%
+//fix bug 21630,add a class MapHashFile,when the AdvancedMemoryHashFile of the linked tHashOutput is null,use method getAdvancedMemoryHashFile to get previous AdvancedMemoryHashFile.
+%>
+org.talend.designer.components.hashfile.common.MapHashFile mf_<%=cid %>=org.talend.designer.components.hashfile.common.MapHashFile.getMapHashFile();
 <%	
 if(!isLinked){//111
 	//////////////////////////////////////////////////////////////
@@ -167,7 +170,8 @@ if(!isLinked){//111
 %>    
 		org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName %>Struct> tHashFile_<%=cid %> = null;
 		tHashFile_<%=cid %> = new org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName%>Struct>(org.talend.designer.components.hashfile.common.MATCHING_MODE.<%=matchingMode %>);                
-        globalMap.put("tHashFile_<%=cid %>", tHashFile_<%=cid %>);
+        //use this ResourceMap instead of globalMap,so that globalMap will not be too large
+        mf_<%=cid %>.getResourceMap().put("tHashFile_<%=cid %>", tHashFile_<%=cid %>);
 <%	
 	}//222
 }else{//111
@@ -175,6 +179,8 @@ if(!isLinked){//111
 	//it link to another tHashOutput, it works in append model.
 %>
 		org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=tHashOutput_incommingDataConnName %>Struct> tHashFile_<%=cid %> = null; 
+		//use this map to keep the present key and the previous key of AdvancedMemoryHashFile
+		mf_<%=cid %>.getKeyMap().put("tHashFile_<%=cid %>", "tHashFile_<%=tHashOutputName %>");
 <%
 }//111
 %>
