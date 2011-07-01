@@ -54,6 +54,7 @@ if((fileName_<%=cid%>.indexOf("/") != -1)) {
 }
 boolean isFileGenerated_<%=cid %> = true;
 java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
+globalMap.put("<%=cid %>_FILE_NAME",fileName_<%=cid%>);
 <%
 	if(isAppend){
 %>
