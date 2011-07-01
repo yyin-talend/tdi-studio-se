@@ -33,7 +33,7 @@ imports="
     
 	String fieldSeparator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
 	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
-    
+    String encodingType=ElementParameterParser.getValue(node,"__ENCODING_TYPE__");
 	List<Map<String, String>> inTableValues =
     (List<Map<String,String>>)ElementParameterParser.getObjectValue(
         node,
@@ -129,14 +129,25 @@ imports="
 //********************the new part end*****************************************************
 	}else if(use_inlineContent){
 	
-	String fileContent = ElementParameterParser.getValue(node,"__INLINECONTENT__");
-	
-	String lineSeparator = (String) java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
+	String fileContent ="";
+	String lineSeparator = "";
 	//lineSeparator.replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n")
-	
 	String fileContentEnCodeStr = "";
+	String encoding="";
+	//String jvmEncoding=java.nio.charset.Charset.defaultCharset().toString();
+	String jvmEncoding="UTF-8";
+	  if("CUSTOM".equalsIgnoreCase(encodingType)){
+	       encoding=ElementParameterParser.getValue(node,"__ENCODING__");
+	       if(encoding!=null&&(!"".equals(encoding))&&encoding.startsWith("\"")&&encoding.endsWith("\"")){
+	       encoding=encoding.substring(1,encoding.length()-1).toUpperCase();
+	       }
+	    }else{
+	      encoding=encodingType;
+	    }
 	try {
-		fileContentEnCodeStr = (new sun.misc.BASE64Encoder()).encode(fileContent.getBytes("UTF8"));
+	    fileContent = new String(ElementParameterParser.getValue(node,"__INLINECONTENT__").getBytes(encoding),jvmEncoding);
+	    lineSeparator = (String) java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
+		fileContentEnCodeStr = (new sun.misc.BASE64Encoder()).encode(fileContent.getBytes(jvmEncoding));
 	} catch (java.io.UnsupportedEncodingException e) {
 		e.printStackTrace();
 	}	
@@ -151,7 +162,7 @@ for(String item : arrayStr){
 <%}%>
 String originalFileContent_<%=cid %> = "";
 try {
-    originalFileContent_<%=cid %> = new String((new sun.misc.BASE64Decoder()).decodeBuffer(result_<%=cid %>.toString()), "UTF8");
+    originalFileContent_<%=cid %> = new String((new sun.misc.BASE64Decoder()).decodeBuffer(result_<%=cid %>.toString()), java.nio.charset.Charset.defaultCharset().toString());
 } catch (Exception e) {
     e.printStackTrace();
 }
@@ -162,7 +173,7 @@ globalMap.put("NB_LINE", <%=nbRows%>);
 for (int i_<%=cid%> = 0 ; i_<%=cid%> < <%=nbRows%> ; i_<%=cid%>++) {	
 
 java.io.InputStream ins_<%=cid %> = new java.io.ByteArrayInputStream(originalFileContent_<%=cid %>.getBytes());        
-org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(ins_<%=cid %>, "UTF-8",<%=fieldSeparator %>,<%=rowSeparator %>,true, 0, 0, -1, -1, false);
+org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(ins_<%=cid %>, java.nio.charset.Charset.defaultCharset().toString(),<%=fieldSeparator %>,<%=rowSeparator %>,true, 0, 0, -1, -1, false);
 
 while (fid_<%=cid %>.nextRecord()) {
 	nb_line_<%=cid %>++;
