@@ -148,6 +148,7 @@ import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ITalendEditor;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.NodePartKeyHander;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
@@ -1458,14 +1459,20 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                         }
                                     }
                                 }
-                                // bug 22272:if add a tUnite component onto a flow,the flow style should be
-                                // FLOW_MERGE,not FLOW_MAIN
-                                if (node.getComponent().getName().equals("tUnite")) {
-                                    targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_MERGE);
-                                } else {
-                                    targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_MAIN);
+                                // bug 22272:if reconnect new target,the input line style of the target must be suitable
+                                // for its compoment.
+                                EConnectionType reconnectNewInputStyle = targetConnection.getLineStyle();
+                                if (ConnectionManager.canConnectToTarget(targetConnection.getSource(), originalTarget, node,
+                                        targetConnection.getLineStyle(), targetConnection.getName(), targetConnector.getName())) {
+                                    reconnectNewInputStyle = ConnectionManager.getNewConnectionType();
                                 }
-
+                                if (reconnectNewInputStyle.equals(EConnectionType.FLOW_MAIN)) {
+                                    targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_MAIN);
+                                } else if (reconnectNewInputStyle.equals(EConnectionType.FLOW_MERGE)) {
+                                    targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_MERGE);
+                                } else if (reconnectNewInputStyle.equals(EConnectionType.FLOW_REF)) {
+                                    targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_REF);
+                                }
                                 // System.out.print("new: " + targetConnection.getSource().getUniqueName() + "-----"
                                 // + targetConnection.getUniqueName() + "----->"
                                 // + targetConnection.getTarget().getUniqueName() + "(new)");
