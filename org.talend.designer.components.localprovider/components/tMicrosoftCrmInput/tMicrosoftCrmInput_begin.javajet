@@ -33,7 +33,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 		// if output columns are defined
 		if (nbSchemaColumns > 0 && outgoingConns != null && outgoingConns.size() > 0){
-			
+			String authType = ElementParameterParser.getValue(node, "__AUTH_TYPE__");
 			String endpointURL = ElementParameterParser.getValue(node, "__ENDPOINTURL__");
 			String orgName = ElementParameterParser.getValue(node, "__ORGNAME__");
 			String username = ElementParameterParser.getValue(node, "__USERNAME__");
@@ -48,37 +48,58 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 %>
 		
 			System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
-			com.microsoft.crm4.webserviceTest.CrmServiceStub service_<%=cid%> = new com.microsoft.crm4.webserviceTest.CrmServiceStub(<%=endpointURL%>);
-			org.apache.axis2.client.Options options_<%=cid%> = service_<%=cid%>._getServiceClient().getOptions();
-			org.apache.axis2.transport.http.HttpTransportProperties.Authenticator auth_<%=cid%> = new org.apache.axis2.transport.http.HttpTransportProperties.Authenticator();
-			
-			List<String> authSchemes_<%=cid%> = new java.util.ArrayList<String>();
-			authSchemes_<%=cid%>.add(org.apache.axis2.transport.http.HttpTransportProperties.Authenticator.NTLM);
-			auth_<%=cid%> .setAuthSchemes(authSchemes_<%=cid%>);
-			
-            auth_<%=cid%> .setUsername(<%=username%>);
-            auth_<%=cid%> .setPassword(<%=password%>);
-            auth_<%=cid%> .setHost(<%=host%>);
-            auth_<%=cid%> .setPort(<%=port%>);
-            auth_<%=cid%> .setDomain(<%=domain%>);
-            auth_<%=cid%> .setPreemptiveAuthentication(false);
+			<%if(("ON_PREMISE").equals(authType)){%>
+				com.microsoft.crm4.webserviceTest.CrmServiceStub service_<%=cid%> = new com.microsoft.crm4.webserviceTest.CrmServiceStub(<%=endpointURL%>);
+				org.apache.axis2.client.Options options_<%=cid%> = service_<%=cid%>._getServiceClient().getOptions();
+				org.apache.axis2.transport.http.HttpTransportProperties.Authenticator auth_<%=cid%> = new org.apache.axis2.transport.http.HttpTransportProperties.Authenticator();
+				
+				List<String> authSchemes_<%=cid%> = new java.util.ArrayList<String>();
+				authSchemes_<%=cid%>.add(org.apache.axis2.transport.http.HttpTransportProperties.Authenticator.NTLM);
+				auth_<%=cid%> .setAuthSchemes(authSchemes_<%=cid%>);
+				
+	            auth_<%=cid%> .setUsername(<%=username%>);
+	            auth_<%=cid%> .setPassword(<%=password%>);
+	            auth_<%=cid%> .setHost(<%=host%>);
+	            auth_<%=cid%> .setPort(<%=port%>);
+	            auth_<%=cid%> .setDomain(<%=domain%>);
+	            auth_<%=cid%> .setPreemptiveAuthentication(false);
+	            
+	            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.AUTHENTICATE, auth_<%=cid%>);
+	           	options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.REUSE_HTTP_CLIENT, "<%=reuseHttpClient%>");
+	
+	            
+	            options_<%=cid%> .setUserName(<%=username%>);
+	            options_<%=cid%> .setPassword(<%=password%>);
+	            options_<%=cid%> .setTimeOutInMilliSeconds(Long.valueOf(<%=timeout%>));
+	            
+	            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.SO_TIMEOUT,new Integer(<%=timeout%>));
+	            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.CONNECTION_TIMEOUT, new Integer(<%=timeout%>));
             
-            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.AUTHENTICATE, auth_<%=cid%>);
-           	options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.REUSE_HTTP_CLIENT, "<%=reuseHttpClient%>");
-
-            
-            options_<%=cid%> .setUserName(<%=username%>);
-            options_<%=cid%> .setPassword(<%=password%>);
-            options_<%=cid%> .setTimeOutInMilliSeconds(Long.valueOf(<%=timeout%>));
-            
-            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.SO_TIMEOUT,new Integer(<%=timeout%>));
-            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.CONNECTION_TIMEOUT, new Integer(<%=timeout%>));
-            
-            com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument catd_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument.Factory.newInstance();
-            com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken token_<%=cid%> = com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken.Factory.newInstance();
-            token_<%=cid%>.setAuthenticationType(0);
-            token_<%=cid%>.setOrganizationName(<%=orgName%>);
-            catd_<%=cid%>.setCrmAuthenticationToken(token_<%=cid%>);
+	            com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument catd_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument.Factory.newInstance();
+	            com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken token_<%=cid%> = com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken.Factory.newInstance();
+	            token_<%=cid%>.setAuthenticationType(0);
+	            token_<%=cid%>.setOrganizationName(<%=orgName%>);
+	            catd_<%=cid%>.setCrmAuthenticationToken(token_<%=cid%>);
+	        <%}else if(("ONLINE").equals(authType)){%>
+	        	com.microsoft.crm4.webserviceTest.CrmServiceStub service_<%=cid%> = new com.microsoft.crm4.webserviceTest.CrmServiceStub("https://" + <%=host%> + "/MSCrmServices/2007/CrmService.asmx");
+				org.apache.axis2.client.Options options_<%=cid%> = service_<%=cid%>._getServiceClient().getOptions();
+	        	org.talend.mscrm.login.passport.MsDynamicsWrapper msDynamicsWrapper_<%=cid%> = new org.talend.mscrm.login.passport.MsDynamicsWrapper(<%=host%>,<%=orgName%>,<%=username%>,<%=password%>);
+				msDynamicsWrapper_<%=cid%>.connect();
+				String crmTicket_<%=cid%> = msDynamicsWrapper_<%=cid%>.getCrmTicket();
+	        	
+	        	options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.REUSE_HTTP_CLIENT, "<%=reuseHttpClient%>");
+	        	options_<%=cid%> .setTimeOutInMilliSeconds(Long.valueOf(<%=timeout%>));
+	            
+	            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.SO_TIMEOUT,new Integer(<%=timeout%>));
+	            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.CONNECTION_TIMEOUT, new Integer(<%=timeout%>));
+	        	
+	        	com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument catd_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument.Factory.newInstance();
+	            com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken token_<%=cid%> = com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken.Factory.newInstance();
+	            token_<%=cid%>.setAuthenticationType(1);
+	            token_<%=cid%>.setOrganizationName(<%=orgName%>);
+	            token_<%=cid%>.setCrmTicket(crmTicket_<%=cid%>);
+	            catd_<%=cid%>.setCrmAuthenticationToken(token_<%=cid%>);
+	        <%}%>
             
      	<%
      		String entityname = ElementParameterParser.getValue(node, "__ENTITYNAME__").trim();
