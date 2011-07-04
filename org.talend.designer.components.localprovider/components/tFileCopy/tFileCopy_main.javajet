@@ -150,6 +150,14 @@
 
 		globalMap.put("<%=cid %>_DESTINATION_FILEPATH",desFile_<%=cid %>.getPath());
 		globalMap.put("<%=cid %>_DESTINATION_FILENAME",desFile_<%=cid %>.getName());
+		String srcFilePathFolder_<%=cid%>="";
+		if(srcFileName_<%=cid %>.lastIndexOf("\\")>srcFileName_<%=cid %>.lastIndexOf("/")){
+		   srcFilePathFolder_<%=cid%>=srcFileName_<%=cid %>.substring(0,srcFileName_<%=cid %>.lastIndexOf("\\")+1);
+		}else{
+		   srcFilePathFolder_<%=cid%>=srcFileName_<%=cid %>.substring(0,srcFileName_<%=cid %>.lastIndexOf("/")+1);
+		}
+		globalMap.put("<%=cid %>_SOURCE_DIRECTORY", srcFilePathFolder_<%=cid %>);
+		globalMap.put("<%=cid %>_DESTINATION_DIRECTORY", desDirName_<%=cid %>);
 <%
 	}
 %>        
