@@ -202,9 +202,22 @@ public class JavaProcessUtil {
                                             String var = ContextParameterUtils.getVariableFromCode(moduleName);
                                             if (var.equals(contextPara.getName())) {
                                                 String value = context.getContextParameter(contextPara.getName()).getValue();
-                                                value = value.substring(value.lastIndexOf("\\") + 1);
-                                                if (!neededLibraries.contains(value)) {
-                                                    neededLibraries.add(value);
+
+                                                if (curParam.getName().equals(EParameterName.DRIVER_JAR.getName())
+                                                        && value.contains(";")) {
+                                                    String[] jars = value.split(";");
+                                                    for (int i = 0; i < jars.length; i++) {
+                                                        String jar = jars[i];
+                                                        jar = jar.substring(jar.lastIndexOf("\\") + 1);
+                                                        if (!neededLibraries.contains(jar)) {
+                                                            neededLibraries.add(jar);
+                                                        }
+                                                    }
+                                                } else {
+                                                    value = value.substring(value.lastIndexOf("\\") + 1);
+                                                    if (!neededLibraries.contains(value)) {
+                                                        neededLibraries.add(value);
+                                                    }
                                                 }
                                             }
                                         }
