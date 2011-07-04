@@ -414,7 +414,7 @@ public class Problems {
 
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
-            if (problem.getNodeName() != null && (problem.getNodeName().equals(element.getLabel()))) {
+            if (problem.getNodeName() != null && (problem.getNodeName().equals(element.getUniqueName()))) {
                 iter.remove();
             }
         }
