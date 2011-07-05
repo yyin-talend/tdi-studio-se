@@ -1,14 +1,15 @@
 package org.talend.designer.components.hashfile.common;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile;
 
 public class MapHashFile {
 	//use this map instead of globalMap
-	private Map<String, AdvancedMemoryHashFile> resourceMap = new HashMap<String, AdvancedMemoryHashFile>();
+	private Map<String, AdvancedMemoryHashFile> resourceMap = Collections.synchronizedMap(new HashMap<String, AdvancedMemoryHashFile>());
 	//keep the present key of AdvancedMemoryHashFile as key and the previous key as value
-	private Map<String, String> keyMap = new HashMap<String, String>();
+	private Map<String, String> keyMap = Collections.synchronizedMap(new HashMap<String, String>());
 	//singleton
 	private static final MapHashFile mhf = new MapHashFile();
 
