@@ -211,6 +211,7 @@ public enum EParameterName {
     IMPLICIT_TCONTEXTLOAD_FILE(Messages.getString("EParameterName.FromFile")), //$NON-NLS-1$
     FIELDSEPARATOR(Messages.getString("EParameterName.FieldSeparator")), //$NON-NLS-1$
     ROWSEPARATOR(Messages.getString("EParameterName.RowSeparator")), //$NON-NLS-1$
+    ROWSEPARATOR_LIMIT(Messages.getString("EParameterName.RowSeparatorLimit")), //$NON-NLS-1$
     FROM_FILE_FLAG(Messages.getString("EParameterName.fromFileFlag")), //$NON-NLS-1$
     FROM_DATABASE_FLAG(Messages.getString("EParameterName.fromDatabaseFlag")), //$NON-NLS-1$
     // implict tConextLoad parameters.
