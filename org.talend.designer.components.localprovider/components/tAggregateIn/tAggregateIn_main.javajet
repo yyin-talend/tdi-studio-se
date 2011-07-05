@@ -97,8 +97,8 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 				}
 			}
 		}
-
-
+		//fix bug 22089,if only choose iterator,the NPE will not occured.
+		if(outputConn!=null){ // T_InMain_AggR_602
 		List<IMetadataColumn> outputColumns = metadataTableOutput.getListColumns();
 		int sizeColumns = outputColumns.size();
 		if(sizeOperations > 0 || sizeGroupbys > 0){ // T_InMain_AggR_603
@@ -428,7 +428,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
     		} // T_InMain_AggR_604
 
 		} // T_InMain_AggR_603
-
+	  } // T_InMain_AggR_602
 	} // T_InMain_AggR_601
 } // T_InMain_AggR_600
 %>
