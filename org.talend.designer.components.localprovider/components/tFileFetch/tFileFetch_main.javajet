@@ -511,4 +511,10 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 		System.err.println(e.getMessage());
 	}
 <%}%>
+<%if (bUseCache) {%>
+	java.io.InputStream stream<%=cid%> = (java.io.InputStream)globalMap.get("<%=cid%>_INPUT_STREAM");
+	if(stream<%=cid%>!=null){
+		stream<%=cid%>.close();
+	}
+<%}%>
 globalMap.put("<%=cid%>_INPUT_STREAM", retIS_<%=cid%>);
