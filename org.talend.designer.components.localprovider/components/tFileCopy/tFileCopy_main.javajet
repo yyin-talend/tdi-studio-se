@@ -148,14 +148,12 @@
 
 		}
 
-		globalMap.put("<%=cid %>_DESTINATION_FILEPATH",desFile_<%=cid %>.getPath());
+        String desFilePath_<%=cid %>=desFile_<%=cid %>.getPath().replaceAll("\\\\", "/");
+		globalMap.put("<%=cid %>_DESTINATION_FILEPATH",desFilePath_<%=cid %>);
 		globalMap.put("<%=cid %>_DESTINATION_FILENAME",desFile_<%=cid %>.getName());
-		String srcFilePathFolder_<%=cid%>="";
-		if(srcFileName_<%=cid %>.lastIndexOf("\\")>srcFileName_<%=cid %>.lastIndexOf("/")){
-		   srcFilePathFolder_<%=cid%>=srcFileName_<%=cid %>.substring(0,srcFileName_<%=cid %>.lastIndexOf("\\")+1);
-		}else{
-		   srcFilePathFolder_<%=cid%>=srcFileName_<%=cid %>.substring(0,srcFileName_<%=cid %>.lastIndexOf("/")+1);
-		}
+		String  srcFilePathFolder_<%=cid%>=srcFileName_<%=cid %>.replaceAll("\\\\", "/");
+		desDirName_<%=cid %>=desDirName_<%=cid %>.replaceAll("\\\\", "/");
+		srcFilePathFolder_<%=cid%>=srcFilePathFolder_<%=cid%>.substring(0,srcFilePathFolder_<%=cid%>.lastIndexOf("/")+1);
 		globalMap.put("<%=cid %>_SOURCE_DIRECTORY", srcFilePathFolder_<%=cid %>);
 		globalMap.put("<%=cid %>_DESTINATION_DIRECTORY", desDirName_<%=cid %>);
 <%
