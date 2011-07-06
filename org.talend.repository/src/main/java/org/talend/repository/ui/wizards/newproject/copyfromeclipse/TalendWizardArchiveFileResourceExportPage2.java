@@ -64,7 +64,7 @@ public class TalendWizardArchiveFileResourceExportPage2 extends WizardArchiveFil
         saveDirtyEditors();
         // about to invoke the operation so save our state
         saveWidgetValues();
-        final List results = new ArrayList(1);
+        final List<Boolean> results = new ArrayList<Boolean>(1);
         CoreRuntimePlugin.getInstance().getProxyRepositoryFactory().executeRepositoryWorkUnit(new RepositoryWorkUnit("refresh") {
 
             protected void run() throws LoginException, PersistenceException {
@@ -86,6 +86,6 @@ public class TalendWizardArchiveFileResourceExportPage2 extends WizardArchiveFil
 
         });
 
-        return results.size() == 1;
+        return results.size() == 1 && results.get(0) == true;
     }
 }
