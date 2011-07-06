@@ -66,7 +66,7 @@ public class ExternalNodeChangeCommand extends Command {
 
     private List<IMetadataTable> newMetaDataList;
 
-    private List<Connection> connectionsToDelete;
+    private Map<Connection, IODataComponent> connectionsToDelete;
 
     private List<ChangeMetadataCommand> metadataOutputChanges = new ArrayList<ChangeMetadataCommand>();
 
@@ -97,7 +97,7 @@ public class ExternalNodeChangeCommand extends Command {
         newExternalData = externalNode.getExternalData();
         newMetaDataList = externalNode.getMetadataList();
 
-        connectionsToDelete = new ArrayList<Connection>();
+        connectionsToDelete = new HashMap<Connection, IODataComponent>();
 
         for (IODataComponent dataComponent : (List<IODataComponent>) inAndOut.getOuputs()) {
             IConnection connection = dataComponent.getConnection();
@@ -108,7 +108,7 @@ public class ExternalNodeChangeCommand extends Command {
                 }
             }
             if (!metadataExists && (connection instanceof Connection)) {
-                connectionsToDelete.add((Connection) connection);
+                connectionsToDelete.put((Connection) connection, dataComponent);
             }
         }
 
@@ -292,7 +292,7 @@ public class ExternalNodeChangeCommand extends Command {
             }
         }
 
-        for (Connection connection : connectionsToDelete) {
+        for (Connection connection : connectionsToDelete.keySet()) {
             connection.disconnect();
             INode prevNode = connection.getSource();
             INodeConnector nodeConnectorSource, nodeConnectorTarget;
@@ -302,6 +302,8 @@ public class ExternalNodeChangeCommand extends Command {
             INode nextNode = connection.getTarget();
             nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
+
+            inAndOut.getOuputs().remove(connectionsToDelete.get(connection));
         }
         ((Process) node.getProcess()).checkProcess();
         if (!isMetaLanguage) {
@@ -333,7 +335,7 @@ public class ExternalNodeChangeCommand extends Command {
         metadataInputWasRepository.clear();
         node.setExternalData(oldExternalData);
         node.setMetadataList(oldMetaDataList);
-        for (Connection connection : connectionsToDelete) {
+        for (Connection connection : connectionsToDelete.keySet()) {
             connection.reconnect();
             Node prevNode = (Node) connection.getSource();
             INodeConnector nodeConnectorSource, nodeConnectorTarget;
@@ -343,6 +345,10 @@ public class ExternalNodeChangeCommand extends Command {
             Node nextNode = (Node) connection.getTarget();
             nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
+
+            if (connectionsToDelete.get(connection) != null) {
+                inAndOut.getOuputs().add(connectionsToDelete.get(connection));
+            }
         }
         for (ChangeMetadataCommand cmd : metadataOutputChanges) {
             cmd.undo();
