@@ -36,17 +36,24 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.ide.DialogUtil;
 import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.eclipse.ui.internal.ide.dialogs.ResourceTreeAndListGroup;
+import org.eclipse.ui.internal.wizards.datatransfer.ArchiveFileExportOperation;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.IDataTransferHelpContextIds;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardArchiveFileResourceExportPage1;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.talend.commons.exception.LoginException;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.prefs.GeneralParametersProvider;
 import org.talend.core.prefs.GeneralParametersProvider.GeneralParameters;
+import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.repository.RepositoryWorkUnit;
 
 /**
  * 
@@ -118,9 +125,9 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
         }
 
         this.resourceGroup = new ResourceTreeAndListGroup(parent, input,
-                getResourceProvider(IResource.FOLDER | IResource.PROJECT), WorkbenchLabelProvider
-                        .getDecoratingWorkbenchLabelProvider(), getResourceProvider(IResource.FILE), WorkbenchLabelProvider
-                        .getDecoratingWorkbenchLabelProvider(), SWT.NONE, DialogUtil.inRegularFontMode(parent));
+                getResourceProvider(IResource.FOLDER | IResource.PROJECT),
+                WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider(), getResourceProvider(IResource.FILE),
+                WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider(), SWT.NONE, DialogUtil.inRegularFontMode(parent));
 
         ICheckStateListener listener = new ICheckStateListener() {
 
@@ -238,5 +245,43 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
         deselectButton.setFont(font);
         setButtonLayoutData(deselectButton);
 
+    }
+
+    public boolean finish() {
+        List resourcesToExport = getWhiteCheckedResources();
+
+        if (!ensureTargetIsValid()) {
+            return false;
+        }
+
+        // Save dirty editors if possible but do not stop if not all are saved
+        saveDirtyEditors();
+
+        // about to invoke the operation so save our state
+        saveWidgetValues();
+
+        final List results = new ArrayList(1);
+        CoreRuntimePlugin.getInstance().getProxyRepositoryFactory().executeRepositoryWorkUnit(new RepositoryWorkUnit("refresh") {
+
+            protected void run() throws LoginException, PersistenceException {
+                try {
+                    ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+                } catch (CoreException e) {
+                    ExceptionHandler.process(e);
+                }
+                Display.getCurrent().syncExec(new Runnable() {
+
+                    public void run() {
+                        List resourcesToExport = getWhiteCheckedResources();
+                        boolean r = executeExportOperation(new ArchiveFileExportOperation(null, resourcesToExport,
+                                getDestinationValue()));
+                        results.add(r);
+                    }
+                });
+            }
+
+        });
+
+        return results.size() == 1;
     }
 }

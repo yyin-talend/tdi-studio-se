@@ -1544,5 +1544,15 @@
          </run>
       </application>
    </extension>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <wizard
+            category="org.eclipse.ui.Basic"
+            class="org.talend.repository.ui.wizards.newproject.copyfromeclipse.TalendZipFileExportWizard2"
+            icon="icons/exportzip_wiz.gif"
+            id="org.eclipse.ui.wizards.export.TalendZipFile"
+            name="Archive File">
+      </wizard>
+   </extension>
 
 </plugin>
