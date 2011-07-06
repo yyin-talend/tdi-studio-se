@@ -49,7 +49,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
-
+				int nb_line_<%=cid%> = 0;	
                 java.net.Authenticator.setDefault(new java.net.Authenticator() {
                     protected java.net.PasswordAuthentication getPasswordAuthentication() {
                     	return new java.net.PasswordAuthentication(<%=username%>, <%=password%>.toCharArray());
@@ -128,7 +128,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 							<%=outgoingConn.getName()%>.TARGET = Boolean.valueOf(record_<%=cid%>.get("TARGET"));
 							<%=outgoingConn.getName()%>.SOURCE = record_<%=cid%>.get("SOURCE");
 						<%}%>
-						
+						nb_line_<%=cid%> ++;
 						<%
 						for( int i = 0; i < columnList.size(); i++) {
 							IMetadataColumn column = columnList.get(i);

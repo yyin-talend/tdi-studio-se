@@ -33,6 +33,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
 %>
 String taskFlag_<%=cid%>="";
+int nb_line_<%=cid%> = 0;	
 org.talend.stewardship.TaskGenerator tasks_<%=cid%> = new org.talend.stewardship.TaskGenerator();
 org.talend.stewardship.Task task_<%=cid%> = null;
 int port_<%=cid%> =  <%=port%>;

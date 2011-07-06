@@ -101,6 +101,7 @@ if(!taskFlag_<%=cid%>.equals(<%=dataUtil.getValueExpression(conn.getName(),loopi
 			System.err.println("An error occured while uploading tasks.");
 		}
 	}
+	nb_line_<%=cid%> ++;
 	task_<%=cid%> = tasks_<%=cid%>.addTask();
 	task_<%=cid%>.setBasicInfo(<%=taskName%>,"<%=type%>",<%=createdBy%>,<%=owner%>,<%=starRanking%>,<%=tags%>);
 <%if(RESOLUTION_TYPE.equals(type)){%>
