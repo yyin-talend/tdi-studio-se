@@ -1459,6 +1459,28 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (connParameters == null) {
             connParameters = new ConnectionParameters();
         }
+
+        Object value = elem.getPropertyValue("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
+        IElementParameter compList = elem.getElementParameterFromField(EParameterFieldType.COMPONENT_LIST);
+        if (value != null && (value instanceof Boolean) && ((Boolean) value) && compList != null) {
+            if (connectionNode == null) {
+                Object compValue = compList.getValue();
+                if (compValue != null && !compValue.equals("")) { //$NON-NLS-1$
+                    List<? extends INode> nodes = part.getProcess().getGraphicalNodes();
+                    for (INode node : nodes) {
+                        if (node.getUniqueName().equals(compValue) && (node instanceof Node)) {
+                            connectionNode = (Node) node;
+                            break;
+                        }
+                    }
+
+                }
+            }
+            if (connectionNode != null) {
+                element = connectionNode;
+            }
+        }
+
         connParameters.setDbName(getParameterValueWithContext(element, EConnectionParameterName.SID.getName(), context));
         connParameters.setPassword(getParameterValueWithContext(element, EConnectionParameterName.PASSWORD.getName(), context));
         connParameters.setPort(getParameterValueWithContext(element, EConnectionParameterName.PORT.getName(), context));
