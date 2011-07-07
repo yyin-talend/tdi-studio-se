@@ -93,6 +93,7 @@
 		<IMPORT NAME="talend-stewardship-task" MODULE="talend-stewardshipTask.jar" REQUIRED="true" />
 		<IMPORT NAME="talend-stewardship-client" MODULE="org.talend.taskloadclient.jar" REQUIRED="true" />
 		<IMPORT NAME="dom4j" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
+		<IMPORT NAME="talend-shipTask" MODULE="commons-lang-2.6.jar" REQUIRED="true" />
   	</IMPORTS>
   </CODEGENERATION>  
   <RETURNS> 
