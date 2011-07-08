@@ -915,7 +915,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 }
             }
         }
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+        if (property != null && GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
             ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                     ICamelDesignerCoreService.class);
             if (camelService.isInstanceofCamel(property.getItem())) {
