@@ -369,6 +369,15 @@ public class WebServiceUI extends AbstractWebService {
             for (Map<String, String> map : outputMap) {
                 if (map.get("PARAMETERINFO") != null && map.get("PARAMETERINFO") instanceof String) {
                     String ele = (String) map.get("PARAMETERINFO"); //$NON-NLS-1$
+                    int arraySize = 0;
+                    String paraIndex = null;
+                    if (map.get("PARAMETERARRAYSIZE") != null) {
+                        if (!map.get("PARAMETERARRAYSIZE").equals(""))
+                            arraySize = Integer.valueOf(map.get("PARAMETERARRAYSIZE"));
+                    }
+                    if (map.get("PARAMETERINDEX") != null) {
+                        paraIndex = map.get("PARAMETERINDEX");
+                    }
                     if (!ele.equals("")) {
                         if (!map.get("PARAPARENT").equals("")) {
                             String paraParent = map.get("PARAPARENT");
@@ -382,6 +391,9 @@ public class WebServiceUI extends AbstractWebService {
                                         // para.setParent(para2);
                                         ParameterInfo parain = new ParameterInfo();
                                         parain.setName(ele);
+                                        // bug 22801:After import tWebService job,missing [*] when added new Element
+                                        parain.setArraySize(arraySize);
+                                        parain.setIndex(paraIndex);
                                         para2.getParameterInfos().add(parain);
                                         parain.setParent(para2);
                                         paraoutList.add(parain);
@@ -436,6 +448,15 @@ public class WebServiceUI extends AbstractWebService {
             for (Map<String, String> map : inputparaValue) {
                 if (map.get("PARAMETERINFO") != null && map.get("PARAMETERINFO") instanceof String) {
                     String ele = (String) map.get("PARAMETERINFO"); //$NON-NLS-1$
+                    int arraySize = 0;
+                    String paraIndex = null;
+                    if (map.get("PARAMETERARRAYSIZE") != null) {
+                        if (!map.get("PARAMETERARRAYSIZE").equals(""))
+                            arraySize = Integer.valueOf(map.get("PARAMETERARRAYSIZE"));
+                    }
+                    if (map.get("PARAMETERINDEX") != null) {
+                        paraIndex = map.get("PARAMETERINDEX");
+                    }
                     if (!ele.equals("")) {
                         if (!map.get("PARAPARENT").equals("")) {
                             String paraParent = map.get("PARAPARENT");
@@ -449,6 +470,9 @@ public class WebServiceUI extends AbstractWebService {
                                         // para.setParent(para2);
                                         ParameterInfo parain = new ParameterInfo();
                                         parain.setName(ele);
+                                        // bug 22801:After import tWebService job,missing [*] when added new Element
+                                        parain.setArraySize(arraySize);
+                                        parain.setIndex(paraIndex);
                                         para2.getParameterInfos().add(parain);
                                         parain.setParent(para2);
                                         paraList.add(parain);

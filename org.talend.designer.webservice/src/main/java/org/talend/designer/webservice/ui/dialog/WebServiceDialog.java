@@ -345,6 +345,8 @@ public class WebServiceDialog extends Dialog implements WebServiceEventListener 
                         Map<String, String> sourceMap = new HashMap<String, String>(2);
                         sourceMap.put("PARAMETERINFO", para.getName());
                         sourceMap.put("PARAPARENT", para.getParent().getName());
+                        sourceMap.put("PARAMETERARRAYSIZE", String.valueOf(para.getArraySize()));
+                        sourceMap.put("PARAMETERINDEX", para.getIndex());
                         inputparaValue.add(sourceMap);
                     }
                 }
@@ -445,6 +447,8 @@ public class WebServiceDialog extends Dialog implements WebServiceEventListener 
                         Map<String, String> sourceMap = new HashMap<String, String>(2);
                         sourceMap.put("PARAMETERINFO", para.getName());
                         sourceMap.put("PARAPARENT", para.getParent().getName());
+                        sourceMap.put("PARAMETERARRAYSIZE", String.valueOf(para.getArraySize()));
+                        sourceMap.put("PARAMETERINDEX", para.getIndex());
                         outputMap.add(sourceMap);
                     }
                 }
