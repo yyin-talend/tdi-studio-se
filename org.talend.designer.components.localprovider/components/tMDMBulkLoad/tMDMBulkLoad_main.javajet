@@ -33,7 +33,7 @@ if (count_<%=cid%> > 0 && count_<%=cid%> % <%=arraySize%> == 0) {
 	inputStreamMerger_<%=cid%> = bulkloadClient_<%=cid %>.load();
 }
 
-inputStreamMerger_<%=cid%>.push(new java.io.ByteArrayInputStream(<%=conn.getName()%>.<%=xmlField %>.toString().getBytes()));
+inputStreamMerger_<%=cid%>.push(new java.io.ByteArrayInputStream(<%=conn.getName()%>.<%=xmlField %>.toString().getBytes("UTF-8")));
 <%
 			}//4
 		}//3
