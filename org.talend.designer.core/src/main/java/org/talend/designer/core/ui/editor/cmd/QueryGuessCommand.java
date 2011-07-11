@@ -83,6 +83,11 @@ public class QueryGuessCommand extends Command {
         this.newOutputMetadataTable = newOutputMetadataTable;
     }
 
+    public QueryGuessCommand(INode node2, IMetadataTable metadataTable, Connection conn) {// 9594
+        this(node2, metadataTable);
+        this.conn = conn;
+    }
+
     /**
      * DOC qzhang QueryGuessCommand constructor comment.
      * 
@@ -206,6 +211,11 @@ public class QueryGuessCommand extends Command {
             }
 
         }
+
+        if (conn instanceof DatabaseConnection && conn.isContextMode()) {
+            schema = DatabaseConnectionParameterUtil.getTrueParamValue((DatabaseConnection) conn, schema);
+        }
+
         String newQuery = null;
         realTableName = QueryUtil.getTableName(node, newOutputMetadataTable, schema, dbType, realTableName);
         if (realTableName.startsWith(TalendTextUtils.QUOTATION_MARK) && realTableName.endsWith(TalendTextUtils.QUOTATION_MARK)

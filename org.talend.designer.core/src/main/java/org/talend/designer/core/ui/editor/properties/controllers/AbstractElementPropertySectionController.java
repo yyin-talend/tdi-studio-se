@@ -1498,6 +1498,15 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setDriverJar(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
                 EConnectionParameterName.DRIVER_JAR.getName(), context)));
 
+        // for jdbc connection from reposiotry
+        final String dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassName(connParameters.getDriverClass());
+        if (connParameters.getDbType() == null || EDatabaseTypeName.MYSQL.getDisplayName().equals(connParameters.getDbType())
+                && !EDatabaseTypeName.MYSQL.getProduct().equals(dbTypeByClassName)) {
+            if (dbTypeByClassName != null && !"".equals(dbTypeByClassName)) {
+                connParameters.setDbType(dbTypeByClassName);
+            }
+        }
+
         if (connParameters.getDbType().equals(EDatabaseTypeName.SQLITE.getXmlName())
                 || connParameters.getDbType().equals(EDatabaseTypeName.ACCESS.getXmlName())
                 || connParameters.getDbType().equals(EDatabaseTypeName.FIREBIRD.getXmlName())) {

@@ -60,7 +60,6 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
-import orgomg.cwm.resource.relational.impl.SchemaImpl;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -193,29 +192,10 @@ public class QueryTypeController extends AbstractRepositoryController {
 
         // Only for getting the real table name.
         if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
-            // repositoryTableMap = dynamicProperty.getRepositoryTableMap();
-            // String paramName;
+
             IElementParameter repositorySchemaTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
                     .getName());
-            // Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
-            //
-            // paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
-            //
-            // if (repositoryControl != null) {
-            //
-            // String selectedComboItem = ((CCombo) repositoryControl).getText();
-            // if (selectedComboItem != null && selectedComboItem.length() > 0) {
-            // String value = new String(""); //$NON-NLS-1$
-            // for (int i = 0; i < elem.getElementParameters().size(); i++) {
-            // IElementParameter param = elem.getElementParameters().get(i);
-            // if (param.getName().equals(paramName)) {
-            // for (int j = 0; j < param.getListItemsValue().length; j++) {
-            // if (selectedComboItem.equals(param.getListItemsDisplayName()[j])) {
-            // value = (String) param.getListItemsValue()[j];
-            // }
-            // }
-            // }
-            // }
+
             if (repositorySchemaTypeParameter != null) {
                 final Object value = repositorySchemaTypeParameter.getValue();
                 if (elem instanceof Node) {
@@ -247,11 +227,11 @@ public class QueryTypeController extends AbstractRepositoryController {
                                     IMetadataTable repositoryMetadata = ConvertionHelper.convert(table);
                                     realTableName = repositoryMetadata.getTableName();
                                     realTableId = repositoryMetadata.getId();
-                                    if (table.eContainer() != null && table.eContainer() instanceof SchemaImpl) {
-                                        SchemaImpl schemaImpl = (SchemaImpl) table.eContainer();
-                                        schemaName = schemaImpl.getName();
-                                        dynamicProperty.getTableIdAndDbSchemaMap().put(realTableId, schemaName);
-                                    }
+                                    // if (table.eContainer() != null && table.eContainer() instanceof SchemaImpl) {
+                                    // SchemaImpl schemaImpl = (SchemaImpl) table.eContainer();
+                                    // schemaName = schemaImpl.getName();
+                                    // dynamicProperty.getTableIdAndDbSchemaMap().put(realTableId, schemaName);
+                                    // }
                                     break;
                                 }
                             }
@@ -267,6 +247,29 @@ public class QueryTypeController extends AbstractRepositoryController {
             // }
             // }
         } // Ends
+
+        Connection repositoryConnection = null;
+        if (elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
+            final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+            if (propertyValue != null) {
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                Item item = null;
+                try {
+                    IRepositoryViewObject repobj = factory.getLastVersion(propertyValue.toString());
+                    if (repobj != null) {
+                        Property property = repobj.getProperty();
+                        if (property != null) {
+                            item = property.getItem();
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+                if (item != null && item instanceof ConnectionItem) {
+                    repositoryConnection = ((ConnectionItem) item).getConnection();
+                }
+            }
+        }
 
         QueryGuessCommand cmd = null;
         INode node = null;
@@ -295,7 +298,7 @@ public class QueryTypeController extends AbstractRepositoryController {
                 return cmd;
             }
         }
-        cmd = new QueryGuessCommand(node, newRepositoryMetadata);
+        cmd = new QueryGuessCommand(node, newRepositoryMetadata, repositoryConnection);
 
         cmd.setMaps(dynamicProperty.getTableIdAndDbTypeMap(), dynamicProperty.getTableIdAndDbSchemaMap(), null);
         String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
