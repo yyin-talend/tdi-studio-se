@@ -355,7 +355,7 @@
 	<CODEGENERATION> 
 		<IMPORTS> 
 			<IMPORT MODULE="namedpipe-1.0.jar" NAME="namedpipe-1.0.jar" REQUIRED="true"/> 
-			<IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="false" />
+			<IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="true" />
 			<IMPORT MODULE="namedpipe_jni_64bit.dll" NAME="namedpipe_jni_64bit.dll" REQUIRED="false"/> 
 			<IMPORT MODULE="namedpipe_jni.dll" NAME="namedpipe_jni.dll" REQUIRED="false"/> 
 		</IMPORTS> 

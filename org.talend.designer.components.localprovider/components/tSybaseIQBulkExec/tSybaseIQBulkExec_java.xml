@@ -264,7 +264,7 @@
    <CODEGENERATION>
     <IMPORTS>
        <IMPORT NAME="Driver-Sybase" MODULE="jconn3.jar" REQUIRED="true" />
-       <IMPORT NAME="Driver-Sybase" MODULE="jodbc.jar" REQUIRED="false" /> 
+       <IMPORT NAME="Driver-Sybase" MODULE="jodbc.jar" REQUIRED="true" /> 
     </IMPORTS>
   </CODEGENERATION>
 

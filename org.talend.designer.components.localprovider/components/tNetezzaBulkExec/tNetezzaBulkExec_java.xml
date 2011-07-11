@@ -308,7 +308,7 @@
 	<CODEGENERATION>
 
 	  <IMPORTS>
-        <IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="false" />
+        <IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED="true" />
 	  </IMPORTS>
 
 	</CODEGENERATION>
