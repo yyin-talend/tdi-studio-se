@@ -45,6 +45,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
@@ -124,7 +125,7 @@ public class ImportItemUtil {
 
     private boolean hasErrors = false;
 
-    private RepositoryObjectCache cache = new RepositoryObjectCache();
+    private static RepositoryObjectCache cache = new RepositoryObjectCache();
 
     private TreeBuilder treeBuilder = new TreeBuilder();
 
@@ -309,7 +310,7 @@ public class ImportItemUtil {
                 }
             }
 
-            if (result && overwrite && itemRecord.getState() == State.ID_EXISTED) {
+            if (result && overwrite && itemRecord.getState() == State.NAME_AND_ID_EXISTED) {
                 // if item is locked, cannot overwrite
                 if (checkIfLocked(itemRecord)) {
                     itemRecord.addError(Messages.getString("RepositoryUtil.itemLocked")); //$NON-NLS-1$
@@ -517,7 +518,9 @@ public class ImportItemUtil {
 
     public void clearAllData() {
         deletedItems.clear();
-        cache.clear();
+        if (!CommonsPlugin.isHeadless() || !ProjectManager.getInstance().getCurrentProject().isLocal()) {
+            cache.clear();
+        }
         treeBuilder.clear();
         xmiResourceManager.unloadResources();
         xmiResourceManager.resetResourceSet();
@@ -526,7 +529,6 @@ public class ImportItemUtil {
 
     private void importItemRecord(ResourcesManager manager, ItemRecord itemRecord, boolean overwrite, IPath destinationPath,
             final Set<String> overwriteDeletedItems, String contentType, final IProgressMonitor monitor) {
-
         monitor.subTask(Messages.getString("ImportItemWizardPage.Importing") + itemRecord.getItemName()); //$NON-NLS-1$
 
         resolveItem(manager, itemRecord);
@@ -714,6 +716,7 @@ public class ImportItemUtil {
                     itemRecord.setItemId(itemRecord.getProperty().getId());
                     itemRecord.setItemVersion(itemRecord.getProperty().getVersion());
                     itemRecord.setImported(true);
+                    cache.addToCache(tmpItem);
                 } else if (VersionUtils.compareTo(lastVersion.getProperty().getVersion(), tmpItem.getProperty().getVersion()) < 0) {
                     repFactory.forceCreate(tmpItem, path);
                     itemRecord.setImportPath(path.toPortableString());
@@ -721,6 +724,7 @@ public class ImportItemUtil {
                     itemRecord.setRepositoryType(itemType);
                     itemRecord.setItemVersion(itemRecord.getProperty().getVersion());
                     itemRecord.setImported(true);
+                    cache.addToCache(tmpItem);
                 } else {
                     PersistenceException e = new PersistenceException(Messages.getString(
                             "ImportItemUtil.persistenceException", tmpItem.getProperty())); //$NON-NLS-1$
@@ -774,7 +778,6 @@ public class ImportItemUtil {
         }
 
         applyMigrationTasks(itemRecord, monitor);
-
     }
 
     private void applyMigrationTasks(ItemRecord itemRecord, IProgressMonitor monitor) {
@@ -920,7 +923,9 @@ public class ImportItemUtil {
      */
     public List<ItemRecord> populateItems(ResourcesManager collector, boolean overwrite, IProgressMonitor progressMonitor) {
         treeBuilder.clear();
-        cache.clear();
+        if (!CommonsPlugin.isHeadless() || !ProjectManager.getInstance().getCurrentProject().isLocal()) {
+            cache.clear();
+        }
         projects.clear();
         routineExtModulesMap.clear();
         List<ItemRecord> items = new ArrayList<ItemRecord>();
@@ -989,10 +994,12 @@ public class ImportItemUtil {
             }
         });
 
-        for (List<IRepositoryViewObject> list : this.cache.getItemsFromRepository().values()) {
-            list.clear();
+        if (!CommonsPlugin.isHeadless() || !ProjectManager.getInstance().getCurrentProject().isLocal()) {
+            for (List<IRepositoryViewObject> list : this.cache.getItemsFromRepository().values()) {
+                list.clear();
+            }
+            this.cache.getItemsFromRepository().clear();
         }
-        this.cache.getItemsFromRepository().clear();
 
         return items;
     }
@@ -1293,6 +1300,25 @@ public class ImportItemUtil {
                 result = Collections.EMPTY_LIST;
             }
             return result;
+        }
+
+        public void addToCache(Item tmpItem) {
+            ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(tmpItem);
+            IRepositoryViewObject newObject = new RepositoryViewObject(tmpItem.getProperty(), true);
+            List<IRepositoryViewObject> items = cache.get(newObject.getId());
+            if (items == null) {
+                items = new ArrayList<IRepositoryViewObject>();
+                cache.put(newObject.getId(), items);
+            }
+            items.add(newObject);
+            List<IRepositoryViewObject> list = itemsFromRepository.get(itemType);
+            if (list != null) {
+                list.add(newObject);
+            } else {
+                List<IRepositoryViewObject> newList = new ArrayList<IRepositoryViewObject>();
+                newList.add(newObject);
+                itemsFromRepository.put(itemType, newList);
+            }
         }
 
         public void initialize(ERepositoryObjectType itemType) throws PersistenceException {
