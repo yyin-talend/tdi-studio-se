@@ -363,15 +363,19 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
   int result_<%=cid %> = ps_<%=cid %>.waitFor();
   normal_<%=cid %>.join(10000);
   error_<%=cid %>.join(10000);
-
- 
+  
+  globalMap.put("tRunJob_1_CHILD_RETURN_CODE",result_<%=cid %>);
   if(result_<%=cid %> != 0){
+   		globalMap.put("tRunJob_1_CHILD_EXCEPTION_STACKTRACE",errorMsg_<%=cid %>.toString());
 	<%if (dieOnError) { %>  
 	    throw new RuntimeException("Child job return " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
 	<%}else{%>
 		System.err.println("Child job return " + result_<%=cid %> + ". It doesn't terminate normally.\n" + errorMsg_<%=cid %>.toString());
 	<%}%>
+  }else{
+		globalMap.put("tRunJob_1_CHILD_EXCEPTION_STACKTRACE",null);
   }
+ 
 
 
 <%
