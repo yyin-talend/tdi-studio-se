@@ -1,6 +1,7 @@
 package org.talend.designer.core.ui.editor.jobletcontainer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
@@ -42,6 +44,7 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.joblet.model.JobletNode;
 import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.repository.model.ERepositoryStatus;
@@ -590,6 +593,7 @@ public class JobletUtil {
                 }
             }
         }
+
         return false;
     }
 
@@ -605,6 +609,27 @@ public class JobletUtil {
 
         }
         return true;
+    }
+
+    public Map<String, List<JobletContainer>> getModifyMap(List<Element> elem) {
+        Map<String, List<JobletContainer>> jobletNodeMap = new HashMap<String, List<JobletContainer>>();
+        for (Element element : elem) {
+            if (element instanceof SubjobContainer) {
+                for (NodeContainer container : ((SubjobContainer) element).getNodeContainers()) {
+                    if (container instanceof JobletContainer) {
+                        String processID = container.getNode().getProcess().getId();
+                        if (!jobletNodeMap.containsKey(processID)) {
+                            List<JobletContainer> nodeList = new ArrayList<JobletContainer>();
+                            nodeList.add((JobletContainer) container);
+                            jobletNodeMap.put(processID, nodeList);
+                        } else {
+                            jobletNodeMap.get(processID).add((JobletContainer) container);
+                        }
+                    }
+                }
+            }
+        }
+        return jobletNodeMap;
     }
 
     // public void reloadJobletComponent(IProcess2 process){

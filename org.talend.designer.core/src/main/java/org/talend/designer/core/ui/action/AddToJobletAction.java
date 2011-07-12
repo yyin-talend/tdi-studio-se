@@ -13,9 +13,12 @@
 package org.talend.designer.core.ui.action;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -29,4 +32,6 @@ public abstract class AddToJobletAction extends SelectionAction {
     }
 
     public abstract List<Node> getJobletNodeList();
+
+    public abstract Map<INode, IConnection> getJobletNodeMap();
 }
