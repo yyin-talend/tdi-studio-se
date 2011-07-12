@@ -167,8 +167,8 @@ try{
             for (int i = 0; i < mp<%=cid%>.getCount(); i++) {
                 javax.mail.BodyPart mpart<%=cid%> = mp<%=cid%>.getBodyPart(i);
                 String disposition<%=cid%> = mpart<%=cid%>.getDisposition();
-                if ((disposition<%=cid%> != null)
-                        && ((disposition<%=cid%>.equals(javax.mail.Part.ATTACHMENT)) || (disposition<%=cid%>.equals(javax.mail.Part.INLINE)))) {
+                if (disposition<%=cid%> != null
+                        && disposition<%=cid%>.equals(javax.mail.Part.ATTACHMENT)) {
                     attachfileName<%=cid%> = mpart<%=cid%>.getFileName();
                     
                     if (attachfileName<%=cid%>.indexOf("=?") != -1){
