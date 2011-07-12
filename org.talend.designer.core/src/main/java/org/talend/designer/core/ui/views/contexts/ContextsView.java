@@ -292,6 +292,14 @@ public class ContextsView extends ViewPart {
             if (modified) {
                 part.getTalendEditor().setDirty(true);
             }
+            IEditorInput editorInput = part.getEditorInput();
+            if (editorInput != null && editorInput instanceof JobEditorInput) {
+                JobEditorInput jobInput = (JobEditorInput) editorInput;
+                IProcess2 process = jobInput.getLoadedProcess();
+                if (process != null) {
+                    contextComposite.setReadOnly(process.isReadOnly());
+                }
+            }
         }
         contextComposite.setPart(part);
     }
