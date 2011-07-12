@@ -76,7 +76,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			if(isAppendFile){
 %>  
         if (file_<%=cid %>.exists()) {
-        jxl.Workbook workbook_<%=cid %> = jxl.Workbook.getWorkbook(file_<%=cid %>);
+        jxl.Workbook workbook_<%=cid %> = jxl.Workbook.getWorkbook(file_<%=cid %>,workbookSettings_<%= cid %>);
         writeableWorkbook_<%=cid %> = new jxl.write.biff.WritableWorkbookImpl(
                 	new java.io.BufferedOutputStream(new java.io.FileOutputStream(file_<%=cid %>, false)), 
                 	workbook_<%=cid %>, 
