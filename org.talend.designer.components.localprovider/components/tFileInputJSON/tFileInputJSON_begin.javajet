@@ -34,6 +34,30 @@ String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "_
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 
 %>
+  class JSONUtil_<%=cid%>{
+      public int getData(String query,javax.script.Invocable invocableEngine,java.util.List<org.json.simple.JSONArray> jsonResultList,int recordMaxSize){
+          try{
+              //only 2 types: String/Boolean
+              String resultObj = invocableEngine.invokeFunction("jsonPath",query).toString();
+              if(!"false".equals(resultObj)){
+	              org.json.simple.JSONArray resultArray= (org.json.simple.JSONArray)org.json.simple.JSONValue.parse(resultObj);
+	              jsonResultList.add(resultArray);
+	              if(recordMaxSize != -1 && recordMaxSize != resultArray.size()){
+		             //just give an error, don't stop
+		              System.err.println("The Json resource datas maybe have some problems, please make sure the data structure with the same fields.");
+	               }
+	               recordMaxSize = Math.max(recordMaxSize, resultArray.size());
+               }else{
+	               System.err.println("Can't find any data with JSONPath " + query);
+	               //add null to take a place in List(buffer)
+	               jsonResultList.add(null); 
+               }
+          }catch(Exception e){
+              e.printStackTrace();
+          }
+          return recordMaxSize;
+      }
+  }
 int nb_line_<%=cid%> = 0;
 
 javax.script.ScriptEngineManager scriptEngineMgr_<%=cid%> = new javax.script.ScriptEngineManager();
@@ -61,30 +85,16 @@ java.util.List<org.json.simple.JSONArray> JSONResultList_<%=cid%> = new java.uti
 
 int recordMaxSize_<%=cid%> = -1;
 javax.script.Invocable invocableEngine_<%=cid%> = (javax.script.Invocable)jsEngine_<%=cid%>;
+
+JSONUtil_<%=cid%> jsonUtil_<%=cid%>=new JSONUtil_<%=cid%>();
 <%
 	for(Map<String,String> path:mapping){
 		String column = path.get("SCHEMA_COLUMN");
 		String query = path.get("QUERY");
 %>
-//only 2 types: String/Boolean
-String resultObj_<%=column%>_<%=cid%> = invocableEngine_<%=cid%>.invokeFunction("jsonPath", <%=query%>).toString();
 
-if(!"false".equals(resultObj_<%=column%>_<%=cid%>)){
-	org.json.simple.JSONArray resultArray_<%=column%>_<%=cid%> = (org.json.simple.JSONArray)org.json.simple.JSONValue.parse(resultObj_<%=column%>_<%=cid%>);
-	JSONResultList_<%=cid%>.add(resultArray_<%=column%>_<%=cid%>);
-	
-	if(recordMaxSize_<%=cid%> != -1 && recordMaxSize_<%=cid%> != resultArray_<%=column%>_<%=cid%>.size()){
-		//just give an error, don't stop
-		System.err.println("The Json resource datas maybe have some problems, please make sure the data structure with the same fields.");
-	}
-	
-	recordMaxSize_<%=cid%> = Math.max(recordMaxSize_<%=cid%>, resultArray_<%=column%>_<%=cid%>.size());
-}
-else{
-	System.err.println("Can't find any data with JSONPath " + <%=query %>);
-	//add null to take a place in List(buffer)
-	JSONResultList_<%=cid%>.add(null); 
-}
+recordMaxSize_<%=cid%>=jsonUtil_<%=cid%>.getData(<%=query%>,invocableEngine_<%=cid%>,JSONResultList_<%=cid%>,recordMaxSize_<%=cid%>);
+
 <%
 	}
 %>
