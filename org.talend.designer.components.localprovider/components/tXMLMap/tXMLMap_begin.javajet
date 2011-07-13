@@ -411,7 +411,7 @@ class TreeNode_API_<%=cid %> {
 	
 	void generateMethodCode(TreeNode node, String cid) {
 
-		if(node.getOutgoingConnections().size()>0){
+		if(!(node.getChildren().size()>0)){
 			String talendType = node.getType();
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(talendType);
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(talendType, node.isNullable());
