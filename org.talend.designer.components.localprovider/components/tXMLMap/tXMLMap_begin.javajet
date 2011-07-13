@@ -586,14 +586,14 @@ class TreeNode_API_<%=cid %> {
 	if(mainInputTable != null) {
 		String mainInputName = mainInputTable.getName();
 		for(TreeNode tmpNode : mainInputTable.getNodes()){
-            generateMethodUtil.generateCode(tmpNode, cid); // begin part keep this part
+			if("id_Document".equals(tmpNode.getType())) {
+				generateMethodUtil.generateCode(tmpNode, cid); // begin part keep this part
 %>
-
-			TreeNode_API_<%=cid %> treeNodeAPI_<%=cid %> = new TreeNode_API_<%=cid %>();
-			int nb_line_<%=cid%> = 0; 
-			NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
+				TreeNode_API_<%=cid %> treeNodeAPI_<%=cid %> = new TreeNode_API_<%=cid %>();
+				int nb_line_<%=cid%> = 0; 
+				NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
 <%
-			break;
+			}
 		}
     }
 
