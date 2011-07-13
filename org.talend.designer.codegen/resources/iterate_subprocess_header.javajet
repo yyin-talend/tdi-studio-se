@@ -33,6 +33,8 @@ ECodePart codePart = codeGenArgument.getCodePart();
 //boolean trace = codeGenArgument.isTrace();
 boolean stat = codeGenArgument.isStatistics();
 
+boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
+
 Set<IConnection> connSet =  new HashSet<IConnection>();
 connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MAIN));
 connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MERGE));
@@ -74,10 +76,14 @@ for (IConnection iterateConn : iterateConnSet) { //1
 
 			@Override
 			public Object put(String key, Object value) {
+				<%if(!isRunInMultiThread){%>
 				synchronized (<%=process.getName()%>.this.obj) {
+				<%}%>
 					super.put(key, value);
 					return <%=process.getName()%>.this.globalMap.put(key, value);
+				<%if(!isRunInMultiThread){%>
 				}
+				<%}%>
 			}
 		}	
 	<% if(isRunJob) {%>
@@ -137,9 +143,17 @@ for (IConnection iterateConn : iterateConnSet) { //1
         		<%
 			} 
 			%>
-			synchronized (<%=process.getName()%>.this.obj) {
-				this.globalMap = java.util.Collections.synchronizedMap(new ThreadedMap(globalMap));
-			}
+			<%
+			// if codeGenArgument.getIsRunInMultiThread() is true, the job.this.globalMap will wrapped with synchronizedMap, use synchronized(job.this.globalMap) when use globalMap.keySet().iterator()
+			// when codeGenArgument.getIsRunInMultiThread() is false, the job.this.globalMap is HashMap, use synchronized(job.this.object) when do the job.this.globalMap.put() operation(tMap,tIterateToFlow).
+			if(isRunInMultiThread){%>
+				synchronized (globalMap) {
+					this.globalMap = java.util.Collections.synchronizedMap(new ThreadedMap(globalMap));
+			<%}else{%>
+				synchronized (<%=process.getName()%>.this.obj) {
+					this.globalMap = new ThreadedMap(globalMap);
+			<%}%>
+				}
 			iterateId = "." + threadID;
 	<%if(isRunJob) {%>
 			//bug21906 copy context to local for mutilthread

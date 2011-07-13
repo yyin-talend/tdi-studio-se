@@ -48,16 +48,23 @@ struct_<%=cid%>.<%=mappingColumn.get("SCHEMA_COLUMN")%>  = <%=mappingColumn.get(
 %>
 
 <%if(isInThread){//tIterateToFlow is a little special, it link with OnSubJobOK in virtual level, so, in Multi-Thread, there should be synchronized.%>
-synchronized(obj){
-    if(<%=currentProcess.getName() %>.this.globalMap.containsKey("<%=destination %>")){
-    	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = (java.util.List<OnSubjobOkStruct<%=destination%>>)<%=currentProcess.getName() %>.this.globalMap.get("<%=destination %>"); 
-    	list_<%=cid%>.add(struct_<%=cid%>);
-    }else{
-    	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = java.util.Collections.synchronizedList(new java.util.ArrayList<OnSubjobOkStruct<%=destination%>>());
-    	list_<%=cid%>.add(struct_<%=cid%>);
-    	<%=currentProcess.getName() %>.this.globalMap.put("<%=destination %>",list_<%=cid%>);
-    }
-}
+	<%
+	// if codeGenArgument.getIsRunInMultiThread() is true, the job.this.globalMap will wrapped with synchronizedMap, use synchronized(job.this.globalMap)
+	// when codeGenArgument.getIsRunInMultiThread() is false, the job.this.globalMap is HashMap, use synchronized(job.this.object) when do the job.this.globalMap.put() operation(tMap,tIterateToFlow).
+	if(codeGenArgument.getIsRunInMultiThread()){%>
+		synchronized (<%=currentProcess.getName()%>.this.globalMap) {
+	<%}else{%>
+		synchronized (<%=currentProcess.getName()%>.this.obj) {
+	<%}%>
+		    if(<%=currentProcess.getName() %>.this.globalMap.containsKey("<%=destination %>")){
+		    	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = (java.util.List<OnSubjobOkStruct<%=destination%>>)<%=currentProcess.getName() %>.this.globalMap.get("<%=destination %>"); 
+		    	list_<%=cid%>.add(struct_<%=cid%>);
+		    }else{
+		    	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = java.util.Collections.synchronizedList(new java.util.ArrayList<OnSubjobOkStruct<%=destination%>>());
+		    	list_<%=cid%>.add(struct_<%=cid%>);
+		    	<%=currentProcess.getName() %>.this.globalMap.put("<%=destination %>",list_<%=cid%>);
+		    }
+		}
 <%}else{%>
     if(globalMap.containsKey("<%=destination %>")){
     	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = (java.util.List<OnSubjobOkStruct<%=destination%>>)globalMap.get("<%=destination %>"); 
