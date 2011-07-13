@@ -131,12 +131,14 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                                         table, newOutputMetadata);
                                 param.setRepositoryValueUsed(true);
                             } else {
-                                Object value = RepositoryToComponentProperty.getValue(((ConnectionItem) item).getConnection(),
-                                        param.getRepositoryValue(), newOutputMetadata);
-                                if (value != null) {
-                                    param.setValue(value);
+                                if (!param.getRepositoryValue().equals("FILE_PATH")) {
+                                    Object value = RepositoryToComponentProperty.getValue(
+                                            ((ConnectionItem) item).getConnection(), param.getRepositoryValue(),
+                                            newOutputMetadata);
+                                    if (value != null) {
+                                        param.setValue(value);
+                                    }
                                 }
-
                             }
                         }
                     }
