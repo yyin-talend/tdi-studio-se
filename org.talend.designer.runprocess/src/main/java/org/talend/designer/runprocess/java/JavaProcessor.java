@@ -432,11 +432,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             boolean f = true;
             while (f) {
                 long time2 = System.currentTimeMillis();
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    ExceptionHandler.process(e);
-                }
                 if (time2 - time1 > 30000) {
                     if (job.getResult() == null || !job.getResult().isOK()) {
                         f = false;
@@ -447,9 +442,11 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                         f = false;
                     }
                 } else {
-                    if (job.getResult() != null && job.getResult().isOK()) {
-                        processCode = formatedCode;
-                        f = false;
+                    if (job.getState() != Job.RUNNING) {
+                        if (job.getResult() != null && job.getResult().isOK()) {
+                            processCode = formatedCode;
+                            f = false;
+                        }
                     }
                 }
 
