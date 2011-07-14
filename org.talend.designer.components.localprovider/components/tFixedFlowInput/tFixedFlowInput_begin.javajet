@@ -52,7 +52,6 @@ imports="
 	if(use_singleMode){
 		if(tableValues != null && tableValues.size() > 0 && conns != null && conns.size() > 0) {
 	    %>
-	    globalMap.put("NB_LINE", <%=nbRows%>);
 	    for (int i_<%=cid%> = 0 ; i_<%=cid%> < <%=nbRows%> ; i_<%=cid%>++) {
 	        <%
     	    for(IConnection conn : conns) {
@@ -157,7 +156,6 @@ try {
 }
 
 int nb_line_<%=cid %> = 0;
-globalMap.put("NB_LINE", <%=nbRows%>);
 
 for (int i_<%=cid%> = 0 ; i_<%=cid%> < <%=nbRows%> ; i_<%=cid%>++) {	
 

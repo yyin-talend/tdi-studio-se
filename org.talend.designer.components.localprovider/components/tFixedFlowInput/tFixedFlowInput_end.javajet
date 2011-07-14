@@ -36,7 +36,8 @@ imports="
     if(use_singleMode){
     	if(tableValues != null && tableValues.size() > 0 && conns != null && conns.size() > 0) {
         %>
-        }        
+        }
+        globalMap.put("<%=cid%>_NB_LINE", <%=nbRows%>);        
         <%
     	}
 //********************the new part*****************************************************    	
@@ -55,7 +56,7 @@ imports="
 	}
 	
 	cacheList_<%=cid %>.clear();
-	globalMap.put("NB_LINE", nb_line_<%=cid %>);
+	globalMap.put("<%=cid%>_NB_LINE", nb_line_<%=cid %>);
 <%
     	    }
     	}
@@ -66,7 +67,7 @@ imports="
 	  fid_<%=cid %>.close();
 	}
 
-	globalMap.put("NB_LINE", nb_line_<%=cid %>);
+	globalMap.put("<%=cid%>_NB_LINE", nb_line_<%=cid %>);
 <%
 	}
 %>
