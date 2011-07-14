@@ -3,7 +3,7 @@ import org.talend.core.model.process.INode;
 public class CLASS
 {
     private static String end_multiThread = "((java.util.Map) threadLocal.get()).put(\"status\", \"end\");";
-    private static String end_singleThread = "status = \"end\";";
+    private static String end_singleThread = "if(!\"failure\".equals(status)) { status = \"end\"; }";
     private static String failure_multiThread = "((java.util.Map) threadLocal.get()).put(\"status\", \"failure\");";
     private static String failure_singleThread = "status = \"failure\";";
     private static String errorCode_multiThread = "((java.util.Map) threadLocal.get()).put(\"errorCode\", null);";
