@@ -38,14 +38,13 @@ imports="
 	String exConn= "conn_" + connection;
 	String exConnBaseDN = "connBaseDN_" + connection;
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
-	String protocol = "";
 %>
 	String baseDN_<%=cid%> = "";
 <%
 if(("false").equals(useExistingConn)){
 	String host=ElementParameterParser.getValue(node, "__HOST__");
 	String port=ElementParameterParser.getValue(node, "__PORT__");
-	protocol=ElementParameterParser.getValue(node, "__PROTOCOL__");
+	String protocol=ElementParameterParser.getValue(node, "__PROTOCOL__");
 	String advanced=ElementParameterParser.getValue(node, "__ADVANCEDCA__");
 	String storepath=ElementParameterParser.getValue(node, "__STORECA__");
 	String storepwd = ElementParameterParser.getValue(node, "__STORECAPWD__");
@@ -112,12 +111,6 @@ if(("false").equals(useExistingConn)){
 <%
 	}
 }else{
-	List<? extends INode> nodes = node.getProcess().getGraphicalNodes();
-    for(INode targetNode : nodes){
-    	if (targetNode.getUniqueName().equals(connection)) {
-	      protocol = ElementParameterParser.getValue(targetNode, "__PROTOCOL__");
-	    }
-    }
 %>
 	javax.naming.ldap.InitialLdapContext ctx_<%=cid%> = (javax.naming.ldap.InitialLdapContext)globalMap.get("<%=exConn%>");
 	baseDN_<%=cid%> = (String)globalMap.get("<%=exConnBaseDN%>");
@@ -260,14 +253,7 @@ do {
     				if(attrStr_<%=cid%>.length()>0){
     					attrStr_<%=cid%>.append(<%=separator%>);
     				}
-					<%if("userpassword".equals(column.getOriginalDbColumnName().toLowerCase()) && "LDAP".equals(protocol)){%>
-	    				if(attrs_<%=cid%>.get("userPassword") !=null){
-	    					byte[] b_pwd_<%=cid%>  =(byte[])e_<%=cid%>.next();
-							attrStr_<%=cid%>.append(new String(b_pwd_<%=cid%>,defaultCharset));
-		    			}
-	    			<%}else{%>
-	    					attrStr_<%=cid%>.append(e_<%=cid%>.next().toString());
-	    			<%}%>
+    				attrStr_<%=cid%>.append(e_<%=cid%>.next().toString());
     			}
     			<%=conn.getName() %>.<%=column.getLabel() %> = attrStr_<%=cid%>.toString();
 			} else {
