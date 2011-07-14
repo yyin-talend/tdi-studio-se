@@ -110,6 +110,13 @@
 			<DEFAULT>"filename.suffix"</DEFAULT>
 		</PARAMETER>
 		
+		<PARAMETER NAME="MODE" FIELD="CLOSED_LIST" NUM_ROW="71" SHOW_IF="((USE_EXISTING_CONNECTION == 'true') AND (#LINK@NODE.CONNECTION.SFTP == 'false') AND (#LINK@NODE.CONNECTION.FTPS == 'false')) OR ((USE_EXISTING_CONNECTION == 'false') AND (SFTP=='false'))">
+	      <ITEMS DEFAULT="ascii">
+	     	<ITEM NAME="ASCII"  VALUE="ascii" />
+	        <ITEM NAME="BINARY"  VALUE="binary" />        
+	      </ITEMS>
+	    </PARAMETER>
+		
 	    <PARAMETER NAME="SFTP" FIELD="CHECK" NUM_ROW="80" REPOSITORY_VALUE="SFTP" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 	      <DEFAULT>false</DEFAULT>
 	    </PARAMETER>

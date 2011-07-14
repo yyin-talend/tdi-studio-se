@@ -37,6 +37,7 @@ String connectMode = ElementParameterParser.getValue(node, "__CONNECT_MODE__");
 String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 String conn= "conn_" + connection;
 String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+String mode = ElementParameterParser.getValue(node, "__MODE__");
 boolean MD5 = new Boolean(ElementParameterParser.getValue(node, "__MD5__"));
 boolean sftp = false;
 
@@ -169,6 +170,15 @@ if (sftp) {
     ftp_<%=cid %>.connect();
     ftp_<%=cid %>.login(<%=username %>, <%=password %>);
   <%}%>
+  <%
+  //add feature 19709,add the "Transfer mode" option,
+  //the default transfer mode is ASCII,we don't change the mode when ascii is choosed.
+  if("binary".equalsIgnoreCase(mode)){
+  %>
+  	ftp_<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.BINARY);
+  <%
+  }
+  %>
   String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\", "/");
   <%=outputConnName %> = new <%=outputConnName %>Struct();
   String remoteFile_<%=cid %> = <%=remoteDir %> + "/" + <%=filename%>;
