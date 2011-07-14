@@ -457,7 +457,9 @@ private class TalendException extends Exception {
 								%>
 								errorCode = null;
 								<%=conn.getTarget().getUniqueName() %>Process(globalMap);
-								status="end";
+								if(!"failure".equals(status)) {
+									status="end";
+								}
 								<%
 							}
 							%>
@@ -527,7 +529,9 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 %>
 					errorCode = null;
 					<%=conn.getTarget().getUniqueName() %>Process(globalMap);
-					status="end";
+					if(!"failure".equals(status)) {
+						status="end";
+					}
 <%
 					}
 %>
