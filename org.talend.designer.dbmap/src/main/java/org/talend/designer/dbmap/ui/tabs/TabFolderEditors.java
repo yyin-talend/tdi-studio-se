@@ -83,6 +83,7 @@ public class TabFolderEditors extends CTabFolder {
 
             public void handleEvent(Event event) {
                 lastSelectedTab = tabFolderEditors.getSelectionIndex();
+                mapperManager.getUiManager().refreshSqlExpression();
             }
         });
         tabFolderEditors.setSelection(0);

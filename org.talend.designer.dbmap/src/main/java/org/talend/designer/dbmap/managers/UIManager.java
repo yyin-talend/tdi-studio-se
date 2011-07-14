@@ -1695,18 +1695,20 @@ public class UIManager extends AbstractUIManager {
      * Refresh Sql select query in the bottom tab and its title.
      */
     public void refreshSqlExpression() {
-        mapperManager.getComponent().restoreMapperModelFromInternalData();
-        OutputDataMapTableView selectedOutputTableView = getCurrentSelectedOutputTableView();
-        if (selectedOutputTableView == null) {
+        if (getTabFolderEditors().getSelectionIndex() == 2) {
+            mapperManager.getComponent().restoreMapperModelFromInternalData();
+            OutputDataMapTableView selectedOutputTableView = getCurrentSelectedOutputTableView();
+            if (selectedOutputTableView == null) {
 
-        } else {
-            IDataMapTable dataMapTable = selectedOutputTableView.getDataMapTable();
-            String tableName = dataMapTable.getName();
-            DbGenerationManager generationMnager = mapperManager.getComponent().getGenerationManager();
-            String sql = generationMnager.buildSqlSelect(mapperManager.getComponent(), tableName);
-            getTabFolderEditors().getItem(2).setText(
-                    Messages.getString("TabFolderEditors.SqlSelectQuery", new Object[] { tableName })); //$NON-NLS-1$
-            getTabFolderEditors().getStyledSqlText().setText(sql);
+            } else {
+                IDataMapTable dataMapTable = selectedOutputTableView.getDataMapTable();
+                String tableName = dataMapTable.getName();
+                DbGenerationManager generationMnager = mapperManager.getComponent().getGenerationManager();
+                String sql = generationMnager.buildSqlSelect(mapperManager.getComponent(), tableName);
+                getTabFolderEditors().getItem(2).setText(
+                        Messages.getString("TabFolderEditors.SqlSelectQuery", new Object[] { tableName })); //$NON-NLS-1$
+                getTabFolderEditors().getStyledSqlText().setText(sql);
+            }
         }
     }
 
