@@ -237,7 +237,11 @@ do {
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						if(javaType == JavaTypesManager.BYTE_ARRAY){
 %>
-							<%=conn.getName() %>.<%=column.getLabel() %> = (byte[])attrs_<%=cid%>.get("<%=column.getOriginalDbColumnName()%>").get();
+							if(attrs_<%=cid%>.get("<%=column.getOriginalDbColumnName()%>") !=null){
+                            	<%=conn.getName() %>.<%=column.getLabel() %> = (byte[])attrs_<%=cid%>.get("<%=column.getOriginalDbColumnName()%>").get();
+    						} else {
+                           		<%=conn.getName() %>.<%=column.getLabel() %> = null;
+    						}
 <%
 						}else{
 							if("dn".equals(column.getLabel().toLowerCase())){
