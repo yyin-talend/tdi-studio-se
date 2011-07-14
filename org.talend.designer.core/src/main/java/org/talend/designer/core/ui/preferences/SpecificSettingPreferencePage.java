@@ -18,6 +18,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 
 public class SpecificSettingPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
@@ -34,6 +35,9 @@ public class SpecificSettingPreferencePage extends FieldEditorPreferencePage imp
     protected void createFieldEditors() {
         addField(new BooleanFieldEditor(IRepositoryPrefConstants.ALLOW_SPECIFIC_CHARACTERS_FOR_SCHEMA_COLUMNS,
                 "Allow specific characters (UTF8,...) for columns of schemas", getFieldEditorParent()));
+
+        addField(new BooleanFieldEditor(ITalendCorePrefConstants.FORBIDDEN_MAPPING_LENGTH_PREC_LOGIC,
+                "Forbidden mappingfile length and precision logic", getFieldEditorParent()));
 
     }
 
