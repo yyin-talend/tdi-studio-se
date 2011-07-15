@@ -33,6 +33,7 @@
 	System.err.println(<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
 	globalMap.put("<%=cid %>_DIE_MESSAGE", <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
 	currentComponent = "<%=cid %>";
+	status = "failure";
     <%
     if(isRunInMultiThread ){
     %>
