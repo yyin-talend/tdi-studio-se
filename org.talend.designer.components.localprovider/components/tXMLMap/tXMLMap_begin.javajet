@@ -528,6 +528,17 @@ class TreeNode_API_<%=cid %> {
 		}
 	}
 	
+	boolean hasDocumentInMainInputTable = false;
+	if(mainInputTable != null) {
+		for(TreeNode tmpNode : mainInputTable.getNodes()){
+			if("id_Document".equals(tmpNode.getType())) {
+				hasDocumentInMainInputTable = true;
+				//This boolean when there is a document in the main input table schema.
+				break;
+			}
+		}
+	}
+	
 	class FindNodeUtil{
 		
 		TreeNode findLoopPathNode(TreeNode node){
@@ -590,11 +601,13 @@ class TreeNode_API_<%=cid %> {
 				generateMethodUtil.generateCode(tmpNode, cid); // begin part keep this part
 %>
 				TreeNode_API_<%=cid %> treeNodeAPI_<%=cid %> = new TreeNode_API_<%=cid %>();
-				int nb_line_<%=cid%> = 0; 
 				NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
-<%
+<%	
 			}
 		}
+%>
+		int nb_line_<%=cid%> = 0; 
+<%		
     }
 
 %>
@@ -920,8 +933,15 @@ for(OutputXmlTree outputTable : outputTables) {
 			index+=1;
 %>
 class GenerateDocument_<%=tableName %> {
-	
-	TreeNode_API_<%=cid %> treeNodeAPI = null;
+
+<%
+	if(hasDocumentInMainInputTable) {
+		//We generate the TreeNode_API object only if there is a document in the schema.
+%>
+		TreeNode_API_<%=cid %> treeNodeAPI = null;
+<%
+	}
+%>
 	
 	org.dom4j.Document doc = null;
 	
@@ -963,7 +983,8 @@ XMLMapUtil xmu = new XMLMapUtil();
     	return this.doc;
     }
 	
-    void generateElements (TreeNode_API_<%=cid %> treeNodeAPI,boolean isInnerJoin<%
+	//We generate the TreeNode_API object only if there is a document in the main input table.
+    void generateElements(<%if(hasDocumentInMainInputTable){%>TreeNode_API_<%=cid %> treeNodeAPI,<%}%>boolean isInnerJoin<%
 		%><%=xmu.createSignature(node, false) %><%
 	
 		for (VarTable var : varTables) {

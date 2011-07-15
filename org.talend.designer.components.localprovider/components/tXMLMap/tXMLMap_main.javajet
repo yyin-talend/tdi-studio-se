@@ -57,7 +57,7 @@ skeleton="tXMLMap_java.skeleton"
 	boolean isXpathFromLookup = true;
 	boolean isExpressionEmpty = true;
 	boolean hasOutgoingConnection = false;
-	boolean containDocType = false;
+	boolean hasDocumentInMainInputTable = false;
 	boolean isPlainNode = true;
 	boolean isPlainNodeInLookup = false;
 	int lookupTableCount = 0;
@@ -142,7 +142,7 @@ skeleton="tXMLMap_java.skeleton"
 			
 			matchXmlTreeExpr = new MatchXmlTreeExpr(tmpNode, cid);
 			if(("id_Document").equals(tmpNode.getType())) { // find the type:document node.
-				containDocType = true;
+				hasDocumentInMainInputTable = true;
 				//find the loop path
 				FindNodeUtil findUtil = new FindNodeUtil();
 				TreeNode loopNode = findUtil.findLoopPathNode(tmpNode);
@@ -347,7 +347,7 @@ for(OutputTreeNode tableEntry : tableEntries) {
 		}
 %>
 
-<%	} else if(isXpathFromLookup && containDocType ){ %>
+<%	} else if(isXpathFromLookup && hasDocumentInMainInputTable ){ %>
 <%
 		if(!isInnerJoinReject && !isOutputReject) {
 %>
@@ -383,7 +383,7 @@ for(OutputTreeNode tableEntry : tableEntries) {
 			hasDocumentGlobal = true;
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(tableEntry.getType(), tableEntry.isNullable());
 %>
-			gen_Doc_<%=table.getName() %>_<%=cid %>.generateElements(treeNodeAPI_<%=cid %>,<%= rejectedDocInnerJoin %>
+			gen_Doc_<%=table.getName() %>_<%=cid %>.generateElements(<%if(hasDocumentInMainInputTable){%>treeNodeAPI_<%=cid %>,<%}%><%= rejectedDocInnerJoin %>
 		
 		<%
 		for (InputXmlTree inputTable: inputTables) {
@@ -437,7 +437,7 @@ for(OutputTreeNode tableEntry : tableEntries) {
 
 <%	if(!isXpathFromLookup){%>
 } // end for rejection
-<% } else if(isXpathFromLookup && containDocType ){%>
+<% } else if(isXpathFromLookup && hasDocumentInMainInputTable ){%>
 } // end for doc rejection
 <% } %>
 <%
@@ -459,10 +459,6 @@ for(OutputTreeNode tableEntry : tableEntries) {
 }// end var
 <%	if(!isXpathFromLookup){%>
 	<%=rejectedInnerJoin %> = false;
-<% } %>
-<%
-if((isXpathFromLookup || hasOutgoingConnection) && containDocType && !isPlainNode){%>
-
 <% } %>
 
 <%
