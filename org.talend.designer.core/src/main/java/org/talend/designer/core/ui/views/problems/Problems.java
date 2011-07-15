@@ -347,8 +347,9 @@ public class Problems {
         }
         for (Problem problem : problemList) {
             /* use id and version to filter the problems,see bug 20560 */
+            // if problem not instanceof TalendProblem ,node don't operate it.for bug 23088
             if (problem.getJobInfo() != null && problem.getJobInfo().getJobId() != null
-                    && problem.getJobInfo().getJobId().equals(process.getId())) {
+                    && problem.getJobInfo().getJobId().equals(process.getId()) && !(problem instanceof TalendProblem)) {
                 if (problem.getJobInfo().getJobVersion() != null
                         && problem.getJobInfo().getJobVersion().equals(process.getVersion())) {
                     if (problem.getNodeName() == null) {
