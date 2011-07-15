@@ -2688,7 +2688,7 @@ public class Node extends Element implements IGraphicalNode {
         } else {
             mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
         }
-
+        List<INodeConnector> mainConnectors = this.getConnectorsFromType(EConnectionType.FLOW_MAIN);
         if (mainConnector != null && !isExternalNode()) {
             IMetadataTable table = getMetadataFromConnector(mainConnector.getName());
 
@@ -2717,6 +2717,49 @@ public class Node extends Element implements IGraphicalNode {
                         String errorMessage = Messages.getString("Node.noSchemaDefined"); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         noSchema = true;
+                    }
+                }
+                // see bug 22089:the getConnectorFromType() method,same connector type,but different connectors.In case
+                // the filterRow like these specail components,the connector is not correct,we add the
+                // input/output schema check on it
+                for (INodeConnector nodeConnector : mainConnectors) {
+                    mainConnector = nodeConnector;
+                    if ((mainConnector.getMaxLinkInput() != 0) && (mainConnector.getMaxLinkOutput() != 0)) {
+                        IConnection inputConnecion = null;
+                        IMetadataTable inputMeta = null;
+                        for (IConnection connection : inputs) {
+                            if (connection.isActivate()
+                                    && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle()
+                                            .equals(EConnectionType.TABLE))) {
+                                inputMeta = connection.getMetadataTable();
+                                inputConnecion = connection;
+                            }
+                        }
+                        if (inputMeta != null) {
+                            if (mainConnector != null
+                                    && ((mainConnector.getMaxLinkInput() != 0 && mainConnector.getMaxLinkOutput() != 0))
+                                    && (!table
+                                            .sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
+                                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE
+                                                    | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN
+                                                    | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE
+                                                    | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                                    | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
+                                if (!table.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)
+                                        && table.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_LENGTH)) {
+                                    String warningMessage = Messages.getString("Node.lengthDiffWarning", //$NON-NLS-1$
+                                            inputConnecion.getName());
+                                    Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                                } else {
+                                    schemaSynchronized = false;
+                                    String errorMessage = Messages.getString(
+                                            "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
+                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                }
+                            }
+                        }
                     }
                 }
             } else {
