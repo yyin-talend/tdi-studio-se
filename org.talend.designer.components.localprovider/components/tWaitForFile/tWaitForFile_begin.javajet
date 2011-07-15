@@ -93,6 +93,22 @@
 
                 return list;
             }
+<%
+			if(("filecreated").equals(triggerAction) || ("fileall").equals(triggerAction)) {
+%>
+			java.util.List<java.io.File> getCreatedFiles(java.util.List<java.io.File> originalFiles, java.util.List<java.io.File> fetchOneTimeFiles) {
+				java.util.List<java.io.File> newCreatedFiles = new java.util.ArrayList<java.io.File>();
+				for(java.io.File file: fetchOneTimeFiles){
+					if(!originalFiles.contains(file)){
+						newCreatedFiles.add(file);
+					}
+				}
+				return newCreatedFiles;
+			}
+			
+<%
+			}
+%>
             <%
             if(("fileupdated").equals(triggerAction) || ("fileall").equals(triggerAction)) {
                 %>
@@ -175,12 +191,17 @@
             <%
             if(("filecreated").equals(triggerAction)) {
                 %>
-                for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
-                    if(!originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
+                java.util.List<java.io.File> newCreatedFiles_<%=cid %> = util_<%=cid %>.getCreatedFiles(originalFiles_<%=cid%>,fetchFilesOneTime_<%=cid%>);
+                // a sign: when there are created files, it is true, when find one of the created file, it should set to false
+                boolean isExistCreated_<%=cid %> = !newCreatedFiles_<%=cid %>.isEmpty();
+                while(isExistCreated_<%=cid %>) {
+                	for ( int i=0; i< newCreatedFiles_<%=cid %>.size(); i++) {
+						java.io.File file_<%=cid %> = newCreatedFiles_<%=cid %>.get(i);
            	<%	
    				//fix bug 22123,if we can rename the filename,that means no other program is using the file.
            		if(waitRelease){
            	%>
+           				Thread.sleep(200);
            				java.io.File tempfile=new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile");
                     	if(file_<%=cid %>.renameTo(tempfile)){
                     		tempfile.renameTo(file_<%=cid %>);
@@ -192,12 +213,12 @@
             %>
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
-                        found_<%=cid %> = true;      
+                        found_<%=cid %> = true;
+                        isExistCreated_<%=cid %> = false;      
                         originalFiles_<%=cid %>.add(file_<%=cid %>);              
                         break;
                     }
                 }
-               // originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
                 <%
             } else if(("filedeleted").equals(triggerAction)) {
                 %>
@@ -210,7 +231,6 @@
                         break;
                     }
                 }
-               // originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
                 <%
             } else if(("fileupdated").equals(triggerAction)) {
                 %>
@@ -221,11 +241,6 @@
                         globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
                        	found_<%=cid %> = true;
                         originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid%>), file_<%=cid %>);
-                        /*originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
-                        originalMap_<%=cid%>.clear();
-                        for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
-                            originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
-                        } */    
                         break;                        
                     }
             	<%}else{%>
@@ -252,22 +267,21 @@
                         found_<%=cid %> = true;
                         if(fetchFilesOneTime_<%=cid %>.size() != originalFiles_<%=cid %>.size()) {
                         originalFiles_<%=cid %>.remove(file_<%=cid %>);
-                            /*originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
-                            originalMap_<%=cid%>.clear();
-                            for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
-                                originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
-                            }*/
                         }
-                        //fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();                        
                         break;
                     }
                 }
-                for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
-                    if(!originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
+                java.util.List<java.io.File> newCreatedFiles_<%=cid %> = util_<%=cid %>.getCreatedFiles(originalFiles_<%=cid%>,fetchFilesOneTime_<%=cid%>);
+                // a sign: when there are created files, it is true, when find one of the created file, it should set to false
+                boolean isExistCreated_<%=cid %> = !newCreatedFiles_<%=cid %>.isEmpty();
+                while(isExistCreated_<%=cid %>) {
+                	for ( int i=0; i< newCreatedFiles_<%=cid %>.size(); i++) {
+						java.io.File file_<%=cid %> = newCreatedFiles_<%=cid %>.get(i);
            	<%	
    				//fix bug 22123,if we can rename the filename,that means no other program is using the file.
            		if(waitRelease){
            	%>
+           				Thread.sleep(200);
            				java.io.File tempfile=new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile");
                     	if(file_<%=cid %>.renameTo(tempfile)){
                     		tempfile.renameTo(file_<%=cid %>);
@@ -280,13 +294,8 @@
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
-                        originalFiles_<%=cid %>.add(file_<%=cid %>);
-                        /*originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
-                        originalMap_<%=cid%>.clear();
-                        for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
-                            originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
-                        }
-                        fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();       */             
+                        isExistCreated_<%=cid %> = false;
+                        originalFiles_<%=cid %>.add(file_<%=cid %>);           
                         break;
                     }
                 }
@@ -295,12 +304,7 @@
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
-                        originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid %>), file_<%=cid %>);//occur repeat value
-                       /* originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
-                        originalMap_<%=cid%>.clear();
-                        for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
-                            originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
-                        }   */                 
+                        originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid %>), file_<%=cid %>);//occur repeat value              
                         break;
                     }
                 }               
@@ -320,7 +324,7 @@
             globalMap.put("<%=cid %>_CURRENT_ITERATION", count_<%=cid %>);
             
             if (!found_<%=cid %>) {
-            	Thread.currentThread().sleep(<%=ElementParameterParser.getValue(node, "__WAIT__")%> * 1000);
+            	Thread.sleep(<%=ElementParameterParser.getValue(node, "__WAIT__")%> * 1000);
                 continue;
             }            
 
