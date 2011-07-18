@@ -111,7 +111,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					nb_line_<%=cid%> ++;
 
 					qr_<%=cid%> = sfMgr_<%=cid%>.queryAll("SELECT " + "<%=fieldlist%>" + " FROM " + "<%=module%>" + " WHERE Id = '"+dr_<%=cid%>.getId().getID()+"'",250);
-        			for(int i_<%=cid%> = 0; i_<%=cid%> < qr_<%=cid %>.getRecords().length; i_<%=cid%>++){
+					if(qr_<%=cid %>.getSize()>0){
+					
+        			 for(int i_<%=cid%> = 0; i_<%=cid%> < qr_<%=cid %>.getRecords().length; i_<%=cid%>++){
         				org.apache.axiom.om.OMElement[] fields_<%=cid %> = qr_<%=cid %>.getRecords()[i_<%=cid%>].getExtraElement();
 
 						int len_<%=cid%> = fields_<%=cid %>.length;
@@ -152,7 +154,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 							
 						}
 %>
-					}		
+					 }
+					} 		
 					<%=outgoingConn.getName()%>.Id = dr_<%=cid%>.getId().getID();
 <%
 			}
