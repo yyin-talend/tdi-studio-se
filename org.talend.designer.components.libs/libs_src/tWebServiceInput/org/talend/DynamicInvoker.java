@@ -107,6 +107,7 @@ public class DynamicInvoker {
         // Start by reading in the WSDL using Parser
         wsdlParser = new Parser();
         // System.out.println("Reading WSDL document from '" + wsdlURL + "'");
+        // wsdlParser.setTimeout(timeout * 1000);
         wsdlParser.run(wsdlURL);
     }
 

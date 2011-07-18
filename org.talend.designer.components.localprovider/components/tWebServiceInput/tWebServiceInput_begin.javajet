@@ -59,117 +59,121 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if(method != null && !("\"runJob\"").equals(method.trim())) {
 %>
 /////////////////////////////////// 
-        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
-        Object[] params_<%=cid %> = new Object[] {
-        <%=endpoint %>, 
-        <%=method %>,      
-<%
-        for (int i = 0; i < params.size(); i++) {
-            Map<String, String> line = params.get(i);
-%>
-        <%= line.get("VALUE") %>,
-<%
-        }
-%>      
-        };
-<% 
-		if (needSSLtoTrustServer) {
-%>   
-        System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
-
-		System.setProperty("javax.net.ssl.trustStore", <%=trustStoreFile %>);
-		System.setProperty("javax.net.ssl.trustStorePassword", <%=trustStorePassword %>);
-<% 
-		}
-		if (needAuth&&!winAuth) {
-%>        	   
-        org.talend.DynamicInvoker.setAuth(true, <%=username %>, <%=password %>); 		
-<%
-  		}
-  		if (needAuth&&winAuth){
-  			String domain_username = "\""+TalendTextUtils.removeQuotes(domain)+"\\\\"+TalendTextUtils.removeQuotes(username)+"\"";
-%>
-		org.talend.DynamicInvoker.setWINAuth(true, <%=domain_username %>, <%=password %>); 	  		
-<%
-  		}
-		if (useProxy) {
-%>  
-		org.talend.DynamicInvoker.setHttpProxy(true, <%=proxuHost %>, <%=proxyPort %>, <%=proxuUser %>, <%=proxyPassword%>); 
-<%
-  		}
-%> 
-		org.talend.DynamicInvoker.setTimeOut(<%=timeout %>);
+	        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
+	        Object[] params_<%=cid %> = new Object[] {
+	        <%=endpoint %>, 
+	        <%=method %>,      
+				<%
+		        for (int i = 0; i < params.size(); i++) {
+		            Map<String, String> line = params.get(i);
+				%>
+		    	    <%= line.get("VALUE") %>,
+				<%
+		        }
+				%>      
+	        };
+			<% 
+			if (needSSLtoTrustServer) {
+			%>   
+		        System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
 		
- 		org.talend.DynamicInvoker.main(params_<%=cid %>);
- 		java.util.Map result = org.talend.DynamicInvoker.getResult();
+				System.setProperty("javax.net.ssl.trustStore", <%=trustStoreFile %>);
+				System.setProperty("javax.net.ssl.trustStorePassword", <%=trustStorePassword %>);
+			<% 
+			}
+			if (needAuth&&!winAuth) {
+			%>        	   
+        		org.talend.DynamicInvoker.setAuth(true, <%=username %>, <%=password %>); 		
+			<%
+  			}
+  			if (needAuth&&winAuth){
+  				String domain_username = "\""+TalendTextUtils.removeQuotes(domain)+"\\\\"+TalendTextUtils.removeQuotes(username)+"\"";
+				%>
+				org.talend.DynamicInvoker.setWINAuth(true, <%=domain_username %>, <%=password %>); 	  		
+			<%
+  			}
+			if (useProxy) {
+			%>  
+				org.talend.DynamicInvoker.setHttpProxy(true, <%=proxuHost %>, <%=proxyPort %>, <%=proxuUser %>, <%=proxyPassword%>); 
+			<%
+  			}
+			%> 
+			org.talend.DynamicInvoker.setTimeOut(<%=timeout %>);
+		
+	 		org.talend.DynamicInvoker.main(params_<%=cid %>);
+	 		java.util.Map result = org.talend.DynamicInvoker.getResult();
+	        
+	        Object[] results_<%=cid %> = null;
+		    int nb_line_<%=cid %> = 0;
+		
+	        for (Object key : result.keySet()) {
         
-        Object[] results_<%=cid %> = null;
-	    int nb_line_<%=cid %> = 0;
-	
-        for (Object key : result.keySet()) {
-        
-           results_<%=cid %> = new Object[<%=listColumns.size()==0? 1 : listColumns.size()%>];
-            
-           Object value = result.get(key);
-           if (value instanceof Object[]){
-                Object[] objArr_<%=cid %> = (Object[])value;
-                int len_<%=cid %> = Math.min(objArr_<%=cid %>.length, results_<%=cid %>.length);
-                int k_<%=cid %> = 0;
-                for (int i_<%=cid %> = 0; i_<%=cid %> < len_<%=cid %>; i_<%=cid %>++ ) {
-                    results_<%=cid %>[k_<%=cid %>] = objArr_<%=cid %>[k_<%=cid %>];
-                }
+	           results_<%=cid %> = new Object[<%=listColumns.size()==0? 1 : listColumns.size()%>];
+	            
+	           Object value = result.get(key);
+	           if (value instanceof Object[]){
+	                Object[] objArr_<%=cid %> = (Object[])value;
+	                int len_<%=cid %> = Math.min(objArr_<%=cid %>.length, results_<%=cid %>.length);
+	                int k_<%=cid %> = 0;
+	                for (int i_<%=cid %> = 0; i_<%=cid %> < len_<%=cid %>; i_<%=cid %>++ ) {
+	                    results_<%=cid %>[k_<%=cid %>] = objArr_<%=cid %>[k_<%=cid %>];
+	                }
                 
-          } else if (value instanceof java.util.List) {
-                java.util.List list_<%=cid %> = (java.util.List)value;
-                int len_<%=cid %> = Math.min(list_<%=cid %>.size(), results_<%=cid %>.length);
-                int k_<%=cid %> = 0;
-                for (java.util.Iterator iter_<%=cid %> = list_<%=cid %>.iterator(); iter_<%=cid %>.hasNext() && k_<%=cid %> < len_<%=cid %>; k_<%=cid %>++) {
-                    results_<%=cid %>[k_<%=cid %>] = iter_<%=cid %>.next();
-                }
+		        } else if (value instanceof java.util.List) {
+		        	java.util.List list_<%=cid %> = (java.util.List)value;
+		            int len_<%=cid %> = Math.min(list_<%=cid %>.size(), results_<%=cid %>.length);
+		            int k_<%=cid %> = 0;
+		            for (java.util.Iterator iter_<%=cid %> = list_<%=cid %>.iterator(); iter_<%=cid %>.hasNext() && k_<%=cid %> < len_<%=cid %>; k_<%=cid %>++) {
+		            	results_<%=cid %>[k_<%=cid %>] = iter_<%=cid %>.next();
+		            }
                                 
-            } else if (value instanceof java.util.Map) {                
-				java.util.Map map_<%=cid %> = (java.util.Map)value;
-                java.util.Collection values_<%=cid %> = map_<%=cid %>.values();
-                int len_<%=cid %> = Math.min(values_<%=cid %>.size(), results_<%=cid %>.length);
-                int k_<%=cid %> = 0;
-                for (java.util.Iterator iter_<%=cid %> = values_<%=cid %>.iterator(); iter_<%=cid %>.hasNext() && k_<%=cid %> < len_<%=cid %>; k_<%=cid %>++) {
-                    results_<%=cid %>[k_<%=cid %>] = iter_<%=cid %>.next();
-                }
+           		} else if (value instanceof java.util.Map) {                
+					java.util.Map map_<%=cid %> = (java.util.Map)value;
+	                java.util.Collection values_<%=cid %> = map_<%=cid %>.values();
+	                int len_<%=cid %> = Math.min(values_<%=cid %>.size(), results_<%=cid %>.length);
+	                int k_<%=cid %> = 0;
+	                for (java.util.Iterator iter_<%=cid %> = values_<%=cid %>.iterator(); iter_<%=cid %>.hasNext() && k_<%=cid %> < len_<%=cid %>; k_<%=cid %>++) {
+	                    results_<%=cid %>[k_<%=cid %>] = iter_<%=cid %>.next();
+	                }
 
-            } else if (value instanceof org.w3c.dom.Element) {
-                results_<%=cid %>[0] = org.apache.axis.utils.XMLUtils.ElementToString((org.w3c.dom.Element)value);
+            	} else if (value instanceof org.w3c.dom.Element) {
+                	results_<%=cid %>[0] = org.apache.axis.utils.XMLUtils.ElementToString((org.w3c.dom.Element)value);
                 
-            }else if (value instanceof org.apache.axis.types.Schema){
-                org.apache.axis.types.Schema schema_<%=cid %> = (org.apache.axis.types.Schema) value;
-                org.apache.axis.message.MessageElement[] _any_<%=cid %> = schema_<%=cid %>.get_any();
-                for (int s_<%=cid %> = 0; s_<%=cid %> < _any_<%=cid %>.length; s_<%=cid %>++) {
-                    results_<%=cid %>[s_<%=cid %>] = _any_<%=cid %>[s_<%=cid %>].toString();
-                }	
-                
-            } else {
-			    results_<%=cid %>[0] = value;
-            }
+	            }else if (value instanceof org.apache.axis.types.Schema){
+	                org.apache.axis.types.Schema schema_<%=cid %> = (org.apache.axis.types.Schema) value;
+	                org.apache.axis.message.MessageElement[] _any_<%=cid %> = schema_<%=cid %>.get_any();
+	                for (int s_<%=cid %> = 0; s_<%=cid %> < _any_<%=cid %>.length; s_<%=cid %>++) {
+	                    results_<%=cid %>[s_<%=cid %>] = _any_<%=cid %>[s_<%=cid %>].toString();
+	                }	
+	                
+	            } else {
+				    results_<%=cid %>[0] = value;
+	            }
             
-<%} else { %>
-        Object[] results_<%=cid %> = null;
-	    int nb_line_<%=cid %> = 0;
-	    
-        org.talend.TalendJob talendJob_<%=cid%> = new org.talend.TalendJobProxy(<%=endpoint %>);
-        String[][] runJob_<%=cid%> = talendJob_<%=cid%>.runJob(new String[]{
-<%
-        for (int i = 0; i < params.size(); i++) {
-            Map<String, String> line = params.get(i);
-%>
-        <%= line.get("VALUE") %>,
-<%
-        }
-%> 
-        });
-        for (String[] item_<%=cid%> : runJob_<%=cid%>) {
-			results_<%=cid %> = item_<%=cid%>;
-<%}%>            
+		<%} else { %>
+	        Object[] results_<%=cid %> = null;
+		    int nb_line_<%=cid %> = 0;
+		    
+		    org.talend.TalendJobHTTPClientConfiguration clientConfig_<%=cid%> = new org.talend.TalendJobHTTPClientConfiguration();
+			clientConfig_<%=cid%>.setTimeout(<%=timeout %>);
+			
+	        org.talend.TalendJob talendJob_<%=cid%> = new org.talend.TalendJobProxy(<%=endpoint %>);
+			talendJob_<%=cid%>.setClientConfig(clientConfig_<%=cid%>);	        
+	        String[][] runJob_<%=cid%> = talendJob_<%=cid%>.runJob(new String[]{
+			<%
+	        for (int i = 0; i < params.size(); i++) {
+	            Map<String, String> line = params.get(i);
+				%>
+        		<%= line.get("VALUE") %>,
+			<%
+        	}
+			%> 
+        	});
+	        for (String[] item_<%=cid%> : runJob_<%=cid%>) {
+				results_<%=cid %> = item_<%=cid%>;
+		<%}%>            
 	
-           nb_line_<%=cid %>++;
+        nb_line_<%=cid %>++;
 	       
 // for output
 <%
