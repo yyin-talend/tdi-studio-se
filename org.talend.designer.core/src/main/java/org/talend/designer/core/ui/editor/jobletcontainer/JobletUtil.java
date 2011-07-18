@@ -18,6 +18,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
@@ -34,6 +35,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.ui.ISVNProviderService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.NodeConnector;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -423,6 +425,24 @@ public class JobletUtil {
                     if (((Node) node).isJoblet() && jobletItem.getProperty() != null) {
                         if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())) {
                             boolean haveLock = jobletItem.getState().isLocked();
+                            boolean isSvn = false;
+                            ISVNProviderService service = null;
+                            if (PluginChecker.isSVNProviderPluginLoaded()) {
+                                service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(
+                                        ISVNProviderService.class);
+                            }
+                            if (service != null && service.isProjectInSvnMode()) {
+                                isSvn = service.isProjectInSvnMode();
+                            }
+                            if (isSvn) {
+                                IProxyRepositoryService proxyService = (IProxyRepositoryService) GlobalServiceRegister
+                                        .getDefault().getService(IProxyRepositoryService.class);
+                                IProxyRepositoryFactory factory = proxyService.getProxyRepositoryFactory();
+                                ERepositoryStatus repositoryStatus = factory.getStatus(jobletItem);
+                                if (repositoryStatus == ERepositoryStatus.LOCK_BY_USER) {
+                                    haveLock = true;
+                                }
+                            }
                             if (haveLock) {
                                 return true;
                             }
