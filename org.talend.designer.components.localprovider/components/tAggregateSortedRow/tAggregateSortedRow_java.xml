@@ -43,6 +43,14 @@
     >
       <DEFAULT/> 
     </PARAMETER>
+	
+	<PARAMETER
+		NAME="NOTE"
+		FIELD="LABEL"
+		NUM_ROW="15"
+		>
+		<DEFAULT>( Enter the accurate number of input rows )</DEFAULT>
+	</PARAMETER>
     
     <PARAMETER NAME="ROW_COUNT" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="20">
