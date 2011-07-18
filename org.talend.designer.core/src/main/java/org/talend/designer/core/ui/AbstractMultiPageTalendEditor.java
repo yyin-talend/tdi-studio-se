@@ -254,6 +254,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             // if user discard change, restore property information, make it possible to remove error status
             Property property = processEditorInput.getItem().getProperty();
             property.getInformations().clear();
+            if (propertyInformation == null) {
+                propertyInformation = new ArrayList(property.getInformations());
+            }
             property.getInformations().addAll(propertyInformation);
             Problems.computePropertyMaxInformationLevel(property);
         }
