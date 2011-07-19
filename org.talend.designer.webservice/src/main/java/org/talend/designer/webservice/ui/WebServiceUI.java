@@ -375,7 +375,7 @@ public class WebServiceUI extends AbstractWebService {
                         if (!map.get("PARAMETERARRAYSIZE").equals(""))
                             arraySize = Integer.valueOf(map.get("PARAMETERARRAYSIZE"));
                     }
-                    if (map.get("PARAMETERINDEX") != null) {
+                    if (map.get("PARAMETERINDEX") != null && !map.get("PARAMETERINDEX").equals("")) {
                         paraIndex = map.get("PARAMETERINDEX");
                     }
                     if (!ele.equals("")) {
@@ -454,7 +454,7 @@ public class WebServiceUI extends AbstractWebService {
                         if (!map.get("PARAMETERARRAYSIZE").equals(""))
                             arraySize = Integer.valueOf(map.get("PARAMETERARRAYSIZE"));
                     }
-                    if (map.get("PARAMETERINDEX") != null) {
+                    if (map.get("PARAMETERINDEX") != null && !map.get("PARAMETERINDEX").equals("")) {
                         paraIndex = map.get("PARAMETERINDEX");
                     }
                     if (!ele.equals("")) {
