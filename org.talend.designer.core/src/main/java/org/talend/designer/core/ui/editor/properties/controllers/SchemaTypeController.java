@@ -926,7 +926,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     }
                     CompoundCommand cc = new CompoundCommand();
                     RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
-                            fullParamName, value, repositoryMetadata, null);
+                            fullParamName, value, repositoryMetadata, null, null);
                     changeMetadataCommand.setConnection(connection);
                     cc.add(changeMetadataCommand);
 
@@ -1138,7 +1138,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 cc.add(baseCommand);
             } else {
                 RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
-                        fullParamName, value, repositoryMetadata, newRepositoryIdValue);
+                        fullParamName, value, repositoryMetadata, newRepositoryIdValue, null);
                 changeMetadataCommand.setConnection(connection);
                 cc.add(changeMetadataCommand);
             }

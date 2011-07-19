@@ -106,7 +106,7 @@ public class ConvertRepositoryNodeToProcessNode {
         // change metadata command
         RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) node,
                 schemaParam.getName() + ":" //$NON-NLS-1$
-                        + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, table, null);
+                        + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, table, null, null);
         cc.add(changeMetadataCommand);
 
         // guess query command
