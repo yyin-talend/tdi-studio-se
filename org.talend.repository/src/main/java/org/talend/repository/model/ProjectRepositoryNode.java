@@ -1586,9 +1586,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private List<IRepositoryViewObject> getValidationRuleObjsFromSchema(String schema) {
         List<IRepositoryViewObject> objs = new ArrayList<IRepositoryViewObject>();
         try {
-            List<IRepositoryViewObject> members = new ArrayList<IRepositoryViewObject>();
-            getAllRepViewObjsByType(members, null, ERepositoryObjectType.METADATA_VALIDATION_RULES);
-            if (members != null) {
+            List<IRepositoryViewObject> members = factory.getAll(ERepositoryObjectType.METADATA_VALIDATION_RULES);
+            if (members != null && members.size() > 0) {
                 for (IRepositoryViewObject member : members) {
                     if (member != null && member.getProperty() != null) {
                         Item item = member.getProperty().getItem();
@@ -1607,25 +1606,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         }
 
         return objs;
-    }
-
-    private void getAllRepViewObjsByType(List<IRepositoryViewObject> objs, Container<String, IRepositoryViewObject> container,
-            ERepositoryObjectType type) throws PersistenceException {
-        if (objs == null)
-            objs = new ArrayList<IRepositoryViewObject>();
-        if (container == null)
-            container = factory.getMetadata(type);
-        if (container != null) {
-            List<IRepositoryViewObject> members = container.getMembers();
-            if (members != null && members.size() > 0)
-                objs.addAll(container.getMembers());
-            List<Container<String, IRepositoryViewObject>> subContainers = container.getSubContainer();
-            if (subContainers != null && subContainers.size() > 0) {
-                for (Container<String, IRepositoryViewObject> subContainer : subContainers) {
-                    getAllRepViewObjsByType(objs, subContainer, type);
-                }
-            }
-        }
     }
 
     private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryViewObject repObj,

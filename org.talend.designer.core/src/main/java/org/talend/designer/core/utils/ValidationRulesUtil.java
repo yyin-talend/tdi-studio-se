@@ -21,7 +21,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -85,18 +84,21 @@ public class ValidationRulesUtil {
         List<IRepositoryViewObject> rulesObjs = new ArrayList<IRepositoryViewObject>();
 
         if (schemaId != null) {
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
-                RootContainer<String, IRepositoryViewObject> validationRoot = factory
-                        .getMetadata(ERepositoryObjectType.METADATA_VALIDATION_RULES);
-                Set<String> set = validationRoot.absoluteKeySet();
-                for (String key : set) {
-                    IRepositoryViewObject obj = validationRoot.getAbsoluteMember(key);
-                    if (obj != null) {
-                        ValidationRulesConnectionItem rulesItem = (ValidationRulesConnectionItem) obj.getProperty().getItem();
-                        ValidationRulesConnection rulesConnection = (ValidationRulesConnection) rulesItem.getConnection();
-                        if (schemaId.equals(rulesConnection.getBaseSchema())) {
-                            rulesObjs.add(obj);
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                List<IRepositoryViewObject> members = factory.getAll(ERepositoryObjectType.METADATA_VALIDATION_RULES);
+                if (members != null && members.size() > 0) {
+                    for (IRepositoryViewObject member : members) {
+                        if (member != null && member.getProperty() != null) {
+                            Item item = member.getProperty().getItem();
+                            if (item != null && item instanceof ValidationRulesConnectionItem) {
+                                ValidationRulesConnectionItem validItem = (ValidationRulesConnectionItem) item;
+                                ValidationRulesConnection connection = (ValidationRulesConnection) validItem.getConnection();
+                                if (connection != null && schemaId.equals(connection.getBaseSchema())
+                                        && !rulesObjs.contains(member)) {
+                                    rulesObjs.add(member);
+                                }
+                            }
                         }
                     }
                 }
