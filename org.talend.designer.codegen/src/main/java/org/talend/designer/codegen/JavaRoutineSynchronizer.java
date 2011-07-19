@@ -216,12 +216,12 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            ProjectManager projectManager = ProjectManager.getInstance();
-            org.talend.core.model.properties.Project project = projectManager.getProject(routineItem);
-            initRoutineFolder(javaProject, project);
-            String routinesFolder = getRoutinesFolder(null);
+//            ProjectManager projectManager = ProjectManager.getInstance();
+//            org.talend.core.model.properties.Project project = projectManager.getProject(routineItem);
+            initRoutineFolder(javaProject, routineItem);
+            String routinesFolder = getRoutinesFolder(routineItem);
             if (!routineItem.isBuiltIn()) {
-                routinesFolder = getRoutinesFolder(project);
+                routinesFolder = getRoutinesFolder(routineItem);
             }
             IFile file = javaProject.getFile(routinesFolder + "/" //$NON-NLS-1$
                     + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
@@ -292,8 +292,8 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      * @param project
      * @throws CoreException
      */
-    private void initRoutineFolder(IProject javaProject, org.talend.core.model.properties.Project project) throws CoreException {
-        IFolder rep = javaProject.getFolder(getRoutinesFolder(null));
+    private void initRoutineFolder(IProject javaProject, RoutineItem item) throws CoreException {
+        IFolder rep = javaProject.getFolder(getRoutinesFolder(item));
         if (!rep.exists()) {
             rep.create(true, true, null);
         }
@@ -312,9 +312,9 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
-    private String getRoutinesFolder(org.talend.core.model.properties.Project project) {
+    private String getRoutinesFolder(RoutineItem routineItem) {
         String routinesPath = JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
-                + JavaUtils.JAVA_ROUTINES_DIRECTORY;
+                + routineItem.getPackageType();
         // if (project != null) {
         // // add project name in package path
         // routinesPath += "/" + project.getTechnicalLabel().toLowerCase();
