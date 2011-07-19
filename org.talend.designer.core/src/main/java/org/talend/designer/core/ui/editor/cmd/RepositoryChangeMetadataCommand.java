@@ -98,7 +98,6 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         if (newOutputMetadata != null) {
             setDBTableFieldValue(node, newOutputMetadata.getTableName(), oldOutputMetadata.getTableName());
             setSAPFunctionName(node, newOutputMetadata.getLabel());
-            newOutputMetadata.setTableName(node.getMetadataList().get(0).getTableName());
         }
         super.execute();
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
