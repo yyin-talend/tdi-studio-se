@@ -2719,49 +2719,6 @@ public class Node extends Element implements IGraphicalNode {
                         noSchema = true;
                     }
                 }
-                // see bug 22089:the getConnectorFromType() method,same connector type,but different connectors.In case
-                // the filterRow like these specail components,the connector is not correct,we add the
-                // input/output schema check on it
-                for (INodeConnector nodeConnector : mainConnectors) {
-                    mainConnector = nodeConnector;
-                    if ((mainConnector.getMaxLinkInput() != 0) && (mainConnector.getMaxLinkOutput() != 0)) {
-                        IConnection inputConnecion = null;
-                        IMetadataTable inputMeta = null;
-                        for (IConnection connection : inputs) {
-                            if (connection.isActivate()
-                                    && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle()
-                                            .equals(EConnectionType.TABLE))) {
-                                inputMeta = connection.getMetadataTable();
-                                inputConnecion = connection;
-                            }
-                        }
-                        if (inputMeta != null) {
-                            if (mainConnector != null
-                                    && ((mainConnector.getMaxLinkInput() != 0 && mainConnector.getMaxLinkOutput() != 0))
-                                    && (!table
-                                            .sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
-                                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE
-                                                    | IMetadataColumn.OPTIONS_IGNORE_COMMENT
-                                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN
-                                                    | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
-                                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE
-                                                    | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
-                                                    | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
-                                if (!table.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)
-                                        && table.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_LENGTH)) {
-                                    String warningMessage = Messages.getString("Node.lengthDiffWarning", //$NON-NLS-1$
-                                            inputConnecion.getName());
-                                    Problems.add(ProblemStatus.WARNING, this, warningMessage);
-                                } else {
-                                    schemaSynchronized = false;
-                                    String errorMessage = Messages.getString(
-                                            "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
-                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                                }
-                            }
-                        }
-                    }
-                }
             } else {
                 if ((mainConnector.getMaxLinkInput() != 0) && (mainConnector.getMaxLinkOutput() != 0)) {
                     if (table != null && table.getListColumns().size() == 0) {
@@ -2845,6 +2802,51 @@ public class Node extends Element implements IGraphicalNode {
 
         schemaSynchronized = true;
 
+        // see bug 22089:the getConnectorFromType() method,same connector type,but different connectors.In case
+        // the filterRow,the connector is not correct,we add the
+        // input/output schema check on it
+        if ((component.isSchemaAutoPropagated() && getComponent().getName().equals("tFilterRow"))
+                && (getMetadataList().size() != 0)) {
+            for (INodeConnector nodeConnector : mainConnectors) {
+                INodeConnector actualConnector = nodeConnector;
+                if (actualConnector != null) {
+                    int maxFlowInput = actualConnector.getMaxLinkInput();
+                    if (maxFlowInput <= 1 || getComponent().useLookup() || isELTComponent()) {
+                        IMetadataTable inputMeta = null, outputMeta = getMetadataList().get(0);
+                        if ((actualConnector.getMaxLinkInput() != 0) && (actualConnector.getMaxLinkOutput() != 0)) {
+                            IConnection inputConnecion = null;
+                            for (IConnection connection : inputs) {
+                                if (connection.isActivate()
+                                        && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection
+                                                .getLineStyle().equals(EConnectionType.TABLE))) {
+                                    inputMeta = connection.getMetadataTable();
+                                    inputConnecion = connection;
+                                }
+                            }
+                            if (inputMeta != null) {
+                                if ((!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
+                                        | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                        | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                        | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                        | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
+                                    if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)
+                                            && outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_LENGTH)) {
+                                        String warningMessage = Messages.getString("Node.lengthDiffWarning", //$NON-NLS-1$
+                                                inputConnecion.getName());
+                                        Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                                    } else {
+                                        schemaSynchronized = false;
+                                        String errorMessage = Messages.getString(
+                                                "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
+                                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         // test if the columns can be checked or not
         if ((component.isSchemaAutoPropagated() || getComponent().getComponentType() == EComponentType.JOBLET)
                 && (getMetadataList().size() != 0)) {
