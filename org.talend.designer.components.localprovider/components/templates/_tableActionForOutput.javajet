@@ -79,8 +79,14 @@ if (!isParallelize) {
 			//to fixed: bug8422
 			if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
 %>	         
+		    
+		    <%//bug22719: informix use independent connection, should remove this code after use shared connection
+		    if(INFORMIX.equalsIgnoreCase(dbmsId)){%>
+		    String keyCheckTable_<%=cid %> = "[Informix"+<%=dbhost%>+<%=dbport%>+<%=dbname%>+<%=dbserver%>+"]" + "[checktable]" + "[" + <%=table%> + "]";
+		    <%}else{%>
 		    // [%connection%][checktable][tableName]
 		    String keyCheckTable_<%=cid %> = conn_<%=cid%> + "[checktable]" + "[" + <%=table%> + "]";
+		    <%}%>
 		    
 			if(GlobalResource.resourceMap.get(keyCheckTable_<%=cid %>)== null){
 			
