@@ -12,22 +12,34 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor.actions;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
+import org.talend.commons.xml.XmlUtil;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.XMLFileNode;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlXPathLoopDescriptorImpl;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.core.utils.TalendQuoteUtils;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -36,12 +48,15 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
 
 /**
@@ -80,10 +95,6 @@ public class OutputImportTreeFromRepository extends SelectionAction {
             nodeMap.clear();
             if (mapperManager != null && parentNode.eContainer() instanceof OutputXmlTree) {
                 mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
-            }
-            if (treeNodeRoot.eContainer() instanceof AbstractInOutTree) {
-                mapperManager.getProblemsAnalyser().checkLoopProblems((AbstractInOutTree) treeNodeRoot.eContainer());
-                mapperManager.getMapperUI().updateStatusBar();
             }
         }
     }
@@ -246,9 +257,17 @@ public class OutputImportTreeFromRepository extends SelectionAction {
             }
 
             String file = connection.getXmlFilePath();
-            List<FOXTreeNode> list = TreeUtil.getFoxTreeNodes(file);
+            List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
+            File xmlFile = new File(file);
+            if (xmlFile.exists()) {
+                list = TreeUtil.getFoxTreeNodes(file);
+            } else if (connection.getFileContent() != null && connection.getFileContent().length > 0) {
+                String xsdFile = initFileContent(connection);
+                if (xsdFile != null && new File(xsdFile).exists()) {
+                    list = TreeUtil.getFoxTreeNodes(xsdFile);
+                }
+            }
             prepareEmfTreeNode(list, parentNode, null, absoluteXPathQuery);
-
         }
 
     }
@@ -380,6 +399,55 @@ public class OutputImportTreeFromRepository extends SelectionAction {
         }
 
         return temp;
+    }
+
+    private String initFileContent(XmlFileConnection connection) {
+        byte[] bytes = connection.getFileContent();
+        Project project = ProjectManager.getInstance().getCurrentProject();
+        IProject fsProject = null;
+        try {
+            fsProject = ResourceUtils.getProject(project.getTechnicalLabel());
+        } catch (PersistenceException e2) {
+            ExceptionHandler.process(e2);
+        }
+        if (fsProject == null) {
+            return null;
+        }
+        String temPath = fsProject.getLocationURI().getPath() + File.separator + "temp";
+        String fileName = "";
+
+        String pathStr = connection.getXmlFilePath();
+        if (connection.isContextMode()) {
+            ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connection, true);
+            pathStr = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType, pathStr));
+        }
+        if (pathStr != null && XmlUtil.isXMLFile(pathStr)) {
+            fileName = StringUtil.TMP_XML_FILE;
+        } else if (pathStr != null && XmlUtil.isXSDFile(pathStr)) {
+            fileName = StringUtil.TMP_XSD_FILE;
+        }
+        File temfile = new File(temPath + File.separator + fileName);
+        if (!temfile.exists()) {
+            try {
+                temfile.createNewFile();
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+
+        FileOutputStream outStream;
+        try {
+            outStream = new FileOutputStream(temfile);
+            outStream.write(bytes);
+            outStream.close();
+        } catch (FileNotFoundException e1) {
+            ExceptionHandler.process(e1);
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+
+        return temfile.getPath();
+
     }
 
     public void setMapperManager(MapperManager mapperManager) {
