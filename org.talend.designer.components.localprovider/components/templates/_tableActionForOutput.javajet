@@ -81,8 +81,14 @@ if (!isParallelize) {
 %>	         
 		    
 		    <%//bug22719: informix use independent connection, should remove this code after use shared connection
-		    if(INFORMIX.equalsIgnoreCase(dbmsId)){%>
-		    String keyCheckTable_<%=cid %> = "[Informix"+<%=dbhost%>+<%=dbport%>+<%=dbname%>+<%=dbserver%>+"]" + "[checktable]" + "[" + <%=table%> + "]";
+		    if(INFORMIX.equalsIgnoreCase(dbmsId)){
+			    String dbnameKey = ElementParameterParser.getValue(node, "__DBNAME__");
+	    		String dbserverKey = ElementParameterParser.getValue(node, "__DBSERVER__");
+			    String dbhostKey = ElementParameterParser.getValue(node, "__HOST__");
+				String dbportKey = ElementParameterParser.getValue(node, "__PORT__");
+				String tableSchemaKey = ElementParameterParser.getValue(node,"__SCHEMA_DB__");
+		    %>
+		    String keyCheckTable_<%=cid %> = "[Informix]"+"["+<%=dbhostKey%>+"]["+<%=dbportKey%>+"]["+<%=dbnameKey%>+"]["+<%=dbserverKey%>+"]["+<%=tableSchemaKey%>+"]"+ "[checktable]" + "[" + <%=table%> + "]";
 		    <%}else{%>
 		    // [%connection%][checktable][tableName]
 		    String keyCheckTable_<%=cid %> = conn_<%=cid%> + "[checktable]" + "[" + <%=table%> + "]";
