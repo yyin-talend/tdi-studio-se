@@ -135,6 +135,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
     		
 			for (int i_<%=cid %>=0;i_<%=cid %><so_<%=cid%>.length;i_<%=cid %>++){
 				nb_line_<%=cid%> ++;
+				
+			  if(so_<%=cid%>[i_<%=cid %>]!=null){
 				org.apache.axiom.om.OMElement[] fields_<%=cid %> = so_<%=cid%>[i_<%=cid %>].getExtraElement();
 				int len_<%=cid%> = fields_<%=cid %>.length;
 <% 
@@ -148,7 +150,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 							
 							String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 %>						
-				if (<%=i %> < len_<%=cid%> && fields_<%=cid %>[<%=i%>].getText() != null && !"".equals(fields_<%=cid %>[<%=i%>].getText())){
+				    if (<%=i %> < len_<%=cid%> &&  fields_<%=cid %>[<%=i%>]!=null && fields_<%=cid %>[<%=i%>].getText() != null && !"".equals(fields_<%=cid %>[<%=i%>].getText())){
 <%
 									if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
 %>

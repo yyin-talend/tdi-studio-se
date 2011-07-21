@@ -25,6 +25,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 				}
+			  }	
 			}
 		}
 	}
