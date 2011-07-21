@@ -990,18 +990,25 @@ public class EmfComponent extends AbstractComponent {
                 isCamel = service.isInstanceofCamel(((IProcess2) node.getProcess()).getProperty().getItem());
         }
         if (!isCamel) {
-            boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME) != null;
-            param = new ElementParameter(node);
-            param.setName(EParameterName.TSTATCATCHER_STATS.getName());
-            param.setValue(new Boolean(compType.getHEADER().isTSTATCATCHERSTATS()));
-            param.setDisplayName(EParameterName.TSTATCATCHER_STATS.getDisplayName());
-            param.setFieldType(EParameterFieldType.CHECK);
-            param.setCategory(EComponentCategory.ADVANCED);
-            param.setNumRow(99);
-            param.setReadOnly(false);
-            param.setRequired(false);
-            param.setShow(tStatCatcherAvailable);
-            listParam.add(param);
+            boolean isStatCatcherComponent = false;
+            if (this.name != null && this.name.equals(TSTATCATCHER_NAME)) { //$NON-NLS-N$
+                isStatCatcherComponent = true;
+            }
+            /* for bug 0021961,should not show parameter TSTATCATCHER_STATS in UI on component tStatCatcher */
+            if (!isStatCatcherComponent) {
+                boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME) != null;
+                param = new ElementParameter(node);
+                param.setName(EParameterName.TSTATCATCHER_STATS.getName());
+                param.setValue(new Boolean(compType.getHEADER().isTSTATCATCHERSTATS()));
+                param.setDisplayName(EParameterName.TSTATCATCHER_STATS.getDisplayName());
+                param.setFieldType(EParameterFieldType.CHECK);
+                param.setCategory(EComponentCategory.ADVANCED);
+                param.setNumRow(99);
+                param.setReadOnly(false);
+                param.setRequired(false);
+                param.setShow(tStatCatcherAvailable);
+                listParam.add(param);
+            }
         }
         param = new ElementParameter(node);
         param.setName(EParameterName.HELP.getName());

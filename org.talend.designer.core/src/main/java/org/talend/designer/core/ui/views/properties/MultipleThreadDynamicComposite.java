@@ -570,26 +570,10 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                         .createControl(subComposite, curParam, numInRow, nbInRow, h2, lastControl);
 
                             } else {
-                                String componentName = null;
                                 if (isCompactView()) {
                                     int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
-                                    if (elem != null && elem instanceof Node) {
-                                        componentName = ((Node) elem).getComponent().getName();
-                                    }
-                                    // bug 0021961: tStatCatcher should not allow "Advanced Settings / Statistic"..
-                                    if (componentName != null && componentName.equals("tStatCatcher") //$NON-NLS-N$
-                                    ) {
-                                        if (!EParameterName.TSTATCATCHER_STATS.getDisplayName().equals(curParam.getDisplayName())) {
-                                            {
-                                                lastControl = controller.createControl(composite, curParam, numInRow, nbInRow,
-                                                        h3, lastControl);
-                                            }
-                                        }
-
-                                    } else {
-                                        lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, h3,
-                                                lastControl);
-                                    }
+                                    lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, h3,
+                                            lastControl);
                                 } else {
                                     if (numInRow > 1 && nbInRow > 1) {
                                         heightSize += maxRowSize;
