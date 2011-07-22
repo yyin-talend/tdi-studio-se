@@ -41,6 +41,7 @@ StringBuffer OperXml_<%=cid%> = new StringBuffer();
 
 <%
  if ("insert".equals(action) || "update".equals(action)) {//************
+ 	List<Map<String, String>> lookupMapping = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOKUP_MAPPING__");
 %>
 		
 <%
@@ -86,6 +87,19 @@ StringBuffer OperXml_<%=cid%> = new StringBuffer();
 %>   
 								OperXml_<%=cid%>.append("<");
 								OperXml_<%=cid%>.append("<%=column.getLabel()%>");
+						<%
+						if(lookupMapping.size()>0){
+							for(Map<String, String> lookupMapper:lookupMapping){
+								if(column.getLabel().equals(lookupMapper.get("INPUT_COLUMN"))){
+								%>
+								OperXml_<%=cid%>.append(" type=\"");	
+								OperXml_<%=cid%>.append(<%=lookupMapper.get("TYPE")%>);
+								OperXml_<%=cid%>.append("\"");	
+								<%
+								}
+							}
+						}						
+						%>
 								OperXml_<%=cid%>.append(">");
 								
 								OperXml_<%=cid%>.append("<![CDATA[");

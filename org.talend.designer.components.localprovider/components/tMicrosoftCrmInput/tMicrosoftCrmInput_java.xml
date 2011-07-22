@@ -3719,7 +3719,6 @@
 <COLUMN KEY="false" LENGTH="0" NAME="statuscode" TYPE="id_Object"/>
 <COLUMN KEY="false" LENGTH="0" NAME="subcategory" TYPE="id_String"/>
 <COLUMN KEY="false" LENGTH="0" NAME="subject" TYPE="id_String"/>
-<COLUMN KEY="false" LENGTH="0" NAME="subscriptionid" TYPE="id_Object"/>
 <COLUMN KEY="false" LENGTH="0" NAME="timezoneruleversionnumber" TYPE="id_Integer"/>
 <COLUMN KEY="false" LENGTH="0" NAME="utcconversiontimezonecode" TYPE="id_Integer"/>
 </TABLE>
@@ -4166,6 +4165,11 @@
 
 	<ADVANCED_PARAMETERS>
 		<PARAMETER NAME="REUSE_HTTP_CLIENT" FIELD="CHECK" NUM_ROW="10" REQUIRED="true">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER NAME="DEBUG" FIELD="CHECK" NUM_ROW="20"
+			REQUIRED="false" SHOW="false">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 	</ADVANCED_PARAMETERS>
