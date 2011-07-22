@@ -48,7 +48,7 @@ public class VarNodeFigure extends Figure {
     protected void createComponents() {
         EqualWidthLayout manager = new EqualWidthLayout();
         this.setLayoutManager(manager);
-        expression = new ExpressionFigure();
+        expression = new VarNodeExpression();
         expression.setText(varNode.getExpression());
         // CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
         // expression.setBorder(compoundBorder);

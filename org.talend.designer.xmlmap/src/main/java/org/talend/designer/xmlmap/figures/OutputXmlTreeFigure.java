@@ -97,7 +97,6 @@ public class OutputXmlTreeFigure extends AbstractInOutTreeFigure {
         scroll.getViewport().setContents(columnContainer);
         ToolbarLayout layout = new ToolbarLayout();
         layout.setStretchMinorAxis(true);
-        layout.setVertical(true);
         columnContainer.setLayoutManager(layout);
         columnContainer.setOpaque(true);
         columnContainer.setBackgroundColor(ColorConstants.white);
@@ -139,6 +138,5 @@ public class OutputXmlTreeFigure extends AbstractInOutTreeFigure {
             setBackgroundColor(ColorConstants.menuBackground);
             setOpaque(true);
         }
-
     }
 }

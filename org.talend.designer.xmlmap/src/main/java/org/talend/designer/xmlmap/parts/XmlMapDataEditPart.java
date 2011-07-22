@@ -15,19 +15,17 @@ package org.talend.designer.xmlmap.parts;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MarginBorder;
-import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.talend.designer.xmlmap.figures.SashSeparator;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.TreeContainerLayout;
 import org.talend.designer.xmlmap.figures.layout.XmlMapDataLayout;
@@ -36,6 +34,9 @@ import org.talend.designer.xmlmap.figures.treetools.zone.OutputZoneToolBar;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
+import org.talend.designer.xmlmap.ui.resource.ImageInfo;
+import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
+import org.talend.designer.xmlmap.util.SeparatorType;
 
 /**
  * wchen class global comment. Detailled comment
@@ -58,14 +59,9 @@ public class XmlMapDataEditPart extends BaseEditPart {
 
     private InputZoneToolBar inputToolBar;
 
-    private ISelectionChangedListener selectionListener;
-
-    private static int IN_OUT_BORDER = 20;
-
     @Override
     protected IFigure createFigure() {
         Figure mainFigure = new Figure();
-
         XmlMapDataLayout manager2 = new XmlMapDataLayout(this);
         mainFigure.setLayoutManager(manager2);
 
@@ -74,55 +70,66 @@ public class XmlMapDataEditPart extends BaseEditPart {
         inputZone.setLayoutManager(new InOutZoneLayout());
 
         inputToolBar = new InputZoneToolBar(this);
+        inputToolBar.setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
         inputZone.add(inputToolBar);
 
         inputScroll = new ScrollPane();
         inputScroll.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
-        leftFigure = new RectangleFigure();
-        leftFigure.setBorder(new LineBorder(ColorConstants.darkBlue));
+        leftFigure = new Figure();
         // ToolbarLayout subManager = new ToolbarLayout();
         ToolbarLayout subManager = new TreeContainerLayout();
         subManager.setSpacing(20);
         subManager.setVertical(true);
         leftFigure.setLayoutManager(subManager);
-        leftFigure.setBorder(new MarginBorder(IN_OUT_BORDER));
+        leftFigure.setBorder(new MarginBorder(20, 40, 20, 40));
         inputScroll.getViewport().setContents(leftFigure);
         inputScroll.getViewport().setContentsTracksWidth(true);
 
         inputZone.add(inputScroll);
         mainFigure.add(inputZone);
 
+        // separator 1
+        SashSeparator separatorLeft = new SashSeparator();
+        separatorLeft.setType(SeparatorType.ZONE_SEPARATOR);
+        separatorLeft.setImage(ImageProviderMapper.getImage(ImageInfo.ZONE_SASH));
+        mainFigure.add(separatorLeft);
+
         // var
         varScroll = new ScrollPane();
         varScroll.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
-        centerFigure = new RectangleFigure();
-        // GridLayout centerLayout = new GridLayout();
-        // centerFigure.setLayoutManager(centerLayout);
+        centerFigure = new Figure();
+
         subManager = new ToolbarLayout();
         subManager.setSpacing(20);
         subManager.setVertical(true);
         centerFigure.setLayoutManager(subManager);
         centerFigure.setBorder(new MarginBorder(5, 60, 5, 60));
         varScroll.getViewport().setContents(centerFigure);
+
         mainFigure.add(varScroll);
+
+        // separetor 2
+        SashSeparator separatorRight = new SashSeparator();
+        separatorRight.setType(SeparatorType.ZONE_SEPARATOR);
+        separatorRight.setImage(ImageProviderMapper.getImage(ImageInfo.ZONE_SASH));
+        mainFigure.add(separatorRight);
 
         // output
         Figure outputZone = new Figure();
         outputZone.setLayoutManager(new InOutZoneLayout());
 
         outputToolBar = new OutputZoneToolBar(this);
+        outputToolBar.setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
         outputZone.add(outputToolBar);
         outputScroll = new ScrollPane();
         outputScroll.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
-        rightFigure = new RectangleFigure();
-        rightFigure.setBorder(new LineBorder(ColorConstants.darkBlue));
+        rightFigure = new Figure();
 
-        // subManager = new ToolbarLayout();
         subManager = new TreeContainerLayout();
         subManager.setSpacing(20);
         subManager.setVertical(true);
         rightFigure.setLayoutManager(subManager);
-        rightFigure.setBorder(new MarginBorder(IN_OUT_BORDER));
+        rightFigure.setBorder(new MarginBorder(20, 40, 20, 40));
         outputScroll.getViewport().setContents(rightFigure);
         outputScroll.getViewport().setContentsTracksWidth(true);
         outputZone.add(outputScroll);
@@ -130,6 +137,15 @@ public class XmlMapDataEditPart extends BaseEditPart {
 
         mainFigure.setOpaque(true);
         mainFigure.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_LINKS_ZONE));
+
+        separatorLeft.setLeftFigure(inputZone);
+        separatorLeft.setRightFigure(varScroll);
+        separatorLeft.setParentFigure(mainFigure);
+
+        separatorRight.setLeftFigure(varScroll);
+        separatorRight.setRightFigure(outputZone);
+        separatorRight.setParentFigure(mainFigure);
+
         return mainFigure;
     }
 
@@ -218,7 +234,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
 
     class InOutZoneLayout extends EqualWidthLayout {
 
-        private static final int TOOL_BAR_HEIGHT = 40;
+        private static final int TOOL_BAR_HEIGHT = 30;
 
         @Override
         public void layout(IFigure parent) {

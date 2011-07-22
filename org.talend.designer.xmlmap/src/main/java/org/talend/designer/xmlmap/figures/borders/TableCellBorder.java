@@ -26,7 +26,7 @@ public class TableCellBorder extends AbstractBorder {
     private boolean drawColumnSeparate = true;
 
     public Insets getInsets(IFigure figure) {
-        return new Insets(0, 0, 0, 1);
+        return new Insets(0, 6, 0, 1);
     }
 
     /*
@@ -38,7 +38,7 @@ public class TableCellBorder extends AbstractBorder {
     public void paint(IFigure figure, Graphics graphics, Insets insets) {
         graphics.setForegroundColor(ColorConstants.menuBackground);
         if (drawColumnSeparate) {
-            tempRect.setBounds(getPaintRectangle(figure, getInsets(null)));
+            tempRect.setBounds(getPaintRectangle(figure, new Insets(0, 0, 0, 1)));
             graphics.drawLine(tempRect.getTopRight(), tempRect.getBottomRight());
         } else {
             tempRect.setBounds(getPaintRectangle(figure, new Insets()));

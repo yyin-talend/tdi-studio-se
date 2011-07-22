@@ -7,8 +7,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.swt.SWT;
-import org.talend.designer.xmlmap.figures.TreeNodeFigure;
-import org.talend.designer.xmlmap.figures.XmlTreeBranch;
+import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.parts.BaseConnectionEditPart;
@@ -56,36 +55,15 @@ public class FilterColumnAnchor extends ChopboxAnchor {
                 return null;
             } else if (getOwner() instanceof TreeNodeFigure) {
                 TreeNodeFigure nodeFigure = (TreeNodeFigure) getOwner();
-                // normal column
-                if (nodeFigure.getTreeBranch() == null) {
+                if (nodeFigure.getElement() != null) {
                     if (loctionRight) {
-                        ref = getOwner().getBounds().getRight();
+                        ref = nodeFigure.getElement().getBounds().getRight();
                     } else {
-                        if (nodeFigure.getColumnExpressionFigure() != null) {
-                            ref = nodeFigure.getColumnExpressionFigure().getBounds().getLeft();
-                        } else {
-                            ref = getOwner().getBounds().getLeft();
-                        }
+                        ref = nodeFigure.getElement().getBounds().getLeft();
                     }
                     getOwner().translateToAbsolute(ref);
 
                 }
-            } else if (getOwner() instanceof XmlTreeBranch) {
-                XmlTreeBranch treeBranch = (XmlTreeBranch) getOwner();
-                Rectangle elembounds = treeBranch.getElement().getBounds().getCopy();
-                Rectangle bounds = treeBranch.getRoot().getBounds().getCopy();
-                elembounds.x = bounds.x;
-                elembounds.width = bounds.width;
-                if (loctionRight) {
-                    ref = elembounds.getRight();
-                } else {
-                    if (treeBranch.getExpressionFigure() != null) {
-                        ref = treeBranch.getExpressionFigure().getBounds().getLeft();
-                    } else {
-                        ref = elembounds.getLeft();
-                    }
-                }
-                getOwner().translateToAbsolute(ref);
             } else {
                 ref = getOwner().getBounds().getCenter();
                 getOwner().translateToAbsolute(ref);
@@ -140,6 +118,7 @@ public class FilterColumnAnchor extends ChopboxAnchor {
         }
 
         return ref;
+
     }
 
     /*

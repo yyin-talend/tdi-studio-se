@@ -12,23 +12,15 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
-import org.talend.designer.xmlmap.figures.ExpressionFigure;
-import org.talend.designer.xmlmap.figures.OutputTreeNodeFigure;
-import org.talend.designer.xmlmap.figures.TreeBranchFigure;
-import org.talend.designer.xmlmap.figures.XmlTreeBranch;
-import org.talend.designer.xmlmap.figures.layout.TreeNodeLayout;
+import org.talend.designer.xmlmap.figures.treeNode.RowFigure;
+import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
-import org.talend.designer.xmlmap.ui.resource.ColorInfo;
-import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
-import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
@@ -38,19 +30,16 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
     @Override
     protected IFigure createFigure() {
         OutputTreeNode model = (OutputTreeNode) getModel();
-        IFigure figure = null;
-        // nodes in xml tree
-        if (XmlMapUtil.getXPathLength(model.getXpath()) > 2) {
-            figure = new XmlTreeBranch(new TreeBranchFigure(model), XmlTreeBranch.STYLE_ROW_HANGING);
-            treeBranchFigure = (XmlTreeBranch) figure;
+        boolean isRoot = false;
+        if (model.eContainer() instanceof AbstractInOutTree) {
+            isRoot = true;
         }
-        // normal column and tree root
-        else {
-            figure = new OutputTreeNodeFigure(this);
-            figure.setLayoutManager(new TreeNodeLayout(findOutputXmlTreePart(this)));
-            // figure.setLayoutManager(new EqualWidthLayout());
-        }
-        return figure;
+
+        final RowFigure testRow = new RowFigure(this, !isRoot);
+        TreeNodeFigure treeNodeFigure = new TreeNodeFigure(testRow);
+        treeNodeFigure.setRoot(isRoot);
+
+        return treeNodeFigure;
     }
 
     @Override
@@ -67,55 +56,7 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
 
     @Override
     protected void addChildVisual(EditPart childEditPart, int index) {
-        OutputTreeNodeEditPart childPart = (OutputTreeNodeEditPart) childEditPart;
-        OutputTreeNodeEditPart parentPart = (OutputTreeNodeEditPart) childEditPart.getParent();
-        IFigure parentFigure = parentPart.getFigure();
-        // when add one child node of a tree,should also add a label for firstColumn
-        /* 1.should find the related root outputTreeNodeFigure */
-        OutputTreeNodeFigure rootOutputTreeNodeFigure = (OutputTreeNodeFigure) findRootTreeNodeFigure(parentFigure);
-        /* 2.add label to first column of rootOutputTreeNodeFigure */
-        if (childPart.getFigure() instanceof XmlTreeBranch && rootOutputTreeNodeFigure != null) {
-            Figure rootOutputTreeNodeExpressionFigure = rootOutputTreeNodeFigure.getExpressionContainer();
-            ExpressionFigure expressionFigure = new ExpressionFigure();
-            expressionFigure.setText(((OutputTreeNode) childPart.getModel()).getExpression());
-            XmlTreeBranch treeBranch = (XmlTreeBranch) childPart.getFigure();
-            expressionFigure.setTreeBranch(treeBranch);
-            expressionFigure.setTreeNodePart(childPart);
-
-            if (!((TreeNode) childEditPart.getModel()).getChildren().isEmpty()) {
-                expressionFigure.setOpaque(true);
-                expressionFigure.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_EXPREESION_DISABLE));
-            } else {
-                expressionFigure.setOpaque(false);
-            }
-
-            treeBranch.setExpressionFigure(expressionFigure);
-            Map<TreeNode, Integer> nodeAndIndex = new HashMap<TreeNode, Integer>();
-            int expressionIndex = getExpressionIndex((OutputTreeNode) childPart.getModel(),
-                    getModelTreeRoot((OutputTreeNode) childPart.getModel()), 0, nodeAndIndex);
-            rootOutputTreeNodeExpressionFigure.add(expressionFigure, expressionIndex);
-            getViewer().getVisualPartMap().put(expressionFigure, childEditPart);
-        }
         super.addChildVisual(childEditPart, index);
-    }
-
-    @Override
-    public IFigure getContentPane() {
-        if (getFigure() instanceof OutputTreeNodeFigure) {
-            return ((OutputTreeNodeFigure) getFigure()).getContentPane();
-        } else if (getFigure() instanceof XmlTreeBranch) {
-            return ((XmlTreeBranch) getFigure()).getContentsPane();
-        }
-        return super.getContentPane();
-    }
-
-    private OutputXmlTreeEditPart findOutputXmlTreePart(OutputTreeNodeEditPart treeNodePart) {
-        if (treeNodePart.getParent() instanceof OutputXmlTreeEditPart) {
-            return (OutputXmlTreeEditPart) treeNodePart.getParent();
-        } else {
-            return findOutputXmlTreePart((OutputTreeNodeEditPart) treeNodePart.getParent());
-        }
-
     }
 
 }

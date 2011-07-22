@@ -31,11 +31,11 @@ import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.designer.xmlmap.figures.TreeNodeFigure;
 import org.talend.designer.xmlmap.figures.VarNodeFigure;
 import org.talend.designer.xmlmap.figures.VariableContainerFigure;
-import org.talend.designer.xmlmap.figures.XmlTreeBranch;
+import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
@@ -106,7 +106,7 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
         // } else {
         figure = getFigure();
         // }
-        return new ColumnAnchor(figure, true);
+        return new ColumnAnchor(this, figure, true);
     }
 
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
@@ -116,21 +116,21 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
         // } else {
         figure = getFigure();
         // }
-        return new ColumnAnchor(figure, false);
+        return new ColumnAnchor(this, figure, false);
     }
 
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
         IFigure figure = null;
         figure = getFigure();
         // }
-        return new ColumnAnchor(figure, true);
+        return new ColumnAnchor(this, figure, true);
         // return new ChopboxAnchor(getFigure());
     }
 
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
         IFigure figure = null;
         figure = getFigure();
-        return new ColumnAnchor(figure, false);
+        return new ColumnAnchor(this, figure, false);
         // return new ChopboxAnchor(getFigure());
     }
 
@@ -190,28 +190,29 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
 
         private boolean isSource;
 
-        public ColumnAnchor(IFigure owner, boolean isSource) {
+        private VarNodeEditPart varNodePart;
+
+        public ColumnAnchor(VarNodeEditPart varNodePart, IFigure owner, boolean isSource) {
             super(owner);
             this.isSource = isSource;
+            this.varNodePart = varNodePart;
         }
 
         public IFigure getOwner() {
-            // IFigure figure = getOwner();
-            // if (figure instanceof TreeNodeFigure) {
-            // if (((TreeNodeFigure) figure).getTreeBranch() != null) {
-            // return ((TreeNodeFigure) figure).getTreeBranch();
-            // } else {
-            // return figure;
-            // }
-            // }
-
             return super.getOwner();
         }
 
         public Point getReferencePoint() {
             Point ref = null;
-            if (getOwner() == null) {
-                return null;
+
+            final VarTableEditPart varTablePart = (VarTableEditPart) varNodePart.getParent();
+
+            if (((VarTable) varTablePart.getModel()).isMinimized()) {
+                if (isSource) {
+                    ref = varTablePart.getFigure().getBounds().getRight();
+                } else {
+                    ref = varTablePart.getFigure().getBounds().getLeft();
+                }
             } else if (getOwner() instanceof TreeNodeFigure) {
                 TreeNodeFigure nodeFigure = (TreeNodeFigure) getOwner();
                 // normal column
@@ -219,65 +220,15 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
                     if (isSource) {
                         ref = getOwner().getBounds().getRight();
                     } else {
-                        if (nodeFigure.getColumnExpressionFigure() != null) {
-                            ref = nodeFigure.getColumnExpressionFigure().getBounds().getLeft();
+                        if (nodeFigure.getElement() != null) {
+                            ref = nodeFigure.getElement().getBounds().getLeft();
                         } else {
                             ref = getOwner().getBounds().getLeft();
                         }
                     }
                     getOwner().translateToAbsolute(ref);
 
-                } else {
-                    // tree root
-                    // XmlTreeBranch treeBranch = nodeFigure.getTreeBranch();
-                    // Rectangle elembounds = treeBranch.getElement().getBounds().getCopy();
-                    // Rectangle bounds = treeBranch.getRoot().getBounds().getCopy();
-                    // elembounds.x = bounds.x;
-                    // elembounds.width = bounds.width;
-                    // if (isSource) {
-                    // ref = elembounds.getRight();
-                    // } else {
-                    // ref = elembounds.getLeft();
-                    // }
-                    // getOwner().translateToAbsolute(ref);
-
                 }
-            } else if (getOwner() instanceof XmlTreeBranch) {
-                XmlTreeBranch treeBranch = (XmlTreeBranch) getOwner();
-                Rectangle elembounds = treeBranch.getElement().getBounds().getCopy();
-                Rectangle bounds = treeBranch.getRoot().getBounds().getCopy();
-                elembounds.x = bounds.x;
-                elembounds.width = bounds.width;
-                if (isSource) {
-                    ref = elembounds.getRight();
-                } else {
-                    if (treeBranch.getExpressionFigure() != null) {
-                        ref = treeBranch.getExpressionFigure().getBounds().getLeft();
-                    } else {
-                        ref = elembounds.getLeft();
-                    }
-
-                    // OutputTreeNodeFigure findRootOutputTreeNodeFigure = findRootOutputTreeNodeFigure(treeBranch);
-                    // if (findRootOutputTreeNodeFigure != null
-                    // && findRootOutputTreeNodeFigure.getTreeNodeExpressionFigure() != null) {
-                    // Figure expressionFigure = findRootOutputTreeNodeFigure.getTreeNodeExpressionFigure();
-                    // List children = expressionFigure.getChildren();
-                    // if (children != null) {
-                    // for (int i = 0; i < children.size(); i++) {
-                    // if (children.get(i) instanceof Label) {
-                    // Label label = (Label) children.get(i);
-                    // if (((TreeNode) getModel()).getExpression() != null
-                    // && ((TreeNode) getModel()).getExpression().equals(label.getText())) {
-                    // ref = label.getBounds().getLeft();
-                    // break;
-                    // }
-                    // }
-                    // }
-                    // }
-                    //
-                    // }
-                }
-                getOwner().translateToAbsolute(ref);
             } else if (getOwner() instanceof VarNodeFigure) {
                 VarNodeFigure varNodeFigure = (VarNodeFigure) getOwner();
                 if (isSource) {
@@ -296,6 +247,7 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 getOwner().translateToAbsolute(ref);
             }
             return ref;
+
         }
 
         /*

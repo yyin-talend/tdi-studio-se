@@ -35,14 +35,19 @@ public enum ImageInfo {
     LAST_MATCH("/icons/last_match.png"), //$NON-NLS-1$
     ALL_MATCHES("/icons/all_matches.png"), //$NON-NLS-1$
 
-    FILTER_BUTTON("/icons/button.jpg"),
+    FILTER_BUTTON("/icons/button.jpg"), //$NON-NLS-1$
 
     LOOKUP_KEY_ICON("/icons/lookup_key16.png"), //$NON-NLS-1$
-    CONDENSED_TOOL_ICON("/icons/condensedToolItem.png"),
-    CONDENSED_TOOL_ICON1("/icons/condensedToolItem1.png"),
-    CONDENSED_TOOL_ICON2("/icons/condensedToolItem2.png"),
-    CONDENSED_TOOL_ICON3("/icons/condensedToolItem3.png"),
-    CONDENSED_TOOL_ICON4("/icons/condensedToolItem4.png"), ;
+    CONDENSED_TOOL_ICON("/icons/condensedToolItem.png"), //$NON-NLS-1$
+    CONDENSED_TOOL_ICON1("/icons/condensedToolItem1.png"), //$NON-NLS-1$
+    CONDENSED_TOOL_ICON2("/icons/condensedToolItem2.png"), //$NON-NLS-1$
+    CONDENSED_TOOL_ICON3("/icons/condensedToolItem3.png"), //$NON-NLS-1$
+    CONDENSED_TOOL_ICON4("/icons/condensedToolItem4.png"), //$NON-NLS-1$
+
+    TREE_EXPAND("/icons/tree_expand.gif"), //$NON-NLS-1$
+    TREE_COLLAPSE("/icons/tree_collapse.gif"), //$NON-NLS-1$
+    ZONE_SASH("/icons/zone_sash.jpg")//$NON-NLS-1$
+    ;
 
     private String path;
 

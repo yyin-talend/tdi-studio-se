@@ -13,7 +13,6 @@
 package org.talend.designer.xmlmap.parts;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,16 +32,15 @@ import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.swt.SWT;
-import org.talend.commons.ui.swt.geftree.figure.TreeBranch;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
-import org.talend.designer.xmlmap.figures.TreeBranchFigure;
-import org.talend.designer.xmlmap.figures.TreeNodeFigure;
-import org.talend.designer.xmlmap.figures.XmlTreeBranch;
 import org.talend.designer.xmlmap.figures.anchors.ConnectionColumnAnchor;
 import org.talend.designer.xmlmap.figures.anchors.FilterColumnAnchor;
 import org.talend.designer.xmlmap.figures.anchors.LookupColumnAnchor;
 import org.talend.designer.xmlmap.figures.cells.IWidgetCell;
+import org.talend.designer.xmlmap.figures.treeNode.RowFigure;
+import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -66,27 +64,21 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
     // for expand and collapse
     protected IFigure rootAnchor;
 
-    protected XmlTreeBranch treeBranchFigure;
-
     protected XmlMapNodeDirectEditManager directEditManager;
 
     @Override
     protected IFigure createFigure() {
         TreeNode model = (TreeNode) getModel();
-        IFigure figure = null;
-
-        // nodes in xml tree
-        if (XmlMapUtil.getXPathLength(model.getXpath()) > 2) {
-            String status = model.isLoop() ? String.valueOf(model.isLoop()) : "";
-            figure = new XmlTreeBranch(new TreeBranchFigure(model), XmlTreeBranch.STYLE_ROW_HANGING);
-            treeBranchFigure = (XmlTreeBranch) figure;
-
+        boolean isRoot = false;
+        if (model.eContainer() instanceof AbstractInOutTree) {
+            isRoot = true;
         }
-        // normal column and tree root
-        else {
-            figure = new TreeNodeFigure(this);
-        }
-        return figure;
+
+        final RowFigure testRow = new RowFigure(this, !isRoot);
+        TreeNodeFigure treeNodeFigure = new TreeNodeFigure(testRow);
+        treeNodeFigure.setRoot(isRoot);
+
+        return treeNodeFigure;
     }
 
     protected String getTreeBranchName(TreeNode model) {
@@ -133,25 +125,22 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
     }
 
     public void expand(boolean expand) {
-        if (getFigure() instanceof XmlTreeBranch) {
-            ((XmlTreeBranch) this.getFigure()).doExpandCollapse((XmlTreeBranch) (getFigure()));
-        }
+        // if (getFigure() instanceof XmlTreeBranch) {
+        // ((XmlTreeBranch) this.getFigure()).doExpandCollapse((XmlTreeBranch) (getFigure()));
+        // }
     }
 
     @Override
     public IFigure getContentPane() {
-        if (getFigure() instanceof TreeNodeFigure) {
-            return ((TreeNodeFigure) getFigure()).getContentPane();
-        } else if (getFigure() instanceof XmlTreeBranch) {
-            return ((XmlTreeBranch) getFigure()).getContentsPane();
-        }
-        return super.getContentPane();
+        return ((TreeNodeFigure) getFigure()).getContents();
     }
 
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
         IFigure figure = null;
+        boolean forceDarshDot = false;
         if (getRootAnchor() != null) {
             figure = getRootAnchor();
+            forceDarshDot = true;
         } else {
             figure = getFigure();
         }
@@ -161,20 +150,22 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         if (connection instanceof FilterConnectionEditPart) {
             return new FilterColumnAnchor(figure, connection, this);
         }
-        return new ConnectionColumnAnchor(figure, connection, this);
+        return new ConnectionColumnAnchor(figure, connection, this, forceDarshDot);
     }
 
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
         IFigure figure = null;
+        boolean forceDarshDot = false;
         if (getRootAnchor() != null) {
             figure = getRootAnchor();
+            forceDarshDot = true;
         } else {
             figure = getFigure();
         }
         if (connection instanceof LookupConnectionEditPart) {
             return new LookupColumnAnchor(figure, connection, this);
         }
-        return new ConnectionColumnAnchor(figure, connection, this);
+        return new ConnectionColumnAnchor(figure, connection, this, forceDarshDot);
     }
 
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
@@ -187,99 +178,12 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
 
     @Override
     protected void addChildVisual(EditPart childEditPart, int index) {
-        TreeNode treeNode = (TreeNode) getModel();
-        TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(treeNode);
-        boolean isLookup = false;
-        if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
-            isLookup = ((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
-        }
-        if (isLookup) {
-            TreeNodeEditPart childPart = (TreeNodeEditPart) childEditPart;
-            TreeNodeEditPart parentPart = (TreeNodeEditPart) childEditPart.getParent();
-            IFigure parentFigure = parentPart.getFigure();
-            if (childPart.getFigure() instanceof XmlTreeBranch) {
-                // when add one child node of a tree,should also add a expression figure for firstColumn
-                /* 1.should find the related root TreeNodeFigure */
-                TreeNodeFigure rootTreeNodeFigure = findRootTreeNodeFigure(parentFigure);
-                if (rootTreeNodeFigure != null) {
-                    /* add expression figure to the root expression contianer */
-                    Figure rootTreeNodeExpressionFigure = rootTreeNodeFigure.getExpressionContainer();
-                    ExpressionFigure expressionFigure = new ExpressionFigure();
-                    expressionFigure.setText(((TreeNode) childPart.getModel()).getExpression());
-                    XmlTreeBranch treeBranch = (XmlTreeBranch) childPart.getFigure();
-                    expressionFigure.setTreeBranch(treeBranch);
-                    expressionFigure.setTreeNodePart(childPart);
-
-                    if (!((TreeNode) childEditPart.getModel()).getChildren().isEmpty()) {
-                        expressionFigure.setOpaque(true);
-                        expressionFigure.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_EXPREESION_DISABLE));
-                    } else {
-                        expressionFigure.setOpaque(false);
-                    }
-
-                    treeBranch.setExpressionFigure(expressionFigure);
-                    Map<TreeNode, Integer> nodeAndIndex = new HashMap<TreeNode, Integer>();
-                    int expressionIndex = getExpressionIndex((TreeNode) childPart.getModel(),
-                            getModelTreeRoot((TreeNode) childPart.getModel()), 0, nodeAndIndex);
-                    rootTreeNodeExpressionFigure.add(expressionFigure, expressionIndex);
-                    getViewer().getVisualPartMap().put(expressionFigure, childEditPart);
-                }
-            }
-        }
-
         super.addChildVisual(childEditPart, index);
     }
 
     @Override
     protected void removeChildVisual(EditPart childEditPart) {
-        TreeNode treeNode = (TreeNode) getModel();
-        TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(treeNode);
-        boolean isInputMain = false;
-        if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
-            isInputMain = !((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
-        }
-
-        if (!isInputMain) {
-            // remove expression label when remove a treenode
-            TreeNodeEditPart childPart = (TreeNodeEditPart) childEditPart;
-            TreeNodeFigure rootTreeNodeFigure = findRootTreeNodeFigure(childPart.getFigure());
-            if (rootTreeNodeFigure != null) {
-                Figure rootExpressionContainer = rootTreeNodeFigure.getExpressionContainer();
-                if (rootExpressionContainer.getChildren() != null && !rootExpressionContainer.getChildren().isEmpty()) {
-
-                    /*
-                     * if remove root node of a document ,clear expressionFigure , and add back the first one for
-                     * document tree node
-                     */
-                    if (treeNode instanceof TreeNode && XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
-                        ExpressionFigure object = (ExpressionFigure) rootExpressionContainer.getChildren().get(0);
-                        rootExpressionContainer.getChildren().clear();
-                        rootExpressionContainer.add(object);
-                        super.removeChildVisual(childEditPart);
-                        return;
-                    }
-
-                    removeExpressionFigure(rootExpressionContainer, childPart);
-                }
-            }
-        }
-
         super.removeChildVisual(childEditPart);
-    }
-
-    private void removeExpressionFigure(Figure rootExpressionContainer, EditPart childEditPart) {
-        TreeNodeEditPart treeNodePart = (TreeNodeEditPart) childEditPart;
-        if (treeNodePart.getFigure() instanceof XmlTreeBranch) {
-            ExpressionFigure expressionFigure = ((XmlTreeBranch) treeNodePart.getFigure()).getExpressionFigure();
-            rootExpressionContainer.remove(expressionFigure);
-            getViewer().getVisualPartMap().remove(expressionFigure);
-        }
-        if (!childEditPart.getChildren().isEmpty()) {
-            for (Object obj : childEditPart.getChildren()) {
-                removeExpressionFigure(rootExpressionContainer, (EditPart) obj);
-            }
-        }
-
     }
 
     protected TreeNodeFigure findRootTreeNodeFigure(IFigure parentFigure) {
@@ -371,17 +275,15 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                     for (Object conn : part.getTargetConnections()) {
                         if (conn instanceof AbstractConnectionEditPart) {
                             AbstractConnectionEditPart connectionEditPart = (AbstractConnectionEditPart) conn;
-                            if (connectionEditPart.getFigure() instanceof PolylineConnection) {
-                                PolylineConnection connFigure = (PolylineConnection) connectionEditPart.getFigure();
-                                if (part.getTreeBranchFigure() != null) {
-                                    if (expanded) {
-                                        connFigure.setLineStyle(SWT.LINE_DASHDOTDOT);
-                                    } else {
-                                        connFigure.setLineStyle(SWT.LINE_SOLID);
-                                    }
-                                }
-                            }
                             connectionEditPart.refresh();
+                            // if (connectionEditPart.getFigure() instanceof PolylineConnection) {
+                            // PolylineConnection connFigure = (PolylineConnection) connectionEditPart.getFigure();
+                            // if (expanded) {
+                            // connFigure.setLineStyle(SWT.LINE_DASHDOTDOT);
+                            // } else {
+                            // connFigure.setLineStyle(SWT.LINE_SOLID);
+                            // }
+                            // }
                         }
                     }
                 }
@@ -393,43 +295,24 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
     public void notifyChanged(Notification notification) {
         int type = notification.getEventType();
         int featureId = notification.getFeatureID(XmlmapPackage.class);
+        TreeNodeFigure treeNodeFigure = (TreeNodeFigure) getFigure();
+
         switch (type) {
         case Notification.SET:
             switch (featureId) {
             case XmlmapPackage.TREE_NODE__LOOP:
             case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
-                if (getFigure() instanceof TreeBranch) {
-                    if (((XmlTreeBranch) getFigure()).getElement() instanceof TreeBranchFigure) {
-                        TreeBranchFigure branchFigure = (TreeBranchFigure) ((XmlTreeBranch) getFigure()).getElement();
-                        branchFigure.updateStatus();
-                    }
-                }
+                treeNodeFigure.getElement().getBranchContent().updateStatus();
                 break;
             case XmlmapPackage.TREE_NODE__NAME:
-                if (getFigure() instanceof TreeBranch) {
-                    if (((XmlTreeBranch) getFigure()).getElement() instanceof TreeBranchFigure) {
-                        TreeBranchFigure branchFigure = (TreeBranchFigure) ((XmlTreeBranch) getFigure()).getElement();
-                        branchFigure.updataNameFigure();
-                    }
-                } else if (getFigure() instanceof TreeNodeFigure) {
-                    ((TreeNodeFigure) getFigure()).updateNameFigure();
-                }
+                treeNodeFigure.getElement().getBranchContent().updataNameFigure();
                 break;
             case XmlmapPackage.OUTPUT_TREE_NODE__DEFAULT_VALUE:
-                if (getFigure() instanceof TreeBranch) {
-                    if (((XmlTreeBranch) getFigure()).getElement() instanceof TreeBranchFigure) {
-                        TreeBranchFigure branchFigure = (TreeBranchFigure) ((XmlTreeBranch) getFigure()).getElement();
-                        branchFigure.updateDefaultValueFigure();
-                    }
-                }
+                treeNodeFigure.getElement().getBranchContent().updateDefaultValueFigure();
                 break;
             case XmlmapPackage.TREE_NODE__TYPE:
-                TreeNode treeNode = (TreeNode) getModel();
-                if (treeNode.eContainer() instanceof InputXmlTree || treeNode.eContainer() instanceof OutputXmlTree) {
-                    if (figure instanceof TreeNodeFigure) {
-                        ((TreeNodeFigure) figure).refreshChildren();
-                    }
-                }
+                refreshChildren();
+
                 break;
             case XmlmapPackage.TREE_NODE__EXPRESSION:
                 if (getModel() instanceof TreeNode && !(getModel() instanceof OutputTreeNode)) {
@@ -455,15 +338,10 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 }
                 if (getFigure() instanceof TreeNodeFigure) {
                     TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
-                    if (outputFigure.getColumnExpressionFigure() != null) {
-                        outputFigure.getColumnExpressionFigure().setText(((TreeNode) getModel()).getExpression());
+                    if (outputFigure.getElement() != null) {
+                        outputFigure.getElement().updateExpression();
                     }
 
-                } else if (getFigure() instanceof XmlTreeBranch) {
-                    ExpressionFigure expressionFigure = ((XmlTreeBranch) getFigure()).getExpressionFigure();
-                    if (expressionFigure != null) {
-                        expressionFigure.setText(((TreeNode) getModel()).getExpression());
-                    }
                 }
                 break;
             case XmlmapPackage.INPUT_XML_TREE__MINIMIZED:
@@ -478,13 +356,11 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             switch (featureId) {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 refreshChildren();
-                if (getFigure() instanceof XmlTreeBranch) {
-                    ExpressionFigure expression = ((XmlTreeBranch) getFigure()).getExpressionFigure();
-                    if (expression != null) {
-                        expression.setOpaque(true);
-                        expression.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_EXPREESION_DISABLE));
+                ExpressionFigure expression = treeNodeFigure.getElement().getExpressionFigure();
+                if (expression != null) {
+                    expression.setOpaque(true);
+                    expression.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_EXPREESION_DISABLE));
 
-                    }
                 }
 
                 break;
@@ -504,13 +380,11 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             switch (featureId) {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 refreshChildren();
-                if (getFigure() instanceof XmlTreeBranch) {
-                    ExpressionFigure expression = ((XmlTreeBranch) getFigure()).getExpressionFigure();
-                    if (expression != null) {
-                        boolean isEmpty = ((TreeNode) getModel()).getChildren().isEmpty();
-                        if (isEmpty) {
-                            expression.setOpaque(false);
-                        }
+                ExpressionFigure expression = treeNodeFigure.getElement().getExpressionFigure();
+                if (expression != null) {
+                    boolean isEmpty = ((TreeNode) getModel()).getChildren().isEmpty();
+                    if (isEmpty) {
+                        expression.setOpaque(false);
                     }
                 }
             case XmlmapPackage.TREE_NODE__OUTGOING_CONNECTIONS:
@@ -533,9 +407,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         if (RequestConstants.REQ_DIRECT_EDIT.equals(req.getType())) {
             Figure figure = null;
             if (getFigure() instanceof TreeNodeFigure) {
-                figure = ((TreeNodeFigure) getFigure()).getColumnExpressionFigure();
-            } else if (getFigure() instanceof XmlTreeBranch) {
-                figure = ((XmlTreeBranch) getFigure()).getExpressionFigure();
+                figure = ((TreeNodeFigure) getFigure()).getElement().getExpressionFigure();
             }
             if (directEditManager == null) {
                 if (figure instanceof IWidgetCell) {
@@ -572,11 +444,6 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         }
 
         return null;
-    }
-
-    protected XmlTreeBranch getTreeBranchFigure() {
-        return this.treeBranchFigure;
-
     }
 
     protected IFigure getRootAnchor() {

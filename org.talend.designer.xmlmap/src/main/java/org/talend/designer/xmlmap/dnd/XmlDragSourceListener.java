@@ -15,11 +15,16 @@ package org.talend.designer.xmlmap.dnd;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPartViewer;
+import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.dnd.AbstractTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransfer;
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
+import org.talend.designer.xmlmap.figures.SashSeparator;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
@@ -36,11 +41,21 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
     }
 
     public void dragStart(DragSourceEvent event) {
-        Object template = getTemplate();
+        Object template = getTemplate(event);
         TemplateTransfer.getInstance().setTemplate(template);
     }
 
-    protected TransferedObject getTemplate() {
+    protected Object getTemplate(DragSourceEvent event) {
+        final RootEditPart rootEditPart = getViewer().getRootEditPart();
+        if (rootEditPart instanceof AbstractGraphicalEditPart) {
+            AbstractGraphicalEditPart graphicPart = (AbstractGraphicalEditPart) rootEditPart;
+            final IFigure figure = graphicPart.getFigure();
+            final IFigure findFigureAt = figure.findFigureAt(new Point(event.x, event.y));
+            if (findFigureAt instanceof SashSeparator) {
+                return findFigureAt;
+            }
+        }
+
         List selection = getViewer().getSelectedEditParts();
         if (selection == null || selection.isEmpty()) {
             return null;
@@ -107,7 +122,7 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
     }
 
     public void dragSetData(DragSourceEvent event) {
-        event.data = getTemplate();
+        event.data = getTemplate(event);
     }
 
     @Override

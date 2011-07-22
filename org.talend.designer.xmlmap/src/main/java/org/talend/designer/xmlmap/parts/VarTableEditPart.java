@@ -77,18 +77,7 @@ public class VarTableEditPart extends BaseEditPart {
                 refreshChildren();
                 break;
             case XmlmapPackage.VAR_TABLE__MINIMIZED:
-                // Boolean newStateIsMinimized = notification.getNewBooleanValue();
-                // ImageFigure minisize = ((CenterVarFigure) getFigure()).getImageButtonsFigure().getMiniSize();
-                // if (newStateIsMinimized) {
-                // minisize.setImage(restorImage);
-                // minisize.setToolTip(restoretooltip);
-                // } else {
-                // minisize.setImage(miniImage);
-                // minisize.setToolTip(minitooltip);
-                // }
-                // refreshChildren();
-                // refreshVisuals();
-                // refresh();
+
             }
         }
     }

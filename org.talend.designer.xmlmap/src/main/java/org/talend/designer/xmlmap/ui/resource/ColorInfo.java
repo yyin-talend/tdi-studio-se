@@ -22,12 +22,7 @@ import org.eclipse.swt.widgets.Display;
  * 
  */
 public enum ColorInfo {
-
-    COLOR_ENTRY_HIGHLIGHTED(176, 231, 0), // green
-
     COLOR_BACKGROUND_LINKS_ZONE(210, 210, 196), // gray
-
-    COLOR_UNSELECTED_ZONE_TO_ZONE_LINK(196, 196, 180), // light gray
 
     COLOR_SELECTED_LOOKUP_LINKS(160, 40, 210), // violet
     COLOR_UNSELECTED_LOOKUP_LINKS(200, 186, 225), // pastel violet
@@ -35,21 +30,19 @@ public enum ColorInfo {
     COLOR_SELECTED_FILTER_LINK(255, 150, 20), // orange
     COLOR_UNSELECTED_FILTER_LINK(255, 200, 70), // light gray
 
-    COLOR_UNSELECTED_GLOBALMAP_LINK(111, 186, 225), // bleu
-
     COLOR_HIGHLIGHTED_TEXT_ROW(240, 240, 240), // light gray
 
     ZONE_BACKGROUND_COLOR(241, 239, 226), // zone background color
-
-    COLOR_BACKGROUND_ERROR_EXPRESSION_CELL(255, 0, 0), // red
-
-    COLOR_DRAGGING_INSERTION_INDICATOR(0, 78, 152), // blue
 
     COLOR_TREE_BORDER(153, 186, 243),
 
     COLOR_TMAP_PREVIEW(235, 234, 230),
 
-    COLOR_EXPREESION_DISABLE(240, 240, 240)
+    COLOR_EXPREESION_DISABLE(240, 240, 240),
+
+    COLOR_SEPARATOR_TOP_LEFT(172, 168, 153), // dark gray
+
+    COLOR_TREE_LINES(128, 128, 128)
 
     ;
 

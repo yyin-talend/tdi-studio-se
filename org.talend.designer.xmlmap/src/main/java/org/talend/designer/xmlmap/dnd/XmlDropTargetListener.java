@@ -13,7 +13,9 @@
 package org.talend.designer.xmlmap.dnd;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LayoutManager;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.Request;
@@ -24,6 +26,8 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
+import org.talend.designer.xmlmap.figures.SashSeparator;
+import org.talend.designer.xmlmap.figures.layout.XmlMapDataLayout;
 import org.talend.designer.xmlmap.figures.treesettings.FilterTextArea;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
@@ -36,6 +40,7 @@ import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
+import org.talend.designer.xmlmap.util.SeparatorType;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -68,6 +73,13 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
     @Override
     protected void updateTargetEditPart() {
         super.updateTargetEditPart();
+
+        // if(getTargetEditPart() instanceof TreeNode){
+        // TreeNodeEditPart treeNodePart = (TreeNodeEditPart)getTargetEditPart();
+        // final IFigure figure = treeNodePart.getFigure();
+        // }
+        //
+
         if (getViewer() instanceof XmlMapGraphicViewer) {
             Point dropLocation = getDropLocation();
             EditPartViewer.Conditional condition = new EditPartViewer.Conditional() {
@@ -92,11 +104,69 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
 
     }
 
+    private void handleSashDrag(DropTargetEvent event, SashSeparator separator) {
+        if (separator.getType() == SeparatorType.ZONE_SEPARATOR) {
+            final Point dropLocation = getDropLocation();
+            final Rectangle leftBounds = separator.getLeftFigure().getBounds();
+            final Rectangle rightBounds = separator.getRightFigure().getBounds();
+            if (dropLocation.x < (leftBounds.x + separator.getZoneMinSize() + separator.getWidth())
+                    || dropLocation.x > (rightBounds.x + rightBounds.width - separator.getZoneMinSize() - separator.getWidth())) {
+                event.detail = DND.DROP_NONE;
+                return;
+            }
+
+        }
+
+        final LayoutManager layoutManager = separator.getParentFigure().getLayoutManager();
+        if (layoutManager instanceof XmlMapDataLayout) {
+            XmlMapDataLayout layout = (XmlMapDataLayout) layoutManager;
+            int X = getDropLocation().x;
+            final Rectangle separatorBounds = separator.getBounds().getCopy();
+            separatorBounds.x = X;
+            layout.setConstraint(separator, separatorBounds);
+
+            Rectangle leftBounds = separator.getLeftFigure().getBounds().getCopy();
+
+            Rectangle rightBounds = separator.getRightFigure().getBounds().getCopy();
+            int wL = X - leftBounds.x;
+
+            int wR = rightBounds.getTopRight().x - X - separator.getWidth();
+            int xR = X + separator.getWidth();
+
+            if (wL < separator.getZoneMinSize()) {
+                wL = separator.getZoneMinSize();
+                wR = rightBounds.getTopRight().x - leftBounds.x - separator.getZoneMinSize() - separator.getWidth();
+                xR = leftBounds.x + separator.getZoneMinSize() + separator.getWidth();
+            }
+            if (wR < separator.getZoneMinSize()) {
+                wL = rightBounds.getTopRight().x - separator.getZoneMinSize() - separator.getWidth() - leftBounds.x;
+                wR = separator.getZoneMinSize();
+                xR = rightBounds.getTopRight().x - separator.getZoneMinSize();
+            }
+            leftBounds.width = wL;
+            layout.setConstraint(separator.getLeftFigure(), leftBounds.getCopy());
+            separator.getLeftFigure().invalidateTree();
+
+            rightBounds.x = xR;
+            rightBounds.width = wR;
+            layout.setConstraint(separator.getRightFigure(), rightBounds.getCopy());
+            separator.getRightFigure().invalidateTree();
+            separator.getParentFigure().revalidate();
+        }
+    }
+
     @Override
     public void dragOver(DropTargetEvent event) {
         super.dragOver(event);
         Object object = TemplateTransfer.getInstance().getObject();
 
+        // dnd the sash
+        if (object instanceof SashSeparator) {
+            handleSashDrag(event, (SashSeparator) object);
+            return;
+        }
+
+        // dnd the tree node
         if (!(object instanceof TransferedObject)) {
             event.detail = DND.DROP_NONE;
             return;
@@ -232,6 +302,20 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
     @Override
     protected void handleDrop() {
         super.handleDrop();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.dnd.AbstractTransferDropTargetListener#isEnabled(org.eclipse.swt.dnd.DropTargetEvent)
+     */
+    @Override
+    public boolean isEnabled(DropTargetEvent event) {
+        final Object object = TemplateTransfer.getInstance().getObject();
+        if (object instanceof SashSeparator) {
+            return true;
+        }
+        return super.isEnabled(event);
     }
 
 }

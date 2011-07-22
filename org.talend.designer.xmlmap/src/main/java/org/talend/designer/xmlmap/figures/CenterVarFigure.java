@@ -67,6 +67,7 @@ public class CenterVarFigure extends Figure {
      * DOC hywang Comment method "createComponents".
      */
     protected void createComponents() {
+        setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
         header = new Figure();
         header.setOpaque(true);
         header.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.ZONE_BACKGROUND_COLOR));
@@ -82,6 +83,7 @@ public class CenterVarFigure extends Figure {
         imageButtonsFigure = new VarToolBarFigure(tablePart);
         header.add(varText);
         header.add(imageButtonsFigure);
+
         VarTableContainerFigure = new VarTableContainerFigure(table);
         // if (table.isIsMinimized()) {
         // VarTableContainerFigure.setPreferredSize(imageButtonsFigure.getPreferredSize().width, 0);
