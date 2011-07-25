@@ -29,7 +29,6 @@ import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
-import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.swt.SWT;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
@@ -50,6 +49,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
 import org.talend.designer.xmlmap.policy.DragAndDropEditPolicy;
+import org.talend.designer.xmlmap.policy.RowSelectionEditPolicy;
 import org.talend.designer.xmlmap.policy.TreeExpandSupportEditPolicy;
 import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
@@ -94,7 +94,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
 
     @Override
     protected void createEditPolicies() {
-        installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
+        installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new RowSelectionEditPolicy());
         installEditPolicy("Drag and Drop", new DragAndDropEditPolicy());
         installEditPolicy(TreeExpandSupportEditPolicy.EXPAND_SUPPORT, new TreeExpandSupportEditPolicy());
         installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
@@ -411,7 +411,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             }
             if (directEditManager == null) {
                 if (figure instanceof IWidgetCell) {
-                    directEditManager = new XmlMapNodeDirectEditManager(this, new XmlMapNodeCellEditorLocator(figure));
+                    directEditManager = new XmlMapNodeDirectEditManager(this, new XmlMapNodeCellEditorLocator(figure, this));
                 }
             }
             if (directEditManager != null) {

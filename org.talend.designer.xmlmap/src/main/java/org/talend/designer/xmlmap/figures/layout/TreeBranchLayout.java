@@ -69,10 +69,10 @@ public class TreeBranchLayout extends AbstractLayout {
 
         titleBounds.setLocation(X, Y);
 
-        if (clientArea.getRight().x > titleBounds.getRight().x) {
-            int newWidth = clientArea.getRight().x - titleBounds.x;
-            titleBounds.width = newWidth;
-        }
+        // if (clientArea.getRight().x > titleBounds.getRight().x) {
+        // int newWidth = clientArea.getRight().x - titleBounds.x;
+        // titleBounds.width = newWidth;
+        // }
 
         treeBranch.getTitle().setBounds(titleBounds);
 

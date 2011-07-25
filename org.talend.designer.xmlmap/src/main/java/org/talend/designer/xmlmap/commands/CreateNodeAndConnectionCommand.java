@@ -65,6 +65,9 @@ public class CreateNodeAndConnectionCommand extends Command {
 
     @Override
     public void execute() {
+        if (targetEditPart == null) {
+            return;
+        }
         xmlMapData = getXmlMapData(targetEditPart.getModel());
         if (xmlMapData == null) {
             return;

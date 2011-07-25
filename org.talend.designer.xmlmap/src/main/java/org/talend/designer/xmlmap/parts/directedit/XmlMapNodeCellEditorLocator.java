@@ -19,6 +19,8 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
+import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 
 /**
  * DOC talend class global comment. Detailled comment
@@ -27,6 +29,15 @@ public class XmlMapNodeCellEditorLocator implements CellEditorLocator {
 
     private Figure figure;
 
+    private TreeNodeEditPart treeNodePart;
+
+    private Rectangle treeBounds;
+
+    public XmlMapNodeCellEditorLocator(Figure figure, TreeNodeEditPart treeNodePart) {
+        this(figure);
+        this.treeNodePart = treeNodePart;
+    }
+
     public XmlMapNodeCellEditorLocator(Figure figure) {
         this.figure = figure;
     }
@@ -34,6 +45,19 @@ public class XmlMapNodeCellEditorLocator implements CellEditorLocator {
     public void relocate(CellEditor celleditor) {
         Control control = celleditor.getControl();
         Rectangle copy = figure.getBounds().getCopy();
+
+        if (treeNodePart != null) {
+            AbstractInOutTreeEditPart inOutTreeEditPart = treeNodePart.getInOutTreeEditPart(treeNodePart);
+            if (inOutTreeEditPart != null) {
+                Rectangle treeBounds = inOutTreeEditPart.getFigure().getBounds();
+                if (copy.x < treeBounds.x) {
+                    copy.width = copy.x + copy.width - treeBounds.x;
+                    copy.x = treeBounds.x + 1;
+                }
+
+            }
+        }
+
         figure.translateToAbsolute(copy);
         if (control instanceof Text) {
             Text text = (Text) control;

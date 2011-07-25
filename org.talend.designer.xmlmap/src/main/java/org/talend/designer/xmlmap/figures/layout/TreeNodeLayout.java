@@ -43,6 +43,7 @@ public class TreeNodeLayout extends ToolbarLayout {
         final TreeAnimatingLayer contents = treeNode.getContents();
         final RowFigure element = treeNode.getElement();
 
+        contents.getBounds().width = clientArea.width;
         contents.validate();
 
         int maxWidth = clientArea.width;
@@ -62,10 +63,6 @@ public class TreeNodeLayout extends ToolbarLayout {
         rectangle.setLocation(x, y);
         rectangle.setSize(contentsSize);
         contents.setBounds(rectangle);
-
-        contents.invalidate();
-        // adapt tree branch width to parent width
-        // final List children = contents.getChildren();
 
     }
 

@@ -29,7 +29,7 @@ public class ZoneToolBarLayout extends EqualWidthLayout {
         int numChildren = children.size();
         Rectangle clientArea = transposer.t(parent.getClientArea());
         int x = clientArea.x + spacing;
-        int y = clientArea.y + spacing;
+        int y = clientArea.y;
 
         Dimension prefSizes[] = new Dimension[numChildren];
         Dimension minSizes[] = new Dimension[numChildren];
@@ -45,7 +45,7 @@ public class ZoneToolBarLayout extends EqualWidthLayout {
         IFigure child;
         int totalHeight = 0;
         int totalMinHeight = 0;
-        int prefMinSumHeight = 0;
+        int maxHeight = 0;
 
         for (int i = 0; i < numChildren; i++) {
             child = (IFigure) children.get(i);
@@ -55,10 +55,12 @@ public class ZoneToolBarLayout extends EqualWidthLayout {
 
             totalHeight += prefSizes[i].height;
             totalMinHeight += minSizes[i].height;
+            maxHeight = Math.max(maxHeight, prefSizes[i].height);
         }
         totalHeight += (numChildren - 1) * spacing;
         totalMinHeight += (numChildren - 1) * spacing;
-        prefMinSumHeight = totalHeight - totalMinHeight;
+
+        y = y + (clientArea.height - maxHeight) / 2;
 
         for (int i = 0; i < numChildren; i++) {
             int prefHeight = prefSizes[i].height;

@@ -49,7 +49,7 @@ public class RowLayout extends XYLayout {
      */
     @Override
     public void layout(IFigure parent) {
-        int initExpressionWidth = (treeNodePart.getViewer().getControl().getSize().x / 3 - 80) / 2;
+        int initExpressionWidth = (treeNodePart.getViewer().getControl().getSize().x / 3 - 80 - 10) / 2;
 
         final Rectangle clientArea = parent.getClientArea();
         double shrinkHeight = 1;
@@ -65,7 +65,7 @@ public class RowLayout extends XYLayout {
         int x = clientArea.x;
         int y = clientArea.y;
 
-        int branchWidth = clientArea.width - initExpressionWidth;
+        // int branchWidth = clientArea.width - initExpressionWidth;
 
         final ExpressionFigure expressionFigure = rowFigure.getExpressionFigure();
         if (expressionFigure != null) {
@@ -73,13 +73,14 @@ public class RowLayout extends XYLayout {
             expressionFigure.setBounds(newBounds);
             setConstraint(expressionFigure, newBounds);
             x = x + newBounds.width;
-        } else {
-            branchWidth = clientArea.width;
         }
+        // else {
+        // branchWidth = clientArea.width;
+        // }
 
         final TreeBranch treeBranch = rowFigure.getTreeBranch();
         final Dimension preSize = treeBranch.getPreferredSize(clientArea.width, -1);
-        branchWidth = Math.max(branchWidth, preSize.width);
+        int branchWidth = Math.max(initExpressionWidth, preSize.width);
         Rectangle newBounds = new Rectangle(x, y, branchWidth, FIXED_ROW_HEIGHT);
         treeBranch.setBounds(newBounds);
         setConstraint(treeBranch, newBounds);
