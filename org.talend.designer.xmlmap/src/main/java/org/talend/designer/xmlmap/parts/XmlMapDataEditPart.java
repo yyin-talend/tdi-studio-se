@@ -234,7 +234,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
 
     class InOutZoneLayout extends EqualWidthLayout {
 
-        private static final int TOOL_BAR_HEIGHT = 30;
+        private static final int TOOL_BAR_HEIGHT = 35;
 
         @Override
         public void layout(IFigure parent) {

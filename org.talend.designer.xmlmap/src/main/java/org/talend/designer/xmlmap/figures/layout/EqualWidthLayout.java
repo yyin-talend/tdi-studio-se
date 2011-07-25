@@ -21,7 +21,7 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
- * wchen Horizontal layout , children shares the width of parent.
+ * wchen talend class global comment. Detailled comment
  */
 public class EqualWidthLayout extends ToolbarLayout {
 
