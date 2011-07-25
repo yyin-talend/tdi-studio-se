@@ -176,9 +176,14 @@ if(columnList != null && columnList.size() > 0) {
 			if(useFixedLength==true){
 %>
 		loadingCols.append("ASCII(" + <%=column.getLength()%> + ")");
-<%			}else{ %>
+<%			}else{ 
+				if ("jconn3.jar".equals(dbVersion)) {
+%>
         	loadingCols.append("'" + <%=field_separator.replaceAll("\\\\", "\\\\\\\\") %> + "'");
-<%			}
+<%				}else{%>
+			loadingCols.append("'" + <%=lines_separator.replaceAll("\\\\", "\\\\\\\\") %> + "'" );	
+<%				}
+			}
       	}
     }
 %>
@@ -197,6 +202,7 @@ if(columnList != null && columnList.size() > 0) {
 	if ("jconn3.jar".equals(dbVersion)) {
 %>
 		strSQL +=" from '" + <%=fileName %> + "' ";
+	    strSQL = strSQL + " row delimited by '" + <%=lines_separator.replaceAll("\\\\", "\\\\\\\\")%> + "'";
 <%    
     } else {
 %>
@@ -204,7 +210,6 @@ if(columnList != null && columnList.size() > 0) {
 <%
     }
 %>
-   strSQL = strSQL + " row delimited by '" + <%=lines_separator.replaceAll("\\\\", "\\\\\\\\")%> + "'";
     
 <%if(useFixedLength==true){ %>
 	 strSQL=strSQL + " quotes off";
