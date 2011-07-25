@@ -15,7 +15,6 @@ package org.talend.designer.core;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -43,9 +42,6 @@ public class DesignerPlugin extends AbstractUIPlugin {
 
     public DesignerPlugin() {
         plugin = this;
-        Modes.getMode("perl.xml"); //$NON-NLS-1$
-        Modes.getMode("tsql.xml"); //$NON-NLS-1$
-        Modes.getMode("java.xml"); //$NON-NLS-1$
         /*
          * // plugins list IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry(); String[] namespaces =
          * extensionRegistry.getNamespaces(); System.out.println("Liste des plugins talend:"); for (int i = 0; i <
