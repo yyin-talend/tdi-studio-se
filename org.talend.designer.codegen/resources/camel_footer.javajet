@@ -7,6 +7,8 @@
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.Vector
+		java.util.List
+		java.util.Map
 	"
 %>
 <%
@@ -74,6 +76,80 @@
 <%
 			}
 %>
+			javax.jms.ConnectionFactory connectionFactory = null;
+<%
+			List<? extends INode> activeMQNodes = process.getNodesOfType("cActiveMQ");
+			for(INode node: activeMQNodes){
+			    String url = "";
+			    String customized = ElementParameterParser.getValue(node, "__CUSTOMIZED__");
+			    if("true".equals(customized)){
+			    	url = ElementParameterParser.getValue(node, "__BROKER_URI__");
+			    	if (url.startsWith("\"")) {
+			            url = url.substring(1);
+			        }
+			        if (url.endsWith("\"")) {
+			            url = url.substring(0, url.length() - 1);
+			        }
+			    }else{
+			    	StringBuilder sb = new StringBuilder();
+			    	String protocal = ElementParameterParser.getValue(node, "__PROTOCOL__");
+				    String server = ElementParameterParser.getValue(node, "__SERVER__");
+				    String port = ElementParameterParser.getValue(node, "__PORT__");
+			
+				    if ("custom".equals(protocal)) {
+				        protocal = ElementParameterParser.getValue(node, "__CUSTOM_PROTOCOL__");
+				    }		
+			        sb.append("\"");
+			        sb.append(protocal);
+			        sb.append("://");
+			        sb.append(server);
+			        sb.append(":");
+			        sb.append(port);
+			
+			   
+			        String additionalOptions = ElementParameterParser.getValue(node, "__ADDITIONAL_OPTIONS__");
+			        if("true".equals(additionalOptions)){
+				        List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node,
+		                "__BROKER_OPTIONS__");
+				        if(tableValues.size()>0){
+				        	sb.append("?");
+				        }
+				        for (Map<String, String> map : tableValues) {
+				            String argName = map.get("NAME").trim();
+				            String argValue = map.get("VALUE").trim();
+				
+				            if (argValue.startsWith("\"")) {
+				                argValue = argValue.substring(1);
+				            }
+				            if (argValue.endsWith("\"")) {
+				                argValue = argValue.substring(0, argValue.length() - 1);
+				            }
+				
+				            if (argName.startsWith("\"")) {
+				                argName = argName.substring(1);
+				            }
+				            if (argName.endsWith("\"")) {
+				                argName = argName.substring(0, argName.length() - 1);
+				            }
+				            sb.append(argName);
+				            sb.append("=");
+				            sb.append(argValue);
+				        }
+				        if(tableValues.size()>0){
+				        	sb.deleteCharAt(sb.length()-1);
+				        }
+			        }
+			        sb.append("\"");
+			        url = sb.toString();
+			    }
+%>
+			connectionFactory = new org.apache.activemq.ActiveMQConnectionFactory(<%=url%>);
+			camelContext.addComponent("<%=ElementParameterParser.getValue(node, "__NAME__").trim()%>",
+					org.apache.activemq.camel.component.ActiveMQComponent.jmsComponent(connectionFactory));
+<%   
+		}
+%>
+
 			answer.put("camel-1", camelContext);
 			return answer;
 		}
