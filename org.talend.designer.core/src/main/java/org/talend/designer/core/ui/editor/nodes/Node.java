@@ -2293,49 +2293,6 @@ public class Node extends Element implements IGraphicalNode {
                 }
             }
             checkValidationRule(param);
-
-            //
-            if (this.getComponent() != null && "tFileOutputDelimited".equals(this.getComponent().getName())) {
-                int limitValue = 1;
-                if (param.getName().equals("ROWSEPARATOR")) {
-                    if (!(param.getValue() instanceof String)) {
-                        break;
-                    }
-                    String value = (String) param.getValue();
-                    IElementParameter limitParameter = param.getElement().getElementParameter(
-                            EParameterName.ROWSEPARATOR_LIMIT.getName());
-                    if (limitParameter != null && limitParameter instanceof IElementParameter) {
-                        Object limitParameterValue = (Object) limitParameter.getValue();
-                        if (limitParameterValue != null && limitParameterValue instanceof String) {
-                            String str = limitParameterValue.toString();
-                            if (str.startsWith(TalendTextUtils.QUOTATION_MARK) && str.endsWith(TalendTextUtils.QUOTATION_MARK)) {
-                                String s = TalendTextUtils.removeQuotes(str);
-                                if (s.matches("^[0-9_]+$")) {
-                                    limitValue = Integer.parseInt(s);
-                                } else {
-                                    String errorMessage = Messages.getString(
-                                            "Node.separatorFieldMustInteger", param.getDisplayName()); //$NON-NLS-1$
-                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                                }
-                            }
-                        }
-                    }
-                    if (value.startsWith(TalendTextUtils.QUOTATION_MARK) && value.endsWith(TalendTextUtils.QUOTATION_MARK)) {
-                        String removedQuotesValueStr = TalendTextUtils.removeQuotes(value);
-                        if (removedQuotesValueStr != null && !"".equals(removedQuotesValueStr)) {
-                            String valueStr = removedQuotesValueStr.replace("\\", ";");
-                            if (valueStr != null && !"".equals(valueStr) && valueStr.startsWith(";")) {
-                                valueStr = valueStr.substring(1);
-                                if (valueStr.split(";").length > limitValue) {
-                                    String errorMessage = Messages.getString(
-                                            "Node.separatorFieldLengthMoreThanLimit", param.getDisplayName()); //$NON-NLS-1$
-                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         IElementParameter enableParallelizeParameter = getElementParameter(EParameterName.PARALLELIZE.getName());
