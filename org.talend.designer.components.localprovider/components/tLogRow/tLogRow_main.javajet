@@ -49,7 +49,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 %>
 
 
-				StringBuilder strBuffer_<%=cid%> = new StringBuilder();
+				strBuffer_<%=cid%> = new StringBuilder();
 <% 
    if (("true").equals(printUniqueName)) {//print the component name.
 %>

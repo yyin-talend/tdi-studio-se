@@ -361,8 +361,8 @@ if (("true").equals(printHeader)) {
 <%
   }
 %>
+ 		StringBuilder strBuffer_<%=cid%> = null;
 		int nb_line_<%=cid%> = 0;
- 
 ///////////////////////    			
 <%
     }//2
