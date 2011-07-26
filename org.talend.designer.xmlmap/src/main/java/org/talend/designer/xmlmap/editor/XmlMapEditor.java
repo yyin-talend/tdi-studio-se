@@ -35,7 +35,7 @@ import org.talend.designer.xmlmap.editor.actions.CreateElementAction;
 import org.talend.designer.xmlmap.editor.actions.CreateNameSpaceAction;
 import org.talend.designer.xmlmap.editor.actions.DeleteTreeNodeAction;
 import org.talend.designer.xmlmap.editor.actions.FixValueAction;
-import org.talend.designer.xmlmap.editor.actions.ImportTreeFromRepository;
+import org.talend.designer.xmlmap.editor.actions.InputImportTreeFromRepository;
 import org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml;
 import org.talend.designer.xmlmap.editor.actions.OutputImportTreeFromRepository;
 import org.talend.designer.xmlmap.editor.actions.OutputImportTreeFromXml;
@@ -124,7 +124,7 @@ public class XmlMapEditor extends GraphicalEditor {
         getActionRegistry().registerAction(groupAction);
         getSelectionActions().add(groupAction.getId());
 
-        ImportTreeFromRepository importFromRepository = new ImportTreeFromRepository(this, getGraphicalViewer().getControl()
+        InputImportTreeFromRepository importFromRepository = new InputImportTreeFromRepository(this, getGraphicalViewer().getControl()
                 .getShell());
         importFromRepository.setMapperManager(mapperManager);
         getActionRegistry().registerAction(importFromRepository);
@@ -337,8 +337,8 @@ public class XmlMapEditor extends GraphicalEditor {
                         menu.add(loopAction);
                     }
 
-                    ImportTreeFromRepository importFromRepository = (ImportTreeFromRepository) getActionRegistry().getAction(
-                            ImportTreeFromRepository.ID);
+                    InputImportTreeFromRepository importFromRepository = (InputImportTreeFromRepository) getActionRegistry().getAction(
+                            InputImportTreeFromRepository.ID);
                     importFromRepository.update(object);
                     if (importFromRepository.isEnabled()) {
                         menu.add(importFromRepository);

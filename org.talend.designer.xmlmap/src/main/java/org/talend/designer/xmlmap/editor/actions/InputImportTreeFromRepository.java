@@ -28,9 +28,8 @@ import org.talend.core.model.metadata.builder.connection.impl.XmlXPathLoopDescri
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
@@ -46,17 +45,17 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeU
 /**
  * wchen class global comment. Detailled comment
  */
-public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
+public class InputImportTreeFromRepository extends ImportTreeFromRepository {
 
-    private OutputTreeNode parentNode;
+    private TreeNode parentNode;
 
     private Shell shell;
 
-    public static final String ID = "org.talend.designer.xmlmap.editor.actions.OutputImportTreeFromRepository";
+    private Map<TreeNode, XMLFileNode> nodeMap = new HashMap<TreeNode, XMLFileNode>();
 
-    private Map<OutputTreeNode, XMLFileNode> nodeMap = new HashMap<OutputTreeNode, XMLFileNode>();
+    public static final String ID = "org.talend.designer.xmlmap.editor.actions.ImportTreeFromRepository";
 
-    public OutputImportTreeFromRepository(IWorkbenchPart part, Shell shell) {
+    public InputImportTreeFromRepository(IWorkbenchPart part, Shell shell) {
         super(part);
         this.shell = shell;
         setId(ID);
@@ -67,7 +66,8 @@ public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
     public void run() {
         RepositoryReviewDialog reviewDialog = new RepositoryReviewDialog(shell, ERepositoryObjectType.METADATA, "XML");
         if (reviewDialog.open() == Window.OK) {
-            TreeNode treeNodeRoot = XmlMapUtil.getOutputTreeNodeRoot(parentNode);
+            TreeNode treeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(parentNode);
+
             XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
             parentNode.getChildren().clear();
             RepositoryNode repositoryNode = reviewDialog.getResult();
@@ -75,8 +75,8 @@ public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
             XmlFileConnection connection = (XmlFileConnection) item.getConnection();
             prepareEmfTreeNode(connection);
             nodeMap.clear();
-            if (mapperManager != null && parentNode.eContainer() instanceof OutputXmlTree) {
-                mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
+            if (mapperManager != null && parentNode.eContainer() instanceof InputXmlTree) {
+                mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
             }
         }
     }
@@ -85,15 +85,14 @@ public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
      * same as XmlFileOutputStep2Form.initXmlTreeData()
      */
     private void prepareEmfTreeNode(XmlFileConnection connection) {
-        OutputTreeNode rootNode = null;
-        OutputTreeNode current = parentNode;
+        TreeNode rootNode = null;
+        TreeNode current = parentNode;
         if (!connection.isInputModel()) {
             List<XMLFileNode> root = connection.getRoot();
             List<XMLFileNode> loop = connection.getLoop();
             List<XMLFileNode> group = connection.getGroup();
-
-            OutputTreeNode temp = null;
-            OutputTreeNode mainNode = null;
+            TreeNode temp = null;
+            TreeNode mainNode = null;
             String mainPath = null;
             String currentPath = null;
 
@@ -102,18 +101,15 @@ public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
                 XMLFileNode node = (XMLFileNode) root.get(i);
                 String newPath = node.getXMLPath();
                 String type = node.getType();
-
                 if (node.getAttribute().equals("attri")) {
-                    temp = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                    temp = XmlmapFactory.eINSTANCE.createTreeNode();
                     temp.setName(newPath);
-                    temp.setDefaultValue(node.getDefaultValue());
                     temp.setNodeType(NodeType.ATTRIBUT);
                     temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
                     current.getChildren().add(temp);
                 } else if (node.getAttribute().equals("ns")) {
-                    temp = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                    temp = XmlmapFactory.eINSTANCE.createTreeNode();
                     temp.setName(newPath);
-                    temp.setDefaultValue(node.getDefaultValue());
                     temp.setNodeType(NodeType.NAME_SPACE);
                     temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
 
@@ -148,16 +144,14 @@ public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
                 String type = node.getType();
 
                 if (node.getAttribute().equals("attri")) {
-                    temp = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                    temp = XmlmapFactory.eINSTANCE.createTreeNode();
                     temp.setName(newPath);
-                    temp.setDefaultValue(node.getDefaultValue());
                     temp.setNodeType(NodeType.ATTRIBUT);
                     temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
                     current.getChildren().add(temp);
                 } else if (node.getAttribute().equals("ns")) {
-                    temp = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                    temp = XmlmapFactory.eINSTANCE.createTreeNode();
                     temp.setName(newPath);
-                    temp.setDefaultValue(node.getDefaultValue());
                     temp.setNodeType(NodeType.NAME_SPACE);
                     temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
                     current.getChildren().add(temp);
@@ -192,16 +186,14 @@ public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
                 String type = node.getType();
 
                 if (node.getAttribute().equals("attri")) {
-                    temp = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                    temp = XmlmapFactory.eINSTANCE.createTreeNode();
                     temp.setName(newPath);
-                    temp.setDefaultValue(node.getDefaultValue());
                     temp.setNodeType(NodeType.ATTRIBUT);
                     temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
                     current.getChildren().add(temp);
                 } else if (node.getAttribute().equals("ns")) {
-                    temp = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                    temp = XmlmapFactory.eINSTANCE.createTreeNode();
                     temp.setName(newPath);
-                    temp.setDefaultValue(node.getDefaultValue());
                     temp.setNodeType(NodeType.NAME_SPACE);
                     temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
                     current.getChildren().add(temp);
@@ -225,13 +217,14 @@ public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
 
             }
             if (rootNode == null) {
-                rootNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                rootNode = XmlmapFactory.eINSTANCE.createTreeNode();
                 rootNode.setName("root");
                 rootNode.setNodeType(NodeType.ELEMENT);
                 rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                 rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
             }
             parentNode.getChildren().add(rootNode);
+
         } else {
             String absoluteXPathQuery = "";
             if (!connection.getSchema().isEmpty() && connection.getSchema().get(0) instanceof XmlXPathLoopDescriptorImpl) {
@@ -254,13 +247,13 @@ public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
 
     }
 
-    private void prepareEmfTreeNode(List<FOXTreeNode> list, OutputTreeNode parent, String xmlPath, String absoluteXPathQuery) {
+    private void prepareEmfTreeNode(List<FOXTreeNode> list, TreeNode parent, String xmlPath, String absoluteXPathQuery) {
         if (list == null || list.isEmpty()) {
             return;
         }
         String xPath = parent.getXpath();
         for (FOXTreeNode foxNode : list) {
-            OutputTreeNode createTreeNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+            TreeNode createTreeNode = XmlmapFactory.eINSTANCE.createTreeNode();
             createTreeNode.setName(foxNode.getLabel());
             if (foxNode instanceof Element) {
                 createTreeNode.setNodeType(NodeType.ELEMENT);
@@ -268,17 +261,14 @@ public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
                 createTreeNode.setNodeType(NodeType.ATTRIBUT);
             } else if (foxNode instanceof NameSpaceNode) {
                 createTreeNode.setNodeType(NodeType.NAME_SPACE);
-                createTreeNode.setDefaultValue(foxNode.getDefaultValue());
-                if (createTreeNode.getName() == null || createTreeNode.getName().equals("")) {
-                    createTreeNode.setName(XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX);
-                }
             }
             createTreeNode.setXpath(XmlMapUtil.getXPath(xPath, createTreeNode.getName(), createTreeNode.getNodeType()));
-            if (foxNode.getDataType() != null && "".equals(foxNode.getDataType())) {
+            if (foxNode.getDataType() != null) {
                 createTreeNode.setType(foxNode.getDataType());
             } else {
                 createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
             }
+
             String tempXpath = null;
             if (absoluteXPathQuery != null) {
                 if (xmlPath == null) {
@@ -303,14 +293,13 @@ public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
 
     }
 
-    protected OutputTreeNode addElement(OutputTreeNode current, String currentPath, XMLFileNode node) {
+    protected TreeNode addElement(TreeNode current, String currentPath, XMLFileNode node) {
         String newPath = node.getXMLPath();
         String defaultValue = node.getDefaultValue();
         String name = newPath.substring(newPath.lastIndexOf("/") + 1); //$NON-NLS-1$
         String parentPath = newPath.substring(0, newPath.lastIndexOf("/")); //$NON-NLS-1$
-        OutputTreeNode temp = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+        TreeNode temp = XmlmapFactory.eINSTANCE.createTreeNode();
         temp.setName(name);
-        temp.setDefaultValue(defaultValue);
 
         if (current == parentNode) { // root node of a document
             return temp;
@@ -350,9 +339,9 @@ public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
                     parentLevel = i;
                 }
             }
-            OutputTreeNode parent = current;
+            TreeNode parent = current;
             for (int i = 0; i < nods.length - (parentLevel + 1); i++) {
-                OutputTreeNode tmpParent = (OutputTreeNode) parent.eContainer();
+                TreeNode tmpParent = (TreeNode) parent.eContainer();
                 if (tmpParent == null) {
                     break;
                 }
@@ -397,8 +386,8 @@ public class OutputImportTreeFromRepository extends ImportTreeFromRepository {
             Object object = getSelectedObjects().get(0);
             if (object instanceof TreeNodeEditPart) {
                 TreeNodeEditPart parentPart = (TreeNodeEditPart) object;
-                parentNode = (OutputTreeNode) parentPart.getModel();
-                if (parentNode.eContainer() instanceof OutputXmlTree && XmlMapUtil.DOCUMENT.equals(parentNode.getType())) {
+                parentNode = (TreeNode) parentPart.getModel();
+                if (parentNode.eContainer() instanceof InputXmlTree && XmlMapUtil.DOCUMENT.equals(parentNode.getType())) {
                     return true;
                 }
             }
