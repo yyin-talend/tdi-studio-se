@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -93,7 +92,6 @@ import org.talend.repository.ui.wizards.metadata.table.files.FileLdifTableWizard
 import org.talend.repository.ui.wizards.metadata.table.files.FilePositionalTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileRegexpTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileXmlTableWizard;
-
 import orgomg.cwm.objectmodel.core.Package;
 import orgomg.cwm.resource.record.RecordFactory;
 import orgomg.cwm.resource.record.RecordFile;
@@ -924,23 +922,23 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                                 DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(),
                                         creation, node.getObject(), metadataTable, getExistingNames(), forceReadOnly,
                                         managerConnection, metadataConnection);
-                                UIJob uijob = new UIJob("") { //$NON-NLS-1$
-
-                                    // modified by wzhang. when connection failed,error message display.
-                                    public IStatus runInUIThread(IProgressMonitor monitor) {
-                                        if (!managerConnection.getIsValide()) {
-                                            MessageDialog.openError(null,
-                                                    Messages.getString("AbstractCreateTableAction.connError"), //$NON-NLS-1$
-                                                    Messages.getString("AbstractCreateTableAction.errorMessage")); //$NON-NLS-1$
-                                        }
-                                        return Status.OK_STATUS;
-                                    }
-
-                                };
+                                //                                UIJob uijob = new UIJob("") { //$NON-NLS-1$
+                                //
+                                // // modified by wzhang. when connection failed,error message display.
+                                // public IStatus runInUIThread(IProgressMonitor monitor) {
+                                // if (!managerConnection.getIsValide()) {
+                                // MessageDialog.openError(null,
+                                //                                                    Messages.getString("AbstractCreateTableAction.connError"), //$NON-NLS-1$
+                                //                                                    Messages.getString("AbstractCreateTableAction.errorMessage")); //$NON-NLS-1$
+                                // }
+                                // return Status.OK_STATUS;
+                                // }
+                                //
+                                // };
                                 WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                                         .getShell(), databaseTableWizard);
                                 wizardDialog.setBlockOnOpen(true);
-                                uijob.schedule(1300);
+                                // uijob.schedule(1300);
                                 handleWizard(node, wizardDialog);
                             } else {
                                 // added for bug 16595

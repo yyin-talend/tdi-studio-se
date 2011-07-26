@@ -42,7 +42,7 @@
     	FIELD="LABEL"
     	NUM_ROW="1"
     >
-    	<DEFAULT>(To use this component, you need first to add these SAS Java packages (sas.core.jar, sas.intrnet.javatools.jar, sas.svc.connection.jar) in the Modules view)</DEFAULT>
+    	<DEFAULT>(To use this component, you need first to add these SAS Java packages (sas.core.jar, sas.security.sspi.jar, sas.svc.connection.jar) in the Modules view)</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -274,7 +274,7 @@
      <IMPORTS>
 		<IMPORT NAME="Driver-SAS" MODULE="sas.core.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-SAS" MODULE="sas.svc.connection.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-SAS" MODULE="sas.intrnet.javatools.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-SAS" MODULE="sas.security.sspi.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
    

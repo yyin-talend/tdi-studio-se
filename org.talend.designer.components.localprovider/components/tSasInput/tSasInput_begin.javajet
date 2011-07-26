@@ -37,11 +37,11 @@ imports="
 			dbpwd = ElementParameterParser.getValue(node, "__PASS__");
 %>
 			java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
-			String dbName_<%=cid %> = <%=dbname%>;
+			
 			String dbUser_<%=cid %> = <%=dbuser%>;
 			String dbPwd_<%=cid %> = <%=dbpwd%>;
 			java.util.Properties property_<%=cid %> = new java.util.Properties();
-			property_<%=cid %>.setProperty("librefs", dbName_<%=cid %>);
+			
 			property_<%=cid %>.setProperty("username", dbUser_<%=cid %>);
 			property_<%=cid %>.setProperty("password", dbPwd_<%=cid %>);
 			<%this.setURL(node);%>
