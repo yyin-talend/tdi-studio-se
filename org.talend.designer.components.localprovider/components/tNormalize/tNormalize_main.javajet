@@ -59,7 +59,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             outgoingConnName = outConn.getName();
         }
         List<IMetadataColumn> metadataColumns = metadata.getListColumns();
-        if(incomingConnName != null && outgoingConnName != null && 
+        if(incomingConnName != null && 
                 metadataColumns != null && !metadataColumns.isEmpty()) {//3
             %>
             if(<%=incomingConnName %>.<%=normalizeColumn%> != null && <%=incomingConnName %>.<%=normalizeColumn%>.trim().length() > 0) {
@@ -84,6 +84,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                 currentRecord_<%=cid%> = new StringBuilder();
                 nb_line_<%=cid%>++;               
                 <%
+                if(outgoingConnName != null ){
                 if(("true").equals(deduplicate)) {//check deduplicate start
                     for(int i = 0 ; i < metadataColumns.size() ; i++) {
                         IMetadataColumn metadataColumn = (IMetadataColumn)metadataColumns.get(i);
@@ -160,6 +161,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                         <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>;
                         <%
                     }
+                }
                 }
                 %>
 
