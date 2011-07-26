@@ -196,8 +196,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
 
     private boolean isBuilInMode(Item item) {
         if (item != null && !item.isChecked()
-                && (item.getOperation() == EUpdateResult.UPDATE || item.getOperation() == EUpdateResult.DELETE)
-                && item.getResultObject() != null && item.getResultObject().getUpdateType() != EUpdateItemType.NODE_SCHEMA) {
+                && (item.getOperation() == EUpdateResult.UPDATE || item.getOperation() == EUpdateResult.DELETE)) {
             return true;
         }
         return false;

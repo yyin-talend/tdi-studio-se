@@ -318,8 +318,7 @@ public class UpdateViewerHelper {
                 }
 
                 if (!result.isChecked()
-                        && (result.getResultType() == EUpdateResult.UPDATE || result.getResultType() == EUpdateResult.DELETE)
-                        && result.getUpdateType() != EUpdateItemType.NODE_SCHEMA) {
+                        && (result.getResultType() == EUpdateResult.UPDATE || result.getResultType() == EUpdateResult.DELETE)) {
                     updateDialog.updateWarnMessage();
                     return;
                 }

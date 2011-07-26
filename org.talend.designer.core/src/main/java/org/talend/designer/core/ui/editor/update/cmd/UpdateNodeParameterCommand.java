@@ -715,7 +715,10 @@ public class UpdateNodeParameterCommand extends Command {
                 }
 
             }
-
+            // bug 23326
+            if (builtIn) { // bult-in
+                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+            }
         }
     }
 
