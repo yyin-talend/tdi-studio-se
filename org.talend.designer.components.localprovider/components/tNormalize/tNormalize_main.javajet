@@ -58,6 +58,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             IConnection outConn = outConns.get(0);
             outgoingConnName = outConn.getName();
         }
+        List< ? extends IConnection> outIterate = NodeUtil.getOutgoingConnections(node, IConnectionCategory.USE_ITERATE);
         List<IMetadataColumn> metadataColumns = metadata.getListColumns();
         if(incomingConnName != null && 
                 metadataColumns != null && !metadataColumns.isEmpty()) {//3
@@ -80,6 +81,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             } else {
                 normalizeRecord_<%=cid%> = new String[1];
             }
+            <%
+            if(!outIterate.isEmpty()||outgoingConnName != null){
+            %>
             for(int i_<%=cid%> = 0 ; i_<%=cid%> < normalizeRecord_<%=cid%>.length ; i_<%=cid%>++) {
                 currentRecord_<%=cid%> = new StringBuilder();
                 nb_line_<%=cid%>++;               
@@ -166,6 +170,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                 %>
 
             <%
+            }
         }
         //3
     }
