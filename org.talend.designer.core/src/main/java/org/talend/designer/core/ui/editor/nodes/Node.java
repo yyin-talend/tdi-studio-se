@@ -480,6 +480,9 @@ public class Node extends Element implements IGraphicalNode {
         if (breaningService.isPoweredOnlyCamel()) {
             componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
         }
+        if (component instanceof EmfComponent) {
+            componentsPath = ((EmfComponent) component).getSourceBundleName();
+        }
         if (!pluginFullName.equals(componentsPath)) {
             externalNode = ExternalNodesFactory.getInstance(pluginFullName);
         }

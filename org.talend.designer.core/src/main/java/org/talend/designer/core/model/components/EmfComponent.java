@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,10 +26,8 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -39,7 +36,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.RGB;
-import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -88,7 +84,6 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.components.IComponentsLocalProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
@@ -259,35 +254,10 @@ public class EmfComponent extends AbstractComponent {
         return returnValue;
     }
 
-    private String getComponentsLocation(String folder) {
-        String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
-        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-        if (breaningService.isPoweredOnlyCamel()) {
-            componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
-        }
-        Bundle b = Platform.getBundle(componentsPath);
-        File file = null;
-        try {
-            URL url = FileLocator.find(b, new Path(folder), null);
-            if (url == null) {
-                return null;
-            }
-            URL fileUrl = FileLocator.toFileURL(url);
-            file = new File(fileUrl.getPath());
-        } catch (Exception e) {
-            // e.printStackTrace();
-            ExceptionHandler.process(e);
-        }
-
-        return file.getAbsolutePath();
-    }
-
     @SuppressWarnings("unchecked")
     private void load() throws BusinessException {
         if (!isLoaded) {
-            String source = getComponentsLocation(IComponentsFactory.COMPONENTS_INNER_FOLDER);
-            File file = new File(source + uriString);
+            File file = new File(uriString);
             URI createURI = URI.createURI(file.toURI().toString());
             Resource res = getComponentResourceFactoryImpl().createResource(createURI);
             try {
@@ -2475,24 +2445,24 @@ public class EmfComponent extends AbstractComponent {
     }
 
     public String getPluginFullName() {
-        String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
-        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-        if (breaningService.isPoweredOnlyCamel()) {
-            componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
-        }
+        // String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
+        // IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+        // IBrandingService.class);
+        // if (breaningService.isPoweredOnlyCamel()) {
+        // componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
+        // }
         String pluginFullName = null;
         if (!isAlreadyLoad) {
             pluginFullName = compType.getHEADER().getEXTENSION();
             if (pluginFullName == null) {
-                pluginFullName = componentsPath;
+                pluginFullName = getSourceBundleName();
             }
             info.setPluginFullName(pluginFullName);
         } else {
             if (info != null) {
                 pluginFullName = info.getPluginFullName();
             } else {
-                pluginFullName = componentsPath;
+                pluginFullName = getSourceBundleName();
             }
         }
         // cache.get
@@ -2923,8 +2893,7 @@ public class EmfComponent extends AbstractComponent {
 
     private ArrayList<ECodePart> createCodePartList() {
         ArrayList<ECodePart> theCodePartList = new ArrayList<ECodePart>();
-        String source = getComponentsLocation(IComponentsFactory.COMPONENTS_INNER_FOLDER);
-        File dirChildFile = new File(source + uriString);
+        File dirChildFile = new File(uriString);
         File dirFile = dirChildFile.getParentFile();
         final String extension = "." + LanguageManager.getCurrentLanguage().getName() + "jet"; //$NON-NLS-1$ //$NON-NLS-2$
         FilenameFilter fileNameFilter = new FilenameFilter() {
@@ -3409,5 +3378,22 @@ public class EmfComponent extends AbstractComponent {
     public IProcess getProcess() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    String bundleName;
+
+    public String getSourceBundleName() {
+        if (bundleName == null) {
+            String installPath = uriString;
+            installPath = installPath.substring(0, installPath.lastIndexOf(IComponentsFactory.COMPONENTS_INNER_FOLDER));
+            IPath path = new Path(installPath);
+            String bundleName = path.lastSegment();
+            return bundleName;
+        }
+        return bundleName;
+    }
+
+    public void setSourceBundleName(String bundleName) {
+        this.bundleName = bundleName;
     }
 }

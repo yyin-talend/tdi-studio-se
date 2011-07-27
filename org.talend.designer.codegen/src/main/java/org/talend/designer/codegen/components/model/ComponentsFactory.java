@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -66,6 +67,7 @@ import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.ITisLocalProviderService;
+import org.talend.designer.core.ITisLocalProviderService.ResClassLoader;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
@@ -329,7 +331,7 @@ public class ComponentsFactory implements IComponentsFactory {
         ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
         for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
             if (componentsProvider.getInstallationFolder().exists()) {
-                File source = getComponentsLocation(componentsProvider.getComponentsLocation());
+                File source = componentsProvider.getInstallationFolder();
                 File[] childDirectories;
 
                 FileFilter fileFilter = new FileFilter() {
@@ -371,7 +373,6 @@ public class ComponentsFactory implements IComponentsFactory {
     private void reloadComponentsFromCache() throws BusinessException {
         ComponentsCache cache = ComponentManager.getInstance();
         Iterator it = cache.getComponentEntryMap().entrySet().iterator();
-        File pathFile = getComponentsLocation(IComponentsFactory.COMPONENTS_INNER_FOLDER);
         while (it.hasNext()) {
             Map.Entry<String, ComponentInfo> entry = (Map.Entry<String, ComponentInfo>) it.next();
             ComponentInfo info = entry.getValue();
@@ -401,32 +402,20 @@ public class ComponentsFactory implements IComponentsFactory {
                 currentComp.setVisible(false);
                 currentComp.setTechnical(true);
             }
-            if (currentComp.getPathSource().contains("camel")) {
+            if (currentComp.getSourceBundleName().contains("camel")) {
                 currentComp.setPaletteType("CAMEL");
             } else {
                 currentComp.setPaletteType("DI");
             }
 
             if (!componentList.contains(currentComp)) {
-                ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
-                currentComp.setResourceBundle(getComponentResourceBundle(currentComp, info.getPathSource(),
-                        componentsProviderManager.loadUserComponentsProvidersFromExtension()));
+                currentComp.setResourceBundle(getComponentResourceBundle(currentComp, info.getUriString(), null));
 
-                File currentFile = new File(pathFile.getAbsoluteFile() + info.getUriString());
+                File currentFile = new File(info.getUriString());
                 loadIcons(currentFile.getParentFile(), currentComp);
                 componentList.add(currentComp);
             }
         }
-    }
-
-    /**
-     * DOC guanglong.du Comment method "createComponentCacheResource".
-     * 
-     * @param eclipseProject
-     * @return
-     */
-    private Resource createComponentCacheResource(String installLocation) {
-        return ComponentManager.createComponentCacheResource(installLocation);
     }
 
     /**
@@ -561,8 +550,13 @@ public class ComponentsFactory implements IComponentsFactory {
             isCustom = true;
         }
 
-        File source = getComponentsLocation(pathSource);
-        File replaceSource = getComponentsLocation(IComponentsFactory.COMPONENTS_INNER_FOLDER);
+        File source;
+        try {
+            source = provider.getInstallationFolder();
+        } catch (IOException e1) {
+            ExceptionHandler.process(e1);
+            return;
+        }
         File[] childDirectories;
 
         FileFilter fileFilter = new FileFilter() {
@@ -625,7 +619,7 @@ public class ComponentsFactory implements IComponentsFactory {
                             continue;
                         }
                         String pathName = xmlMainFile.getAbsolutePath();
-                        pathName = pathName.replace(replaceSource.getAbsolutePath(), "");
+                        // pathName = pathName.replace(replaceSource.getAbsolutePath(), "");
                         EmfComponent currentComp = new EmfComponent(pathName, xmlMainFile.getParentFile().getName(), pathSource,
                                 ComponentManager.getInstance(), isCreated);
                         // force to call some functions to update the cache. (to improve)
@@ -670,7 +664,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         if (componentList.contains(currentComp)) {
                             log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version."); //$NON-NLS-1$ //$NON-NLS-2$
                         } else {
-                            currentComp.setResourceBundle(getComponentResourceBundle(currentComp, pathSource, provider));
+                            currentComp.setResourceBundle(getComponentResourceBundle(currentComp, source.toString(), provider));
                             loadIcons(currentFolder, currentComp);
                             componentList.add(currentComp);
                             if (isCustom) {
@@ -745,28 +739,49 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private ResourceBundle getComponentResourceBundle(IComponent currentComp, String source, AbstractComponentsProvider provider) {
-        String label = ComponentFilesNaming.getInstance().getBundleName(currentComp.getName(), source);
 
-        // Class eclass = null;
-        // try {
-        // eclass = bundle4.loadClass("org.talend.designer.components.ComponentsLocalProviderPlugin");
-        // } catch (ClassNotFoundException e) {
-        // ExceptionHandler.process(e);
-        // }
-        // return ResourceBundle.getBundle(label, Locale.getDefault(), classLoader);
-        // ResourceBundle bundle = ResourceBundle.getBundle(label, Locale.getDefault(), new
-        // ResClassLoader(getClass().getClassLoader()))
-        ResourceBundle bundle = null;
-        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-        if (breaningService.isPoweredOnlyCamel()) {
-            bundle = provider.getResourceBundle(label);
-        } else {
-            ITisLocalProviderService service = (ITisLocalProviderService) GlobalServiceRegister.getDefault().getService(
-                    ITisLocalProviderService.class);
-            bundle = service.getResourceBundle(label);
+        try {
+            AbstractComponentsProvider currentProvider = provider;
+            if (currentProvider == null) {
+                ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
+                for (AbstractComponentsProvider curProvider : componentsProviderManager.getProviders()) {
+                    String path = curProvider.getInstallationFolder().toString();
+                    if (source.startsWith(path)) {
+                        currentProvider = curProvider;
+                        break;
+                    }
+                }
+            }
+            String installPath = currentProvider.getInstallationFolder().toString();
+            String label = ComponentFilesNaming.getInstance().getBundleName(currentComp.getName(),
+                    installPath.substring(installPath.lastIndexOf(IComponentsFactory.COMPONENTS_INNER_FOLDER)));
+
+            if (currentProvider.isUseLocalProvider()) {
+                // if the component use local provider as storage (for user / ecosystem components)
+                // then get the bundle resource from the current main component provider.
+
+                // note: code here to review later, service like this shouldn't be used...
+                ResourceBundle bundle = null;
+                IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                        IBrandingService.class);
+                if (brandingService.isPoweredOnlyCamel()) {
+                    bundle = currentProvider.getResourceBundle(label);
+                } else {
+                    ITisLocalProviderService service = (ITisLocalProviderService) GlobalServiceRegister.getDefault().getService(
+                            ITisLocalProviderService.class);
+                    bundle = service.getResourceBundle(label);
+                }
+                return bundle;
+            } else {
+                ResourceBundle bundle = ResourceBundle.getBundle(label, Locale.getDefault(), new ResClassLoader(currentProvider
+                        .getClass().getClassLoader()));
+                return bundle;
+            }
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
         }
-        return bundle;
+
+        return null;
     }
 
     private String getCodeLanguageSuffix() {
@@ -920,66 +935,60 @@ public class ComponentsFactory implements IComponentsFactory {
      * @see org.talend.core.model.components.IComponentsFactory#getAllComponentsCanBeProvided()
      */
     public Map<String, ImageDescriptor> getAllComponentsCanBeProvided() {
-        List source = new ArrayList();
+        List<AbstractComponentsProvider> source = new ArrayList<AbstractComponentsProvider>();
         if (allComponents == null) {
             allComponents = new HashMap<String, ImageDescriptor>();
-            source.add(IComponentsFactory.COMPONENTS_INNER_FOLDER);
+            // source.add(IComponentsFactory.COMPONENTS_INNER_FOLDER);
             ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
             source.addAll(componentsProviderManager.getProviders());
             for (int i = 0; i < source.size(); i++) {
-                String path = null;
-                Object object = source.get(i);
-                if (object instanceof String) {
-                    path = (String) object;
-                } else if (object instanceof AbstractComponentsProvider) {
-                    path = ((AbstractComponentsProvider) object).getComponentsLocation();
+                AbstractComponentsProvider object = source.get(i);
+                File sourceFile;
+                try {
+                    sourceFile = object.getInstallationFolder();
+                } catch (IOException e1) {
+                    ExceptionHandler.process(e1);
+                    continue;
                 }
-                if (path != null) {
-                    File sourceFile = getComponentsLocation(path);
-                    File[] childDirectories;
+                File[] childDirectories;
 
-                    FileFilter fileFilter = new FileFilter() {
+                FileFilter fileFilter = new FileFilter() {
 
-                        public boolean accept(final File file) {
-                            return file.isDirectory() && file.getName().charAt(0) != '.'
-                                    && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER);
-                        }
-
-                    };
-                    if (sourceFile == null) {
-                        ExceptionHandler.process(new Exception("Component Not Found")); //$NON-NLS-1$
-                        continue;
+                    public boolean accept(final File file) {
+                        return file.isDirectory() && file.getName().charAt(0) != '.'
+                                && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER);
                     }
 
-                    childDirectories = sourceFile.listFiles(fileFilter);
-                    if (childDirectories != null) {
-                        for (File currentFolder : childDirectories) {
-                            try {
-                                ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
-                            } catch (BusinessException e) {
-                                continue;
-                            }
-                            File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
-                                    currentFolder.getName(), getCodeLanguageSuffix()));
-                            List<String> families = getComponentsFamilyFromXML(xmlMainFile);
-                            ComponentIconLoading cil = new ComponentIconLoading(currentFolder);
-                            ImageDescriptor image32 = cil.getImage32();
-                            if (families != null) {
-                                for (String family : families) {
-                                    allComponents.put(family + FAMILY_SPEARATOR + currentFolder.getName(), image32);
-                                    if (object instanceof AbstractComponentsProvider) {
-                                        if (!componentsAndProvider.containsKey(family)) {
-                                            componentsAndProvider.put(family, (AbstractComponentsProvider) object);
-                                        }
-                                    }
+                };
+                if (sourceFile == null) {
+                    ExceptionHandler.process(new Exception("Component Not Found")); //$NON-NLS-1$
+                    continue;
+                }
+
+                childDirectories = sourceFile.listFiles(fileFilter);
+                if (childDirectories != null) {
+                    for (File currentFolder : childDirectories) {
+                        try {
+                            ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
+                        } catch (BusinessException e) {
+                            continue;
+                        }
+                        File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
+                                currentFolder.getName(), getCodeLanguageSuffix()));
+                        List<String> families = getComponentsFamilyFromXML(xmlMainFile);
+                        ComponentIconLoading cil = new ComponentIconLoading(currentFolder);
+                        ImageDescriptor image32 = cil.getImage32();
+                        if (families != null) {
+                            for (String family : families) {
+                                allComponents.put(family + FAMILY_SPEARATOR + currentFolder.getName(), image32);
+                                if (!componentsAndProvider.containsKey(family)) {
+                                    componentsAndProvider.put(family, (AbstractComponentsProvider) object);
                                 }
                             }
-
                         }
                     }
                 }
             }
-
         }
         return allComponents;
     }
@@ -1058,5 +1067,20 @@ public class ComponentsFactory implements IComponentsFactory {
      */
     public void resetSpecificComponents() {
         loadComponentsFromExtensions();
+    }
+
+    public List<File> getComponentsProvidersFolder() {
+        List<File> list = new ArrayList<File>();
+
+        ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
+        for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
+            try {
+                list.add(componentsProvider.getInstallationFolder());
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+                continue;
+            }
+        }
+        return list;
     }
 }

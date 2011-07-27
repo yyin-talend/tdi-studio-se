@@ -69,6 +69,7 @@ import org.talend.designer.codegen.config.LightJetBean;
 import org.talend.designer.codegen.config.TalendJetEmitter;
 import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.i18n.Messages;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -323,6 +324,9 @@ public final class CodeGeneratorEmittersPoolFactory {
                     IBrandingService.class);
             if (breaningService.isPoweredOnlyCamel()) {
                 componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
+            }
+            if (component instanceof EmfComponent) {
+                componentsPath = ((EmfComponent) component).getSourceBundleName();
             }
             JetBean jetBean = new JetBean(componentsPath, templateURI, component.getName(), component.getVersion(),
                     codeLanguage.getName(), codePart.getName());

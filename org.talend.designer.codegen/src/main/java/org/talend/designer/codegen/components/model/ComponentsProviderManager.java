@@ -59,9 +59,9 @@ public final class ComponentsProviderManager {
             for (IConfigurationElement configurationElement : configurationElements) {
                 String id = configurationElement.getAttribute("id"); //$NON-NLS-1$
                 String folderName = configurationElement.getAttribute("folderName"); //$NON-NLS-1$
-                IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                         IBrandingService.class);
-                if (!breaningService.isPoweredOnlyCamel()
+                if (!brandingService.isPoweredOnlyCamel()
                         && id.equals("org.talend.designer.camel.components.localprovider.CamelLocalComponentsProvider")) {
                     folderName = "camel";
                 }
