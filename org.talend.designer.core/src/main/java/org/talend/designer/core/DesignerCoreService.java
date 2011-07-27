@@ -646,8 +646,8 @@ public class DesignerCoreService implements IDesignerCoreService {
      * org.talend.designer.core.IDesignerCoreService#getNeededLibrariesForProcess(org.talend.core.model.process.IProcess
      * , boolean)
      */
-    public Set<String> getNeededLibrariesForProcess(IProcess process, boolean withChildrens) {
-        return JavaProcessUtil.getNeededLibraries(process, withChildrens);
+    public Set<String> getNeededLibrariesForProcess(IProcess process, boolean withChildrens, boolean... exportAsOSGI) {
+        return JavaProcessUtil.getNeededLibraries(process, withChildrens, exportAsOSGI);
     }
 
     /*

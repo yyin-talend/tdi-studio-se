@@ -41,6 +41,8 @@ import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ILibrariesService;
+import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -99,6 +101,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         ExportFileResource osgiResource = new ExportFileResource(null, ""); //$NON-NLS-1$
         ExportFileResource jobScriptResource = new ExportFileResource(null, ""); //$NON-NLS-1$
 
+        List<ProcessItem> itemToBeExport = new ArrayList<ProcessItem>();
+
         if (needJob) {
             list.add(libResource);
         }
@@ -114,6 +118,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         Set<String> neededLibraries = null;
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
+            itemToBeExport.add(processItem);
             jobName = processItem.getProperty().getLabel();
             packageName = JavaResourcesHelper.getProjectFolderName(processItem)
                     + PACKAGE_SEPARATOR
@@ -188,7 +193,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         libResource.addResources(userRoutineList);
 
         // generate the META-INFO folder
-        ExportFileResource metaInfoFolder = genMetaInfoFolder(libResource);
+        ExportFileResource metaInfoFolder = genMetaInfoFolder(libResource, itemToBeExport);
         list.add(metaInfoFolder);
 
         return list;
@@ -250,7 +255,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         addContextScripts(processItem, jobName, version, contextResource, needContext);
     }
 
-    protected ExportFileResource genMetaInfoFolder(ExportFileResource libResource) {
+    protected ExportFileResource genMetaInfoFolder(ExportFileResource libResource, List<ProcessItem> itemToBeExport) {
         ExportFileResource metaInfoResource = new ExportFileResource(null, "META-INF"); //$NON-NLS-1$
 
         // generate the MANIFEST.MF file in the temp folder
@@ -258,7 +263,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         FileOutputStream fos = null;
         try {
-            Manifest manifest = getManifest(libResource);
+            Manifest manifest = getManifest(libResource, itemToBeExport);
             fos = new FileOutputStream(manifestPath);
             manifest.write(fos);
         } catch (FileNotFoundException e1) {
@@ -289,7 +294,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return metaInfoResource;
     }
 
-    protected Manifest getManifest(ExportFileResource libResource) throws IOException {
+    protected Manifest getManifest(ExportFileResource libResource, List<ProcessItem> itemToBeExport) throws IOException {
+        boolean updateBundleClassPath = true;
         Manifest manifest = new Manifest();
         Attributes a = manifest.getMainAttributes();
         a.put(Attributes.Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
@@ -317,11 +323,61 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                             ",javax.xml.soap;resolution:=optional" + //$NON-NLS-1$
                             ",javax.xml.ws.soap;resolution:=optional"); //$NON-NLS-1$
         }
-
-        a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
+        if (itemToBeExport != null && !itemToBeExport.isEmpty()) {
+            for (ProcessItem pi : itemToBeExport) {
+                /* need to fill bundle depedence informations for every component,feature 0023460 */
+                String requiredBundles = caculateDependenciesBundles(pi);
+                if (requiredBundles != null && !"".equals(requiredBundles)) {
+                    updateBundleClassPath = false;
+                }
+                a.put(new Attributes.Name("Require-Bundle"), requiredBundles);
+            }
+        }
+        if (updateBundleClassPath) {
+            a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
+        }
         a.put(new Attributes.Name("Export-Service"), "routines.system.api.TalendJob;name=" + jobName + ";type=" + itemType); //$NON-NLS-1$
 
         return manifest;
+    }
+
+    /**
+     * DOC hywang Comment method "caculateDependenciesBundles".
+     * 
+     * @return
+     */
+    private String caculateDependenciesBundles(ProcessItem processItem) {
+        StringBuffer requiredBundles = new StringBuffer();
+        IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                IDesignerCoreService.class);
+        IProcess fakeProcess = designerCoreService.getProcessFromProcessItem(processItem);
+        List<? extends INode> generateNodes = fakeProcess.getGeneratingNodes();
+        // this list is used to avoid add dumplicated bundle
+        List<String> alreadyAddedBundles = new ArrayList<String>();
+        for (INode generateNode : generateNodes) {
+            List<ModuleNeeded> modelneededForGenerateNode = generateNode.getComponent().getModulesNeeded();
+            int index = 0;
+            for (ModuleNeeded module : modelneededForGenerateNode) {
+                String bundleName = module.getBundleName();
+                String bundleVersion = module.getBundleVersion();
+                // the last dependence should not contain "," and "\n"
+                String bundleToAdd = bundleName;
+                if (bundleVersion != null && !"".equals(bundleVersion)) {
+                    bundleToAdd = bundleName + ";bundle-version=" + bundleVersion;
+                }
+                if (index != modelneededForGenerateNode.size() - 1) {
+                    bundleToAdd = bundleToAdd + ",\n";
+                }
+                if (bundleToAdd != null && !"".equals(bundleToAdd)) {
+                    alreadyAddedBundles.add(bundleToAdd);
+                    if (!alreadyAddedBundles.contains(bundleToAdd)) {
+                        requiredBundles.append(bundleToAdd);
+                    }
+                }
+                index++;
+            }
+        }
+        return requiredBundles.toString();
     }
 
     private String getClassPath(ExportFileResource libResource) {

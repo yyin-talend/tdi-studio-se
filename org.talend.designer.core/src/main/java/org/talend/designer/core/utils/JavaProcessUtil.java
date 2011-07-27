@@ -44,7 +44,7 @@ import org.talend.librariesmanager.model.ModulesNeededProvider;
  */
 public class JavaProcessUtil {
 
-    public static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens) {
+    public static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens, boolean... isExportOSGI) {
         // see bug 4939: making tRunjobs work loop will cause a error of "out of memory"
         Set<ProcessItem> searchItems = new HashSet<ProcessItem>();
         if (withChildrens) {
@@ -58,10 +58,15 @@ public class JavaProcessUtil {
                 searchItems.add(processItem);
             }
         }
-        return getNeededLibraries(process, withChildrens, searchItems);
+        return getNeededLibraries(process, withChildrens, searchItems, isExportOSGI);
     }
 
-    private static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens, Set<ProcessItem> searchItems) {
+    private static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens, Set<ProcessItem> searchItems,
+            boolean... isExportOSGI) {
+        boolean exportOSGI = false;
+        if (isExportOSGI != null) {
+            exportOSGI = isExportOSGI[0];
+        }
         Set<String> neededLibraries = new HashSet<String>();
         IElementParameter headerParameter = process.getElementParameter(EParameterName.HEADER_LIBRARY.getName());
         if (headerParameter != null) {
@@ -115,7 +120,10 @@ public class JavaProcessUtil {
             List<ModuleNeeded> moduleList = node.getComponent().getModulesNeeded();
             for (ModuleNeeded needed : moduleList) {
                 if (needed.isRequired()) {
-                    neededLibraries.add(needed.getModuleName());
+                    /*should not export libs which contains bundle infomations when export OSGI*/
+                    if (needed.getBundleName() == null && needed.getBundleVersion() == null && !exportOSGI) {
+                        neededLibraries.add(needed.getModuleName());
+                    }
                 }
             }
             for (IElementParameter curParam : node.getElementParameters()) {

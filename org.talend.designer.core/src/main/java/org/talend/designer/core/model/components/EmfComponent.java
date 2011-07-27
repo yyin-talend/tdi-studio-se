@@ -2578,12 +2578,10 @@ public class EmfComponent extends AbstractComponent {
         List<ModuleNeeded> componentImportNeedsList = new ArrayList<ModuleNeeded>();
         if (!isAlreadyLoad) {
             if (compType.getCODEGENERATION().getIMPORTS() != null) {
-                EList emfImportList;
-                emfImportList = compType.getCODEGENERATION().getIMPORTS().getIMPORT();
+                EList emfImportList = compType.getCODEGENERATION().getIMPORTS().getIMPORT();
                 info.getImportType().addAll(emfImportList);
                 for (int i = 0; i < emfImportList.size(); i++) {
                     IMPORTType importType = (IMPORTType) emfImportList.get(i);
-
                     String msg = getTranslatedValue(importType.getNAME() + ".INFO"); //$NON-NLS-1$
                     if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
                         msg = Messages.getString("modules.required"); //$NON-NLS-1$
@@ -2592,6 +2590,19 @@ public class EmfComponent extends AbstractComponent {
                     List<String> list = getInstallURL(importType);
                     ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
                             importType.isREQUIRED(), list);
+                    String bundleID = importType.getBundleID();
+                    if (bundleID != null) {
+                        String bundleName = null;
+                        String bundleVersion = null;
+                        if (bundleID.contains(":")) {
+                            String[] nameAndVersion = bundleID.split(":"); //$NON-NLS-N$
+                            bundleName = nameAndVersion[0];
+                            bundleVersion = nameAndVersion[1];
+                        }
+                        bundleName = bundleID;
+                        componentImportNeeds.setBundleName(bundleName);
+                        componentImportNeeds.setBundleVersion(bundleVersion);
+                    }
                     moduleNames.add(importType.getMODULE());
                     componentImportNeeds.setShow(importType.isSHOW());
                     componentImportNeedsList.add(componentImportNeeds);
