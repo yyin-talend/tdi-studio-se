@@ -908,13 +908,16 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                                         metadataConnection.getDbRootPath(), metadataConnection.getAdditionalParams());
                                 metadataConnection.setUrl(genUrl);
                             }
-
-                            if (creation) {
-                                managerConnection.check(metadataConnection);
+                            // bug 23508:even open type is metaTable,not connection,we always need the connection's
+                            // datapackage to find the table schema when click the retrieve schema button
+                            if (connection != null) {
                                 EList<orgomg.cwm.objectmodel.core.Package> dp = connection.getDataPackage();
                                 Collection<Package> newDataPackage = EcoreUtil.copyAll(dp);
                                 ConnectionHelper.addPackages(newDataPackage,
                                         (DatabaseConnection) metadataConnection.getCurrentConnection());
+                            }
+                            if (creation) {
+                                managerConnection.check(metadataConnection);
 
                                 ExtractMetaDataUtils.metadataCon = metadataConnection;
                                 // when open,set use synonyms false.
