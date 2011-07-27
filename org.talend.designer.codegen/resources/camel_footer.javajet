@@ -149,6 +149,18 @@
 <%   
 		}
 %>
+<%
+			List<? extends INode> jmsNodes = process.getNodesOfType("cJMS");
+			for(INode node: jmsNodes){
+			    String name = ElementParameterParser.getValue(node, "__NAME__").trim();
+    				name += ElementParameterParser.getValue(node, "__SUBFIX__").trim();
+%>
+			    <%=ElementParameterParser.getValue(node, "__CODE__")%>
+			   camelContext.addComponent("<%=name%>",
+					org.apache.activemq.camel.component.ActiveMQComponent.jmsComponent(connectionFactory));
+<%
+			}
+%>
 
 			answer.put("camel-1", camelContext);
 			return answer;
