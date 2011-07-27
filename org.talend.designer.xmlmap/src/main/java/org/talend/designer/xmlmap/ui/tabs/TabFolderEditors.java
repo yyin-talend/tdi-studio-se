@@ -43,8 +43,8 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
+import org.talend.designer.xmlmap.ui.tabs.table.InputXmlTreeSchemaTableView;
 import org.talend.designer.xmlmap.ui.tabs.table.OutputXmlTreeSchemaTableView;
-import org.talend.designer.xmlmap.ui.tabs.table.XmlTreeSchemaTableView;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -62,7 +62,7 @@ public class TabFolderEditors extends CTabFolder {
 
     private MetadataTableEditorView outputMetaEditor;
 
-    private XmlTreeSchemaTableView inputTreeSchemaEditor;
+    private InputXmlTreeSchemaTableView inputTreeSchemaEditor;
 
     private OutputXmlTreeSchemaTableView outputTreeSchemaEditor;
 
@@ -125,11 +125,13 @@ public class TabFolderEditors extends CTabFolder {
         SashForm xmlTreeEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
         xmlTreeEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
         item.setControl(xmlTreeEditorContainer);
-        inputTreeSchemaEditor = new XmlTreeSchemaTableView(mapperManage.getSelectedInputTreeSchemaModel(null),
+        inputTreeSchemaEditor = new InputXmlTreeSchemaTableView(mapperManage.getSelectedInputTreeSchemaModel(null),
                 xmlTreeEditorContainer);
+        inputTreeSchemaEditor.initGraphicComponents();
 
         outputTreeSchemaEditor = new OutputXmlTreeSchemaTableView(mapperManage.getSelectedOutputTreeSchemaModel(null),
                 xmlTreeEditorContainer);
+        outputTreeSchemaEditor.initGraphicComponents();
 
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
         item.setText("Expression editor"); //$NON-NLS-1$
@@ -142,6 +144,7 @@ public class TabFolderEditors extends CTabFolder {
 
             public void handleEvent(Event event) {
                 lastSelectedTab = tabFolderEditors.getSelectionIndex();
+
             }
         });
         tabFolderEditors.setSelection(0);
@@ -271,7 +274,7 @@ public class TabFolderEditors extends CTabFolder {
         return this.outputMetaEditor;
     }
 
-    public XmlTreeSchemaTableView getInputTreeSchemaEditor() {
+    public InputXmlTreeSchemaTableView getInputTreeSchemaEditor() {
         return inputTreeSchemaEditor;
     }
 

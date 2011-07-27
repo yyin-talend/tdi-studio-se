@@ -67,7 +67,7 @@ public class MapperManager implements ISelectionChangedListener {
 
     private InputXmlTree selectedInputTree;
 
-    private OutputXmlTree oldSelectedOut;
+    private OutputXmlTree selectedOutputTree;
 
     private ProblemsAnalyser problemsAnalyser;
 
@@ -103,6 +103,7 @@ public class MapperManager implements ISelectionChangedListener {
                 treeSchemaEntrys);
 
         if (inputXmlTree != null) {
+            tableModel.setName(inputXmlTree.getName());
             EList<TreeNode> nodes = inputXmlTree.getNodes();
             for (TreeNode node : nodes) {
                 if (XmlMapUtil.DOCUMENT.equals(node.getType())) {
@@ -122,6 +123,7 @@ public class MapperManager implements ISelectionChangedListener {
                 treeSchemaEntrys);
 
         if (outputXmlTree != null) {
+            tableModel.setName(outputXmlTree.getName());
             EList<OutputTreeNode> nodes = outputXmlTree.getNodes();
             for (TreeNode node : nodes) {
                 if (XmlMapUtil.DOCUMENT.equals(node.getType())) {
@@ -164,7 +166,7 @@ public class MapperManager implements ISelectionChangedListener {
                         if (outputTreeNodeRoot != null && outputTreeNodeRoot.eContainer() instanceof OutputXmlTree) {
                             selectOutputXmlTree((OutputXmlTree) outputTreeNodeRoot.eContainer());
 
-                            onSelectedEntries((IStructuredSelection) event.getSelection(), oldSelectedOut);
+                            onSelectedEntries((IStructuredSelection) event.getSelection(), selectedOutputTree);
                         }
                     } else if (model instanceof TreeNode) {
                         TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) model);
@@ -264,18 +266,12 @@ public class MapperManager implements ISelectionChangedListener {
     }
 
     public void refreshInputTreeSchemaEditor(InputXmlTree tree) {
-        if (tree == null) {
-            return;
-        }
         ExtendedTableModel<TreeSchemaTableEntry> selectedInputTreeSchemaModel = getSelectedInputTreeSchemaModel(tree);
         mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().setExtendedControlModel(selectedInputTreeSchemaModel);
         mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().getTableViewerCreator().refresh();
     }
 
     public void refreshOutputTreeSchemaEditor(OutputXmlTree tree) {
-        if (tree == null) {
-            return;
-        }
         ExtendedTableModel<TreeSchemaTableEntry> selectedInputTreeSchemaModel = getSelectedOutputTreeSchemaModel(tree);
         if (mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor() != null) {
             mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor().setExtendedControlModel(selectedInputTreeSchemaModel);
@@ -330,6 +326,7 @@ public class MapperManager implements ISelectionChangedListener {
                                     }
                                     problemsAnalyser.checkLoopProblems(selectedInputTree);
                                     mapperUI.updateStatusBar();
+                                    refreshInputTreeSchemaEditor(selectedInputTree);
                                 }
                             }
                         } else if (AbstractMetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
@@ -428,8 +425,8 @@ public class MapperManager implements ISelectionChangedListener {
     }
 
     public void selectOutputXmlTree(OutputXmlTree outputTree) {
-        if (outputTree != oldSelectedOut) {
-            oldSelectedOut = outputTree;
+        if (outputTree != selectedOutputTree) {
+            selectedOutputTree = outputTree;
             MetadataTableEditorView outputMetaEditorView = mapperUI.getTabFolderEditors().getOutputMetaEditorView();
             List<IMetadataTable> metadataList = mapperComponent.getMetadataList();
             IMetadataTable table = null;
@@ -458,15 +455,15 @@ public class MapperManager implements ISelectionChangedListener {
 
                     public void handleEvent(ModifiedBeanEvent<IMetadataColumn> event) {
                         if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId())) {
-                            if (event.index < oldSelectedOut.getNodes().size()) {
-                                TreeNode treeNode = oldSelectedOut.getNodes().get(event.index);
+                            if (event.index < selectedOutputTree.getNodes().size()) {
+                                TreeNode treeNode = selectedOutputTree.getNodes().get(event.index);
                                 if (treeNode != null) {
                                     treeNode.setName((String) event.newValue);
                                 }
                             }
                         } else if (AbstractMetadataTableEditorView.ID_COLUMN_TYPE.equals(event.column.getId())) {
-                            if (event.index < oldSelectedOut.getNodes().size()) {
-                                TreeNode treeNode = oldSelectedOut.getNodes().get(event.index);
+                            if (event.index < selectedOutputTree.getNodes().size()) {
+                                TreeNode treeNode = selectedOutputTree.getNodes().get(event.index);
                                 if (treeNode != null) {
                                     XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
                                     treeNode.getChildren().clear();
@@ -481,23 +478,24 @@ public class MapperManager implements ISelectionChangedListener {
                                                 createTreeNode.getName(), createTreeNode.getNodeType()));
                                         treeNode.getChildren().add(createTreeNode);
                                     }
-                                    problemsAnalyser.checkLoopProblems(oldSelectedOut);
+                                    problemsAnalyser.checkLoopProblems(selectedOutputTree);
                                     mapperUI.updateStatusBar();
+                                    refreshOutputTreeSchemaEditor(selectedOutputTree);
                                 }
                             }
                         } else if (AbstractMetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
-                            if (event.index < oldSelectedOut.getNodes().size()) {
-                                TreeNode treeNode = oldSelectedOut.getNodes().get(event.index);
+                            if (event.index < selectedOutputTree.getNodes().size()) {
+                                TreeNode treeNode = selectedOutputTree.getNodes().get(event.index);
                                 treeNode.setKey((Boolean) event.newValue);
                             }
                         } else if (AbstractMetadataTableEditorView.ID_COLUMN_PATTERN.equals(event.column.getId())) {
-                            if (event.index < oldSelectedOut.getNodes().size()) {
-                                TreeNode treeNode = oldSelectedOut.getNodes().get(event.index);
+                            if (event.index < selectedOutputTree.getNodes().size()) {
+                                TreeNode treeNode = selectedOutputTree.getNodes().get(event.index);
                                 treeNode.setPattern((String) event.newValue);
                             }
                         } else if (AbstractMetadataTableEditorView.ID_COLUMN_NULLABLE.equals(event.column.getId())) {
-                            if (event.index < oldSelectedOut.getNodes().size()) {
-                                TreeNode treeNode = oldSelectedOut.getNodes().get(event.index);
+                            if (event.index < selectedOutputTree.getNodes().size()) {
+                                TreeNode treeNode = selectedOutputTree.getNodes().get(event.index);
                                 treeNode.setNullable((Boolean) event.newValue);
                             }
                         }
@@ -512,7 +510,7 @@ public class MapperManager implements ISelectionChangedListener {
                     public void handleEvent(ListenableListEvent event) {
 
                         if (event.type == TYPE.ADDED) {
-                            EList<OutputTreeNode> nodes = oldSelectedOut.getNodes();
+                            EList<OutputTreeNode> nodes = selectedOutputTree.getNodes();
                             List<IMetadataColumn> metadataColumns = (List<IMetadataColumn>) event.addedObjects;
                             if (event.index != null) {
                                 int index = event.index;
@@ -522,10 +520,10 @@ public class MapperManager implements ISelectionChangedListener {
                                     createTreeNode.setType(column.getTalendType());
                                     createTreeNode.setNullable(column.isNullable());
                                     createTreeNode.setPattern(column.getPattern());
-                                    createTreeNode.setXpath(XmlMapUtil.getXPath(oldSelectedOut.getName(),
+                                    createTreeNode.setXpath(XmlMapUtil.getXPath(selectedOutputTree.getName(),
                                             createTreeNode.getName(), createTreeNode.getNodeType()));
 
-                                    oldSelectedOut.getNodes().add(index, createTreeNode);
+                                    selectedOutputTree.getNodes().add(index, createTreeNode);
                                     index = index + 1;
                                 }
                             }
@@ -534,14 +532,14 @@ public class MapperManager implements ISelectionChangedListener {
                             List<IMetadataColumn> metadataColumns = (List<IMetadataColumn>) event.removedObjects;
                             List treeNodeToRemove = new ArrayList();
                             for (IMetadataColumn column : metadataColumns) {
-                                for (TreeNode node : oldSelectedOut.getNodes()) {
+                                for (TreeNode node : selectedOutputTree.getNodes()) {
                                     if (node.getName() != null && node.getName().equals(column.getLabel())) {
                                         XmlMapUtil.detachNodeConnections(node, copyOfMapData, true);
                                         treeNodeToRemove.add(node);
                                     }
                                 }
                             }
-                            oldSelectedOut.getNodes().removeAll(treeNodeToRemove);
+                            selectedOutputTree.getNodes().removeAll(treeNodeToRemove);
 
                         } else if (event.type == TYPE.SWAPED) {
                             List<Integer> listIndexTarget = event.indicesTarget;
@@ -549,10 +547,10 @@ public class MapperManager implements ISelectionChangedListener {
                             for (int i = 0; i < listIndexOrignal.size(); i++) {
                                 int orignal = listIndexOrignal.get(i);
                                 int target = listIndexTarget.get(i);
-                                if (orignal < oldSelectedOut.getNodes().size()) {
-                                    OutputTreeNode tempTreeNode = oldSelectedOut.getNodes().get(orignal);
-                                    oldSelectedOut.getNodes().remove(orignal);
-                                    oldSelectedOut.getNodes().add(target, tempTreeNode);
+                                if (orignal < selectedOutputTree.getNodes().size()) {
+                                    OutputTreeNode tempTreeNode = selectedOutputTree.getNodes().get(orignal);
+                                    selectedOutputTree.getNodes().remove(orignal);
+                                    selectedOutputTree.getNodes().add(target, tempTreeNode);
                                 }
                             }
 
