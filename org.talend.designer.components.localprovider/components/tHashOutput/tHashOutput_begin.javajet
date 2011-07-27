@@ -169,7 +169,9 @@ if(!isLinked){//111
 		String connectionName = incommingDataConn.getName();
 %>    
 		org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName %>Struct> tHashFile_<%=cid %> = null;
-		tHashFile_<%=cid %> = new org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName%>Struct>(org.talend.designer.components.hashfile.common.MATCHING_MODE.<%=matchingMode %>);                
+		if((tHashFile_<%=cid %> = mf_<%=cid %>.getResourceMap().get("tHashFile_<%=cid %>"))==null){
+			tHashFile_<%=cid %> = new org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName%>Struct>(org.talend.designer.components.hashfile.common.MATCHING_MODE.<%=matchingMode %>);                
+        }
         //use this ResourceMap instead of globalMap,so that globalMap will not be too large
         mf_<%=cid %>.getResourceMap().put("tHashFile_<%=cid %>", tHashFile_<%=cid %>);
 <%	
