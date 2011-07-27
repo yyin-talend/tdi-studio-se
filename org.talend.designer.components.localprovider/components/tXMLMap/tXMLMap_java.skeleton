@@ -28,6 +28,10 @@ public class CLASS {
 					} else {
 						return getConnectionType(conn.getSource());
 					}
+				} else if (conn.getLineStyle().equals(EConnectionType.ITERATE)||conn.getLineStyle().equals(EConnectionType.ON_ROWS_END)) {
+					if(node.getOutgoingConnections() != null && node.getOutgoingConnections().size() > 0) {
+						return node.getOutgoingConnections().get(0).getName();
+					}
 				}
 			}
 			return "";
