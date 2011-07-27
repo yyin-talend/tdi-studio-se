@@ -270,7 +270,8 @@ if(execStat){
 					|| errorThread_<%=iterateTargetNodeName %>.errorCode.compareTo(errorCode) > 0) {
 				errorCode = errorThread_<%=iterateTargetNodeName %>.errorCode;
 			}
-		} else if (!status.equals("failure")) {
+		} 
+		if (!status.equals("failure")) {
 			status = errorThread_<%=iterateTargetNodeName %>.status;
 		}
 	}else{				
@@ -282,7 +283,8 @@ if(execStat){
 					|| threadErrorCode.compareTo(errorCode) > 0) {
 				errorCode = threadErrorCode;
 			}
-		} else if (!status.equals("failure")) {
+		} 
+		if (!status.equals("failure")) {
 			status = threadStatus;
 		}
 	 }			
@@ -295,7 +297,8 @@ if(execStat){
 			if (localErrorCode == null || errorThread_<%=iterateTargetNodeName %>.errorCode.compareTo(localErrorCode) > 0) {
 				((java.util.Map) threadLocal.get()).put("errorCode", errorThread_<%=iterateTargetNodeName %>.errorCode);
 			}
-		} else if (!localStatus.equals("failure")) {
+		} 
+		if (!localStatus.equals("failure")) {
 			((java.util.Map) threadLocal.get()).put("status", errorThread_<%=iterateTargetNodeName %>.status);
 		}
 	}else{
@@ -313,7 +316,8 @@ if(execStat){
 				((java.util.Map) threadLocal.get()).put("errorCode",
 						threadErrorCode);
 			}
-		} else if (!localStatus.equals("failure")) {
+		} 
+		if (!localStatus.equals("failure")) {
 			((java.util.Map) threadLocal.get()).put("status",
 					threadStatus);
 		}

@@ -440,7 +440,8 @@ this.globalResumeTicket = false;//to run others jobs
                     if (errorCode == null || localErrorCode.compareTo(errorCode) > 0) {
                        errorCode = localErrorCode;
                     }
-                }else if(!status.equals("failure")){
+                }
+                if(!status.equals("failure")){
                         status = localStatus;
                 }	
          	    

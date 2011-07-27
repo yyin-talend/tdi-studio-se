@@ -451,6 +451,7 @@ private class TalendException extends Exception {
 								%>
 								((java.util.Map)threadLocal.get()).put("errorCode", null);
 								<%=conn.getTarget().getUniqueName() %>Process(globalMap);
+								((java.util.Map)threadLocal.get()).put("status", "end");
 								<%
 							} else {
 								%>
@@ -522,6 +523,7 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 %>
 					((java.util.Map)threadLocal.get()).put("errorCode", null);
 					<%=conn.getTarget().getUniqueName() %>Process(globalMap);
+					((java.util.Map)threadLocal.get()).put("status", "end");
 <%
 					} else {
 %>

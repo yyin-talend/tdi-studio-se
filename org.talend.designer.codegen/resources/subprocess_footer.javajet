@@ -56,7 +56,8 @@
 						if (this.errorCode == null || localErrorCode.compareTo(this.errorCode) > 0) {
 							this.errorCode = localErrorCode;
 						}
-					} else if (!this.status.equals("failure")) {
+					} 
+					if (!this.status.equals("failure")) {
 						this.status = localStatus;
 					}
 			
