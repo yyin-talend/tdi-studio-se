@@ -1783,7 +1783,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                     }
                 }
 
-                if (containerPart != null) {
+                if (containerPart != null && node instanceof Node) {
                     List<org.talend.designer.core.ui.editor.connections.Connection> connections = CreateComponentOnLinkHelper
                             .getConnection(containerPart, draw2dPosition, (Node) node);
                     for (org.talend.designer.core.ui.editor.connections.Connection connection : connections) {
