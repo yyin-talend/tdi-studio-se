@@ -39,12 +39,13 @@
     %>
     	errorCode = new Integer(<%=code %>);
         ((java.util.Map)threadLocal.get()).put("errorCode", new Integer(<%=code %>));
+        ((java.util.Map)threadLocal.get()).put("status", "failure");
         globalMap.put("<%=cid %>_DIE_CODE", errorCode);
     <%
         }else {
     %>
         errorCode = new Integer(<%=code %>);
-        globalMap.put("<%=cid %>_DIE_CODE", errorCode);
+        globalMap.put("<%=cid %>_DIE_CODE", errorCode);        
     <%
         }
     %>
