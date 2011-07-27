@@ -229,6 +229,26 @@ public class Node extends Element implements IGraphicalNode {
 
     private ICheckNodesService checkNodeService;
 
+    private String index;
+
+    /**
+     * Getter for index.
+     * 
+     * @return the index
+     */
+    public String getIndex() {
+        return this.index;
+    }
+
+    /**
+     * Sets the index.
+     * 
+     * @param index the index to set
+     */
+    public void setIndex(String index) {
+        this.index = index;
+    }
+
     public boolean isGeneratedByJobscriptBool() {
         return this.generatedByJobscriptBool;
     }
