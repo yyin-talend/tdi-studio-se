@@ -371,6 +371,14 @@ public class ComponentsFactory implements IComponentsFactory {
      * @throws BusinessException
      */
     private void reloadComponentsFromCache() throws BusinessException {
+        String applicationPath;
+        try {
+            applicationPath = FileLocator.getBundleFile(Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION)).getParent();
+        } catch (IOException e2) {
+            ExceptionHandler.process(e2);
+            return;
+        }
+
         ComponentsCache cache = ComponentManager.getInstance();
         Iterator it = cache.getComponentEntryMap().entrySet().iterator();
         while (it.hasNext()) {
@@ -409,9 +417,10 @@ public class ComponentsFactory implements IComponentsFactory {
             }
 
             if (!componentList.contains(currentComp)) {
-                currentComp.setResourceBundle(getComponentResourceBundle(currentComp, info.getUriString(), null));
+                currentComp
+                        .setResourceBundle(getComponentResourceBundle(currentComp, applicationPath + info.getUriString(), null));
 
-                File currentFile = new File(info.getUriString());
+                File currentFile = new File(applicationPath + info.getUriString());
                 loadIcons(currentFile.getParentFile(), currentComp);
                 componentList.add(currentComp);
             }
@@ -550,6 +559,13 @@ public class ComponentsFactory implements IComponentsFactory {
             isCustom = true;
         }
 
+        String applicationPath;
+        try {
+            applicationPath = FileLocator.getBundleFile(Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION)).getParent();
+        } catch (IOException e2) {
+            ExceptionHandler.process(e2);
+            return;
+        }
         File source;
         try {
             source = provider.getInstallationFolder();
@@ -619,7 +635,7 @@ public class ComponentsFactory implements IComponentsFactory {
                             continue;
                         }
                         String pathName = xmlMainFile.getAbsolutePath();
-                        // pathName = pathName.replace(replaceSource.getAbsolutePath(), "");
+                        pathName = pathName.replace(applicationPath, "");
                         EmfComponent currentComp = new EmfComponent(pathName, xmlMainFile.getParentFile().getName(), pathSource,
                                 ComponentManager.getInstance(), isCreated);
                         // force to call some functions to update the cache. (to improve)

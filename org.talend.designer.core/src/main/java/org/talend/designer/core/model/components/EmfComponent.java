@@ -17,6 +17,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,8 +27,10 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -257,7 +260,15 @@ public class EmfComponent extends AbstractComponent {
     @SuppressWarnings("unchecked")
     private void load() throws BusinessException {
         if (!isLoaded) {
-            File file = new File(uriString);
+            String applicationPath;
+            try {
+                applicationPath = FileLocator.getBundleFile(Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION))
+                        .getParent();
+            } catch (IOException e2) {
+                ExceptionHandler.process(e2);
+                return;
+            }
+            File file = new File(applicationPath + uriString);
             URI createURI = URI.createURI(file.toURI().toString());
             Resource res = getComponentResourceFactoryImpl().createResource(createURI);
             try {
@@ -2893,7 +2904,14 @@ public class EmfComponent extends AbstractComponent {
 
     private ArrayList<ECodePart> createCodePartList() {
         ArrayList<ECodePart> theCodePartList = new ArrayList<ECodePart>();
-        File dirChildFile = new File(uriString);
+        String applicationPath;
+        try {
+            applicationPath = FileLocator.getBundleFile(Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION)).getParent();
+        } catch (IOException e2) {
+            ExceptionHandler.process(e2);
+            return (ArrayList<ECodePart>) Collections.EMPTY_LIST;
+        }
+        File dirChildFile = new File(applicationPath + uriString);
         File dirFile = dirChildFile.getParentFile();
         final String extension = "." + LanguageManager.getCurrentLanguage().getName() + "jet"; //$NON-NLS-1$ //$NON-NLS-2$
         FilenameFilter fileNameFilter = new FilenameFilter() {
@@ -3384,10 +3402,8 @@ public class EmfComponent extends AbstractComponent {
 
     public String getSourceBundleName() {
         if (bundleName == null) {
-            String installPath = uriString;
-            installPath = installPath.substring(0, installPath.lastIndexOf(IComponentsFactory.COMPONENTS_INNER_FOLDER));
-            IPath path = new Path(installPath);
-            String bundleName = path.lastSegment();
+            IPath path = new Path(uriString);
+            String bundleName = path.segment(0);
             return bundleName;
         }
         return bundleName;
