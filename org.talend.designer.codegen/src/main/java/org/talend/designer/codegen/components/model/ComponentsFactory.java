@@ -46,6 +46,9 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.packageadmin.PackageAdmin;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -371,14 +374,7 @@ public class ComponentsFactory implements IComponentsFactory {
      * @throws BusinessException
      */
     private void reloadComponentsFromCache() throws BusinessException {
-        String applicationPath;
-        try {
-            applicationPath = FileLocator.getBundleFile(Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION)).getParent();
-        } catch (IOException e2) {
-            ExceptionHandler.process(e2);
-            return;
-        }
-
+        Map<String, String> bundleIdToPath = new HashMap<String, String>();
         ComponentsCache cache = ComponentManager.getInstance();
         Iterator it = cache.getComponentEntryMap().entrySet().iterator();
         while (it.hasNext()) {
@@ -390,7 +386,8 @@ public class ComponentsFactory implements IComponentsFactory {
             }
             IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
             String[] availableComponents = service.getBrandingConfiguration().getAvailableComponents();
-            EmfComponent currentComp = new EmfComponent(info.getUriString(), name, info.getPathSource(), cache, true);
+            EmfComponent currentComp = new EmfComponent(info.getUriString(), info.getSourceBundleName(), name,
+                    info.getPathSource(), cache, true);
             // if the component is not needed in the current branding,
             // and that this one IS NOT a specific component for code generation
             // just don't load it
@@ -410,10 +407,23 @@ public class ComponentsFactory implements IComponentsFactory {
                 currentComp.setVisible(false);
                 currentComp.setTechnical(true);
             }
+            if (currentComp.getSourceBundleName() == null) {
+                System.out.println("bug !!!");
+            }
             if (currentComp.getSourceBundleName().contains("camel")) {
                 currentComp.setPaletteType("CAMEL");
             } else {
                 currentComp.setPaletteType("DI");
+            }
+            String applicationPath = bundleIdToPath.get(info.getSourceBundleName());
+            if (applicationPath == null) {
+                try {
+                    applicationPath = FileLocator.getBundleFile(Platform.getBundle(info.getSourceBundleName())).getPath();
+                } catch (IOException e2) {
+                    ExceptionHandler.process(e2);
+                    return;
+                }
+                bundleIdToPath.put(info.getSourceBundleName(), applicationPath);
             }
 
             if (!componentList.contains(currentComp)) {
@@ -559,13 +569,6 @@ public class ComponentsFactory implements IComponentsFactory {
             isCustom = true;
         }
 
-        String applicationPath;
-        try {
-            applicationPath = FileLocator.getBundleFile(Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION)).getParent();
-        } catch (IOException e2) {
-            ExceptionHandler.process(e2);
-            return;
-        }
         File source;
         try {
             source = provider.getInstallationFolder();
@@ -604,6 +607,9 @@ public class ComponentsFactory implements IComponentsFactory {
             }
 
         };
+        BundleContext context = Platform.getProduct().getDefiningBundle().getBundleContext();
+        ServiceReference sref = context.getServiceReference(PackageAdmin.class.getName());
+        PackageAdmin admin = (PackageAdmin) context.getService(sref);
 
         if (childDirectories != null) {
             if (monitor != null) {
@@ -635,9 +641,25 @@ public class ComponentsFactory implements IComponentsFactory {
                             continue;
                         }
                         String pathName = xmlMainFile.getAbsolutePath();
+
+                        String bundleName;
+                        if (!isCustom) {
+                            bundleName = admin.getBundle(provider.getClass()).getSymbolicName();
+                        } else {
+                            bundleName = IComponentsFactory.COMPONENTS_LOCATION;
+                        }
+                        String applicationPath;
+                        try {
+                            applicationPath = FileLocator.getBundleFile(Platform.getBundle(bundleName)).getPath();
+                        } catch (IOException e2) {
+                            ExceptionHandler.process(e2);
+                            return;
+                        }
+
                         pathName = pathName.replace(applicationPath, "");
-                        EmfComponent currentComp = new EmfComponent(pathName, xmlMainFile.getParentFile().getName(), pathSource,
-                                ComponentManager.getInstance(), isCreated);
+
+                        EmfComponent currentComp = new EmfComponent(pathName, bundleName, xmlMainFile.getParentFile().getName(),
+                                pathSource, ComponentManager.getInstance(), isCreated);
                         // force to call some functions to update the cache. (to improve)
                         currentComp.isVisibleInComponentDefinition();
                         currentComp.isTechnical();

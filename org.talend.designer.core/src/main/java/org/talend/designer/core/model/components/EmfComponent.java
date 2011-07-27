@@ -209,11 +209,12 @@ public class EmfComponent extends AbstractComponent {
     // weak ref used so that memory is not used by a static HashMap instance
     private static SoftReference<Map> optionMapSoftRef;
 
-    public EmfComponent(String uriString, String name, String pathSource, ComponentsCache cache, boolean isload)
+    public EmfComponent(String uriString, String bundleId, String name, String pathSource, ComponentsCache cache, boolean isload)
             throws BusinessException {
         this.uriString = uriString;
         this.name = name;
         this.pathSource = pathSource;
+        this.bundleName = bundleId;
         this.isAlreadyLoad = isload;
         if (!isAlreadyLoad) {
             info = ComponentCacheFactory.eINSTANCE.createComponentInfo();
@@ -227,6 +228,7 @@ public class EmfComponent extends AbstractComponent {
             getTranslatedFamilyName();
             getRepositoryType();
             info.setUriString(uriString);
+            info.setSourceBundleName(bundleId);
             info.setPathSource(pathSource);
             cache.getComponentEntryMap().put(getName(), info);
             isAlreadyLoad = true;
@@ -262,8 +264,7 @@ public class EmfComponent extends AbstractComponent {
         if (!isLoaded) {
             String applicationPath;
             try {
-                applicationPath = FileLocator.getBundleFile(Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION))
-                        .getParent();
+                applicationPath = FileLocator.getBundleFile(Platform.getBundle(bundleName)).getPath();
             } catch (IOException e2) {
                 ExceptionHandler.process(e2);
                 return;
@@ -2906,7 +2907,7 @@ public class EmfComponent extends AbstractComponent {
         ArrayList<ECodePart> theCodePartList = new ArrayList<ECodePart>();
         String applicationPath;
         try {
-            applicationPath = FileLocator.getBundleFile(Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION)).getParent();
+            applicationPath = FileLocator.getBundleFile(Platform.getBundle(bundleName)).getPath();
         } catch (IOException e2) {
             ExceptionHandler.process(e2);
             return (ArrayList<ECodePart>) Collections.EMPTY_LIST;
@@ -3401,15 +3402,6 @@ public class EmfComponent extends AbstractComponent {
     String bundleName;
 
     public String getSourceBundleName() {
-        if (bundleName == null) {
-            IPath path = new Path(uriString);
-            String bundleName = path.segment(0);
-            return bundleName;
-        }
         return bundleName;
-    }
-
-    public void setSourceBundleName(String bundleName) {
-        this.bundleName = bundleName;
     }
 }
