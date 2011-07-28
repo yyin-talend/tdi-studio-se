@@ -53,6 +53,7 @@
     public String clientHost;
     public String defaultClientHost = "localhost";
     public String contextStr = "<%=codeGenArgument.getContextName() %>";
+    public boolean isDefaultContext = true;
     public String pid = "0";
     public String rootPid = null;
     public String fatherPid = null;
@@ -175,7 +176,10 @@
     	
     	try {
     		//call job/subjob with an existing context, like: --context=production. if without this parameter, there will use the default context instead.  
-    		java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/"+contextStr+".properties");    		
+    		java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/"+contextStr+".properties");
+    		if(isDefaultContext && inContext ==null) {
+                
+            } else {    		
     		if (inContext!=null) {
 	    		//defaultProps is in order to keep the original context value
 	    		defaultProps.load(inContext);
@@ -261,6 +265,7 @@
 			    }
 			}
 			%>
+			}
     	} catch (java.io.IOException ie) {
     		System.err.println("Could not load context "+contextStr);
     		ie.printStackTrace();
@@ -568,6 +573,7 @@ if (execStat) {
     		clientHost = arg.substring(14);
     	} else if (arg.startsWith("--context=")) {
     		contextStr = arg.substring(10);
+    		isDefaultContext = false;
     	} else if (arg.startsWith("--father_pid=")) {
     		fatherPid = arg.substring(13);
     	} else if (arg.startsWith("--root_pid=")) {
