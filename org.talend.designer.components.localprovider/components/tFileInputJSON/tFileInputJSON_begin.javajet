@@ -11,6 +11,7 @@ imports="
     java.util.List
     org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
+	org.talend.core.model.utils.NodeUtil
 " 
 %>
 <%
@@ -33,6 +34,9 @@ boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSe
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 
+List< ? extends IConnection> conns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
+String firstConnName = "";
+List<IMetadataTable> metadatas = node.getMetadataList();
 %>
   class JSONUtil_<%=cid%>{
       public int getData(String query,javax.script.Invocable invocableEngine,java.util.List<org.json.simple.JSONArray> jsonResultList,int recordMaxSize){
@@ -57,57 +61,8 @@ String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__D
           }
           return recordMaxSize;
       }
-  }
-int nb_line_<%=cid%> = 0;
-
-javax.script.ScriptEngineManager scriptEngineMgr_<%=cid%> = new javax.script.ScriptEngineManager();
-javax.script.ScriptEngine jsEngine_<%=cid%> = scriptEngineMgr_<%=cid%>.getEngineByName("JavaScript");
-if (jsEngine_<%=cid%> == null) {
-    System.err.println("No script engine found for JavaScript");
-}
-java.io.InputStream jsonis_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("json.js").openStream();
-jsEngine_<%=cid%>.eval( new java.io.BufferedReader(new java.io.InputStreamReader(jsonis_<%=cid%>)));
-
-java.io.InputStream jsonpathis_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("jsonpath.js").openStream();
-jsEngine_<%=cid%>.eval(new java.io.BufferedReader(new java.io.InputStreamReader(jsonpathis_<%=cid%>)));
-
-<%if(!isUseUrl){//read from a file%>
-java.io.FileReader fr_<%=cid%> = new java.io.FileReader(<%=filename %>);
-<%}else{ //read from internet%>
-java.net.URL url_<%=cid %> = new java.net.URL(<%=urlpath %>);
-java.net.URLConnection urlConn_<%=cid %> = url_<%=cid %>.openConnection();
-java.io.InputStreamReader fr_<%=cid %> = new java.io.InputStreamReader(urlConn_<%=cid %>.getInputStream());
-<%}%>
-java.lang.Object jsonText_<%=cid%> = org.json.simple.JSONValue.parse(fr_<%=cid%>);
-jsEngine_<%=cid%>.eval("var obj="+jsonText_<%=cid%>.toString());
-
-java.util.List<org.json.simple.JSONArray> JSONResultList_<%=cid%> = new java.util.ArrayList<org.json.simple.JSONArray>();
-
-int recordMaxSize_<%=cid%> = -1;
-javax.script.Invocable invocableEngine_<%=cid%> = (javax.script.Invocable)jsEngine_<%=cid%>;
-
-JSONUtil_<%=cid%> jsonUtil_<%=cid%>=new JSONUtil_<%=cid%>();
-<%
-	for(Map<String,String> path:mapping){
-		String column = path.get("SCHEMA_COLUMN");
-		String query = path.get("QUERY");
-%>
-
-recordMaxSize_<%=cid%>=jsonUtil_<%=cid%>.getData(<%=query%>,invocableEngine_<%=cid%>,JSONResultList_<%=cid%>,recordMaxSize_<%=cid%>);
 
 <%
-	}
-%>
-
-
-	for(int nbResultArray_<%=cid%> = 0; nbResultArray_<%=cid%> < recordMaxSize_<%=cid%>; nbResultArray_<%=cid%>++){
-	
-		nb_line_<%=cid%>++;
-
-<%
-List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-String firstConnName = "";
-List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
 	IMetadataTable metadata = metadatas.get(0);
 	if (metadata!=null) {
@@ -116,7 +71,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			if (conns.size()>0) {
 				IConnection conn = conns.get(0);
 				firstConnName = conn.getName();
-				for (int i=0;i<mapping.size();i++) { 
+				for (int i=0;i<mapping.size();i++) {
+    				if(i % 100 == 0){
+%>
+	void setRowValue_<%=(i/100) %>(<%=firstConnName %>Struct <%=firstConnName %>, java.util.List<org.json.simple.JSONArray> JSONResultList_<%=cid%>, int nbResultArray_<%=cid%>) {
+<%
+    				}
+%>
+<%
 					for(IMetadataColumn column:columns) {
 						if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
 							if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
@@ -169,8 +131,90 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 }
 						}
 					}
-				}
+    				if((i + 1) % 100 == 0){
+%>
 			}
+<%
+    				}
+				} // for (int i=0)
+  				if(mapping.size() > 0 && mapping.size() % 100 > 0){
+%>
+			}
+<%
+ 				 }
+			}
+
+		}
+
+	}
+}
+%>
+  }
+int nb_line_<%=cid%> = 0;
+
+javax.script.ScriptEngineManager scriptEngineMgr_<%=cid%> = new javax.script.ScriptEngineManager();
+javax.script.ScriptEngine jsEngine_<%=cid%> = scriptEngineMgr_<%=cid%>.getEngineByName("JavaScript");
+if (jsEngine_<%=cid%> == null) {
+    System.err.println("No script engine found for JavaScript");
+}
+java.io.InputStream jsonis_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("json.js").openStream();
+jsEngine_<%=cid%>.eval( new java.io.BufferedReader(new java.io.InputStreamReader(jsonis_<%=cid%>)));
+
+java.io.InputStream jsonpathis_<%=cid%> = com.jsonpath.test.ReadJar.class.getResource("jsonpath.js").openStream();
+jsEngine_<%=cid%>.eval(new java.io.BufferedReader(new java.io.InputStreamReader(jsonpathis_<%=cid%>)));
+
+<%if(!isUseUrl){//read from a file%>
+java.io.FileReader fr_<%=cid%> = new java.io.FileReader(<%=filename %>);
+<%}else{ //read from internet%>
+java.net.URL url_<%=cid %> = new java.net.URL(<%=urlpath %>);
+java.net.URLConnection urlConn_<%=cid %> = url_<%=cid %>.openConnection();
+java.io.InputStreamReader fr_<%=cid %> = new java.io.InputStreamReader(urlConn_<%=cid %>.getInputStream());
+<%}%>
+java.lang.Object jsonText_<%=cid%> = org.json.simple.JSONValue.parse(fr_<%=cid%>);
+jsEngine_<%=cid%>.eval("var obj="+jsonText_<%=cid%>.toString());
+
+java.util.List<org.json.simple.JSONArray> JSONResultList_<%=cid%> = new java.util.ArrayList<org.json.simple.JSONArray>();
+
+int recordMaxSize_<%=cid%> = -1;
+javax.script.Invocable invocableEngine_<%=cid%> = (javax.script.Invocable)jsEngine_<%=cid%>;
+
+JSONUtil_<%=cid%> jsonUtil_<%=cid%>=new JSONUtil_<%=cid%>();
+<%
+	for(Map<String,String> path:mapping){
+		String column = path.get("SCHEMA_COLUMN");
+		String query = path.get("QUERY");
+%>
+
+recordMaxSize_<%=cid%>=jsonUtil_<%=cid%>.getData(<%=query%>,invocableEngine_<%=cid%>,JSONResultList_<%=cid%>,recordMaxSize_<%=cid%>);
+
+<%
+	}
+%>
+
+
+	for(int nbResultArray_<%=cid%> = 0; nbResultArray_<%=cid%> < recordMaxSize_<%=cid%>; nbResultArray_<%=cid%>++){
+	
+		nb_line_<%=cid%>++;
+<%
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata!=null) {
+		List<IMetadataColumn> columns=metadata.getListColumns();
+		if (conns!=null) {
+			if (conns.size()>0) {
+				IConnection conn = conns.get(0);
+				firstConnName = conn.getName();
+				for (int i=0;i<mapping.size();i++) {
+					if(i % 100 == 0){
+%>
+	jsonUtil_<%=cid%>.setRowValue_<%= (i/100) %>(<%=firstConnName %>,JSONResultList_<%=cid%>,nbResultArray_<%=cid%>);
+<%
+					}
+				}// for
+			}// conns.size()>0
+			/**
+			have no idea what the following code is used for
+			*/
 			if (conns.size()>1) {
 				for (int i=1;i<conns.size();i++) {
 					IConnection conn = conns.get(i);
@@ -183,11 +227,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					}
 				}
 			}
-		}
-
-		}
-	}
-
-
-
+		} // if(conns!=null)
+	} // if (metadata!=null)
+} // if ((metadatas!=null)&&(metadatas.size()>0))
 %>
