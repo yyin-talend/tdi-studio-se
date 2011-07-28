@@ -369,5 +369,26 @@ public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V>, Cloneable {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+    
+    /**
+     * Getter for id_Document lookup
+     */ 
+    public void lookup() {
+    	if(matchingMode == MATCHING_MODE.UNIQUE_MATCH) {
+    		if(uniqueHash == null) {
+    			return;
+    		}
+    		List<V> localList = new ArrayList<V>();
+    		for(V value : uniqueHash.values()) {
+    			localList.add(value);
+    		}
+    		listResult = localList;
+    		sizeResultList = localList.size();
+    		objectResult = null;
+    		currentIndex = 0;
+    	} else {
+    		//TODO
+    	}
+    }
 
 }

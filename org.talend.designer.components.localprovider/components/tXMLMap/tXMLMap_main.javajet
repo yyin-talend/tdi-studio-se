@@ -19,6 +19,7 @@
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree
 			org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
+			org.talend.designer.xmlmap.model.emf.xmlmap.Connection
 			org.talend.core.model.process.IConnection
 			org.talend.core.model.process.EConnectionType
 			org.talend.core.model.metadata.IMetadataTable
@@ -170,6 +171,7 @@ skeleton="tXMLMap_java.skeleton"
 	
 	for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) { // G_TXM_M_001
     	nb_line_<%=cid%>++;
+    	<%= rejectedInnerJoin %> = false;
     	<%= rejectedDocInnerJoin %> = false;
 		<%=mainRowRejected%>=false;
 		
@@ -204,6 +206,7 @@ skeleton="tXMLMap_java.skeleton"
 
 <%
 	//	System.out.println("size of vartable begin:" + varTables.size());
+	TreeUtil treeUtil = new TreeUtil();
 	for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) { 
 		InputXmlTree nextInputTable = inputTables.get(iInputTable);
 %>
@@ -377,7 +380,6 @@ for(OutputTreeNode tableEntry : tableEntries) {
 <%
 	boolean hasDocument = false;
 	for(OutputTreeNode tableEntry : tableEntries) {
-
 		if(("id_Document").equals(tableEntry.getType())){
 			hasDocument = true;
 			hasDocumentGlobal = true;
@@ -390,8 +392,8 @@ for(OutputTreeNode tableEntry : tableEntries) {
 	
 		%>, <%=inputTable.getName() %>
 		<%
-	
 		}
+		
 		for (VarTable var : varTables) {
 			%>, <%=var.getName()%><%
 		}
@@ -406,15 +408,14 @@ for(OutputTreeNode tableEntry : tableEntries) {
 <%
 		} else {
 			String resultExpression = "";
-			//if(matchXmlTreeExpr != null)
-				resultExpression = matchXmlTreeExpr.generateExprCode(tableEntry.getExpression());
-		if(resultExpression!=null && !("").equals(resultExpression)){
+			resultExpression = matchXmlTreeExpr.generateExprCode(tableEntry.getExpression());
+			if(resultExpression!=null && !("").equals(resultExpression)){
 %>
 			
 			<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = <%=resultExpression %>;
 <%	
+			}
 		}
-	}
 
 %>
 

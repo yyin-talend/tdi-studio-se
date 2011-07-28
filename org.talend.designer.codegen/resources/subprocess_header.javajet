@@ -142,7 +142,12 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 				public <%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> get<%=column.getLabel().substring(0, 1).toUpperCase()%><%=column.getLabel().substring(1)%> () {
 					return this.<%=column.getLabel()%>;
 				}
-				<%			    	
+				<%
+				if("id_Document".equals(javaType.getId())) {
+				%>
+				public java.util.Map<String,Object> documentLookupResult =  new java.util.HashMap<String,Object>();
+				<%
+				}		    	
 			}
 		}
     %>
