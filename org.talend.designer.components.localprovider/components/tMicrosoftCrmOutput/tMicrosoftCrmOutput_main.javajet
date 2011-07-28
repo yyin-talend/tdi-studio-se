@@ -18,7 +18,6 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
 %>
-
 <%
     String entityname = ElementParameterParser.getValue(node, "__ENTITYNAME__").trim();
     String customEntityname = ElementParameterParser.getValue(node, "__CUSTOM_ENTITY_NAME__");
@@ -36,7 +35,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {//3
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
-%>
+    			
+    			List<IMetadataColumn> columns = metadata.getListColumns();
+    			int sizeColumns = columns.size();
+    			
+    			if("update".equals(action) && sizeColumns == 2 && "ownerid".equals(columns.get(1).getLabel())){
+    				 action = "reassignOwnerID";
+    			}
+    			boolean hasOwnerID = false;
+				%>
 StringBuffer OperXml_<%=cid%> = new StringBuffer();
 
 <%
@@ -61,10 +68,6 @@ StringBuffer OperXml_<%=cid%> = new StringBuffer();
     	OperXml_<%=cid%>.append("\" xmlns:web=\"http://schemas.microsoft.com/crm/2007/WebServices\">");
     	OperXml_<%=cid%>.append("\n");
     		
-<%  
-    			List<IMetadataColumn> columns = metadata.getListColumns();
-    			int sizeColumns = columns.size();
-%>
 <%    			
     			for (int i = 0; i < sizeColumns; i++) {//5  			
 
@@ -74,6 +77,11 @@ StringBuffer OperXml_<%=cid%> = new StringBuffer();
 					
 					String entityMethodTemp = column.getLabel();
 					String entityMethod = "";
+					
+					if("update".equals(action) && "ownerid".equals(column.getLabel()))	{
+						hasOwnerID = true;
+						continue;
+					}
 %>
 
 <%
@@ -184,6 +192,35 @@ service_<%=cid%>.update(updateDoc_<%=cid%>,catd_<%=cid%>,null,null);
 
 <%
   }//************
+  if("reassignOwnerID".equals(action) || ("update".equals(action) && hasOwnerID)){
+%>
+	com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Execute execute_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Execute.Factory
+            .newInstance();
+    com.microsoft.schemas.crm._2007.webservices.ExecuteDocument executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Factory
+            .newInstance();
+    com.microsoft.schemas.crm._2007.webservices.AssignRequest assignRequest_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.AssignRequest.Factory
+            .newInstance();
+    com.microsoft.schemas.crm._2006.coretypes.SecurityPrincipal assignee_<%=cid%> = com.microsoft.schemas.crm._2006.coretypes.SecurityPrincipal.Factory.newInstance();
+    assignee_<%=cid%>.setPrincipalId(String.valueOf(<%=conn.getName() %>.ownerid));
+    assignee_<%=cid%>.setType(com.microsoft.schemas.crm._2006.coretypes.SecurityPrincipalType.Enum.forString("User"));
+    assignRequest_<%=cid%>.setAssignee(assignee_<%=cid%>);
+    
+    com.microsoft.schemas.crm._2007.webservices.TargetOwnedDynamic dynamicTarget_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.TargetOwnedDynamic.Factory
+            .newInstance();
+    dynamicTarget_<%=cid%>.setEntityName("<%=entityname.toLowerCase()%>");
+    dynamicTarget_<%=cid%>.setEntityId(String.valueOf(<%=conn.getName() %>.Id));
+    
+    assignRequest_<%=cid%>.setTarget(dynamicTarget_<%=cid%>);
+
+    execute_<%=cid%>.setRequest(assignRequest_<%=cid%>);
+    executeDoc_<%=cid%>.setExecute(execute_<%=cid%>);
+    
+    executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Factory.parse(executeDoc_<%=cid%>.toString());
+
+    service_<%=cid%>.execute(executeDoc_<%=cid%>, catd_<%=cid%>, null,null);
+            
+<%  
+  }
 %> 	 
 		nb_line_<%=cid %>++; 
 		
