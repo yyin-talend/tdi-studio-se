@@ -64,7 +64,7 @@ public class JavaProcessUtil {
     private static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens, Set<ProcessItem> searchItems,
             boolean... isExportOSGI) {
         boolean exportOSGI = false;
-        if (isExportOSGI != null) {
+        if (isExportOSGI != null && isExportOSGI.length == 1) {
             exportOSGI = isExportOSGI[0];
         }
         Set<String> neededLibraries = new HashSet<String>();
@@ -120,7 +120,7 @@ public class JavaProcessUtil {
             List<ModuleNeeded> moduleList = node.getComponent().getModulesNeeded();
             for (ModuleNeeded needed : moduleList) {
                 if (needed.isRequired()) {
-                    /*should not export libs which contains bundle infomations when export OSGI*/
+                    /* should not export libs which contains bundle infomations when export OSGI */
                     if (needed.getBundleName() == null && needed.getBundleVersion() == null && !exportOSGI) {
                         neededLibraries.add(needed.getModuleName());
                     }
