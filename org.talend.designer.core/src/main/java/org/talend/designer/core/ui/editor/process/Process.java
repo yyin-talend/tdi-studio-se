@@ -307,8 +307,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * Add all routineParameters for a process.
      */
     private void createRoutineDependecnes() {
-        ProcessType processType = ((ProcessItem) property.getItem()).getProcess();
-        if (processType.getParameters() != null) {
+        ProcessType processType = getProcessType();
+        if (processType != null && processType.getParameters() != null) {
             routinesDependencies = new ArrayList<RoutinesParameterType>(processType.getParameters().getRoutinesParameter());
         }
     }
