@@ -64,7 +64,7 @@ public class CreateNodeContainerCommand extends CreateCommand {
         }
 
         AbstractProcessProvider provider = AbstractProcessProvider.findProcessProviderFromPID(nodeContainer.getNode()
-                .getComponent().getPluginFullName());
+                .getComponent().getPluginExtension());
         if (provider != null) {
             if (!provider.canCreateNode(nodeContainer.getNode())) {
                 return false;
@@ -80,7 +80,7 @@ public class CreateNodeContainerCommand extends CreateCommand {
             this.nodeContainer.getNode().setLocation(this.location);
         }
         AbstractProcessProvider provider = AbstractProcessProvider.findProcessProviderFromPID(nodeContainer.getNode()
-                .getComponent().getPluginFullName());
+                .getComponent().getPluginExtension());
         if (provider == null || (provider != null && provider.containNodeInMemoryNotProcess())) {
             this.process.addNodeContainer(this.nodeContainer);
             process.checkStartNodes();

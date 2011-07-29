@@ -20,7 +20,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.EComponentType;
-import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.EComponentCategory;
@@ -283,8 +282,8 @@ public class DummyComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getPluginFullName()
      */
-    public String getPluginFullName() {
-        return IComponentsFactory.COMPONENTS_LOCATION;
+    public String getPluginExtension() {
+        return null;
     }
 
     /*

@@ -31,7 +31,6 @@ public class DataNode extends AbstractNode {
 
     public DataNode(IComponent component, String uniqueName) {
         setComponentName(component.getName());
-        setPluginFullName(component.getPluginFullName());
         List<IMetadataTable> metaList = new ArrayList<IMetadataTable>();
         IMetadataTable metaTable = new MetadataTable();
         metaTable.setTableName(uniqueName);

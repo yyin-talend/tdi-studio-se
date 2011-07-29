@@ -220,7 +220,7 @@ public class EmfComponent extends AbstractComponent {
             info = ComponentCacheFactory.eINSTANCE.createComponentInfo();
             load();
             getOriginalFamilyName();
-            getPluginFullName();
+            getPluginExtension();
             getModulesNeeded();
             isTechnical();
             getVersion();
@@ -284,9 +284,9 @@ public class EmfComponent extends AbstractComponent {
                 // exists.
                 if (compType.getHEADER().getEXTENSION() != null) {
                     try {
-                        ExternalNodesFactory.getInstance(this.getPluginFullName());
+                        ExternalNodesFactory.getInstance(this.getPluginExtension());
                     } catch (RuntimeException re) {// unfortunatly this methos throws a runtime Exception which is bad
-                        throw new BusinessException("Failed to load plugin :" + this.getPluginFullName(), re); //$NON-NLS-1$
+                        throw new BusinessException("Failed to load plugin :" + this.getPluginExtension(), re); //$NON-NLS-1$
                     }
                 }
 
@@ -2456,7 +2456,7 @@ public class EmfComponent extends AbstractComponent {
         return listConnector;
     }
 
-    public String getPluginFullName() {
+    public String getPluginExtension() {
         // String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
         // IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
         // IBrandingService.class);
@@ -2466,15 +2466,10 @@ public class EmfComponent extends AbstractComponent {
         String pluginFullName = null;
         if (!isAlreadyLoad) {
             pluginFullName = compType.getHEADER().getEXTENSION();
-            if (pluginFullName == null) {
-                pluginFullName = getSourceBundleName();
-            }
-            info.setPluginFullName(pluginFullName);
+            info.setPluginExtension(pluginFullName);
         } else {
             if (info != null) {
-                pluginFullName = info.getPluginFullName();
-            } else {
-                pluginFullName = getSourceBundleName();
+                pluginFullName = info.getPluginExtension();
             }
         }
         // cache.get

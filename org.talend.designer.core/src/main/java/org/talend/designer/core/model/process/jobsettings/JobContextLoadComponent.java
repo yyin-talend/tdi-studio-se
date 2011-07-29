@@ -138,7 +138,7 @@ public class JobContextLoadComponent implements IComponent {
         return null;
     }
 
-    public String getPluginFullName() {
+    public String getPluginExtension() {
         return null;
     }
 

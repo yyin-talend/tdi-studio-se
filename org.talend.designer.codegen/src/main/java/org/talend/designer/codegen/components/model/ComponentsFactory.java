@@ -665,7 +665,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         currentComp.isTechnical();
                         currentComp.getOriginalFamilyName();
                         currentComp.getTranslatedFamilyName();
-                        currentComp.getPluginFullName();
+                        currentComp.getPluginExtension();
                         currentComp.getVersion();
                         currentComp.getModulesNeeded();
                         currentComp.getPluginDependencies();

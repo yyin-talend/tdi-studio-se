@@ -29,7 +29,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
-import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
@@ -221,7 +220,7 @@ public class DataProcess {
             dataNode = new DataNode();
         } else {
             // mapper
-            dataNode = (AbstractNode) ExternalNodesFactory.getInstance(graphicalNode.getPluginFullName());
+            dataNode = (AbstractNode) ExternalNodesFactory.getInstance(graphicalNode.getComponent().getPluginExtension());
             IExternalData externalData = graphicalNode.getExternalData();
             IExternalNode externalNode = graphicalNode.getExternalNode();
             if (externalData != null) {
@@ -235,7 +234,6 @@ public class DataProcess {
         dataNode.setActivate(graphicalNode.isActivate());
         dataNode.setStart(graphicalNode.isStart());
         dataNode.setMetadataList(graphicalNode.getMetadataList());
-        dataNode.setPluginFullName(graphicalNode.getPluginFullName());
         dataNode.setComponent(graphicalNode.getComponent());
         dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
         dataNode.setListConnector(graphicalNode.getListConnector());
@@ -749,17 +747,16 @@ public class DataProcess {
             }
 
             AbstractNode curNode;
-            if (component.getPluginFullName().equals(IComponentsFactory.COMPONENTS_LOCATION)) {
+            if (component.getPluginExtension() == null) {
                 curNode = new DataNode(component, uniqueName);
             } else {
                 // mapper
-                curNode = (AbstractNode) ExternalNodesFactory.getInstance(graphicalNode.getPluginFullName());
+                curNode = (AbstractNode) ExternalNodesFactory.getInstance(component.getPluginExtension());
                 IExternalData externalData = graphicalNode.getExternalData();
                 if (externalData != null) {
                     ((IExternalNode) curNode).setExternalData(externalData);
                 }
                 curNode.setStart(graphicalNode.isStart());
-                curNode.setPluginFullName(graphicalNode.getPluginFullName());
                 curNode.setElementParameters(graphicalNode.getComponent().createElementParameters(curNode));
                 curNode.setListConnector(graphicalNode.getListConnector());
                 copyElementParametersValue(graphicalNode, curNode);

@@ -120,7 +120,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     }
 
     // no use for virtual component
-    public String getPluginFullName() {
+    public String getPluginExtension() {
         return null;
     }
 

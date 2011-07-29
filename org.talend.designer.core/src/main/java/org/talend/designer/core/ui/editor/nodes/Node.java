@@ -39,7 +39,6 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
-import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IODataComponent;
@@ -76,7 +75,6 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.IJobletProviderService;
-import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.CheckNodeManager;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICheckNodesService;
@@ -183,8 +181,6 @@ public class Node extends Element implements IGraphicalNode {
 
     private IProcess2 process = null;
 
-    private String pluginFullName;
-
     private boolean readOnly = false;
 
     private static final String COMPARE_STR1 = "tDBInput"; //$NON-NLS-1$
@@ -226,8 +222,6 @@ public class Node extends Element implements IGraphicalNode {
     private String inOutUniqueName;
 
     private String joblet_unique_name;
-
-    private ICheckNodesService checkNodeService;
 
     private String index;
 
@@ -493,18 +487,8 @@ public class Node extends Element implements IGraphicalNode {
             setPropertyValue(EParameterName.VALIDATION_RULES.getName(), hasValidationRule);
         }
         setHasValidationRule(hasValidationRule);
-        pluginFullName = newComponent.getPluginFullName();
-        String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
-        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-        if (breaningService.isPoweredOnlyCamel()) {
-            componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
-        }
-        if (component instanceof EmfComponent) {
-            componentsPath = ((EmfComponent) component).getSourceBundleName();
-        }
-        if (!pluginFullName.equals(componentsPath)) {
-            externalNode = ExternalNodesFactory.getInstance(pluginFullName);
+        if (component.getPluginExtension() != null) {
+            externalNode = ExternalNodesFactory.getInstance(component.getPluginExtension());
         }
 
         if (isExternalNode()) {
@@ -1674,7 +1658,6 @@ public class Node extends Element implements IGraphicalNode {
             externalNode.setMetadataList(copyOfMetadataList);
             externalNode.setIncomingConnections(inputs);
             externalNode.setOutgoingConnections(outputs);
-            externalNode.setPluginFullName(getPluginFullName());
             externalNode.setElementParameters(getElementParameters());
             externalNode.setUniqueName(getUniqueName());
             externalNode.setSubProcessStart(isSubProcessStart());
@@ -1704,14 +1687,6 @@ public class Node extends Element implements IGraphicalNode {
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
-    }
-
-    public String getPluginFullName() {
-        return pluginFullName;
-    }
-
-    public void setPluginFullName(String pluginFullName) {
-        this.pluginFullName = pluginFullName;
     }
 
     public NodeContainer getNodeContainer() {
