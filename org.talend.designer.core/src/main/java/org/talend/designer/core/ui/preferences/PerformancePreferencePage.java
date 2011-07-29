@@ -123,9 +123,10 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
             addField(new BooleanFieldEditor(ITalendCorePrefConstants.ADD_USER_ROUTINES,
                     Messages.getString("PerformancePreferencePage.addAllUserRoutines"),//$NON-NLS-1$
                     getFieldEditorParent()));
-            addField(new BooleanFieldEditor(ITalendCorePrefConstants.ADD_SYSTEM_ROUTINES,
-                    Messages.getString("PerformancePreferencePage.addAllSystemRoutines"),//$NON-NLS-1$
-                    getFieldEditorParent()));
+            // TDI-8323:remove this one,we do not need this since we always add all system routines for new job
+            // addField(new BooleanFieldEditor(ITalendCorePrefConstants.ADD_SYSTEM_ROUTINES, Messages
+            //                .getString("PerformancePreferencePage.addAllSystemRoutines"),//$NON-NLS-1$
+            // getFieldEditorParent()));
         }
     }
 

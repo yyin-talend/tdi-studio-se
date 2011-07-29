@@ -298,6 +298,19 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     private void createProcessParameters() {
         createMainParameters();
         createJobSettingsParameters();
+        // TDI-8323:if we select "Add all user routines to job dependencies" in windows preference, when creating a new
+        // job",we need to set its routineParameters for process
+        createRoutineDependecnes();
+    }
+
+    /**
+     * Add all routineParameters for a process.
+     */
+    private void createRoutineDependecnes() {
+        ProcessType processType = ((ProcessItem) property.getItem()).getProcess();
+        if (processType.getParameters() != null) {
+            routinesDependencies = new ArrayList<RoutinesParameterType>(processType.getParameters().getRoutinesParameter());
+        }
     }
 
     /**
@@ -1329,8 +1342,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             }
             // always add the system, others must be checked
             for (IRepositoryViewObject object : routines) {
-                if (((RoutineItem) object.getProperty().getItem()).isBuiltIn() && routinesDependencies.isEmpty()) {
-                    routinesToAdd.add(object.getLabel());
+                if (((RoutineItem) object.getProperty().getItem()).isBuiltIn()) {
+                    if (routinesDependencies.isEmpty()) {
+                        routinesToAdd.add(object.getLabel());
+                    }
+                    // TDI-8323:since we "Add all user routines to job dependencies" in windows preference,the
+                    // routinesDependencies will not empty.
+                    else if (!routinesAlreadySetup.contains(object.getLabel())) {
+                        routinesToAdd.add(object.getLabel());
+                    }
                 } else if (!routinesAlreadySetup.contains(object.getLabel())) {
                     possibleRoutines.add(object.getLabel());
                 }
@@ -1392,7 +1412,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             }
 
             for (IRepositoryViewObject object : routines) {
-                if (routinesToAdd.contains(object.getLabel())) {
+                if (routinesToAdd.contains(object.getLabel()) && !routinesAlreadySetup.contains(object.getLabel())) {
                     RoutinesParameterType routinesParameterType = TalendFileFactory.eINSTANCE.createRoutinesParameterType();
                     routinesParameterType.setId(object.getId());
                     routinesParameterType.setName(object.getLabel());
