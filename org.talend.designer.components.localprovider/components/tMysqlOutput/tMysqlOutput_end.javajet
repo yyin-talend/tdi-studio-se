@@ -348,22 +348,35 @@ skeleton="../templates/db_output_bulk.skeleton"
                 %>                                                
                 try {
                 		if (batchSizeCounter_<%=cid%> != 0) {
-							pstmt_<%=cid %>.executeBatch();                	
+							int countSum_<%=cid%> = 0;
+							for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
+								countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+							}                	
 	            	    	<%if (("INSERT").equals(dataAction)) {
 	            	    	%>
-	            	    		insertedCount_<%=cid%> += batchSizeCounter_<%=cid%>;
+	            	    		insertedCount_<%=cid%> += countSum_<%=cid%>;
 	            	    	<%
 	            	    	}
 	            	    	%>                         	    	
             	    	}
             	    		
-                }catch (java.sql.SQLException e){
+                }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
                 		throw(e);
                 	<%
                 	}else {
                 	%>
+                	int countSum_<%=cid%> = 0;
+					for(int countEach_<%=cid%>: e.getUpdateCounts()) {
+						countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+					}
+					<%if (("INSERT").equals(dataAction)) {
+            	    %>
+            	    insertedCount_<%=cid%> += countSum_<%=cid%>;
+	    	    	<%
+	    	    	}
+	    	    	%> 
                 	System.err.println(e.getMessage());
                 	<%
                 	}%>
@@ -413,19 +426,21 @@ skeleton="../templates/db_output_bulk.skeleton"
 	<%if ((rejectConnName==null && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) && useBatchSize) && ( ("INSERT").equals(dataAction) ||("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
     %>                
     try {
-			pstmt_<%=cid %>.executeBatch();                	
+			int countSum_<%=cid%> = 0;
+			for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
+				countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+			}       	
 	    	<%if (("INSERT").equals(dataAction)) {
 	    	%>
-	    		if(pstmt_<%=cid %>.getUpdateCount() != -1)
-	    		insertedCount_<%=cid%> +=pstmt_<%=cid %>.getUpdateCount(); 
+	    		insertedCount_<%=cid%> += countSum_<%=cid%>; 
 	    	<%
 	    	}else if (("UPDATE").equals(dataAction)) {
 	    	%>
-	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+	    		updatedCount_<%=cid%> += countSum_<%=cid%>;
 	    	<%
 	    	}else if (("DELETE").equals(dataAction)) {
 	    	%>
-	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+	    	    deletedCount_<%=cid%> += countSum_<%=cid%>;
 	    	<%
 	    	}%>            	    
     }catch (java.sql.BatchUpdateException e){
@@ -435,6 +450,23 @@ skeleton="../templates/db_output_bulk.skeleton"
     	<%
     	}else {
     	%>
+    	int countSum_<%=cid%> = 0;
+		for(int countEach_<%=cid%>: e.getUpdateCounts()) {
+			countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+		}
+		<%if (("INSERT").equals(dataAction)) {
+    	%>
+    	insertedCount_<%=cid%> += countSum_<%=cid%>;
+    	<%
+    	}else if (("UPDATE").equals(dataAction)) {
+    	%>            	    		
+    	updatedCount_<%=cid%> += countSum_<%=cid%>;
+    	<%
+    	}else if (("DELETE").equals(dataAction)) {
+    	%>
+    	deletedCount_<%=cid%> += countSum_<%=cid%>;
+    	<%
+    	}%>
     	System.out.println(e.getMessage());
     	<%
     	}%>                	

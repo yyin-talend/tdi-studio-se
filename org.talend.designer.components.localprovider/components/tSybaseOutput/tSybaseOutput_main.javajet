@@ -922,18 +922,21 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
                 %>                                                
                 try {
-						pstmt_<%=cid %>.executeBatch();                	
+						int countSum_<%=cid%> = 0;
+						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
+							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+						}                	
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
-            	    		insertedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+            	    		insertedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}else if (("UPDATE").equals(dataAction)) {
             	    	%>
-            	    		updatedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+            	    		updatedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}else if (("DELETE").equals(dataAction)) {
             	    	%>
-            	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+            	    	    deletedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}%>                         	    	
             	    	batchSizeCounter_<%=cid%> = 0;             	                	                	
@@ -944,6 +947,23 @@ skeleton="../templates/db_output_bulk.skeleton"
                 	<%
                 	}else {
                 	%>
+                	int countSum_<%=cid%> = 0;
+					for(int countEach_<%=cid%>: e.getUpdateCounts()) {
+						countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+					}
+					<%if (("INSERT").equals(dataAction)) {
+			    	%>
+			    		insertedCount_<%=cid%> += countSum_<%=cid%>; 
+			    	<%
+			    	}else if (("UPDATE").equals(dataAction)) {
+			    	%>
+			    		updatedCount_<%=cid%> += countSum_<%=cid%>;
+			    	<%
+			    	}else if (("DELETE").equals(dataAction)) {
+			    	%>
+			    	    deletedCount_<%=cid%> += countSum_<%=cid%>;
+			    	<%
+			    	}%>
                 	System.err.println(e.getMessage());
                 	<%
                 	}%>
@@ -975,18 +995,21 @@ skeleton="../templates/db_output_bulk.skeleton"
 					<%
 					}
 					%>
-                		pstmt_<%=cid %>.executeBatch();
+                		int countSum_<%=cid%> = 0;
+						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
+							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+						}
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
-            	    		insertedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+            	    		insertedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}else if (("UPDATE").equals(dataAction)) {
             	    	%>            	    		
-            	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+            	    		updatedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}else if (("DELETE").equals(dataAction)) {
             	    	%>
-            	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+            	    	    deletedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}%>  
             	    	<%
@@ -1010,6 +1033,23 @@ skeleton="../templates/db_output_bulk.skeleton"
                 	<%
                 	}else {
                 	%>
+	                	int countSum_<%=cid%> = 0;
+						for(int countEach_<%=cid%>: e.getUpdateCounts()) {
+							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+						}
+						<%if (("INSERT").equals(dataAction)) {
+            	    	%>
+            	    		insertedCount_<%=cid%> += countSum_<%=cid%>;
+            	    	<%
+            	    	}else if (("UPDATE").equals(dataAction)) {
+            	    	%>            	    		
+            	    		updatedCount_<%=cid%> += countSum_<%=cid%>;
+            	    	<%
+            	    	}else if (("DELETE").equals(dataAction)) {
+            	    	%>
+            	    	    deletedCount_<%=cid%> += countSum_<%=cid%>;
+            	    	<%
+            	    	}%> 
                         System.out.println(e.getMessage());
                 	<%
                 	}%>
