@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.events.SelectionEvent;
@@ -37,6 +39,8 @@ public class ExportRulesToRepository implements SelectionListener {
 
     @Override
     public void widgetSelected(SelectionEvent e) {
+        IElementParameter elementParameter = node.getElementParameter("RULE_TABLE");
+        ArrayList<HashMap<String, String>> value = (ArrayList<HashMap<String, String>>) elementParameter.getValue();
 
     }
 
