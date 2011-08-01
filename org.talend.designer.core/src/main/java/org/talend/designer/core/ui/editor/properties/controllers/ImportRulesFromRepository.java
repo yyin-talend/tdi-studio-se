@@ -37,7 +37,8 @@ public class ImportRulesFromRepository implements SelectionListener {
 
     @Override
     public void widgetSelected(SelectionEvent e) {
-
+        IElementParameter elementParameter = node.getElementParameter("RULE_TABLE");
+        Map<String, IElementParameter> childParameters = elementParameter.getChildParameters();
     }
 
     @Override
