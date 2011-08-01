@@ -178,8 +178,55 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         hashCurControls.put(param.getName(), btnEdit);
         Point initialSize = btnEdit.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-
+        // return addButton(subComposite, param, btnEdit, numInRow, top);
         return btnEdit;
+    }
+
+    private Control addButton(Composite subComposite, final IElementParameter param, Control lastControl, int numInRow, int top) {
+        FormData data;
+        Button btnImport = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
+        btnImport.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor("icons/import.gif")));
+        btnImport.addSelectionListener(new ImportRulesFromRepository(this));
+        btnImport.setData(NAME, "Import");
+        btnImport.setData(PARAMETER_NAME, param.getName());
+        if (elem instanceof Node) {
+            btnImport.setToolTipText(VARIABLE_TOOLTIP + "Import Rules from Repository!");
+        }
+        data = new FormData();
+        data.left = new FormAttachment(lastControl, 0);
+        data.right = new FormAttachment(lastControl, btnImport.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
+                + (ITabbedPropertyConstants.HSPACE * 2), SWT.RIGHT);
+        {
+            data.top = new FormAttachment(0, top);
+        }
+        data.height = STANDARD_BUTTON_WIDTH + 1;
+        data.width = STANDARD_BUTTON_WIDTH;
+        btnImport.setLayoutData(data);
+        if (numInRow != 1) {
+            btnImport.setAlignment(SWT.RIGHT);
+        }
+        Button btnExport = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
+        btnExport.setSize(lastControl.getSize());
+
+        Point btnSize = btnExport.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        btnExport.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor("icons/export.gif")));
+        btnExport.addSelectionListener(new ExportRulesToRepository(this));
+        btnExport.setData(NAME, "Export");
+        btnExport.setData(PARAMETER_NAME, param.getName());
+        if (elem instanceof Node) {
+            btnExport.setToolTipText(VARIABLE_TOOLTIP + "Export Rules to Repository!");
+        }
+        data = new FormData();
+        data.left = new FormAttachment(btnImport, 0);
+        data.right = new FormAttachment(btnImport, STANDARD_BUTTON_WIDTH + 15, SWT.RIGHT);
+        {
+            data.top = new FormAttachment(0, top);
+        }
+        data.height = STANDARD_BUTTON_WIDTH + 1;
+        data.width = STANDARD_BUTTON_WIDTH;
+        btnExport.setLayoutData(data);
+        dynamicProperty.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);
+        return btnExport;
     }
 
     /**
