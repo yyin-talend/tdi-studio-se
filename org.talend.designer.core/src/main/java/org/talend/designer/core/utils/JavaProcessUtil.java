@@ -296,7 +296,8 @@ public class JavaProcessUtil {
 
         if (curParam.getName().equals("DB_VERSION")) { //$NON-NLS-1$
             String jdbcName = (String) value;
-            if (jdbcName != null) {
+            //
+            if (jdbcName != null && !jdbcName.equals("Access_2003") && !jdbcName.equals("Access_2007")) {
                 if (jdbcName.contains("11g")) { //$NON-NLS-1$
                     if (System.getProperty("java.version").startsWith("1.6")) { //$NON-NLS-1$ //$NON-NLS-2$
                         jdbcName = jdbcName.replace('5', '6');
