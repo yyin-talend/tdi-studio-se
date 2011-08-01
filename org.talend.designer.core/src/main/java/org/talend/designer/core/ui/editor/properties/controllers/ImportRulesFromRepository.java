@@ -35,13 +35,13 @@ public class ImportRulesFromRepository implements SelectionListener {
         node = (Node) generateGrammarController.elem;
     }
 
-    @Override
+
     public void widgetSelected(SelectionEvent e) {
         IElementParameter elementParameter = node.getElementParameter("RULE_TABLE");
         Map<String, IElementParameter> childParameters = elementParameter.getChildParameters();
     }
 
-    @Override
+
     public void widgetDefaultSelected(SelectionEvent e) {
         IElementParameter elementParameter = node.getElementParameter("RULE_TABLE");
         Map<String, IElementParameter> childParameters = elementParameter.getChildParameters();

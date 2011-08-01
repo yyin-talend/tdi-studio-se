@@ -37,14 +37,11 @@ public class ExportRulesToRepository implements SelectionListener {
         node = (Node) generateGrammarController.elem;
     }
 
-    @Override
     public void widgetSelected(SelectionEvent e) {
         IElementParameter elementParameter = node.getElementParameter("RULE_TABLE");
         ArrayList<HashMap<String, String>> value = (ArrayList<HashMap<String, String>>) elementParameter.getValue();
-
     }
 
-    @Override
     public void widgetDefaultSelected(SelectionEvent e) {
         IElementParameter elementParameter = node.getElementParameter("RULE_TABLE");
         Map<String, IElementParameter> childParameters = elementParameter.getChildParameters();
