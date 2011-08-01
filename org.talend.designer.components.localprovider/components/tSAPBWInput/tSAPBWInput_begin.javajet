@@ -7,9 +7,7 @@ imports="
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.core.model.process.IConnection
 	org.talend.core.model.process.IConnectionCategory
-	org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
 	org.talend.core.model.metadata.types.JavaTypesManager
-	org.talend.core.model.metadata.types.JavaType
 	java.util.List
 	java.util.Map
 " 
@@ -18,28 +16,17 @@ imports="
 <%
 
 	class SAPBWInputBeginUtil extends DefaultDBInputUtil{
-	    
-		public void setURL(INode node) {
-			
-			String jdbcUrl = ElementParameterParser.getValue(node, "__URL__");
-%>
-			String url_<%=cid %> = <%=jdbcUrl%>;
-<%
-		}
 		
 		public void createConnection(INode node) {
 			cid = node.getUniqueName();
-			dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
-			dbhost = ElementParameterParser.getValue(node, "__HOST__");
-	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
-	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+			String jdbcUrl = ElementParameterParser.getValue(node, "__URL__");
 	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
 	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
 %>
 			    java.lang.Class.forName("org.jdbc4olap.jdbc.OlapDriver");
-				<%this.setURL(node);%>
-		        String dbUser_<%=cid %> = <%=dbuser%>;
-		        String dbPwd_<%=cid %> = <%=dbpwd%>;
+			    String url_<%=cid %> = <%=jdbcUrl %>;
+		        String dbUser_<%=cid %> = <%=dbuser %>;
+		        String dbPwd_<%=cid %> = <%=dbpwd %>;
 		        conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 <%
 		}
@@ -55,6 +42,15 @@ imports="
 <%
 	    }  
 	    //---------end according schema type to generate ResultSet
+	       public void afterGenertorType(String firstConnName, IMetadataColumn column, int currentColNo) {
+			if (column.isNullable()) {
+%>
+				if (rs_<%=cid%>.wasNull()) {
+					<%=firstConnName%>.<%=column.getLabel()%> = null;
+				}
+<%
+			}
+	    }
 	}//end class
 	
 	dbInputBeginUtil = new SAPBWInputBeginUtil();
