@@ -49,6 +49,7 @@ StringBuffer OperXml_<%=cid%> = new StringBuffer();
 <%
  if ("insert".equals(action) || "update".equals(action)) {//************
  	List<Map<String, String>> lookupMapping = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOKUP_MAPPING__");
+ 	List activityEntities = java.util.Arrays.asList(new String[]{"activitypointer","appointment","bulkoperation","campaignactivity","campaignresponse","email","fax","incidentresolution","letter","opportunityclose","orderclose","phonecall","quoteclose","serviceappointment","task"});
 %>
 		
 <%
@@ -131,13 +132,17 @@ StringBuffer OperXml_<%=cid%> = new StringBuffer();
 								OperXml_<%=cid%>.append("\n");
 <%
 					}else{
+						String entityIdStr = entityname.toLowerCase();
+						if(activityEntities.contains(entityIdStr)){
+							entityIdStr = "activity";
+						}
 %>
 						OperXml_<%=cid%>.append("<");
-						OperXml_<%=cid%>.append("<%=entityname.toLowerCase()%>");
+						OperXml_<%=cid%>.append("<%=entityIdStr%>");
 						OperXml_<%=cid%>.append("id>");
 						OperXml_<%=cid%>.append(<%=conn.getName() %>.Id);
 						OperXml_<%=cid%>.append("</");
-						OperXml_<%=cid%>.append("<%=entityname.toLowerCase()%>");
+						OperXml_<%=cid%>.append("<%=entityIdStr%>");
 						OperXml_<%=cid%>.append("id>");
 						OperXml_<%=cid%>.append("\n");
 <%
