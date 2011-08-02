@@ -22,4 +22,6 @@ public class FileConstants {
 
     public static final String ITEM_EXTENSION = "item"; //$NON-NLS-1$
 
+    public static final String SCREENSHOT_EXTENSION = "screenshot"; //$NON-NLS-1$
+
 }

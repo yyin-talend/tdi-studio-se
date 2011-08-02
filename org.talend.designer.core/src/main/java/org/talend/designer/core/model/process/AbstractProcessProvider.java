@@ -102,6 +102,8 @@ public abstract class AbstractProcessProvider implements IReplaceNodeInProcess {
 
     public abstract Process buildNewGraphicProcess(Item node);
 
+    public abstract Process buildNewGraphicProcess(Item node, boolean needScreenshot);
+
     /**
      * DOC qzhang Comment method "loadComponentsFromProviders".
      * 

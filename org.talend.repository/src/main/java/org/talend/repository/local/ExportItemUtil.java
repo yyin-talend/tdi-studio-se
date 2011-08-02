@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -84,9 +85,13 @@ public class ExportItemUtil {
 
     private File itemFile;
 
+    private File screenshotFile;
+
     private IPath projectPath;
 
     private IPath propertyPath;
+
+    private IPath screenshotPath;
 
     private IPath itemPath;
 
@@ -289,7 +294,10 @@ public class ExportItemUtil {
                     fixItemLockState();
                     toExport.put(propertyFile, propertyPath);
                     toExport.put(itemFile, itemPath);
-
+                    int ID = item.eClass().getClassifierID();
+                    if (ID == PropertiesPackage.PROCESS_ITEM || ID == PropertiesPackage.JOBLET_PROCESS_ITEM) {
+                        toExport.put(screenshotFile, screenshotPath);
+                    }
                     // ProxyRepositoryFactory.getInstance().unloadResources(copiedItem.getProperty());
                     // copiedItem.setParent(null);
                 }
@@ -402,6 +410,16 @@ public class ExportItemUtil {
         itemPath = fileNamePath.addFileExtension(FileConstants.ITEM_EXTENSION);
 
         itemFile = new File(destinationFile, itemPath.toOSString());
+        // added by dlin :to copy the .screenshot file in to the to be exported files
+        int ID = item.eClass().getClassifierID();
+        if (ID == PropertiesPackage.PROCESS_ITEM || ID == PropertiesPackage.JOBLET_PROCESS_ITEM) {
+            String screenshotFileName = fileNamePath.addFileExtension(FileConstants.SCREENSHOT_EXTENSION).toOSString();
+            String sourceFilePath = Platform.getInstanceLocation().getURL().getPath() + Path.SEPARATOR + screenshotFileName;
+            screenshotPath = fileNamePath.addFileExtension(FileConstants.SCREENSHOT_EXTENSION);
+            screenshotFile = new File(destinationFile, screenshotPath.toOSString());
+
+            copyJarToDestination(sourceFilePath, screenshotFile.getAbsolutePath());
+        }
 
     }
 

@@ -685,7 +685,7 @@ public class ImportItemUtil {
                             && !itemRecord.getMigrationTasksToApply().isEmpty();
 
                     repFactory.create(tmpItem, path, true);
-
+                    copyScreenshotFile(manager, itemRecord);
                     if (isConnectionEmptyBeforeMigration) {// copy the file before migration, this is bad because it
                         // should not refer to Filesytem
                         // but this is a quick hack and anyway the migration task only works on files
@@ -778,6 +778,49 @@ public class ImportItemUtil {
         }
 
         applyMigrationTasks(itemRecord, monitor);
+    }
+
+    // added by dlin 2011-7-25 don't like .item and .property ,just copy .screenshot file will be ok
+    private void copyScreenshotFile(ResourcesManager manager, ItemRecord itemRecord) throws IOException {
+        int ID = itemRecord.getItem().eClass().getClassifierID();
+        if (ID != PropertiesPackage.PROCESS_ITEM && ID != PropertiesPackage.JOBLET_PROCESS_ITEM) {
+            return;
+        }
+        OutputStream os = null;
+        InputStream is = null;
+        try {
+            URI propertyResourceURI = EcoreUtil.getURI(itemRecord.getItem().getProperty());
+            URI relativePlateformDestUri = propertyResourceURI.trimFileExtension().appendFileExtension(
+                    FileConstants.SCREENSHOT_EXTENSION);
+            URL fileURL = FileLocator.toFileURL(new java.net.URL(
+                    "platform:/resource" + relativePlateformDestUri.toPlatformString(true))); //$NON-NLS-1$
+            // for migration task ,there is not .screeenshot file in preceding version - begin
+            boolean hasScreenshotFile = false;
+            Iterator it = manager.getPaths().iterator();
+            while (it.hasNext()) {
+                IPath path = (IPath) it.next();
+                if (path.toOSString().endsWith(FileConstants.SCREENSHOT_EXTENSION)) {
+                    hasScreenshotFile = true;
+                    break;
+                }
+            }
+            if (!hasScreenshotFile) {
+                return;
+            }
+            // for migration task ,there is not .screeenshot file in preceding version - begin
+            os = new FileOutputStream(fileURL.getFile());
+            manager.getPaths().iterator().next();
+            is = manager.getStream(itemRecord.getPath().removeFileExtension()
+                    .addFileExtension(FileConstants.SCREENSHOT_EXTENSION));
+            FileCopyUtils.copyStreams(is, os);
+        } finally {
+            if (os != null) {
+                os.close();
+            }
+            if (is != null) {
+                is.close();
+            }
+        }
     }
 
     private void applyMigrationTasks(ItemRecord itemRecord, IProgressMonitor monitor) {

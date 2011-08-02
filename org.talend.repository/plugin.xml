@@ -1317,6 +1317,13 @@
             id="org.talend.repository.model.migration.ReplacetFileOutputXMLParameterMigrationTask"
             name="Change the tFileOutputXML parameter value for the context,add quote to value">
       </projecttask>
+        <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.AddScreenshotFileMigrationTask"
+             description="AddScreenshotFileMigrationTask"
+             id="org.talend.repository.model.migration.AddScreenshotFileMigrationTask"
+             name="AddScreenshotFileMigrationTask">
+       </projecttask>
    </extension>
    
    <extension

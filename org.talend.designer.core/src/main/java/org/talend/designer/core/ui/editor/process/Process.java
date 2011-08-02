@@ -39,6 +39,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
@@ -104,6 +106,7 @@ import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.update.IUpdateManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.utils.KeywordsValidator;
@@ -131,6 +134,8 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.SubjobType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
+import org.talend.designer.core.model.utils.emf.talendfile.TalendFilePackage;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ScreenshotsMapImpl;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
@@ -218,6 +223,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     protected IUpdateManager updateManager;
 
     protected byte[] screenshot = null;
+
+    protected EMap<?, ?> screenshots = null;
 
     private List<byte[]> externalInnerContents = new ArrayList<byte[]>();
 
@@ -1191,6 +1198,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
          */
         processType.setDefaultContext(contextManager.getDefaultContext().getName());
         processType.setScreenshot(getScreenshot());
+        if (getScreenshot() != null) {
+            processType.getScreenshots().put("process", getScreenshot());
+        }
         setScreenshot(null); // once be saved, set the screenshot to null to free memory
         contextManager.saveToEmf(processType.getContext());
         return processType;
@@ -1307,7 +1317,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         if (node.getExternalNode() != null && node.getExternalNode().getScreenshot() != null) {
             byte[] saveImageToData = ImageUtils.saveImageToData(node.getExternalNode().getScreenshot());
-            nType.setScreenshot(saveImageToData);
+            process.getScreenshots().put(node.getUniqueName(), saveImageToData);
         }
     }
 
@@ -1540,7 +1550,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         setActivate(false);
 
         ProcessType processType = getProcessType();
-        EmfHelper.visitChilds(processType);
+        // EmfHelper.visitChilds(processType);
 
         if (processType.getParameters() != null) {
             routinesDependencies = new ArrayList<RoutinesParameterType>(processType.getParameters().getRoutinesParameter());
@@ -1571,6 +1581,10 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         checkStartNodes();
         // (bug 5365)
         checkNodeTableParameters();
+        XmiResourceManager resourceManager = new XmiResourceManager();
+        if (this.loadScreenshots) {
+            resourceManager.loadScreenshots(property, processType);
+        }
 
         // this fix caused another problem 14736 , project settings should be reload in
         // ImportItemUtil.importItemRecord()
@@ -1793,14 +1807,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         addNodeContainer(nodeContainer);
         nodesHashtable.put(nc.getUniqueName(), nc);
         updateAllMappingTypes();
-
-        if (loadScreenshots) {
-            byte[] innerContent = nType.getScreenshot();
-            if (nc.getExternalNode() != null && !CommonsPlugin.isHeadless()) {
-                nc.getExternalNode().setScreenshot(ImageUtils.createImageFromData(innerContent));
-            }
-            externalInnerContents.add(innerContent);
-        }
         nc.setNeedLoadLib(false);
         //
         return nc;
@@ -3369,8 +3375,16 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         return this.screenshot;
     }
 
+    public EMap getScreenshots() {
+        return this.screenshots;
+    }
+
     public void setScreenshot(byte[] imagedata) {
         this.screenshot = imagedata;
+    }
+
+    public void setScreenshots(EMap screenshots) {
+        this.screenshots = screenshots;
     }
 
     /*
