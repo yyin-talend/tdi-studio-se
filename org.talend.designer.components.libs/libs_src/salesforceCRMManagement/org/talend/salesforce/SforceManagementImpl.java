@@ -75,7 +75,7 @@ public class SforceManagementImpl implements SforceManagement {
 
     private void setTimeout(Options options, int timeout) {
         options.setProperty(HTTPConstants.CONNECTION_TIMEOUT, timeout);
-        // options.setProperty(HTTPConstants.SO_TIMEOUT, timeout);
+        options.setProperty(HTTPConstants.SO_TIMEOUT, timeout);
     }
 
     public boolean login(String endpoint, String username, String password, String timeout, boolean needCompression)
