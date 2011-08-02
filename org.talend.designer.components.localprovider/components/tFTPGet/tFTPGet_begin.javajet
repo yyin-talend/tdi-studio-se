@@ -648,7 +648,7 @@ String localdir_<%=cid %>  = <%=localdir%>;
 java.io.File dirHandle_<%=cid %> = new java.io.File(localdir_<%=cid %>);
 
 if (!dirHandle_<%=cid %>.exists()) {
-  dirHandle_<%=cid %>.mkdir();
+  dirHandle_<%=cid %>.mkdirs();
 }
 String root_<%=cid %> = getter_<%=cid %>.pwd();
 
