@@ -16,9 +16,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.commons.exception.PersistenceException;
@@ -26,10 +28,12 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.commons.xml.XmlUtil;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
@@ -41,6 +45,8 @@ public abstract class ImportTreeFromRepository extends SelectionAction {
 
     protected MapperManager mapperManager;
 
+    private IWorkbenchPart part;
+
     /**
      * DOC talend ImportTreeFromRepository constructor comment.
      * 
@@ -48,6 +54,7 @@ public abstract class ImportTreeFromRepository extends SelectionAction {
      */
     public ImportTreeFromRepository(IWorkbenchPart part) {
         super(part);
+        this.part = part;
     }
 
     public void setMapperManager(MapperManager mapperManager) {
@@ -107,4 +114,19 @@ public abstract class ImportTreeFromRepository extends SelectionAction {
         setSelection(new StructuredSelection(selection));
     }
 
+    protected boolean isMappedChild(String tempXpath, String absoluteXPathQuery, List<SchemaTarget> schemaTargets) {
+        for (SchemaTarget schemaTarget : schemaTargets) {
+            final String relativeXPathQuery = schemaTarget.getRelativeXPathQuery();
+            String toAbsolute = absoluteXPathQuery + XmlMapUtil.XPATH_SEPARATOR + relativeXPathQuery;
+            if (toAbsolute.startsWith(tempXpath)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected void showError() {
+        MessageDialog.openError(null, "Error", "Import from repository fail, please check your repository connection!");
+    }
 }

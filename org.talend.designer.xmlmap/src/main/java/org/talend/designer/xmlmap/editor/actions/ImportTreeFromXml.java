@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -66,6 +67,17 @@ public class ImportTreeFromXml extends SelectionAction {
             XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
             parentNode.getChildren().clear();
             prepareEmfTreeNode(list, parentNode);
+
+            if (parentNode.getChildren().isEmpty()) {
+                TreeNode rootNode = XmlmapFactory.eINSTANCE.createTreeNode();
+                rootNode.setName("root");
+                rootNode.setNodeType(NodeType.ELEMENT);
+                rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
+                parentNode.getChildren().add(rootNode);
+                showError();
+            }
+
             if (mapperManager != null && parentNode.eContainer() instanceof InputXmlTree) {
                 mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
             }
@@ -90,7 +102,8 @@ public class ImportTreeFromXml extends SelectionAction {
             } else if (foxNode instanceof Attribute) {
                 createTreeNode.setNodeType(NodeType.ATTRIBUT);
             } else if (foxNode instanceof NameSpaceNode) {
-                createTreeNode.setNodeType(NodeType.NAME_SPACE);
+                // createTreeNode.setNodeType(NodeType.NAME_SPACE);
+                continue;
             }
             createTreeNode.setXpath(XmlMapUtil.getXPath(xPath, createTreeNode.getName(), createTreeNode.getNodeType()));
             if (foxNode.getDataType() != null) {
@@ -129,5 +142,9 @@ public class ImportTreeFromXml extends SelectionAction {
 
     public void update(Object selection) {
         setSelection(new StructuredSelection(selection));
+    }
+
+    protected void showError() {
+        MessageDialog.openError(null, "Error", "Import fail, please check your xml file!");
     }
 }

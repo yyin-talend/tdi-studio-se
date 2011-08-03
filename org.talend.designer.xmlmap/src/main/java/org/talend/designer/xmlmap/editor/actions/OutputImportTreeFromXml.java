@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -67,6 +68,18 @@ public class OutputImportTreeFromXml extends SelectionAction {
             XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
             parentNode.getChildren().clear();
             prepareEmfTreeNode(list, parentNode);
+
+            // if import fail , add back the root node
+            if (parentNode.getChildren().isEmpty()) {
+                OutputTreeNode rootNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                rootNode.setName("root");
+                rootNode.setNodeType(NodeType.ELEMENT);
+                rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
+                parentNode.getChildren().add(rootNode);
+                showError();
+            }
+
             if (mapperManager != null && parentNode.eContainer() instanceof OutputXmlTree) {
                 mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
             }
@@ -92,6 +105,10 @@ public class OutputImportTreeFromXml extends SelectionAction {
                 createTreeNode.setNodeType(NodeType.ATTRIBUT);
             } else if (foxNode instanceof NameSpaceNode) {
                 createTreeNode.setNodeType(NodeType.NAME_SPACE);
+                createTreeNode.setDefaultValue(foxNode.getDefaultValue());
+                if (createTreeNode.getName() == null || createTreeNode.getName().equals("")) {
+                    createTreeNode.setName(XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX);
+                }
             }
             createTreeNode.setXpath(XmlMapUtil.getXPath(xPath, createTreeNode.getName(), createTreeNode.getNodeType()));
             if (foxNode.getDataType() != null && "".equals(foxNode.getDataType())) {
@@ -130,5 +147,9 @@ public class OutputImportTreeFromXml extends SelectionAction {
 
     public void update(Object selection) {
         setSelection(new StructuredSelection(selection));
+    }
+
+    protected void showError() {
+        MessageDialog.openError(null, "Error", "Import fail, please check your xml file!");
     }
 }

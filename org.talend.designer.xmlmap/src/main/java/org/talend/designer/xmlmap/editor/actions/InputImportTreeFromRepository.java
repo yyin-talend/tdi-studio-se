@@ -22,6 +22,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XMLFileNode;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlXPathLoopDescriptorImpl;
@@ -75,6 +76,17 @@ public class InputImportTreeFromRepository extends ImportTreeFromRepository {
             XmlFileConnection connection = (XmlFileConnection) item.getConnection();
             prepareEmfTreeNode(connection);
             nodeMap.clear();
+
+            if (parentNode.getChildren().isEmpty()) {
+                TreeNode rootNode = XmlmapFactory.eINSTANCE.createTreeNode();
+                rootNode.setName("root");
+                rootNode.setNodeType(NodeType.ELEMENT);
+                rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
+                parentNode.getChildren().add(rootNode);
+                showError();
+            }
+
             if (mapperManager != null && parentNode.eContainer() instanceof InputXmlTree) {
                 mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
             }
@@ -227,8 +239,15 @@ public class InputImportTreeFromRepository extends ImportTreeFromRepository {
 
         } else {
             String absoluteXPathQuery = "";
+            List<SchemaTarget> schemaTargets = null;
             if (!connection.getSchema().isEmpty() && connection.getSchema().get(0) instanceof XmlXPathLoopDescriptorImpl) {
                 absoluteXPathQuery = ((XmlXPathLoopDescriptorImpl) connection.getSchema().get(0)).getAbsoluteXPathQuery();
+                schemaTargets = ((XmlXPathLoopDescriptorImpl) connection.getSchema().get(0)).getSchemaTargets();
+            }
+
+            // fix for TDI-8707 : only import mapped elements from connection to xml map
+            if (schemaTargets == null || schemaTargets.isEmpty()) {
+                return;
             }
 
             String file = connection.getXmlFilePath();
@@ -242,12 +261,13 @@ public class InputImportTreeFromRepository extends ImportTreeFromRepository {
                     list = TreeUtil.getFoxTreeNodesForXmlMap(xsdFile, absoluteXPathQuery);
                 }
             }
-            prepareEmfTreeNode(list, parentNode, null, absoluteXPathQuery);
+            prepareEmfTreeNode(list, parentNode, null, absoluteXPathQuery, schemaTargets);
         }
 
     }
 
-    private void prepareEmfTreeNode(List<FOXTreeNode> list, TreeNode parent, String xmlPath, String absoluteXPathQuery) {
+    private void prepareEmfTreeNode(List<FOXTreeNode> list, TreeNode parent, String xmlPath, String absoluteXPathQuery,
+            List<SchemaTarget> schemaTargets) {
         if (list == null || list.isEmpty()) {
             return;
         }
@@ -260,7 +280,8 @@ public class InputImportTreeFromRepository extends ImportTreeFromRepository {
             } else if (foxNode instanceof Attribute) {
                 createTreeNode.setNodeType(NodeType.ATTRIBUT);
             } else if (foxNode instanceof NameSpaceNode) {
-                createTreeNode.setNodeType(NodeType.NAME_SPACE);
+                // createTreeNode.setNodeType(NodeType.NAME_SPACE);
+                continue;
             }
             createTreeNode.setXpath(XmlMapUtil.getXPath(xPath, createTreeNode.getName(), createTreeNode.getNodeType()));
             if (foxNode.getDataType() != null) {
@@ -270,24 +291,23 @@ public class InputImportTreeFromRepository extends ImportTreeFromRepository {
             }
 
             String tempXpath = null;
-            if (absoluteXPathQuery != null) {
-                if (xmlPath == null) {
-                    tempXpath = XmlMapUtil.XPATH_SEPARATOR + foxNode.getLabel();
-                } else {
-                    tempXpath = xmlPath + XmlMapUtil.XPATH_SEPARATOR + foxNode.getLabel();
-                }
-                if (tempXpath.equals(absoluteXPathQuery)) {
-                    if (!(parent.eContainer() instanceof AbstractInOutTree)) {
-                        createTreeNode.setLoop(true);
-                    }
-                    absoluteXPathQuery = null;
-                }
+            if (xmlPath == null) {
+                tempXpath = XmlMapUtil.XPATH_SEPARATOR + foxNode.getLabel();
+            } else {
+                tempXpath = xmlPath + XmlMapUtil.XPATH_SEPARATOR + foxNode.getLabel();
+            }
 
+            if (tempXpath.equals(absoluteXPathQuery)) {
+                if (!(parent.eContainer() instanceof AbstractInOutTree)) {
+                    createTreeNode.setLoop(true);
+                }
+            } else if (!isMappedChild(tempXpath, absoluteXPathQuery, schemaTargets)) {
+                continue;
             }
 
             parent.getChildren().add(createTreeNode);
             if (foxNode.getChildren() != null && !foxNode.getChildren().isEmpty()) {
-                prepareEmfTreeNode(foxNode.getChildren(), createTreeNode, tempXpath, absoluteXPathQuery);
+                prepareEmfTreeNode(foxNode.getChildren(), createTreeNode, tempXpath, absoluteXPathQuery, schemaTargets);
             }
         }
 
