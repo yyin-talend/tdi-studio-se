@@ -14,10 +14,11 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ITDQRepositoryService;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -39,11 +40,16 @@ public class ExportRulesToRepository implements SelectionListener {
 
     public void widgetSelected(SelectionEvent e) {
         IElementParameter elementParameter = node.getElementParameter("RULE_TABLE");
-        ArrayList<HashMap<String, String>> value = (ArrayList<HashMap<String, String>>) elementParameter.getValue();
+        ArrayList<HashMap<String, Object>> value = (ArrayList<HashMap<String, Object>>) elementParameter.getValue();
+        ;
+        ITDQRepositoryService tdqRepService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQRepositoryService.class)) {
+            tdqRepService = (ITDQRepositoryService) GlobalServiceRegister.getDefault().getService(ITDQRepositoryService.class);
+        }
+        String elementName = node.getNodeLabel().getElementName();
+        tdqRepService.createParserRuleItem(value, elementName);
     }
 
     public void widgetDefaultSelected(SelectionEvent e) {
-        IElementParameter elementParameter = node.getElementParameter("RULE_TABLE");
-        Map<String, IElementParameter> childParameters = elementParameter.getChildParameters();
     }
 }
