@@ -20,6 +20,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -49,6 +50,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.joblet.model.JobletNode;
 import org.talend.designer.joblet.model.JobletProcess;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IProxyRepositoryService;
@@ -200,6 +202,17 @@ public class JobletUtil {
 
     public NodeContainer cloneNodeContainer(NodeContainer nodeContainer, Node cloneNode) {
         NodeContainerPart nodeConPart = new NodeContainerPart();
+        // TDI-13132
+        IComponent tempComponent = cloneNode.getComponent();
+        if (tempComponent != null) {
+            String tempComponentName = tempComponent.getName();
+            if (tempComponentName != null) {
+                IComponent component = ComponentsFactoryProvider.getInstance().get(tempComponentName);
+                if (component != null) {
+                    cloneNode.setComponent(component);
+                }
+            }
+        }
         NodeContainer cloneNodeContainer = new NodeContainer(cloneNode);
         nodeConPart.setModel(cloneNodeContainer);
         cloneNodeContainer.setNodeError(cloneNode.getNodeError());
