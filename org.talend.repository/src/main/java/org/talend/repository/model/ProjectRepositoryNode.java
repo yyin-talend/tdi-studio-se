@@ -678,6 +678,49 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
+
+        IConfigurationElement[] servicesElements = registry
+                .getConfigurationElementsFor("org.talend.core.repository.service_repository_node"); //$NON-NLS-1$
+        try {
+            for (int i = 0; i < servicesElements.length; i++) {
+                IConfigurationElement element = servicesElements[i];
+                Object extensionNode = element.createExecutableExtension("class"); //$NON-NLS-N$
+                String type = element.getAttribute("type"); //$NON-NLS-N$
+                String parentNodeType = element.getAttribute("parentNodeType"); //$NON-NLS-N$
+                if (extensionNode instanceof IExtendRepositoryNode) {
+                    IExtendRepositoryNode diyNode = (IExtendRepositoryNode) extensionNode;
+                    IImage icon = diyNode.getNodeImage();
+
+                    RepositoryNode dynamicNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                    @SuppressWarnings("unchecked")
+                    RepositoryNode[] children = (RepositoryNode[]) diyNode.getChildren();
+                    if (children != null && (children.length > 0)) {
+                        for (RepositoryNode nodeToAdd : children) {
+                            dynamicNode.getChildren().add(nodeToAdd);
+                            nodeToAdd.setParent(dynamicNode);
+                            nodeToAdd.setRoot(this);
+                        }
+                    }
+                    ERepositoryObjectType repositoryNodeType = (ERepositoryObjectType) ERepositoryObjectType.valueOf(
+                            ERepositoryObjectType.class, type);
+                    if (repositoryNodeType != null) {
+                        dynamicNode.setProperties(EProperties.LABEL, repositoryNodeType);
+                        dynamicNode.setProperties(EProperties.CONTENT_TYPE, repositoryNodeType);
+                    }
+                    dynamicNode.setIcon(icon);
+                    repositoryNodeMap.put(repositoryNodeType, dynamicNode);
+                    IRepositoryNode parentNode = findParentNodeByLabel(nodes, parentNodeType);
+                    if (parentNode != null) {
+                        parentNode.getChildren().add(dynamicNode);
+                        // dynamicNode.setParent((RepositoryNode) parentNode);
+                    } else {
+                        nodes.add(dynamicNode);
+                    }
+                }
+            }
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
     }
 
     private IRepositoryNode findParentNodeByLabel(List<IRepositoryNode> nodes, String parentNodeType) {
@@ -781,10 +824,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == metadataHL7ConnectionNode) {
                 convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_HL7, true),
                         metadataHL7ConnectionNode, ERepositoryObjectType.METADATA_FILE_HL7, recBinNode);
-            } else if (parent == metadataFTPConnectionNode) {
-                convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_FTP, true),
-                        metadataFTPConnectionNode, ERepositoryObjectType.METADATA_FILE_FTP, recBinNode);
-            } else if (parent == metadataBRMSConnectionNode) {
+            }else if (parent == metadataBRMSConnectionNode) {
                 convert(newProject, factory.getMetadata(newProject, ERepositoryObjectType.METADATA_FILE_BRMS, true),
                         metadataBRMSConnectionNode, ERepositoryObjectType.METADATA_FILE_BRMS, recBinNode);
             } else if (parent == sqlPatternNode) {
@@ -849,7 +889,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 }
             } else if (parent instanceof RepositoryNode) {
                 RepositoryNode repositoryNode = (RepositoryNode) parent;
-                if (repositoryNode.getContentType().isResourceItem()) {
+                if (repositoryNode.getContentType() != null && repositoryNode.getContentType().isResourceItem()) {
                     convert(newProject, factory.getMetadata(newProject, repositoryNode.getContentType(), true), repositoryNode,
                             repositoryNode.getContentType(), recBinNode);
                 }
