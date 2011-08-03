@@ -141,6 +141,17 @@ public class SAXLooper {
         return looper.multiIterator();
     }
 
+    /**
+     * handle the exception in task.
+     * @throws Exception
+     */
+    public void handleTaskResponse() throws Exception {
+    	if(this.isSimpleParse) {
+    		SimpleSAXLooper ssl = (SimpleSAXLooper)this.looper;
+    		ssl.handleException();
+    	} 
+    }
+    
     public static void main(String args[]) {
 
         try {

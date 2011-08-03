@@ -12,31 +12,35 @@
 // ============================================================================
 package org.talend.xml.sax.simpleparser;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.talend.xml.sax.commons.ISAXLooper;
 import org.talend.xml.sax.simpleparser.model.XMLNode;
 import org.talend.xml.sax.simpleparser.model.XMLNodes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public class SimpleSAXLooper extends Thread implements ISAXLooper {
+public class SimpleSAXLooper implements ISAXLooper,Callable {
 
     private XMLNodes nodes = new XMLNodes();
 
     private DataBufferCache bcache;
 
+    private Thread task;
+    
+    private FutureTask futureTask;
+    
     public SimpleSAXLooper(String loopPath, String[] nodePaths, boolean[] asXMLs) {
-
+    	futureTask = new FutureTask(this);
+    	task = new Thread(futureTask);
         for (int i = 0; i < nodePaths.length; i++) {
             nodes.addNode(new XMLNode(loopPath, nodePaths[i], null, asXMLs[i]));
         }
@@ -45,6 +49,15 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
 
     public SimpleSAXLooper(String rootPath, String[] arrLoopPath, String[][] arrNodePaths) {
 
+    }
+    
+    /**
+     * handle the exception in task.
+     * FutureTask.get() is a block method waiting for the Task over and it can throw the exception in Task(Callable,Thread,Runnable)
+     * @throws Exception
+     */
+    public void handleException() throws Exception {
+		futureTask.get();
     }
 
     private void initLoopEntry() {
@@ -85,7 +98,7 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
     public void parse(String fileURL, String charset) {
         this.fileURL = fileURL;
         this.charset = charset;
-        start();
+        task.start();
     }
 
     private java.io.InputStream is;
@@ -93,15 +106,13 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
     public void parse(java.io.InputStream is, String charset) {
         this.is = is;
         this.charset = charset;
-        start();
+        task.start();
     }
-
-    public void run() {
-        try {
-
+    
+    public Object call() throws Exception {
+		try {
             DefaultHandler hd = new SimpleSAXLoopHandler(nodes, bcache);
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-
             if (fileURL != null) {
                 org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(
                         new java.io.FileInputStream(fileURL));
@@ -112,16 +123,11 @@ public class SimpleSAXLooper extends Thread implements ISAXLooper {
                 inSource.setEncoding(this.charset);
                 saxParser.parse(is, hd);
             }
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
         	bcache.notifyErrorOccurred();
         }
-    }
+		return null;
+	}
 
     public static void main(String[] args) {
         try {
