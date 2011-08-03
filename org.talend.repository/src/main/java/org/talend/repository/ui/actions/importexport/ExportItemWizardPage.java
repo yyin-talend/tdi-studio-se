@@ -68,6 +68,7 @@ import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -641,9 +642,14 @@ class ExportItemWizardPage extends WizardPage {
         }
         IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
         RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
-
-        List<RelationshipItemBuilder.Relation> relations = builder.getItemsRelatedTo(item.getProperty().getId(), item
-                .getProperty().getVersion(), RelationshipItemBuilder.JOB_RELATION);
+        List<RelationshipItemBuilder.Relation> relations;
+        if (item instanceof JobletProcessItem) {
+            relations = builder.getItemsRelatedTo(item.getProperty().getId(), item.getProperty().getVersion(),
+                    RelationshipItemBuilder.JOBLET_RELATION);
+        } else {
+            relations = builder.getItemsRelatedTo(item.getProperty().getId(), item.getProperty().getVersion(),
+                    RelationshipItemBuilder.JOB_RELATION);
+        }
         for (RelationshipItemBuilder.Relation relation : relations) {
             IRepositoryViewObject obj = null;
             try {
