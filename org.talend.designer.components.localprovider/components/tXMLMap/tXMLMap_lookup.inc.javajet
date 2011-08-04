@@ -41,9 +41,10 @@ skeleton="tXMLMap_java.skeleton"
 			if(connectionType == EConnectionType.FLOW_REF) {
 				IMetadataTable metadataTable = connection.getMetadataTable();
 				String tableName = nextInputTable.getName();
-				
 				String lookupMode = nextInputTable.getLookupMode();
+				boolean isInnerJoin = false;
 				if (nextInputTable.isInnerJoin()) {
+					isInnerJoin = true;
 			    	inputTablesWithInnerJoin.add(nextInputTable);
 			 	}
 			    //  nextJoinedTableNames =tableName+  "__" + tableName; 
@@ -69,6 +70,7 @@ skeleton="tXMLMap_java.skeleton"
 			String documentColumn = "";
 			ArrayList<String> xPathAsOutput = new ArrayList<String>();
 			String loopXPath = "";
+			boolean isMultipleResult = false;
 			
 			boolean existXpathKeyFromCurrentLookup = false;
 			for(int j = 0; j < listColumns.size(); j++){
@@ -137,6 +139,9 @@ skeleton="tXMLMap_java.skeleton"
 					matchingMode = "ALL_ROWS";
 				}
 			}
+			if("ALL_ROWS".equals(matchingMode) || "ALL_MATCHES".equals(matchingMode)) {
+				isMultipleResult = true;
+			}
 %>
 		<% if(hasOutgoingConnection){ %>
 			boolean forceLoop<%= tableName %> = false;
@@ -175,61 +180,62 @@ skeleton="tXMLMap_java.skeleton"
 						tHash_Lookup_<%= tableName %>.lookup();
 					<% } %>
 						if(tHash_Lookup_<%= tableName %>.hasNext()){
-							forceLoop<%= tableName %> = true;
+						
 						} else {
-							//not find and should reject data(not Document)
+						<% if(isInnerJoin) {//inner join,not find and should reject data(not Document)%>
 							<%= rejectedInnerJoin %> = true;
 							<%= rejectedDocInnerJoin %> = true;
+						<% } else {//left outter join should keep main table data,not reject anytime.%>
+							<%=tableName%> = <%=tableName%>Default;
+						<% } %>
 						}
-					}else {
-						forceLoop<%= tableName %> = true;
 					}
 				   
 				  	<% if(findFromDocumentType) {%>
 				   	boolean isMatchDocRow<%=cid%> = false;
 				  	<% } %>
-					while (tHash_Lookup_<%=tableName%>.hasNext() || forceLoop<%=tableName%>) { 
-								
+					while (tHash_Lookup_<%=tableName%>.hasNext()) { 
 						<%=tableName%>Struct fromLookup_<%=tableName%> = null;
 						<%=tableName%> = <%=tableName%>Default;
-				
-						if (!forceLoop<%=tableName%>) { 
-							fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
-							if (fromLookup_<%=tableName%> != null) {
-							<% if(findFromDocumentType) {%>
-								//begin to lookup Document Object
-								Document doc = fromLookup_<%=tableName%>.<%=documentColumn%>;
-								java.util.List<String> xPathAsOutput = new java.util.ArrayList<String>();
-							<%
-							for(String xpath : xPathAsOutput) {
-							%>
-								xPathAsOutput.add("<%=xpath%>");
-							<%
-							}
-							%>
-								List<java.util.Map<String,Object>> result = doc.LookupDocument("<%=loopXPath%>",<%= tableName %>HashKey.documentLookupResult,xPathAsOutput);
-								if(result == null || result.size() == 0) {
-									// not find
-								} else {
-									//find and cache it,now only memory,inner join and unique match mode
-									//once find,not reject.
-									isMatchDocRow<%=cid%> = true;
-									for(java.util.Map<String,Object> docRow : result) {
-										for(String path : docRow.keySet()) {
-											treeNodeAPI_<%=cid %>.put(path, String.valueOf(docRow.get(path)));
-										}
-										
+						fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
+						if (fromLookup_<%=tableName%> != null) {
+						<% if(findFromDocumentType) {%>
+							//begin to lookup Document Object
+							Document doc = fromLookup_<%=tableName%>.<%=documentColumn%>;
+							java.util.List<String> xPathAsOutput = new java.util.ArrayList<String>();
+						<%
+						for(String xpath : xPathAsOutput) {
+						%>
+							xPathAsOutput.add("<%=xpath%>");
+						<%
+						}
+						%>
+							List<java.util.Map<String,Object>> result = doc.LookupDocument("<%=loopXPath%>",<%= tableName %>HashKey.documentLookupResult,xPathAsOutput);
+							if(result == null || result.size() == 0) {
+								// not find
+							} else {
+								//find and cache it,now only memory,inner join and unique match mode
+								//once find,not reject.
+								isMatchDocRow<%=cid%> = true;
+								for(java.util.Map<String,Object> docRow : result) {
+									for(String path : docRow.keySet()) {
+										treeNodeAPI_<%=cid %>.put(path, String.valueOf(docRow.get(path)));
 									}
 									
 								}
-							<% } %>
-								<%=tableName%> = fromLookup_<%=tableName%>;
+								
 							}
+						<% } %>
+							<%=tableName%> = fromLookup_<%=tableName%>;
 						}
-						forceLoop<%=tableName%> = false;
 					}
-					<% if(findFromDocumentType) {%>
+					<% if(isInnerJoin && findFromDocumentType) {%>
 				   	<%= rejectedDocInnerJoin %> = !isMatchDocRow<%=cid%>;
+				  	<% } %>
+				  	<% if(!isInnerJoin && findFromDocumentType) { %>
+				  	if(!isMatchDocRow<%=cid%>) {
+				  		<%=tableName%> = <%=tableName%>Default;
+				  	}
 				  	<% } %>
 	<%				
 	}
@@ -244,23 +250,20 @@ skeleton="tXMLMap_java.skeleton"
 				if(!<%= rejectedInnerJoin %>){
 					tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
 					if(tHash_Lookup_<%= tableName %>.hasNext()){
-						forceLoop<%= tableName %> = true;
+					
 					}
 				}else {
-					forceLoop<%= tableName %> = true;
+				
 				}
-				while (tHash_Lookup_<%=tableName%>.hasNext() || forceLoop<%=tableName%>) { 
+				while (tHash_Lookup_<%=tableName%>.hasNext()) { 
 						
 					<%=tableName%>Struct fromLookup_<%=tableName%> = null;
 					<%=tableName%> = <%=tableName%>Default;
 			
-					if (!forceLoop<%=tableName%>) { 
-						fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
-						if (fromLookup_<%=tableName%> != null) {
-							<%=tableName%> = fromLookup_<%=tableName%>;
-						}
+					fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
+					if (fromLookup_<%=tableName%> != null) {
+						<%=tableName%> = fromLookup_<%=tableName%>;
 					}
-					forceLoop<%=tableName%> = false;
 <%					}
 				}
 			}
