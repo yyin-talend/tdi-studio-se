@@ -419,6 +419,7 @@ public class ComponentsFactory implements IComponentsFactory {
             if (applicationPath == null) {
                 try {
                     applicationPath = FileLocator.getBundleFile(Platform.getBundle(info.getSourceBundleName())).getPath();
+                    applicationPath = (new Path(applicationPath)).toPortableString();
                 } catch (IOException e2) {
                     ExceptionHandler.process(e2);
                     return;
@@ -651,12 +652,15 @@ public class ComponentsFactory implements IComponentsFactory {
                         String applicationPath;
                         try {
                             applicationPath = FileLocator.getBundleFile(Platform.getBundle(bundleName)).getPath();
+                            applicationPath = (new Path(applicationPath)).toPortableString();
                         } catch (IOException e2) {
                             ExceptionHandler.process(e2);
                             return;
                         }
 
                         pathName = pathName.replace(applicationPath, "");
+                        pathName = (new Path(pathName)).toPortableString();
+
 
                         EmfComponent currentComp = new EmfComponent(pathName, bundleName, xmlMainFile.getParentFile().getName(),
                                 pathSource, ComponentManager.getInstance(), isCreated);
@@ -783,7 +787,7 @@ public class ComponentsFactory implements IComponentsFactory {
             if (currentProvider == null) {
                 ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
                 for (AbstractComponentsProvider curProvider : componentsProviderManager.getProviders()) {
-                    String path = curProvider.getInstallationFolder().toString();
+                    String path = new Path(curProvider.getInstallationFolder().toString()).toPortableString();
                     if (source.startsWith(path)) {
                         currentProvider = curProvider;
                         break;

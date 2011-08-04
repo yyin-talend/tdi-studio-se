@@ -265,6 +265,7 @@ public class EmfComponent extends AbstractComponent {
             String applicationPath;
             try {
                 applicationPath = FileLocator.getBundleFile(Platform.getBundle(bundleName)).getPath();
+                applicationPath = (new Path(applicationPath)).toPortableString();
             } catch (IOException e2) {
                 ExceptionHandler.process(e2);
                 return;
@@ -2914,6 +2915,7 @@ public class EmfComponent extends AbstractComponent {
         String applicationPath;
         try {
             applicationPath = FileLocator.getBundleFile(Platform.getBundle(bundleName)).getPath();
+            applicationPath = (new Path(applicationPath)).toPortableString();
         } catch (IOException e2) {
             ExceptionHandler.process(e2);
             return (ArrayList<ECodePart>) Collections.EMPTY_LIST;
