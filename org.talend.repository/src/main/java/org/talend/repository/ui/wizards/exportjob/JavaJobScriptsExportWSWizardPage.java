@@ -74,7 +74,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.TalendUt
 
 /**
  * DOC x class global comment. Detailled comment <br/>
- * 
+ *
  */
 public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizardPage {
 
@@ -82,7 +82,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      * type of job exports.
      * */
     public static enum JobExportType {
-        POJO("Autonomous Job"), //$NON-NLS-1$ 
+        POJO("Autonomous Job"), //$NON-NLS-1$
         WSWAR("Axis WebService (WAR)"), //$NON-NLS-1$
         WSZIP("Axis WebService (ZIP)"), //$NON-NLS-1$
         JBOSSESB("JBoss ESB"), //$NON-NLS-1$
@@ -201,7 +201,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.wizard.WizardPage#setWizard(org.eclipse.jface.wizard.IWizard)
      */
     @Override
@@ -379,7 +379,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWizardPage#createJobScriptsManager()
      */
     @Override
@@ -407,13 +407,18 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         return "sa-talend-" + this.getDefaultFileName().get(0) + "Service-provide.zip"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    protected String getOSGIBundleForESBDefaultName() {
+        return this.getDefaultFileName().get(0) + "-" + this.getDefaultFileName().get(1) + getOutputSuffix();
+    }
+
     /**
      * Open an appropriate destination browser so that the user can specify a source to import from.
      */
     @Override
     protected void handleDestinationBrowseButtonPressed() {
         FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
-        switch (getCurrentExportType()) {
+        JobExportType jobExportType = getCurrentExportType();
+        switch (jobExportType) {
         case WSWAR:
             dialog.setFilterExtensions(new String[] { "*.war", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
             break;
@@ -430,7 +435,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        if (getCurrentExportType().equals(JobExportType.PETALSESB)) {
+        if (jobExportType.equals(JobExportType.PETALSESB)) {
             IPath destPath = new Path(this.saDestinationFilePath);
             String fileName, directory;
             if (destPath.toFile().isDirectory()) {
@@ -469,7 +474,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             String s = (String) this.getDefaultFileName().get(0);
 
             if (str.equals(s)) {
-                selectedFileName = b + "_" + this.getDefaultFileName().get(1) + this.getOutputSuffix(); //$NON-NLS-1$
+                selectedFileName = b + ((JobExportType.OSGI.equals(jobExportType)) ? "-" : "_")
+                		+ this.getDefaultFileName().get(1) + this.getOutputSuffix(); //$NON-NLS-1$
             } else {
                 selectedFileName = b + this.getOutputSuffix();
             }
@@ -560,9 +566,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
             setDefaultDestination();
 
-            IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$ 
+            IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$
             if (section == null) {
-                section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$ 
+                section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$
             }
             if (exportDependencies != null && !exportDependencies.isDisposed()) {
                 exportDependencies.setSelection(settings.getBoolean(STORE_DEPENDENCIES_ID));
@@ -622,7 +628,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                     }
                 }
             }
-            setDefaultDestination();
+            // setDefaultDestination();
+            String bundleName = getOSGIBundleForESBDefaultName();
+            String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
+            IPath path = new Path(userDir).append(bundleName);
+            setDestinationValue(path.toOSString());
         }
     }
 
@@ -1318,7 +1328,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWizardPage#getExportResources()
      */
     @Override
@@ -1341,7 +1351,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#setTopFolder(java.util.List,
      * java.lang.String)
      */
@@ -1367,7 +1377,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#checkExport()
      */
     @Override
@@ -1490,11 +1500,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (exportTypeCombo != null && JobExportType.getTypeFromString(exportTypeCombo.getText()).equals(JobExportType.JBOSSESB)) {
             if (getDialogSettings() != null) {
-                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$ 
+                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$
                 if (section == null) {
-                    section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$ 
+                    section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$
                 }
-                section.put(ESB_EXPORT_TYPE, this.esbTypeCombo.getText());//$NON-NLS-1$//$NON-NLS-1$ 
+                section.put(ESB_EXPORT_TYPE, this.esbTypeCombo.getText());//$NON-NLS-1$//$NON-NLS-1$
                 section.put(ESB_SERVICE_NAME, this.esbServiceName.getText());
                 section.put(ESB_CATEGORY, this.esbCategory.getText());
                 section.put(QUERY_MESSAGE_NAME, this.esbQueueMessageName.getText());

@@ -194,7 +194,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         // generate the META-INFO folder
         ExportFileResource metaInfoFolder = genMetaInfoFolder(libResource, itemToBeExport);
-        list.add(metaInfoFolder);
+        list.add(0, metaInfoFolder);
 
         return list;
     }
@@ -343,7 +343,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * DOC hywang Comment method "caculateDependenciesBundles".
-     * 
+     *
      * @return
      */
     private String caculateDependenciesBundles(ProcessItem processItem) {

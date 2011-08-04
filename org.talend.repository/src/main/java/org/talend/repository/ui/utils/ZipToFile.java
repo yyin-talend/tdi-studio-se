@@ -50,9 +50,9 @@ public class ZipToFile {
     }
 
     /**
-     * 
+     *
      * DOC wzhang Comment method "copyFile".
-     * 
+     *
      * @param src
      * @param dest
      */
@@ -90,9 +90,9 @@ public class ZipToFile {
     }
 
     /**
-     * 
+     *
      * DOC aiming Comment method "zipFile".
-     * 
+     *
      * @param baseDir
      * @param zipFile
      * @throws Exception
@@ -119,9 +119,9 @@ public class ZipToFile {
     }
 
     /**
-     * 
+     *
      * DOC aiming Comment method "getAbsFileName".
-     * 
+     *
      * @param baseDir
      * @param realFileName
      * @return
@@ -143,9 +143,9 @@ public class ZipToFile {
     }
 
     /**
-     * 
+     *
      * DOC aiming Comment method "getSubFiles".
-     * 
+     *
      * @param baseDir
      * @return
      */
@@ -153,18 +153,30 @@ public class ZipToFile {
         List ret = new ArrayList();
         File[] tmp = baseDir.listFiles();
         for (int i = 0; i < tmp.length; i++) {
-            if (tmp[i].isFile())
-                ret.add(tmp[i]);
-            if (tmp[i].isDirectory())
-                ret.addAll(getSubFiles(tmp[i]));
+            File item = tmp[i];
+            if (item.isFile()) {
+                if ("MANIFEST.MF".equalsIgnoreCase(item.getName())) {
+                    // "META-INF/MANIFEST.MF" must be a first entry in JAR package
+                    ret.add(0, item);
+                } else {
+                    ret.add(item);
+                }
+            } else if (item.isDirectory()) {
+                if ("META-INF".equalsIgnoreCase(item.getName())) {
+                    // "META-INF/MANIFEST.MF" must be a first entry in JAR package
+                    ret.addAll(0, getSubFiles(item));
+                } else {
+                    ret.addAll(getSubFiles(item));
+                }
+            }
         }
         return ret;
     }
 
     /**
-     * 
+     *
      * DOC aiming Comment method "unZipFile".
-     * 
+     *
      * @param zipfile
      * @param unzipdir
      * @throws Exception
@@ -214,7 +226,6 @@ public class ZipToFile {
             zipFile("C:\\zipfile\\", "C:\\new.jar"); //$NON-NLS-1$ //$NON-NLS-2$
             unZipFile("C:\\new.jar", "c:/unzipf/"); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             // e.printStackTrace();
             ExceptionHandler.process(e);
         }
