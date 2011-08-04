@@ -16,8 +16,6 @@ import java.util.Comparator;
 
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IESBRepositoryContentHandler;
-import org.talend.core.model.repository.RepositoryServiceManager;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
@@ -107,12 +105,6 @@ public class RepositoryNameSorter extends ViewerSorter {
             } else if (!contentType.isStaticNode()) {
                 return contentType.ordinal();
             } else {
-                for (IESBRepositoryContentHandler handler : RepositoryServiceManager.getHandlers()) {
-                    ERepositoryObjectType stype = handler.getRepositoryObjectType(null);
-                    if (stype != null && stype == contentType) {
-                        return 7;
-                    }
-                }
                 return 199;
             }
         } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {

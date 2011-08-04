@@ -29,9 +29,9 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IESBRepositoryContentHandler;
+import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryServiceManager;
+import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.repository.model.ISubRepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -134,14 +134,14 @@ public class DetecteViewImpactAction extends AContextualAction {
                         canWork = true;
                     } else {
 
-                        for (IESBRepositoryContentHandler handler : RepositoryServiceManager.getHandlers()) {
+                        for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
                             ERepositoryObjectType stype = handler.getRepositoryObjectType(null);
                             if (stype == objectType) {
                                 canWork = true;
                                 break;
                             }
                         }
-                        if (RepositoryServiceManager.getHandlers().size() < 0) {
+                        if (RepositoryContentManager.getHandlers().size() < 0) {
                             canWork = false;
                         }
 

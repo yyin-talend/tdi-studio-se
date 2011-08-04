@@ -60,8 +60,6 @@ import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.HeaderFooterConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IESBRepositoryContentHandler;
-import org.talend.core.model.repository.RepositoryServiceManager;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.ProjectManager;
@@ -248,13 +246,6 @@ public class RepositoryReviewDialog extends Dialog {
 
         if (type == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
             return new ValidationRuleTypeProcessor(repositoryType);
-        }
-
-        for (IESBRepositoryContentHandler handler : RepositoryServiceManager.getHandlers()) {
-            ERepositoryObjectType stype = handler.getRepositoryObjectType(null);
-            if (stype != null && stype == type) {
-                return new RepositoryTypeProcessor(repositoryType);
-            }
         }
         throw new IllegalArgumentException(Messages.getString("RepositoryReviewDialog.0", type)); //$NON-NLS-1$
     }
