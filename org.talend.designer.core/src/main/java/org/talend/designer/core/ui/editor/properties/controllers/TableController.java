@@ -604,6 +604,14 @@ public class TableController extends AbstractElementPropertySectionController {
                                 } else {
                                     currentLine.put(items[j], oldItems[nb]);
                                 }
+                            } else {
+                                if (o instanceof String) {
+                                    currentLine.put(items[j], (String) tmpParam.getDefaultClosedListValue());
+                                } else {
+                                    if (o instanceof Boolean) {
+                                        currentLine.put(items[j], (Boolean) tmpParam.getDefaultClosedListValue());
+                                    }
+                                }
                             }
                         }
                     }
@@ -640,6 +648,8 @@ public class TableController extends AbstractElementPropertySectionController {
         tmpParam = (IElementParameter) itemsValue[0];
         switch (tmpParam.getFieldType()) {
         case CONTEXT_PARAM_NAME_LIST:
+            line.put(items[0], (String) tmpParam.getDefaultClosedListValue());
+            break;
         case CLOSED_LIST:
         case COLUMN_LIST:
         case COMPONENT_LIST:
