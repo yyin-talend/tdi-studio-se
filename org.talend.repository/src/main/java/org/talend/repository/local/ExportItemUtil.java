@@ -294,8 +294,8 @@ public class ExportItemUtil {
                     fixItemLockState();
                     toExport.put(propertyFile, propertyPath);
                     toExport.put(itemFile, itemPath);
-                    int ID = item.eClass().getClassifierID();
-                    if (ID == PropertiesPackage.PROCESS_ITEM || ID == PropertiesPackage.JOBLET_PROCESS_ITEM) {
+                    int id = item.eClass().getClassifierID();
+                    if (id == PropertiesPackage.PROCESS_ITEM || id == PropertiesPackage.JOBLET_PROCESS_ITEM) {
                         toExport.put(screenshotFile, screenshotPath);
                     }
                     // ProxyRepositoryFactory.getInstance().unloadResources(copiedItem.getProperty());
@@ -411,8 +411,8 @@ public class ExportItemUtil {
 
         itemFile = new File(destinationFile, itemPath.toOSString());
         // added by dlin :to copy the .screenshot file in to the to be exported files
-        int ID = item.eClass().getClassifierID();
-        if (ID == PropertiesPackage.PROCESS_ITEM || ID == PropertiesPackage.JOBLET_PROCESS_ITEM) {
+        int id = item.eClass().getClassifierID();
+        if (id == PropertiesPackage.PROCESS_ITEM || id == PropertiesPackage.JOBLET_PROCESS_ITEM) {
             String screenshotFileName = fileNamePath.addFileExtension(FileConstants.SCREENSHOT_EXTENSION).toOSString();
             String sourceFilePath = Platform.getInstanceLocation().getURL().getPath() + Path.SEPARATOR + screenshotFileName;
             screenshotPath = fileNamePath.addFileExtension(FileConstants.SCREENSHOT_EXTENSION);

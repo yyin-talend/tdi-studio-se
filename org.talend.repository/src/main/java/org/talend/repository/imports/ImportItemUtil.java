@@ -782,8 +782,8 @@ public class ImportItemUtil {
 
     // added by dlin 2011-7-25 don't like .item and .property ,just copy .screenshot file will be ok
     private void copyScreenshotFile(ResourcesManager manager, ItemRecord itemRecord) throws IOException {
-        int ID = itemRecord.getItem().eClass().getClassifierID();
-        if (ID != PropertiesPackage.PROCESS_ITEM && ID != PropertiesPackage.JOBLET_PROCESS_ITEM) {
+        int id = itemRecord.getItem().eClass().getClassifierID();
+        if (id != PropertiesPackage.PROCESS_ITEM && id != PropertiesPackage.JOBLET_PROCESS_ITEM) {
             return;
         }
         OutputStream os = null;
