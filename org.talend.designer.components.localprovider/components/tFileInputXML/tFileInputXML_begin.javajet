@@ -304,7 +304,17 @@ parser_<%=cid%>.setFeature("http://apache.org/xml/features/validation/schema", t
 parser_<%=cid%>.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
 parser_<%=cid%>.setFeature("http://xml.org/sax/features/namespaces", true);
 parser_<%=cid%>.setErrorHandler(null);
-Object filename_<%=cid %> = <%=filename %>;
+Object filename_<%=cid %> = null;
+try {
+	filename_<%=cid %> = <%=filename %>;
+} catch(Exception e) {
+	<%if (dieOnError) {%>
+	throw(e);
+	<%}else{%>
+	System.err.println(e.getMessage());
+	<%}%>
+}
+
 boolean isValidFile_<%=cid %> = true;
 try{
     if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filename_<%=cid %>.toString().startsWith("//")){
@@ -313,7 +323,7 @@ try{
     if(filename_<%=cid %> instanceof java.io.InputStream){
     	parser_<%=cid%>.parse(new org.xml.sax.InputSource((java.io.InputStream)filename_<%=cid %>));
     }else{
-    	java.io.InputStream in_<%=cid %>= new java.io.FileInputStream(filename_<%=cid %>.toString());
+    	java.io.InputStream in_<%=cid %>= new java.io.FileInputStream(String.valueOf(filename_<%=cid %>));
     	org.xml.sax.InputSource xmlInputSource_<%=cid%> = new org.xml.sax.InputSource(in_<%=cid %>);
     	xmlInputSource_<%=cid%>.setEncoding(<%=encoding%>);
     	parser_<%=cid%>.parse(xmlInputSource_<%=cid%>);
@@ -517,7 +527,16 @@ class XML_API_<%=cid%>{
 %>
 
 org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
-Object filename_<%=cid %> = <%=filename %>;
+Object filename_<%=cid %> = null;
+try {
+	filename_<%=cid %> = <%=filename %>;
+} catch(Exception e) {
+	<%if (dieOnError) {%>
+	throw(e);
+	<%}else{%>
+	System.err.println(e.getMessage());
+	<%}%>
+}
 if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filename_<%=cid %>.toString().startsWith("//")){
 	filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");
 }
@@ -526,26 +545,30 @@ if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filenam
 	if(("true").equals(ignore_NS_Str)){
 %>
 org.dom4j.Document doc_reader_<%=cid %> = null;
-if(filename_<%=cid %> instanceof java.io.InputStream){
-	doc_reader_<%=cid %> = reader_<%=cid %>.read((java.io.InputStream)filename_<%=cid %>);
-}else{
-	doc_reader_<%=cid %> = reader_<%=cid %>.read(new java.io.File(filename_<%=cid %>.toString()).toURI().toString());
-}
 org.dom4j.Document doc_tmp_<%=cid %> = org.dom4j.DocumentHelper.createDocument();
 org.dom4j.io.OutputFormat format_<%=cid %> = org.dom4j.io.OutputFormat.createPrettyPrint();
-format_<%=cid %>.setTrimText(false);
-format_<%=cid %>.setEncoding(<%=encoding %>);
-
-new XML_NS_RMV_<%=cid %>().removeNamespace(doc_reader_<%=cid %>,doc_tmp_<%=cid %>);
-
-doc_reader_<%=cid %>.clearContent();
-doc_reader_<%=cid %> = null;
-
-java.io.FileOutputStream stream_<%=cid %> = new java.io.FileOutputStream(<%=tmp_filename %>);
-org.dom4j.io.XMLWriter output_<%=cid %> = new org.dom4j.io.XMLWriter(stream_<%=cid %>, format_<%=cid %>);
-output_<%=cid %>.write(doc_tmp_<%=cid %>);
-output_<%=cid %>.close();
-
+try {
+	if(filename_<%=cid %> instanceof java.io.InputStream){
+		doc_reader_<%=cid %> = reader_<%=cid %>.read((java.io.InputStream)filename_<%=cid %>);
+	}else{
+		doc_reader_<%=cid %> = reader_<%=cid %>.read(new java.io.File(String.valueOf(filename_<%=cid %>)).toURI().toString());
+	}
+	format_<%=cid %>.setTrimText(false);
+	format_<%=cid %>.setEncoding(<%=encoding %>);
+	new XML_NS_RMV_<%=cid %>().removeNamespace(doc_reader_<%=cid %>,doc_tmp_<%=cid %>);
+	doc_reader_<%=cid %>.clearContent();
+	doc_reader_<%=cid %> = null;
+	java.io.FileOutputStream stream_<%=cid %> = new java.io.FileOutputStream(<%=tmp_filename %>);
+	org.dom4j.io.XMLWriter output_<%=cid %> = new org.dom4j.io.XMLWriter(stream_<%=cid %>, format_<%=cid %>);
+	output_<%=cid %>.write(doc_tmp_<%=cid %>);
+	output_<%=cid %>.close();
+} catch(Exception e) {
+	<%if (dieOnError) {%>
+	throw(e);
+	<%}else{%>
+	System.err.println(e.getMessage());
+	<%}%>
+}
 filename_<%=cid %> = <%=tmp_filename %>;
 <%
 	}
@@ -556,7 +579,7 @@ try{
 	if(filename_<%=cid %> instanceof java.io.InputStream){
 		doc_<%=cid%> = reader_<%=cid %>.read((java.io.InputStream)filename_<%=cid %>);
 	}else{
-		org.xml.sax.InputSource in_<%=cid %>= new org.xml.sax.InputSource(new java.io.FileInputStream(filename_<%=cid %>.toString()));
+		org.xml.sax.InputSource in_<%=cid %>= new org.xml.sax.InputSource(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)));
 		in_<%=cid %>.setEncoding(<%=encoding %>);		
 		doc_<%=cid%> = reader_<%=cid %>.read(in_<%=cid %>);
 	}
@@ -646,14 +669,23 @@ String str_<%=cid %> = "";
 String[] node_<%=cid%> = null;
 org.talend.xml.sax.SAXLooper looper_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=loopQuery%>,queryPaths_<%=cid%>,asXMLs_<%=cid%>);
 looper_<%=cid%>.setEncoding(<%=encoding %>);
-Object filename_<%=cid %> = <%=filename %>;
+Object filename_<%=cid %> = null;
+try {
+	filename_<%=cid %> = <%=filename %>;
+} catch(Exception e) {
+	<%if (dieOnError) {%>
+	throw(e);
+	<%}else{%>
+	System.err.println(e.getMessage());
+	<%}%>
+}
 if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filename_<%=cid %>.toString().startsWith("//")){
 	filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");
 }
 if(filename_<%=cid %> instanceof java.io.InputStream){
 	looper_<%=cid%>.parse((java.io.InputStream)filename_<%=cid %>);
 }else{
-	looper_<%=cid%>.parse(filename_<%=cid %>.toString());
+	looper_<%=cid%>.parse(String.valueOf(filename_<%=cid %>));
 }
 java.util.Iterator<java.util.Map<String, String>> it_<%=cid%>  = looper_<%=cid%>.iterator();
 while (it_<%=cid%>.hasNext()) {
