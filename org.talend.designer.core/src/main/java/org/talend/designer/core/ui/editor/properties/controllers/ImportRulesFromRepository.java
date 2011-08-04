@@ -78,6 +78,8 @@ public class ImportRulesFromRepository implements SelectionListener {
         public PaserRuleSelectionDialog(Shell parent, ILabelProvider labelProvider, ITreeContentProvider contentProvider) {
             super(parent, labelProvider, contentProvider);
             addFilter(new PaserRulesFilter());
+            setTitle(Messages.getString("ImportRulesFromRepository.dialog")); //$NON-NLS-1$
+            setMessage(Messages.getString("ImportRulesFromRepository.title")); //$NON-NLS-1$
             isOverride = false;
         }
 
