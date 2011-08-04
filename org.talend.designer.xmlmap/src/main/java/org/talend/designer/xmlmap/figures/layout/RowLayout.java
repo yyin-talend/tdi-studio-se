@@ -12,10 +12,13 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.layout;
 
+import java.util.HashMap;
 import java.util.ListIterator;
+import java.util.Map;
 
+import org.eclipse.draw2d.AbstractHintLayout;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.XYLayout;
+import org.eclipse.draw2d.LayoutManager;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -27,7 +30,11 @@ import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 /**
  * DOC talend class global comment. Detailled comment
  */
-public class RowLayout extends XYLayout {
+public class RowLayout extends AbstractHintLayout {
+
+    private Dimension cachedPreferredHint = new Dimension(-1, -1);
+
+    protected Map constraints = new HashMap();
 
     private static final int FIXED_ROW_HEIGHT = 20;
 
@@ -47,20 +54,10 @@ public class RowLayout extends XYLayout {
      * 
      * @see org.eclipse.draw2d.XYLayout#layout(org.eclipse.draw2d.IFigure)
      */
-    @Override
     public void layout(IFigure parent) {
         int initExpressionWidth = (treeNodePart.getViewer().getControl().getSize().x / 3 - 80 - 10) / 2;
 
         final Rectangle clientArea = parent.getClientArea();
-        double shrinkHeight = 1;
-        double shrinkWidth = 1;
-        boolean parentResized = false;
-        if (previousClientArea != null && previousClientArea.equals(clientArea)) {
-            parentResized = true;
-            previousClientArea = clientArea;
-            shrinkHeight = (double) clientArea.y / (double) previousClientArea.y;
-            shrinkWidth = (double) clientArea.x / (double) previousClientArea.x;
-        }
 
         int x = clientArea.x;
         int y = clientArea.y;
@@ -74,9 +71,6 @@ public class RowLayout extends XYLayout {
             setConstraint(expressionFigure, newBounds);
             x = x + newBounds.width;
         }
-        // else {
-        // branchWidth = clientArea.width;
-        // }
 
         final TreeBranch treeBranch = rowFigure.getTreeBranch();
         final Dimension preSize = treeBranch.getPreferredSize(clientArea.width, -1);
@@ -84,9 +78,6 @@ public class RowLayout extends XYLayout {
         Rectangle newBounds = new Rectangle(x, y, branchWidth, FIXED_ROW_HEIGHT);
         treeBranch.setBounds(newBounds);
         setConstraint(treeBranch, newBounds);
-        x = x + newBounds.width;
-
-        // add code for shell resize later
 
     }
 
@@ -97,6 +88,16 @@ public class RowLayout extends XYLayout {
      */
     @Override
     protected Dimension calculatePreferredSize(IFigure f, int wHint, int hHint) {
+        Insets insets = f.getInsets();
+        if (wHint >= 0)
+            wHint = Math.max(0, wHint - insets.getWidth());
+
+        boolean flush = cachedPreferredHint.width != wHint;
+        if (flush) {
+            f.invalidate();
+            cachedPreferredHint.width = wHint;
+        }
+
         f.validate();
         Dimension d = new Dimension();
         ListIterator children = f.getChildren().listIterator();
@@ -119,14 +120,25 @@ public class RowLayout extends XYLayout {
             d.width = d.width + r.width;
 
         }
-
-        Insets insets = f.getInsets();
         return new Dimension(d.width + insets.getWidth(), d.height + insets.getHeight()).union(getBorderPreferredSize(f));
 
     }
 
-    public int getMaxRowHeight() {
-        return FIXED_ROW_HEIGHT;
+    public void remove(IFigure figure) {
+        super.remove(figure);
+        constraints.remove(figure);
+    }
+
+    /**
+     * Sets the layout constraint of the given figure. The constraints can only be of type {@link Rectangle}.
+     * 
+     * @see LayoutManager#setConstraint(IFigure, Object)
+     * @since 2.0
+     */
+    public void setConstraint(IFigure figure, Object newConstraint) {
+        super.setConstraint(figure, newConstraint);
+        if (newConstraint != null)
+            constraints.put(figure, newConstraint);
     }
 
 }

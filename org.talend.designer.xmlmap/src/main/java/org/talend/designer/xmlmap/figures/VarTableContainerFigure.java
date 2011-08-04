@@ -51,21 +51,22 @@ public class VarTableContainerFigure extends Figure {
 
             @Override
             protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {
-                container.validate();
+                // container.validate();
                 List children = container.getChildren();
                 Rectangle result = new Rectangle().setLocation(container.getClientArea().getLocation());
                 boolean isMinimized = vartable.isMinimized();
                 if (isMinimized) {
                     result.setSize(wHint, 0);
                 } else if (!isMinimized) {
-                    for (int i = 0; i < children.size(); i++) {
-                        Dimension preferredSize2 = ((IFigure) children.get(i)).getPreferredSize();
-                        result.union(((IFigure) children.get(i)).getBounds());
-                        if (result.width > preferredSize2.width) {
-                            result.width = preferredSize2.width;
-                        }
-                    }
-                    result.resize(container.getInsets().getWidth(), container.getInsets().getHeight());
+                    // for (int i = 0; i < children.size(); i++) {
+                    // Dimension preferredSize2 = ((IFigure) children.get(i)).getPreferredSize();
+                    // result.union(((IFigure) children.get(i)).getBounds());
+                    // if (result.width > preferredSize2.width) {
+                    // result.width = preferredSize2.width;
+                    // }
+                    // }
+                    // result.resize(container.getInsets().getWidth(), container.getInsets().getHeight());
+                    result.setSize(super.calculatePreferredSize(container, wHint, hHint));
                 }
                 return result.getSize();
             }

@@ -21,6 +21,7 @@ import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.TreeLayout;
@@ -105,7 +106,19 @@ public abstract class AbstractInOutTreeFigure extends GenericFigure {
         Figure container = new Figure();
         container.setLayoutManager(new ToolbarLayout());
         scroll.getViewport().setContents(container);
-        ToolbarLayout layout = new ToolbarLayout();
+        scroll.getViewport().setContentsTracksWidth(true);
+        ToolbarLayout layout = new ToolbarLayout() {
+
+            @Override
+            protected Dimension calculateMinimumSize(IFigure container, int wHint, int hHint) {
+                return super.calculateMinimumSize(container, wHint, hHint);
+            }
+
+            @Override
+            protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {
+                return super.calculatePreferredSize(container, wHint, hHint);
+            }
+        };
         columnContainer = new Figure();
         columnContainer.setLayoutManager(layout);
 

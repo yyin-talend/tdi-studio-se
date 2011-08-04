@@ -60,6 +60,7 @@ public class TreeToolBarContainer extends Figure {
 
     private void createToolbar() {
         TreeToolBarLayout manager = new TreeToolBarLayout();
+        manager.setVertical(false);
         manager.setSpacing(5);
         this.setLayoutManager(manager);
 

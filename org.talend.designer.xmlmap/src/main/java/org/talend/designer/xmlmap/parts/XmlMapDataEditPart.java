@@ -21,12 +21,14 @@ import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.draw2d.Viewport;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
 import org.talend.designer.xmlmap.figures.SashSeparator;
-import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.TreeContainerLayout;
 import org.talend.designer.xmlmap.figures.layout.XmlMapDataLayout;
 import org.talend.designer.xmlmap.figures.treetools.zone.InputZoneToolBar;
@@ -67,7 +69,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
 
         // input
         Figure inputZone = new Figure();
-        inputZone.setLayoutManager(new InOutZoneLayout());
+        inputZone.setLayoutManager(new ZoneLayout());
 
         inputToolBar = new InputZoneToolBar(this);
         inputToolBar.setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
@@ -99,12 +101,12 @@ public class XmlMapDataEditPart extends BaseEditPart {
         varScroll.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
         centerFigure = new Figure();
 
-        subManager = new ToolbarLayout();
+        subManager = new ZoneLayout();
         subManager.setSpacing(20);
-        subManager.setVertical(true);
         centerFigure.setLayoutManager(subManager);
         centerFigure.setBorder(new MarginBorder(5, 60, 5, 60));
         varScroll.getViewport().setContents(centerFigure);
+        varScroll.getViewport().setContentsTracksWidth(true);
 
         mainFigure.add(varScroll);
 
@@ -116,7 +118,7 @@ public class XmlMapDataEditPart extends BaseEditPart {
 
         // output
         Figure outputZone = new Figure();
-        outputZone.setLayoutManager(new InOutZoneLayout());
+        outputZone.setLayoutManager(new ZoneLayout());
 
         outputToolBar = new OutputZoneToolBar(this);
         outputToolBar.setBorder(new LineBorder(ColorProviderMapper.getColor(ColorInfo.COLOR_TREE_BORDER)));
@@ -232,28 +234,62 @@ public class XmlMapDataEditPart extends BaseEditPart {
         }
     }
 
-    class InOutZoneLayout extends EqualWidthLayout {
+    class ZoneLayout extends ToolbarLayout {
 
         private static final int TOOL_BAR_HEIGHT = 35;
 
         @Override
         public void layout(IFigure parent) {
-            List children2 = parent.getChildren();
-            if (children2.size() != 2) {
-                super.layout(parent);
-            }
+            List children = parent.getChildren();
             org.eclipse.swt.graphics.Point avilableSize = getViewer().getControl().getSize();
             Rectangle clientArea = parent.getClientArea();
             int x = clientArea.x;
             int y = clientArea.y;
-            Figure toolBarFigure = (Figure) children2.get(0);
-            Rectangle newBounds = new Rectangle(x, y, clientArea.width, TOOL_BAR_HEIGHT);
-            toolBarFigure.setBounds(newBounds);
+            if (children.size() == 2) {
+                // layout input output zone
+                Figure toolBarFigure = (Figure) children.get(0);
+                Rectangle newBounds = new Rectangle(x, y, clientArea.width, TOOL_BAR_HEIGHT);
+                toolBarFigure.setBounds(newBounds);
 
-            Figure scroll = (Figure) children2.get(1);
-            Rectangle bounds = new Rectangle(x, y + TOOL_BAR_HEIGHT, clientArea.width, avilableSize.y - TOOL_BAR_HEIGHT);
-            scroll.setBounds(bounds);
+                Figure scroll = (Figure) children.get(1);
+                Rectangle bounds = new Rectangle(x, y + TOOL_BAR_HEIGHT, clientArea.width, avilableSize.y - TOOL_BAR_HEIGHT);
+                scroll.setBounds(bounds);
+            } else if (children.size() == 1) {
+                // layout var zone
+                Rectangle vBounds = null;
+                if (parent.getParent() instanceof Viewport) {
+                    vBounds = ((Viewport) parent.getParent()).getBounds();
+                }
+                Figure zoneFigure = (Figure) children.get(0);
+                final Insets insets = parent.getBorder().getInsets(zoneFigure);
 
+                int width = vBounds == null ? clientArea.width : (vBounds.width - insets.left - insets.right);
+                final Dimension prefSize = zoneFigure.getPreferredSize(clientArea.width, -1);
+                Rectangle newBounds = new Rectangle(x, y, width, prefSize.height);
+                zoneFigure.setBounds(newBounds);
+            }
+
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.draw2d.AbstractHintLayout#invalidate()
+         */
+        @Override
+        public void invalidate() {
+            super.invalidate();
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.draw2d.ToolbarLayout#calculateMinimumSize(org.eclipse.draw2d.IFigure, int, int)
+         */
+        @Override
+        protected Dimension calculateMinimumSize(IFigure container, int wHint, int hHint) {
+            // TODO Auto-generated method stub
+            return super.calculateMinimumSize(container, wHint, hHint);
         }
     }
 

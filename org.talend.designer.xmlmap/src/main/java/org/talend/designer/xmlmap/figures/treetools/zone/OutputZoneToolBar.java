@@ -15,7 +15,6 @@ package org.talend.designer.xmlmap.figures.treetools.zone;
 import java.util.List;
 
 import org.eclipse.draw2d.Clickable;
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.emf.common.util.EList;
@@ -39,50 +38,33 @@ import org.talend.designer.xmlmap.figures.layout.ZoneToolBarLayout;
 import org.talend.designer.xmlmap.figures.treetools.ToolBarButtonImageFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
-import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.XmlMapDataEditPart;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
-import org.talend.designer.xmlmap.ui.resource.ImageInfo;
-import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class OutputZoneToolBar extends Figure {
+public class OutputZoneToolBar extends ZoneToolBar {
 
-    private ToolBarButtonImageFigure add_btn, remove_btn, move_up, move_down, min_size, auto_map, die_on_error;
-
-    private XmlMapData mapData;
-
-    private XmlMapDataEditPart mapDataPart;
-
-    private XmlMapGraphicViewer graphicViewer;
+    private ToolBarButtonImageFigure add_btn, remove_btn, auto_map, die_on_error;
 
     private XmlMapComponent mapperComponent;
-
-    private Image restorImage = ImageProviderMapper.getImage(ImageInfo.RESTORE_ICON);
-
-    private Image miniImage = ImageProviderMapper.getImage(ImageInfo.MINIMIZE_ICON);
-
-    private boolean minimized = true;
 
     private boolean isDieOnError = false;
 
     public OutputZoneToolBar(XmlMapDataEditPart mapDataPart) {
-        this.mapDataPart = mapDataPart;
-        this.mapData = (XmlMapData) mapDataPart.getModel();
-
+        super(mapDataPart);
         if (mapDataPart.getViewer() instanceof XmlMapGraphicViewer) {
-            this.graphicViewer = (XmlMapGraphicViewer) mapDataPart.getViewer();
             mapperComponent = this.graphicViewer.getMapperManager().getMapperComponent();
         }
 
         ZoneToolBarLayout manager = new ZoneToolBarLayout();
+        manager.setVertical(false);
         manager.setSpacing(8);
         setLayoutManager(manager);
         setOpaque(true);
@@ -266,119 +248,6 @@ public class OutputZoneToolBar extends Figure {
         }
     }
 
-    class MoveUpButton extends ToolBarButtonImageFigure {
-
-        public MoveUpButton() {
-            super(ImageProvider.getImage(EImage.UP_ICON));
-        }
-
-        @Override
-        public void toolBarButtonPressed(MouseEvent me) {
-            super.toolBarButtonPressed(me);
-            if (graphicViewer != null) {
-                CommandStack commandStack = graphicViewer.getEditDomain().getCommandStack();
-                commandStack.execute(new Command() {
-
-                    @Override
-                    public void execute() {
-                        List<OutputXmlTree> outputTrees = mapData.getOutputTrees();
-                        OutputXmlTreeEditPart currentSelectedOutputXmlTree = graphicViewer.getFiguresManager()
-                                .getCurrentSelectedOutputXmlTree();
-                        if (currentSelectedOutputXmlTree != null) {
-                            OutputXmlTree selectedTree = (OutputXmlTree) currentSelectedOutputXmlTree.getModel();
-
-                            int index = outputTrees.indexOf(selectedTree);
-                            if (index != -1 && index - 1 >= 0) {
-                                outputTrees.remove(selectedTree);
-                                outputTrees.add(index - 1, selectedTree);
-
-                                // index of modelchildren is different from index of tree
-                                int indexOf = mapDataPart.getModelChildren().indexOf(selectedTree);
-                                if (indexOf != -1) {
-                                    mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-        }
-    }
-
-    class MoveDownButton extends ToolBarButtonImageFigure {
-
-        public MoveDownButton() {
-            super(ImageProvider.getImage(EImage.DOWN_ICON));
-        }
-
-        @Override
-        public void toolBarButtonPressed(MouseEvent me) {
-            super.toolBarButtonPressed(me);
-            if (graphicViewer != null) {
-                CommandStack commandStack = graphicViewer.getEditDomain().getCommandStack();
-                commandStack.execute(new Command() {
-
-                    @Override
-                    public void execute() {
-                        List<OutputXmlTree> outputTrees = mapData.getOutputTrees();
-                        OutputXmlTreeEditPart currentSelectedOutputXmlTree = graphicViewer.getFiguresManager()
-                                .getCurrentSelectedOutputXmlTree();
-                        if (currentSelectedOutputXmlTree != null) {
-                            OutputXmlTree selectedTree = (OutputXmlTree) currentSelectedOutputXmlTree.getModel();
-
-                            int index = outputTrees.indexOf(selectedTree);
-                            if (index != -1 && index + 1 < outputTrees.size()) {
-                                outputTrees.remove(selectedTree);
-                                outputTrees.add(index + 1, selectedTree);
-
-                                // index of modelchildren is different from index of tree
-                                int indexOf = mapDataPart.getModelChildren().indexOf(selectedTree);
-                                if (indexOf != -1) {
-                                    mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-        }
-    }
-
-    class MinSizeButton extends ToolBarButtonImageFigure {
-
-        public MinSizeButton(Image image) {
-            super(image);
-        }
-
-        @Override
-        public void toolBarButtonPressed(MouseEvent me) {
-            super.toolBarButtonPressed(me);
-            CommandStack commandStack = mapDataPart.getViewer().getEditDomain().getCommandStack();
-            commandStack.execute(new Command() {
-
-                @Override
-                public void execute() {
-                    minimized = !minimized;
-                    EList<OutputXmlTree> outputTrees = mapData.getOutputTrees();
-                    for (OutputXmlTree outputTree : outputTrees) {
-                        if (minimized != outputTree.isMinimized()) {
-                            outputTree.setMinimized(minimized);
-                        }
-                    }
-                }
-            });
-
-            if (minimized) {
-                setImage(restorImage);
-            } else {
-                setImage(miniImage);
-            }
-            mapDataPart.getViewer().deselectAll();
-        }
-    }
-
     class AutoMapButton extends ToolBarButtonImageFigure {
 
         public AutoMapButton() {
@@ -512,6 +381,76 @@ public class OutputZoneToolBar extends Figure {
                         setImage(image);
                     }
                 });
+            }
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.xmlmap.figures.treetools.zone.ZoneToolBar#moveUp()
+     */
+    @Override
+    public void moveUp() {
+        List<OutputXmlTree> outputTrees = mapData.getOutputTrees();
+        OutputXmlTreeEditPart currentSelectedOutputXmlTree = graphicViewer.getFiguresManager().getCurrentSelectedOutputXmlTree();
+        if (currentSelectedOutputXmlTree != null) {
+            OutputXmlTree selectedTree = (OutputXmlTree) currentSelectedOutputXmlTree.getModel();
+
+            int index = outputTrees.indexOf(selectedTree);
+            if (index != -1 && index - 1 >= 0) {
+                outputTrees.remove(selectedTree);
+                outputTrees.add(index - 1, selectedTree);
+
+                // index of modelchildren is different from index of tree
+                int indexOf = mapDataPart.getModelChildren().indexOf(selectedTree);
+                if (indexOf != -1) {
+                    mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
+                }
+            }
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.xmlmap.figures.treetools.zone.ZoneToolBar#moveDown()
+     */
+    @Override
+    public void moveDown() {
+        List<OutputXmlTree> outputTrees = mapData.getOutputTrees();
+        OutputXmlTreeEditPart currentSelectedOutputXmlTree = graphicViewer.getFiguresManager().getCurrentSelectedOutputXmlTree();
+        if (currentSelectedOutputXmlTree != null) {
+            OutputXmlTree selectedTree = (OutputXmlTree) currentSelectedOutputXmlTree.getModel();
+
+            int index = outputTrees.indexOf(selectedTree);
+            if (index != -1 && index + 1 < outputTrees.size()) {
+                outputTrees.remove(selectedTree);
+                outputTrees.add(index + 1, selectedTree);
+
+                // index of modelchildren is different from index of tree
+                int indexOf = mapDataPart.getModelChildren().indexOf(selectedTree);
+                if (indexOf != -1) {
+                    mapDataPart.getViewer().appendSelection((EditPart) mapDataPart.getChildren().get(indexOf));
+                }
+            }
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.xmlmap.figures.treetools.zone.ZoneToolBar#minSize()
+     */
+    @Override
+    public void minSize() {
+        minimized = !minimized;
+        EList<OutputXmlTree> outputTrees = mapData.getOutputTrees();
+        for (OutputXmlTree outputTree : outputTrees) {
+            if (minimized != outputTree.isMinimized()) {
+                outputTree.setMinimized(minimized);
             }
         }
     }

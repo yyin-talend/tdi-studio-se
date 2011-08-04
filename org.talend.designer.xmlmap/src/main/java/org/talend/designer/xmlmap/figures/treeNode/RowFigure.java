@@ -80,6 +80,11 @@ public class RowFigure extends Figure {
                 selectManager.setSelection(RowFigure.this);
             }
         });
+
+        // ///////////////test
+        // setOpaque(true);
+        // setBackgroundColor(ColorConstants.red);
+
     }
 
     public TreeBranch getTreeBranch() {

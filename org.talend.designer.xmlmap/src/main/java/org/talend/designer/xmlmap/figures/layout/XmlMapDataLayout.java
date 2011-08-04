@@ -176,9 +176,12 @@ public class XmlMapDataLayout extends XYLayout {
         }
         Dimension d = rect.getSize();
         Insets insets = f.getInsets();
+
+        org.eclipse.swt.graphics.Point avilableSize = editPart.getViewer().getControl().getSize();
+        d.width = avilableSize.x;
         // should be d.width + insets.getWidth(), -1 only used to sovle a problem:when resize the shell the layout is
         // never called
-        return new Dimension(d.width + insets.getWidth() - 1, d.height + insets.getHeight()).union(getBorderPreferredSize(f));
+        return new Dimension(d.width, d.height + insets.getHeight()).union(getBorderPreferredSize(f));
     }
 
 }

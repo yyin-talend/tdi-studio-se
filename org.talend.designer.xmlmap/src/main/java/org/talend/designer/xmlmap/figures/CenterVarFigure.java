@@ -58,7 +58,6 @@ public class CenterVarFigure extends Figure {
         this.setBorder(new LineBorder());
         this.setBackgroundColor(ColorConstants.white);
         ToolbarLayout mainLayout = new ToolbarLayout();
-        mainLayout.setVertical(true);
         this.setLayoutManager(mainLayout);
         createComponents();
     }

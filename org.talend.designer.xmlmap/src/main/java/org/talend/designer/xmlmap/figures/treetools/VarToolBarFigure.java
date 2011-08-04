@@ -70,6 +70,7 @@ public class VarToolBarFigure extends Figure {
      */
     protected void createToolbar() {
         TreeToolBarLayout manager = new TreeToolBarLayout();
+        manager.setVertical(false);
         this.setLayoutManager(manager);
         add = new AddButton();
         remove = new RemoveButton();

@@ -21,7 +21,6 @@ import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
-import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.ui.parts.GraphicalEditor;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.jface.action.IAction;
@@ -35,8 +34,8 @@ import org.talend.designer.xmlmap.editor.actions.CreateElementAction;
 import org.talend.designer.xmlmap.editor.actions.CreateNameSpaceAction;
 import org.talend.designer.xmlmap.editor.actions.DeleteTreeNodeAction;
 import org.talend.designer.xmlmap.editor.actions.FixValueAction;
-import org.talend.designer.xmlmap.editor.actions.InputImportTreeFromRepository;
 import org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml;
+import org.talend.designer.xmlmap.editor.actions.InputImportTreeFromRepository;
 import org.talend.designer.xmlmap.editor.actions.OutputImportTreeFromRepository;
 import org.talend.designer.xmlmap.editor.actions.OutputImportTreeFromXml;
 import org.talend.designer.xmlmap.editor.actions.SetGroupAction;
@@ -124,8 +123,8 @@ public class XmlMapEditor extends GraphicalEditor {
         getActionRegistry().registerAction(groupAction);
         getSelectionActions().add(groupAction.getId());
 
-        InputImportTreeFromRepository importFromRepository = new InputImportTreeFromRepository(this, getGraphicalViewer().getControl()
-                .getShell());
+        InputImportTreeFromRepository importFromRepository = new InputImportTreeFromRepository(this, getGraphicalViewer()
+                .getControl().getShell());
         importFromRepository.setMapperManager(mapperManager);
         getActionRegistry().registerAction(importFromRepository);
         getSelectionActions().add(importFromRepository.getId());
@@ -151,7 +150,7 @@ public class XmlMapEditor extends GraphicalEditor {
      */
     protected void configureGraphicalViewer() {
         super.configureGraphicalViewer();
-        getGraphicalViewer().setRootEditPart(new ScalableRootEditPart());
+        getGraphicalViewer().setRootEditPart(new XmlMapScalableRootEditPart());
         getGraphicalViewer().setEditPartFactory(new XmlMapPartFactory());
         getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(getCommonKeyHandler()));
 
@@ -337,8 +336,8 @@ public class XmlMapEditor extends GraphicalEditor {
                         menu.add(loopAction);
                     }
 
-                    InputImportTreeFromRepository importFromRepository = (InputImportTreeFromRepository) getActionRegistry().getAction(
-                            InputImportTreeFromRepository.ID);
+                    InputImportTreeFromRepository importFromRepository = (InputImportTreeFromRepository) getActionRegistry()
+                            .getAction(InputImportTreeFromRepository.ID);
                     importFromRepository.update(object);
                     if (importFromRepository.isEnabled()) {
                         menu.add(importFromRepository);

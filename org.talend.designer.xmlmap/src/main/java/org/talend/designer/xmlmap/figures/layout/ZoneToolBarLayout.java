@@ -15,19 +15,20 @@ package org.talend.designer.xmlmap.figures.layout;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class ZoneToolBarLayout extends EqualWidthLayout {
+public class ZoneToolBarLayout extends ToolbarLayout {
 
     @Override
     public void layout(IFigure parent) {
         List children = parent.getChildren();
         int numChildren = children.size();
-        Rectangle clientArea = transposer.t(parent.getClientArea());
+        Rectangle clientArea = parent.getClientArea();
         int x = clientArea.x + spacing;
         int y = clientArea.y;
 
@@ -50,8 +51,8 @@ public class ZoneToolBarLayout extends EqualWidthLayout {
         for (int i = 0; i < numChildren; i++) {
             child = (IFigure) children.get(i);
 
-            prefSizes[i] = transposer.t(getChildPreferredSize(child, wHint, hHint));
-            minSizes[i] = transposer.t(getChildMinimumSize(child, wHint, hHint));
+            prefSizes[i] = getChildPreferredSize(child, wHint, hHint);
+            minSizes[i] = getChildMinimumSize(child, wHint, hHint);
 
             totalHeight += prefSizes[i].height;
             totalMinHeight += minSizes[i].height;
@@ -70,7 +71,7 @@ public class ZoneToolBarLayout extends EqualWidthLayout {
 
             child = (IFigure) children.get(i);
 
-            child.setBounds(transposer.t(newBounds));
+            child.setBounds(newBounds);
             x = x + newBounds.width + spacing;
 
         }

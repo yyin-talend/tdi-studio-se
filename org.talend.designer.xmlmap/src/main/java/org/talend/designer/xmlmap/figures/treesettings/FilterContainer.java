@@ -21,6 +21,7 @@ import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
+import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -31,7 +32,6 @@ import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogControlle
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.xmlmap.commands.TreeSettingDirectEditCommand;
-import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
@@ -66,6 +66,7 @@ public class FilterContainer extends Figure {
 
     private void createContent() {
         FilterContainerLayout manager = new FilterContainerLayout();
+        manager.setVertical(false);
         manager.setSpacing(5);
         setLayoutManager(manager);
 
@@ -128,14 +129,14 @@ public class FilterContainer extends Figure {
         }
     }
 
-    class FilterContainerLayout extends EqualWidthLayout {
+    class FilterContainerLayout extends ToolbarLayout {
 
         @Override
         public void layout(IFigure parent) {
             List children = parent.getChildren();
             int numChildren = children.size();
 
-            Rectangle clientArea = transposer.t(parent.getClientArea());
+            Rectangle clientArea = parent.getClientArea();
             int x = clientArea.x;
             int y = clientArea.y;
 
@@ -151,8 +152,8 @@ public class FilterContainer extends Figure {
 
             for (int i = 0; i < numChildren; i++) {
                 child = (IFigure) children.get(i);
-                prefSizes[i] = transposer.t(getChildPreferredSize(child, wHint, hHint));
-                minSizes[i] = transposer.t(getChildMinimumSize(child, wHint, hHint));
+                prefSizes[i] = getChildPreferredSize(child, wHint, hHint);
+                minSizes[i] = getChildMinimumSize(child, wHint, hHint);
 
             }
             Insets insets = parent.getBorder().getInsets(null);
