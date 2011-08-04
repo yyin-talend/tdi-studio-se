@@ -366,20 +366,25 @@ if(("true").equals(use_existing_ctl_file)) {
 	//options clause end
 	//encoding begin
     String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
-    encoding= encoding.toUpperCase();
-    if(("\"UTF-8\"").equals(encoding)){
-        encoding = "'UTF8'";
-    }else if(("\"ISO-8859-15\"").equals(encoding)){
-        encoding = "'WE8ISO8859P15'";
-    }else if(("\"GBK\"").equals(encoding)){
-        encoding = "'ZHS16GBK'";
-    }else if(("\"GB2312\"").equals(encoding)){
-        encoding = "'ZHS16CGB231280'";//ZHS16MACCGB231280 ?
-    }else if(("\"BIG5\"").equals(encoding)){
-        encoding = "'ZHT16BIG5'";
-    } else {
-       //will be enhanced later, now default with utf-16
-        encoding = "'AL16UTF16'";
+    String oracleEncoding  = ElementParameterParser.getValue(node, "__ORACLE_ENCODING__");
+    if(!"\"\"".equals(oracleEncoding)){
+    	encoding = oracleEncoding;
+    }else{
+	    encoding= encoding.toUpperCase();
+	    if(("\"UTF-8\"").equals(encoding)){
+	        encoding = "\"UTF8\"";
+	    }else if(("\"ISO-8859-15\"").equals(encoding)){
+	        encoding = "\"WE8ISO8859P15\"";
+	    }else if(("\"GBK\"").equals(encoding)){
+	        encoding = "\"ZHS16GBK\"";
+	    }else if(("\"GB2312\"").equals(encoding)){
+	        encoding = "\"ZHS16CGB231280\"";//ZHS16MACCGB231280 ?
+	    }else if(("\"BIG5\"").equals(encoding)){
+	        encoding = "\"ZHT16BIG5\"";
+	    } else {
+	       //will be enhanced later, now default with utf-16
+	       encoding = "\"AL16UTF16\"";
+	    }
     }
     //encoding end    
 	String dataFile = ElementParameterParser.getValue(node, "__DATA__");
@@ -407,7 +412,7 @@ if(("true").equals(use_existing_ctl_file)) {
     pw_<%=cid%>.println(optionClause_<%=cid %>.toString());
   
     pw_<%=cid%>.println("LOAD DATA");
-    pw_<%=cid%>.println("CHARACTERSET <%=encoding %>") ;
+    pw_<%=cid%>.println("CHARACTERSET '"+<%=encoding %>+"'") ;
     bw_<%=cid %>.write("INFILE '" + dataf_<%=cid %> + "'");
         
     <%if (flagHasLob) {%>
