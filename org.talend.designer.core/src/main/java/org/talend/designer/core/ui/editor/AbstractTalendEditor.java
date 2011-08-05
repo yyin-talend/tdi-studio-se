@@ -1756,47 +1756,45 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 } catch (IllegalAccessException e) {
                     ExceptionHandler.process(e);
                 }
-                if (!(request instanceof CreateRequest)) {
-                    return;
-                }
+                if (request instanceof CreateRequest) {
+                    Object node = ((CreateRequest) request).getNewObject();
+                    RootEditPart rep = getViewer().getRootEditPart().getRoot();
 
-                Object node = ((CreateRequest) request).getNewObject();
-                RootEditPart rep = getViewer().getRootEditPart().getRoot();
-
-                Point viewOriginalPosition = new Point();
-                if (rep instanceof ScalableFreeformRootEditPart) {
-                    ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
-                    Viewport viewport = (Viewport) root.getFigure();
-                    viewOriginalPosition = viewport.getViewLocation();
-                }
-
-                org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(mouseEvent.x
-                        + viewOriginalPosition.x, mouseEvent.y + viewOriginalPosition.y);
-                SubjobContainerPart containerPart = null;
-
-                for (Object child : getProcessPart().getChildren()) {
-                    if (child instanceof SubjobContainerPart) {
-                        SubjobContainer container = (SubjobContainer) ((SubjobContainerPart) child).getModel();
-                        if (container.getSubjobContainerRectangle().contains(draw2dPosition)) {
-                            containerPart = (SubjobContainerPart) child;
-                        }
-                    }
-                }
-
-                if (containerPart != null && node instanceof Node) {
-                    List<org.talend.designer.core.ui.editor.connections.Connection> connections = CreateComponentOnLinkHelper
-                            .getConnection(containerPart, draw2dPosition, (Node) node);
-                    for (org.talend.designer.core.ui.editor.connections.Connection connection : connections) {
-                        CreateComponentOnLinkHelper.selectConnection(connection, containerPart);
+                    Point viewOriginalPosition = new Point();
+                    if (rep instanceof ScalableFreeformRootEditPart) {
+                        ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
+                        Viewport viewport = (Viewport) root.getFigure();
+                        viewOriginalPosition = viewport.getViewLocation();
                     }
 
-                    if (connections.isEmpty()) {
-                        CreateComponentOnLinkHelper.unselectAllConnections(containerPart);
-                    }
-                } else {
+                    org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(mouseEvent.x
+                            + viewOriginalPosition.x, mouseEvent.y + viewOriginalPosition.y);
+                    SubjobContainerPart containerPart = null;
+
                     for (Object child : getProcessPart().getChildren()) {
                         if (child instanceof SubjobContainerPart) {
-                            CreateComponentOnLinkHelper.unselectAllConnections((SubjobContainerPart) child);
+                            SubjobContainer container = (SubjobContainer) ((SubjobContainerPart) child).getModel();
+                            if (container.getSubjobContainerRectangle().contains(draw2dPosition)) {
+                                containerPart = (SubjobContainerPart) child;
+                            }
+                        }
+                    }
+
+                    if (containerPart != null && node instanceof Node) {
+                        List<org.talend.designer.core.ui.editor.connections.Connection> connections = CreateComponentOnLinkHelper
+                                .getConnection(containerPart, draw2dPosition, (Node) node);
+                        for (org.talend.designer.core.ui.editor.connections.Connection connection : connections) {
+                            CreateComponentOnLinkHelper.selectConnection(connection, containerPart);
+                        }
+
+                        if (connections.isEmpty()) {
+                            CreateComponentOnLinkHelper.unselectAllConnections(containerPart);
+                        }
+                    } else {
+                        for (Object child : getProcessPart().getChildren()) {
+                            if (child instanceof SubjobContainerPart) {
+                                CreateComponentOnLinkHelper.unselectAllConnections((SubjobContainerPart) child);
+                            }
                         }
                     }
                 }
