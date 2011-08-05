@@ -18,7 +18,11 @@ stmt_<%=cid %>.close();
 <%
 if(!("true").equals(useExistingConn))
 {
+	String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
+    if(("true").equals(useCursor)) {
 	%>
+		conn_<%=cid %>.commit();
+	<%}%>
 	conn_<%=cid %> .close();
 	<%
 }

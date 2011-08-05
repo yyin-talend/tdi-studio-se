@@ -38,6 +38,16 @@ imports="
 			return "com.paraccel.Driver";
 		}
 		
+		public void createConnection(INode node) {
+			super.createConnection(node);
+			String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
+            if(("true").equals(useCursor)) {
+%>
+				conn_<%=cid%>.setAutoCommit(false);
+<%
+			}
+		}
+		
 		public void createStatement(INode node) {
 			super.createStatement(node);
 			String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
