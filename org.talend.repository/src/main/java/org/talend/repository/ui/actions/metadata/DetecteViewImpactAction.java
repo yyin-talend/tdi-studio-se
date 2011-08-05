@@ -133,9 +133,11 @@ public class DetecteViewImpactAction extends AContextualAction {
                             || objectType == ERepositoryObjectType.CONTEXT || objectType == ERepositoryObjectType.JOBLET) {
                         canWork = true;
                     } else {
-
+                        Object obj = selection.getFirstElement();
+                        RepositoryNode nodeObj = (RepositoryNode) obj;
+                        Item item = nodeObj.getObject().getProperty().getItem();
                         for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
-                            ERepositoryObjectType stype = handler.getRepositoryObjectType(null);
+                            ERepositoryObjectType stype = handler.getRepositoryObjectType(item);
                             if (stype == objectType) {
                                 canWork = true;
                                 break;
