@@ -12,11 +12,14 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.layout;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
+import org.eclipse.draw2d.AbstractHintLayout;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.XYLayout;
+import org.eclipse.draw2d.LayoutManager;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Point;
@@ -27,13 +30,16 @@ import org.talend.designer.xmlmap.parts.XmlMapDataEditPart;
 /**
  * wchen class global comment. Detailled comment
  */
-public class XmlMapDataLayout extends XYLayout {
+public class XmlMapDataLayout extends AbstractHintLayout {
 
     XmlMapDataEditPart editPart;
 
     private int zoneWidth;
 
     org.eclipse.swt.graphics.Point previousAvilableSize;
+
+    /** The layout contraints */
+    protected Map constraints = new HashMap();
 
     public XmlMapDataLayout(XmlMapDataEditPart editPart) {
         this.editPart = editPart;
@@ -74,7 +80,7 @@ public class XmlMapDataLayout extends XYLayout {
         Rectangle clientArea = parent.getClientArea();
         int x = clientArea.x;
         int y = clientArea.y;
-        Point offset = getOrigin(parent);
+        Point offset = parent.getClientArea().getLocation();
 
         int toltalWidth = 0;
         for (int i = 0; i < numChildren; i++) {
@@ -184,4 +190,27 @@ public class XmlMapDataLayout extends XYLayout {
         return new Dimension(d.width, d.height + insets.getHeight()).union(getBorderPreferredSize(f));
     }
 
+    /**
+     * @see LayoutManager#remove(IFigure)
+     */
+    public void remove(IFigure figure) {
+        super.remove(figure);
+        constraints.remove(figure);
+    }
+
+    public Object getConstraint(IFigure figure) {
+        return constraints.get(figure);
+    }
+
+    /**
+     * Sets the layout constraint of the given figure. The constraints can only be of type {@link Rectangle}.
+     * 
+     * @see LayoutManager#setConstraint(IFigure, Object)
+     * @since 2.0
+     */
+    public void setConstraint(IFigure figure, Object newConstraint) {
+        super.setConstraint(figure, newConstraint);
+        if (newConstraint != null)
+            constraints.put(figure, newConstraint);
+    }
 }

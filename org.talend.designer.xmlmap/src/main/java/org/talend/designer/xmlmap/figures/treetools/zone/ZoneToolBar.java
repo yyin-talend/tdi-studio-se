@@ -19,6 +19,7 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.designer.xmlmap.XmlMapComponent;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.treetools.ToolBarButtonImageFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
@@ -45,11 +46,14 @@ public abstract class ZoneToolBar extends Figure {
 
     protected Image miniImage = ImageProviderMapper.getImage(ImageInfo.MINIMIZE_ICON);
 
+    protected XmlMapComponent mapperComponent;
+
     public ZoneToolBar(XmlMapDataEditPart mapDataPart) {
         this.mapDataPart = mapDataPart;
         this.mapData = (XmlMapData) mapDataPart.getModel();
         if (mapDataPart.getViewer() instanceof XmlMapGraphicViewer) {
             this.graphicViewer = (XmlMapGraphicViewer) mapDataPart.getViewer();
+            mapperComponent = this.graphicViewer.getMapperManager().getMapperComponent();
         }
 
     }

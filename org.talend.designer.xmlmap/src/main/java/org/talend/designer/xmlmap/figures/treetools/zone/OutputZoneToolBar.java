@@ -14,7 +14,6 @@ package org.talend.designer.xmlmap.figures.treetools.zone;
 
 import java.util.List;
 
-import org.eclipse.draw2d.Clickable;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.emf.common.util.EList;
@@ -24,14 +23,8 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.IProcess;
-import org.talend.core.model.process.IProcess2;
-import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.designer.xmlmap.XmlMapComponent;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.layout.ZoneToolBarLayout;
@@ -51,17 +44,10 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
  */
 public class OutputZoneToolBar extends ZoneToolBar {
 
-    private ToolBarButtonImageFigure add_btn, remove_btn, auto_map, die_on_error;
-
-    private XmlMapComponent mapperComponent;
-
-    private boolean isDieOnError = false;
+    private ToolBarButtonImageFigure add_btn, remove_btn, auto_map;
 
     public OutputZoneToolBar(XmlMapDataEditPart mapDataPart) {
         super(mapDataPart);
-        if (mapDataPart.getViewer() instanceof XmlMapGraphicViewer) {
-            mapperComponent = this.graphicViewer.getMapperManager().getMapperComponent();
-        }
 
         ZoneToolBarLayout manager = new ZoneToolBarLayout();
         manager.setVertical(false);
@@ -105,26 +91,6 @@ public class OutputZoneToolBar extends ZoneToolBar {
         if (mapData.getOutputTrees().isEmpty()) {
             min_size.setEnabled(false);
         }
-
-        if (mapperComponent != null) {
-            IElementParameter elementParameter = mapperComponent.getElementParameter("DIE_ON_ERROR");
-            if (elementParameter != null && elementParameter.getValue() != null) {
-                isDieOnError = Boolean.valueOf(elementParameter.getValue().toString());
-            }
-            // /////////////////////////////// test
-            // isDieOnError should set true in default on component side , but this part is not done now
-            isDieOnError = true;
-            // ///////////////////////////////
-            graphicViewer.getMapperManager().setDieOnError(isDieOnError);
-        }
-
-        if (isDieOnError) {
-            image = ImageProvider.getImage(EImage.CHECKED_ICON);
-        } else {
-            image = ImageProvider.getImage(EImage.UNCHECKED_ICON);
-        }
-        die_on_error = new DieOnErrorButton(image);
-        this.add(die_on_error);
 
     }
 
@@ -260,128 +226,6 @@ public class OutputZoneToolBar extends ZoneToolBar {
             super.toolBarButtonPressed(me);
             AutoMapper autoMap = new AutoMapper(mapData);
             autoMap.map();
-        }
-    }
-
-    class DieOnErrorButton extends ToolBarButtonImageFigure {
-
-        public DieOnErrorButton(Image image) {
-            super(image);
-            setText("Die on Error");
-            setStyle(Clickable.STYLE_TOGGLE);
-        }
-
-        @Override
-        public void toolBarButtonPressed(MouseEvent me) {
-            super.toolBarButtonPressed(me);
-            if (graphicViewer != null) {
-                CommandStack commandStack = mapDataPart.getViewer().getEditDomain().getCommandStack();
-                commandStack.execute(new Command() {
-
-                    @Override
-                    public void execute() {
-                        isDieOnError = !isDieOnError;
-                        graphicViewer.getMapperManager().setDieOnError(isDieOnError);
-                        Image image = null;
-                        if (isDieOnError) {
-                            image = ImageProvider.getImage(EImage.CHECKED_ICON);
-                            if (!mapData.getOutputTrees().isEmpty()) {
-                                OutputXmlTree outputTree = mapData.getOutputTrees().get(0);
-                                if (outputTree.isErrorReject()) {
-                                    // mapperComponent.getMetadataList().add(metadataTable);
-                                    mapData.getOutputTrees().remove(0);
-                                    mapperComponent.getProcess().removeUniqueConnectionName(outputTree.getName());
-                                    removeMetadataTableByName(outputTree.getName());
-                                    if (!mapData.getOutputTrees().isEmpty()) {
-                                        int indexOf = mapDataPart.getModelChildren().indexOf(mapData.getOutputTrees().get(0));
-                                        if (indexOf != -1) {
-                                            mapDataPart.getViewer().select((EditPart) mapDataPart.getChildren().get(indexOf));
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            image = ImageProvider.getImage(EImage.UNCHECKED_ICON);
-                            boolean hasRejectTable = false;
-                            if (!mapData.getOutputTrees().isEmpty()) {
-                                OutputXmlTree outputTree = mapData.getOutputTrees().get(0);
-                                if (outputTree.isErrorReject()) {
-                                    hasRejectTable = true;
-                                }
-                            }
-                            if (!hasRejectTable) {
-                                String baseName = MapperManager.ERROR_REJECT;
-
-                                IProcess process = mapperComponent.getProcess();
-                                String tableName = baseName;
-                                if (!process.checkValidConnectionName(baseName) && process instanceof IProcess2) {
-                                    final String uniqueName = ((IProcess2) process).generateUniqueConnectionName("row", baseName);
-                                    tableName = uniqueName;
-                                    ((IProcess2) process).addUniqueConnectionName(uniqueName);
-                                } else if (process instanceof IProcess2) {
-                                    tableName = baseName;
-                                    ((IProcess2) process).addUniqueConnectionName(baseName);
-                                }
-                                OutputXmlTree outputXmlTree = XmlmapFactory.eINSTANCE.createOutputXmlTree();
-                                outputXmlTree.setErrorReject(true);
-                                outputXmlTree.setName(tableName);
-                                mapData.getOutputTrees().add(0, outputXmlTree);
-
-                                MetadataTable metadataTable = new MetadataTable();
-                                metadataTable.setLabel(tableName);
-                                metadataTable.setTableName(tableName);
-
-                                MetadataColumn errorMessageCol = new MetadataColumn();
-                                errorMessageCol.setLabel(MapperManager.ERROR_REJECT_MESSAGE);
-                                errorMessageCol.setTalendType(CorePlugin.getDefault().getPreferenceStore()
-                                        .getString(MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
-                                errorMessageCol.setNullable(true);
-                                errorMessageCol.setOriginalDbColumnName(MapperManager.ERROR_REJECT_MESSAGE);
-                                errorMessageCol.setReadOnly(true);
-                                errorMessageCol.setCustom(true);
-                                metadataTable.getListColumns().add(errorMessageCol);
-
-                                MetadataColumn errorStackTrace = new MetadataColumn();
-                                errorStackTrace.setLabel(MapperManager.ERROR_REJECT_STACK_TRACE);
-                                errorStackTrace.setTalendType(CorePlugin.getDefault().getPreferenceStore()
-                                        .getString(MetadataTypeLengthConstants.FIELD_DEFAULT_TYPE));
-                                errorStackTrace.setNullable(true);
-                                errorStackTrace.setOriginalDbColumnName(MapperManager.ERROR_REJECT_STACK_TRACE);
-                                errorStackTrace.setReadOnly(true);
-                                errorStackTrace.setCustom(true);
-                                metadataTable.getListColumns().add(errorStackTrace);
-                                mapperComponent.getMetadataList().add(metadataTable);
-
-                                OutputTreeNode errorMessageNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
-                                errorMessageNode.setName(MapperManager.ERROR_REJECT_MESSAGE);
-                                errorMessageNode.setType(errorMessageCol.getTalendType());
-                                errorMessageNode.setNullable(true);
-                                outputXmlTree.getNodes().add(errorMessageNode);
-
-                                OutputTreeNode errorStackTraceNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
-                                errorStackTraceNode.setName(MapperManager.ERROR_REJECT_STACK_TRACE);
-                                errorStackTraceNode.setType(errorStackTrace.getTalendType());
-                                errorStackTraceNode.setNullable(true);
-                                outputXmlTree.getNodes().add(errorStackTraceNode);
-
-                                int indexOf = mapDataPart.getModelChildren().indexOf(outputXmlTree);
-                                if (indexOf != -1) {
-                                    mapDataPart.getViewer().select((EditPart) mapDataPart.getChildren().get(indexOf));
-                                }
-
-                                move_down.setEnabled(false);
-                                remove_btn.setEnabled(false);
-
-                                if (!min_size.isEnabled()) {
-                                    min_size.setEnabled(true);
-                                }
-                            }
-                        }
-
-                        setImage(image);
-                    }
-                });
-            }
         }
     }
 

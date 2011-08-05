@@ -27,7 +27,7 @@ import org.talend.designer.xmlmap.util.SeparatorType;
  */
 public class SashSeparator extends ImageFigure {
 
-    private int SEPARATOR_WIDTH = 5;
+    private int SEPARATOR_WIDTH = 10;
 
     private int ZONE_MIN_SIZE = 25;
 
@@ -40,11 +40,6 @@ public class SashSeparator extends ImageFigure {
     private SeparatorType type;
 
     public SashSeparator() {
-        // setOpaque(true);
-        // setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_LINKS_ZONE));
-
-        // setBackgroundColor(ColorConstants.red);
-
         this.addMouseMotionListener(new MouseMotionListener() {
 
             public void mouseDragged(MouseEvent me) {
@@ -69,7 +64,9 @@ public class SashSeparator extends ImageFigure {
             }
 
         });
-
+        setAlignment(PositionConstants.NORTH);
+        // setOpaque(true);
+        // setBackgroundColor(ColorConstants.red);
     }
 
     public int getWidth() {
