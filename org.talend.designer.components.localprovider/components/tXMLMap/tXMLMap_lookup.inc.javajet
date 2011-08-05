@@ -42,6 +42,11 @@ skeleton="tXMLMap_java.skeleton"
 				IMetadataTable metadataTable = connection.getMetadataTable();
 				String tableName = nextInputTable.getName();
 				String lookupMode = nextInputTable.getLookupMode();
+				boolean isCacheOrReloadLookupMode = org.talend.designer.xmlmap.model.tree.LOOKUP_MODE.CACHE_OR_RELOAD.name().equals(lookupMode);
+				boolean isOneOfReloadLookupMode = isCacheOrReloadLookupMode ||
+					   org.talend.designer.xmlmap.model.tree.LOOKUP_MODE.RELOAD.name().equals(lookupMode);
+				INode lookupSubProcessStartNode = searchSubProcessStartNode(connection);
+			  	String lookupSubProcessStartNodeName = lookupSubProcessStartNode.getUniqueName();
 				boolean isInnerJoin = false;
 				if (nextInputTable.isInnerJoin()) {
 					isInnerJoin = true;
@@ -174,10 +179,58 @@ skeleton="tXMLMap_java.skeleton"
 		if(hasOutgoingConnection){
 	%>
 					if(!<%= rejectedInnerJoin %>){
-					<%if(findFromBasicType) {%>
-						tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
-					<% } else if(findFromDocumentType) { %>
-						tHash_Lookup_<%= tableName %>.lookup();
+					
+					<% if(isOneOfReloadLookupMode) {//TD110
+							if(isCacheOrReloadLookupMode) {
+								if(findFromBasicType) { %>
+								tHash_Lookup_Cache_<%= tableName %>.lookup( <%= tableName %>HashKey );
+								<% } else if(findFromDocumentType) { %>
+								tHash_Lookup_Cache_<%= tableName %>.lookup();
+								<% } %>
+	  							if(tHash_Lookup_Cache_<%= tableName %>.hasNext()) {
+  									tHash_Lookup_<%= tableName %> = tHash_Lookup_Cache_<%= tableName %>;
+	  							} else {
+					<%
+							}
+					%>
+								<%= lookupSubProcessStartNodeName %>Process(globalMap);
+					<%
+							boolean isAllRows = "ALL_ROWS".equals(nextInputTable.getMatchingMode());
+				            if(nextInputTable.isPersistent()) {%>
+								tHash_Lookup_<%=tableName%> = 
+									(org.talend.designer.components.lookup.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) 
+										((org.talend.designer.components.lookup.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) 
+											 globalMap.get( "tHash_Lookup_<%=tableName%>" ));
+							<%
+						    } else {
+						    %>
+								tHash_Lookup_<%=tableName%> = 
+								(org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct>) 
+									((org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct>) 
+										globalMap.get( "tHash_Lookup_<%=tableName%>" ));
+							<%
+						    }
+						    %>
+						    	tHash_Lookup_<%= tableName %>.initGet();
+						    	<% if(findFromBasicType) { %>
+						    	tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
+						    	<% } else if(findFromDocumentType) { %>
+						    	tHash_Lookup_<%= tableName %>.lookup();
+						    	<% } 
+						    if(isCacheOrReloadLookupMode) {
+						    %>
+						    	}
+						    <%	
+						    }
+						}//TD110
+					%>
+					
+					<% if(!isOneOfReloadLookupMode) {%>
+						<%if(findFromBasicType) {%>
+							tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
+						<% } else if(findFromDocumentType) { %>
+							tHash_Lookup_<%= tableName %>.lookup();
+						<% } %>
 					<% } %>
 						if(tHash_Lookup_<%= tableName %>.hasNext()){
 						

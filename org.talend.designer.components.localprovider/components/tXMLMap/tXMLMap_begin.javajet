@@ -121,9 +121,9 @@
 	
 	org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_Cache_<%=tableName%> =
 		org.talend.designer.components.lookup.memory.AdvancedMemoryLookup.
-		<<%=tableName%>Struct>getLookup(org.talend.designer.components.lookup.commom.ICommonLookup.MATCHING_MODE.<%=matchingModeStr%>);
+		<<%=tableName%>Struct>getLookup(org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.<%=matchingModeStr%>);
 	
-	org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct tHash_Lookup_Real_<%=tableName%> = null;
+	org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_Real_<%=tableName%> = null;
 	<%}
 	if(isAllRows && !isOneOfReloadLookupMode) {
 	%>
@@ -346,7 +346,12 @@ class GenerateMethodUtil {
 						} else if("id_byte[]".equals(pathTypeMap.get(tmpXpath))) {
 							strBuilder.append("treeNodeAPI.get_Bytes(\""+ tmpXpath + "\")");
 						} else {
-							strBuilder.append("treeNodeAPI.get_" + pathTypeToGenMap.get(tmpXpath) + "(\""+ tmpXpath + "\")");
+							String type = pathTypeToGenMap.get(tmpXpath);
+							if(type != null) {
+								strBuilder.append("treeNodeAPI.get_" + pathTypeToGenMap.get(tmpXpath) + "(\""+ tmpXpath + "\")");
+							} else {
+								strBuilder.append("treeNodeAPI.get_String(\""+ tmpXpath + "\")");
+							}
 						}				
 					} else {
 						strBuilder.append(expression);
