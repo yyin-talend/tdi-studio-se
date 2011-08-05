@@ -366,8 +366,9 @@ if(("true").equals(use_existing_ctl_file)) {
 	//options clause end
 	//encoding begin
     String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
+    boolean enableOracelEncoding = ("true").equals(ElementParameterParser.getValue(node, "__ENABLE_EDIT_ORACLE_ENCODING__"));
     String oracleEncoding  = ElementParameterParser.getValue(node, "__ORACLE_ENCODING__");
-    if(!"\"\"".equals(oracleEncoding)){
+    if(enableOracelEncoding){
     	encoding = oracleEncoding;
     }else{
 	    encoding= encoding.toUpperCase();
