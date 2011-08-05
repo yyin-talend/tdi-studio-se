@@ -184,12 +184,12 @@ if(useExistingConnection) {
 	if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
 	    url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + "rewriteBatchedStatements=true";
 	} else {
-		String proprtties_<%=cid%> = <%=dbproperties%>;
-		if (!proprtties_<%=cid%>.contains("rewriteBatchedStatements")) {
-			proprtties_<%=cid%> += "&rewriteBatchedStatements=true";
+		String properties_<%=cid%> = <%=dbproperties%>;
+		if (!properties_<%=cid%>.contains("rewriteBatchedStatements")) {
+			properties_<%=cid%> += "&rewriteBatchedStatements=true";
 		}
 		
-	    url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + proprtties_<%=cid%>;
+	    url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + properties_<%=cid%>;
 	}
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;    
