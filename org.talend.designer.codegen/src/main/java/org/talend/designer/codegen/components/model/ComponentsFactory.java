@@ -407,9 +407,6 @@ public class ComponentsFactory implements IComponentsFactory {
                 currentComp.setVisible(false);
                 currentComp.setTechnical(true);
             }
-            if (currentComp.getSourceBundleName() == null) {
-                System.out.println("bug !!!");
-            }
             if (currentComp.getSourceBundleName().contains("camel")) {
                 currentComp.setPaletteType("CAMEL");
             } else {
@@ -652,15 +649,20 @@ public class ComponentsFactory implements IComponentsFactory {
                         String applicationPath;
                         try {
                             applicationPath = FileLocator.getBundleFile(Platform.getBundle(bundleName)).getPath();
+                            // applicationPath= C:\myapp\plugins\myplugin
                             applicationPath = (new Path(applicationPath)).toPortableString();
+                            // applicationPath= C:/myapp/plugins/myplugin
                         } catch (IOException e2) {
                             ExceptionHandler.process(e2);
                             return;
                         }
 
-                        pathName = pathName.replace(applicationPath, "");
+                        // pathName = C:\myapp\plugins\myplugin\components\mycomponent\mycomponent.xml
                         pathName = (new Path(pathName)).toPortableString();
+                        // pathName = C:/myapp/plugins/myplugin/components/mycomponent/mycomponent.xml
+                        pathName = pathName.replace(applicationPath, "");
 
+                        // pathName = /components/mycomponent/mycomponent.xml
 
                         EmfComponent currentComp = new EmfComponent(pathName, bundleName, xmlMainFile.getParentFile().getName(),
                                 pathSource, ComponentManager.getInstance(), isCreated);
