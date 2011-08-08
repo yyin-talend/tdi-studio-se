@@ -245,7 +245,7 @@ skeleton="tXMLMap_java.skeleton"
 					}
 				   
 				  	<% if(findFromDocumentType) {%>
-				   	boolean isMatchDocRow<%=cid%> = false;
+				   	isMatchDocRow<%=cid%> = false;
 				  	<% } %>
 					while (tHash_Lookup_<%=tableName%>.hasNext()) { 
 						<%=tableName%>Struct fromLookup_<%=tableName%> = null;
@@ -284,6 +284,7 @@ skeleton="tXMLMap_java.skeleton"
 					}
 					<% if(isInnerJoin && findFromDocumentType) {%>
 				   	<%= rejectedDocInnerJoin %> = !isMatchDocRow<%=cid%>;
+				    <%= rejectedInnerJoin %> = <%= rejectedDocInnerJoin %>;
 				  	<% } %>
 				  	<% if(!isInnerJoin && findFromDocumentType) { %>
 				  	if(!isMatchDocRow<%=cid%>) {
