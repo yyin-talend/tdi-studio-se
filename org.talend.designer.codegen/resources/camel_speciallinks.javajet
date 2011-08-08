@@ -33,7 +33,7 @@ List< ? extends IConnection> connsIf = node.getIncomingConnections();
 if(connsIf.size()>0) {
 	if(connsIf.get(0).getLineStyle()==EConnectionType.ROUTE_WHEN) {
 %>
-		.when(<%=connsIf.get(0).getRouteConnectionType()%>(<%=connsIf.get(0).getCondition()%>))
+		.when().<%=connsIf.get(0).getRouteConnectionType()%>(<%=connsIf.get(0).getCondition()%>)
 <%
 	} else if(connsIf.get(0).getLineStyle()==EConnectionType.ROUTE_OTHER) {
 %>
