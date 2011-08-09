@@ -31,9 +31,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
     	String locale = ElementParameterParser.getValue(node, "__DATE_LOCALE__");
     	boolean useFieldsEnclosure = ("true").equals(ElementParameterParser.getValue(node,"__USE_FIELDS_ENCLOSURE__"));
+    	String stringBuilderSize = ElementParameterParser.getValue(node, "__STRING_BUILDER_SIZE__");
     	
     	for (IConnection conn : conns) {
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    		%>
+    			StringBuilder sb_<%=cid%> = new StringBuilder(<%=stringBuilderSize%>);
+    			<%
     			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
     			for (int i = 0; i < sizeColumns; i++) {
@@ -53,11 +57,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				<%
 					if (useFieldsEnclosure && !( "BLOB".equals (dbType) || "CLOB".equals(dbType))) {
 					%>		
-						out<%=cid %>.write(OUT_FIELDS_ENCLOSURE_LEFT_<%=cid %>);
+						sb_<%=cid%>.append(OUT_FIELDS_ENCLOSURE_LEFT_<%=cid %>);
 					<%
 					}
 					%>
-    						out<%=cid %>.write(
+    						sb_<%=cid%>.append(
 					<% if ("BLOB".equals (dbType) || "CLOB".equals(dbType)) {
 						hasLobflag=true;
 					%>
@@ -109,7 +113,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%	
 					if (useFieldsEnclosure && !( "BLOB".equals (dbType) || "CLOB".equals(dbType))) {
 					%>		
-						out<%=cid %>.write(OUT_FIELDS_ENCLOSURE_RIGHT_<%=cid %>);
+						sb_<%=cid%>.append(OUT_FIELDS_ENCLOSURE_RIGHT_<%=cid %>);
 					<%
 					}
 					if(!isPrimitive) {
@@ -119,7 +123,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				} 
 					if(i != sizeColumns - 1) {
 %>					
-							out<%=cid %>.write(OUT_DELIM_<%=cid %>);
+							sb_<%=cid%>.append(OUT_DELIM_<%=cid %>);
 <%
     				}
     			}
@@ -128,11 +132,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			
     			<% if (!hasLobflag) {
     			%>
-    			out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
+    			sb_<%=cid%>.append(OUT_DELIM_ROWSEP_<%=cid %>);
     			<%
     			}else { %>
-    			out<%=cid %>.write(OUT_DELIM_ROWSEP_WITH_LOB_<%=cid %>);
+    			sb_<%=cid%>.append(OUT_DELIM_ROWSEP_WITH_LOB_<%=cid %>);
     			<%}%>
+    			out<%=cid%>.write(sb_<%=cid%>.toString());
     			nb_line_<%=cid %>++;
     <%
     		}

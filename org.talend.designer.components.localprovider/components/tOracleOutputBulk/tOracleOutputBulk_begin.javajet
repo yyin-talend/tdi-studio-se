@@ -44,6 +44,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         boolean useFieldsEnclosure = ("true").equals(ElementParameterParser.getValue(node,"__USE_FIELDS_ENCLOSURE__"));
         String fieldsEnclosureLift = ElementParameterParser.getValue(node,"__FIELDS_ENCLOSURE_LEFT__");
         String fieldsEnclosureRight = ElementParameterParser.getValue(node,"__FIELDS_ENCLOSURE_RIGHT__");
+        String bufferSize = ElementParameterParser.getValue(node,"__BUFFER_SIZE__");
 %>
 		String fileName_<%=cid%> = (new java.io.File(<%=filename %>)).getAbsolutePath().replace("\\","/");
 <%
@@ -82,7 +83,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	}
 %>		
 		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-        		new java.io.FileOutputStream(fileName_<%=cid%>, <%= isAppend%>),<%= encoding%>));
+        		new java.io.FileOutputStream(fileName_<%=cid%>, <%= isAppend%>),<%= encoding%>),<%=bufferSize%>);
 <%
     }
 }
