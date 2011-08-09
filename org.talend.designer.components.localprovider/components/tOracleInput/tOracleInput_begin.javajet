@@ -157,8 +157,25 @@ imports="
 			}		
 <%
 	    }
+	    
+	    public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+	    	boolean noNullValues = ("true").equals(ElementParameterParser.getValue(node, "__NO_NULL_VALUES__"));    
+	    	if(noNullValues){
+%>
+			java.sql.Timestamp timestamp = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
+			if(timestamp != null) {
+			    <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(timestamp.getTime());
+			} else {
+			    <%=firstConnName%>.<%=column.getLabel()%> =  null;
+			}			 
+<%
+			}else{
+				super.generateTimestampResultSet(firstConnName,column,currentColNo);
+			}
+	    }
 
 	   	public void generateOthersResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String typeToGenerate) {
+		   	boolean noNullValues = ("true").equals(ElementParameterParser.getValue(node, "__NO_NULL_VALUES__"));
 	   		boolean isConvert = ("true").equals(ElementParameterParser.getValue(node, "__IS_CONVERT_XMLTYPE__"));    
 			List<Map<String, String>> convertColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONVERT_XMLTYPE__");  
 	   		
@@ -204,22 +221,49 @@ imports="
 				}
 <%
 			} else {
+				if(noNullValues){
 %>
-				if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null) {
 					<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
-				} else {
-<%
-					if(column.isNullable()) {
+					<%
+					if(("Boolean").equals(typeToGenerate)){
+					%>
+						if(!<%=firstConnName%>.<%=column.getLabel()%> && rs_<%=cid %>.getObject(<%=currentColNo%>) == null){
+					<%
+					}else if(("Bytes").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate)){
+					%>
+						if(<%=firstConnName%>.<%=column.getLabel()%> == null){
+					<%
+					}else if(("Byte").equals(typeToGenerate) || ("Double").equals(typeToGenerate) || ("Float").equals(typeToGenerate) || ("Int").equals(typeToGenerate) || ("Long").equals(typeToGenerate) || ("Short").equals(typeToGenerate)){
+					%>
+						if(<%=firstConnName%>.<%=column.getLabel()%> == 0 && rs_<%=cid %>.getObject(<%=currentColNo%>) == null){
+					<%
+					}else{
+					%>
+						if(rs_<%=cid %>.getObject(<%=currentColNo%>) == null){
+					<%
+					}
+					%>
+				<%
+				}else{
+				%>
+					if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null) {
+						<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
+					} else {
+				<%
+				}
+				%>
+<%		
+				if(column.isNullable()) {
 %>
 						<%=firstConnName%>.<%=column.getLabel()%> = null;
 <%
-					} else {
+				} else {
 %>    
- 	                        throw new RuntimeException("Null value in non-Nullable column");
+ 	                	throw new RuntimeException("Null value in non-Nullable column");
 <%    
-					}
-%>
 				}
+%>
+					}
 <%
 			}
 	    }	    
