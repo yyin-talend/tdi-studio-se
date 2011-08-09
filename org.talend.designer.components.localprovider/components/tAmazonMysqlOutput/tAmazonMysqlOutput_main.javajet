@@ -674,7 +674,7 @@ if(columnList != null && columnList.size() > 0) {
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 						if("Dynamic".equals(typeToGenerate)) {
 						%>
-							int count_dyn_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, counter<%=cid%>-1, "<%=dbmsId %>");
+							int count_dyn_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, counter<%=cid%>-1, "<%=dbmsId%>");
 							counter<%=cid%>+=count_dyn_<%=cid%>;
 						<%
 						}
@@ -748,7 +748,7 @@ if(columnList != null && columnList.size() > 0) {
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 						if("Dynamic".equals(typeToGenerate)) {
 						%>
-							DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, <%=counter-1%>, "<%=dbmsId %>");
+							DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, <%=counter-1%>, "<%=dbmsId%>");
 						<%
 						}
 					}
@@ -830,7 +830,7 @@ if(columnList != null && columnList.size() > 0) {
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 					if("Dynamic".equals(typeToGenerate)) {
 					%>
-						DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, <%=counter-1%>, "<%=dbmsId %>");
+						DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, <%=counter-1%>, "<%=dbmsId%>");
 					<%
 					}
 				}
@@ -894,7 +894,7 @@ if(columnList != null && columnList.size() > 0) {
 				if("Dynamic".equals(typeToGenerate)) {
 				%>
 				
-					int count_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, <%=counterCol-1%>, "<%=dbmsId %>");
+					int count_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmt_<%=cid%>, <%=counterCol-1%>, "<%=dbmsId%>");
 				<%
 				}
 			}
@@ -1034,7 +1034,7 @@ if(columnList != null && columnList.size() > 0) {
 					if("Dynamic".equals(typeToGenerate)) {
 					%>
 					
-						int count_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmtUpdate_<%=cid%>, <%=counterCol-1%>, "<%=dbmsId %>");
+						int count_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmtUpdate_<%=cid%>, <%=counterCol-1%>, "<%=dbmsId%>");
 					<%
 					}
 				}
@@ -1125,7 +1125,7 @@ if(columnList != null && columnList.size() > 0) {
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 					if("Dynamic".equals(typeToGenerate)) {
 					%>
-						DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmtInsert_<%=cid%>, <%=counterInsert-1%>, "<%=dbmsId %>");
+						DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmtInsert_<%=cid%>, <%=counterInsert-1%>, "<%=dbmsId%>");
 					<%
 					}
 				}
@@ -1192,7 +1192,7 @@ if(columnList != null && columnList.size() > 0) {
 				if("Dynamic".equals(typeToGenerate)) {
 				%>
 				
-					int count_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmtUpdate_<%=cid%>, <%=counterColUpdate-1%>, "<%=dbmsId %>");
+					int count_<%=cid%>=DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmtUpdate_<%=cid%>, <%=counterColUpdate-1%>, "<%=dbmsId%>");
 				<%
 				}
 			}
@@ -1294,7 +1294,7 @@ if(columnList != null && columnList.size() > 0) {
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(dynamicColumn.getColumn().getTalendType(), dynamicColumn.getColumn().isNullable());
 					if("Dynamic".equals(typeToGenerate)) {
 					%>
-						DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmtInsert_<%=cid%>, <%=counter-1%>, "<%=dbmsId %>");
+						DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=dynamicColumn.getName()%>, pstmtInsert_<%=cid%>, <%=counter-1%>, "<%=dbmsId%>");
 					<%
 					}
 				}
@@ -1651,20 +1651,33 @@ if(columnList != null && columnList.size() > 0) {
                 <%if ( (rejectConnName==null)) {
                 %>                                                
                 try {
-						pstmt_<%=cid %>.executeBatch();                	
+						int countSum_<%=cid%> = 0;
+						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
+							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+						}                  	
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
-            	    		insertedCount_<%=cid%> += batchSizeCounter_<%=cid%>;
+            	    	insertedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}
             	    	%>                         	    	
-                }catch (java.sql.SQLException e){
+                }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
                 		throw(e);
                 	<%
                 	}else {
                 	%>
+                	int countSum_<%=cid%> = 0;
+					for(int countEach_<%=cid%>: e.getUpdateCounts()) {
+						countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+					}
+					<%if (("INSERT").equals(dataAction)) {
+            	    %>
+            	    insertedCount_<%=cid%> += countSum_<%=cid%>;
+	    	    	<%
+	    	    	}
+	    	    	%>  
                 	System.err.println(e.getMessage());
                 	<%
                 	}%>
@@ -1685,15 +1698,18 @@ if(columnList != null && columnList.size() > 0) {
                 <%if ( (rejectConnName==null) && (("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
                 %>                                                
                 try {
-						pstmt_<%=cid %>.executeBatch();                	
+						int countSum_<%=cid%> = 0;
+						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
+							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+						}              	
             	    	<%
             	    	 if (("UPDATE").equals(dataAction)) {
             	    	%>
-            	    		updatedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+            	    	updatedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}else if (("DELETE").equals(dataAction)) {
             	    	%>
-            	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
+            	    	deletedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}%>                         	    	
             	    	batchSizeCounter_<%=cid%> = 0;             	                	                	
@@ -1704,6 +1720,15 @@ if(columnList != null && columnList.size() > 0) {
                 	<%
                 	}else {
                 	%>
+                	int countSum_<%=cid%> = 0;
+					for(int countEach_<%=cid%>: e.getUpdateCounts()) {
+						countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+					}
+					<%if (("UPDATE").equals(dataAction)) {%>
+            	    updatedCount_<%=cid%> += countSum_<%=cid%>;
+            	    <% }else if (("DELETE").equals(dataAction)) {%>
+            	    deletedCount_<%=cid%> += countSum_<%=cid%>;
+            	    <%}%>
                 	System.err.println(e.getMessage());
                 	<%
                 	}%>
@@ -1729,19 +1754,21 @@ if(columnList != null && columnList.size() > 0) {
                 <%if ((rejectConnName==null && useBatchSize && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
                 %>
                 try {
-                		pstmt_<%=cid %>.executeBatch();
+                		int countSum_<%=cid%> = 0;
+						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
+							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+						}
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
-            	    	if(pstmt_<%=cid %>.getUpdateCount() != -1)
-            	    		insertedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+            	    	insertedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}else if (("UPDATE").equals(dataAction)) {
             	    	%>            	    		
-            	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+            	    	updatedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}else if (("DELETE").equals(dataAction)) {
             	    	%>
-            	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+            	    	deletedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
             	    	}%>            	    
                 }catch (java.sql.BatchUpdateException e){
@@ -1751,7 +1778,24 @@ if(columnList != null && columnList.size() > 0) {
                 	<%
                 	}else {
                 	%>
-                        System.out.println(e.getMessage());
+                	int countSum_<%=cid%> = 0;
+					for(int countEach_<%=cid%>: e.getUpdateCounts()) {
+						countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+					}
+					<%if (("INSERT").equals(dataAction)) {
+        	    	%>
+        	    	insertedCount_<%=cid%> += countSum_<%=cid%>;
+        	    	<%
+        	    	}else if (("UPDATE").equals(dataAction)) {
+        	    	%>            	    		
+        	    	updatedCount_<%=cid%> += countSum_<%=cid%>;
+        	    	<%
+        	    	}else if (("DELETE").equals(dataAction)) {
+        	    	%>
+        	    	deletedCount_<%=cid%> += countSum_<%=cid%>;
+        	    	<%
+        	    	}%>
+                    System.out.println(e.getMessage());
                 	<%
                 	}%>
                 
