@@ -73,7 +73,7 @@ skeleton="tXMLMap_java.skeleton"
 			boolean findFromBasicType = false;
 			boolean findFromDocumentType = false;
 			String documentColumn = "";
-			boolean hasOutputFromLookupDoc = false;
+			boolean hasOutputFromLookupDoc = false;//to output or another lookup
 			ArrayList<String> xPathAsOutput = new ArrayList<String>();//output contain(1.lookup table to output table 2.lookup table to lookup table)
 			String loopXPath = "";
 			boolean isMultipleResult = false;
@@ -100,8 +100,11 @@ skeleton="tXMLMap_java.skeleton"
 					    		if(outputs!=null && outputs.size()!=0) {
 					    			xPathAsOutput.add(leaf.getXpath());
 					    			hasOutputFromLookupDoc = true;
+					    			hasOutgoingConnection = true;
 					    		} else if(lookupOutputs!=null && lookupOutputs.size()!=0) {
 					    			xPathAsOutput.add(leaf.getXpath());
+					    			hasOutputFromLookupDoc = true;
+					    			hasOutgoingConnection = true;
 					    		}
 				    		}
 				    	  	if(leaf.getOutgoingConnections().size() > 0){
