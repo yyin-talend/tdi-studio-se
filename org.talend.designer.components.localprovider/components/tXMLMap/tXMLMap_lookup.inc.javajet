@@ -73,7 +73,8 @@ skeleton="tXMLMap_java.skeleton"
 			boolean findFromBasicType = false;
 			boolean findFromDocumentType = false;
 			String documentColumn = "";
-			ArrayList<String> xPathAsOutput = new ArrayList<String>();
+			boolean hasOutputFromLookupDoc = false;
+			ArrayList<String> xPathAsOutput = new ArrayList<String>();//output contain(1.lookup table to output table 2.lookup table to lookup table)
 			String loopXPath = "";
 			boolean isMultipleResult = false;
 			
@@ -93,8 +94,13 @@ skeleton="tXMLMap_java.skeleton"
 			    for(TreeNode leaf : allLeaf) { 
 				    if (leaf != null) {
 				    		if("Document".equals(typeToGenerate)) {
+				    			documentColumn = columnName;
 				    			EList<Connection> outputs = leaf.getOutgoingConnections();
+				    			EList<LookupConnection> lookupOutputs = leaf.getLookupOutgoingConnections();
 					    		if(outputs!=null && outputs.size()!=0) {
+					    			xPathAsOutput.add(leaf.getXpath());
+					    			hasOutputFromLookupDoc = true;
+					    		} else if(lookupOutputs!=null && lookupOutputs.size()!=0) {
 					    			xPathAsOutput.add(leaf.getXpath());
 					    		}
 				    		}
@@ -252,8 +258,8 @@ skeleton="tXMLMap_java.skeleton"
 						<%=tableName%> = <%=tableName%>Default;
 						fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
 						if (fromLookup_<%=tableName%> != null) {
-						<% if(findFromDocumentType) {%>
-							//begin to lookup Document Object
+						<% if(findFromDocumentType || hasOutputFromLookupDoc) {%>
+							//begin to lookup Document Object (case 1:lookup doc key exists),(case 2:lookup doc key not exists but lookup line doc output exist)
 							Document doc = fromLookup_<%=tableName%>.<%=documentColumn%>;
 							java.util.List<String> xPathAsOutput = new java.util.ArrayList<String>();
 						<%
@@ -269,7 +275,9 @@ skeleton="tXMLMap_java.skeleton"
 							} else {
 								//find and cache it,now only memory,inner join and unique match mode
 								//once find,not reject.
+								<% if(findFromDocumentType) { %>
 								isMatchDocRow<%=cid%> = true;
+								<% } %>
 								for(java.util.Map<String,Object> docRow : result) {
 									for(String path : docRow.keySet()) {
 										treeNodeAPI_<%=cid %>.put(path, String.valueOf(docRow.get(path)));
@@ -290,6 +298,9 @@ skeleton="tXMLMap_java.skeleton"
 				  	if(!isMatchDocRow<%=cid%>) {
 				  		<%=tableName%> = <%=tableName%>Default;
 				  	}
+				  	<% } %>
+				  	<% if(hasOutputFromLookupDoc && !findFromDocumentType) {//for the case : not lookup doc,but doc output exists%>
+				  		//do nothing
 				  	<% } %>
 	<%				
 	}

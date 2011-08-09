@@ -20,6 +20,7 @@
 			org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.Connection
+			org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
 			org.talend.core.model.process.IConnection
 			org.talend.core.model.process.EConnectionType
 			org.talend.core.model.metadata.IMetadataTable
@@ -120,6 +121,9 @@ skeleton="tXMLMap_java.skeleton"
 		MatchXmlTreeExpr matchXmlTreeExpr = null;
 		for(OutputXmlTree outputTable : outputTables) {
 			String outputTableName = outputTable.getName();
+			if(nameToOutputConnection.get(outputTableName) == null) {
+				continue;
+			}
 			for(OutputTreeNode outputNode: outputTable.getNodes()) {
 				if(("id_Document").equals(outputNode.getType())){
 				
