@@ -407,10 +407,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         return "sa-talend-" + this.getDefaultFileName().get(0) + "Service-provide.zip"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    protected String getOSGIBundleForESBDefaultName() {
-        return this.getDefaultFileName().get(0) + "-" + this.getDefaultFileName().get(1) + getOutputSuffix();
-    }
-
     /**
      * Open an appropriate destination browser so that the user can specify a source to import from.
      */
@@ -474,8 +470,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             String s = (String) this.getDefaultFileName().get(0);
 
             if (str.equals(s)) {
+//                selectedFileName = b + "_" + this.getDefaultFileName().get(1) + this.getOutputSuffix(); //$NON-NLS-1$
                 selectedFileName = b + ((JobExportType.OSGI.equals(jobExportType)) ? "-" : "_")
-                		+ this.getDefaultFileName().get(1) + this.getOutputSuffix(); //$NON-NLS-1$
+                        + this.getDefaultFileName().get(1) + this.getOutputSuffix(); //$NON-NLS-1$
             } else {
                 selectedFileName = b + this.getOutputSuffix();
             }
@@ -629,10 +626,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 }
             }
             // setDefaultDestination();
-            String bundleName = getOSGIBundleForESBDefaultName();
-            String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
-            IPath path = new Path(userDir).append(bundleName);
-            setDestinationValue(path.toOSString());
+            setDefaultDestinationForOSGI();
         }
     }
 
