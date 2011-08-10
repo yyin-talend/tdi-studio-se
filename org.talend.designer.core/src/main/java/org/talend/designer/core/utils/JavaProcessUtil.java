@@ -120,8 +120,16 @@ public class JavaProcessUtil {
             List<ModuleNeeded> moduleList = node.getComponent().getModulesNeeded();
             for (ModuleNeeded needed : moduleList) {
                 if (needed.isRequired()) {
-                    /* should not export libs which contains bundle infomations when export OSGI */
-                    if (needed.getBundleName() == null && needed.getBundleVersion() == null && !exportOSGI) {
+                    /**
+                     * For export job to OSGI: if current module needed DO NOT contains any bundle info (name/version),
+                     * same as now, we add the jars to the final export and we set the Bundle-Classpath. if current
+                     * module needed contains bundle info. We don't add the jar to the final export, we don't set any
+                     * Bundle-Classpath, but we add as Require-Bundle for example (following previous import info):
+                     * org.apache.commons.lang;bundle-version="2.6.0" (<name>;bundle-version="<version>")
+                     * */
+                    if (!exportOSGI) {
+                        neededLibraries.add(needed.getModuleName());
+                    } else if (needed.getBundleName() == null && needed.getBundleVersion() == null) {
                         neededLibraries.add(needed.getModuleName());
                     }
                 }

@@ -329,8 +329,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 String requiredBundles = caculateDependenciesBundles(pi);
                 if (requiredBundles != null && !"".equals(requiredBundles)) {
                     updateBundleClassPath = false;
+                    a.put(new Attributes.Name("Require-Bundle"), requiredBundles);
                 }
-                a.put(new Attributes.Name("Require-Bundle"), requiredBundles);
             }
         }
         if (updateBundleClassPath) {
@@ -343,7 +343,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * DOC hywang Comment method "caculateDependenciesBundles".
-     *
+     * 
      * @return
      */
     private String caculateDependenciesBundles(ProcessItem processItem) {
