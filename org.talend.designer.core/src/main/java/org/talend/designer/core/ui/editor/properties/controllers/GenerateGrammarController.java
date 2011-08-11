@@ -30,6 +30,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionEvent;
@@ -41,6 +42,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.SystemException;
@@ -245,7 +247,14 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         String javaClassName = StringUtils.capitalize(PROJECT_NAME) + StringUtils.capitalize(JOB_NAME)
                 + StringUtils.capitalize(COMPONENT_NAME);
         ITDQItemService service = (ITDQItemService) GlobalServiceRegister.getDefault().getService(ITDQItemService.class);
-        File fileCreated = service.fileCreatedInRoutines(node, javaClassName);
+        File fileCreated = null;
+        try {
+            fileCreated = service.fileCreatedInRoutines(node, javaClassName);
+        } catch (Exception ex) {
+            MessageDialog.openError(Display.getDefault().getActiveShell(),
+                    Messages.getString("GenerateGrammarController.prompt"),//$NON-NLS-1$
+                    ex.getMessage());
+        }
 
         if (fileCreated == null)
             return;
