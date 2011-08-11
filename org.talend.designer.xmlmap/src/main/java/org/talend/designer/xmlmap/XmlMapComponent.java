@@ -47,6 +47,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -297,4 +298,21 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
             mapperMain = new MapperMain(this);
         }
     }
+
+    @Override
+    public boolean isRunRefSubProcessAtStart(String connectionName) {
+        XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
+        List<InputXmlTree> inputTrees = new ArrayList<InputXmlTree>(externalEmfData.getInputTrees());
+        for (InputXmlTree table : inputTrees) {
+            if (table.getName().equals(connectionName)) {
+                String lookupMode = table.getLookupMode();
+                if (XML_MAP_LOOKUP_MODE.RELOAD.name().equals(lookupMode)
+                        || XML_MAP_LOOKUP_MODE.CACHE_OR_RELOAD.name().equals(lookupMode)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }
