@@ -15,6 +15,8 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.core.model.process.AbstractNode;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -43,6 +45,10 @@ public class ConnectionDeleteCommand extends Command {
     public void execute() {
         Process process = (Process) connectionList.get(0).getSource().getProcess();
         for (Connection connection : connectionList) {
+            final INode target = connection.getTarget();
+            if (target.getExternalNode() instanceof AbstractNode) {
+                ((AbstractNode) target.getExternalNode()).removeInput(connection);
+            }
             connection.disconnect();
             INodeConnector nodeConnectorSource, nodeConnectorTarget;
             nodeConnectorSource = connection.getSourceNodeConnector();

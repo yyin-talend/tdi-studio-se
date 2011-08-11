@@ -27,6 +27,12 @@
       <ExternalComponent
             class="org.talend.designer.xmlmap.XmlMapComponent"></ExternalComponent>
    </extension>
-   
+      <extension
+         point="org.talend.core.runtime.service">
+      <Service
+            class="org.talend.designer.xmlmap.XmlMapService"
+            serviceId="IXmlMapService">
+      </Service>
+   </extension>
 
 </plugin>

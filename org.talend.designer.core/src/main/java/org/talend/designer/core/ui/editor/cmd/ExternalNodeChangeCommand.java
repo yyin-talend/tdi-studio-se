@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.ColumnNameChanged;
@@ -38,6 +39,7 @@ import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.service.IXmlMapService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -264,6 +266,19 @@ public class ExternalNodeChangeCommand extends Command {
                                     connection.getMetadataTable(), dataComponent.getTable());
                             cmd.execute(true);
                             metadataOutputChanges.add(cmd);
+                        }
+                    } else {
+                        // no matter propagate or not the metadata change will be propagate to xmlmap emf data
+                        final Node target = (Node) connection.getTarget();
+                        if (target != null && target.getExternalNode() != null) {
+                            if (GlobalServiceRegister.getDefault().isServiceRegistered(IXmlMapService.class)) {
+                                final IXmlMapService service = (IXmlMapService) GlobalServiceRegister.getDefault().getService(
+                                        IXmlMapService.class);
+                                if (service.isXmlMapComponent(target.getExternalNode())) {
+                                    IODataComponent output = new IODataComponent(connection, dataComponent.getTable());
+                                    target.metadataInputChanged(output, connection.getUniqueName());
+                                }
+                            }
                         }
                     }
                 }

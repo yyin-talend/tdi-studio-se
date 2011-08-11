@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.ColumnNameChanged;
@@ -37,6 +38,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.service.IXmlMapService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -406,6 +408,22 @@ public class ChangeMetadataCommand extends Command {
             for (IConnection outgoingConnection : node.getOutgoingConnections()) {
                 if (outgoingConnection.getConnectorName().equals(currentConnector)) {
                     outgoingConnection.getTarget().metadataInputChanged(dataComponent, outgoingConnection.getName());
+                }
+            }
+        } else {
+            if (!node.getOutgoingConnections().isEmpty()) {
+                for (IConnection outgoingConnection : node.getOutgoingConnections()) {
+                    final Node target = (Node) outgoingConnection.getTarget();
+                    if (target != null && target.getExternalNode() != null) {
+                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IXmlMapService.class)) {
+                            final IXmlMapService service = (IXmlMapService) GlobalServiceRegister.getDefault().getService(
+                                    IXmlMapService.class);
+                            if (service.isXmlMapComponent(target.getExternalNode())) {
+                                IODataComponent output = new IODataComponent(outgoingConnection, newOutputMetadata);
+                                target.metadataInputChanged(output, outgoingConnection.getUniqueName());
+                            }
+                        }
+                    }
                 }
             }
         }

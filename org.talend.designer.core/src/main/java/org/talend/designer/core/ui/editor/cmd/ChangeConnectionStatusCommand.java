@@ -46,10 +46,10 @@ public class ChangeConnectionStatusCommand extends Command {
     }
 
     public void execute() {
+        INode target = connection.getTarget();
         if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
             connection.setLineStyle(EConnectionType.FLOW_REF);
         } else {
-            INode target = connection.getTarget();
             boolean found = false;
             for (int i = 0; i < target.getIncomingConnections().size() && !found; i++) {
                 Connection currentConnection = (Connection) target.getIncomingConnections().get(i);
@@ -60,6 +60,11 @@ public class ChangeConnectionStatusCommand extends Command {
             }
             connection.setLineStyle(EConnectionType.FLOW_MAIN);
         }
+
+        if (target.getExternalNode() != null) {
+            target.getExternalNode().connectionStatusChanged(connection.getLineStyle(), connection.getUniqueName());
+        }
+
         ((Process) connection.getSource().getProcess()).checkStartNodes();
         ((Process) connection.getSource().getProcess()).checkProcess();
     }

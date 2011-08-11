@@ -21,11 +21,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.cursor.CursorHelper;
+import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.BlockCode;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.HashConfiguration;
 import org.talend.core.model.process.HashableColumn;
 import org.talend.core.model.process.IComponentDocumentation;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IHashConfiguration;
@@ -48,6 +52,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
+import org.talend.designer.xmlmap.util.MapDataHelper;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -61,7 +66,10 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
 
     private GenerationManager generationManager;
 
+    private MapDataHelper mapperHelper;
+
     public XmlMapComponent() {
+        mapperHelper = new MapDataHelper();
     }
 
     public int open(Display display) {
@@ -152,6 +160,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         if (this.emfMapData == null) {
             this.emfMapData = XmlmapFactory.eINSTANCE.createXmlMapData();
         }
+
         return this.emfMapData;
     }
 
@@ -231,10 +240,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
 
     public List<String> checkNeededRoutines(List<String> possibleRoutines, String additionalString) {
         List<String> routinesToAdd = new ArrayList<String>();
-        XmlMapData xmlMapData = null;
-        if (this.getExternalEmfData() instanceof XmlMapData) {
-            xmlMapData = (XmlMapData) this.getExternalEmfData();
-        }
+        XmlMapData xmlMapData = (XmlMapData) getExternalEmfData();
         for (String routine : possibleRoutines) {
             List<OutputXmlTree> listOutput = xmlMapData.getOutputTrees();
             for (OutputXmlTree outTable : listOutput) {
@@ -296,6 +302,63 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
     private void initMapperMain() {
         if (mapperMain == null) {
             mapperMain = new MapperMain(this);
+        }
+    }
+
+    @Override
+    public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
+        if (dataComponent.getTable() != null) {
+            XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
+            for (InputXmlTree inputTree : externalEmfData.getInputTrees()) {
+                if (inputTree.getName() != null && inputTree.getName().equals(connectionToApply)) {
+                    mapperHelper.rebuildInputTree(inputTree, dataComponent.getTable(), externalEmfData);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
+        List<IMetadataTable> list = new ArrayList<IMetadataTable>();
+        if (dataComponent.getTable() != null) {
+            list.add(dataComponent.getTable());
+        }
+        mapperHelper.rebuildModelOutputs(list, (XmlMapData) getExternalEmfData());
+    }
+
+    @Override
+    public void connectionStatusChanged(EConnectionType newValue, String connectionToApply) {
+        XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
+        for (InputXmlTree inputTree : externalEmfData.getInputTrees()) {
+            if (inputTree.getName() != null && inputTree.getName().equals(connectionToApply)) {
+                inputTree.setLookup(EConnectionType.FLOW_MAIN != newValue);
+            } else if (EConnectionType.FLOW_MAIN == newValue) {
+                inputTree.setLookup(true);
+            }
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.AbstractNode#removeInput(org.talend.core.model.process.IConnection)
+     */
+    @Override
+    public void removeInput(IConnection connection) {
+        XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
+        InputXmlTree toRemove = null;
+        for (InputXmlTree inputTree : externalEmfData.getInputTrees()) {
+            if (inputTree.getName() != null && inputTree.getName().equals(connection.getUniqueName())) {
+                toRemove = inputTree;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            for (TreeNode treeNode : toRemove.getNodes()) {
+                XmlMapUtil.detachNodeConnections(treeNode, externalEmfData, true);
+            }
+            XmlMapUtil.detachFilterSource(toRemove, externalEmfData);
+            externalEmfData.getInputTrees().remove(toRemove);
         }
     }
 

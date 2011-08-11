@@ -310,9 +310,10 @@ public class MapperManager implements ISelectionChangedListener {
                             if (event.index < selectedInputTree.getNodes().size()) {
                                 TreeNode treeNode = selectedInputTree.getNodes().get(event.index);
                                 if (treeNode != null) {
-
-                                    XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
-                                    treeNode.getChildren().clear();
+                                    if (treeNode.getType() != null && treeNode.getType().equals(XmlMapUtil.DOCUMENT)) {
+                                        XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
+                                        treeNode.getChildren().clear();
+                                    }
                                     treeNode.setType((String) event.newValue);
 
                                     if (XmlMapUtil.DOCUMENT.equals(event.newValue)) {
@@ -465,8 +466,10 @@ public class MapperManager implements ISelectionChangedListener {
                             if (event.index < selectedOutputTree.getNodes().size()) {
                                 TreeNode treeNode = selectedOutputTree.getNodes().get(event.index);
                                 if (treeNode != null) {
-                                    XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
-                                    treeNode.getChildren().clear();
+                                    if (treeNode.getType() != null && treeNode.getType().equals(XmlMapUtil.DOCUMENT)) {
+                                        XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
+                                        treeNode.getChildren().clear();
+                                    }
                                     treeNode.setType((String) event.newValue);
 
                                     if (XmlMapUtil.DOCUMENT.equals(event.newValue)) {
