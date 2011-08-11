@@ -577,8 +577,8 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EClass getOutputTreeNode() {
-        return outputTreeNodeEClass;
+    public EAttribute getTreeNode_DefaultValue() {
+        return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(10);
     }
 
     /**
@@ -586,8 +586,8 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getOutputTreeNode_DefaultValue() {
-        return (EAttribute)outputTreeNodeEClass.getEStructuralFeatures().get(0);
+    public EClass getOutputTreeNode() {
+        return outputTreeNodeEClass;
     }
 
     /**
@@ -833,9 +833,9 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEAttribute(treeNodeEClass, TREE_NODE__MAIN);
         createEReference(treeNodeEClass, TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS);
         createEReference(treeNodeEClass, TREE_NODE__LOOKUP_INCOMING_CONNECTIONS);
+        createEAttribute(treeNodeEClass, TREE_NODE__DEFAULT_VALUE);
 
         outputTreeNodeEClass = createEClass(OUTPUT_TREE_NODE);
-        createEAttribute(outputTreeNodeEClass, OUTPUT_TREE_NODE__DEFAULT_VALUE);
 
         varNodeEClass = createEClass(VAR_NODE);
 
@@ -953,9 +953,9 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEAttribute(getTreeNode_Main(), ecorePackage.getEBoolean(), "main", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getTreeNode_LookupOutgoingConnections(), this.getLookupConnection(), null, "lookupOutgoingConnections", null, 0, -1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getTreeNode_LookupIncomingConnections(), this.getLookupConnection(), null, "lookupIncomingConnections", null, 0, -1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTreeNode_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(outputTreeNodeEClass, OutputTreeNode.class, "OutputTreeNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getOutputTreeNode_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, OutputTreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(varNodeEClass, VarNode.class, "VarNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

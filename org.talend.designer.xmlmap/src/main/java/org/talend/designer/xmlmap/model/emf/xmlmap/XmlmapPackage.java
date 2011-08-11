@@ -52,7 +52,7 @@ public interface XmlmapPackage extends EPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    String eNS_PREFIX = "";
+    String eNS_PREFIX = "TalendXMLMap";
 
     /**
      * The singleton instance of the package.
@@ -718,13 +718,22 @@ public interface XmlmapPackage extends EPackage {
     int TREE_NODE__LOOKUP_INCOMING_CONNECTIONS = ABSTRACT_NODE_FEATURE_COUNT + 9;
 
     /**
+     * The feature id for the '<em><b>Default Value</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__DEFAULT_VALUE = ABSTRACT_NODE_FEATURE_COUNT + 10;
+
+    /**
      * The number of structural features of the '<em>Tree Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 10;
+    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 11;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.
@@ -896,7 +905,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int OUTPUT_TREE_NODE__DEFAULT_VALUE = TREE_NODE_FEATURE_COUNT + 0;
+    int OUTPUT_TREE_NODE__DEFAULT_VALUE = TREE_NODE__DEFAULT_VALUE;
 
     /**
      * The number of structural features of the '<em>Output Tree Node</em>' class.
@@ -905,7 +914,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int OUTPUT_TREE_NODE_FEATURE_COUNT = TREE_NODE_FEATURE_COUNT + 1;
+    int OUTPUT_TREE_NODE_FEATURE_COUNT = TREE_NODE_FEATURE_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarNodeImpl <em>Var Node</em>}' class.
@@ -1602,6 +1611,17 @@ public interface XmlmapPackage extends EPackage {
     EReference getTreeNode_LookupIncomingConnections();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getDefaultValue <em>Default Value</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Default Value</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getDefaultValue()
+     * @see #getTreeNode()
+     * @generated
+     */
+    EAttribute getTreeNode_DefaultValue();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode <em>Output Tree Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1610,17 +1630,6 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EClass getOutputTreeNode();
-
-    /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#getDefaultValue <em>Default Value</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Default Value</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#getDefaultValue()
-     * @see #getOutputTreeNode()
-     * @generated
-     */
-    EAttribute getOutputTreeNode_DefaultValue();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarNode <em>Var Node</em>}'.
@@ -2167,6 +2176,14 @@ public interface XmlmapPackage extends EPackage {
         EReference TREE_NODE__LOOKUP_INCOMING_CONNECTIONS = eINSTANCE.getTreeNode_LookupIncomingConnections();
 
         /**
+         * The meta object literal for the '<em><b>Default Value</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute TREE_NODE__DEFAULT_VALUE = eINSTANCE.getTreeNode_DefaultValue();
+
+        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2175,14 +2192,6 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EClass OUTPUT_TREE_NODE = eINSTANCE.getOutputTreeNode();
-
-        /**
-         * The meta object literal for the '<em><b>Default Value</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute OUTPUT_TREE_NODE__DEFAULT_VALUE = eINSTANCE.getOutputTreeNode_DefaultValue();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarNodeImpl <em>Var Node</em>}' class.

@@ -49,6 +49,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isMain <em>Main</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getLookupOutgoingConnections <em>Lookup Outgoing Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getLookupIncomingConnections <em>Lookup Incoming Connections</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getDefaultValue <em>Default Value</em>}</li>
  * </ul>
  * </p>
  *
@@ -224,6 +225,26 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * @ordered
      */
     protected EList<LookupConnection> lookupIncomingConnections;
+
+    /**
+     * The default value of the '{@link #getDefaultValue() <em>Default Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getDefaultValue()
+     * @generated
+     * @ordered
+     */
+    protected static final String DEFAULT_VALUE_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getDefaultValue() <em>Default Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getDefaultValue()
+     * @generated
+     * @ordered
+     */
+    protected String defaultValue = DEFAULT_VALUE_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -432,6 +453,27 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setDefaultValue(String newDefaultValue) {
+        String oldDefaultValue = defaultValue;
+        defaultValue = newDefaultValue;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__DEFAULT_VALUE, oldDefaultValue, defaultValue));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -469,6 +511,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return getLookupOutgoingConnections();
             case XmlmapPackage.TREE_NODE__LOOKUP_INCOMING_CONNECTIONS:
                 return getLookupIncomingConnections();
+            case XmlmapPackage.TREE_NODE__DEFAULT_VALUE:
+                return getDefaultValue();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -515,6 +559,9 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 getLookupIncomingConnections().clear();
                 getLookupIncomingConnections().addAll((Collection<? extends LookupConnection>)newValue);
                 return;
+            case XmlmapPackage.TREE_NODE__DEFAULT_VALUE:
+                setDefaultValue((String)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -557,6 +604,9 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__LOOKUP_INCOMING_CONNECTIONS:
                 getLookupIncomingConnections().clear();
                 return;
+            case XmlmapPackage.TREE_NODE__DEFAULT_VALUE:
+                setDefaultValue(DEFAULT_VALUE_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -589,6 +639,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return lookupOutgoingConnections != null && !lookupOutgoingConnections.isEmpty();
             case XmlmapPackage.TREE_NODE__LOOKUP_INCOMING_CONNECTIONS:
                 return lookupIncomingConnections != null && !lookupIncomingConnections.isEmpty();
+            case XmlmapPackage.TREE_NODE__DEFAULT_VALUE:
+                return DEFAULT_VALUE_EDEFAULT == null ? defaultValue != null : !DEFAULT_VALUE_EDEFAULT.equals(defaultValue);
         }
         return super.eIsSet(featureID);
     }
@@ -617,6 +669,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
         result.append(group);
         result.append(", main: ");
         result.append(main);
+        result.append(", defaultValue: ");
+        result.append(defaultValue);
         result.append(')');
         return result.toString();
     }

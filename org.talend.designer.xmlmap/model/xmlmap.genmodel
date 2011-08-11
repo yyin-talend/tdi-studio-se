@@ -65,10 +65,9 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/main"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//TreeNode/lookupOutgoingConnections"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//TreeNode/lookupIncomingConnections"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//TreeNode/defaultValue"/>
     </genClasses>
-    <genClasses ecoreClass="xmlmap.ecore#//OutputTreeNode">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//OutputTreeNode/defaultValue"/>
-    </genClasses>
+    <genClasses ecoreClass="xmlmap.ecore#//OutputTreeNode"/>
     <genClasses ecoreClass="xmlmap.ecore#//VarNode"/>
     <genClasses image="false" ecoreClass="xmlmap.ecore#//IConnection"/>
     <genClasses image="false" ecoreClass="xmlmap.ecore#//INodeConnection">

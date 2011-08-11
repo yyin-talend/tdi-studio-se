@@ -72,10 +72,9 @@
         upperBound="-1" eType="#//LookupConnection"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lookupIncomingConnections"
         upperBound="-1" eType="#//LookupConnection"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OutputTreeNode" eSuperTypes="#//TreeNode">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OutputTreeNode" eSuperTypes="#//TreeNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="VarNode" eSuperTypes="#//AbstractNode"/>
   <eClassifiers xsi:type="ecore:EEnum" name="NodeType">
     <eLiterals name="ELEMENT"/>
