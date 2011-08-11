@@ -73,6 +73,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.ReferenceFileItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.properties.SnippetItem;
@@ -684,8 +685,11 @@ public class ImportItemUtil {
                             && ((ConnectionItem) tmpItem).getConnection().eResource() == null
                             && !itemRecord.getMigrationTasksToApply().isEmpty();
 
-                    repFactory.create(tmpItem, path, true);
+                    repFactory.create(tmpItem, path);
                     copyScreenshotFile(manager, itemRecord);
+                    copyReferenceFiles(manager, tmpItem, itemRecord.getPath());
+                    repFactory.save(tmpItem, true);
+                    repFactory.unloadResources(tmpItem.getProperty());
                     if (isConnectionEmptyBeforeMigration) {// copy the file before migration, this is bad because it
                         // should not refer to Filesytem
                         // but this is a quick hack and anyway the migration task only works on files
@@ -821,6 +825,32 @@ public class ImportItemUtil {
                 is.close();
             }
         }
+    }
+
+    private void copyReferenceFiles(ResourcesManager manager, Item tmpItem, IPath pathToRead) throws IOException {
+        OutputStream os = null;
+        InputStream is = null;
+
+        List<ReferenceFileItem> refItems = tmpItem.getReferenceResources();
+        URI propertyResourceURI = EcoreUtil.getURI(tmpItem.getProperty());
+        for (ReferenceFileItem refItem : refItems) {
+            URI relativePlateformDestUri = propertyResourceURI.trimFileExtension().appendFileExtension(refItem.getExtension());
+            try {
+                URL fileURL = FileLocator.toFileURL(new java.net.URL(
+                        "platform:/resource" + relativePlateformDestUri.toPlatformString(true))); //$NON-NLS-1$
+                os = new FileOutputStream(fileURL.getFile());
+                is = manager.getStream(pathToRead.removeFileExtension().addFileExtension(refItem.getExtension()));
+                FileCopyUtils.copyStreams(is, os);
+            } finally {
+                if (os != null) {
+                    os.close();
+                }
+                if (is != null) {
+                    is.close();
+                }
+            }
+        }
+
     }
 
     private void applyMigrationTasks(ItemRecord itemRecord, IProgressMonitor monitor) {
@@ -1172,6 +1202,13 @@ public class ImportItemUtil {
             Resource resource = createResource(itemRecord.getResourceSet(), itemPath, byteArray);
 
             resource.load(stream, null);
+
+            for (ReferenceFileItem rfItem : (List<ReferenceFileItem>) item.getReferenceResources()) {
+                itemPath = getReferenceItemPath(itemRecord.getPath(), rfItem.getExtension());
+                stream = manager.getStream(itemPath);
+                Resource rfResource = createResource(itemRecord.getResourceSet(), itemPath, true);
+                rfResource.load(stream, null);
+            }
             resetItemReference(itemRecord, resource);
             // EcoreUtil.resolveAll(itemRecord.getResourceSet());
         } catch (IOException e) {
@@ -1314,6 +1351,10 @@ public class ImportItemUtil {
 
     private IPath getItemPath(IPath path) {
         return path.removeFileExtension().addFileExtension(FileConstants.ITEM_EXTENSION);
+    }
+
+    private IPath getReferenceItemPath(IPath path, String extension) {
+        return path.removeFileExtension().addFileExtension(extension);
     }
 
     /**

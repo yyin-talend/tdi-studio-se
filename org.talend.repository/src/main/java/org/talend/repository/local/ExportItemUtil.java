@@ -48,11 +48,13 @@ import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataManager;
+import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.PropertiesPackage;
+import org.talend.core.model.properties.ReferenceFileItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
@@ -96,6 +98,10 @@ public class ExportItemUtil {
     private IPath itemPath;
 
     private Project project;
+
+    private Map<File, IPath> refereneceFilesToBeExport;
+
+    private Map<File, ReferenceFileItem> referenceFilesMapping;
 
     private Map<String, User> login2user = new HashMap<String, User>();
 
@@ -290,6 +296,7 @@ public class ExportItemUtil {
                     fixItem(copiedItem);
                     computeItemFilesAndPaths(destinationDirectory, copiedItem, projectFolderStructure);
                     createItemResources(copiedItem, copiedObjects, resourceSet);
+                    createReferenceFileItemReources(resourceSet);
                     fixItemUserReferences(copiedItem);
                     fixItemLockState();
                     toExport.put(propertyFile, propertyPath);
@@ -298,8 +305,12 @@ public class ExportItemUtil {
                     if (id == PropertiesPackage.PROCESS_ITEM || id == PropertiesPackage.JOBLET_PROCESS_ITEM) {
                         toExport.put(screenshotFile, screenshotPath);
                     }
-                    // ProxyRepositoryFactory.getInstance().unloadResources(copiedItem.getProperty());
-                    // copiedItem.setParent(null);
+                    if (refereneceFilesToBeExport != null && !refereneceFilesToBeExport.isEmpty()) {
+                        for (File rfFile : refereneceFilesToBeExport.keySet()) {
+                            IPath rFPath = refereneceFilesToBeExport.get(rfFile);
+                            toExport.put(rfFile, rFPath);
+                        }
+                    }
                 }
 
                 if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
@@ -420,7 +431,30 @@ public class ExportItemUtil {
 
             copyJarToDestination(sourceFilePath, screenshotFile.getAbsolutePath());
         }
+        /* for all the referenceFileItems */
+        computeReferenceFilesAndPaths(destinationFile, item, fileNamePath);
+    }
 
+    private void computeReferenceFilesAndPaths(File destinationFile, Item item, IPath fileNamePath) {
+        List<ReferenceFileItem> referenceFiles = (List<ReferenceFileItem>) item.getReferenceResources();
+        if (referenceFiles != null && !referenceFiles.isEmpty()) {
+            for (ReferenceFileItem ri : referenceFiles) {
+                IPath rfPath = fileNamePath.addFileExtension(ri.getExtension());
+                File rfFile = new File(destinationFile, rfPath.toOSString());
+                if (refereneceFilesToBeExport != null) {
+                    refereneceFilesToBeExport.put(rfFile, rfPath);
+                } else {
+                    refereneceFilesToBeExport = new HashMap<File, IPath>();
+                    refereneceFilesToBeExport.put(rfFile, rfPath);
+                }
+                if (referenceFilesMapping != null) {
+                    referenceFilesMapping.put(rfFile, ri);
+                } else {
+                    referenceFilesMapping = new HashMap<File, ReferenceFileItem>();
+                    referenceFilesMapping.put(rfFile, ri);
+                }
+            }
+        }
     }
 
     // private void init() {
@@ -460,6 +494,27 @@ public class ExportItemUtil {
         boolean isFileItem = PropertiesPackage.eINSTANCE.getFileItem().isSuperTypeOf(item.eClass());
         itemResource = createResource(itemFile, isFileItem, resourceSet);
         moveObjectsToResource(itemResource, copiedObjects, null);
+    }
+
+    /**
+     * DOC hywang Comment method "createReferenceFileItemReources". create resources for every reference file when
+     * export the item
+     */
+    private void createReferenceFileItemReources(ResourceSetImpl resourceSet) {
+        if (refereneceFilesToBeExport != null) {
+            for (File rfFile : refereneceFilesToBeExport.keySet()) {
+                Resource rfResrouce = createResource(rfFile, true, resourceSet);
+                ReferenceFileItem mappedItem = referenceFilesMapping.get(rfFile);
+                ByteArray byteContent = null;
+                if (mappedItem != null) {
+                    byteContent = mappedItem.getContent();
+                }
+                if (byteContent != null) {
+                    rfResrouce.getContents().add(byteContent);
+                }
+            }
+        }
+
     }
 
     private void fixItem(Item item) {
@@ -506,6 +561,16 @@ public class ExportItemUtil {
                     for (Iterator iterator = referencedEList.iterator(); iterator.hasNext();) {
                         EObject referenceEObject = (EObject) iterator.next();
                         if (referenceEObject != null && !objects.contains(referenceEObject)) {
+                            // need to load all reference files when copy the item
+                            if (referenceEObject instanceof ReferenceFileItem) {
+                                EList subRef = referenceEObject.eClass().getEAllReferences();
+                                for (Iterator subiter = subRef.iterator(); subiter.hasNext();) {
+                                    EReference subReference = (EReference) subiter.next();
+                                    if (!subReference.isMany()) {
+                                        referenceEObject.eGet(subReference);
+                                    }
+                                }
+                            }
                             objects.add(referenceEObject);
                         }
                     }
