@@ -1894,13 +1894,15 @@ public class Node extends Element implements IGraphicalNode {
                 if (target.getJobletNode() != null) {
                     target = target.getJobletNode();
                 }
-                if ((source.isActivate() == target.isActivate())
-                        && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
-                    found = true;
-                    break;
-                }
-                if (((Node) source).isDummy() || isDummy()) {
-                    return source.getSubProcessStartNode(withConditions);
+
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+                    if (source.isActivate() == target.isActivate()) {
+                        found = true;
+                        break;
+                    }
+                    if (((Node) source).isDummy() || isDummy()) {
+                        return source.getSubProcessStartNode(withConditions);
+                    }
                 }
             }
             if (!found) {
