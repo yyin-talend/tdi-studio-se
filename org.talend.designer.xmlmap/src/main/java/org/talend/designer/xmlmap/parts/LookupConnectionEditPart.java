@@ -70,7 +70,7 @@ public class LookupConnectionEditPart extends BaseConnectionEditPart {
         }
         TreeNode sourceTreeNode = (TreeNode) model.getSource();
         List<IConnection> outConns = new ArrayList<IConnection>();
-        TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(sourceTreeNode);
+        TreeNode inputTreeNodeRoot = XmlMapUtil.getTreeNodeRoot(sourceTreeNode);
         if (inputTreeNodeRoot != null) {
             InputXmlTree inputTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
             outConns.addAll(XmlMapUtil.getAllNodeLookConnections(inputTree));

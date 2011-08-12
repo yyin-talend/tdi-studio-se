@@ -88,13 +88,12 @@ public class CreateElementAction extends SelectionAction {
             }
 
             if (open == Window.OK && mapperManager != null) {
+                TreeNode docRoot = XmlMapUtil.getTreeNodeRoot(parent);
                 if (input) {
-                    TreeNode docRoot = XmlMapUtil.getInputTreeNodeRoot(parent);
                     if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
                         mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) docRoot.eContainer());
                     }
                 } else {
-                    TreeNode docRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) parent);
                     if (docRoot != null && docRoot.eContainer() instanceof OutputXmlTree) {
                         mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) docRoot.eContainer());
                     }

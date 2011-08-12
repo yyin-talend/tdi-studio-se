@@ -120,8 +120,6 @@ public abstract class XmlTreeSchemaTableView extends AbstractExtendedTableViewer
         this.getTableViewerCreator().getTableViewer().refresh();
     }
 
-    protected abstract String validateNameSpace(String newValue);
-
     /*
      * (non-Javadoc)
      * 
@@ -130,5 +128,15 @@ public abstract class XmlTreeSchemaTableView extends AbstractExtendedTableViewer
     @Override
     public Composite getParentComposite() {
         return mainComposite;
+    }
+
+    protected String validateNameSpace(String newValue) {
+        if ((newValue.indexOf("(") != -1 || newValue.indexOf(")") != -1)
+                && !newValue.equals(XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX)) {
+            isValidName = false;
+            return "Namespace Prefix is invalid";
+        }
+        return null;
+
     }
 }

@@ -22,7 +22,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
@@ -84,13 +83,12 @@ public class CreateAttributeAction extends SelectionAction {
                 parent.setExpression("");
             }
             if (open == Window.OK && mapperManager != null) {
+                TreeNode docRoot = XmlMapUtil.getTreeNodeRoot(parent);
                 if (input) {
-                    TreeNode docRoot = XmlMapUtil.getInputTreeNodeRoot(parent);
                     if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
                         mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) docRoot.eContainer());
                     }
                 } else {
-                    TreeNode docRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) parent);
                     if (docRoot != null && docRoot.eContainer() instanceof OutputXmlTree) {
                         mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) docRoot.eContainer());
                     }

@@ -307,7 +307,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             case XmlmapPackage.TREE_NODE__NAME:
                 treeNodeFigure.getElement().getBranchContent().updataNameFigure();
                 break;
-            case XmlmapPackage.OUTPUT_TREE_NODE__DEFAULT_VALUE:
+            case XmlmapPackage.TREE_NODE__DEFAULT_VALUE:
                 treeNodeFigure.getElement().getBranchContent().updateDefaultValueFigure();
                 break;
             case XmlmapPackage.TREE_NODE__TYPE:
@@ -316,7 +316,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 break;
             case XmlmapPackage.TREE_NODE__EXPRESSION:
                 if (getModel() instanceof TreeNode && !(getModel() instanceof OutputTreeNode)) {
-                    TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) getModel());
+                    TreeNode inputTreeNodeRoot = XmlMapUtil.getTreeNodeRoot((TreeNode) getModel());
                     if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
                         InputXmlTree inputTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
                         if (inputTree.isLookup()) {

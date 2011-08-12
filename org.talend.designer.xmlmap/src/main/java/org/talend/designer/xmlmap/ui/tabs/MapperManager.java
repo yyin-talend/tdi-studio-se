@@ -162,14 +162,14 @@ public class MapperManager implements ISelectionChangedListener {
                     AbstractNode model = (AbstractNode) ((AbstractNodePart) firstElement).getModel();
                     boolean isInputMain = false;
                     if (model instanceof OutputTreeNode) {
-                        OutputTreeNode outputTreeNodeRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) model);
+                        OutputTreeNode outputTreeNodeRoot = (OutputTreeNode) XmlMapUtil.getTreeNodeRoot((OutputTreeNode) model);
                         if (outputTreeNodeRoot != null && outputTreeNodeRoot.eContainer() instanceof OutputXmlTree) {
                             selectOutputXmlTree((OutputXmlTree) outputTreeNodeRoot.eContainer());
 
                             onSelectedEntries((IStructuredSelection) event.getSelection(), selectedOutputTree);
                         }
                     } else if (model instanceof TreeNode) {
-                        TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) model);
+                        TreeNode inputTreeNodeRoot = XmlMapUtil.getTreeNodeRoot((TreeNode) model);
                         if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
                             selectInputXmlTree((InputXmlTree) inputTreeNodeRoot.eContainer());
                             isInputMain = !((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();

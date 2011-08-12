@@ -24,6 +24,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
@@ -46,6 +47,8 @@ public class ImportTreeFromXml extends SelectionAction {
 
     private Shell shell;
 
+    private boolean input;
+
     public static final String ID = "org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml";
 
     public ImportTreeFromXml(IWorkbenchPart part, Shell shell) {
@@ -62,14 +65,19 @@ public class ImportTreeFromXml extends SelectionAction {
         String file = f.open();
         if (file != null) {
             list = TreeUtil.getFoxTreeNodes(file);
-            TreeNode treeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(parentNode);
+            TreeNode treeNodeRoot = XmlMapUtil.getTreeNodeRoot(parentNode);
 
             XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
             parentNode.getChildren().clear();
             prepareEmfTreeNode(list, parentNode);
 
             if (parentNode.getChildren().isEmpty()) {
-                TreeNode rootNode = XmlmapFactory.eINSTANCE.createTreeNode();
+                TreeNode rootNode = null;
+                if (input) {
+                    rootNode = XmlmapFactory.eINSTANCE.createTreeNode();
+                } else {
+                    rootNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                }
                 rootNode.setName("root");
                 rootNode.setNodeType(NodeType.ELEMENT);
                 rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
@@ -78,8 +86,10 @@ public class ImportTreeFromXml extends SelectionAction {
                 showError();
             }
 
-            if (mapperManager != null && parentNode.eContainer() instanceof InputXmlTree) {
+            if (parentNode.eContainer() instanceof InputXmlTree) {
                 mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
+            } else if (parentNode.eContainer() instanceof OutputXmlTree) {
+                mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
             }
             if (treeNodeRoot.eContainer() instanceof AbstractInOutTree) {
                 mapperManager.getProblemsAnalyser().checkLoopProblems((AbstractInOutTree) treeNodeRoot.eContainer());
@@ -95,18 +105,26 @@ public class ImportTreeFromXml extends SelectionAction {
         }
         String xPath = parent.getXpath();
         for (FOXTreeNode foxNode : list) {
-            TreeNode createTreeNode = XmlmapFactory.eINSTANCE.createTreeNode();
+            TreeNode createTreeNode = null;
+            if (input) {
+                createTreeNode = XmlmapFactory.eINSTANCE.createTreeNode();
+            } else {
+                createTreeNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+            }
             createTreeNode.setName(foxNode.getLabel());
             if (foxNode instanceof Element) {
                 createTreeNode.setNodeType(NodeType.ELEMENT);
             } else if (foxNode instanceof Attribute) {
                 createTreeNode.setNodeType(NodeType.ATTRIBUT);
             } else if (foxNode instanceof NameSpaceNode) {
-                // createTreeNode.setNodeType(NodeType.NAME_SPACE);
-                continue;
+                createTreeNode.setNodeType(NodeType.NAME_SPACE);
+                createTreeNode.setDefaultValue(foxNode.getDefaultValue());
+                if (createTreeNode.getName() == null || createTreeNode.getName().equals("")) {
+                    createTreeNode.setName(XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX);
+                }
             }
             createTreeNode.setXpath(XmlMapUtil.getXPath(xPath, createTreeNode.getName(), createTreeNode.getNodeType()));
-            if (foxNode.getDataType() != null) {
+            if (foxNode.getDataType() != null && "".equals(foxNode.getDataType())) {
                 createTreeNode.setType(foxNode.getDataType());
             } else {
                 createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
@@ -132,7 +150,7 @@ public class ImportTreeFromXml extends SelectionAction {
             if (object instanceof TreeNodeEditPart) {
                 TreeNodeEditPart parentPart = (TreeNodeEditPart) object;
                 parentNode = (TreeNode) parentPart.getModel();
-                if (parentNode.eContainer() instanceof InputXmlTree && XmlMapUtil.DOCUMENT.equals(parentNode.getType())) {
+                if (parentNode.eContainer() instanceof AbstractInOutTree && XmlMapUtil.DOCUMENT.equals(parentNode.getType())) {
                     return true;
                 }
             }
@@ -147,4 +165,13 @@ public class ImportTreeFromXml extends SelectionAction {
     protected void showError() {
         MessageDialog.openError(null, "Error", "Import fail, please check your xml file!");
     }
+
+    public boolean isInput() {
+        return input;
+    }
+
+    public void setInput(boolean input) {
+        this.input = input;
+    }
+
 }

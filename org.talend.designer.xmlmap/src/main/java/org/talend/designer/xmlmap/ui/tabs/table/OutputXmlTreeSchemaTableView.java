@@ -102,14 +102,4 @@ public class OutputXmlTreeSchemaTableView extends XmlTreeSchemaTableView {
         tableViewerCreator.setCellModifier(new XmlCellModifier(tableViewerCreator));
     }
 
-    protected String validateNameSpace(String newValue) {
-        if ((newValue.indexOf("(") != -1 || newValue.indexOf(")") != -1)
-                && !newValue.equals(XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX)) {
-            isValidName = false;
-            return "Namespace Prefix is invalid";
-        }
-        return null;
-
-    }
-
 }

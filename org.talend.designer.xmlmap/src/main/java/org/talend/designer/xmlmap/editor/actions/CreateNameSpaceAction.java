@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor.actions;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -31,12 +32,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.commons.ui.swt.formtools.LabelledText;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
-import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
+import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
@@ -46,16 +47,18 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.Strin
  */
 public class CreateNameSpaceAction extends SelectionAction {
 
-    private OutputTreeNode parent;
+    private TreeNode parent;
 
     private MapperManager mapperManager;
 
-    public static final String ID = "org.talend.designer.xmlmap.editor.actions.CreateNameSpaceAction";
+    private boolean input;
+
+    public static final String ID = "org.talend.designer.xmlmap.editor.actions.CreateNameSapceInput";
 
     public CreateNameSpaceAction(IWorkbenchPart part) {
         super(part);
-        setId(ID);
         setText("Set A Namespace");
+        setId(ID);
     }
 
     @Override
@@ -77,7 +80,12 @@ public class CreateNameSpaceAction extends SelectionAction {
             }
         }
 
-        OutputTreeNode createdNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+        TreeNode createdNode = null;
+        if (input) {
+            createdNode = XmlmapFactory.eINSTANCE.createTreeNode();
+        } else {
+            createdNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+        }
         createdNode.setName(prefix);
         createdNode.setNodeType(NodeType.NAME_SPACE);
         createdNode.setDefaultValue(defaultValue);
@@ -85,14 +93,32 @@ public class CreateNameSpaceAction extends SelectionAction {
         String label = createdNode.getName();
         if (prefix == null || "".equals(prefix)) {
             label = XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX;
+            createdNode.setName(XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX);
         }
 
         createdNode.setXpath(XmlMapUtil.getXPath(parent.getXpath(), label, NodeType.NAME_SPACE));
 
-        parent.getChildren().add(createdNode);
-        TreeNode docRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) parent);
+        final EList<TreeNode> children = parent.getChildren();
+
+        int index = 0;
+        for (int i = 0; i < children.size(); i++) {
+            final TreeNode treeNode = children.get(i);
+            if (treeNode.getNodeType() == NodeType.NAME_SPACE) {
+                continue;
+            } else {
+                index = i;
+                break;
+            }
+        }
+        children.add(index, createdNode);
+
+        // children.add(createdNode);
+
+        TreeNode docRoot = XmlMapUtil.getTreeNodeRoot(parent);
         if (docRoot != null && docRoot.eContainer() instanceof OutputXmlTree) {
             mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) docRoot.eContainer());
+        } else if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
+            mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) docRoot.eContainer());
         }
     }
 
@@ -102,9 +128,9 @@ public class CreateNameSpaceAction extends SelectionAction {
             return false;
         } else {
             Object object = getSelectedObjects().get(0);
-            if (object instanceof OutputTreeNodeEditPart) {
-                OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) object;
-                this.parent = (OutputTreeNode) nodePart.getModel();
+            if (object instanceof TreeNodeEditPart) {
+                TreeNodeEditPart nodePart = (TreeNodeEditPart) object;
+                this.parent = (TreeNode) nodePart.getModel();
                 boolean isElement = NodeType.ELEMENT.equals(parent.getNodeType());
                 if (isElement && !XmlMapUtil.DOCUMENT.equals(parent.getType())) {
                     return true;
@@ -242,6 +268,14 @@ public class CreateNameSpaceAction extends SelectionAction {
             return this.nsValue;
         }
 
+    }
+
+    public boolean isInput() {
+        return input;
+    }
+
+    public void setInput(boolean input) {
+        this.input = input;
     }
 
 }

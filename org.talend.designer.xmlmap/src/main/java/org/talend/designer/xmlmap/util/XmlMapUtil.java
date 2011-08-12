@@ -28,7 +28,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
@@ -239,30 +238,19 @@ public class XmlMapUtil {
 
     }
 
-    public static TreeNode getInputTreeNodeRoot(TreeNode model) {
-        if (model.eContainer() instanceof InputXmlTree) {
+    public static TreeNode getTreeNodeRoot(TreeNode model) {
+        if (model.eContainer() instanceof AbstractInOutTree) {
             return model;
         } else if (model.eContainer() instanceof TreeNode) {
-            return getInputTreeNodeRoot((TreeNode) model.eContainer());
-        }
-        return null;
-    }
-
-    public static OutputTreeNode getOutputTreeNodeRoot(OutputTreeNode model) {
-        if (model.eContainer() instanceof OutputXmlTree) {
-            return model;
-        } else if (model.eContainer() instanceof OutputTreeNode) {
-            return getOutputTreeNodeRoot((OutputTreeNode) model.eContainer());
+            return getTreeNodeRoot((TreeNode) model.eContainer());
         }
         return null;
     }
 
     public static XmlMapData getXmlMapData(AbstractNode treeNode) {
         AbstractNode rootNode = null;
-        if (treeNode instanceof OutputTreeNode) {
-            rootNode = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) treeNode);
-        } else if (treeNode instanceof TreeNode) {
-            rootNode = XmlMapUtil.getInputTreeNodeRoot((TreeNode) treeNode);
+        if (treeNode instanceof TreeNode) {
+            rootNode = XmlMapUtil.getTreeNodeRoot((TreeNode) treeNode);
         } else if (treeNode instanceof VarNode) {
             return (XmlMapData) treeNode.eContainer().eContainer();
         }

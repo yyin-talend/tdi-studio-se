@@ -287,14 +287,4 @@ public class InputXmlTreeSchemaTableView extends XmlTreeSchemaTableView {
         };
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.xmlmap.ui.tabs.table.XmlTreeSchemaTableView#validateNameSpace(java.lang.String)
-     */
-    @Override
-    protected String validateNameSpace(String newValue) {
-        return null;
-    }
-
 }

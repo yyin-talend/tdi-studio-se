@@ -19,8 +19,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
-import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
@@ -28,7 +28,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.Strin
  */
 public class FixValueAction extends SelectionAction {
 
-    private OutputTreeNode selectedNode;
+    private TreeNode selectedNode;
 
     public static final String ID = "org.talend.designer.xmlmap.editor.actions.FixValueAction";
 
@@ -68,9 +68,9 @@ public class FixValueAction extends SelectionAction {
             return false;
         } else {
             Object object = getSelectedObjects().get(0);
-            if (object instanceof OutputTreeNodeEditPart) {
-                OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) object;
-                this.selectedNode = (OutputTreeNode) nodePart.getModel();
+            if (object instanceof TreeNodeEditPart) {
+                TreeNodeEditPart nodePart = (TreeNodeEditPart) object;
+                this.selectedNode = (TreeNode) nodePart.getModel();
                 boolean isNameSpace = NodeType.NAME_SPACE.equals(selectedNode.getNodeType());
                 if (isNameSpace && (selectedNode.getExpression() == null || "".equals(selectedNode.getExpression()))) {
                     return true;

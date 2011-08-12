@@ -84,7 +84,7 @@ public class SetGroupAction extends SelectionAction {
             OutputTreeNode selectedNode = (OutputTreeNode) nodePart.getModel();
             OutputTreeNode rootNode = null;
             if (loopNode instanceof OutputTreeNode) {
-                rootNode = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) loopNode);
+                rootNode = (OutputTreeNode) XmlMapUtil.getTreeNodeRoot(loopNode);
             }
             Object parentNode = loopNode.eContainer();
             if (parentNode instanceof OutputTreeNode && rootNode != null) {
@@ -121,7 +121,7 @@ public class SetGroupAction extends SelectionAction {
     public void run() {
         OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
         OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
-        OutputTreeNode outputDocumentRoot = XmlMapUtil.getOutputTreeNodeRoot(model);
+        OutputTreeNode outputDocumentRoot = (OutputTreeNode) XmlMapUtil.getTreeNodeRoot(model);
         if (outputDocumentRoot != null) {
             XmlMapUtil.cleanSubGroup(outputDocumentRoot);
         }

@@ -207,7 +207,7 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
                 return;
             }
             boolean isLookup = false;
-            TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) getTargetEditPart().getModel());
+            TreeNode inputTreeNodeRoot = XmlMapUtil.getTreeNodeRoot((TreeNode) getTargetEditPart().getModel());
             InputXmlTree targetTree = null;
             if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
                 isLookup = ((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
@@ -219,7 +219,7 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
             if (isLookup) {
                 for (Object obj : transferedObj.getToTransfer()) {
                     if (obj instanceof TreeNodeEditPart) {
-                        inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) ((TreeNodeEditPart) obj).getModel());
+                        inputTreeNodeRoot = XmlMapUtil.getTreeNodeRoot((TreeNode) ((TreeNodeEditPart) obj).getModel());
                         if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
                             InputXmlTree sourceTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
                             if (targetTree == sourceTree) {
@@ -276,7 +276,7 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
             InputXmlTree targetTree = (InputXmlTree) ((InputXmlTreeEditPart) getTargetEditPart()).getModel();
             for (Object obj : transferedObj.getToTransfer()) {
                 if (obj instanceof TreeNodeEditPart) {
-                    TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot((TreeNode) ((TreeNodeEditPart) obj).getModel());
+                    TreeNode inputTreeNodeRoot = XmlMapUtil.getTreeNodeRoot((TreeNode) ((TreeNodeEditPart) obj).getModel());
                     if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
                         InputXmlTree sourceTree = (InputXmlTree) inputTreeNodeRoot.eContainer();
                         if (sourceTree.eContainer() instanceof XmlMapData) {

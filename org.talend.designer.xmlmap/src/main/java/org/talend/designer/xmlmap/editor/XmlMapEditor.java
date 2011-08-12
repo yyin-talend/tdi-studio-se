@@ -34,10 +34,8 @@ import org.talend.designer.xmlmap.editor.actions.CreateElementAction;
 import org.talend.designer.xmlmap.editor.actions.CreateNameSpaceAction;
 import org.talend.designer.xmlmap.editor.actions.DeleteTreeNodeAction;
 import org.talend.designer.xmlmap.editor.actions.FixValueAction;
+import org.talend.designer.xmlmap.editor.actions.ImportTreeFromRepository;
 import org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml;
-import org.talend.designer.xmlmap.editor.actions.InputImportTreeFromRepository;
-import org.talend.designer.xmlmap.editor.actions.OutputImportTreeFromRepository;
-import org.talend.designer.xmlmap.editor.actions.OutputImportTreeFromXml;
 import org.talend.designer.xmlmap.editor.actions.SetGroupAction;
 import org.talend.designer.xmlmap.editor.actions.SetLoopAction;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -88,12 +86,6 @@ public class XmlMapEditor extends GraphicalEditor {
      */
     protected void createActions() {
 
-        OutputImportTreeFromXml outputImportAction = new OutputImportTreeFromXml(this, getGraphicalViewer().getControl()
-                .getShell());
-        outputImportAction.setMapperManager(mapperManager);
-        getActionRegistry().registerAction(outputImportAction);
-        getSelectionActions().add(outputImportAction.getId());
-
         ImportTreeFromXml importAction = new ImportTreeFromXml(this, getGraphicalViewer().getControl().getShell());
         importAction.setMapperManager(mapperManager);
         getActionRegistry().registerAction(importAction);
@@ -123,22 +115,16 @@ public class XmlMapEditor extends GraphicalEditor {
         getActionRegistry().registerAction(groupAction);
         getSelectionActions().add(groupAction.getId());
 
-        InputImportTreeFromRepository importFromRepository = new InputImportTreeFromRepository(this, getGraphicalViewer()
-                .getControl().getShell());
+        ImportTreeFromRepository importFromRepository = new ImportTreeFromRepository(this, getGraphicalViewer().getControl()
+                .getShell());
         importFromRepository.setMapperManager(mapperManager);
         getActionRegistry().registerAction(importFromRepository);
         getSelectionActions().add(importFromRepository.getId());
 
-        OutputImportTreeFromRepository outputImportFromRepository = new OutputImportTreeFromRepository(this, getGraphicalViewer()
-                .getControl().getShell());
-        outputImportFromRepository.setMapperManager(mapperManager);
-        getActionRegistry().registerAction(outputImportFromRepository);
-        getSelectionActions().add(outputImportFromRepository.getId());
-
-        CreateNameSpaceAction createNameSpace = new CreateNameSpaceAction(this);
-        createNameSpace.setMapperManager(mapperManager);
-        getActionRegistry().registerAction(createNameSpace);
-        getSelectionActions().add(createNameSpace.getId());
+        CreateNameSpaceAction createNameSpaceInput = new CreateNameSpaceAction(this);
+        createNameSpaceInput.setMapperManager(mapperManager);
+        getActionRegistry().registerAction(createNameSpaceInput);
+        getSelectionActions().add(createNameSpaceInput.getId());
 
         FixValueAction fixValueAction = new FixValueAction(this);
         getActionRegistry().registerAction(fixValueAction);
@@ -234,9 +220,9 @@ public class XmlMapEditor extends GraphicalEditor {
                 if (object instanceof OutputTreeNodeEditPart) {
                     OutputTreeNode model = (OutputTreeNode) ((OutputTreeNodeEditPart) object).getModel();
                     if (XmlMapUtil.DOCUMENT.equals(model.getType()) || XmlMapUtil.getXPathLength(model.getXpath()) > 2) {
-                        OutputImportTreeFromXml importAction = (OutputImportTreeFromXml) getActionRegistry().getAction(
-                                OutputImportTreeFromXml.ID);
+                        ImportTreeFromXml importAction = (ImportTreeFromXml) getActionRegistry().getAction(ImportTreeFromXml.ID);
                         importAction.update(object);
+                        importAction.setInput(false);
                         if (importAction.isEnabled()) {
                             menu.add(importAction);
                         }
@@ -260,6 +246,7 @@ public class XmlMapEditor extends GraphicalEditor {
                         CreateNameSpaceAction createNameSpace = (CreateNameSpaceAction) getActionRegistry().getAction(
                                 CreateNameSpaceAction.ID);
                         createNameSpace.update(object);
+                        createNameSpace.setInput(false);
                         if (createNameSpace.isEnabled()) {
                             menu.add(createNameSpace);
                         }
@@ -290,9 +277,10 @@ public class XmlMapEditor extends GraphicalEditor {
                             menu.add(grouptAction);
                         }
 
-                        OutputImportTreeFromRepository importFromRepository = (OutputImportTreeFromRepository) getActionRegistry()
-                                .getAction(OutputImportTreeFromRepository.ID);
+                        ImportTreeFromRepository importFromRepository = (ImportTreeFromRepository) getActionRegistry().getAction(
+                                ImportTreeFromRepository.ID);
                         importFromRepository.update(object);
+                        importFromRepository.setInput(false);
                         if (importFromRepository.isEnabled()) {
                             menu.add(importFromRepository);
                         }
@@ -301,6 +289,7 @@ public class XmlMapEditor extends GraphicalEditor {
 
                 } else if (object instanceof TreeNodeEditPart) {
                     ImportTreeFromXml importAction = (ImportTreeFromXml) getActionRegistry().getAction(ImportTreeFromXml.ID);
+                    importAction.setInput(true);
                     importAction.update(object);
                     if (importAction.isEnabled()) {
                         menu.add(importAction);
@@ -322,6 +311,14 @@ public class XmlMapEditor extends GraphicalEditor {
                         menu.add(createAttribute);
                     }
 
+                    CreateNameSpaceAction createNameSpace = (CreateNameSpaceAction) getActionRegistry().getAction(
+                            CreateNameSpaceAction.ID);
+                    createNameSpace.setInput(true);
+                    createNameSpace.update(object);
+                    if (createNameSpace.isEnabled()) {
+                        menu.add(createNameSpace);
+                    }
+
                     DeleteTreeNodeAction deleteAction = (DeleteTreeNodeAction) getActionRegistry().getAction(
                             DeleteTreeNodeAction.ID);
                     deleteAction.setInput(true);
@@ -336,8 +333,9 @@ public class XmlMapEditor extends GraphicalEditor {
                         menu.add(loopAction);
                     }
 
-                    InputImportTreeFromRepository importFromRepository = (InputImportTreeFromRepository) getActionRegistry()
-                            .getAction(InputImportTreeFromRepository.ID);
+                    ImportTreeFromRepository importFromRepository = (ImportTreeFromRepository) getActionRegistry().getAction(
+                            ImportTreeFromRepository.ID);
+                    importFromRepository.setInput(true);
                     importFromRepository.update(object);
                     if (importFromRepository.isEnabled()) {
                         menu.add(importFromRepository);

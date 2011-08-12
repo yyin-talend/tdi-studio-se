@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
@@ -85,13 +84,8 @@ public class DeleteTreeNodeAction extends SelectionAction {
                 TreeNode treeNode = (TreeNode) nodePart.getModel();
                 if (treeNode.eContainer() instanceof TreeNode) {
                     TreeNode parent = (TreeNode) treeNode.eContainer();
-                    if (input) {
-                        // find root before remove
-                        if (docRoot == null) {
-                            docRoot = XmlMapUtil.getInputTreeNodeRoot(parent);
-                        }
-                    } else {
-                        docRoot = XmlMapUtil.getOutputTreeNodeRoot((OutputTreeNode) parent);
+                    if (docRoot == null) {
+                        docRoot = XmlMapUtil.getTreeNodeRoot(parent);
                     }
                     XmlMapUtil.detachNodeConnections(treeNode, mapperManager.getCopyOfMapData(), true);
 

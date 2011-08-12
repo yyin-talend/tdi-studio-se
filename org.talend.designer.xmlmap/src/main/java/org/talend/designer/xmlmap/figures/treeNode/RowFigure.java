@@ -51,7 +51,7 @@ public class RowFigure extends Figure {
         if (treeNode instanceof OutputTreeNode) {
             isLookup = true;
         } else {
-            TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(treeNode);
+            TreeNode inputTreeNodeRoot = XmlMapUtil.getTreeNodeRoot(treeNode);
             if (inputTreeNodeRoot != null && inputTreeNodeRoot.eContainer() instanceof InputXmlTree) {
                 isLookup = ((InputXmlTree) inputTreeNodeRoot.eContainer()).isLookup();
             }

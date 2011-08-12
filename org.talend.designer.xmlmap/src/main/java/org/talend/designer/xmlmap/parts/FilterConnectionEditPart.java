@@ -68,7 +68,7 @@ public class FilterConnectionEditPart extends BaseConnectionEditPart {
             return 0;
         }
         TreeNode sourceTreeNode = (TreeNode) model.getSource();
-        TreeNode inputTreeNodeRoot = XmlMapUtil.getInputTreeNodeRoot(sourceTreeNode);
+        TreeNode inputTreeNodeRoot = XmlMapUtil.getTreeNodeRoot(sourceTreeNode);
         List<IConnection> outConns = new ArrayList<IConnection>();
         if (inputTreeNodeRoot != null) {
             EObject eobj = inputTreeNodeRoot.eContainer();

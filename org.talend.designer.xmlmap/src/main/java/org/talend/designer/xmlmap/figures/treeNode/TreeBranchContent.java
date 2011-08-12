@@ -95,8 +95,8 @@ public class TreeBranchContent extends Figure {
     }
 
     private String getDefaultValue(TreeNode node) {
-        if (node instanceof OutputTreeNode && NodeType.NAME_SPACE.equals(node.getNodeType())) {
-            String defaultValue2 = ((OutputTreeNode) node).getDefaultValue();
+        if (NodeType.NAME_SPACE.equals(node.getNodeType())) {
+            String defaultValue2 = node.getDefaultValue();
             if (defaultValue2 == null || "".equals(defaultValue2)) {
                 return "";
             }
