@@ -110,6 +110,9 @@ skeleton="tXMLMap_java.skeleton"
 				    	  	if(leaf.getOutgoingConnections().size() > 0){
 						    	hasOutgoingConnection = true;
 						    }
+						    if(leaf.getLookupOutgoingConnections().size() > 0) {
+						    	hasOutgoingConnection = true;
+						    }
 				    	  	expressionKey = leaf.getExpression();
 							if (expressionKey != null && !"".equals(expressionKey.trim())) {
 							    keysNames.add(columnName);
@@ -160,20 +163,30 @@ skeleton="tXMLMap_java.skeleton"
 		<% if(hasOutgoingConnection){ %>
 			boolean forceLoop<%= tableName %> = false;
 			<%= className %> <%= tableName %>ObjectFromLookup = null;
-		
-			
+			boolean hasResultFromLookupCache<%= tableName %> = false;
+			java.util.Map<String,Object> cacheResult<%=tableName%> = new java.util.HashMap<String,Object>();
 		<%} %>
 <%
 		if( null != aKeysValues && aKeysValues.length != 0 ){
 			isExpressionEmpty = false;
-			if(aKeysValues.length > 0) { 
+			if(aKeysValues.length > 0) {//TD114
+			 	if(isCacheOrReloadLookupMode) {
+			   	%>
+			   		List<Object> lookupCacheKey<%=tableName%> = new java.util.ArrayList<Object>();
+			   	<%	
+			  	} 
 				for (int iKeyName = 0; iKeyName < aKeysNames.length; iKeyName++) {
 				   String typeToGenerate = keysTypes.get(iKeyName);
 				   boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
 				   if("Document".equals(typeToGenerate)) {
 %>
 					<%= tableName %>HashKey.documentLookupResult.put("<%=xPathKeysOfLookupTable.get(expressionKeys.get(iKeyName))%>",<%=aKeysValues[iKeyName] %>);										  
-<%				
+<%					
+					if(isCacheOrReloadLookupMode) {
+					%>
+					lookupCacheKey<%=tableName%>.add(<%=aKeysValues[iKeyName] %>);
+					<%
+					}
 				   } else {
 %>
 				   	 <%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = <%=aKeysValues[iKeyName] %>;
@@ -181,23 +194,29 @@ skeleton="tXMLMap_java.skeleton"
 <%		
 				   }
 				}// end for aKeysNames
+			}//TD114
+			
+			if(findFromBasicType && isCacheOrReloadLookupMode) {
+			%>
+				lookupCacheKey<%=tableName%>.add(<%= tableName %>HashKey);
+			<%	
 			} 
 %>
 
 	<%
 		if(hasOutgoingConnection){
 	%>
-					if(!<%= rejectedInnerJoin %>){
+					if(!<%= rejectedInnerJoin %>){//TD120
 					
 					<% if(isOneOfReloadLookupMode) {//TD110
 							if(isCacheOrReloadLookupMode) {
 								if(findFromBasicType) { %>
-								tHash_Lookup_Cache_<%= tableName %>.lookup( <%= tableName %>HashKey );
+								tHash_Lookup_Cache_<%= tableName %>.lookup(lookupCacheKey<%=tableName%>);
 								<% } else if(findFromDocumentType) { %>
-								tHash_Lookup_Cache_<%= tableName %>.lookup();
+								tHash_Lookup_Cache_<%= tableName %>.lookup(lookupCacheKey<%=tableName%>);
 								<% } %>
 	  							if(tHash_Lookup_Cache_<%= tableName %>.hasNext()) {
-  									tHash_Lookup_<%= tableName %> = tHash_Lookup_Cache_<%= tableName %>;
+  									hasResultFromLookupCache<%= tableName %> = true;
 	  							} else {
 					<%
 							}
@@ -236,12 +255,12 @@ skeleton="tXMLMap_java.skeleton"
 					
 					<% if(!isOneOfReloadLookupMode) {%>
 						<%if(findFromBasicType) {%>
-							tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
+						tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
 						<% } else if(findFromDocumentType) { %>
-							tHash_Lookup_<%= tableName %>.lookup();
+						tHash_Lookup_<%= tableName %>.lookup();
 						<% } %>
 					<% } %>
-						if(tHash_Lookup_<%= tableName %>.hasNext()){
+						if(hasResultFromLookupCache<%=tableName %>  || tHash_Lookup_<%= tableName %>.hasNext()){
 						
 						} else {
 						<% if(isInnerJoin) {//inner join,not find and should reject data(not Document)%>
@@ -251,60 +270,85 @@ skeleton="tXMLMap_java.skeleton"
 							<%=tableName%> = <%=tableName%>Default;
 						<% } %>
 						}
-					}
+					}//TD120
 				   
-				  	<% if(findFromDocumentType) {%>
-				   	isMatchDocRow<%=cid%> = false;
-				  	<% } %>
-					while (tHash_Lookup_<%=tableName%>.hasNext()) { 
-						<%=tableName%>Struct fromLookup_<%=tableName%> = null;
-						<%=tableName%> = <%=tableName%>Default;
-						fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
-						if (fromLookup_<%=tableName%> != null) {
-						<% if(findFromDocumentType || hasOutputFromLookupDoc) {%>
-							//begin to lookup Document Object (case 1:lookup doc key exists),(case 2:lookup doc key not exists but lookup line doc output exist)
-							Document doc = fromLookup_<%=tableName%>.<%=documentColumn%>;
-							java.util.List<String> xPathAsOutput = new java.util.ArrayList<String>();
-						<%
-						for(String xpath : xPathAsOutput) {
-						%>
-							xPathAsOutput.add("<%=xpath%>");
-						<%
-						}
-						%>
-							List<java.util.Map<String,Object>> result = doc.LookupDocument("<%=loopXPath%>",<%= tableName %>HashKey.documentLookupResult,xPathAsOutput);
-							if(result == null || result.size() == 0) {
-								// not find
-							} else {
-								//find and cache it,now only memory,inner join and unique match mode
-								//once find,not reject.
-								<% if(findFromDocumentType) { %>
-								isMatchDocRow<%=cid%> = true;
-								<% } %>
-								for(java.util.Map<String,Object> docRow : result) {
-									for(String path : docRow.keySet()) {
-										treeNodeAPI_<%=cid %>.put(path, String.valueOf(docRow.get(path)));
+				    if(hasResultFromLookupCache<%= tableName %>) {
+				    	<%if(isCacheOrReloadLookupMode) {%>
+				    	java.util.Map<String,Object> cacheResult = tHash_Lookup_Cache_<%= tableName %>.next();
+				    		<% for(String xpath : xPathAsOutput) { %>
+				    	treeNodeAPI_<%=cid %>.put("<%=xpath%>",String.valueOf(cacheResult.get("<%=xpath%>")));
+				    		<% } %>
+			    		<%=tableName%> = (<%=className%>)cacheResult.get("<%=tableName%>");
+				    	<% } %>
+				    } else {
+					  	<% if(findFromDocumentType) {%>
+					   	isMatchDocRow<%=cid%> = false;
+					  	<% } %>
+						while (tHash_Lookup_<%=tableName%>.hasNext()) { 
+							<%=tableName%>Struct fromLookup_<%=tableName%> = null;
+							<%=tableName%> = <%=tableName%>Default;
+							fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
+							if (fromLookup_<%=tableName%> != null) {
+							<% if(findFromDocumentType || hasOutputFromLookupDoc) {%>
+								//begin to lookup Document Object (case 1:lookup doc key exists),(case 2:lookup doc key not exists but lookup line doc output exist)
+								Document doc = fromLookup_<%=tableName%>.<%=documentColumn%>;
+								java.util.List<String> xPathAsOutput = new java.util.ArrayList<String>();
+							<%
+							for(String xpath : xPathAsOutput) {
+							%>
+								xPathAsOutput.add("<%=xpath%>");
+							<%
+							}
+							%>
+								List<java.util.Map<String,Object>> result = doc.LookupDocument("<%=loopXPath%>",<%= tableName %>HashKey.documentLookupResult,xPathAsOutput);
+								if(result == null || result.size() == 0) {
+									// not find
+								} else {
+									//find and cache it,now only memory,inner join and unique match mode
+									//once find,not reject.
+									<% if(findFromDocumentType) { %>
+									isMatchDocRow<%=cid%> = true;
+									<% } %>
+									for(java.util.Map<String,Object> docRow : result) {
+										for(String path : docRow.keySet()) {
+											treeNodeAPI_<%=cid %>.put(path, String.valueOf(docRow.get(path)));
+											<%if(isCacheOrReloadLookupMode) {%>
+											cacheResult<%=tableName%>.put(path,String.valueOf(docRow.get(path)));
+											<% } %>
+										}
+										
 									}
 									
 								}
-								
+							<% } %>
+								<%=tableName%> = fromLookup_<%=tableName%>;
+								<%if(isCacheOrReloadLookupMode) {%>
+									<%if(findFromDocumentType) {%>
+									if(isMatchDocRow<%=cid%>) {
+										cacheResult<%=tableName%>.put("<%=tableName%>",<%=tableName%>);
+										tHash_Lookup_Cache_<%= tableName %>.put(lookupCacheKey<%=tableName%>,cacheResult<%=tableName%>); 
+									}
+									<% } else { %>
+									cacheResult<%=tableName%>.put("<%=tableName%>",<%=tableName%>); 
+									tHash_Lookup_Cache_<%= tableName %>.put(lookupCacheKey<%=tableName%>,cacheResult<%=tableName%>); 
+									<% } %>
+								<% } %>
 							}
-						<% } %>
-							<%=tableName%> = fromLookup_<%=tableName%>;
 						}
-					}
-					<% if(isInnerJoin && findFromDocumentType) {%>
-				   	<%= rejectedDocInnerJoin %> = !isMatchDocRow<%=cid%>;
-				    <%= rejectedInnerJoin %> = <%= rejectedDocInnerJoin %>;
-				  	<% } %>
-				  	<% if(!isInnerJoin && findFromDocumentType) { %>
-				  	if(!isMatchDocRow<%=cid%>) {
-				  		<%=tableName%> = <%=tableName%>Default;
+						<% if(isInnerJoin && findFromDocumentType) {%>
+					   	<%= rejectedDocInnerJoin %> = !isMatchDocRow<%=cid%> && !hasResultFromLookupCache<%= tableName %>;
+					    <%= rejectedInnerJoin %> = <%= rejectedDocInnerJoin %>;
+					  	<% } %>
+					  	<% if(!isInnerJoin && findFromDocumentType) { %>
+					  	if(!isMatchDocRow<%=cid%> && !hasResultFromLookupCache<%= tableName %>) {
+					  		<%=tableName%> = <%=tableName%>Default;
+					  	}
+					  	<% } %>
+					  	<% if(hasOutputFromLookupDoc && !findFromDocumentType) {//for the case : not lookup doc,but doc output exists%>
+					  		//do nothing
+					  	<% } %>
 				  	}
-				  	<% } %>
-				  	<% if(hasOutputFromLookupDoc && !findFromDocumentType) {//for the case : not lookup doc,but doc output exists%>
-				  		//do nothing
-				  	<% } %>
+				  	
 	<%				
 	}
 	%>

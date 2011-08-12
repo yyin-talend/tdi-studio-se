@@ -119,11 +119,7 @@
 	if(isCacheOrReloadLookupMode) {
 	%>
 	
-	org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_Cache_<%=tableName%> =
-		org.talend.designer.components.lookup.memory.AdvancedMemoryLookup.
-		<<%=tableName%>Struct>getLookup(org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.<%=matchingModeStr%>);
-	
-	org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_Real_<%=tableName%> = null;
+	routines.system.DocumentLookupCache tHash_Lookup_Cache_<%=tableName%> = new routines.system.DocumentLookupCache();
 	<%}
 	if(isAllRows && !isOneOfReloadLookupMode) {
 	%>
