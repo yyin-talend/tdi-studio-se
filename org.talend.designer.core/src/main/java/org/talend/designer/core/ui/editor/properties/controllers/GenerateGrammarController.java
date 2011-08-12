@@ -30,6 +30,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -70,6 +71,8 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
@@ -103,7 +106,24 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         }
 
         public void widgetSelected(SelectionEvent e) {
-            generateJavaFile();
+            // MOD xwang 2011-08-12 make the editor dirty
+            executeCommand(new Command() {
+
+                @Override
+                public void execute() {
+                    Display disp = Display.getCurrent();
+                    if (disp == null) {
+                        disp = Display.getDefault();
+                    }
+                    disp.syncExec(new Runnable() {
+
+                        public void run() {
+                            generateJavaFile();
+                        }
+                    });
+                }
+
+            });
 
             IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                     .findView(IRepositoryView.VIEW_ID);
@@ -262,6 +282,15 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         try {
             RoutineItem returnItem = persistInRoutine(new Path(JOB_NAME), fileCreated, javaClassName);
             addReferenceJavaFile(returnItem, true);
+            // ADD (to line 292) xwang 2011-08-12 add routine dependency in job
+            if (node.getProcess() instanceof org.talend.designer.core.ui.editor.process.Process) {
+                RoutinesParameterType r = TalendFileFactory.eINSTANCE.createRoutinesParameterType();
+                r.setId(returnItem.getProperty().getId());
+                r.setName(returnItem.getProperty().getLabel());
+                List<RoutinesParameterType> routines = new ArrayList<RoutinesParameterType>();
+                routines.add(r);
+                ((org.talend.designer.core.ui.editor.process.Process) node.getProcess()).addGeneratingRoutines(routines);
+            }
             refreshProject();
         } catch (Exception e) {
             ExceptionHandler.process(e);
