@@ -53,7 +53,6 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -311,7 +310,7 @@ public class ComponentsFactory implements IComponentsFactory {
         log.debug(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$
 
         if (!duringLogon) {
-            CorePlugin.getDefault().getRunProcessService().updateLibraries(new HashSet<String>(), null);
+            // CorePlugin.getDefault().getRunProcessService().updateLibraries(new HashSet<String>(), null);
         }
         // TimeMeasure.step("initComponents", "updateLibraries");
 
@@ -606,6 +605,9 @@ public class ComponentsFactory implements IComponentsFactory {
 
         };
         BundleContext context = Platform.getProduct().getDefiningBundle().getBundleContext();
+        // if (context == null) {
+        // context = CodeGeneratorActivator.getDefault().getBundle().getBundleContext();
+        // }
         ServiceReference sref = context.getServiceReference(PackageAdmin.class.getName());
         PackageAdmin admin = (PackageAdmin) context.getService(sref);
 

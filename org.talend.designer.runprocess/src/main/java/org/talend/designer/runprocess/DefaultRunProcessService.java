@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.runprocess;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Level;
@@ -201,7 +200,8 @@ public class DefaultRunProcessService implements IRunProcessService {
     public void updateLibraries(Set<String> jobModuleList, IProcess process) {
         switch (LanguageManager.getCurrentLanguage()) {
         case JAVA:
-            JavaProcessorUtilities.computeLibrariesPath(new HashSet<String>(jobModuleList), null);
+            // JavaProcessorUtilities.computeLibrariesPath(new HashSet<String>(jobModuleList), null);
+            JavaProcessorUtilities.updateLibrariesAndClasspath(process);
         default:
             // nothing
         }

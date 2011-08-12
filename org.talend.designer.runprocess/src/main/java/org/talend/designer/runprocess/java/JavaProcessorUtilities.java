@@ -13,7 +13,10 @@
 package org.talend.designer.runprocess.java;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -28,24 +31,39 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IRepositoryBundleService;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.designer.core.ICamelDesignerCoreService;
+import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 
 /**
@@ -198,6 +216,209 @@ public class JavaProcessorUtilities {
         }
 
         javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
+    }
+
+    /**
+     * DOC ycbai Comment method "updateLibrariesAndClasspath".
+     * 
+     * @param process
+     * @throws CoreException
+     */
+    public static void updateLibrariesAndClasspath(IProcess process) {
+        try {
+            Set<String> neededLibraries = getNeededLibrariesForProcess(process);
+            IRepositoryBundleService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
+
+            // Update libraries of java project.
+            File libDir = getJavaProjectLibFolder();
+            List<String> jarNamesInLib = new ArrayList<String>();
+            File[] jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
+            if (jarFiles != null && jarFiles.length > 0) {
+                for (File file : jarFiles) {
+                    if (file.isFile()) {
+                        String fileName = file.getName();
+                        if (!neededLibraries.contains(fileName)) {
+                            FilesUtils.removeFile(file);
+                        } else {
+                            jarNamesInLib.add(file.getName());
+                        }
+                    }
+                }
+            }
+            for (String lib : neededLibraries) {
+                if (!jarNamesInLib.contains(lib)) {
+                    repositoryBundleService.retrieve(lib, libDir.getAbsolutePath());
+                    jarNamesInLib.add(lib);
+                }
+            }
+
+            // Update classpath of java project.
+            boolean modified = false;
+            IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+            IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY));
+            IClasspathEntry[] classpathEntryArray = javaProject.getRawClasspath();
+            if (!ArrayUtils.contains(classpathEntryArray, jreClasspathEntry)) {
+                classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, jreClasspathEntry);
+                modified = true;
+            }
+            if (!ArrayUtils.contains(classpathEntryArray, classpathEntry)) {
+                IClasspathEntry source = null;
+                for (IClasspathEntry entry : classpathEntryArray) {
+                    if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+                        source = entry;
+                        break;
+                    }
+                }
+                if (source != null) {
+                    classpathEntryArray = (IClasspathEntry[]) ArrayUtils.remove(classpathEntryArray,
+                            ArrayUtils.indexOf(classpathEntryArray, source));
+                }
+                classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, classpathEntry);
+                modified = true;
+            }
+            jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
+            for (File jarFile : jarFiles) {
+                IClasspathEntry newEntry = JavaCore.newLibraryEntry(new Path(jarFile.getAbsolutePath()), null, null);
+                if (!ArrayUtils.contains(classpathEntryArray, newEntry)) {
+                    classpathEntryArray = (IClasspathEntry[]) ArrayUtils.add(classpathEntryArray, newEntry);
+                    modified = true;
+                }
+            }
+
+            // sort
+            int exchange = 2; // The first,second library is JVM and SRC.
+            for (String jar : jarNamesInLib) {
+                int index = indexOfEntry(classpathEntryArray, jar);
+                if (index < 0) {
+                    throw new BusinessException("Missing jar:" + jar);
+                }
+                if (index >= 0 && index != exchange) {
+                    // exchange
+                    IClasspathEntry entry = classpathEntryArray[index];
+                    IClasspathEntry first = classpathEntryArray[exchange];
+                    classpathEntryArray[index] = first;
+                    classpathEntryArray[exchange] = entry;
+                }
+                exchange++;
+            }
+
+            List<IClasspathEntry> classpathEntryList = new ArrayList<IClasspathEntry>(Arrays.asList(classpathEntryArray));
+            for (Iterator<IClasspathEntry> iterator = classpathEntryList.iterator(); iterator.hasNext();) {
+                IClasspathEntry entry = iterator.next();
+                if (classpathEntryList.indexOf(entry) > 1) {
+                    IPath path = entry.getPath();
+                    if (path != null && !jarNamesInLib.contains(path.lastSegment())) {
+                        iterator.remove();
+                        modified = true;
+                    }
+                }
+            }
+            classpathEntryArray = (IClasspathEntry[]) classpathEntryList.toArray(new IClasspathEntry[classpathEntryList.size()]);
+            if (modified) {
+                javaProject.setRawClasspath(classpathEntryArray, null);
+            }
+            javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
+        } catch (JavaModelException e) {
+            ExceptionHandler.process(e);
+        } catch (BusinessException e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    /**
+     * DOC ycbai Comment method "getNeededLibrariesForProcess".
+     * 
+     * @return
+     */
+    public static Set<String> getNeededLibrariesForProcess(IProcess process) {
+        Set<String> neededLibraries = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(process.getId(),
+                process.getVersion());
+        if (process == null || !(process instanceof IProcess2)) {
+            if (neededLibraries == null) {
+                neededLibraries = process.getNeededLibraries(true);
+                if (neededLibraries == null) {
+                    neededLibraries = new HashSet<String>();
+                    for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
+                        neededLibraries.add(moduleNeeded.getModuleName());
+                    }
+                }
+            } else {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
+            }
+            return neededLibraries;
+        }
+        Property property = ((IProcess2) process).getProperty();
+        if (neededLibraries == null) {
+            neededLibraries = process.getNeededLibraries(true);
+            if (neededLibraries == null) {
+                neededLibraries = new HashSet<String>();
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
+            }
+        } else {
+            if (property != null && property.getItem() instanceof ProcessItem) {
+                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines((ProcessItem) property
+                        .getItem());
+                for (ModuleNeeded moduleNeeded : modulesNeededs) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
+
+            } else {
+                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+                    neededLibraries.add(moduleNeeded.getModuleName());
+                }
+            }
+        }
+        if (property != null && GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (camelService.isInstanceofCamel(property.getItem())) {
+                ERepositoryObjectType beansType = camelService.getBeansType();
+                List<IRepositoryViewObject> collectedBeans = new ArrayList<IRepositoryViewObject>();
+                try {
+                    collectedBeans = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory().getAll(beansType);
+                    for (IRepositoryViewObject object : collectedBeans) {
+                        Item item = object.getProperty().getItem();
+                        if (item instanceof RoutineItem) {
+                            RoutineItem routine = (RoutineItem) item;
+                            EList imports = routine.getImports();
+                            for (Object o : imports) {
+                                IMPORTType type = (IMPORTType) o;
+                                neededLibraries.add(type.getMODULE());
+                            }
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+        }
+        return neededLibraries;
+    }
+
+    /**
+     * DOC ycbai Comment method "getJavaProjectLibPath".
+     * 
+     * @return
+     */
+    public static File getJavaProjectLibFolder() {
+        try {
+            if (javaProject == null) {
+                initializeProject();
+            }
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
+
+        IPath libPath = javaProject.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
+        File libDir = libPath.toFile();
+        if (!libDir.exists()) {
+            libDir.mkdirs();
+        }
+        return libDir;
     }
 
     private static String projectSetup;

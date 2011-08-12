@@ -45,6 +45,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.IRepositoryBundleService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataManager;
@@ -324,8 +325,10 @@ public class ExportItemUtil {
                         }
 
                     }
-
-                    String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
+                    IRepositoryBundleService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
+                    // String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
+                    String path = repositoryBundleService.getOBRRoot().getAbsolutePath();
+                    ;
 
                     for (int j = 0; j < jarNameList.size(); j++) {
                         String jarName = (String) jarNameList.get(j);

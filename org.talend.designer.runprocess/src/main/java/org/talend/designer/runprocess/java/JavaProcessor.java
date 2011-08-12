@@ -21,7 +21,6 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +45,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -77,7 +75,6 @@ import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.jface.text.formatter.MultiPassContentFormatter;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
@@ -88,7 +85,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
@@ -96,22 +92,15 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.JobInfo;
-import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.runprocess.Processor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
@@ -125,7 +114,6 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
-import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.ProjectManager;
 
 /**
@@ -891,75 +879,26 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 classPathSeparator = ":"; //$NON-NLS-1$
             }
         }
-
-        Set<String> neededLibraries = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(process.getId(),
-                process.getVersion());
-
-        if (neededLibraries == null) {
-            neededLibraries = process.getNeededLibraries(true);
-            if (neededLibraries == null) {
-                neededLibraries = new HashSet<String>();
-                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
-                    neededLibraries.add(moduleNeeded.getModuleName());
-                }
-            }
-        } else {
-            if (process instanceof IProcess2 && property != null && property.getItem() instanceof ProcessItem) {
-                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider.getModulesNeededForRoutines((ProcessItem) property
-                        .getItem());
-                for (ModuleNeeded moduleNeeded : modulesNeededs) {
-                    neededLibraries.add(moduleNeeded.getModuleName());
-                }
-
-            } else {
-                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
-                    neededLibraries.add(moduleNeeded.getModuleName());
-                }
-            }
-        }
-        if (property != null && GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                    ICamelDesignerCoreService.class);
-            if (camelService.isInstanceofCamel(property.getItem())) {
-                ERepositoryObjectType beansType = camelService.getBeansType();
-                List<IRepositoryViewObject> collectedBeans = new ArrayList<IRepositoryViewObject>();
-                try {
-                    collectedBeans = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory().getAll(beansType);
-                    for (IRepositoryViewObject object : collectedBeans) {
-                        Item item = object.getProperty().getItem();
-                        if (item instanceof RoutineItem) {
-                            RoutineItem routine = (RoutineItem) item;
-                            EList imports = routine.getImports();
-                            for (Object o : imports) {
-                                IMPORTType type = (IMPORTType) o;
-                                neededLibraries.add(type.getMODULE());
-                            }
-                        }
-                    }
-                } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
-                }
-
-            }
-
-        }
+        Set<String> neededLibraries = JavaProcessorUtilities.getNeededLibrariesForProcess(process);
 
         boolean exportingJob = ProcessorUtilities.isExportConfig();
-        String unixRootPathVar = "$ROOT_PATH";
-        String unixRootPath = unixRootPathVar + "/";
+        String unixRootPathVar = "$ROOT_PATH"; //$NON-NLS-1$
+        String unixRootPath = unixRootPathVar + "/"; //$NON-NLS-1$
 
         StringBuffer libPath = new StringBuffer();
-        File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
-        if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
-            for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
-                if (externalLib.isFile() && neededLibraries.contains(externalLib.getName())) {
+        File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
+        File[] jarFiles = libDir.listFiles(FilesUtils.getAcceptJARFilesFilter());
+        if (jarFiles != null && jarFiles.length > 0) {
+            for (File jarFile : jarFiles) {
+                if (jarFile.isFile() && neededLibraries.contains(jarFile.getName())) {
                     if (!win32 && exportingJob) {
                         libPath.append(unixRootPath);
                     }
                     if (exportingJob) {
-                        libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName()) + classPathSeparator);
+                        libPath.append(new Path(this.getLibraryPath()))
+                                .append("/").append(jarFile.getName()).append(classPathSeparator); //$NON-NLS-1$
                     } else {
-                        libPath.append(new Path(externalLib.getAbsolutePath()).toPortableString() + classPathSeparator);
+                        libPath.append(new Path(jarFile.getAbsolutePath()).toPortableString()).append(classPathSeparator);
                     }
                 }
             }
@@ -1018,7 +957,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         if (exportingJob) {
             libFolder = new Path(this.getLibraryPath()) + classPathSeparator;
         } else {
-            libFolder = new Path(externalLibDirectory.getAbsolutePath()).toPortableString() + classPathSeparator;
+            libFolder = new Path(libDir.getAbsolutePath()).toPortableString() + classPathSeparator;
         }
         String portableCommand = new Path(command).toPortableString();
         String portableProjectPath = new Path(projectPath).toPortableString();

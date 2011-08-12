@@ -45,6 +45,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IRepositoryBundleService;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -208,6 +209,8 @@ public class EmfComponent extends AbstractComponent {
 
     // weak ref used so that memory is not used by a static HashMap instance
     private static SoftReference<Map> optionMapSoftRef;
+
+    private IRepositoryBundleService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
 
     public EmfComponent(String uriString, String bundleId, String name, String pathSource, ComponentsCache cache, boolean isload)
             throws BusinessException {
@@ -1047,7 +1050,8 @@ public class EmfComponent extends AbstractComponent {
         param.setDisplayName(EParameterName.JAVA_LIBRARY_PATH.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
-        param.setValue(CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath());
+        // param.setValue(CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath());
+        param.setValue(repositoryBundleService.getOBRRoot().getAbsolutePath());
         param.setReadOnly(true);
         listParam.add(param);
 
