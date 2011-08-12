@@ -87,9 +87,11 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.ValidationRulesConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
+import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.model.repository.SVNConstant;
@@ -1460,6 +1462,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             EDIFACTConnection edifactConnection = (EDIFACTConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
                     .getConnection();
             createTables(recBinNode, node, repositoryObject, edifactConnection);
+        }
+        for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
+            handler.addNode(type, recBinNode, repositoryObject, node);
         }
     }
 
