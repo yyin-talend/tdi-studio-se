@@ -43,6 +43,7 @@ import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.general.ILibrariesService;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -3520,6 +3521,11 @@ public class Node extends Element implements IGraphicalNode {
 
     public List<? extends IConnection> getOutgoingCamelSortedConnections() {
         return org.talend.core.model.utils.NodeUtil.getOutgoingCamelSortedConnections(this);
+    }
+
+    public List<ModuleNeeded> getModulesNeeded() {
+        // same as the component, but an override is possible in the AbstractNode when generate the code
+        return component.getModulesNeeded();
     }
 
 }

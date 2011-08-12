@@ -590,6 +590,8 @@ public class DataProcess {
                     outgoingConnections.add(0, connection);
                 }
             }
+            // for feature TDI-17041, Impossible to add imports from a virtual component.
+            dataNode.getModulesNeeded().addAll(graphicalNode.getModulesNeeded());
 
             // set informations for the last node, so the outgoing connections.
             INode outputNode = itemsMap.get(multipleComponentManager.getOutput());

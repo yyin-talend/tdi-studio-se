@@ -117,7 +117,7 @@ public class JavaProcessUtil {
 
         List<? extends INode> nodeList = process.getGeneratingNodes();
         for (INode node : nodeList) {
-            List<ModuleNeeded> moduleList = node.getComponent().getModulesNeeded();
+            List<ModuleNeeded> moduleList = node.getModulesNeeded();
             for (ModuleNeeded needed : moduleList) {
                 if (needed.isRequired()) {
                     /**
