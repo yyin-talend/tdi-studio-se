@@ -276,9 +276,19 @@ skeleton="../templates/db_output_bulk.skeleton"
         <%if ((rejectConnName==null && useBatchSize) && ( ("INSERT").equals(dataAction) ||("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
     %>                
     try {
-          if(commitCounter_<%=cid%> > 0){
-			pstmt_<%=cid %>.executeBatch(); 
-			pstmt_<%=cid %>.clearBatch(); 
+    	if(pstmt_<%=cid %> != null) {
+    	<%if(!("true").equals(useExistingConn)) { //check if existing connectionn is not used
+    	%>
+        	if(commitCounter_<%=cid%> > 0){
+
+		<%} else {
+		%>
+			if(nb_line_<%=cid %> > 0) {
+		<%
+		  }
+		%>
+				pstmt_<%=cid %>.executeBatch(); 
+				pstmt_<%=cid %>.clearBatch(); 
 	    	<%if (("INSERT").equals(dataAction)) {
 	    	%>
 	    		insertedCount_<%=cid%> +=pstmt_<%=cid %>.getUpdateCount(); 
@@ -292,7 +302,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
 	    	<%
 	    	}%>
-	    }            	    
+	    	}
+	    }	                	    
     }catch (java.sql.BatchUpdateException e){
     	<%if(("true").equals(dieOnError)) {
     	%>
