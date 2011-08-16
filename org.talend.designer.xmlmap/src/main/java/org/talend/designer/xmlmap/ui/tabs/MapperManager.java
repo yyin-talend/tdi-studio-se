@@ -317,6 +317,7 @@ public class MapperManager implements ISelectionChangedListener {
                                     treeNode.setType((String) event.newValue);
 
                                     if (XmlMapUtil.DOCUMENT.equals(event.newValue)) {
+                                        XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
                                         TreeNode createTreeNode = XmlmapFactory.eINSTANCE.createTreeNode();
                                         createTreeNode.setName("root");
                                         createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
@@ -324,6 +325,7 @@ public class MapperManager implements ISelectionChangedListener {
                                         createTreeNode.setXpath(XmlMapUtil.getXPath(treeNode.getXpath(),
                                                 createTreeNode.getName(), createTreeNode.getNodeType()));
                                         treeNode.getChildren().add(createTreeNode);
+
                                     }
                                     problemsAnalyser.checkLoopProblems(selectedInputTree);
                                     mapperUI.updateStatusBar();
@@ -473,6 +475,7 @@ public class MapperManager implements ISelectionChangedListener {
                                     treeNode.setType((String) event.newValue);
 
                                     if (XmlMapUtil.DOCUMENT.equals(event.newValue)) {
+                                        XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
                                         OutputTreeNode createTreeNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
                                         createTreeNode.setName("root");
                                         createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
@@ -480,6 +483,7 @@ public class MapperManager implements ISelectionChangedListener {
                                         createTreeNode.setXpath(XmlMapUtil.getXPath(treeNode.getXpath(),
                                                 createTreeNode.getName(), createTreeNode.getNodeType()));
                                         treeNode.getChildren().add(createTreeNode);
+
                                     }
                                     problemsAnalyser.checkLoopProblems(selectedOutputTree);
                                     mapperUI.updateStatusBar();
