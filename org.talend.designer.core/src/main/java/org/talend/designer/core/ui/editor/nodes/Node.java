@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -2133,6 +2134,12 @@ public class Node extends Element implements IGraphicalNode {
     @SuppressWarnings("unchecked")
     private void checkParameters() {
         for (IElementParameter param : this.getElementParametersWithChildrens()) {
+            if (param.getFieldType() == EParameterFieldType.CLOSED_LIST) {
+                if (!ArrayUtils.contains(param.getListItemsValue(), param.getValue())) {
+                    Problems.add(ProblemStatus.ERROR, this,
+                            "Unknown value in the list / Value set not supported by the component");
+                }
+            }
             if (param.getName().equals(EParameterName.COMMENT.getName())) {
                 String infoValue = (String) param.getValue();
                 if (infoValue != null && !infoValue.equals("")) { //$NON-NLS-1$                                             
