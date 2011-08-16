@@ -280,7 +280,7 @@ skeleton="tXMLMap_java.skeleton"
 				    		<% } %>
 			    		<%=tableName%> = (<%=className%>)cacheResult.get("<%=tableName%>");
 				    	<% } %>
-				    } else {
+				    } else if(!<%= rejectedInnerJoin %>) {
 					  	<% if(findFromDocumentType) {%>
 					   	isMatchDocRow<%=cid%> = false;
 					  	<% } %>
