@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.exception.SystemException;
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -43,8 +42,6 @@ import org.talend.designer.runprocess.RunProcessPlugin;
 public abstract class ShadowNode extends AbstractNode {
 
     private String componentName;
-
-    private IComponent component;
 
     private IConnection inCnx;
 
@@ -255,7 +252,7 @@ public abstract class ShadowNode extends AbstractNode {
     }
 
     public boolean hasConditionalOutputs() {
-        return component.hasConditionalOutputs();
+        return getComponent().hasConditionalOutputs();
     }
 
     /*
@@ -264,7 +261,7 @@ public abstract class ShadowNode extends AbstractNode {
      * @see org.talend.core.model.process.INode#isMultiplyingOutputs()
      */
     public boolean isMultiplyingOutputs() {
-        return component.isMultiplyingOutputs();
+        return getComponent().isMultiplyingOutputs();
     }
 
     public boolean isExternalNode() {
@@ -318,25 +315,6 @@ public abstract class ShadowNode extends AbstractNode {
 
     public boolean isReadOnly() {
         return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#getComponent()
-     */
-    public IComponent getComponent() {
-        return component;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#setComponent(org.talend.core.model.components.IComponent)
-     */
-    public void setComponent(IComponent component) {
-        this.component = component;
-
     }
 
     public int getColumnNumber() {
