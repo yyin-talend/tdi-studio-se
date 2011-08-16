@@ -133,7 +133,7 @@ public class MapDataHelper {
                 if (XmlMapUtil.DOCUMENT.equals(found.getType())) {
                     EList<TreeNode> children = found.getChildren();
                     if (children.isEmpty()) {
-                        XmlMapUtil.detachConnectionsSouce(found, mapData);
+                        XmlMapUtil.detachConnectionsTarget(found, mapData);
                         TreeNode treeRoot = XmlmapFactory.eINSTANCE.createTreeNode();
                         treeRoot.setName("root");
                         treeRoot.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
