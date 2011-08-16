@@ -1486,13 +1486,17 @@ public class EmfComponent extends AbstractComponent {
                     }
                     param.setArgs(args.toArray(new String[0]));
                 }
+            case TREE_TABLE:
+                param.setValue(new ArrayList<Map<String, Object>>());
+                break;
             default:
                 param.setValue(""); //$NON-NLS-1$
             }
 
             if (!param.getFieldType().equals(EParameterFieldType.TABLE)
                     && !param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
-                    && !param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                    && !param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    && !param.getFieldType().equals(EParameterFieldType.TREE_TABLE)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
@@ -2004,7 +2008,7 @@ public class EmfComponent extends AbstractComponent {
             } else {
                 listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME()); //$NON-NLS-1$
             }
-            if (type != EParameterFieldType.TABLE) {
+            if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE) {
                 listItemsValue[k] = item.getVALUE();
             } else {
                 EParameterFieldType currentField = EParameterFieldType.getFieldTypeByName(item.getFIELD());
@@ -2087,7 +2091,7 @@ public class EmfComponent extends AbstractComponent {
         // hshen 6930
         param.setListItemsNotReadOnlyIf(listNotReadonlyIf);
         param.setListItemsReadOnlyIf(listReadonlyIf);
-        if (type != EParameterFieldType.TABLE) {
+        if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE) {
             Object defaultValue = ""; //$NON-NLS-1$
             if (items != null) {
                 if (items.getDEFAULT() != null) {
