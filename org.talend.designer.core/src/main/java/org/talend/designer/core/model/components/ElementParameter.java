@@ -137,6 +137,8 @@ public class ElementParameter implements IElementParameter {
 
     private String[] args;
 
+    private int maxlength;
+
     public ElementParameter(final IElement element) {
         this.element = element;
     }
@@ -1000,5 +1002,23 @@ public class ElementParameter implements IElementParameter {
      */
     public void setJavaFunction(String javaFunction) {
         this.javaFunction = javaFunction;
+    }
+
+    /**
+     * DOC Administrator Comment method "setMaxLength".
+     * 
+     * @param maxlength
+     */
+    public void setMaxLength(int maxlength) {
+        this.maxlength = maxlength;
+    }
+
+    /**
+     * Getter for maxlength.
+     * 
+     * @return the maxlength
+     */
+    public int getMaxlength() {
+        return this.maxlength;
     }
 }

@@ -1416,7 +1416,9 @@ public class EmfComponent extends AbstractComponent {
             param.setColor(getColor(param, xmlParam.getCOLOR()));
             param.setContextMode(xmlParam.isCONTEXTMODE());
             param.setNoContextAssist(xmlParam.isNOCONTEXTASSIST());
-
+            if (xmlParam.isSetMAXLENGTH()) {
+                param.setMaxLength(xmlParam.getMAXLENGTH());
+            }
             switch (type) {
             case COLOR:
                 param.setValue(DEFAULT_COLOR);

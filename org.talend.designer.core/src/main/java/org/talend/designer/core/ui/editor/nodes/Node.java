@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ObjectUtils;
@@ -2134,12 +2136,39 @@ public class Node extends Element implements IGraphicalNode {
     @SuppressWarnings("unchecked")
     private void checkParameters() {
         for (IElementParameter param : this.getElementParametersWithChildrens()) {
+            if (param.getMaxlength() > 0) {
+                String paramValue = param.getValue().toString();
+                paramValue.length();
+                String tmpValue;
+                if (paramValue.startsWith("\"") && paramValue.endsWith("\"")) {
+                    tmpValue = paramValue.replaceAll("\"", "");
+                } else {
+                    tmpValue = paramValue;
+                }
+                String factor = "\\\\\\\\";
+                Pattern pattern = Pattern.compile(factor);
+                Matcher matcher = pattern.matcher(tmpValue);
+                int lenth = 0;
+                matcher.groupCount();
+                while (matcher.find()) {
+                    lenth++;
+                }
+                String last = tmpValue.replaceAll(factor, "");
+                last = last.replaceAll("\\\\", "");
+                int realLength = last.length() + lenth;
+                if (realLength > param.getMaxlength()) {
+                    String errorMessage = Messages.getString("Node.overLength", param.getDisplayName(), param.getMaxlength()); //$NON-NLS-1$
+                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                }
+            }
+
             if (param.getFieldType() == EParameterFieldType.CLOSED_LIST) {
                 if (!ArrayUtils.contains(param.getListItemsValue(), param.getValue())) {
                     Problems.add(ProblemStatus.ERROR, this,
                             "Unknown value in the list / Value set not supported by the component");
                 }
             }
+
             if (param.getName().equals(EParameterName.COMMENT.getName())) {
                 String infoValue = (String) param.getValue();
                 if (infoValue != null && !infoValue.equals("")) { //$NON-NLS-1$                                             
