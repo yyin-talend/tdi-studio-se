@@ -151,27 +151,63 @@ try{
 
 Object filename_<%=cid %> = <%=filename %>;	
 java.util.zip.ZipInputStream zis_<%=cid %> = null;
-if(filename_<%=cid %> instanceof java.io.InputStream){
-	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
-}else{
-	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(filename_<%=cid %>.toString())));
+try {
+	if(filename_<%=cid %> instanceof java.io.InputStream){
+		zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
+	}else{
+		zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>))));
+	}
+} catch(Exception e) {
+	<% if(dieOnError) {%>
+	throw e;
+	<% } else { %>
+	System.err.println(e.getMessage());
+	<% } %>
 }
 java.util.zip.ZipEntry entry_<%=cid %> = null;
 
-while ((entry_<%=cid %> = zis_<%=cid %>.getNextEntry()) != null) {
+while (true) {
+	try {
+		entry_<%=cid %> = zis_<%=cid %>.getNextEntry();
+	} catch(Exception e) {
+		<% if(dieOnError) {%>
+		throw e;
+		<% } else { %>
+		System.err.println(e.getMessage());
+		break;
+		<% } %>
+	}
+	if(entry_<%=cid %> == null) {
+		break;
+	}
 	if(entry_<%=cid %>.isDirectory()){ //directory
 		continue;
 	}
-	fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(zis_<%=cid %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %><%=hasDynamic?"-1":""%>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
+	try {
+		fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(zis_<%=cid %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %><%=hasDynamic?"-1":""%>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
+	} catch(Exception e) {
+		<% if(dieOnError) {%>
+		throw e;
+		<% } else { %>
+		System.err.println(e.getMessage());
+		<% } %>
+	}
 <%
 		}else{
 %>
-fid_<%=cid %> = 
-	new org.talend.fileprocess.FileInputDelimited(<%=filename %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %><%=hasDynamic?"-1":""%>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
+try {
+	fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %><%=hasDynamic?"-1":""%>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
+} catch(Exception e) {
+	<% if(dieOnError) {%>
+	throw e;
+	<% } else { %>
+	System.err.println(e.getMessage());
+	<% } %>
+}
 <%
 		}
 %>
-while (fid_<%=cid %>.nextRecord()) {
+while (fid_<%=cid %>!=null && fid_<%=cid %>.nextRecord()) {
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 
@@ -493,27 +529,56 @@ routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
 		if(uncompress){
 %>
         java.util.zip.ZipInputStream zis_<%=cid %> = null;
-        if(filename_<%=cid %> instanceof java.io.InputStream){
-        	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
-        }else{
-        	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(filename_<%=cid %>.toString())));
+        try {
+	        if(filename_<%=cid %> instanceof java.io.InputStream){
+	        	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
+	        }else{
+	        	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>))));
+	        }
+        } catch(Exception e) {
+        	<% if(dieOnError) {%>
+			throw e;
+			<% } else { %>
+			System.err.println(e.getMessage());
+			<% } %>
         }
         java.util.zip.ZipEntry entry_<%=cid %> = null;
         
-        while ((entry_<%=cid %> = zis_<%=cid %>.getNextEntry()) != null) {
+        while (true) {
+        	try {
+        		entry_<%=cid %> = zis_<%=cid %>.getNextEntry();
+        	} catch(Exception e) {
+        		<% if(dieOnError) {%>
+				throw e;
+				<% } else { %>
+				System.err.println(e.getMessage());
+				break;
+				<% } %>
+        	}
+        	if(entry_<%=cid %> == null) {
+				break;
+			}
         	if(entry_<%=cid %>.isDirectory()){ //directory
         		continue;
         	}
-        	csvReader<%=cid %>=new com.csvreader.CsvReader(zis_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
+        	String[] row<%=cid %>=null;
+        	int currentLine<%=cid %> = 0;
+        	int outputLine<%=cid %> = 0;
+        	try {//TD110 begin
+        		csvReader<%=cid %>=new com.csvreader.CsvReader(zis_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
 <%
 		}else{
 %>
-		if(filename_<%=cid %> instanceof java.io.InputStream){
-			csvReader<%=cid %>=new com.csvreader.CsvReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
-		}else{
-			csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-                	new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
-        }
+		String[] row<%=cid %>=null;
+		int currentLine<%=cid %> = 0;
+        int outputLine<%=cid %> = 0;
+		try {//TD110 begin
+			if(filename_<%=cid %> instanceof java.io.InputStream){
+				csvReader<%=cid %>=new com.csvreader.CsvReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
+			}else{
+				csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
+	                	new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+	        }
 <%
 		}
 %>
@@ -572,7 +637,6 @@ routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
 <%		}
 	%>      
 	
-		String[] row<%=cid %>=null;
 		
 		if(footer_<%=cid %> > 0){
 			for(totalLine<%=cid %>=0;totalLine<%=cid %> < <%= header %>; totalLine<%=cid %>++){
@@ -600,14 +664,12 @@ routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
             }
          
           	csvReader<%=cid %>.close();
-          	
-        if(filename_<%=cid %> instanceof java.io.InputStream){
-		 	csvReader<%=cid %>=new com.csvreader.CsvReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
-        }else{
-		 	csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-		          new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
-		}
-	          
+	        if(filename_<%=cid %> instanceof java.io.InputStream){
+			 	csvReader<%=cid %>=new com.csvreader.CsvReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
+	        }else{
+			 	csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
+			          new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+			}
 		if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )	
         	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
 <%
@@ -648,18 +710,22 @@ routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
           
         }
         
-        
-        
-        int currentLine<%=cid %> = 0;
-        int outputLine<%=cid %> = 0;
-        
         if(limit<%=cid%> != 0){
         	for(currentLine<%=cid %>=0;currentLine<%=cid %> < <%= header %><%=hasDynamic?"-1":""%>;currentLine<%=cid %>++){
         		csvReader<%=cid %>.readRecord();
         	}
         }
         csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
-        while ( limit<%=cid%> != 0 && csvReader<%=cid %>.readRecord() ) { 
+        
+    } catch(Exception e) {
+		<% if(dieOnError) {%>
+		throw e;
+		<% } else { %>
+		System.err.println(e.getMessage());
+		<% } %>
+    }//TD110 end
+        
+        while ( limit<%=cid%> != 0 && csvReader<%=cid %>!=null && csvReader<%=cid %>.readRecord() ) { 
         
         	row<%=cid %>=csvReader<%=cid %>.getValues();
         	
