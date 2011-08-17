@@ -328,7 +328,6 @@ public class ExportItemUtil {
                     IRepositoryBundleService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
                     // String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
                     String path = repositoryBundleService.getOBRRoot().getAbsolutePath();
-                    ;
 
                     for (int j = 0; j < jarNameList.size(); j++) {
                         String jarName = (String) jarNameList.get(j);

@@ -30,7 +30,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -82,7 +81,6 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.general.IEcosystemService;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.imports.TreeBuilder.IContainerNode;
@@ -121,7 +119,7 @@ class ImportItemWizardPage extends WizardPage {
 
     private Object lastPath;
 
-    private List<ItemRecord> selectedItems = new ArrayList<ItemRecord>();;
+    private List<ItemRecord> selectedItems = new ArrayList<ItemRecord>();
 
     private CheckboxTreeViewer checkTreeViewer;
 
@@ -190,33 +188,6 @@ class ImportItemWizardPage extends WizardPage {
             }
 
         });
-    }
-
-    /**
-     * DOC hcw Comment method "getAvailableItems".
-     * 
-     * @return
-     */
-    private String[] getAvailableItems() {
-        boolean jobTemplateEnabled = (Platform.getBundle("org.talend.designer.jobtemplate") == null ? false : true); //$NON-NLS-1$
-        ERepositoryObjectType types[] = { ERepositoryObjectType.BUSINESS_PROCESS, ERepositoryObjectType.PROCESS,
-                ERepositoryObjectType.JOBLET, ERepositoryObjectType.CONTEXT, ERepositoryObjectType.METADATA_CONNECTIONS,
-                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
-                ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
-                ERepositoryObjectType.METADATA_FILE_EXCEL, ERepositoryObjectType.METADATA_FILE_LDIF,
-                ERepositoryObjectType.METADATA_LDAP_SCHEMA, ERepositoryObjectType.METADATA_GENERIC_SCHEMA,
-                ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
-                ERepositoryObjectType.ROUTINES, ERepositoryObjectType.SQLPATTERNS };
-        List<String> list = new ArrayList<String>(types.length + 1);
-        list.add("All"); //$NON-NLS-1$
-        for (ERepositoryObjectType type : types) {
-            list.add(type.toString());
-        }
-        if (!jobTemplateEnabled) {
-            // remove joblet
-            list.remove(ERepositoryObjectType.JOBLET.toString());
-        }
-        return list.toArray(new String[list.size()]);
     }
 
     private void createErrorsList(Composite workArea) {

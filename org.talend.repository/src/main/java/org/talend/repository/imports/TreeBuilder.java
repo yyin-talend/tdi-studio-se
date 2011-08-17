@@ -151,7 +151,7 @@ public class TreeBuilder {
      * 
      * DOC hcw TreeBuilder class global comment. Detailled comment
      */
-    interface IContainerNode {
+    public interface IContainerNode {
 
         public String getLabel();
 
@@ -166,7 +166,7 @@ public class TreeBuilder {
      * 
      * DOC hcw ImportItemUtil class global comment. Detailled comment
      */
-    class ProjectNode implements IContainerNode {
+    public class ProjectNode implements IContainerNode {
 
         boolean sorted = false;
 
@@ -235,7 +235,7 @@ public class TreeBuilder {
      * 
      * DOC chuang TreeBuilder class global comment. Detailled comment
      */
-    class FolderNode implements IContainerNode {
+    public class FolderNode implements IContainerNode {
 
         private String label;
 
@@ -345,7 +345,7 @@ public class TreeBuilder {
      * 
      * DOC hcw ImportItemUtil class global comment. Detailled comment
      */
-    class TypeNode extends FolderNode {
+    public class TypeNode extends FolderNode {
 
         ERepositoryObjectType type;
 
