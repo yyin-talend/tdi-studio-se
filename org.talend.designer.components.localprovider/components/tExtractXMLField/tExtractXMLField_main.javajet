@@ -217,18 +217,25 @@ if(outConns!=null){
 %>
 				org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,loopQuery_<%=cid %>));
 			    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
-			    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
+			    Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
+			    if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
+    				node_<%=cid%> = temp_<%=cid%>;
+    				str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
+   				}else{
+				    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
 <%
-				if(("true").equals(nodeCheck)){
+					if(("true").equals(nodeCheck)){
 %>
-				str_<%=cid %> = node_<%=cid %>==null?null:node_<%=cid %>.asXML();
+					str_<%=cid %> = node_<%=cid %>==null?null:node_<%=cid %>.asXML();
 <%
-				}else{
+					}else{
 %>
-			    str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid %>);
+				    str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid %>);
 <%
+					}
+%>
 				}
-				
+<%
 				for(IMetadataColumn column:outConn.getMetadataTable().getListColumns()) { // for S_0_0_0
 					if (mapping.get(i).get("SCHEMA_COLUMN")!=null) { // if S_0_0_0_0
 						if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) { //if S_0_0_0_0_0
