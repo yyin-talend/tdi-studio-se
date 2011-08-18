@@ -577,7 +577,7 @@ routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
 				csvReader<%=cid %>=new com.csvreader.CsvReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
 			}else{
 				csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-	                	new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+	                	new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
 	        }
 <%
 		}
@@ -668,7 +668,7 @@ routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
 			 	csvReader<%=cid %>=new com.csvreader.CsvReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
 	        }else{
 			 	csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-			          new java.io.FileInputStream(filename_<%=cid %>.toString()),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+			          new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
 			}
 		if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )	
         	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);

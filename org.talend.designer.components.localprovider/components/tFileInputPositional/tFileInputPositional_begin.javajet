@@ -386,27 +386,96 @@ org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = null;
 		if(uncompress){
 %>
 java.util.zip.ZipInputStream zis_<%=cid %> = null;
-if(filename_<%=cid %> instanceof java.io.InputStream){
-	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
-}else{
-	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(filename_<%=cid %>.toString())));
+try {
+	if(filename_<%=cid %> instanceof java.io.InputStream){
+		zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
+	}else{
+		zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>))));
+	}
+} catch(Exception e) {
+	<% if(dieOnError) {%>
+	throw e;
+	<% } else { %>
+	System.err.println(e.getMessage());
+	<% } %>
 }
 java.util.zip.ZipEntry entry_<%=cid %> = null;
-while ((entry_<%=cid %> = zis_<%=cid %>.getNextEntry()) != null) {
+while (true) {
+	try {
+		entry_<%=cid %> = zis_<%=cid %>.getNextEntry();
+	} catch(Exception e) {
+		<% if(dieOnError) {%>
+		throw e;
+		<% } else { %>
+		System.err.println(e.getMessage());
+		break;
+		<% } %>
+	}
+	if(entry_<%=cid %> == null) {
+		break;
+	}
 	if(entry_<%=cid %>.isDirectory()){ //directory
 		continue;
 	}
-	in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(zis_<%=cid %>, <%=encoding %>));
+	String row_<%=cid %> = null;
+	int rowLen_<%=cid %> = 0;
+	<%
+	if(advanced){
+		if(useByte){
+	%>
+	byte[] byteArray_<%=cid %> = new byte[0];
+	<%
+	}
+	%>
+	String column_<%=cid %> = null;
+	<%
+	}else{
+		if(useByte){
+	%>
+	byte[][] byteArray_<%=cid %> = new byte[<%=metadata.getListColumns().size()%>][];
+	<%
+		}
+	%>
+	String[] columnValue<%=cid %>=new String[<%=metadata.getListColumns().size()%>];
+	<%
+	}
+	%>
+	try {//TD110 begin
+		in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(zis_<%=cid %>, <%=encoding %>));
 <%
 		}else{
 %>
-if(filename_<%=cid %> instanceof java.io.InputStream){
-	in_<%=cid %> = 
-			new java.io.BufferedReader(new java.io.InputStreamReader((java.io.InputStream)filename_<%=cid %>, <%=encoding %>));
-}else{
-	in_<%=cid %> = 
-		new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()), <%=encoding %>));
+String row_<%=cid %> = null;
+int rowLen_<%=cid %> = 0;
+<%
+if(advanced){
+	if(useByte){
+%>
+byte[] byteArray_<%=cid %> = new byte[0];
+<%
 }
+%>
+String column_<%=cid %> = null;
+<%
+}else{
+	if(useByte){
+%>
+byte[][] byteArray_<%=cid %> = new byte[<%=metadata.getListColumns().size()%>][];
+<%
+	}
+%>
+String[] columnValue<%=cid %>=new String[<%=metadata.getListColumns().size()%>];
+<%
+}
+%> 
+try {//TD110 begin
+	if(filename_<%=cid %> instanceof java.io.InputStream){
+		in_<%=cid %> = 
+				new java.io.BufferedReader(new java.io.InputStreamReader((java.io.InputStream)filename_<%=cid %>, <%=encoding %>));
+	}else{
+		in_<%=cid %> = 
+			new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)), <%=encoding %>));
+	}
 
 <%
 		}
@@ -444,7 +513,7 @@ if(footer_<%=cid %> > 0){
 	if(filename_<%=cid %> instanceof java.io.InputStream){
 		in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader((java.io.InputStream)filename_<%=cid %>, <%=encoding %>));
 	}else{
-		in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(filename_<%=cid %>.toString()), <%=encoding %>));
+		in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)), <%=encoding %>));
 	}
 <%
 			if(("").equals(rowSeparator) || ("\"\"").equals(rowSeparator) ){
@@ -465,30 +534,16 @@ if(footer_<%=cid %> > 0){
 		nb_limit_<%=cid %> = available_<%=cid %>;
 	}
 }
-String row_<%=cid %> = null;   
-<%
-	if(advanced){
-		if(useByte){
-%>
-byte[] byteArray_<%=cid %> = new byte[0];
-<%
-		}
-%>
-String column_<%=cid %> = null;
-<%
-	}else{
-		if(useByte){
-%>
-byte[][] byteArray_<%=cid %> = new byte[<%=metadata.getListColumns().size()%>][];
-<%
-		}
-%>
-String[] columnValue<%=cid %>=new String[<%=metadata.getListColumns().size()%>];
-<%
-	}
-%>
-int rowLen_<%=cid %> = 0;
-while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>.readRecord()) {
+
+} catch(Exception e) {//TD110 end
+	<% if(dieOnError) {%>
+	throw e;
+	<% } else { %>
+	System.err.println(e.getMessage());
+	<% } %>
+}
+
+while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.readRecord()) {
 	row_<%=cid %> = reader_<%=cid %>.getRowRecord();
 <%
 	if(useByte){

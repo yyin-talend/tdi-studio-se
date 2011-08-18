@@ -24,7 +24,9 @@
 }
 <%if(uncompress){//compress%>}<%}%>
 if(!(filename_<%=cid %> instanceof java.io.InputStream)){
-	reader_<%=cid %>.close();
+	if(reader_<%=cid %>!=null) {
+		reader_<%=cid %>.close();
+	}
 }
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
