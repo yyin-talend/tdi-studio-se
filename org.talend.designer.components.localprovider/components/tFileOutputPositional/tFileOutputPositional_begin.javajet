@@ -130,7 +130,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			Map<String, String> format=formats.get(i);
     			if(i%100==0){
 %>
-              void writeHeader_<%=i/100%>(String tempStringB<%=cid %>,int tempLengthB<%=cid %>,final <%=writerClass %> out<%=cid %>)throws IOException{
+              void writeHeader_<%=i/100%>(String tempStringB<%=cid %>,int tempLengthB<%=cid %>,final <%=writerClass %> out<%=cid %>)throws IOException,java.io.UnsupportedEncodingException{
               
                  int tempLengthM<%=cid %>= 0;
 <%
@@ -226,7 +226,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 				if(i%100==0){
 %>
-				  void setValue_<%=i/100%>(final <%=inConnName!=null?inConnName:conn.getName() %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,String tempStringM<%=cid %>,int tempLengthM<%=cid %>){
+				  void setValue_<%=i/100%>(final <%=inConnName!=null?inConnName:conn.getName() %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,String tempStringM<%=cid %>,int tempLengthM<%=cid %>)throws IOException,java.io.UnsupportedEncodingException{
 <%
                 }
 %>
