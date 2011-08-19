@@ -8,7 +8,6 @@
   org.talend.core.model.metadata.IMetadataTable
   org.talend.core.model.metadata.IMetadataColumn 
   org.talend.core.model.process.EConnectionType 
-  org.talend.core.model.process.IExternalNode
   org.talend.designer.codegen.config.CodeGeneratorArgument
   org.talend.designer.codegen.config.NodesSubTree
   org.talend.core.model.process.IProcess
@@ -59,6 +58,46 @@ if(execStat){
 <%
 
  if (codePart.equals(ECodePart.MAIN)) {
+ //================================TDI-17183 start========================================
+/**
+	if the node is autopropagate the schema, then the output row should evaluate the input row
+	before the track code part(TDI-17183)
+*/
+  String inputColName = null;
+  if (node.getIncomingConnections()!=null) {
+   for (IConnection incomingConn : node.getIncomingConnections()) {
+    if (incomingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+     inputColName = incomingConn.getName();
+     break;
+    }
+   }
+  }
+  List<IMetadataTable> metadatas = node.getMetadataList();
+  if ((!node.isSubProcessStart())&&(NodeUtil.isDataAutoPropagated(node))) {
+   if (inputColName!=null) {
+    if ((metadatas != null) && (metadatas.size() > 0)) {
+     IMetadataTable outputMetadata = metadatas.get(0);
+     if (outputMetadata != null) {
+      for (IConnection outputConnection : node.getOutgoingConnections()) {
+       if (outputConnection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || outputConnection.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+       
+       	//void the case: row1.username=row1.username
+       	if(!outputConnection.getName().equals(inputColName)){//111
+			//void the case: row1Struct row1 = new row1Struct(); row1Struct row3 = row1;
+            //for (IMetadataColumn column : outputMetadata.getListColumns()) {
+    %>
+     <%=outputConnection.getName() %> = <%=inputColName %>;
+    <% 
+           	//}
+       	}//111
+       	
+       }
+      }
+     }
+    }
+   }
+  }
+//======================================TDI-17183 end=====================================
   boolean traceCodeGenerated = false;     
   for (IConnection conn : node.getOutgoingConnections()) {
      boolean use_reaceenble = ("true").equals(ElementParameterParser.getValue(conn, "__TRACES_CONNECTION_ENABLE__"));
@@ -69,7 +108,6 @@ if(execStat){
     globalMap.put("TRACE_CONDITION", Boolean.FALSE);
   <%
     }
-  
    IMetadataTable metadata = conn.getMetadataTable();
    if (metadata!=null) {
     if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) ||
@@ -163,40 +201,6 @@ if(execStat){
    }
   }
   
-  String inputColName = null;
-  if (node.getIncomingConnections()!=null) {
-   for (IConnection incomingConn : node.getIncomingConnections()) {
-    if (incomingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-     inputColName = incomingConn.getName();
-     break;
-    }
-   }
-  }
-  List<IMetadataTable> metadatas = node.getMetadataList();
-  if ((!node.isSubProcessStart())&&(NodeUtil.isDataAutoPropagated(node))) {
-   if (inputColName!=null) {
-    if ((metadatas != null) && (metadatas.size() > 0)) {
-     IMetadataTable outputMetadata = metadatas.get(0);
-     if (outputMetadata != null) {
-      for (IConnection outputConnection : node.getOutgoingConnections()) {
-       if (outputConnection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || outputConnection.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
-       
-       	//void the case: row1.username=row1.username
-       	if(!outputConnection.getName().equals(inputColName)){//111
-			//void the case: row1Struct row1 = new row1Struct(); row1Struct row3 = row1;
-            //for (IMetadataColumn column : outputMetadata.getListColumns()) {
-    %>
-     <%=outputConnection.getName() %> = <%=inputColName %>;
-    <% 
-           	//}
-       	}//111
-       	
-       }
-      }
-     }
-    }
-   }
-  }
  }
  if (codePart.equals(ECodePart.END)) {
 %>
