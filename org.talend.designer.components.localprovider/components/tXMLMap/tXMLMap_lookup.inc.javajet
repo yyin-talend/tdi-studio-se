@@ -291,17 +291,17 @@ skeleton="tXMLMap_java.skeleton"
 							if (fromLookup_<%=tableName%> != null) {
 							<% if(findFromDocumentType || hasOutputFromLookupDoc) {%>
 								//begin to lookup Document Object (case 1:lookup doc key exists),(case 2:lookup doc key not exists but lookup line doc output exist)
-								Document doc = fromLookup_<%=tableName%>.<%=documentColumn%>;
-								java.util.List<String> xPathAsOutput = new java.util.ArrayList<String>();
+								Document doc<%=cid%> = fromLookup_<%=tableName%>.<%=documentColumn%>;
+								java.util.List<String> xPathAsOutput<%=cid%> = new java.util.ArrayList<String>();
 							<%
 							for(String xpath : xPathAsOutput) {
 							%>
-								xPathAsOutput.add("<%=xpath%>");
+								xPathAsOutput<%=cid%>.add("<%=xpath%>");
 							<%
 							}
 							%>
-								List<java.util.Map<String,Object>> result = doc.LookupDocument("<%=loopXPath%>",<%= tableName %>HashKey.documentLookupResult,xPathAsOutput);
-								if(result == null || result.size() == 0) {
+								List<java.util.Map<String,Object>> result<%=cid%> = doc<%=cid%>.LookupDocument("<%=loopXPath%>",<%= tableName %>HashKey.documentLookupResult,xPathAsOutput<%=cid%>);
+								if(result<%=cid%> == null || result<%=cid%>.size() == 0) {
 									// not find
 								} else {
 									//find and cache it,now only memory,inner join and unique match mode
@@ -309,11 +309,11 @@ skeleton="tXMLMap_java.skeleton"
 									<% if(findFromDocumentType) { %>
 									isMatchDocRow<%=cid%> = true;
 									<% } %>
-									for(java.util.Map<String,Object> docRow : result) {
-										for(String path : docRow.keySet()) {
-											treeNodeAPI_<%=cid %>.put(path, String.valueOf(docRow.get(path)));
+									for(java.util.Map<String,Object> docRow<%=cid%> : result<%=cid%>) {
+										for(String path<%=cid%> : docRow<%=cid%>.keySet()) {
+											treeNodeAPI_<%=cid %>.put(path<%=cid%>, String.valueOf(docRow<%=cid%>.get(path<%=cid%>)));
 											<%if(isCacheOrReloadLookupMode) {%>
-											cacheResult<%=tableName%>.put(path,String.valueOf(docRow.get(path)));
+											cacheResult<%=tableName%>.put(path<%=cid%>,String.valueOf(docRow<%=cid%>.get(path<%=cid%>)));
 											<% } %>
 										}
 										
