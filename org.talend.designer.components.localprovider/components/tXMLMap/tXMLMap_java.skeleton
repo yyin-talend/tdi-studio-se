@@ -121,6 +121,226 @@ public class CLASS {
 		}
 	}
 	
+	class XPathHelper{
+		int dPrefixCount = 0;
+		Map<String,String> nsMapping;
+		TreeNode loopNode;
+		String finalLoopNodeXPath;
+		Map<String,String> outNodesXPath;
+		Map<String,String> lookupInputNodesXPath;
+		
+		public XPathHelper(TreeNode rootNode){
+			//1. find loop node
+			loopNode = findLoopNode(rootNode);
+			if(loopNode!=null){
+				nsMapping = new HashMap<String,String>(); 
+				Map<String,String> dPrefixMapping = new HashMap<String,String>();
+				//2. collection all NS
+				collectionNS(rootNode, nsMapping, dPrefixMapping, null);
+				
+				List<TreeNode> outNodes = new ArrayList<TreeNode>(); 
+				//3. find all output node(out & lookup out)
+				findOutputNodes(rootNode, outNodes);
+				
+				//4. build xpath with prefix
+				finalLoopNodeXPath = buildXPathWithPrefix(loopNode, dPrefixMapping);
+				
+				outNodesXPath = new HashMap<String,String>();
+				buildXPathWithPrefix(outNodes, dPrefixMapping, outNodesXPath);
+				
+				//5. build xpath for the node has lookup input connection
+				List<TreeNode> lookupInputNodes = new ArrayList<TreeNode>();
+				findLookupInputNodes(rootNode, lookupInputNodes);
+				lookupInputNodesXPath = new HashMap<String,String>();
+				buildXPathWithPrefix(lookupInputNodes, dPrefixMapping, lookupInputNodesXPath);
+			}
+			
+		}
+		public boolean hasLoopNode(){
+			if(loopNode == null){
+				return false;
+			}
+			return true;
+		}
+		public boolean hasDefinedNS(){
+			if(nsMapping.size()==0){
+				return false;
+			}
+			return true;
+		}
+		
+		public Map<String,String> getOutNodesXPath(){
+			return outNodesXPath;
+		}
+		
+		public Map<String,String> getLookupInputNodesXPath(){
+			return lookupInputNodesXPath;
+		}
+		
+		public String buildNSMapping(String name){
+			StringBuilder sb = new StringBuilder();
+			for (Object key : nsMapping.keySet()) { 
+			    Object val = nsMapping.get(key);
+			    sb.append(name+".put(\""+key+"\",\""+val+"\");"); 
+			} 
+			return sb.toString();
+		}
+		
+		public String getLoopNodeXPath(){
+			return finalLoopNodeXPath;
+		}
+		
+		private void buildXPathWithPrefix(List<TreeNode> nodes, Map<String,String> dPrefixMapping, Map<String,String> nodesXPath){
+			String loopNodeXPath = loopNode.getXpath();
+			for(TreeNode node: nodes){
+				String currentNodeXPath = node.getXpath();
+				if(currentNodeXPath==null || ("").equals(currentNodeXPath)){
+				}else if(loopNodeXPath.equals(currentNodeXPath)){
+					nodesXPath.put(currentNodeXPath, ".");	
+				}else{
+					String nodeXPathWithPrefix = buildXPathWithPrefix(node, dPrefixMapping);
+					if(nodeXPathWithPrefix.startsWith(finalLoopNodeXPath)){
+						String relativeXPath = nodeXPathWithPrefix.substring(finalLoopNodeXPath.length() + 1);
+						nodesXPath.put(currentNodeXPath, relativeXPath);
+					}else{
+						StringBuilder relativeXPath = new StringBuilder();
+						String tmp = finalLoopNodeXPath;
+						
+						while(!nodeXPathWithPrefix.startsWith(tmp)){
+							int index = tmp.lastIndexOf("/");
+							if(index<0){ break; }
+							tmp = tmp.substring(0,index);
+							relativeXPath.append("../");
+						}
+						if(tmp.lastIndexOf("/") < 0 ){
+							System.out.println("Loop Path is not set or loop Path is invalid");
+						}else{
+							relativeXPath.append(nodeXPathWithPrefix.substring(tmp.length() + 1));
+						}
+						relativeXPath.toString();
+						nodesXPath.put(currentNodeXPath, relativeXPath.toString());
+					}
+				}
+			}
+		} 
+		
+		private String buildXPathWithPrefix(TreeNode node, Map<String,String> dPrefixMapping){
+			String xpath = getXPath(node);
+			StringBuilder finalXPath = new StringBuilder();
+			return buildXPathWithPrefix(finalXPath, xpath, dPrefixMapping);
+			
+		}
+		private String buildXPathWithPrefix(StringBuilder finalXPath, String xpath, Map<String,String> dPrefixMapping){
+			List<String> nodePaths = new ArrayList<String>();
+			
+			while(xpath.lastIndexOf("/") != -1){
+				nodePaths.add(xpath);
+				xpath = xpath.substring(0,xpath.lastIndexOf("/"));
+			}
+			
+			for(int i=nodePaths.size()-1; i>=0; i--){
+				String nodePath = nodePaths.get(i);
+				String prefix = dPrefixMapping.get(nodePath);
+				String nodeName = nodePath.substring(nodePath.lastIndexOf("/")+1);
+				
+				finalXPath.append("/");
+				if(prefix != null && !"".equals(prefix)){
+					finalXPath.append(prefix);
+					finalXPath.append(":");
+					finalXPath.append(nodeName);
+				}else{
+					finalXPath.append(nodeName);
+				}
+			}
+			
+			return finalXPath.toString();
+		}
+		
+		private void findOutputNodes(TreeNode currentNode, List<TreeNode> outNodes){
+			if(currentNode.getOutgoingConnections().size()>0 || currentNode.getLookupOutgoingConnections().size()>0){
+				outNodes.add(currentNode);
+			}
+			for(TreeNode childNode : currentNode.getChildren()) {
+				if(childNode.getNodeType() == NodeType.ELEMENT || childNode.getNodeType() == NodeType.ATTRIBUT){
+					findOutputNodes(childNode, outNodes);
+				}
+			}
+		}
+		
+		private void findLookupInputNodes(TreeNode currentNode, List<TreeNode> lookupInputNodes){
+			if(currentNode.getLookupIncomingConnections().size()>0){
+				lookupInputNodes.add(currentNode);
+			}
+			for(TreeNode childNode : currentNode.getChildren()) {
+				if(childNode.getNodeType() == NodeType.ELEMENT || childNode.getNodeType() == NodeType.ATTRIBUT){
+					findLookupInputNodes(childNode, lookupInputNodes);
+				}
+			}
+		}
+		
+		private void collectionNS(TreeNode currentNode, Map<String,String> nsMapping, Map<String,String> dPrefixMapping, String parentDPrefix){
+			EList<TreeNode> childNodes = currentNode.getChildren();
+			for(TreeNode childNode : childNodes){
+				if(childNode.getNodeType() == NodeType.NAME_SPACE){
+					if(childNode.getName() != null && !"(default)".equals(childNode.getName())){
+						nsMapping.put(childNode.getName(),childNode.getDefaultValue());
+					}else{
+						String defaultPrefix = findVaildDefaultPrefix();
+						nsMapping.put(defaultPrefix,childNode.getDefaultValue());
+						//dPrefixMapping.put(getXPath(currentNode),defaultPrefix);
+						parentDPrefix = defaultPrefix;
+					}
+				}
+			}
+			if(!currentNode.getName().contains(":")){
+				if(parentDPrefix != null && !"".equals(parentDPrefix)){
+					dPrefixMapping.put(getXPath(currentNode),parentDPrefix);
+				}
+			}else{
+				//parentDPrefix = null;
+			}
+			for(TreeNode childNode : childNodes){
+				if(childNode.getNodeType() == NodeType.ELEMENT){
+					collectionNS(childNode, nsMapping, dPrefixMapping, parentDPrefix);
+				}
+			}
+		}
+		
+		private String findVaildDefaultPrefix(){
+			String prefix = "TPrefix"+dPrefixCount;
+			dPrefixCount++;
+			if(nsMapping.get(prefix)==null || "".equals(nsMapping.get(prefix))){
+				return prefix;
+			}else{
+				return findVaildDefaultPrefix();
+			}
+		}
+		
+		private TreeNode findLoopNode(TreeNode node){
+			if(node == null){
+				return null;
+			}
+			if(node.isLoop()) {
+				return node;
+			}
+			for(TreeNode childNode : node.getChildren()) {
+				if(childNode.getNodeType() == NodeType.ELEMENT){
+					TreeNode resultNode = findLoopNode(childNode);
+					if(resultNode!=null){
+						return resultNode;
+					}
+				}
+			}
+			
+			return null;
+		}
+		
+		private String getXPath(TreeNode node){
+			String uiXPath = node.getXpath();
+			return uiXPath.substring(uiXPath.indexOf(":")+1);
+		}
+	}
+	
 	class FindNodeUtil{
 		
 		TreeNode findLoopPathNode(TreeNode node){

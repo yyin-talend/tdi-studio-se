@@ -683,12 +683,12 @@ class GenerateToolByDom4j{
 <%
 		} else {
 %>
-<%=currEleName%>.addNamespace("<%=node.getName() %>", TalendString.replaceSpecialCharForXML("<%generateMethodUtil.generateExprCode(((OutputTreeNode)node).getDefaultValue()); %>"));
+<%=currEleName%>.addNamespace("<%="(default)".equals(node.getName())?"":node.getName() %>", TalendString.replaceSpecialCharForXML("<%generateMethodUtil.generateExprCode(((OutputTreeNode)node).getDefaultValue()); %>"));
 <%
 		}
 		OutputTreeNode parent = (OutputTreeNode)node.eContainer();
 		if(parent.getName().indexOf(":") < 0) { // element without prefix
-			if(node.getName()==null || ("").equals(node.getName().trim()) ) { // it is the default namespace
+			if(node.getName()==null || ("").equals(node.getName().trim()) || "(default)".equals(node.getName().trim())) { // it is the default namespace
 				if(node.getDefaultValue()==null || ("").equals(node.getDefaultValue())) { // get the expression
 %>
         	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>.getName(),

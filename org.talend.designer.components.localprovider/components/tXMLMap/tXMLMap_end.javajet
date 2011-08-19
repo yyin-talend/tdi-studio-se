@@ -14,6 +14,7 @@
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree
 			org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
+			org.talend.designer.xmlmap.model.emf.xmlmap.NodeType
 			org.talend.core.model.process.IConnection
 			org.talend.core.model.process.EConnectionType
 			org.talend.core.model.metadata.IMetadataTable
