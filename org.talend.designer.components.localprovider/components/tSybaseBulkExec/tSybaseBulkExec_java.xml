@@ -66,7 +66,7 @@
       NUM_ROW="30"
       REQUIRED="false"
       REPOSITORY_VALUE="SERVER_NAME"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and TABLE_ACTION != 'NONE')"
     >
       <DEFAULT>"SYBASE_HOST"</DEFAULT>
     </PARAMETER>
@@ -76,7 +76,7 @@
       FIELD="TEXT"
       NUM_ROW="30"
       REPOSITORY_VALUE="PORT"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and TABLE_ACTION != 'NONE')"
     >
       <DEFAULT>"2648"</DEFAULT>
    </PARAMETER>

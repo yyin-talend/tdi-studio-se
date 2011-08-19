@@ -21,6 +21,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 List<IMetadataColumn> columnList = getColumnList(node);
 if(("UPDATE").equals(dataAction)) {
@@ -44,10 +45,10 @@ if(("UPDATE").equals(dataAction)) {
 
 <%
 if(!useExistingConn) {
-    %>
-    if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
-        conn_<%=cid%>.close();
-    }
-    <%
+    if(!"NONE".equals(tableAction)){%>
+	    if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
+	        conn_<%=cid%>.close();
+	    }
+    <%}
 }
 %>

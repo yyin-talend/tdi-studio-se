@@ -80,25 +80,25 @@ if(useExistingConnection) {
 	<%
 } else {       
     %>
-    String host_<%=cid%> = <%=host%>;
-    String port_<%=cid%> = <%=port%>;
     String db_<%=cid%> = <%=database%>;
     String user_<%=cid%> = <%=user%>;
     String pass_<%=cid%> = <%=pwd%>;
-<%
-	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+<%	if(!"NONE".equals(tableAction)){%>
+		String host_<%=cid%> = <%=host%>;
+    	String port_<%=cid%> = <%=port%>;
+<%		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
-		String url_<%=cid %> = "jdbc:sybase:Tds:" + host_<%=cid%> + ":" + port_<%=cid%> + "/" + db_<%=cid%>;
+			String url_<%=cid %> = "jdbc:sybase:Tds:" + host_<%=cid%> + ":" + port_<%=cid%> + "/" + db_<%=cid%>;
 <%
-	} else {
+		} else {
 %>
-		String url_<%=cid %> = "jdbc:sybase:Tds:" + host_<%=cid%> + ":" + port_<%=cid%> + "/" + db_<%=cid%> + "?" + <%=dbproperties%>;
+			String url_<%=cid %> = "jdbc:sybase:Tds:" + host_<%=cid%> + ":" + port_<%=cid%> + "/" + db_<%=cid%> + "?" + <%=dbproperties%>;
 <%
-	}
+		}
 %>
-    java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
-    java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, user_<%=cid%>, pass_<%=cid%>);
-    <%
+   	 	java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
+    	java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, user_<%=cid%>, pass_<%=cid%>);
+<%  }
 }
 %>
 if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() != 0) {
