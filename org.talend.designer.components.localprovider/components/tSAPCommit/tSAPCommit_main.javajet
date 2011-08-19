@@ -19,15 +19,18 @@ imports="
 
     String conn = "conn_" + connection;
     
-    String version = "SAP2";
+    String VERSION_SAP2 = "sapjco.jar";
+    String VERSION_SAP3 = "sapjco3.jar";
+    
+    String version = VERSION_SAP2;
     List<? extends INode> nodes = node.getProcess().getGraphicalNodes();
     for(INode targetNode : nodes){
     	if (targetNode.getUniqueName().equals(connection)) {
-	      version = ElementParameterParser.getValue(targetNode, "__SAP_VERSION__");
+	      version = ElementParameterParser.getValue(targetNode, "__DB_VERSION__");
 	    }
     }
 %>
-<%if("SAP2".equals(version)){%>
+<%if(VERSION_SAP2.equals(version)){%>
 				
 	com.sap.mw.jco.JCO.Client client_<%=cid %> = (com.sap.mw.jco.JCO.Client)globalMap.get("<%=conn%>");	
 	
@@ -46,8 +49,8 @@ imports="
 		    throw new RuntimeException(e_<%=cid%>.getMessage());
 		}	
 	
-<%}else if("SAP3".equals(version)){%>
-	com.sap.conn.jco.JCoDestination dest_<%=cid%> = (com.sap.conn.jco.JCoDestination)globalMap.get("conn_<%=connection %>");
+<%}else if(VERSION_SAP3.equals(version)){%>
+	com.sap.conn.jco.JCoDestination dest_<%=cid%> = (com.sap.conn.jco.JCoDestination)globalMap.get("<%=conn%>");
 	if(dest_<%=cid%> != null)
 	{
 		com.sap.conn.jco.JCoRepository repository_<%=cid %> = dest_<%=cid%>.getRepository();
@@ -64,9 +67,9 @@ imports="
 		}
 <%}%>
 		<%if(close){%>
-			<%if("SAP2".equals(version)){%>
+			<%if(VERSION_SAP2.equals(version)){%>
 		    	com.sap.mw.jco.JCO.releaseClient(client_<%=cid %>);
-		    <%}else if("SAP3".equals(version)){%>
+		    <%}else if(VERSION_SAP3.equals(version)){%>
 				com.sap.conn.jco.JCoContext.end(dest_<%=cid%>);
 			<%}%>
 		<%}%>
