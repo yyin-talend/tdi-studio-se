@@ -76,9 +76,12 @@
 <%
 			}
 %>
-			javax.jms.ConnectionFactory connectionFactory = null;
 <%
 			List<? extends INode> activeMQNodes = process.getNodesOfType("cActiveMQ");
+			if(activeMQNodes.size()>0){
+%>
+			org.apache.activemq.ActiveMQConnectionFactory amqConnectionFactory = null;
+<%			}
 			for(INode node: activeMQNodes){
 				String url = ElementParameterParser.getValue(node, "__BROKER_URI__").trim();
 				if(!url.startsWith("\"")){
@@ -88,14 +91,18 @@
 					url += "\"";
 				}
 %>
-			connectionFactory = new org.apache.activemq.ActiveMQConnectionFactory(<%=url%>);
+			amqConnectionFactory = new org.apache.activemq.ActiveMQConnectionFactory(<%=url%>);
 			camelContext.addComponent("<%=node.getUniqueName().replaceAll("_","")%>",
-					org.apache.activemq.camel.component.ActiveMQComponent.jmsComponent(connectionFactory));
+					org.apache.activemq.camel.component.ActiveMQComponent.jmsComponent(amqConnectionFactory));
 <%   
 		}
 %>
 <%
 			List<? extends INode> jmsNodes = process.getNodesOfType("cJMS");
+			if(jmsNodes.size()>0){
+%>
+				javax.jms.ConnectionFactory connectionFactory = null;
+<%			}
 			for(INode node: jmsNodes){
 			    String name = ElementParameterParser.getValue(node, "__NAME__").trim();
     				name += ElementParameterParser.getValue(node, "__SUBFIX__").trim();
