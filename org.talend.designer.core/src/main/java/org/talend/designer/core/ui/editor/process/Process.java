@@ -1583,7 +1583,11 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         checkNodeTableParameters();
         XmiResourceManager resourceManager = new XmiResourceManager();
         if (this.loadScreenshots) {
-            resourceManager.loadScreenshots(property, processType);
+            // if it is expanding the joblet in job,the property's eResource is null,no need to loadScreenShots
+            if (property.eResource() != null) {
+                resourceManager.loadScreenshots(property, processType);
+            }
+
         }
 
         // this fix caused another problem 14736 , project settings should be reload in
