@@ -586,12 +586,27 @@ if (execStat) {
             String keyValue = arg.substring(16);           
             int index = -1;
             if (keyValue != null && (index = keyValue.indexOf('=')) > -1) {
-                context_param.put(keyValue.substring(0, index), keyValue.substring(index + 1));
+                context_param.put(keyValue.substring(0, index), replaceEscapeChars(keyValue.substring(index + 1)));
             }
     	}
     	
 	}	
-	
+
+	private final String[][] escapeChars = {
+		{"\\n","\n"},{"\\'","\'"},{"\\r","\r"},
+		{"\\f","\f"},{"\\b","\b"},{"\\t","\t"},
+		{"\\"","\""},{"\\\\","\\"}
+		}; 
+	private String replaceEscapeChars (String keyValue) {
+		if(keyValue==null || ("").equals(keyValue.trim())) {
+			return keyValue;
+		}
+		for(String[] strArray: escapeChars) {
+			keyValue = keyValue.replace(strArray[0], strArray[1]);
+		}
+		return keyValue;
+	}
+
 	public Integer getErrorCode() {
 		return errorCode;
 	}
