@@ -143,10 +143,10 @@ if(("UPDATE").equals(dataAction)) {
     <%
 }
 %>
-if(db_<%=cid%> != null && db_<%=cid%>.trim().length() > 0) {
-    command_<%=cid %>.append(db_<%=cid%> + ".." + tableName_<%=cid%>);
+if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0) {
+    command_<%=cid %>.append(db_<%=cid%> + "." + tableName_<%=cid%>);
 } else {
-    command_<%=cid %>.append(tableName_<%=cid%>);
+    command_<%=cid %>.append(db_<%=cid%> + ".." + tableName_<%=cid%>);
 }
 command_<%=cid %>.append(" in " + <%=dataFile%>);
 String headRow_<%=cid%> = <%=headRow%>;
