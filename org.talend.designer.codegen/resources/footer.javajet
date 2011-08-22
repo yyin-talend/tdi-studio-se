@@ -595,7 +595,7 @@ if (execStat) {
 	private final String[][] escapeChars = {
 		{"\\n","\n"},{"\\'","\'"},{"\\r","\r"},
 		{"\\f","\f"},{"\\b","\b"},{"\\t","\t"},
-		{"\\"","\""},{"\\\\","\\"}
+		{"\\\\","\\"}
 		}; 
 	private String replaceEscapeChars (String keyValue) {
 		if(keyValue==null || ("").equals(keyValue.trim())) {
