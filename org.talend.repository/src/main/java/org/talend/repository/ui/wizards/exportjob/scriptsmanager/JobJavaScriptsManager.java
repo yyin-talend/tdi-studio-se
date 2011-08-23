@@ -506,9 +506,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY
                         + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY, systemRoutinesFileUrls);
             }
-
+            // bug TDI-8647
+            systemRoutinesFileUrls.clear(); // empty and re-use it
             rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY
-                    + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + PATH_SEPARATOR + "api"); //$NON-NLS-1$
+                    + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + PATH_SEPARATOR
+                    + JavaUtils.JAVA_SYSTEM_ROUTINES_API_DIRECTORY);
             if (rep.exists()) {
                 for (IResource fileResource : rep.members()) {
                     if (fileResource instanceof IFile
@@ -518,8 +520,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 }
 
                 resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY
-                        + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + PATH_SEPARATOR + "api", //$NON-NLS-1$
-                        systemRoutinesFileUrls);
+                        + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + PATH_SEPARATOR
+                        + JavaUtils.JAVA_SYSTEM_ROUTINES_API_DIRECTORY, systemRoutinesFileUrls);
             }
 
             List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
