@@ -591,11 +591,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         JSONObject o = new JSONObject(addData);
         List<String> rightsAsList = new ArrayList<String>();
         Iterator<String> it = o.sortedKeys();
-        if (it.hasNext()) {
-            for (String key = it.next(); it.hasNext(); key = it.next()) {
-                if (o.getBoolean(key)) {
-                    rightsAsList.add(key);
-                }
+
+        while (it.hasNext()) {
+            String key = it.next();
+            if (o.getBoolean(key)) {
+                rightsAsList.add(key);
             }
         }
         String[] rights = rightsAsList.toArray(new String[] {});
