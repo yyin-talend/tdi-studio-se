@@ -283,12 +283,16 @@ public class ChangeMetadataCommand extends Command {
     }
 
     private void propagateDatas(boolean isExecute) {
+        String baseConnectorForCurrentNode = node.getConnectorFromName(currentConnector).getBaseSchema();
+
         // Propagate :
         if (outputdataContainer != null
                 && (!outputdataContainer.getInputs().isEmpty() || !outputdataContainer.getOuputs().isEmpty())) {
             for (IODataComponent currentIO : outputdataContainer.getInputs()) {
                 INode sourceNode = currentIO.getSource();
-                if (currentIO.hasChanged() && (currentIO.getConnection().getConnectorName().equals(currentConnector))) {
+                if (currentIO.hasChanged()
+                        && (sourceNode.getConnectorFromName(currentIO.getConnection().getConnectorName()).getBaseSchema()
+                                .equals(baseConnectorForCurrentNode))) {
                     sourceNode.metadataOutputChanged(currentIO, currentIO.getName());
                     if (isExecute) {
                         currentIO.setTable(oldInputMetadata);
@@ -314,9 +318,9 @@ public class ChangeMetadataCommand extends Command {
 
                 boolean targetIsBuiltIn = ((Node) targetNode).getConnectorFromType(currentIO.getConnection().getLineStyle())
                         .isMultiSchema();
-                if (baseConnector.equals(currentConnector)
-                        && (targetIsBuiltIn || (!newOutputMetadata.sameMetadataAs(targetNode
-                                .getMetadataFromConnector(baseConnector))))) {
+                if (baseConnector.equals(baseConnectorForCurrentNode)
+                        && (targetIsBuiltIn || (!targetNode
+                                .getMetadataFromConnector(baseConnector).sameMetadataAs(newOutputMetadata)))) {
                     targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
                     if (isExecute) {
                         if (targetNode instanceof Node) {
@@ -430,7 +434,7 @@ public class ChangeMetadataCommand extends Command {
 
         if (inputdataContainer != null) {
             for (IODataComponent currentIO : inputdataContainer.getOuputs()) {
-                if (currentIO.hasChanged() && (currentIO.getConnection().getConnectorName().equals(currentConnector))) {
+                if (currentIO.hasChanged() && (currentIO.getSource().getConnectorFromName(currentIO.getConnection().getConnectorName()).getBaseSchema().equals(currentConnector))) {
                     INode targetNode = currentIO.getTarget();
                     targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
                     if (isExecute) {

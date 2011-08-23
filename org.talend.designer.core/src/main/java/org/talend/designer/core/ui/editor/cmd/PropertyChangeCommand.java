@@ -512,10 +512,9 @@ public class PropertyChangeCommand extends Command {
                                         found = true;
                                         break;
                                     }
-                                    if (!found) {
-                                        toAdd.add(column);
-                                        break;
-                                    }
+                                }
+                                if (!found) {
+                                    toAdd.add(column);
                                 }
 
                                 newMetadataTable.getListColumns().addAll(toAdd);
@@ -530,9 +529,9 @@ public class PropertyChangeCommand extends Command {
                     if (metadataTable != null && newMetadataTable != null) {
                         newMetadataTable.setTableName(metadataTable.getTableName());
                         newMetadataTable.setAttachedConnector(metadataTable.getAttachedConnector());
-                        metadataTable.setReadOnly(newMetadataTable.isReadOnly());
-                        metadataTable.setListColumns(newMetadataTable.clone(true).getListColumns());
-                        changeMetadataCommand = new ChangeMetadataCommand(node, null, metadataTable, newMetadataTable);
+//                        metadataTable.setReadOnly(newMetadataTable.isReadOnly());
+//                        metadataTable.setListColumns(newMetadataTable.clone(true).getListColumns());
+                        changeMetadataCommand = new ChangeMetadataCommand(node, null, null, newMetadataTable);
                         changeMetadataCommand.execute(true);
                     }
                 }
