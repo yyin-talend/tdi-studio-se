@@ -92,7 +92,7 @@ String username_<%=cid %> = null;
 String password_<%=cid %> = null;
 String port_<%=cid%> = null;
 String connectionType_<%=cid%>=null;
-
+String url_<%=cid%> = null;
 int deletedCount_<%=cid%>=0;
 <%       
 boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
@@ -106,6 +106,8 @@ if(useExistingConnection) {
     String existUsername = "username_" + connection;
     String existPassword = "password_" + connection;
     String existConnectonType= "connectionType_" + connection;       
+	String connectToOracleRAC = ElementParameterParser.getValue(node, "__CONNECT_TO_ORACLE_RAC__");
+	String racUrl = "rac_url_"+connection;
     %>
     host_<%=cid%> = (String)globalMap.get("<%=existHost%>");
     dbname_<%=cid%> = (String)globalMap.get("<%=existDbName%>");
@@ -114,8 +116,10 @@ if(useExistingConnection) {
     password_<%=cid%> = (String)globalMap.get("<%=existPassword%>");
     port_<%=cid%> = (String)globalMap.get("<%=existPort%>");
     connectionType_<%=cid%> = (String)globalMap.get("<%=existConnectonType%>");
-    
-    if ("ORACLE_SID".equals(connectionType_<%=cid%>)) {
+    url_<%=cid%> = (String)globalMap.get("<%=racUrl%>");
+    if (url_<%=cid%>!=null&&"ORACLE_RAC".equals(connectionType_<%=cid%>)) {
+		serviceUrl_<%=cid%> = url_<%=cid%>.substring(url_<%=cid%>.indexOf("@")+1);        
+	} else if("ORACLE_SID".equals(connectionType_<%=cid%>)) {
 	    serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + port_<%=cid%> + "))(connect_data=(SID=" + dbname_<%=cid%> + ")))";    
     }else {
     	serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + port_<%=cid%> + "))(connect_data=(service_name=" + dbname_<%=cid%> + ")))";
@@ -125,17 +129,26 @@ if(useExistingConnection) {
     conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
     <%
 } else {
-    %>
-    String url_<%=cid%> = null;
-    host_<%=cid%> = <%=host%>;
-    dbname_<%=cid%> = <%=dbname%>;
-    dbschema_<%=cid%> = <%=dbschema%>;
+    String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+    if(!"ORACLE_RAC".equals(connectionType)) {
+	%>
+	    host_<%=cid%> = <%=host%>;
+	    dbname_<%=cid%> = <%=dbname%>;
+	    dbschema_<%=cid%> = <%=dbschema%>;
+	<%
+	}
+	%>
     username_<%=cid%> = <%=dbuser%>;
     password_<%=cid%> = <%=dbpass%>;
         
     <%
-    String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
-    if(("ORACLE_SID").equals(connectionType)) {
+	String rac_url = ElementParameterParser.getValue(node, "__RAC_URL__");
+    if("ORACLE_RAC".equals(connectionType)) {
+		%>
+		url_<%=cid %> = <%=rac_url%>;        
+		serviceUrl_<%=cid%> = url_<%=cid%>.substring(url_<%=cid%>.indexOf("@")+1); 
+		<%
+	} else if(("ORACLE_SID").equals(connectionType)) {
         %>
 	    serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + <%=port%> + "))(connect_data=(SID=" + dbname_<%=cid%> + ")))";
         url_<%=cid%> = "jdbc:oracle:thin:@" + host_<%=cid%> + ":" + <%=port%> + ":" + dbname_<%=cid%>;
@@ -158,7 +171,7 @@ if(useExistingConnection) {
 		java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");	
 	<%}%>
 <%
-	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+	if("ORACLE_RAC".equals(connectionType) || dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
 	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,username_<%=cid %>,password_<%=cid %>);
 <%
@@ -179,9 +192,10 @@ if(useExistingConnection) {
 }
 
 //table action begin
+String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
 %>
 String tableName_<%=cid%> = null;
-if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+if("ORACLE_RAC".equals("<%=connectionType%>")||dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
     tableName_<%=cid%> = <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
 } else {
     tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
