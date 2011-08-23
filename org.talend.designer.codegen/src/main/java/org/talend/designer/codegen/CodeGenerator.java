@@ -275,7 +275,12 @@ public class CodeGenerator implements ICodeGenerator {
                         if ("cMessagingEndpoint".equals(subTree.getRootNode().getSubProcessStartNode(true).getComponent()
                                 .getName())) {
                             nodeSubTreeList.add(subTree);
-                        } else {
+                        } else if ("cContextConfig".equals(subTree.getRootNode().getSubProcessStartNode(true).getComponent()
+                                .getName())) {
+                            //Customized remove the cContextConfig routeId codes. TESB-2825 LiXP 20110823
+                            //Do nothing.
+                        } 
+                        else {
                             componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
                                     ETypeGen.CAMEL)); // And generate the component par of code
                             componentsCode.append(";");
