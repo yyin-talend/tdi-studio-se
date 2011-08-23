@@ -102,8 +102,15 @@ import java.util.Comparator;
 	
 	
 <%
-	boolean messagingEndpoint = !process.getNodesOfType("cMessagingEndpoint").isEmpty();
-	if (messagingEndpoint) { 
+	boolean startable = false;	
+	for (INode node : (List< ? extends INode>)process.getGraphicalNodes()) {
+		Object value = node.getPropertyValue("STARTABLE");
+		startable = value == null? false:(Boolean)value;
+		if(startable){
+			break;
+		}
+	}
+	if (startable) { 
 %>
 	private org.osgi.framework.BundleContext bundleContext;
 

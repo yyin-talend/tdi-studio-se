@@ -24,13 +24,19 @@
 %>
 
 <%
-
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     Vector v = (Vector) codeGenArgument.getArgument();
 	IProcess process = (IProcess)v.get(0);
     String version = (String)v.get(1);
 	
-	boolean messagingEndpoint = !process.getNodesOfType("cMessagingEndpoint").isEmpty();
+	boolean startable = false;
+	for (INode node : (List< ? extends INode>)process.getGraphicalNodes()) {
+		Object value = node.getPropertyValue("STARTABLE");
+		startable = value == null? false:(Boolean)value;
+		if(startable){
+			break;
+		}
+	}
 	
 	boolean stats = codeGenArgument.isStatistics();
 	
