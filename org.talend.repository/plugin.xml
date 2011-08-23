@@ -1324,6 +1324,12 @@
              id="org.talend.repository.model.migration.AddScreenshotFileMigrationTask"
              name="AddScreenshotFileMigrationTask">
        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.ChangeAS400DBVersionMigrationTask"
+              id="org.talend.repository.model.migration.ChangeAS400DBVersionMigrationTask"
+              name="Change AS400 DBVersion">
+        </projecttask>
    </extension>
    
    <extension
