@@ -514,6 +514,7 @@ public class PropertyChangeCommand extends Command {
                                     }
                                     if (!found) {
                                         toAdd.add(column);
+                                        break;
                                     }
                                 }
 
