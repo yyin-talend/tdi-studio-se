@@ -147,7 +147,7 @@ public class GuessSchemaProcess {
 
         for (IElementParameter param : node.getElementParameters()) {
             Set<String> neededLibraries = new HashSet<String>();
-            JavaProcessUtil.findMoreLibraries(neededLibraries, param, true); // add by hywang
+            JavaProcessUtil.findMoreLibraries(process, neededLibraries, param, true); // add by hywang
             // for bug 8350
             // add for tJDBCInput component
             if (param.getFieldType().equals(EParameterFieldType.MODULE_LIST)) {
@@ -157,9 +157,9 @@ public class GuessSchemaProcess {
                     neededLibraries.add(moduleValue); //$NON-NLS-1$
                 }
                 if (param.isShow(node.getElementParameters())) {
-                    JavaProcessUtil.findMoreLibraries(neededLibraries, param, true);
+                    JavaProcessUtil.findMoreLibraries(process, neededLibraries, param, true);
                 } else {
-                    JavaProcessUtil.findMoreLibraries(neededLibraries, param, false);
+                    JavaProcessUtil.findMoreLibraries(process, neededLibraries, param, false);
                 }
             }
             for (String lib : neededLibraries) {

@@ -30,15 +30,18 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.repository.utils.DatabaseConnectionParameterUtil;
 
 /**
@@ -70,6 +73,8 @@ public class QueryGuessCommand extends Command {
     private String dbType;
 
     private Connection conn; // hywang add for 9594
+
+    private IProcess process;
 
     /**
      * The property is defined in an element, which can be either a node or a connection.
@@ -118,6 +123,10 @@ public class QueryGuessCommand extends Command {
         if (realDBType != null) {
             dbType = realDBType;
         }
+        //
+        if (node != null && node instanceof INode) {
+            process = ((INode) node).getProcess();
+        }
         if (this.realTableId != null && this.dbNameAndDbTypeMap.containsKey(this.realTableId)) {
             dbType = this.dbNameAndDbTypeMap.get(this.realTableId);
         }
@@ -133,6 +142,13 @@ public class QueryGuessCommand extends Command {
         if (dbType != null && dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
             String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString(); //$NON-NLS-N$
             driverClassName = TalendTextUtils.removeQuotes(driverClassName);
+            //
+            if (driverClassName != null && !"".equals(driverClassName)) { //$NON-NLS-N$
+                boolean isContextModeDriverClass = ContextParameterUtils.containContextVariables(driverClassName);
+                if (isContextModeDriverClass) {
+                    driverClassName = JavaProcessUtil.getContextOriginalValue(process, driverClassName);
+                }
+            }
 
             // DRIVER_JAR:
             String driverJarName = node.getElementParameter("DRIVER_JAR").getValue().toString(); //$NON-NLS-N$
@@ -143,6 +159,10 @@ public class QueryGuessCommand extends Command {
                 }
             }
             if (driverJarName != null && !"".equals(driverJarName)) { //$NON-NLS-N$
+                boolean isContextMode = ContextParameterUtils.containContextVariables(driverJarName);
+                if (isContextMode) {
+                    driverJarName = JavaProcessUtil.getContextOriginalValue(process, driverJarName);
+                }
                 dbType = ExtractMetaDataUtils.getDbTypeByClassNameAndDriverJar(driverClassName, driverJarName);
             } else {
                 dbType = ExtractMetaDataUtils.getDbTypeByClassName(driverClassName);

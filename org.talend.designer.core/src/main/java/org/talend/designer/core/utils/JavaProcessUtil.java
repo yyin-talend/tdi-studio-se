@@ -153,9 +153,9 @@ public class JavaProcessUtil {
                 // if (elementParameter != null && elementParameter.isShow(node.getElementParameters())
                 // && Boolean.TRUE.equals(elementParameter.getValue())) {
                 if (curParam.isShow(node.getElementParameters())) {
-                    findMoreLibraries(neededLibraries, curParam, true);
+                    findMoreLibraries(process, neededLibraries, curParam, true);
                 } else {
-                    findMoreLibraries(neededLibraries, curParam, false);
+                    findMoreLibraries(process, neededLibraries, curParam, false);
                 }
             }
 
@@ -281,7 +281,8 @@ public class JavaProcessUtil {
      * @param neededLibraries
      * @param curParam
      */
-    public static void findMoreLibraries(Set<String> neededLibraries, IElementParameter curParam, boolean flag) {
+    public static void findMoreLibraries(final IProcess process, Set<String> neededLibraries, IElementParameter curParam,
+            boolean flag) {
 
         Object value = curParam.getValue();
         if (curParam.getName().equals("DRIVER_JAR")) {//$NON-NLS-N$
@@ -294,8 +295,15 @@ public class JavaProcessUtil {
                         Object object = map.get("JAR_NAME");//$NON-NLS-N$
                         if (object != null && object instanceof String) {
                             String driverName = (String) object;
-                            neededLibraries.add((driverName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
-                                    TalendTextUtils.SINGLE_QUOTE, ""));//$NON-NLS-1$
+                            if (driverName != null && !"".equals(driverName)) {
+                                boolean isContextMode = ContextParameterUtils.containContextVariables(driverName);
+                                if (isContextMode) {
+                                    getModulsInTable(process, curParam, neededLibraries);
+                                } else {
+                                    neededLibraries.add((driverName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
+                                            TalendTextUtils.SINGLE_QUOTE, ""));//$NON-NLS-1$
+                                }
+                            }
                         }
                     }
                 }
@@ -343,5 +351,28 @@ public class JavaProcessUtil {
                 }
             }
         }
+    }
+
+    /**
+     * 
+     * DOC hcyi Comment method "getContextOriginalValue".
+     * 
+     * @param process
+     * @param contextStr
+     */
+    public static String getContextOriginalValue(final IProcess process, String contextStr) {
+        String originalValue = null;
+        List<IContext> listContext = process.getContextManager().getListContext();
+        for (IContext context : listContext) {
+            List<IContextParameter> contextParameterList = context.getContextParameterList();
+            for (IContextParameter contextPara : contextParameterList) {
+                String var = ContextParameterUtils.getVariableFromCode(contextStr);
+                if (var.equals(contextPara.getName())) {
+                    originalValue = context.getContextParameter(contextPara.getName()).getValue();
+                    return originalValue;
+                }
+            }
+        }
+        return null;
     }
 }
