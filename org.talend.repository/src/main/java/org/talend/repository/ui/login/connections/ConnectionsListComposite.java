@@ -41,7 +41,9 @@ import org.talend.commons.ui.swt.tableviewer.behavior.IColumnImageProvider;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ConnectionBean;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -62,6 +64,9 @@ public class ConnectionsListComposite extends Composite {
 
     private ExtendedTableModel<ConnectionBean> model;
 
+    private IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+            IBrandingService.class);
+
     /**
      * DOC smallet ConnectionsComposite constructor comment.
      * 
@@ -77,7 +82,12 @@ public class ConnectionsListComposite extends Composite {
         this.list = ConnectionUserPerReader.getInstance().readConnections();
 
         if (list.isEmpty()) {
-            list.add(ConnectionBean.getDefaultConnectionBean());
+            boolean isOnlyRemoteConnection = brandingService.getBrandingConfiguration().isOnlyRemoteConnection();
+            if (!isOnlyRemoteConnection) {
+                list.add(ConnectionBean.getDefaultConnectionBean());
+            } else {
+                list.add(ConnectionBean.getDefaultRemoteConnectionBean());
+            }
         }
 
         this.model = new ExtendedTableModel<ConnectionBean>(null, list);
