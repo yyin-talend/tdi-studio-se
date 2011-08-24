@@ -543,6 +543,31 @@ if(footer_<%=cid %> > 0){
 	<% } %>
 }
 
+<%
+if ( !(java.util.regex.Pattern.compile("[0-9]*").matcher(positions[0]).matches() )){
+		if(pattern1.startsWith("\"")){
+%>
+		String arrFieldSeparator<%=cid%>[] = "<%=positions[0] %>".split(",");
+<% 
+		}else{
+%>		
+		String arrFieldSeparator<%=cid%>[] = <%=positions[0]%>.split(",");
+<% 
+		}
+%> 
+
+Integer star_<%=cid %> = Integer.valueOf(-1);																				
+Integer[] tmpAry_<%=cid %> = new Integer[arrFieldSeparator<%=cid %>.length];																						
+for (int i = 0; i < arrFieldSeparator<%=cid %>.length; i++ ){																						
+	if (("*").equals(arrFieldSeparator<%=cid %>[i])) {																					
+		tmpAry_<%=cid %>[i] = star_<%=cid %>;																				
+	}else{																					
+		tmpAry_<%=cid %>[i] = Integer.parseInt(arrFieldSeparator<%=cid %>[i]);																				
+	}																					
+}	
+<%
+}	
+%>
 while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.readRecord()) {
 	row_<%=cid %> = reader_<%=cid %>.getRowRecord();
 <%
@@ -671,15 +696,6 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 				
 	///////////////
 	} else{
-		if(pattern1.startsWith("\"")){
-%>
-		String arrFieldSeparator<%=cid%>[] = "<%=positions[0] %>".split(",");
-<%
-		}else{
-	%>		
-		String arrFieldSeparator<%=cid%>[] = <%=positions[0]%>.split(",");
-<%
-		}
 %>
 		for (int i_<%=cid %> = 0; i_<%=cid %> < <%=metadata.getListColumns().size()%>; i_<%=cid %>++) {
 			if (i_<%=cid %> >= arrFieldSeparator<%=cid%>.length ){
@@ -691,10 +707,10 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 		    	columnValue<%=cid %>[i_<%=cid %>] = "";
 		    } else{
 		    
-				if (("*").equals(arrFieldSeparator<%=cid%>[i_<%=cid %>])){
+				if ((star_<%=cid %>).equals(tmpAry_<%=cid %>[i_<%=cid %>])){
 					substringEnd<%=cid %> = rowLen_<%=cid %>;
 				} else{
-	    			substringEnd<%=cid %> = substringEnd<%=cid %> + Integer.parseInt(arrFieldSeparator<%=cid%>[i_<%=cid %>]);
+	    			substringEnd<%=cid %> = substringEnd<%=cid %> +tmpAry_<%=cid %>[i_<%=cid %>];
 			        if(substringEnd<%=cid %> > rowLen_<%=cid %>)
 			        	substringEnd<%=cid %> = rowLen_<%=cid %>;
 				}
