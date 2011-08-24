@@ -85,11 +85,7 @@ imports="
 	        String dbUser_<%=cid %> = <%=dbuser%>;
 	        String dbPwd_<%=cid %> = <%=dbpwd%>;
 <%
-			if("ORACLE_RAC".equals(connectionType)) {
-%>
-			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-<%
-			}else if(("ORACLE_WALLET").equals(connectionType)) {
+			if(("ORACLE_WALLET").equals(connectionType)) {
 %>
 			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
 <%

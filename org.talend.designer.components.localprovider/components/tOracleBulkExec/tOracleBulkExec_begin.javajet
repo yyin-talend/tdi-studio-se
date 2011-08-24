@@ -117,7 +117,7 @@ if(useExistingConnection) {
     port_<%=cid%> = (String)globalMap.get("<%=existPort%>");
     connectionType_<%=cid%> = (String)globalMap.get("<%=existConnectonType%>");
     url_<%=cid%> = (String)globalMap.get("<%=racUrl%>");
-    if (url_<%=cid%>!=null&&"ORACLE_RAC".equals(connectionType_<%=cid%>)) {
+    if ("ORACLE_RAC".equals(connectionType_<%=cid%>)) {
 		serviceUrl_<%=cid%> = url_<%=cid%>.substring(url_<%=cid%>.indexOf("@")+1);        
 	} else if("ORACLE_SID".equals(connectionType_<%=cid%>)) {
 	    serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + port_<%=cid%> + "))(connect_data=(SID=" + dbname_<%=cid%> + ")))";    
@@ -171,7 +171,7 @@ if(useExistingConnection) {
 		java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");	
 	<%}%>
 <%
-	if("ORACLE_RAC".equals(connectionType) || dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
 	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,username_<%=cid %>,password_<%=cid %>);
 <%

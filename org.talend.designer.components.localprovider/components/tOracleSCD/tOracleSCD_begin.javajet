@@ -103,7 +103,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         %>
         String schema_<%=cid%> = <%=ElementParameterParser.getValue(node, "__SCHEMA_DB__")%>;
 <%
-		if("ORACLE_RAC".equals(connectionType) || dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
 		java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
 <%

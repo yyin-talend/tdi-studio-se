@@ -70,7 +70,7 @@ if(("true").equals(useExistingConn)) {
 	String dbUser_<%=cid %> = <%=dbuser%>;
 	String dbPwd_<%=cid %> = <%=dbpwd%>;
 <%
-	if("ORACLE_RAC".equals(connectionType)||dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+	if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
 	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 <%

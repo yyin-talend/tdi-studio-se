@@ -107,19 +107,18 @@ if(useExistingConn) {
     %>
     java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
     <%
-    String rac_url = ElementParameterParser.getValue(previousNode, "__RAC_URL__");
-	
-	if("ORACLE_RAC".equals(connectionType)) {
-        %>
-        String url_<%=cid%> = <%=rac_url%>;
-        <%
-    } else if(connectionType == null || ("ORACLE_SID").equals(connectionType)) {
+    if(connectionType == null || ("ORACLE_SID").equals(connectionType)) {
         %>
         String url_<%=cid%> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
         <%
     } else if(("ORACLE_SERVICE_NAME").equals(connectionType)) {
         %>
         String url_<%=cid%> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
+        <%
+    } else if("ORACLE_RAC".equals(connectionType)) {
+    	String rac_url = ElementParameterParser.getValue(previousNode, "__RAC_URL__");
+        %>
+        String url_<%=cid%> = <%=rac_url%>;
         <%
     }
     %>
