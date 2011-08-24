@@ -129,9 +129,9 @@ import org.talend.repository.utils.JobVersionUtils;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
- *
+ * 
  * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
- *
+ * 
  */
 public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPage1 {
 
@@ -230,7 +230,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Create an instance of this class.
-     *
+     * 
      * @param name java.lang.String
      */
     public JobScriptsExportWizardPage(String name, IStructuredSelection selection) {
@@ -295,7 +295,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Create an instance of this class.
-     *
+     * 
      * @param selection the selection
      */
     public JobScriptsExportWizardPage(IStructuredSelection selection) {
@@ -341,8 +341,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     protected void setDefaultDestinationForOSGI() {
-		String bundleName = this.getDefaultFileName().get(0) + "-"
-				+ this.getDefaultFileName().get(1) + getOutputSuffix();
+        String bundleName = this.getDefaultFileName().get(0) + "-" + this.getDefaultFileName().get(1) + getOutputSuffix();
         String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
         IPath path = new Path(userDir).append(bundleName);
         setInitDestinationFilePath(path.toOSString());
@@ -464,7 +463,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * ftang Comment method "createJobVersionGroup".
-     *
+     * 
      * @param composite
      */
     protected void createJobVersionGroup(Composite parent) {
@@ -537,7 +536,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     /*
      * It's not a good method to resovle the problem of null pointer, which is led by commenting the //
      * createResourcesGroup(composite); and createButtonsGroup(composite); (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1#validateSourceGroup()
      */
     public boolean validateSourceGroup() {
@@ -546,7 +545,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Create the export options specification widgets.
-     *
+     * 
      */
     public void createOptionsGroupButtons(Group optionsGroup) {
         Font font = optionsGroup.getFont();
@@ -565,7 +564,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Create the buttons for the group that determine if the entire or selected directory structure should be created.
-     *
+     * 
      * @param optionsGroup
      * @param font
      */
@@ -696,7 +695,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * DOC zli Comment method "getJobContextValues".
-     *
+     * 
      * @param processItem
      * @param contextName
      * @return
@@ -728,7 +727,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     /**
-     *
+     * 
      * DOC yhch Comment method "exportDependenciesSelected".
      */
     private void exportDependenciesSelected() {
@@ -833,7 +832,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Get all selected items to export.
-     *
+     * 
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -943,7 +942,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         /**
          * DOC zli ParametersValuesDialog constructor comment.
-         *
+         * 
          * @param parentShell
          */
         protected ParametersValuesDialog(Shell parentShell) {
@@ -1232,7 +1231,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         /*
          * (non-Javadoc)
-         *
+         * 
          * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
          */
         public Object[] getChildren(Object parentElement) {
@@ -1241,7 +1240,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         /*
          * (non-Javadoc)
-         *
+         * 
          * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
          */
         public Object getParent(Object element) {
@@ -1250,7 +1249,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         /*
          * (non-Javadoc)
-         *
+         * 
          * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
          */
         public boolean hasChildren(Object element) {
@@ -1367,7 +1366,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     /**
      * The Finish button was pressed. Try to do the required work now and answer a boolean indicating success. If false
      * is returned then the wizard will not close.
-     *
+     * 
      * @returns boolean
      */
     public boolean finish() {
@@ -1446,7 +1445,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * ftang Comment method "exportJobScript".
-     *
+     * 
      * @return
      */
     private boolean exportJobScript(String version, IProgressMonitor monitor) {
@@ -1605,7 +1604,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     /**
-     *
+     * 
      * DOC aiming Comment method "reBuildJobZipFile".
      */
     private void reBuildJobZipFile() {
@@ -1645,12 +1644,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         } finally {
             JavaJobExportReArchieveCreator.deleteTempFiles();
             JavaJobExportReArchieveCreator.deleteTempDestinationFiles();
+            new File(zipFile).delete(); // delete the temp zip file
         }
     }
 
     /**
      * Get the export operation.
-     *
+     * 
      * @param resourcesToExport
      * @return
      */
@@ -1662,7 +1662,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * DOC zli Comment method "getTempDestinationValue".
-     *
+     * 
      * @return
      */
     protected String getTempDestinationValue() {
@@ -1695,7 +1695,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Get the export operation.
-     *
+     * 
      * @param resourcesToExport
      * @return
      */
@@ -1715,7 +1715,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Returns the root folder name.
-     *
+     * 
      * @return
      */
     private String getRootFolderName() {
@@ -1756,7 +1756,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Comment method "setTopFolder".
-     *
+     * 
      * @param resourcesToExport
      * @param topFolder
      */
@@ -1772,7 +1772,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Answer the string to display in self as the destination type.
-     *
+     * 
      * @return java.lang.String
      */
     protected String getDestinationLabel() {
@@ -1781,7 +1781,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Returns resources to be exported. This returns file - for just the files use getSelectedResources.
-     *
+     * 
      * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
      * @throws ProcessorException
      */
@@ -1847,7 +1847,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     /**
      * Answer the suffix that files exported from this wizard should have. If this suffix is a file extension (which is
      * typically the case) then it must include the leading period character.
-     *
+     * 
      */
     protected String getOutputSuffix() {
         return outputFileSuffix; //$NON-NLS-1$
@@ -1908,7 +1908,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.ui.wizards.datatransfer.WizardFileSystemResourceExportPage1#destinationEmptyMessage()
      */
     protected String destinationEmptyMessage() {
@@ -1917,7 +1917,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * ftang Comment method "isMultiNodes".
-     *
+     * 
      * @return
      */
     public boolean isMultiNodes() {
@@ -1929,7 +1929,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * ftang Comment method "getSelectedJobVersion".
-     *
+     * 
      * @return
      */
     public String getSelectedJobVersion() {
