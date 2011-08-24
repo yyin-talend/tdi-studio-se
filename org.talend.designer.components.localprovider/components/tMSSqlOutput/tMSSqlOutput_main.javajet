@@ -380,8 +380,16 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
     } else if (("DELETE").equals(dataAction)) {
         %>
         String delete_<%=cid%> = "DELETE FROM [" + tableName_<%=cid%> + "] WHERE <%=deleteWhereStmt.toString()%>";
+         <%
+            if(isDynamic){
+        %>
+        pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
+        <%
+            }else{
+        %>
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
         <%      
+            }   
     } else if (("INSERT_IF_NOT_EXIST").equals(dataAction)) {
 		List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
 		if(conns_dynamic!=null && conns_dynamic.size()>0){
