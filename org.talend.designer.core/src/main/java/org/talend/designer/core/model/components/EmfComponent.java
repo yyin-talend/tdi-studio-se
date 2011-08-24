@@ -2596,19 +2596,7 @@ public class EmfComponent extends AbstractComponent {
                     List<String> list = getInstallURL(importType);
                     ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
                             importType.isREQUIRED(), list);
-                    String bundleID = importType.getBundleID();
-                    if (bundleID != null) {
-                        String bundleName = null;
-                        String bundleVersion = null;
-                        if (bundleID.contains(":")) {
-                            String[] nameAndVersion = bundleID.split(":"); //$NON-NLS-N$
-                            bundleName = nameAndVersion[0];
-                            bundleVersion = nameAndVersion[1];
-                        }
-                        bundleName = bundleID;
-                        componentImportNeeds.setBundleName(bundleName);
-                        componentImportNeeds.setBundleVersion(bundleVersion);
-                    }
+                    initBundleID(importType, componentImportNeeds);
                     moduleNames.add(importType.getMODULE());
                     componentImportNeeds.setShow(importType.isSHOW());
                     componentImportNeedsList.add(componentImportNeeds);
@@ -2637,7 +2625,6 @@ public class EmfComponent extends AbstractComponent {
                 EList emfImportList = info.getImportType();
                 for (int i = 0; i < emfImportList.size(); i++) {
                     IMPORTType importType = (IMPORTType) emfImportList.get(i);
-
                     String msg = getTranslatedValue(importType.getNAME() + ".INFO"); //$NON-NLS-1$
                     if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
                         msg = Messages.getString("modules.required"); //$NON-NLS-1$
@@ -2645,6 +2632,7 @@ public class EmfComponent extends AbstractComponent {
                     List<String> list = getInstallURL(importType);
                     ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
                             importType.isREQUIRED(), list);
+                    initBundleID(importType, componentImportNeeds);
                     moduleNames.add(importType.getMODULE());
                     componentImportNeeds.setShow(importType.isSHOW());
                     componentImportNeedsList.add(componentImportNeeds);
@@ -2723,6 +2711,23 @@ public class EmfComponent extends AbstractComponent {
         }
 
         return componentImportNeedsList;
+    }
+
+    protected void initBundleID(IMPORTType importType, ModuleNeeded componentImportNeeds) {
+        String bundleID = importType.getBundleID();
+        if (bundleID != null) {
+            String bundleName = null;
+            String bundleVersion = null;
+            if (bundleID.contains(":")) {
+                String[] nameAndVersion = bundleID.split(":"); //$NON-NLS-N$
+                bundleName = nameAndVersion[0];
+                bundleVersion = nameAndVersion[1];
+            } else {
+                bundleName = bundleID;
+            }
+            componentImportNeeds.setBundleName(bundleName);
+            componentImportNeeds.setBundleVersion(bundleVersion);
+        }
     }
 
     public List<String> getInstallURL(IMPORTType importType) {

@@ -50,6 +50,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
@@ -354,30 +355,43 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         List<? extends INode> generateNodes = fakeProcess.getGeneratingNodes();
         // this list is used to avoid add dumplicated bundle
         List<String> alreadyAddedBundles = new ArrayList<String>();
+
+        List<String> segments = new ArrayList<String>();
+        generateBundleSegmemnts(generateNodes, alreadyAddedBundles, segments);
+        int index = 0;
+        for (String segment : segments) {
+            if (index != segments.size() - 1) {
+                segment = segment + ",\n";
+            }
+            requiredBundles.append(segment);
+            index++;
+        }
+        segments = null;
+        alreadyAddedBundles = null;
+        return requiredBundles.toString();
+    }
+
+    protected void generateBundleSegmemnts(List<? extends INode> generateNodes, List<String> alreadyAddedBundles,
+            List<String> segments) {
         for (INode generateNode : generateNodes) {
             List<ModuleNeeded> modelneededForGenerateNode = generateNode.getComponent().getModulesNeeded();
-            int index = 0;
             for (ModuleNeeded module : modelneededForGenerateNode) {
                 String bundleName = module.getBundleName();
                 String bundleVersion = module.getBundleVersion();
                 // the last dependence should not contain "," and "\n"
                 String bundleToAdd = bundleName;
                 if (bundleVersion != null && !"".equals(bundleVersion)) {
-                    bundleToAdd = bundleName + ";bundle-version=" + bundleVersion;
+                    bundleToAdd = bundleName + ";bundle-version=" + TalendTextUtils.addQuotes(bundleVersion);
                 }
-                if (index != modelneededForGenerateNode.size() - 1) {
-                    bundleToAdd = bundleToAdd + ",\n";
-                }
+
                 if (bundleToAdd != null && !"".equals(bundleToAdd)) {
-                    alreadyAddedBundles.add(bundleToAdd);
                     if (!alreadyAddedBundles.contains(bundleToAdd)) {
-                        requiredBundles.append(bundleToAdd);
+                        segments.add(bundleToAdd);
+                        alreadyAddedBundles.add(bundleToAdd);
                     }
                 }
-                index++;
             }
         }
-        return requiredBundles.toString();
     }
 
     private String getClassPath(ExportFileResource libResource) {
