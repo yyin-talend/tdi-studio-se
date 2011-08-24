@@ -542,6 +542,7 @@ public final class UpdateManagerUtils {
         case NODE_QUERY:
         case NODE_SAP_IDOC:
         case NODE_SAP_FUNCTION:
+        case NODE_VALIDATION_RULE:
             command = new UpdateNodeParameterCommand(result);
             break;
         case JOB_PROPERTY_EXTRA:
