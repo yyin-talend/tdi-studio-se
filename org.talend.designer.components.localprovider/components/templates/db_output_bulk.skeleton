@@ -273,6 +273,11 @@ public class CLASS {
             truncateTableSQL.append("TRUNCATE TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
             return truncateTableSQL.toString();
         }
+        public String getTruncateReuseStroageTableSQL() {
+            StringBuilder truncate_reuse_stroage_TableSQL = new StringBuilder();
+            truncate_reuse_stroage_TableSQL.append("TRUNCATE TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + " REUSE STORAGE " + getRProtectedChar());
+            return truncate_reuse_stroage_TableSQL.toString();
+        }
         public String getDropTableSQL() {
             StringBuilder dropTableSQL = new StringBuilder();
             dropTableSQL.append("DROP TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());

@@ -260,6 +260,19 @@ if (!isParallelize) {
             stmtTruncCount_<%=cid%>.close();
             stmtTrunc_<%=cid%>.close();            
 <%
+		} else if(("TRUNCATE_REUSE_STORAGE").equals(tableAction)) {
+%>
+		 	java.sql.Statement stmtTruncCount_<%=cid%> = conn_<%=cid%>.createStatement();
+		 	java.sql.ResultSet rsTruncCount_<%=cid%> = stmtTruncCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
+            java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateReuseStroageTableSQL()%>");
+             while(rsTruncCount_<%=cid%>.next()) {
+                deletedCount_<%=cid%> += rsTruncCount_<%=cid%>.getInt(1);
+            }
+            rsTruncCount_<%=cid%>.close();
+            stmtTruncCount_<%=cid%>.close();
+            stmtTrunc_<%=cid%>.close();
+<%
 		}         
 	}
 //issue 0010346 Parallelization crash with "Drop table if exists and create"
