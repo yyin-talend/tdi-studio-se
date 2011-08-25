@@ -73,7 +73,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         axisLib.add("axis.jar"); //$NON-NLS-1$
         axisLib.add("jaxrpc.jar"); //$NON-NLS-1$
         axisLib.add("saaj.jar"); //$NON-NLS-1$
-        axisLib.add("wsdl4j-1.5.1.jar"); //$NON-NLS-1$
+        axisLib.add("wsdl4j-1.6.2.jar"); //$NON-NLS-1$
         axisLib.add("commons-discovery-0.2.jar"); //$NON-NLS-1$
         axisLib.add("commons-logging-1.1.jar"); //$NON-NLS-1$
         axisLib.add("mail.jar"); //$NON-NLS-1$
