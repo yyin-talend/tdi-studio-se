@@ -604,27 +604,30 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      */
     private List<Map> refreshCode(Element element) {
         IElementParameter sqlPatternValue = element.getElementParameter(EParameterName.SQLPATTERN_VALUE.getName());
-        List<Map> values = (List<Map>) sqlPatternValue.getValue();
+        if (sqlPatternValue != null) {
+            List<Map> values = (List<Map>) sqlPatternValue.getValue();
 
-        if (firstTimeLoad) {
-            List<Map> unusedValues = new ArrayList<Map>();
-            for (Map map : values) {
-                String compoundId = (String) map.get(SQLPatternUtils.SQLPATTERNLIST);
-                String id = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[0];
+            if (firstTimeLoad) {
+                List<Map> unusedValues = new ArrayList<Map>();
+                for (Map map : values) {
+                    String compoundId = (String) map.get(SQLPatternUtils.SQLPATTERNLIST);
+                    String id = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[0];
 
-                IRepositoryViewObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
-                String name = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[1];
+                    IRepositoryViewObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
+                    String name = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[1];
 
-                SQLPatternItem item = null;
-                if (repositoryObject == null && (item = SQLPatternUtils.getSQLPatternItem(element, name)) == null) {
-                    unusedValues.add(map);
+                    SQLPatternItem item = null;
+                    if (repositoryObject == null && (item = SQLPatternUtils.getSQLPatternItem(element, name)) == null) {
+                        unusedValues.add(map);
+                    }
                 }
+                values.removeAll(unusedValues);
+                firstTimeLoad = false;
             }
-            values.removeAll(unusedValues);
-            firstTimeLoad = false;
-        }
 
-        return values;
+            return values;
+        }
+        return new ArrayList();
     }
 
     /**
