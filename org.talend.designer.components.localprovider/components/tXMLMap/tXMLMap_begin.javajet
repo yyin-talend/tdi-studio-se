@@ -119,7 +119,7 @@
 	if(isCacheOrReloadLookupMode) {
 	%>
 	
-	routines.system.DocumentLookupCache tHash_Lookup_Cache_<%=tableName%> = new routines.system.DocumentLookupCache();
+	routines.system.DocumentLookupCache tHash_Lookup_Cache_<%=tableName%> = new routines.system.DocumentLookupCache("<%=matchingModeStr%>");
 	<%}
 	if(isAllRows && !isOneOfReloadLookupMode) {
 	%>

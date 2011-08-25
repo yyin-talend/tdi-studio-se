@@ -371,24 +371,26 @@ public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V>, Cloneable {
     }
     
     /**
-     * Getter for id_Document lookup
+     * Getter for id_Document lookup(for tXMLMap)
+     * Purpose : Get all value data storing in the lookup Object 
+     * Use case : When no basic lookup(not Document lookup) exists,but Document lookup exists
+     * for ALL,First Matching(When no basic lookup,not override the hashCode(),equals() method,so no List<V> value,only V value)
      */ 
     public void lookup() {
+    	List<V> localList = new ArrayList<V>();
     	if(matchingMode == MATCHING_MODE.UNIQUE_MATCH) {
-    		if(uniqueHash == null) {
-    			return;
-    		}
-    		List<V> localList = new ArrayList<V>();
     		for(V value : uniqueHash.values()) {
     			localList.add(value);
     		}
-    		listResult = localList;
-    		sizeResultList = localList.size();
-    		objectResult = null;
-    		currentIndex = 0;
     	} else {
-    		//TODO
+    		for(Object value : mapOfCol.values()) {
+    			localList.add((V)value);
+    		}
     	}
+    	listResult = localList;
+		sizeResultList = localList.size();
+		objectResult = null;
+		currentIndex = 0;
     }
 
 }

@@ -149,6 +149,7 @@ skeleton="tXMLMap_java.skeleton"
 					    }
 					}
 				}
+				
 				isXpathFromLookup = existXpathKeyFromCurrentLookup;
 				String[] aKeysNames = keysNames.toArray(new String[0]);
 				String[] aKeysValues = keysValues.toArray(new String[0]);
@@ -165,15 +166,18 @@ skeleton="tXMLMap_java.skeleton"
 					isMultipleResult = true;
 				}
 				%>
+				
 				<%if(hasOutgoingConnection){ %>
 					boolean forceLoop<%= tableName %> = false;
 					<%= className %> <%= tableName %>ObjectFromLookup = null;
 					boolean hasResultFromLookupCache<%= tableName %> = false;
 					java.util.Map<String,Object> cacheResult<%=tableName%> = new java.util.HashMap<String,Object>();
 				<%} %>
+				
 				<%
 				if( null != aKeysValues && aKeysValues.length != 0 ){
 					isExpressionEmpty = false;
+					
 					if(aKeysValues.length > 0) {//TD114
 					 	if(isCacheOrReloadLookupMode) {
 			   			%>
@@ -200,12 +204,14 @@ skeleton="tXMLMap_java.skeleton"
 					   		}
 						}// end for aKeysNames
 					}//TD114
+					
 					if(findFromBasicType && isCacheOrReloadLookupMode) {
 					%>
 						lookupCacheKey<%=tableName%>.add(<%= tableName %>HashKey);
 					<%	
 					} 
 					%>
+					
 					<%
 					if(hasOutgoingConnection){
 					%>
@@ -272,22 +278,33 @@ skeleton="tXMLMap_java.skeleton"
 								<% } else {//left outter join should keep main table data,not reject anytime.%>
 									<%=tableName%> = <%=tableName%>Default;
 								<% } %>
+								
+								<%if(isMultipleResult) {%>
+								forceLoop<%= tableName %> = true;
+								<%}%>
 							}
 						}//TD120
 				   
-					    if(hasResultFromLookupCache<%= tableName %>) {
+				   		<%if(isMultipleResult) {%>
+				   			if(<%= rejectedInnerJoin %>) {
+				   				forceLoop<%= tableName %> = true;
+				   			}
+				   		<% } %>
+				   
+				   		<% if(!isMultipleResult) {%>
+					    if(hasResultFromLookupCache<%= tableName %>) {//TD10086
 					    	<%if(isCacheOrReloadLookupMode) {%>
-					    	java.util.Map<String,Object> cacheResult = tHash_Lookup_Cache_<%= tableName %>.next();
+					    	java.util.Map<String,Object> cacheResult_<%=cid%> = tHash_Lookup_Cache_<%= tableName %>.next();
 					    		<% for (Object key : outNodesXPath.keySet()) { %>
-					    			treeNodeAPI_<%=cid %>.put("<%=key%>",String.valueOf(cacheResult.get("<%=key%>")));
+					    			treeNodeAPI_<%=cid %>.put("<%=key%>",String.valueOf(cacheResult_<%=cid%>.get("<%=key%>")));
 					    		<% } %>
-				    			<%=tableName%> = (<%=className%>)cacheResult.get("<%=tableName%>");
+				    			<%=tableName%> = (<%=className%>)cacheResult_<%=cid%>.get("<%=tableName%>");
 					    	<% } %>
 					    } else if(!<%= rejectedInnerJoin %>) {
 						  	<% if(findFromDocumentType) {%>
 						   	isMatchDocRow<%=cid%> = false;
 						  	<% } %>
-							while (tHash_Lookup_<%=tableName%>.hasNext()) { 
+							while (tHash_Lookup_<%=tableName%>.hasNext()) {//TD119
 								<%=tableName%>Struct fromLookup_<%=tableName%> = null;
 								<%=tableName%> = <%=tableName%>Default;
 								fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
@@ -295,6 +312,9 @@ skeleton="tXMLMap_java.skeleton"
 								<% if(findFromDocumentType || hasOutputFromLookupDoc) {%>
 									//begin to lookup Document Object (case 1:lookup doc key exists),(case 2:lookup doc key not exists but lookup line doc output exist)
 									Document lookupDoc_<%=cid%> = fromLookup_<%=tableName%>.<%=documentColumn%>;
+									<% if("FIRST_MATCH".equals(matchingMode)) {%>
+									boolean quit<%=tableName%> = false;
+									<% } %>
 									java.util.Map<String,String> xPathAsOutput_<%=cid%> = new java.util.HashMap<String,String>();
 								<%
 								for (Object key : outNodesXPath.keySet()) { 
@@ -304,7 +324,7 @@ skeleton="tXMLMap_java.skeleton"
 								<%
 								}
 								%>
-									List<java.util.Map<String,Object>> result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%= tableName %>HashKey.documentLookupResult,xPathAsOutput_<%=cid%>,xmlNameSpaceMap_<%=tableName%>);
+									List<java.util.Map<String,Object>> result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%= tableName %>HashKey.documentLookupResult,xPathAsOutput_<%=cid%>,xmlNameSpaceMap_<%=tableName%>,"<%=matchingMode%>");
 									if(result_<%=cid%> == null || result_<%=cid%>.size() == 0) {
 										// not find
 									} else {
@@ -320,12 +340,14 @@ skeleton="tXMLMap_java.skeleton"
 												cacheResult<%=tableName%>.put(path_<%=cid%>,String.valueOf(docRow_<%=cid%>.get(path_<%=cid%>)));
 												<% } %>
 											}
-											
 										}
-										
+										<% if("FIRST_MATCH".equals(matchingMode)) {%>
+										quit<%=tableName%> = true;
+										<% } %>
 									}
 								<% } %>
 									<%=tableName%> = fromLookup_<%=tableName%>;
+									
 									<%if(isCacheOrReloadLookupMode) {%>
 										<%if(findFromDocumentType) {%>
 										if(isMatchDocRow<%=cid%>) {
@@ -337,8 +359,14 @@ skeleton="tXMLMap_java.skeleton"
 										tHash_Lookup_Cache_<%= tableName %>.put(lookupCacheKey<%=tableName%>,cacheResult<%=tableName%>); 
 										<% } %>
 									<% } %>
+									
+									<% if("FIRST_MATCH".equals(matchingMode) && (findFromDocumentType || hasOutputFromLookupDoc)) {%>
+										if(quit<%=tableName%>) {//for first match,once find in document,no need to continue to lookup.
+											break;
+										}
+									<% } %>
 								}
-							}
+							}//TD119
 							<% if(isInnerJoin && findFromDocumentType) {%>
 						   	<%= rejectedDocInnerJoin %> = !isMatchDocRow<%=cid%> && !hasResultFromLookupCache<%= tableName %>;
 						    <%= rejectedInnerJoin %> = <%= rejectedDocInnerJoin %>;
@@ -351,8 +379,91 @@ skeleton="tXMLMap_java.skeleton"
 						  	<% if(hasOutputFromLookupDoc && !findFromDocumentType) {//for the case : not lookup doc,but doc output exists%>
 						  		//do nothing
 						  	<% } %>
-				  		}
-				  	
+				  		}//TD10086
+				  		<% } %>
+				  		
+				  		//////////////////////////////////////////////////////////////////////////////////////////////
+				  		<%if(isMultipleResult) {//TD114%>
+				  		boolean fromCache<%=tableName%> = hasResultFromLookupCache<%= tableName %>;
+				  		List<java.util.Map<String,Object>> multipleResultSet<%=tableName%> = new java.util.ArrayList<java.util.Map<String,Object>>();
+						if(hasResultFromLookupCache<%= tableName %>) {
+					    	<%if(isCacheOrReloadLookupMode) {%>
+					    	java.util.Map<String,Object> cacheResult_<%=cid%> = tHash_Lookup_Cache_<%= tableName %>.next();
+					    	multipleResultSet<%=tableName%>.add(cacheResult_<%=cid%>);
+					    	<% } %>
+					    } else if(!<%= rejectedInnerJoin %>) {
+					    	<% if(findFromDocumentType) {%>
+						   	isMatchDocRow<%=cid%> = false;
+						  	<% } %>
+					    	while (tHash_Lookup_<%=tableName%>.hasNext()) {
+					    		<%=tableName%>Struct fromLookup_<%=tableName%> = null;
+								<%=tableName%> = <%=tableName%>Default;
+								fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
+								if(fromLookup_<%=tableName%> != null) {
+								<% if(findFromDocumentType || hasOutputFromLookupDoc) {//TA110%>
+									Document lookupDoc_<%=cid%> = fromLookup_<%=tableName%>.<%=documentColumn%>;
+									java.util.Map<String,String> xPathAsOutput_<%=cid%> = new java.util.HashMap<String,String>();
+									<%
+									for (Object key : outNodesXPath.keySet()) { 
+										Object val = outNodesXPath.get(key);
+									%>
+										xPathAsOutput_<%=cid%>.put("<%=key%>","<%=val%>");
+									<%
+									}
+									%>
+									List<java.util.Map<String,Object>> result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%= tableName %>HashKey.documentLookupResult,xPathAsOutput_<%=cid%>,xmlNameSpaceMap_<%=tableName%>,"<%=matchingMode%>");
+									if(result_<%=cid%> == null || result_<%=cid%>.size() == 0) {
+										//do nothing
+									} else {
+										<% if(findFromDocumentType) { %>
+										isMatchDocRow<%=cid%> = true;
+										<% } %>
+										for(java.util.Map<String,Object> docRow_<%=cid%> : result_<%=cid%>) {
+											docRow_<%=cid%>.put("<%=tableName%>",fromLookup_<%=tableName%>);
+											multipleResultSet<%=tableName%>.add(docRow_<%=cid%>);
+											<%if(isCacheOrReloadLookupMode) {%>
+											for(String path_<%=cid%> : docRow_<%=cid%>.keySet()) {
+												cacheResult<%=tableName%>.put(path_<%=cid%>,String.valueOf(docRow_<%=cid%>.get(path_<%=cid%>)));
+											}
+											cacheResult<%=tableName%>.put("<%=tableName%>",fromLookup_<%=tableName%>);
+											tHash_Lookup_Cache_<%= tableName %>.put(lookupCacheKey<%=tableName%>,cacheResult<%=tableName%>);
+											<% } %>
+										}
+									}
+								<% }//TA110 %>
+									<%if(!findFromDocumentType){%>	
+									<%=tableName%> = fromLookup_<%=tableName%>;
+									<%}%>
+								}
+					    	}//end while
+					    	
+					    }//end else if
+					    //now not support cache all_matches lookup
+					    //forceLooprow3 = !isMatchDocRowtXMLMap_1;
+					    <% if(findFromDocumentType && !isInnerJoin) {%>
+					    	forceLoop<%= tableName %> = !isMatchDocRow<%=cid%> && !hasResultFromLookupCache<%= tableName %>;
+					    <% } %>
+					    java.util.Iterator<java.util.Map<String,Object>> iter<%=tableName%> = multipleResultSet<%=tableName%>.iterator();
+					    while(iter<%=tableName%>.hasNext() || forceLoop<%= tableName %>) { // G_TM_M_002
+					    	<%=tableName%> = <%=tableName%>Default;
+					    	<%=tableName%>Struct tempLookup<%=tableName%> = null; 
+					    	if(!forceLoop<%= tableName %>) {
+						    	java.util.Map<String,Object> oneRow<%=tableName%> = iter<%=tableName%>.next();
+						   		<% for (Object key : outNodesXPath.keySet()) { %>
+						    			treeNodeAPI_<%=cid %>.put("<%=key%>",String.valueOf(oneRow<%=tableName%>.get("<%=key%>")));
+						    	<% } %>
+					    		tempLookup<%=tableName%> = (<%=className%>)oneRow<%=tableName%>.get("<%=tableName%>");
+					    		if(tempLookup<%=tableName%>!=null) {
+					    			<%=tableName%> = tempLookup<%=tableName%>;
+					    		}
+				    		}
+				    		forceLoop<%= tableName %> = false;
+				  		<% 
+				  			gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"' // G_TM_M_002"));
+				  		}//TD114 
+				  		%>
+				  		/////////////////////////////////////////////////////////////////////////////////////////////////
+				  		
 					<%				
 					}
 					%>
@@ -381,6 +492,7 @@ skeleton="tXMLMap_java.skeleton"
 
 								<%=tableName%> = fromLookup_<%=tableName%>;
 							}
+						}
 					<%
 					}
 				}
