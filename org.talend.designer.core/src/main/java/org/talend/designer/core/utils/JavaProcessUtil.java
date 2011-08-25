@@ -362,8 +362,8 @@ public class JavaProcessUtil {
      */
     public static String getContextOriginalValue(final IProcess process, String contextStr) {
         String originalValue = null;
-        List<IContext> listContext = process.getContextManager().getListContext();
-        for (IContext context : listContext) {
+        IContext context = process.getContextManager().getDefaultContext();
+        if (context != null) {
             List<IContextParameter> contextParameterList = context.getContextParameterList();
             for (IContextParameter contextPara : contextParameterList) {
                 String var = ContextParameterUtils.getVariableFromCode(contextStr);
