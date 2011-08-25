@@ -26,14 +26,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     	for (IConnection conn : conns) {//3
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
 %>
-
-count_<%=cid%>++;
 if (count_<%=cid%> > 0 && count_<%=cid%> % <%=arraySize%> == 0) {
 	inputStreamMerger_<%=cid%>.close();
 	inputStreamMerger_<%=cid%> = bulkloadClient_<%=cid %>.load();
 }
 
 inputStreamMerger_<%=cid%>.push(new java.io.ByteArrayInputStream(<%=conn.getName()%>.<%=xmlField %>.toString().getBytes("UTF-8")));
+
+count_<%=cid%>++;
+
 <%
 			}//4
 		}//3

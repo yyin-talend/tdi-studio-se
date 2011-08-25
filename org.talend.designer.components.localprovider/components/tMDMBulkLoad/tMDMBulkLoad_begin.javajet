@@ -24,6 +24,7 @@ imports="
 	
 %>
 org.talend.mdm.bulkload.client.BulkloadClient bulkloadClient_<%=cid %> = new org.talend.mdm.bulkload.client.BulkloadClient(<%=mdmUrl%>, <%=username %>, <%=password%>, <%=version==null || "".equals(version)? "null":version%>, <%=dataCluster %>, <%=dataEntity %>, <%=dataModule%>);
+bulkloadClient_<%=cid %>.startThreadCount();
 bulkloadClient_<%=cid %>.setOptions(new org.talend.mdm.bulkload.client.BulkloadOptions(<%=isGenerateId %>, <%=validate %>, <%=arraySize%>));
 int count_<%=cid%> = 0;
 org.talend.mdm.bulkload.client.InputStreamMerger inputStreamMerger_<%=cid%> = bulkloadClient_<%=cid %>.load();
