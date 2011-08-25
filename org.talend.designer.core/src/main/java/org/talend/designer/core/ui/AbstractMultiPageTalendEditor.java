@@ -232,6 +232,29 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         public void partClosed(IWorkbenchPart part) {
             if (part == AbstractMultiPageTalendEditor.this) {
                 restorePropertyInformation();
+                IProject currentProject;
+                try {
+                    currentProject = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
+                    String jobScriptVersion = "";
+                    if (getEditorInput() != null && getEditorInput() instanceof RepositoryEditorInput) {
+                        Item item = ((RepositoryEditorInput) getEditorInput()).getItem();
+                        if (item != null) {
+                            Property property = item.getProperty();
+                            if (property != null) {
+                                jobScriptVersion = "_" + property.getVersion();
+                            }
+                        }
+                    }
+                    IFile file = currentProject.getFolder("temp").getFile(
+                            getEditorInput().getName() + jobScriptVersion + "_job" + ".jobscript");
+                    if (file.exists()) {
+                        file.delete(true, null);
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                } catch (CoreException e) {
+                    ExceptionHandler.process(e);
+                }
             }
         }
 
@@ -690,7 +713,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     }
                 }
             }
-            IFile file = currentProject.getFolder("temp").getFile(getEditorInput().getName() + jobScriptVersion + ".jobscript");
+            IFile file = currentProject.getFolder("temp").getFile(
+                    getEditorInput().getName() + jobScriptVersion + "_job" + ".jobscript");
 
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(scriptValue.getBytes());
             if (file.exists()) {
