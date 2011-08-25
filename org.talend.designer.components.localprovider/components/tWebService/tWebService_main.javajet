@@ -193,7 +193,11 @@ for(IMetadataTable metadata:metadatas){
 <%
 					} else if(javaType == JavaTypesManager.BYTE_ARRAY) { //byte[]
 %>
-					<%=outgoingConn.getName() %>.<%=column.getLabel() %> = returnValuesMap_<%=cid %>.get("<%=column.getLabel()%>").toString().getBytes();
+					if(returnValuesMap_<%=cid %>.get("<%=column.getLabel()%>") instanceof byte[]){
+						<%=outgoingConn.getName() %>.<%=column.getLabel() %> = (byte[])returnValuesMap_<%=cid %>.get("<%=column.getLabel()%>");	
+					}else{
+						<%=outgoingConn.getName() %>.<%=column.getLabel() %> = returnValuesMap_<%=cid %>.get("<%=column.getLabel()%>").toString().getBytes();
+					}
 <%
 					} else if(javaType == JavaTypesManager.LIST){	//List
 %>
