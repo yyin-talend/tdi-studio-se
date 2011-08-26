@@ -292,6 +292,15 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         } else {
                             objectValue = null;
                         }
+                    }// for bug TDI-8662 . should be careful that connection.getModuleName() will always get the latest
+                     // name of the
+                     // module which was the last one be retrived
+                    else if (connection instanceof SalesforceSchemaConnection && "CUSTOM_MODULE_NAME".equals(repositoryValue)) { //$NON-NLS-1$ 
+                        if (this.moduleUnit != null) {
+                            objectValue = moduleUnit.getModuleName();
+                        } else {
+                            objectValue = null;
+                        }
                     } else {
                         objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table);
                     }
