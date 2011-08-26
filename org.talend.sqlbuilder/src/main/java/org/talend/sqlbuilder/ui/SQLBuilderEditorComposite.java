@@ -17,29 +17,36 @@ import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Resource;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.proposal.StyledTextContentAdapter;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
@@ -151,7 +158,11 @@ public class SQLBuilderEditorComposite extends AbstractSQLEditorComposite {
 
         colorText = new ColorStyledText(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, CorePlugin.getDefault()
                 .getPreferenceStore(), language);
-        Font font = new Font(parent.getDisplay(), "courier", 10, SWT.NONE); //$NON-NLS-1$
+        IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
+        String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+        FontData fontData = new FontData(fontType);
+        Font font = new Font(null, fontData);
+        addResourceDisposeListener(colorText, font);
         colorText.setFont(font);
 
         GridData gd = new GridData(GridData.FILL_BOTH);
@@ -176,6 +187,25 @@ public class SQLBuilderEditorComposite extends AbstractSQLEditorComposite {
             }
 
         });
+    }
+    
+    /**
+     * 
+     * When dispose the control, dispose resource at the same time. (bug 6916)
+     */
+    protected void addResourceDisposeListener(final Control parent, final Resource res) {
+        if (parent != null) {
+            parent.addDisposeListener(new DisposeListener() {
+
+                public void widgetDisposed(DisposeEvent e) {
+                    if (res != null && !res.isDisposed()) {
+                        res.dispose();
+                    }
+                    parent.removeDisposeListener(this);
+                }
+            });
+        }
+
     }
 
     /**

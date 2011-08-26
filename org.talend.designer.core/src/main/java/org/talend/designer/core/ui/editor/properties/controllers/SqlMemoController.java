@@ -21,6 +21,7 @@ import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.IControlCreator;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -32,6 +33,7 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
@@ -73,6 +75,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -500,7 +503,10 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     private ColorStyledText createColorStyledText(final Composite parent, final int style) {
         ColorStyledText colorText = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(), "tsql"); //$NON-NLS-1$
-        Font font = new Font(null, "courier", 8, SWT.NONE); //$NON-NLS-1$
+        IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
+        String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+        FontData fontData = new FontData(fontType);
+        Font font = new Font(null, fontData);
         addResourceDisposeListener(colorText, font);
         colorText.setFont(font);
         return colorText;
