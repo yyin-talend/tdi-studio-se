@@ -606,10 +606,9 @@ public class TableController extends AbstractElementPropertySectionController {
                                 }
                             } else {
                                 if (o instanceof String) {
-                                    currentLine.put(items[j], (String) tmpParam.getDefaultClosedListValue());
-                                } else {
-                                    if (o instanceof Boolean) {
-                                        currentLine.put(items[j], (Boolean) tmpParam.getDefaultClosedListValue());
+                                    Integer nb = new Integer(tmpParam.getIndexOfItemFromList((String)o));
+                                    if (nb == -1) {
+                                        currentLine.put(items[j], (String) tmpParam.getDefaultClosedListValue());
                                     }
                                 }
                             }
