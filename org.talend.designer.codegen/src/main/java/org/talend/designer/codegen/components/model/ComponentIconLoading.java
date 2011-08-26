@@ -15,6 +15,7 @@ package org.talend.designer.codegen.components.model;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.exception.SystemException;
@@ -34,20 +35,19 @@ public class ComponentIconLoading {
 
     private URL folderUrl;
 
-    private ImageDescriptor image32;
-
-    private ImageDescriptor image24;
-
-    private ImageDescriptor image16;
+    private Map<String, ImageDescriptor> registry;
 
     /**
      * DOC smallet ComponentIconLoading constructor comment.
      * 
+     * @param componentsImageRegistry
+     * 
      * @param folder
      */
-    public ComponentIconLoading(File folder) {
+    public ComponentIconLoading(Map<String, ImageDescriptor> componentsImageRegistry, File folder) {
         super();
         this.folder = folder;
+        this.registry = componentsImageRegistry;
         try {
             this.folderUrl = folder.toURI().toURL();
         } catch (MalformedURLException e) {
@@ -56,29 +56,32 @@ public class ComponentIconLoading {
     }
 
     public ImageDescriptor getImage32() {
-        if (image32 == null) {
-            image32 = getImage(ComponentFilesNaming.getInstance().getIcon32FileName(folder.getName()));
-        }
+        ImageDescriptor image32 = getImage(ComponentFilesNaming.getInstance().getIcon32FileName(folder.getName()));
+        registry.put(folder.getName() + "_32", image32);
         return image32;
     }
 
     public ImageDescriptor getImage24() {
-        if (image24 == null) {
-            File file24 = new File(folder, ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
-            if (file24.exists()) {
-                image24 = getImage(ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
-            } else if (image32 != null && image32.getImageData() != null) {
-                try {
-                    image24 = ImageDescriptor.createFromImageData(image32.getImageData().scaledTo(24, 24));
-                } catch (NullPointerException e) {
-                    image24 = image32;
-                }
+        ImageDescriptor image24 = null;
+        ImageDescriptor image32 = registry.get(folder.getName() + "_32");
+        File file24 = new File(folder, ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
+        if (file24.exists()) {
+            image24 = getImage(ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
+        } else if (image32 != null && image32.getImageData() != null) {
+            try {
+                image24 = ImageDescriptor.createFromImageData(image32.getImageData().scaledTo(24, 24));
+            } catch (NullPointerException e) {
+                image24 = image32;
             }
         }
+        registry.put(folder.getName() + "_24", image24);
+
         return image24;
     }
 
     public ImageDescriptor getImage16() {
+        ImageDescriptor image16 = null;
+        ImageDescriptor image32 = registry.get(folder.getName() + "_32");
         if (image16 == null) {
             File file16 = new File(folder, ComponentFilesNaming.getInstance().getIcon16FileName(folder.getName()));
             if (file16.exists()) {
@@ -87,6 +90,7 @@ public class ComponentIconLoading {
                 image16 = ImageDescriptor.createFromImageData(image32.getImageData().scaledTo(16, 16));
             }
         }
+        registry.put(folder.getName() + "_16", image16);
         return image16;
     }
 

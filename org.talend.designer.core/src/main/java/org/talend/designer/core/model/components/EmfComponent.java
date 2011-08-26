@@ -144,11 +144,7 @@ public class EmfComponent extends AbstractComponent {
 
     private COMPONENTType compType;
 
-    private ImageDescriptor icon32;
-
-    private ImageDescriptor icon24;
-
-    private ImageDescriptor icon16;
+    private Map<String, ImageDescriptor> imageRegistry;
 
     private final ECodeLanguage codeLanguage;
 
@@ -2863,22 +2859,17 @@ public class EmfComponent extends AbstractComponent {
         return isLoaded;
     }
 
+    public void setImageRegistry(Map<String, ImageDescriptor> imageRegistry) {
+        this.imageRegistry = imageRegistry;
+    }
+
     /**
      * Getter for icon16.
      * 
      * @return the icon16
      */
     public ImageDescriptor getIcon16() {
-        return this.icon16;
-    }
-
-    /**
-     * Sets the icon16.
-     * 
-     * @param icon16 the icon16 to set
-     */
-    public void setIcon16(ImageDescriptor icon16) {
-        this.icon16 = icon16;
+        return this.imageRegistry.get(getName() + "_16");
     }
 
     /**
@@ -2887,16 +2878,7 @@ public class EmfComponent extends AbstractComponent {
      * @return the icon24
      */
     public ImageDescriptor getIcon24() {
-        return this.icon24;
-    }
-
-    /**
-     * Sets the icon24.
-     * 
-     * @param icon24 the icon24 to set
-     */
-    public void setIcon24(ImageDescriptor icon24) {
-        this.icon24 = icon24;
+        return this.imageRegistry.get(getName() + "_24");
     }
 
     /**
@@ -2905,16 +2887,7 @@ public class EmfComponent extends AbstractComponent {
      * @return the icon32
      */
     public ImageDescriptor getIcon32() {
-        return this.icon32;
-    }
-
-    /**
-     * Sets the icon32.
-     * 
-     * @param icon32 the icon32 to set
-     */
-    public void setIcon32(ImageDescriptor icon32) {
-        this.icon32 = icon32;
+        return this.imageRegistry.get(getName() + "_32");
     }
 
     public String getPathSource() {

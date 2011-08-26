@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.palette;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.palette.PaletteDrawer;
+import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.ui.palette.PaletteEditPartFactory;
 
 /**
@@ -23,6 +24,10 @@ public class TalendPaletteEditPartFactory extends PaletteEditPartFactory {
 
     protected EditPart createDrawerEditPart(EditPart parentEditPart, Object model) {
         return new TalendDrawerEditPart((PaletteDrawer) model);
+    }
+
+    protected EditPart createEntryEditPart(EditPart parentEditPart, Object model) {
+        return new TalendEntryEditPart((PaletteEntry) model);
     }
 
 }

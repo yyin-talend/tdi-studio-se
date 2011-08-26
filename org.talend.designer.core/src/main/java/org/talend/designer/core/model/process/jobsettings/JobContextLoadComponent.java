@@ -14,6 +14,7 @@ package org.talend.designer.core.model.process.jobsettings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.utils.VersionUtils;
@@ -554,6 +555,11 @@ public class JobContextLoadComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#setPaletteType(java.lang.String)
      */
     public void setPaletteType(String paletteType) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void setImageRegistry(Map<String, ImageDescriptor> imageRegistry) {
         // TODO Auto-generated method stub
 
     }

@@ -15,6 +15,7 @@ package org.talend.designer.core.model.components;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.ui.runtime.image.EImage;
@@ -511,6 +512,11 @@ public class DummyComponent extends AbstractComponent {
     public IProcess getProcess() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void setImageRegistry(Map<String, ImageDescriptor> imageRegistry) {
+        // TODO Auto-generated method stub
+
     }
 
 }

@@ -73,6 +73,7 @@ import org.talend.designer.core.ITisLocalProviderService.ResClassLoader;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.designer.core.ui.editor.palette.TalendEntryEditPart;
 import org.talend.repository.ProjectManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -118,7 +119,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static Map<String, AbstractComponentsProvider> componentsAndProvider = new HashMap<String, AbstractComponentsProvider>();
 
-    private Map<String, ImageDescriptor> allComponents;
+    private Map<String, String> allComponents;
 
     // 1. only the in the directory /components ,not including /resource
     // 2. include the skeleton files and external include files
@@ -834,13 +835,18 @@ public class ComponentsFactory implements IComponentsFactory {
         return LanguageManager.getCurrentLanguage().getName();
     }
 
+    private Map<String, ImageDescriptor> componentsImageRegistry = new HashMap<String, ImageDescriptor>();
+
     private void loadIcons(File folder, IComponent component) {
 
-        ComponentIconLoading cil = new ComponentIconLoading(folder);
+        ComponentIconLoading cil = new ComponentIconLoading(componentsImageRegistry, folder);
 
-        component.setIcon32(cil.getImage32());
-        component.setIcon24(cil.getImage24());
-        component.setIcon16(cil.getImage16());
+        // only call to initialize the icons in the registry
+        cil.getImage32();
+        cil.getImage24();
+        cil.getImage16();
+
+        component.setImageRegistry(componentsImageRegistry);
     }
 
     public int size() {
@@ -930,18 +936,22 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     public void reset() {
+        componentsImageRegistry.clear();
         componentList = null;
         skeletonList = null;
         customComponentList = null;
         allComponents = null;
+
     }
 
     public void resetCache() {
+        componentsImageRegistry.clear();
         componentList = null;
         skeletonList = null;
         customComponentList = null;
         allComponents = null;
         isReset = true;
+        TalendEntryEditPart.resetImageCache();
     }
 
     /*
@@ -980,61 +990,68 @@ public class ComponentsFactory implements IComponentsFactory {
      * 
      * @see org.talend.core.model.components.IComponentsFactory#getAllComponentsCanBeProvided()
      */
-    public Map<String, ImageDescriptor> getAllComponentsCanBeProvided() {
-        List<AbstractComponentsProvider> source = new ArrayList<AbstractComponentsProvider>();
+    public Map<String, String> getAllComponentsCanBeProvided() {
+        List source = new ArrayList();
         if (allComponents == null) {
-            allComponents = new HashMap<String, ImageDescriptor>();
-            // source.add(IComponentsFactory.COMPONENTS_INNER_FOLDER);
+            allComponents = new HashMap<String, String>();
+            source.add(IComponentsFactory.COMPONENTS_INNER_FOLDER);
             ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
             source.addAll(componentsProviderManager.getProviders());
             for (int i = 0; i < source.size(); i++) {
-                AbstractComponentsProvider object = source.get(i);
-                File sourceFile;
-                try {
-                    sourceFile = object.getInstallationFolder();
-                } catch (IOException e1) {
-                    ExceptionHandler.process(e1);
-                    continue;
+                String path = null;
+                Object object = source.get(i);
+                if (object instanceof String) {
+                    path = (String) object;
+                } else if (object instanceof AbstractComponentsProvider) {
+                    path = ((AbstractComponentsProvider) object).getComponentsLocation();
                 }
-                File[] childDirectories;
+                if (path != null) {
+                    File sourceFile = getComponentsLocation(path);
+                    File[] childDirectories;
 
-                FileFilter fileFilter = new FileFilter() {
+                    FileFilter fileFilter = new FileFilter() {
 
-                    public boolean accept(final File file) {
-                        return file.isDirectory() && file.getName().charAt(0) != '.'
-                                && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER);
+                        public boolean accept(final File file) {
+                            return file.isDirectory() && file.getName().charAt(0) != '.'
+                                    && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER);
+                        }
+
+                    };
+                    if (sourceFile == null) {
+                        ExceptionHandler.process(new Exception("Component Not Found")); //$NON-NLS-1$
+                        continue;
                     }
 
-                };
-                if (sourceFile == null) {
-                    ExceptionHandler.process(new Exception("Component Not Found")); //$NON-NLS-1$
-                    continue;
-                }
-
-                childDirectories = sourceFile.listFiles(fileFilter);
-                if (childDirectories != null) {
-                    for (File currentFolder : childDirectories) {
-                        try {
-                            ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
-                        } catch (BusinessException e) {
-                            continue;
-                        }
-                        File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
-                                currentFolder.getName(), getCodeLanguageSuffix()));
-                        List<String> families = getComponentsFamilyFromXML(xmlMainFile);
-                        ComponentIconLoading cil = new ComponentIconLoading(currentFolder);
-                        ImageDescriptor image32 = cil.getImage32();
-                        if (families != null) {
-                            for (String family : families) {
-                                allComponents.put(family + FAMILY_SPEARATOR + currentFolder.getName(), image32);
-                                if (!componentsAndProvider.containsKey(family)) {
-                                    componentsAndProvider.put(family, (AbstractComponentsProvider) object);
+                    childDirectories = sourceFile.listFiles(fileFilter);
+                    if (childDirectories != null) {
+                        for (File currentFolder : childDirectories) {
+                            try {
+                                ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
+                            } catch (BusinessException e) {
+                                continue;
+                            }
+                            File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
+                                    currentFolder.getName(), getCodeLanguageSuffix()));
+                            List<String> families = getComponentsFamilyFromXML(xmlMainFile);
+                            ComponentIconLoading cil = new ComponentIconLoading(componentsImageRegistry, currentFolder);
+                            cil.getImage32();
+                            if (families != null) {
+                                for (String family : families) {
+                                    allComponents.put(family + FAMILY_SPEARATOR + currentFolder.getName(),
+                                            currentFolder.getName() + "_32");
+                                    if (object instanceof AbstractComponentsProvider) {
+                                        if (!componentsAndProvider.containsKey(family)) {
+                                            componentsAndProvider.put(family, (AbstractComponentsProvider) object);
+                                        }
+                                    }
                                 }
                             }
+
                         }
                     }
                 }
             }
+
         }
         return allComponents;
     }
@@ -1128,5 +1145,9 @@ public class ComponentsFactory implements IComponentsFactory {
             }
         }
         return list;
+    }
+
+    public Map<String, ImageDescriptor> getComponentsImageRegistry() {
+        return componentsImageRegistry;
     }
 }

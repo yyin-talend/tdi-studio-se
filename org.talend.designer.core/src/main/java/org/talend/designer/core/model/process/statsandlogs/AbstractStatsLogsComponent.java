@@ -178,16 +178,8 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     }
 
     // no use for virtual component
-    public void setIcon16(ImageDescriptor icon16) {
-    }
-
-    // no use for virtual component
-    public void setIcon24(ImageDescriptor icon24) {
-    }
-
-    // no use for virtual component
-    public void setIcon32(ImageDescriptor icon32) {
-    }
+    public void setImageRegistry(java.util.Map<String, ImageDescriptor> imageRegistry) {
+    };
 
     // no use for virtual component
     public boolean useMerge() {
