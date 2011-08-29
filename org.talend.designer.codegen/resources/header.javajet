@@ -450,16 +450,14 @@ private class TalendException extends Exception {
 							if (isRunInMultiThread ) {
 								%>
 								((java.util.Map)threadLocal.get()).put("errorCode", null);
-								<%=conn.getTarget().getUniqueName() %>Process(globalMap);
-								((java.util.Map)threadLocal.get()).put("status", "end");
+								((java.util.Map)threadLocal.get()).put("status", "failure");
+								<%=conn.getTarget().getUniqueName() %>Process(globalMap);								
 								<%
 							} else {
 								%>
 								errorCode = null;
+								status = "failure";
 								<%=conn.getTarget().getUniqueName() %>Process(globalMap);
-								if(!"failure".equals(status)) {
-									status="end";
-								}
 								<%
 							}
 							%>
@@ -522,16 +520,14 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 					if(isRunInMultiThread ){
 %>
 					((java.util.Map)threadLocal.get()).put("errorCode", null);
-					<%=conn.getTarget().getUniqueName() %>Process(globalMap);
-					((java.util.Map)threadLocal.get()).put("status", "end");
+					((java.util.Map)threadLocal.get()).put("status", "failure");
+					<%=conn.getTarget().getUniqueName() %>Process(globalMap);					
 <%
 					} else {
 %>
 					errorCode = null;
+					status = "failure";
 					<%=conn.getTarget().getUniqueName() %>Process(globalMap);
-					if(!"failure".equals(status)) {
-						status="end";
-					}
 <%
 					}
 %>
