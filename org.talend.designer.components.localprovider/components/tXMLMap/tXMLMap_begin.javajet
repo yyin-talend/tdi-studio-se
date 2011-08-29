@@ -66,12 +66,26 @@
 			inputTableTrees.add(currentTree);
 		}
 	}
+	
+	boolean hasDocumentInAnyLookupTable = false;
+	List<TreeNode> lookupDocumentTreeNodes = new ArrayList<TreeNode>();
+	
 	int lstSizeInputs = inputTableTrees.size();
-	for(int i = 1; i<lstSizeInputs; i++){
+	for(int i = 1; i<lstSizeInputs; i++){//TA8080
 		InputXmlTree inputTable = (InputXmlTree)inputTableTrees.get(i);
 		String tableName = inputTable.getName();
-		List<IMetadataTable> treeNodeEntries = node.getMetadataList();
 		
+		EList<TreeNode> treeNodes = inputTable.getNodes();
+		if(treeNodes!=null) {
+			for(TreeNode treeNode : treeNodes) {
+				if("id_Document".equals(treeNode.getType())) {
+					hasDocumentInAnyLookupTable = true;
+					lookupDocumentTreeNodes.add(treeNode);
+				}
+			}
+		}		
+		
+		List<IMetadataTable> treeNodeEntries = node.getMetadataList();
 		if(treeNodeEntries == null){
 		      continue;
 	    }
@@ -129,8 +143,9 @@
 	<%=className%> <%=tableName%>Default = new <%=className%>();
 	<%=className%> <%=tableName%> = new <%=className%>();
 	<%
-	}
+	}//TA8080
 	%>
+	
 	<%
 	class RepalceTableXpath {
 		
@@ -388,7 +403,7 @@ class GenerateMethodUtil {
 		}
 
 	
-	void generateCode(TreeNode node, String cid){
+	void generateCode(List<TreeNode> nodes, String cid){
 %>
 class TreeNode_API_<%=cid %> {
 	java.util.Map<String, String> xpath_value_map = new java.util.HashMap<String, String>();
@@ -404,14 +419,20 @@ class TreeNode_API_<%=cid %> {
 		return null;
 	}
 <%
-		generateMethodCode(node, cid);
+		generateMethodCodeForAll(nodes, cid);
 %>
 }
 <%
 	}
 	
-	void generateMethodCode(TreeNode node, String cid) {
-
+	void generateMethodCodeForAll(List<TreeNode> nodes, String cid) {
+		for(TreeNode node : nodes) {
+			generateMethodCodeForOne(node,cid);
+		}
+	}
+	
+	void generateMethodCodeForOne(TreeNode node, String cid) {
+		
 		if(!(node.getChildren().size()>0)){
 			String talendType = node.getType();
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(talendType);
@@ -421,7 +442,7 @@ class TreeNode_API_<%=cid %> {
 			pathTypeMap.put(node.getXpath(), talendType);
 			pathPatternMap.put(node.getXpath(), patternValue);
 			pathTypeToGenMap.put(node.getXpath(), typeToGenerate);
-//			System.out.println("javaType:Id=" + javaType.getId() + "---talendType="+talendType +"---typeGen=" +typeToGenerate);
+//			System.out.println(node.getXpath() + " javaType:Id=" + javaType.getId() + "---talendType="+talendType +"---typeGen=" +typeToGenerate);
 			if(typeMap.get(typeToGenerate)==null){
 				typeMap.put(typeToGenerate,typeToGenerate);
 				if ("id_String".equals(talendType) || "id_Object".equals(talendType)) {
@@ -454,7 +475,7 @@ class TreeNode_API_<%=cid %> {
 			}
 		} else {
     		for(TreeNode tmpNode : node.getChildren()) {
-    			generateMethodCode(tmpNode,cid);
+    			generateMethodCodeForOne(tmpNode,cid);
     		}
 		}
 	}
@@ -530,10 +551,13 @@ class TreeNode_API_<%=cid %> {
 	}
 	
 	boolean hasDocumentInMainInputTable = false;
+	//we should consider all document node instead of only main document node
+	TreeNode mainDocumentTreeNode = null;
 	if(mainInputTable != null) {
 		for(TreeNode tmpNode : mainInputTable.getNodes()){
 			if("id_Document".equals(tmpNode.getType())) {
 				hasDocumentInMainInputTable = true;
+				mainDocumentTreeNode = tmpNode;
 				//This boolean when there is a document in the main input table schema.
 				break;
 			}
@@ -597,14 +621,22 @@ class TreeNode_API_<%=cid %> {
 	generateMethodUtil.cid = cid;
 	if(mainInputTable != null) {
 		String mainInputName = mainInputTable.getName();
-		for(TreeNode tmpNode : mainInputTable.getNodes()){
-			if("id_Document".equals(tmpNode.getType())) {
-				generateMethodUtil.generateCode(tmpNode, cid); // begin part keep this part
+		
+		boolean hasDocumentInAnyTable = hasDocumentInAnyLookupTable || hasDocumentInMainInputTable;
+		List<TreeNode> AllDocumentTreeNodes = new ArrayList<TreeNode>();
+		if(lookupDocumentTreeNodes.size()!=0) {
+			AllDocumentTreeNodes.addAll(lookupDocumentTreeNodes);
+		}
+		if(mainDocumentTreeNode!=null) {
+			AllDocumentTreeNodes.add(mainDocumentTreeNode);
+		}
+		
+		if(hasDocumentInAnyTable) {
+			generateMethodUtil.generateCode(AllDocumentTreeNodes, cid); // begin part keep this part
 %>
-				TreeNode_API_<%=cid %> treeNodeAPI_<%=cid %> = new TreeNode_API_<%=cid %>();
-				NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
+			TreeNode_API_<%=cid %> treeNodeAPI_<%=cid %> = new TreeNode_API_<%=cid %>();
+			NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
 <%	
-			}
 		}
 %>
 		int nb_line_<%=cid%> = 0; 
@@ -936,7 +968,7 @@ for(OutputXmlTree outputTable : outputTables) {
 class GenerateDocument_<%=tableName %> {
 
 <%
-	if(hasDocumentInMainInputTable) {
+	if(hasDocumentInMainInputTable || hasDocumentInAnyLookupTable) {
 		//We generate the TreeNode_API object only if there is a document in the schema.
 %>
 		TreeNode_API_<%=cid %> treeNodeAPI = null;
@@ -985,7 +1017,7 @@ XMLMapUtil xmu = new XMLMapUtil();
     }
 	
 	//We generate the TreeNode_API object only if there is a document in the main input table.
-    void generateElements(<%if(hasDocumentInMainInputTable){%>TreeNode_API_<%=cid %> treeNodeAPI,<%}%>boolean isInnerJoin<%
+    void generateElements(<%if(hasDocumentInMainInputTable || hasDocumentInAnyLookupTable){%>TreeNode_API_<%=cid %> treeNodeAPI,<%}%>boolean isInnerJoin<%
 		%><%=xmu.createSignature(node, false) %><%
 	
 		for (VarTable var : varTables) {

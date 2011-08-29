@@ -78,6 +78,29 @@ skeleton="tXMLMap_java.skeleton"
 		 hNameToConnection.put(connection.getName(), connection);
 	}
 	
+	List<InputXmlTree> inputTableTrees = new ArrayList<InputXmlTree>();
+	for(int i=0; i<inputTables.size(); i++){
+		InputXmlTree  currentTree = inputTables.get(i);
+		if(hNameToConnection.get(currentTree.getName()) != null){
+			inputTableTrees.add(currentTree);
+		}
+	}
+	
+	boolean hasDocumentInAnyLookupTable = false;
+	
+	int lstSizeInputs = inputTableTrees.size();
+	for(int i = 1; i<lstSizeInputs; i++){
+		InputXmlTree inputTable = (InputXmlTree)inputTableTrees.get(i);
+		EList<TreeNode> treeNodes = inputTable.getNodes();
+		if(treeNodes!=null) {
+			for(TreeNode treeNode : treeNodes) {
+				if("id_Document".equals(treeNode.getType())) {
+					hasDocumentInAnyLookupTable = true;
+					break;
+				}
+			}
+		}
+	}
 	
 	HashMap<String, TreeNode> hInputTableNodes = new HashMap<String, TreeNode>();
 	int sizeInputTables = inputTables.size();
@@ -395,7 +418,7 @@ for(OutputTreeNode tableEntry : tableEntries) {
 			hasDocumentGlobal = true;
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(tableEntry.getType(), tableEntry.isNullable());
 %>
-			gen_Doc_<%=table.getName() %>_<%=cid %>.generateElements(<%if(hasDocumentInMainInputTable){%>treeNodeAPI_<%=cid %>,<%}%><%= rejectedDocInnerJoin %>
+			gen_Doc_<%=table.getName() %>_<%=cid %>.generateElements(<%if(hasDocumentInMainInputTable || hasDocumentInAnyLookupTable){%>treeNodeAPI_<%=cid %>,<%}%><%= rejectedDocInnerJoin %>
 		
 		<%
 		for (InputXmlTree inputTable: inputTables) {
