@@ -68,7 +68,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 try {
 	String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
+<%
+	if(("Windows").equals(execution)){
+%>
 	java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=scriptPath%>+<%=table%>+".script");
+<%
+	}else{
+%>
+	java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=scriptPath%>+<%=table%>+".scr");
+<%
+	}
+%>
 	
 	<%//build script---------------------------------------------------------%>
 	
@@ -110,7 +120,7 @@ try {
 	fw_<%=cid %>.close();
 	
 	<%//run fexp command----------------------------------------------------%>
-	String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>fexp < \""+<%=scriptPath%>+<%=table%>+".script\"<%if(!dieOnError) {%> > \""+<%=errorFile%>+"\"<%}%> 2>&1");
+	String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>fexp < \""+<%=scriptPath%>+<%=table%>+"<%=("Windows").equals(execution)?".script":".scr"%>\"<%if(!dieOnError) {%> > \""+<%=errorFile%>+"\"<%}%> 2>&1");
 	final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
 	<%if(dieOnError) {%>
 	final String returnCodePrefix<%=cid%> = "Highest return code encountered = '";
