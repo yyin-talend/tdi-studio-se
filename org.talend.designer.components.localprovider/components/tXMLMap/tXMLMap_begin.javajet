@@ -525,7 +525,7 @@ class TreeNode_API_<%=cid %> {
             
 %>
 <%= className %> <%= tableName1 %>_tmp = new <%= className %>();
-<%= className %> <%= tableName1 %>_save = new <%= className %>();
+<%= className %> <%= tableName1 %>_save = null;
 <%
         }
 %>

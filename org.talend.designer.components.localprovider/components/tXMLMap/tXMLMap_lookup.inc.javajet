@@ -78,6 +78,7 @@ skeleton="tXMLMap_java.skeleton"
 				String loopXPath = "";
 				boolean isMultipleResult = false;
 				boolean existXpathKeyFromCurrentLookup = false;
+				boolean hasExpressionKey = false;
 				
 				for(int j = 0; j < listColumns.size(); j++){
 					IMetadataColumn column = listColumns.get(j);
@@ -121,6 +122,7 @@ skeleton="tXMLMap_java.skeleton"
 						    
 				    	  	expressionKey = leaf.getExpression();
 							if (expressionKey != null && !"".equals(expressionKey.trim())) {
+								hasExpressionKey = true;
 							    keysNames.add(columnName);
 							    String resultExpression = null;
 							    expressionKeys.add(expressionKey);
@@ -167,7 +169,7 @@ skeleton="tXMLMap_java.skeleton"
 				}
 				%>
 				
-				<%if(hasOutgoingConnection){ %>
+				<%if(hasOutgoingConnection || hasExpressionKey){ %>
 					boolean forceLoop<%= tableName %> = false;
 					<%= className %> <%= tableName %>ObjectFromLookup = null;
 					boolean hasResultFromLookupCache<%= tableName %> = false;
@@ -213,7 +215,7 @@ skeleton="tXMLMap_java.skeleton"
 					%>
 					
 					<%
-					if(hasOutgoingConnection){
+					if(hasOutgoingConnection || hasExpressionKey){
 					%>
 						if(!<%= rejectedInnerJoin %>){//TD120
 							<%if(isOneOfReloadLookupMode) {//TD110
@@ -492,7 +494,6 @@ skeleton="tXMLMap_java.skeleton"
 
 								<%=tableName%> = fromLookup_<%=tableName%>;
 							}
-						}
 					<%
 					}
 				}
