@@ -60,7 +60,9 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
 import org.talend.repository.ProjectManager;
@@ -492,6 +494,7 @@ public class ExportItemUtil {
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getProperty());
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getItemState());
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getItem());
+        moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getReferenceFileItem());
 
         boolean isFileItem = PropertiesPackage.eINSTANCE.getFileItem().isSuperTypeOf(item.eClass());
         itemResource = createResource(itemFile, isFileItem, resourceSet);
@@ -596,6 +599,9 @@ public class ExportItemUtil {
             objectsToTransfer = EcoreUtil.getObjectsByType(objects, type);
         } else {
             objectsToTransfer = objects;
+        }
+        for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
+            handler.addContents(objectsToTransfer, resource);
         }
         resource.getContents().addAll(objectsToTransfer);
         objects.removeAll(objectsToTransfer);
