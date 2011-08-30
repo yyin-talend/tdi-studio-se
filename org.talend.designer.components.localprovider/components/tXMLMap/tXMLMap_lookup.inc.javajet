@@ -441,7 +441,6 @@ skeleton="tXMLMap_java.skeleton"
 					    	
 					    }//end else if
 					    //now not support cache all_matches lookup
-					    //forceLooprow3 = !isMatchDocRowtXMLMap_1;
 					    <% if(findFromDocumentType && !isInnerJoin) {%>
 					    	forceLoop<%= tableName %> = !isMatchDocRow<%=cid%> && !hasResultFromLookupCache<%= tableName %>;
 					    <% } %>
@@ -484,7 +483,7 @@ skeleton="tXMLMap_java.skeleton"
 						}else {
 						
 						}
-						while (tHash_Lookup_<%=tableName%>.hasNext()) { 
+						while (tHash_Lookup_<%=tableName%>.hasNext()) {//TD128 
 								
 							<%=tableName%>Struct fromLookup_<%=tableName%> = null;
 							<%=tableName%> = <%=tableName%>Default;

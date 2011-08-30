@@ -63,7 +63,7 @@ skeleton="tXMLMap_java.skeleton"
 	boolean hasDocumentInMainInputTable = false;
 	boolean isPlainNode = true;
 	boolean isPlainNodeInLookup = false;
-	int lookupTableCount = 0;
+	int closeWhileBlockCount = 0;
 	boolean hasDocumentGlobal = false;
 	
 	List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
@@ -240,15 +240,17 @@ skeleton="tXMLMap_java.skeleton"
 <%
 	//	System.out.println("size of vartable begin:" + varTables.size());
 	TreeUtil treeUtil = new TreeUtil();
-	for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) { 
+	for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) {
+		hasOutgoingConnection = false;//reset the var for every lookup table 
 		InputXmlTree nextInputTable = inputTables.get(iInputTable);
 %>
 
 		<%@ include file="tXMLMap_lookup.inc.javajet" %>
 <%
 	
-	if(hasOutgoingConnection)
-			lookupTableCount++;
+	if(hasOutgoingConnection && isExpressionEmpty) {
+		closeWhileBlockCount++;
+	}
 	
 	} // end for lookup tables
 %>
@@ -480,16 +482,11 @@ for(OutputTreeNode tableEntry : tableEntries) {
 %>
 <%	}
 }%>
-<%if(hasOutgoingConnection && isExpressionEmpty){
-	int i = 0;
-	while(i < lookupTableCount){
-%>
-	} // end for while loop
-<%	
-	i++;
-		} 
-	}
-%>
+
+<%while(closeWhileBlockCount-- > 0) {%>
+	} // end for while loop(TD128)
+<%}%>
+
 }// end var
 <%	if(!isXpathFromLookup){%>
 	<%=rejectedInnerJoin %> = false;
