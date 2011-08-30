@@ -93,6 +93,7 @@ if(("false").equals(useExistingConn)){
 }
 %>
 boolean whetherReject_<%=cid%> = false;
+int nb_line_<%=cid %> = 0;
 <%	if(("DELETE").equals(insertMode)){ %>
 		talend.ssl.ldap.LdapAction ldap_<%=cid %> = new talend.ssl.ldap.LdapAction();
 <%	}%>

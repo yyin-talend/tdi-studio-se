@@ -64,8 +64,9 @@ public class LdapAction {
 	 * @param root
 	 *            :basedn "dc=talend,dc=com"
 	 */
-	public void delete(String base, String filter, DirContext dc, String root) {
+	public int delete(String base, String filter, DirContext dc, String root) {
 		NamingEnumeration<SearchResult> ne = null;
+		int nb_line = 0;
 		try {
 			Vector dn = new Vector();
 			ne = dc.search(base, filter, sc);
@@ -84,6 +85,7 @@ public class LdapAction {
 			for (int i = dn.size() - 1; i >= 0; i--) {
 				if (!root.equals(dn.get(i))) {
 //					System.out.println((String) dn.get(i));
+					nb_line ++;
 					dc.destroySubcontext((String) dn.get(i));
 				}
 			}
@@ -91,6 +93,7 @@ public class LdapAction {
 			System.err.println("Error: " + nex.getMessage());
 			nex.printStackTrace();
 		}
+		return nb_line;
 	}
 
 	public static void main(String[] args) {

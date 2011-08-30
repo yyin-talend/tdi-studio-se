@@ -117,10 +117,12 @@ imports="
 					if(("ADD").equals(insertMode)){
 %>
 						ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>, javax.naming.directory.DirContext.ADD_ATTRIBUTE, entry_<%=cid%>);
+						nb_line_<%=cid %> ++;
 <%
 					} else if(("INSERT").equals(insertMode)){
 %> 
 						ctx_<%=cid%>.createSubcontext(dn_<%=cid%>, entry_<%=cid%>);
+						nb_line_<%=cid %> ++;
 <%
 					}else if(("UPDATA").equals(insertMode)){
 						if(useAttributeOptions && attributeOptions.size() > 0){
@@ -187,17 +189,21 @@ imports="
   							}
 %>
   							ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>,mfItem_<%=cid%>.toArray(new javax.naming.directory.ModificationItem[0]));
+  							nb_line_<%=cid %> ++;
 <%
   	//7631
 						}else{
 %>
 							ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>, javax.naming.directory.DirContext.REPLACE_ATTRIBUTE, entry_<%=cid%>);
+							nb_line_<%=cid %> ++;
 <%
 						}
 					}else if(("DELETE").equals(insertMode)){
 %>
 						//ctx_<%=cid%>.destroySubcontext(dn_<%=cid%>);
-						ldap_<%=cid %>.delete(dn_<%=cid%>,"(objectclass=*)",ctx_<%=cid%>,<%=baseDN%>);
+						int nb_line = 0;
+						nb_line = ldap_<%=cid %>.delete(dn_<%=cid%>,"(objectclass=*)",ctx_<%=cid%>,<%=baseDN%>);
+						nb_line_<%=cid %> = nb_line_<%=cid %> + nb_line;
 <%
 					}else if(("INSERT_UPDATA").equals(insertMode)){
 %>
@@ -208,10 +214,12 @@ imports="
 						}catch(javax.naming.NameNotFoundException nfEx_<%=cid%>)
 						{
 							ctx_<%=cid%>.createSubcontext(dn_<%=cid%>, entry_<%=cid%>);
+							nb_line_<%=cid %> ++;
 						}
 						if(found)
 						{
 							ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>, javax.naming.directory.DirContext.REPLACE_ATTRIBUTE, entry_<%=cid%>);
+							nb_line_<%=cid %> ++;
 						}
 <%
 					}
