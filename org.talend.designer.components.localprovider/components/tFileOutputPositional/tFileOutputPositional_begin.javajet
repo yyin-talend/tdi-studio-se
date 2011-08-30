@@ -246,13 +246,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 							%>
         							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
-        							FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)					
+        							FormatterUtils.format_Number(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>)					
         							<% } else { %>
         							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)						
         							<% } %>
 							<%
 					}else if (javaType == JavaTypesManager.BIGDECIMAL) {
-					%>String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>)	
+					%><%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString()	
 					<% }else{
 					%>String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)<%
 					}
