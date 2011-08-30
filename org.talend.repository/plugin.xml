@@ -1282,7 +1282,14 @@
             class="org.talend.repository.model.migration.UpgrateDatabaseTypeForSybaseConnection"
             id="org.talend.repository.model.migration.UpgrateDatabaseTypeForSybaseConnection"
             name="UpgrateDatabaseTypeForSybaseConnection">
-      </projecttask> 
+      </projecttask>
+	  <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RenameModeParaForPigMigrationTask"
+            description="Rename pig mode parameter for bug TDI-13406 "
+            id="org.talend.repository.model.migration.RenameModeParaForPigMigrationTask"
+            name="Rename pig mode parameter">
+      </projecttask>	  
       <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.RenamePasswordParaForLdapMigrationTask"
