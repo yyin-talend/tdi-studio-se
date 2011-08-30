@@ -24,6 +24,7 @@ imports="
 	String dnColumnName = ElementParameterParser.getValue(node, "__DN_COLUMN_NAME__");
 	boolean useAttributeOptions = "true".equals(ElementParameterParser.getValue(node, "__USE_ATTRIBUTE_OPTIONS__"));
 	List<Map<String, String>> attributeOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ATTRIBUTE_OPTIONS__");
+	String baseDN=ElementParameterParser.getValue(node, "__BASEDN__");
 	String separator = separatorText;
 	if(("\"|\"").equals(separatorText)){
 		separator="\"\\\\|\"";
@@ -195,7 +196,8 @@ imports="
 						}
 					}else if(("DELETE").equals(insertMode)){
 %>
-						ctx_<%=cid%>.destroySubcontext(dn_<%=cid%>);
+						//ctx_<%=cid%>.destroySubcontext(dn_<%=cid%>);
+						ldap_<%=cid %>.delete(dn_<%=cid%>,"(objectclass=*)",ctx_<%=cid%>,<%=baseDN%>);
 <%
 					}else if(("INSERT_UPDATA").equals(insertMode)){
 %>

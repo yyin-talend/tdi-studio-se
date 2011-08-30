@@ -21,6 +21,7 @@ class="LDAPInput"
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String exConn= "conn_" + connection;
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+	String insertMode =ElementParameterParser.getValue(node, "__INSERT_MODE__");
 
 if(("false").equals(useExistingConn)){
 	String host=ElementParameterParser.getValue(node, "__HOST__");
@@ -92,3 +93,6 @@ if(("false").equals(useExistingConn)){
 }
 %>
 boolean whetherReject_<%=cid%> = false;
+<%	if(("DELETE").equals(insertMode)){ %>
+		talend.ssl.ldap.LdapAction ldap_<%=cid %> = new talend.ssl.ldap.LdapAction();
+<%	}%>
