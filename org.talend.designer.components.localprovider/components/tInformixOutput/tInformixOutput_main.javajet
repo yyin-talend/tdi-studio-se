@@ -207,8 +207,16 @@ skeleton="../templates/db_output_bulk.skeleton"
 	} else if (("DELETE").equals(dataAction)) {
 	    %>
 	    String delete_<%=cid%> = "DELETE  FROM " + tableName_<%=cid%> + " WHERE <%=deleteWhereStmt.toString()%>";
+	    <%
+	    if(isDynamic) {
+	    %>
+	    pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
+	    <%
+	    }else{
+	    %>
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
 	    <%		
+	    }
 	}
     if(isEnableDebug) {
         %>
