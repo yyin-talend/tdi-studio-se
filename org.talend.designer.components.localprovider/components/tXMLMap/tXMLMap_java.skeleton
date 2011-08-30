@@ -5,10 +5,41 @@ public class CLASS {
 
 	class XMLMapUtil {
 	
+		private List<IConnection> filterAndSort(INode node) {
+			
+			XmlMapData xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
+			EList<InputXmlTree> inputTables = xmlMapData.getInputTrees();
+			final List<String> tableNames = new ArrayList<String>();
+			HashMap<String, InputXmlTree> hNameToInputXmlTree = new HashMap<String, InputXmlTree>();
+			
+			for(InputXmlTree inputTable : inputTables){
+				hNameToInputXmlTree.put(inputTable.getName(), inputTable);
+				tableNames.add(inputTable.getName());
+			}
+			
+			List<IConnection> inputConnections = new ArrayList<IConnection>();
+			
+			for(IConnection conn : node.getIncomingConnections()){
+				if(hNameToInputXmlTree.get(conn.getName()) != null){
+					inputConnections.add(conn);
+				}
+			}
+			
+			java.util.Collections.sort(inputConnections,new java.util.Comparator<IConnection>() {
+				public int compare(IConnection conn1, IConnection conn2) {
+					return tableNames.indexOf(conn1.getName()) - tableNames.indexOf(conn2.getName());
+				}	
+			});
+			
+			return inputConnections;
+		}
 	
 		public String createSignature(INode node, boolean force) {
 			String toReturn = "";
-			for(IConnection conn : node.getIncomingConnections()) {
+			
+			List<IConnection> inputConnections = filterAndSort(node);
+			
+			for(IConnection conn : inputConnections) {
 				if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE) || conn.getLineStyle().equals(EConnectionType.FLOW_REF)) {
 					if ((force)|| conn.getLineStyle().equals(EConnectionType.FLOW_REF) ||(conn.getSource().isSubProcessStart() || !(NodeUtil.isDataAutoPropagated(conn.getSource())))) {
 						toReturn+=", "+conn.getName() + "Struct " + conn.getName();
