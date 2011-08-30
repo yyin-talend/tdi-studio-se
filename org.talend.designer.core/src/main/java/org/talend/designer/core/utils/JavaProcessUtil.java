@@ -323,8 +323,16 @@ public class JavaProcessUtil {
                 }
 
                 if (flag == true) {
-                    neededLibraries.add((jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
-                            TalendTextUtils.SINGLE_QUOTE, ""));//$NON-NLS-1$
+					String jars = (jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
+                            TalendTextUtils.SINGLE_QUOTE, "");
+                    String separator = ";"; //$NON-NLS-1$
+                    if (jars.contains(separator)) {
+                        for (String jar : jars.split(separator)) {
+                            neededLibraries.add(jar);
+                        }
+                    } else {
+                        neededLibraries.add(jars);
+                    }
                 }
             }
         }
