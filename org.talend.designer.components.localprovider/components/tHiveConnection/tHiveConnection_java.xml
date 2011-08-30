@@ -151,16 +151,17 @@
 
    <CODEGENERATION>
 		<IMPORTS>
+			<IMPORT NAME="Driver-Hadoop-0.20.203" MODULE="hadoop-core-0.20.203.0.jar" REQUIRED="true" />
+       		<IMPORT NAME="Driver-Commons-Log4j-1.2.15" MODULE="log4j-1.2.15.jar" REQUIRED="true" />
+			<IMPORT NAME="Driver-Hive-Exec-0.7.1" MODULE="hive-exec-0.7.1.jar" REQUIRED="true" />
+			<IMPORT NAME="Driver-Hive-Jdbc-0.7.1" MODULE="hive-jdbc-0.7.1.jar" REQUIRED="true" />
+			<IMPORT NAME="Driver-Hive-Metastore-0.7.1" MODULE="hive-metastore-0.7.1.jar" REQUIRED="true" />
+       		<IMPORT NAME="Driver-Hive-Service-0.7.1" MODULE="hive-service-0.7.1.jar" REQUIRED="true" />
+       		<IMPORT NAME="Driver-LibFb303" MODULE="libfb303.jar" REQUIRED="true" />
 			<IMPORT NAME="Driver-slf4j-api-1.6.1" MODULE="slf4j-api-1.6.1.jar" REQUIRED="true" />
 			<IMPORT NAME="Driver-slf4j-log4j12-1.6.1" MODULE="slf4j-log4j12-1.6.1.jar" REQUIRED="true" />
-       		<IMPORT NAME="Driver-Hive-Jdbc-0.7.0" MODULE="hive-jdbc-0.7.0.jar" REQUIRED="true" />
-       		<IMPORT NAME="Driver-Hive-Metastore-0.7.0" MODULE="hive-metastore-0.7.0.jar" REQUIRED="true" />
-       		<IMPORT NAME="Driver-Hive-Exec-0.7.0" MODULE="hive-exec-0.7.0.jar" REQUIRED="true" />
-       		<IMPORT NAME="Driver-Hive-Service-0.7.0" MODULE="hive-service-0.7.0.jar" REQUIRED="true" />
-       		<IMPORT NAME="Driver-Hadoop-0.20.2" MODULE="hadoop-0.20.2-core.jar" REQUIRED="true" />
-       		<IMPORT NAME="Driver-LibFb303" MODULE="libfb303.jar" REQUIRED="true" />
-       		<IMPORT NAME="Driver-Commons-Logging-1.0.4" MODULE="commons-logging-1.0.4.jar" REQUIRED="true" />
-       		<IMPORT NAME="Driver-Commons-Log4j-1.2.15" MODULE="log4j-1.2.15.jar" REQUIRED="true" />
+       		<IMPORT NAME="Driver-Commons-Logging-1.1.1" MODULE="commons-logging-1.1.1.jar" REQUIRED="true" />
+       		<IMPORT NAME="Driver-Commons-Logging-API-1.0.4" MODULE="commons-logging-api-1.0.4.jar" REQUIRED="true" />
      	</IMPORTS>
    </CODEGENERATION>
 
