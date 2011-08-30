@@ -640,15 +640,15 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
         });
         exportDependencies.setLayoutData(gd);
-        // feature 19312
-        exportDependencies.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                refreshExportDependNodes();
-                exportDependenciesSelected();
-            }
-        });
+        // // feature 19312
+        // exportDependencies.addSelectionListener(new SelectionAdapter() {
+        //
+        // @Override
+        // public void widgetSelected(SelectionEvent e) {
+        // refreshExportDependNodes();
+        // exportDependenciesSelected();
+        // }
+        // });
 
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         contextButton.setText(Messages.getString("JobScriptsExportWizardPage.contextPerlScripts")); //$NON-NLS-1$
@@ -1803,7 +1803,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         exportChoiceMap.put(ExportChoice.needJobScript, jobScriptButton.getSelection());
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needDependencies, exportDependencies.getSelection());
+        // exportChoiceMap.put(ExportChoice.needDependencies, exportDependencies.getSelection());
         exportChoiceMap.put(ExportChoice.setParameterValues, setParametersValueButton2.getSelection());
         // exportChoiceMap.put(ExportChoice.needGenerateCode, genCodeButton.getSelection());
         return exportChoiceMap;
