@@ -45,7 +45,6 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.IRepositoryBundleService;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -118,6 +117,7 @@ import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYT
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.librariesmanager.model.service.FakeRepositoryBundleService;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -206,7 +206,8 @@ public class EmfComponent extends AbstractComponent {
     // weak ref used so that memory is not used by a static HashMap instance
     private static SoftReference<Map> optionMapSoftRef;
 
-    private IRepositoryBundleService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
+    private FakeRepositoryBundleService repositoryBundleService = (FakeRepositoryBundleService) CorePlugin.getDefault()
+            .getRepositoryBundleService();
 
     public EmfComponent(String uriString, String bundleId, String name, String pathSource, ComponentsCache cache, boolean isload)
             throws BusinessException {
@@ -1761,6 +1762,7 @@ public class EmfComponent extends AbstractComponent {
             int nbCustom = 0;
             for (int i = 0; i < xmlColumnList.size(); i++) {
                 xmlColumn = (COLUMNType) xmlColumnList.get(i);
+                System.out.println(xmlColumn.getNAME());
                 talendColumn = new MetadataColumn();
                 talendColumn.setLabel(xmlColumn.getNAME());
                 talendColumn.setOriginalDbColumnName(xmlColumn.getNAME());

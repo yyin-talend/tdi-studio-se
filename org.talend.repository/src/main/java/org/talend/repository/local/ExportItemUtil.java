@@ -45,7 +45,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.IRepositoryBundleService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataManager;
@@ -65,6 +64,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
+import org.talend.librariesmanager.model.service.FakeRepositoryBundleService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.IFileExporterFullPath;
@@ -327,7 +327,8 @@ public class ExportItemUtil {
                         }
 
                     }
-                    IRepositoryBundleService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
+                    FakeRepositoryBundleService repositoryBundleService = (FakeRepositoryBundleService) CorePlugin.getDefault()
+                            .getRepositoryBundleService();
                     // String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
                     String path = repositoryBundleService.getOBRRoot().getAbsolutePath();
 
