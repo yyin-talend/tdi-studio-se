@@ -236,7 +236,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (page != null) {
             IViewPart part = page.findView(IRepositoryView.VIEW_ID);
-            if (part == null) {
+            // MOD klliu check TIS is started bug TDQ-3238
+            if (part == null && PluginChecker.isTIS()) {
                 try {
                     // MOD by zshen for 15750 todo 39 if the Perspective is DataProfilingPerspective refuse the
                     // RepositoryView be display by automatic
