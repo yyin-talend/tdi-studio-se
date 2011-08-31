@@ -802,6 +802,7 @@ else if(("Null").equals(mode)){
 		strCompCache_<%=cid %>=strTemp_<%=cid %>;
 		
 <%	if(inputKeysColumns.size() !=0){%>
+			preNewTabIndex_<%=cid%> = -1;
 		}
 <%	}%>	
 	}	
