@@ -54,7 +54,7 @@
 			</ITEMS>
 		</PARAMETER>
 		<PARAMETER
-		  NAME="Answer_Mask"
+		  NAME="ANSWER_MASK"
 		  FIELD="CHECK" 
 		  NUM_ROW="2"
 		  REQUIRED="true"

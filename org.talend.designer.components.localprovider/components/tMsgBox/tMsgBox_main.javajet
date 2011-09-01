@@ -12,7 +12,7 @@
 	String cid = node.getUniqueName();
 	
 	int button = Integer.parseInt(ElementParameterParser.getValue(node, "__BUTTONS__"));
-	boolean maskAnswer="true".equals(ElementParameterParser.getValue(node, "__Answer_Mask__"));
+	boolean maskAnswer="true".equals(ElementParameterParser.getValue(node, "__ANSWER_MASK__"));
 %>
 	int messageIcon<%=cid %> = javax.swing.JOptionPane.<%=ElementParameterParser.getValue(node, "__ICON__") %>;
 	String title<%=cid %> = <%=ElementParameterParser.getValue(node, "__TITLE__") %>;
