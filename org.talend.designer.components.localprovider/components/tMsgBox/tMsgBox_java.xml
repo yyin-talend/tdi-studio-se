@@ -53,7 +53,14 @@
 					VALUE="INFORMATION_MESSAGE" />
 			</ITEMS>
 		</PARAMETER>
-
+		<PARAMETER
+		  NAME="Answer_Mask"
+		  FIELD="CHECK" 
+		  NUM_ROW="2"
+		  REQUIRED="true"
+		  SHOW_IF="BUTTONS=='QUESTION'"
+		  />
+		  
 		<!-- <PARAMETER
 		  NAME="QUESTION_TITLE"
 		  FIELD="TEXT" 

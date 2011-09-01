@@ -11,7 +11,8 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	
-	int button = Integer.parseInt(ElementParameterParser.getValue(node, "__BUTTONS__"));	
+	int button = Integer.parseInt(ElementParameterParser.getValue(node, "__BUTTONS__"));
+	boolean maskAnswer="true".equals(ElementParameterParser.getValue(node, "__Answer_Mask__"));
 %>
 	int messageIcon<%=cid %> = javax.swing.JOptionPane.<%=ElementParameterParser.getValue(node, "__ICON__") %>;
 	String title<%=cid %> = <%=ElementParameterParser.getValue(node, "__TITLE__") %>;
@@ -62,9 +63,24 @@
 			break;
 		case 6:
 		// 6) Question
+		if(maskAnswer){
 %>
+        //mask Answer by '*'
+		javax.swing.JPasswordField text_<%=cid%> = new javax.swing.JPasswordField(20);
+		text_<%=cid%>.setEchoChar('*');
+    	Object[] message_<%=cid%> = { <%=ElementParameterParser.getValue(node, "__QUESTION_LABEL__") %>, new javax.swing.JScrollPane(text_<%=cid%>)};
+    	javax.swing.JOptionPane pane_<%=cid%> = new javax.swing.JOptionPane(message_<%=cid%>, messageIcon<%=cid %>,javax.swing.JOptionPane.OK_CANCEL_OPTION);
+    	javax.swing.JDialog dialog_<%=cid%> = pane_<%=cid%>.createDialog(null, title<%=cid %>);
+    	dialog_<%=cid%>.show();
+    	if((pane_<%=cid%>.getValue()!=null)&&(pane_<%=cid%>.getValue().equals(0))){
+			result<%=cid %> = new String(text_<%=cid%>.getPassword());
+		}else{
+			result<%=cid %>=null;
+		}
+<%      }else{%>
 		result<%=cid %> = javax.swing.JOptionPane.showInputDialog(null, <%=ElementParameterParser.getValue(node, "__QUESTION_LABEL__") %> , title<%=cid %>, messageIcon<%=cid %>);
 <%
+		}
 			break;
 		default:
 			//do nothing
