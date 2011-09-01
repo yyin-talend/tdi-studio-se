@@ -91,7 +91,7 @@ String cid = node.getUniqueName();
         <%}%>        
           ) {
 			<% if(typeSelected.equals("Boolean") ) {%>
-				if(!"true".equals(<%=_sInConnName%>.<%=colName%>) || !"false".equals(<%=_sInConnName%>.<%=colName%>)){
+				if(!("true".equals(<%=_sInConnName%>.<%=colName%>) || "false".equals(<%=_sInConnName%>.<%=colName%>))){
 					throw new Exception("Wrong Boolean type!");
 				}
 			<% }else if(typeSelected.equals("Character") ) {%>
