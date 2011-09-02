@@ -16,6 +16,14 @@
             class="org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage"
             genModel="model/xmlmap.genmodel"/>
    </extension>
+   
+      <extension
+         point="org.talend.core.runtime.service">
+      <Service
+            class="org.talend.designer.xmlmap.DesignerXMLMapperService"
+            serviceId="IDesignerXMLMapperService">
+      </Service>
+   </extension>
 
    <extension point="org.eclipse.emf.ecore.extension_parser">
       <parser

@@ -31,56 +31,5 @@
 "
 skeleton="tXMLMap_java.skeleton"
 %>
-<%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	XmlMapComponent node = (XmlMapComponent) codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
-	XmlMapData xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
-	boolean isXpath = false;	
-	boolean isPlainNode = true;
-	boolean outputHasDocument = false;
-	EList<OutputXmlTree> outputTables = xmlMapData.getOutputTrees();
-	EList<VarTable> varTables = xmlMapData.getVarTables();
-	EList<InputXmlTree> inputTables = xmlMapData.getInputTrees();
-	if(inputTables.size()>0) {
-		InputXmlTree mainInputTable = inputTables.get(0);
-		for(TreeNode tmpNode : mainInputTable.getNodes()){
-			if(tmpNode.getType().equals("id_Document"))
-				isPlainNode = false;
-		}
-	}
 
-for (OutputXmlTree table : outputTables) {
-
-    
-    EList<OutputTreeNode> tableEntries = table.getNodes();
-    if (tableEntries == null ) {
-        continue;
-    }
-    for(OutputTreeNode tableEntry : tableEntries) {
-        	if(!("id_Document").equals(tableEntry.getType())){
-
-        		String resultExpression = tableEntry.getExpression();
-        		if(null !=resultExpression && resultExpression.indexOf("/") != -1)
-        		   isXpath = true;        	
-			} else {
-					outputHasDocument = true;
-			}
-	}
-}
-%>
-
-
-<%
-	if((!outputHasDocument && isPlainNode) || (!isPlainNode &&  !outputHasDocument) || (isPlainNode && outputHasDocument) || (!isPlainNode && outputHasDocument)) {
-		// Nothing to generate
-	}
-
-	if(false){
-%>
-		} // for input xml loop 
-<%
-	}
-%>
-
-
+<%@ include file="tXMLMap_end.inc.javajet" %>

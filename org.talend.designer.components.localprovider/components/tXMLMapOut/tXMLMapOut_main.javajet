@@ -38,7 +38,7 @@
             org.talend.core.model.metadata.types.JavaTypesManager
         	org.talend.core.model.metadata.types.JavaType
 "
-skeleton="tXMLMap_java.skeleton"
+skeleton="../tXMLMap/tXMLMap_java.skeleton"
 %>
 
-<%@ include file="tXMLMap_main.inc.javajet" %>
+<%@ include file="../tXMLMap/tXMLMap_main.inc.javajet" %>

@@ -1152,6 +1152,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         if (node.getUniqueName().startsWith("tMap")) { //$NON-NLS-1$
             isVirtualNode = CorePlugin.getDefault().getMapperService().isVirtualComponent(node);
+        } else if (node.getUniqueName().startsWith("tXMLMap")) { //$NON-NLS-1$
+            isVirtualNode = CorePlugin.getDefault().getXMLMapperService().isVirtualComponent(node);
         } else {
             List<IMultipleComponentManager> multipleComponentManagers = node.getComponent().getMultipleComponentManagers();
             for (IMultipleComponentManager mcm : multipleComponentManagers) {

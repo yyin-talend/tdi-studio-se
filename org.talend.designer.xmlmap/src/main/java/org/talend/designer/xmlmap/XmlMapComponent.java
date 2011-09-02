@@ -53,6 +53,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
 import org.talend.designer.xmlmap.util.MapDataHelper;
+import org.talend.designer.xmlmap.util.XMLMapperHelper;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -70,6 +71,11 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
 
     public XmlMapComponent() {
         mapperHelper = new MapDataHelper();
+    }
+    
+    @Override
+    public boolean isGeneratedAsVirtualComponent() {
+        return XMLMapperHelper.isGeneratedAsVirtualComponent(this);
     }
 
     public int open(Display display) {
