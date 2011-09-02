@@ -13,7 +13,6 @@
 package org.talend.designer.xmlmap.editor.actions;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
-import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -21,7 +20,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
  * DOC talend class global comment. Detailled comment
@@ -41,21 +39,8 @@ public class FixValueAction extends SelectionAction {
     @Override
     public void run() {
         if (selectedNode != null) {
-            IInputValidator validator = new IInputValidator() {
-
-                public String isValid(String newText) {
-                    if (StringUtil.validateLabelForFixedValue(newText)) {
-                        return null;
-                    } else {
-                        return "Prefix is invalid";
-                    }
-
-                }
-
-            };
-
             InputDialog dialog = new InputDialog(null, "Input a fix value", "Input a valid default value",
-                    selectedNode.getDefaultValue(), validator);
+                    selectedNode.getDefaultValue(), null);
             if (dialog.open() == Window.OK) {
                 selectedNode.setDefaultValue(dialog.getValue());
             }
