@@ -23,6 +23,7 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.transport.http.HTTPConstants;
 
+import com.salesforce.soap.partner.CallOptions;
 import com.salesforce.soap.partner.Create;
 import com.salesforce.soap.partner.Delete;
 import com.salesforce.soap.partner.DeleteResponse;
@@ -60,12 +61,29 @@ public class SforceManagementImpl implements SforceManagement {
 
     private SessionHeader sh;
 
+    private CallOptions co;
+
     public SforceServiceStub getStub() {
         return stub;
     }
 
     public SessionHeader getSessionHeader() {
         return sh;
+    }
+
+    public CallOptions getCallOptions() {
+        return co;
+    }
+
+    public void setCallOptions(CallOptions co) {
+        this.co = co;
+    }
+
+    public void setClientID(String clientID) {
+        if (co == null) {
+            co = new CallOptions();
+        }
+        co.setClient(clientID);
     }
 
     private void needCompression(Options options) {
@@ -112,7 +130,7 @@ public class SforceManagementImpl implements SforceManagement {
         login.setUsername(username);
         login.setPassword(password);
 
-        LoginResult loginResult = stub.login(login, null, null).getResult();
+        LoginResult loginResult = stub.login(login, null, co).getResult();
         sh = new SessionHeader();
         sh.setSessionId(loginResult.getSessionId());
         stub = new SforceServiceStub(loginResult.getServerUrl());
@@ -204,7 +222,7 @@ public class SforceManagementImpl implements SforceManagement {
         login.setUsername(username);
         login.setPassword(password);
 
-        LoginResult loginResult = stub.login(login, null, null).getResult();
+        LoginResult loginResult = stub.login(login, null, co).getResult();
         sh = new SessionHeader();
         sh.setSessionId(loginResult.getSessionId());
         stub = new SforceServiceStub(loginResult.getServerUrl());
@@ -257,7 +275,7 @@ public class SforceManagementImpl implements SforceManagement {
                 SObject[] accs = insertItems.toArray(new SObject[insertItems.size()]);
                 Create create = new Create();
                 create.setSObjects(accs);
-                SaveResult[] sr = stub.create(create, sh, null, null, null, null, null, null, null, null, null).getResult();
+                SaveResult[] sr = stub.create(create, sh, co, null, null, null, null, null, null, null, null).getResult();
                 insertItems.clear();
                 accs = null;
 
@@ -284,7 +302,7 @@ public class SforceManagementImpl implements SforceManagement {
                 ID[] delIDs = deleteItems.toArray(new ID[deleteItems.size()]);
                 Delete dels = new Delete();
                 dels.setIds(delIDs);
-                DeleteResponse dresp = stub.delete(dels, sh, null, null, null, null, null, null, null, null);
+                DeleteResponse dresp = stub.delete(dels, sh, co, null, null, null, null, null, null, null);
                 DeleteResult[] dr = dresp.getResult();
                 deleteItems.clear();
                 delIDs = null;
@@ -312,7 +330,7 @@ public class SforceManagementImpl implements SforceManagement {
                 SObject[] upds = updateItems.toArray(new SObject[updateItems.size()]);
                 Update update = new Update();
                 update.setSObjects(upds);
-                SaveResult[] saveResults = stub.update(update, sh, null, null, null, null, null, null, null, null, null)
+                SaveResult[] saveResults = stub.update(update, sh, co, null, null, null, null, null, null, null, null)
                         .getResult();
                 updateItems.clear();
                 upds = null;
@@ -341,7 +359,7 @@ public class SforceManagementImpl implements SforceManagement {
                 Upsert upsert = new Upsert();
                 upsert.setSObjects(upds);
                 upsert.setExternalIDFieldName(upsertKeyColumn);
-                UpsertResult[] upsertResults = stub.upsert(upsert, sh, null, null, null, null, null, null, null, null, null)
+                UpsertResult[] upsertResults = stub.upsert(upsert, sh, co, null, null, null, null, null, null, null, null)
                         .getResult();
                 upsertItems.clear();
                 upds = null;
@@ -389,7 +407,7 @@ public class SforceManagementImpl implements SforceManagement {
             ID[] delIDs = deleteItems.toArray(new ID[deleteItems.size()]);
             Delete dels = new Delete();
             dels.setIds(delIDs);
-            DeleteResponse dresp = stub.delete(dels, sh, null, null, null, null, null, null, null, null);
+            DeleteResponse dresp = stub.delete(dels, sh, co, null, null, null, null, null, null, null);
             DeleteResult[] dr = dresp.getResult();
             deleteItems.clear();
             delIDs = null;
@@ -443,7 +461,7 @@ public class SforceManagementImpl implements SforceManagement {
             SObject[] accs = insertItems.toArray(new SObject[insertItems.size()]);
             Create create = new Create();
             create.setSObjects(accs);
-            SaveResult[] sr = stub.create(create, sh, null, null, null, null, null, null, null, null, null).getResult();
+            SaveResult[] sr = stub.create(create, sh, co, null, null, null, null, null, null, null, null).getResult();
             insertItems.clear();
             accs = null;
 
@@ -488,7 +506,7 @@ public class SforceManagementImpl implements SforceManagement {
             SObject[] upds = updateItems.toArray(new SObject[updateItems.size()]);
             Update update = new Update();
             update.setSObjects(upds);
-            SaveResult[] saveResults = stub.update(update, sh, null, null, null, null, null, null, null, null, null).getResult();
+            SaveResult[] saveResults = stub.update(update, sh, co, null, null, null, null, null, null, null, null).getResult();
             updateItems.clear();
             upds = null;
 
@@ -538,7 +556,7 @@ public class SforceManagementImpl implements SforceManagement {
             Upsert upsert = new Upsert();
             upsert.setSObjects(upds);
             upsert.setExternalIDFieldName(upsertKeyColumn);
-            UpsertResult[] upsertResults = stub.upsert(upsert, sh, null, null, null, null, null, null, null, null, null)
+            UpsertResult[] upsertResults = stub.upsert(upsert, sh, co, null, null, null, null, null, null, null, null)
                     .getResult();
             upsertItems.clear();
             upds = null;
@@ -680,7 +698,7 @@ public class SforceManagementImpl implements SforceManagement {
     }
 
     public Calendar getServerTimestamp() throws Exception {
-        return stub.getServerTimestamp(new GetServerTimestamp(), sh, null).getResult().getTimestamp();
+        return stub.getServerTimestamp(new GetServerTimestamp(), sh, co).getResult().getTimestamp();
     }
 
     public ID[] getUpdated(String objectType, Calendar startDate, Calendar endDate) throws Exception {
@@ -688,7 +706,7 @@ public class SforceManagementImpl implements SforceManagement {
         getUpdated.setSObjectType(objectType);
         getUpdated.setStartDate(startDate);
         getUpdated.setEndDate(endDate);
-        GetUpdatedResult result = stub.getUpdated(getUpdated, sh, null).getResult();
+        GetUpdatedResult result = stub.getUpdated(getUpdated, sh, co).getResult();
         ID[] ids = result.getIds();
         return ids;
     }
@@ -698,7 +716,7 @@ public class SforceManagementImpl implements SforceManagement {
         retrieve.setFieldList(fieldsList);
         retrieve.setIds(ids);
         retrieve.setSObjectType(objectType);
-        SObject[] results = stub.retrieve(retrieve, sh, null, null, null, null).getResult();
+        SObject[] results = stub.retrieve(retrieve, sh, co, null, null, null).getResult();
         // for (SObject sob : results) {
         // OMElement[] omes = sob.getExtraElement();
         // for (int i = 0; i < omes.length; i++) {
@@ -714,7 +732,7 @@ public class SforceManagementImpl implements SforceManagement {
         getDeleted.setSObjectType(objectType);
         getDeleted.setStartDate(startDate);
         getDeleted.setEndDate(endDate);
-        GetDeletedResult result = stub.getDeleted(getDeleted, sh, null).getResult();
+        GetDeletedResult result = stub.getDeleted(getDeleted, sh, co).getResult();
         // DeletedRecord[] deletedRecords = result.getDeletedRecords();
         // List<String> ids = new ArrayList<String>();
         // for (DeletedRecord deletedRecord : deletedRecords) {
@@ -728,7 +746,7 @@ public class SforceManagementImpl implements SforceManagement {
         queryAll.setQueryString(soql);
         QueryOptions queryOptions = new QueryOptions();
         queryOptions.setBatchSize(batchSize);
-        QueryResult qr = stub.queryAll(queryAll, sh, null, queryOptions).getResult();
+        QueryResult qr = stub.queryAll(queryAll, sh, co, queryOptions).getResult();
         return qr;
     }
 
@@ -737,7 +755,7 @@ public class SforceManagementImpl implements SforceManagement {
         queryOptions.setBatchSize(batchSize);
         QueryMore queryMore = new QueryMore();
         queryMore.setQueryLocator(queryLocator);
-        QueryResult qr = stub.queryMore(queryMore, sh, null, queryOptions).getResult();
+        QueryResult qr = stub.queryMore(queryMore, sh, co, queryOptions).getResult();
         return qr;
     }
 
@@ -746,7 +764,7 @@ public class SforceManagementImpl implements SforceManagement {
         query.setQueryString(soql);
         QueryOptions queryOptions = new QueryOptions();
         queryOptions.setBatchSize(batchSize);
-        QueryResult qr = stub.query(query, sh, null, queryOptions, null, null).getResult();
+        QueryResult qr = stub.query(query, sh, co, queryOptions, null, null).getResult();
         return qr;
     }
 }

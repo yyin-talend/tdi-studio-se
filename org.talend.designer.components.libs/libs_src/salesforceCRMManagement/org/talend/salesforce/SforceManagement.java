@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.apache.axiom.om.OMElement;
 
+import com.salesforce.soap.partner.CallOptions;
 import com.salesforce.soap.partner.DeleteResult;
 import com.salesforce.soap.partner.GetDeletedResult;
 import com.salesforce.soap.partner.ID;
@@ -36,6 +37,12 @@ public interface SforceManagement {
     public SforceServiceStub getStub();
 
     public SessionHeader getSessionHeader();
+
+    public CallOptions getCallOptions();
+
+    public void setCallOptions(CallOptions co);
+
+    public void setClientID(String clientID);
 
     public boolean login(String endpoint, String username, String password, int timeout, boolean needCompression)
             throws Exception;
