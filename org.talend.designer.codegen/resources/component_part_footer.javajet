@@ -223,28 +223,41 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
   	if (outgoingConn.getTarget().isActivate()) {
 		
 	         
-  	        if (outgoingConn.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)) { 
-%>
-<%=outgoingConn.getTarget().getUniqueName() %>Process(globalMap);
-<%  
-  	        }        
+  	    if (outgoingConn.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)) { 
+			//send the ok status to socket
+			if(stat){
+			%>
+				if(execStat){   
+   	 				runStat.updateStatOnConnection("<%=outgoingConn.getUniqueName() %>", 0, "ok");
+				}
+			<%}%>
+			<%=outgoingConn.getTarget().getUniqueName() %>Process(globalMap);
+		<%  
+  	    }        
        
 
-   		if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {  		
-%>
-   if (<%=outgoingConn.getCondition() %>) {
-    <%=outgoingConn.getTarget().getUniqueName() %>Process(globalMap);
-   }
+   		if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
+		%>
+   			if (<%=outgoingConn.getCondition() %>) {
+   				<%//send the true status to socket
+				if(stat){
+				%>
+					if(execStat){   
+   	 					runStat.updateStatOnConnection("<%=outgoingConn.getUniqueName() %>", 0, "true");
+					}
+				<%}%>
+    			<%=outgoingConn.getTarget().getUniqueName() %>Process(globalMap);
+   			}
 
-<%
-//send the false status to socket, about the true status, please see: subprocess_header.javajet
+			<%
+			//send the false status to socket
 			if(stat){
-%>   
-   else{
-if(execStat){   
-   	 runStat.updateStatOnConnection("<%=outgoingConn.getUniqueName() %>", 0, "false");
-}   	 
-   }
+			%>   
+   				else{
+					if(execStat){   
+   	 					runStat.updateStatOnConnection("<%=outgoingConn.getUniqueName() %>", 0, "false");
+					}   	 
+   				}
 <%
 			}
    		}

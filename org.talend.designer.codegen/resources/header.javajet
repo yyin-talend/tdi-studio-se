@@ -445,7 +445,11 @@ private class TalendException extends Exception {
 					if (conn.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)) {
 						%>
 						try {
-
+							<%if (stats) {%>
+								if(this.execStat){    	
+						    		runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "error");
+								}
+							<%}%>
 							<%
 							if (isRunInMultiThread ) {
 								%>
@@ -516,6 +520,11 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 				if (conn.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)) {
 %>
 				try {
+					<%if (stats) {%>
+						if(this.execStat){    	
+				    		runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "error");
+						}
+					<%}%>
 <%
 					if(isRunInMultiThread ){
 %>

@@ -151,6 +151,15 @@
 	    		<%
 	    	}
 	    	%>
+    		<%
+			if(stat){
+			%>
+				if(execStat){    	
+					runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "ok");
+				} 
+			<%
+			}
+			%>
 	    	<%= uniqueNameTargetNode %>Process(globalMap);
 	    	<%
     	}
