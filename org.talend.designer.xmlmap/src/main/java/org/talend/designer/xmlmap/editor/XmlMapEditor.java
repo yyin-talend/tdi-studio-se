@@ -39,6 +39,7 @@ import org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml;
 import org.talend.designer.xmlmap.editor.actions.SetGroupAction;
 import org.talend.designer.xmlmap.editor.actions.SetLoopAction;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
@@ -288,63 +289,66 @@ public class XmlMapEditor extends GraphicalEditor {
                     }
 
                 } else if (object instanceof TreeNodeEditPart) {
-                    ImportTreeFromXml importAction = (ImportTreeFromXml) getActionRegistry().getAction(ImportTreeFromXml.ID);
-                    importAction.setInput(true);
-                    importAction.update(object);
-                    if (importAction.isEnabled()) {
-                        menu.add(importAction);
-                    }
+                    TreeNode model = (TreeNode) ((TreeNodeEditPart) object).getModel();
+                    if (XmlMapUtil.DOCUMENT.equals(model.getType()) || XmlMapUtil.getXPathLength(model.getXpath()) > 2) {
+                        ImportTreeFromXml importAction = (ImportTreeFromXml) getActionRegistry().getAction(ImportTreeFromXml.ID);
+                        importAction.setInput(true);
+                        importAction.update(object);
+                        if (importAction.isEnabled()) {
+                            menu.add(importAction);
+                        }
 
-                    CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(
-                            CreateElementAction.ID);
-                    createElement.setInput(true);
-                    createElement.update(object);
-                    if (createElement.isEnabled()) {
-                        menu.add(createElement);
-                    }
+                        CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(
+                                CreateElementAction.ID);
+                        createElement.setInput(true);
+                        createElement.update(object);
+                        if (createElement.isEnabled()) {
+                            menu.add(createElement);
+                        }
 
-                    CreateAttributeAction createAttribute = (CreateAttributeAction) getActionRegistry().getAction(
-                            CreateAttributeAction.ID);
-                    createAttribute.setInput(true);
-                    createAttribute.update(object);
-                    if (createAttribute.isEnabled()) {
-                        menu.add(createAttribute);
-                    }
+                        CreateAttributeAction createAttribute = (CreateAttributeAction) getActionRegistry().getAction(
+                                CreateAttributeAction.ID);
+                        createAttribute.setInput(true);
+                        createAttribute.update(object);
+                        if (createAttribute.isEnabled()) {
+                            menu.add(createAttribute);
+                        }
 
-                    CreateNameSpaceAction createNameSpace = (CreateNameSpaceAction) getActionRegistry().getAction(
-                            CreateNameSpaceAction.ID);
-                    createNameSpace.setInput(true);
-                    createNameSpace.update(object);
-                    if (createNameSpace.isEnabled()) {
-                        menu.add(createNameSpace);
-                    }
+                        CreateNameSpaceAction createNameSpace = (CreateNameSpaceAction) getActionRegistry().getAction(
+                                CreateNameSpaceAction.ID);
+                        createNameSpace.setInput(true);
+                        createNameSpace.update(object);
+                        if (createNameSpace.isEnabled()) {
+                            menu.add(createNameSpace);
+                        }
 
-                    FixValueAction fixValueAction = (FixValueAction) getActionRegistry().getAction(FixValueAction.ID);
-                    fixValueAction.update(object);
-                    if (fixValueAction.isEnabled()) {
-                        menu.add(fixValueAction);
-                    }
+                        FixValueAction fixValueAction = (FixValueAction) getActionRegistry().getAction(FixValueAction.ID);
+                        fixValueAction.update(object);
+                        if (fixValueAction.isEnabled()) {
+                            menu.add(fixValueAction);
+                        }
 
-                    DeleteTreeNodeAction deleteAction = (DeleteTreeNodeAction) getActionRegistry().getAction(
-                            DeleteTreeNodeAction.ID);
-                    deleteAction.setInput(true);
-                    deleteAction.update(object);
-                    if (deleteAction.isEnabled()) {
-                        menu.add(deleteAction);
-                    }
+                        DeleteTreeNodeAction deleteAction = (DeleteTreeNodeAction) getActionRegistry().getAction(
+                                DeleteTreeNodeAction.ID);
+                        deleteAction.setInput(true);
+                        deleteAction.update(object);
+                        if (deleteAction.isEnabled()) {
+                            menu.add(deleteAction);
+                        }
 
-                    SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
-                    loopAction.update(object);
-                    if (loopAction.isEnabled()) {
-                        menu.add(loopAction);
-                    }
+                        SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
+                        loopAction.update(object);
+                        if (loopAction.isEnabled()) {
+                            menu.add(loopAction);
+                        }
 
-                    ImportTreeFromRepository importFromRepository = (ImportTreeFromRepository) getActionRegistry().getAction(
-                            ImportTreeFromRepository.ID);
-                    importFromRepository.setInput(true);
-                    importFromRepository.update(object);
-                    if (importFromRepository.isEnabled()) {
-                        menu.add(importFromRepository);
+                        ImportTreeFromRepository importFromRepository = (ImportTreeFromRepository) getActionRegistry().getAction(
+                                ImportTreeFromRepository.ID);
+                        importFromRepository.setInput(true);
+                        importFromRepository.update(object);
+                        if (importFromRepository.isEnabled()) {
+                            menu.add(importFromRepository);
+                        }
                     }
                 }
             }
