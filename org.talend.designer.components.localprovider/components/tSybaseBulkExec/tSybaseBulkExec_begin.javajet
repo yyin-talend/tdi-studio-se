@@ -35,6 +35,8 @@ String fieldTerminator = ElementParameterParser.getValue(node, "__FIELDS_TERMINA
 String rowTerminator =  ElementParameterParser.getValue(node, "__ROW_TERMINATOR__");
 String headRow =  ElementParameterParser.getValue(node, "__HEAD__");
 boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+boolean useInterfaceFile = ("true").equals(ElementParameterParser.getValue(node,"__USE_INTERFACE_FILE__"));
+String interfacefilename = ElementParameterParser.getValue(node, "__INTERFACE_FILE__");
 List<IMetadataColumn> columnList = getColumnList(node);
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
@@ -79,14 +81,31 @@ if(useExistingConnection) {
 	java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
 	<%
 } else {       
+	if(useInterfaceFile){
     %>
-    String db_<%=cid%> = <%=database%>;
-    String user_<%=cid%> = <%=user%>;
-    String pass_<%=cid%> = <%=pwd%>;
-<%	if(!"NONE".equals(tableAction)){%>
-		String host_<%=cid%> = <%=host%>;
-    	String port_<%=cid%> = <%=port%>;
-<%		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+    	java.io.File file_<%=cid%> = new java.io.File(<%=interfacefilename%>);
+		java.util.Properties properties_<%=cid%> = new java.util.Properties();
+		properties_<%=cid%>.load(new java.io.FileInputStream(file_<%=cid%>));
+		String db_<%=cid%> = properties_<%=cid%>.getProperty("database");
+		String user_<%=cid%> = properties_<%=cid%>.getProperty("username");
+		String pass_<%=cid%> = properties_<%=cid%>.getProperty("password");
+		dbschema_<%=cid%> = properties_<%=cid%>.getProperty("schema");
+		String host_<%=cid%> = properties_<%=cid%>.getProperty("host");
+<%	}
+	else{%>
+		 String db_<%=cid%> = <%=database%>;
+		 String user_<%=cid%> = <%=user%>;
+		 String pass_<%=cid%> = <%=pwd%>;
+		 String host_<%=cid%> = <%=host%>;
+<%	}
+	if(!"NONE".equals(tableAction)){
+		if(useInterfaceFile){%>
+			String port_<%=cid%> = properties_<%=cid%>.getProperty("port");
+<%		}	else{
+%>
+	    	String port_<%=cid%> = <%=port%>;
+<%      }
+		if(dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
 			String url_<%=cid %> = "jdbc:sybase:Tds:" + host_<%=cid%> + ":" + port_<%=cid%> + "/" + db_<%=cid%>;
 <%
@@ -163,8 +182,8 @@ if(headRow_<%=cid%> != null && headRow_<%=cid%>.trim().length() > 0) {
 command_<%=cid %>.append(" -t " + <%=fieldTerminator%>);
 command_<%=cid %>.append(" -r " + <%=rowTerminator%>);
 command_<%=cid %>.append(" -c -U " + user_<%=cid%> + " -P " + pass_<%=cid%>);
-
-<% if(server != null && server.trim().length() > 0) {%>
+<%
+if(server != null && !"\"\"".equals(server.trim()) && !("").equals(server.trim())) {%>
     command_<%=cid %>.append(" -S " + <%=server %>);
 <%}else{%>
 	command_<%=cid %>.append(" -S " + host_<%=cid %>);

@@ -66,7 +66,7 @@
       NUM_ROW="30"
       REQUIRED="false"
       REPOSITORY_VALUE="SERVER_NAME"
-      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and TABLE_ACTION != 'NONE')"
+      SHOW_IF="(USE_INTERFACE_FILE == 'false') and (USE_EXISTING_CONNECTION == 'false') and (TABLE_ACTION != 'NONE')"
     >
       <DEFAULT>"SYBASE_HOST"</DEFAULT>
     </PARAMETER>
@@ -76,7 +76,7 @@
       FIELD="TEXT"
       NUM_ROW="30"
       REPOSITORY_VALUE="PORT"
-      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and TABLE_ACTION != 'NONE')"
+      SHOW_IF="(USE_INTERFACE_FILE == 'false') and (USE_EXISTING_CONNECTION == 'false') and (TABLE_ACTION != 'NONE')"
     >
       <DEFAULT>"2648"</DEFAULT>
    </PARAMETER>
@@ -87,7 +87,7 @@
       NUM_ROW="30"
       REQUIRED="false"
       REPOSITORY_VALUE="SID"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (USE_INTERFACE_FILE == 'false')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -98,7 +98,7 @@
       NUM_ROW="40"
       REQUIRED="true"
       REPOSITORY_VALUE="USERNAME"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (USE_INTERFACE_FILE == 'false')"
     >
       <DEFAULT>"sa"</DEFAULT>
     </PARAMETER>
@@ -109,7 +109,7 @@
       NUM_ROW="40"
       REQUIRED="true"
       REPOSITORY_VALUE="PASSWORD"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (USE_INTERFACE_FILE == 'false')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -120,7 +120,7 @@
       NUM_ROW="40"
       REPOSITORY_VALUE="SCHEMA"
       REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (USE_INTERFACE_FILE == 'false')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -185,6 +185,25 @@
 		<DEFAULT>Warning : this component configuration will automatically generate a commit before bulk insert</DEFAULT>
 	</PARAMETER>	
 
+ 	<PARAMETER
+      NAME="USE_INTERFACE_FILE"
+      FIELD="CHECK"
+      NUM_ROW="65"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+  	<PARAMETER
+      NAME="INTERFACE_FILE"
+      FIELD="FILE"
+      NUM_ROW="65"
+      REQUIRED="true"
+      NOT_SHOW_IF="(USE_INTERFACE_FILE == 'false') or (USE_EXISTING_CONNECTION == 'true')"
+    >
+      <DEFAULT>"C:\interface_file.Properties"</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
