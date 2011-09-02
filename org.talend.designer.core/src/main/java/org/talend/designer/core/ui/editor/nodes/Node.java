@@ -229,6 +229,8 @@ public class Node extends Element implements IGraphicalNode {
 
     private String index;
 
+    private Boolean takeSchema = null;
+
     /**
      * Getter for index.
      * 
@@ -236,6 +238,15 @@ public class Node extends Element implements IGraphicalNode {
      */
     public String getIndex() {
         return this.index;
+    }
+
+    /**
+     * Sets the takeSchema.
+     * 
+     * @param takeSchema the takeSchema to set
+     */
+    public void setTakeSchema(Boolean takeSchema) {
+        this.takeSchema = takeSchema;
     }
 
     /**
@@ -1037,7 +1048,7 @@ public class Node extends Element implements IGraphicalNode {
             } else {
                 mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
             }
-            Boolean takeSchema = null;
+
             if (insertSet) {
                 return;
             }
