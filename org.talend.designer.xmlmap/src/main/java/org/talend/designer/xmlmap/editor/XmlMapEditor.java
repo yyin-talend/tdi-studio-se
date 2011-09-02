@@ -319,6 +319,12 @@ public class XmlMapEditor extends GraphicalEditor {
                         menu.add(createNameSpace);
                     }
 
+                    FixValueAction fixValueAction = (FixValueAction) getActionRegistry().getAction(FixValueAction.ID);
+                    fixValueAction.update(object);
+                    if (fixValueAction.isEnabled()) {
+                        menu.add(fixValueAction);
+                    }
+
                     DeleteTreeNodeAction deleteAction = (DeleteTreeNodeAction) getActionRegistry().getAction(
                             DeleteTreeNodeAction.ID);
                     deleteAction.setInput(true);

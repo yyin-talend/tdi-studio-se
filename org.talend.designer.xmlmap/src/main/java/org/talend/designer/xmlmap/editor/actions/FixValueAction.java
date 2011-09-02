@@ -35,7 +35,7 @@ public class FixValueAction extends SelectionAction {
     public FixValueAction(IWorkbenchPart part) {
         super(part);
         setId(ID);
-        setText("Set A Fixed Prefix");
+        setText("Set A Fixed Value");
     }
 
     @Override
@@ -54,7 +54,7 @@ public class FixValueAction extends SelectionAction {
 
             };
 
-            InputDialog dialog = new InputDialog(null, "Input a fix prefix", "Input the default value' valid label",
+            InputDialog dialog = new InputDialog(null, "Input a fix value", "Input a valid default value",
                     selectedNode.getDefaultValue(), validator);
             if (dialog.open() == Window.OK) {
                 selectedNode.setDefaultValue(dialog.getValue());
