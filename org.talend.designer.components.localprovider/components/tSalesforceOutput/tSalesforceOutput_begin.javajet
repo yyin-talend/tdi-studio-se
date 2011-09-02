@@ -23,6 +23,7 @@ imports="
 	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
+	String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
 	// if the extended insert is disabled set the commit level to 1
 	if (!extendedInsert) commitLevel = "1";
 %>       
@@ -32,13 +33,19 @@ imports="
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
         org.talend.salesforce.SforceManagement sforceManagement_<%=cid %> = new org.talend.salesforce.SforceManagementImpl();
         <%if(useExistingConn){%>
-        if(globalMap.get("stub_<%=connection %>")==null || globalMap.get("sessionHeader_<%=connection%>")==null){
-			throw new RuntimeException("Get null connection from <%=connection %>");
-		}
-		sforceManagement_<%=cid%>.login((com.salesforce.soap.partner.SforceServiceStub)globalMap.get("stub_<%=connection %>"),(com.salesforce.soap.partner.SessionHeader)globalMap.get("sessionHeader_<%=connection%>"), <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);	
+	        if(globalMap.get("stub_<%=connection %>")==null || globalMap.get("sessionHeader_<%=connection%>")==null){
+				throw new RuntimeException("Get null connection from <%=connection %>");
+			}
+			if(globalMap.get("callOptions_<%=connection %>")!=null ){
+				sfMgr_<%=cid%>.setCallOptions((com.salesforce.soap.partner.CallOptions)globalMap.get("callOptions_<%=connection %>"));
+			}
+			sforceManagement_<%=cid%>.login((com.salesforce.soap.partner.SforceServiceStub)globalMap.get("stub_<%=connection %>"),(com.salesforce.soap.partner.SessionHeader)globalMap.get("sessionHeader_<%=connection%>"), <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);	
 		<%}else{%>
-        boolean result_<%=cid%> = sforceManagement_<%=cid %>.login(<%=endpoint %>,<%=username %>, <%=password %>,<%=timeout%>,<%=needCompression%>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);
-        if(!result_<%=cid%>){
-			throw new RuntimeException("Login failed! Please check the username,password and endpoint");
-		}
+			<%if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){%>
+				sfMgr_<%=cid%>.setClientID(<%=clientID%>);
+			<%}%>
+	        boolean result_<%=cid%> = sforceManagement_<%=cid %>.login(<%=endpoint %>,<%=username %>, <%=password %>,<%=timeout%>,<%=needCompression%>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);
+	        if(!result_<%=cid%>){
+				throw new RuntimeException("Login failed! Please check the username,password and endpoint");
+			}
         <%}%>

@@ -33,6 +33,7 @@ String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__"
 
 boolean bulkConnection = ("true").equals(ElementParameterParser.getValue(node,"__BULK_CONNECTION__"));
 String apiVersion = ElementParameterParser.getValue(node,"__API_VERSION__");
+String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
 if(bulkConnection){
 %>
 	org.talend.salesforceBulk.SalesforceBulkAPI sforceBulk_<%=cid%> = new org.talend.salesforceBulk.SalesforceBulkAPI();
@@ -57,7 +58,10 @@ if(bulkConnection){
 
 
 	org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
-
+	<%if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){%>
+	sfMgr_<%=cid%>.setClientID(<%=clientID%>);
+	globalMap.put("callOptions_<%=cid %>", sfMgr_<%=cid%>.getCallOptions());
+	<%}%>
 	boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
 	if(!result_<%=cid%>){
 		throw new RuntimeException("Login failed! Please check the username,password and endpoint");
@@ -65,6 +69,7 @@ if(bulkConnection){
 	
 	globalMap.put("stub_<%=cid %>", sfMgr_<%=cid%>.getStub());
 	globalMap.put("sessionHeader_<%=cid %>", sfMgr_<%=cid%>.getSessionHeader());
+	
 <%}%>			
 			
 

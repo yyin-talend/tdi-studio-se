@@ -64,7 +64,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 			String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
-%>
+			String clientID = ElementParameterParser.getValue(node,"__CLIENT_ID__");
+			%>
 			java.text.SimpleDateFormat startdf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             java.text.SimpleDateFormat enddf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
@@ -77,18 +78,24 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	        
 	        org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
 			<%if(useExistingConn){%>
-			if(globalMap.get("stub_<%=connection %>")==null || globalMap.get("sessionHeader_<%=connection%>")==null){
-				throw new RuntimeException("Get null connection from <%=connection %>");
-			}
-			sfMgr_<%=cid%>.login((com.salesforce.soap.partner.SforceServiceStub)globalMap.get("stub_<%=connection %>"),(com.salesforce.soap.partner.SessionHeader)globalMap.get("sessionHeader_<%=connection%>"));
+				if(globalMap.get("stub_<%=connection %>")==null || globalMap.get("sessionHeader_<%=connection%>")==null){
+					throw new RuntimeException("Get null connection from <%=connection %>");
+				}
+				if(globalMap.get("callOptions_<%=connection %>")!=null ){
+					sfMgr_<%=cid%>.setCallOptions((com.salesforce.soap.partner.CallOptions)globalMap.get("callOptions_<%=connection %>"));
+				}
+				sfMgr_<%=cid%>.login((com.salesforce.soap.partner.SforceServiceStub)globalMap.get("stub_<%=connection %>"),(com.salesforce.soap.partner.SessionHeader)globalMap.get("sessionHeader_<%=connection%>"));
 			<%}else{%>
-			boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
-			if(!result_<%=cid%>){
-				throw new RuntimeException("Login failed! Please check the username,password and endpoint");
-			}
-	        <%}%>
+				<%if(clientID!=null && !"".equals(clientID) && !"\"\"".equals(clientID)){%>
+					sfMgr_<%=cid%>.setClientID(<%=clientID%>);
+				<%}%>
+				boolean result_<%=cid%> = sfMgr_<%=cid%>.login(<%=endpoint%>,<%=username%>, <%=password%>,<%=timeout%>,<%=needCompression%>);
+				if(!result_<%=cid%>){
+					throw new RuntimeException("Login failed! Please check the username,password and endpoint");
+				}
+		        <%}%>
         	
-<%
+			<%
 			java.lang.StringBuilder sb = new java.lang.StringBuilder();
 			for (IMetadataColumn column: columnList){
 				if(sb.length() == 0){
@@ -101,7 +108,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
-%>				
+			%>				
 			com.salesforce.soap.partner.GetDeletedResult gdr_<%=cid%> = sfMgr_<%=cid%>.getDeleted("<%=module%>", startCal_<%=cid%>, endCal_<%=cid%>);
     		com.salesforce.soap.partner.QueryResult qr_<%=cid%> = null;
     		com.salesforce.soap.partner.DeletedRecord[] drs_<%=cid%> = gdr_<%=cid%>.getDeletedRecords();

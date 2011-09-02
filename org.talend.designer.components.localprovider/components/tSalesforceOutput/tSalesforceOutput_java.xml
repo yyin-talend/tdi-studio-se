@@ -3341,7 +3341,15 @@
 	        <COLUMN NAME="errorFields" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
 	        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
 	      </TABLE>
-	    </PARAMETER>    
+	    </PARAMETER>
+	    
+	    <PARAMETER 
+			NAME="CLIENT_ID" 
+			FIELD="TEXT"
+			NUM_ROW="100" 
+			SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+			<DEFAULT>""</DEFAULT>
+		</PARAMETER>    
 	</ADVANCED_PARAMETERS>
 
 	<CODEGENERATION>
