@@ -154,9 +154,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
                         true /* isExportAsOSGI */, progressMonitor);
                 neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
-                        processItem.getProperty().getId(), jobVersion));
+                        processItem.getProperty().getId() + "-osgi", jobVersion));
             } else {
-                LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId(),
+                LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId() + "-osgi",
                         processItem.getProperty().getVersion(), neededLibraries);
                 LastGenerationInfo.getInstance().setLastMainJob(null);
             }
