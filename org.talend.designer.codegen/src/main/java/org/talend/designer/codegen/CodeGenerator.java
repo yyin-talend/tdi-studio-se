@@ -272,11 +272,12 @@ public class CodeGenerator implements ICodeGenerator {
                             generateHeaders = false;
                         }
 
-                        if ("cMessagingEndpoint".equals(subTree.getRootNode().getSubProcessStartNode(true).getComponent()
-                                .getName())) {
+                        //Fix bug TESB-2951 Generated Codes error when Route starts with cFile/cFTP/cActiveMQ/cFTP/cJMS LiXiaopeng 2011-09-05
+                        String startNodeName = subTree.getRootNode().getSubProcessStartNode(true).getComponent().getName();
+                        if ("cMessagingEndpoint".equals(startNodeName) || "cFile".equals(startNodeName) || "cAvtiveMQ".equals(startNodeName) || "cFTP".equals(startNodeName)
+                                || "cJMS".equals(startNodeName) || "cCXF".equals(startNodeName)) {
                             nodeSubTreeList.add(subTree);
-                        } else if ("cContextConfig".equals(subTree.getRootNode().getSubProcessStartNode(true).getComponent()
-                                .getName())) {
+                        } else if ("cContextConfig".equals(startNodeName)) {
                             //Customized remove the cContextConfig routeId codes. TESB-2825 LiXP 20110823
                             //Do nothing.
                         } 
