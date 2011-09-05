@@ -1337,6 +1337,13 @@
               id="org.talend.repository.model.migration.ChangeAS400DBVersionMigrationTask"
               name="Change AS400 DBVersion">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.MigratetFileOutputDelimitedAndtFileInputDelimitedMigrationTask"
+              description="for bug TDI13497"
+              id="org.talend.repository.model.migration.MigratetFileOutputDelimitedAndtFileInputDelimitedMigrationTask"
+              name="MigratetFileOutputDelimitedAndtFileInputDelimitedMigrationTask">
+        </projecttask>
    </extension>
    
    <extension
