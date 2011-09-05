@@ -445,7 +445,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		limit="-1";
     	}
     	String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");     	
-    	String rowSeparator1 = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
+    	String rowSeparator1 = ElementParameterParser.getValue(node, "__CSVROWSEPARATOR__");
     	
     	
     	String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
