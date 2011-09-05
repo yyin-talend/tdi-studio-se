@@ -735,6 +735,22 @@ public class Connection extends Element implements IConnection, IPerformance {
                 labelText += " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             updateName = true;
+        } else if (getLineStyle().equals(EConnectionType.ROUTE)/* if there are more than one ROUTE connections exist
+                                                                * then show the orders of them
+                                                                * &&
+                                                                * (!sourceNodeConnector.getLinkName().equals(name
+                                                                * ))
+                                                                */) {
+            if (getUniqueName() != null) {
+                String linkName = getUniqueName();
+                labelText = linkName;
+                this.setName(linkName);
+            }
+            //labelText = labelText + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            if (outputId >= 0) {
+                labelText += " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            updateName = true;
         } else if (getLineStyle().equals(EConnectionType.ITERATE)) {
             IElementParameter enableParam = this.getElementParameter(ENABLE_PARALLEL);
             IElementParameter numberParam = this.getElementParameter(NUMBER_PARALLEL);
@@ -754,7 +770,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 labelText = linkName + " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             updateName = true;
-        } else if (getLineStyle().equals(EConnectionType.ROUTE) || getLineStyle().equals(EConnectionType.ROUTE_ENDBLOCK)
+        } else if (getLineStyle().equals(EConnectionType.ROUTE_ENDBLOCK)
                 || getLineStyle().equals(EConnectionType.ROUTE_TRY) || getLineStyle().equals(EConnectionType.ROUTE_FINALLY)
                 || getLineStyle().equals(EConnectionType.ROUTE_OTHER)) {
             String linkName = sourceNodeConnector.getLinkName();
