@@ -8,7 +8,6 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.Vector
 		java.util.List
-		java.util.Map
 	"
 %>
 <%
@@ -20,31 +19,10 @@
 %>
 
 		}
-			});
-						
-			getCamelContexts().get(0).start();
-
-<%
-			if(stats) {
-%>			
-
-			CamelStat runStat = new CamelStat(getCamelContexts().get(0));
-						
-			runStat.setParams();
-			
-			runStat.openSocket(true);
-			runStat.setAllPID(rootPid, fatherPid, pid, jobName);
-			runStat.startThreadStat(clientHost, portStats);
-			runStat.updateStatOnJob(RunStat.JOBSTART, "");
-			
-			MyStatThread statsThread = new MyStatThread(runStat);
-			statsThread.run();
-<%
-			} //if stats
-%>
-
-			
-		}
+			};
+			getCamelContexts().get(0).addRoutes(routeBuilder);
+		}	
+		
 
 		protected void doStop() throws Exception {
 			super.doStop();
@@ -143,7 +121,10 @@
 	}
 	
 	CamelImpl camelImplementation = new CamelImpl();
-	camelImplementation.enableHangupSupport();
-	camelImplementation.run();
+	if(start){
+		camelImplementation.enableHangupSupport();
+		camelImplementation.run();
+	}
+	return routeBuilder;
 	
 }

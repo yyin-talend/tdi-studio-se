@@ -5,6 +5,7 @@
 		org.talend.core.model.process.INode
 		org.talend.core.model.process.IConnection 
 		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.process.IElementParameter
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.runprocess.CodeGeneratorRoutine
@@ -20,6 +21,9 @@
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.utils.NodeUtil
 		org.talend.core.model.utils.JavaResourcesHelper
+		java.util.Map
+		java.io.UnsupportedEncodingException
+    	java.net.URLEncoder
 	"
 	class="Header" 
 %>
@@ -100,6 +104,9 @@ import java.util.Comparator;
 	public Integer errorCode = null;
 	private String currentComponent = "";
 	
+	public <%=process.getName()%>(){
+		initUriMap();
+	}
 	
 <%
 	boolean startable = false;	
@@ -120,7 +127,398 @@ import java.util.Comparator;
 <%
 	}
 %>
+	private org.apache.camel.builder.RouteBuilder routeBuilder;
+
+	private java.util.Map<String, String> uriMap; 
 	
+	public java.util.Map<String,String> getUriMap(){
+		return this.uriMap;
+	}
+	
+	public void loadCustomUriMap(java.util.Map<String,String> newMap){
+		if(newMap == null){
+			return;
+		}
+		for(java.util.Map.Entry<String, String> entry: newMap.entrySet()){
+			uriMap.put(entry.getKey(), entry.getValue());
+		}
+	}
+	
+	protected void initUriMap(){
+		uriMap = new java.util.HashMap<String, String>();
+<%
+String cid = "";
+String componentName = "";
+String uri = "";
+for(INode node:(List< ? extends INode>)process.getGraphicalNodes())
+{
+   	IElementParameter param = node.getElementParameter("LABEL");
+   	if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
+   		cid = (String)param.getValue();	
+   	}else{
+   		cid = node.getUniqueName();
+   	}
+	componentName = node.getComponent().getName();
+	uri = "";
+	if("cMessagingEndpoint".equals(componentName)){
+		uri = ElementParameterParser.getValue(node, "__URI__");
+	}else if("cFile".equals(componentName)){
+		String filePath = ElementParameterParser.getValue(node, "__URI__");
+	    if (filePath.startsWith("\"")) {
+	        filePath = filePath.substring(1);
+	    }
+	    if (filePath.endsWith("\"")) {
+	        filePath = filePath.substring(0, filePath.length() - 1);
+	    }
+	    
+	
+	    String noop = ElementParameterParser.getValue(node, "__NOOP__");
+	    String flatten = ElementParameterParser.getValue(node, "__FLATTEN__");
+	    String bufferSize = ElementParameterParser.getValue(node, "__BUFFER_SIZE__");
+	    String autoCreate = ElementParameterParser.getValue(node, "__AUTOCREATE__");
+	    String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+	    String charset = ElementParameterParser.getValue(node, "__ENCODING__");
+	    
+	    if (fileName.startsWith("\"")) {
+	        fileName = fileName.substring(1);
+	    }
+	    if (fileName.endsWith("\"")) {
+	        fileName = fileName.substring(0, fileName.length() - 1);
+	    }
+	    
+	    if (bufferSize.startsWith("\"")) {
+	        bufferSize = bufferSize.substring(1);
+	    }
+	    if (bufferSize.endsWith("\"")) {
+	        bufferSize = bufferSize.substring(0, bufferSize.length() - 1);
+	    }
+	
+	    if (charset.startsWith("\"")) {
+	        charset = charset.substring(1);
+	    }
+	    if (charset.endsWith("\"")) {
+	        charset = charset.substring(0, charset.length() - 1);
+	    }
+	
+	    StringBuffer arguments = new StringBuffer();
+	
+	    uri = "\"file:///" + filePath;
+	
+	    if ("true".equals(noop)) {
+	        arguments.append("noop=true");
+	    } else {
+	        arguments.append("noop=false");
+	    }
+	
+	    if ("false".equals(autoCreate)) {// default true, ignore.
+	        arguments.append("&autoCreate=false");
+	    }
+	    
+	    if ("true".equals(flatten)) {// default false, ignore.
+	        arguments.append("&flatten=true");
+	    }
+	
+	    if (fileName != null && fileName.length() > 0) {
+	        arguments.append("&fileName=" + fileName);
+	    }
+	    
+	    if (charset != null && charset.length() > 0) {
+	        arguments.append("&charset=" + charset);
+	    }
+	    
+	    if (bufferSize != null && bufferSize.length() > 0) {
+	        arguments.append("&bufferSize=" + bufferSize);
+	    }
+	
+	    List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node,
+	            "__ADVARGUMENTS__");
+	    for (Map<String, String> map : tableValues) {
+	        String argName = map.get("NAME");
+	        String argValue = map.get("VALUE");
+	
+	        if (argValue.startsWith("\"")) {
+	            argValue = argValue.substring(1);
+	        }
+	        if (argValue.endsWith("\"")) {
+	            argValue = argValue.substring(0, argValue.length() - 1);
+	        }
+	
+	        if (argName.startsWith("\"")) {
+	            argName = argName.substring(1);
+	        }
+	        if (argName.endsWith("\"")) {
+	            argName = argName.substring(0, argName.length() - 1);
+	        }
+	        
+	        argName = argName.trim();
+	        
+	        try {
+	             argValue =  URLEncoder.encode(argValue,"UTF-8");
+	        } catch (UnsupportedEncodingException e) {
+	        
+	        }
+	        
+	        arguments.append("&" + argName + "=" + argValue);
+	    }
+	
+	    if (arguments.length() > 0) {
+	        uri = uri + "?" + arguments.toString() + "\"";
+	    } else {
+	        uri = uri + "\"";
+	    }
+	}else if("cActiveMQ".equals(componentName)){
+		String name = node.getUniqueName().replaceAll("_","");
+	    String type = ElementParameterParser.getValue(node, "__TYPE__");
+	    String destination = ElementParameterParser.getValue(node, "__DESTINATION__").trim();
+	    boolean hasOptions = false;
+	
+	    StringBuffer sb = new StringBuffer();
+	    sb.append("\"");
+	    sb.append(name);
+	    sb.append(":");
+	    sb.append(type);
+	    sb.append(":");
+	    sb.append(destination);
+	   
+	    List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node,
+	            "__URI_OPTIONS__");
+	    for (Map<String, String> map : tableValues) {
+	        String argName = map.get("NAME").trim();
+	        String argValue = map.get("VALUE").trim();
+	
+	        if (argValue.startsWith("\"")) {
+	            argValue = argValue.substring(1);
+	        }
+	        if (argValue.endsWith("\"")) {
+	            argValue = argValue.substring(0, argValue.length() - 1);
+	        }
+	
+	        if (argName.startsWith("\"")) {
+	            argName = argName.substring(1);
+	        }
+	        if (argName.endsWith("\"")) {
+	            argName = argName.substring(0, argName.length() - 1);
+	        }
+	        if (!hasOptions) {
+	            sb.append("?" + argName + "=" + argValue);
+	            hasOptions = true;
+	        } else {
+	            sb.append("&" + argName + "=" + argValue);
+	        }
+	    }
+	    sb.append("\"");
+	    uri = sb.toString();
+	}else if("cCXF".equals(componentName)){
+		String url = ElementParameterParser.getValue(node,"__ADDRESS__").trim();
+		String serviceType = ElementParameterParser.getValue(node, "__SERVICE_TYPE__");
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("\"cxf://");
+		sb.append(url);
+		sb.append("?");
+		
+		sb.append(serviceType);
+		sb.append("=");
+		if("wsdlURL".equals(serviceType)){
+			sb.append("file:///");
+			String filePath = ElementParameterParser.getValue(node, "__WSDL_FILE__");
+			if(filePath.startsWith("\"")){
+				filePath = filePath.substring(1);
+			}
+			if(filePath.endsWith("\"")){
+				filePath = filePath.substring(0,filePath.length()-1);
+			}
+			filePath.replaceAll("\\\\","/");
+			try{
+				sb.append(URLEncoder.encode(filePath,"UTF-8"));
+			}catch(Exception e){
+				sb.append(filePath);
+			}
+		}else {
+			sb.append(ElementParameterParser.getValue(node, "__SERVICE_CLASS__"));
+		}
+		
+		sb.append("&");
+		String dataformat = ElementParameterParser.getValue(node, "__DATAFORMAT__");
+		sb.append("dataFormat=");
+		sb.append(dataformat);
+		
+		String specifyService = ElementParameterParser.getValue(node, "__SPECIFY_SERVICE__");
+		if("true".equals(specifyService)){
+			sb.append("&serviceName=");
+			sb.append(ElementParameterParser.getValue(node, "__SERVICE_NAME__").trim());
+			sb.append("&portName=");
+			sb.append(ElementParameterParser.getValue(node, "__PORT_NAME__").trim());
+		}
+		
+		List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node,
+	            "__ADVARGUMENTS__");
+	    for (Map<String, String> map : tableValues) {
+	        String argName = map.get("NAME").trim();
+	        String argValue = map.get("VALUE").trim();
+	        if (argName.startsWith("\"")) {
+	            argName = argName.substring(1);
+	        }
+	        if (argName.endsWith("\"")) {
+	            argName = argName.substring(0, argName.length() - 1);
+	        }
+	        if (argValue.startsWith("\"")) {
+	            argValue = argValue.substring(1);
+	        }
+	        if (argValue.endsWith("\"")) {
+	            argValue = argValue.substring(0, argValue.length() - 1);
+	        }
+	        try{
+				argValue = URLEncoder.encode(argValue,"UTF-8");
+				sb.append("&" + argName + "=" + argValue);
+			}catch(Exception e){
+				sb.append("&" + argName + "=" + argValue);
+			}
+	    }
+		sb.append("\"");
+		uri = sb.toString();
+	}else if("cFTP".equals(componentName)){
+		String type = ElementParameterParser.getValue(node, "__TYPE__");
+	    String username = ElementParameterParser.getValue(node, "__USERNAME__");
+	    String server = ElementParameterParser.getValue(node, "__SERVER__");
+	    String port = ElementParameterParser.getValue(node, "__PORT__");
+	    String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+	    String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
+	
+	    if (directory.startsWith("\"")) {
+	        directory = directory.substring(1);
+	    }
+	    if (directory.endsWith("\"")) {
+	        directory = directory.substring(0, directory.length() - 1);
+	    }
+	
+	    if (port.startsWith("\"")) {
+	        port = port.substring(1);
+	    }
+	    if (port.endsWith("\"")) {
+	        port = port.substring(0, port.length() - 1);
+	    }
+	
+	    StringBuffer fragments = new StringBuffer();
+	    fragments.append("\"");
+	    fragments.append(type);
+	    fragments.append("://");
+	
+	    if (username.trim().length() > 0) {
+	        fragments.append(username.trim());
+	        fragments.append("@");
+	    }
+	
+	    fragments.append(server.trim());
+	
+	    if (port.trim().length() > 0) {
+	        fragments.append(":");
+	        fragments.append(port.trim());
+	    }
+	
+	    if (directory.trim().length() > 0) {
+	        fragments.append("/");
+	        fragments.append(directory.trim());
+	    }
+	
+	    boolean hasArg = false;
+	    if (password.trim().length() > 0) {
+	        hasArg = true;
+	        fragments.append("?");
+	        fragments.append("password=" + password);
+	    }
+	
+	    List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node,
+	            "__ADVARGUMENTS__");
+	    for (Map<String, String> map : tableValues) {
+	        String argName = map.get("NAME");
+	        String argValue = map.get("VALUE");
+	
+	        if (argValue.startsWith("\"")) {
+	            argValue = argValue.substring(1);
+	        }
+	        if (argValue.endsWith("\"")) {
+	            argValue = argValue.substring(0, argValue.length() - 1);
+	        }
+	
+	        if (argName.startsWith("\"")) {
+	            argName = argName.substring(1);
+	        }
+	        if (argName.endsWith("\"")) {
+	            argName = argName.substring(0, argName.length() - 1);
+	        }
+	
+	        argName = argName.trim();
+	
+	        try {
+	            argValue = URLEncoder.encode(argValue, "UTF-8");
+	        } catch (UnsupportedEncodingException e) {
+	
+	        }
+	
+	        if (hasArg) {
+	            fragments.append("&" + argName + "=" + argValue);
+	        } else {
+	            fragments.append("?" + argName + "=" + argValue);
+	            hasArg = true;
+	        }
+	
+	    }
+	    uri = fragments.toString() + "\"";
+	}else if("cJMS".equals(componentName)){
+		String name = ElementParameterParser.getValue(node, "__NAME__").trim();
+	    name += ElementParameterParser.getValue(node, "__SUBFIX__").trim();
+	    String type = ElementParameterParser.getValue(node, "__TYPE__");
+	    String destination = ElementParameterParser.getValue(node, "__DESTINATION__").trim();
+	
+	    boolean hasOptions = false;
+	
+	    StringBuffer sb = new StringBuffer();
+	    sb.append("\"");
+	    sb.append(name);
+	    sb.append(":");
+	    sb.append(type);
+	    sb.append(":");
+	    sb.append(destination);
+	   
+	
+	    List<Map<String, String>> tableValues = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node,
+	            "__URI_OPTIONS__");
+	    for (Map<String, String> map : tableValues) {
+	        String argName = map.get("NAME").trim();
+	        String argValue = map.get("VALUE").trim();
+	
+	        if (argValue.startsWith("\"")) {
+	            argValue = argValue.substring(1);
+	        }
+	        if (argValue.endsWith("\"")) {
+	            argValue = argValue.substring(0, argValue.length() - 1);
+	        }
+	
+	        if (argName.startsWith("\"")) {
+	            argName = argName.substring(1);
+	        }
+	        if (argName.endsWith("\"")) {
+	            argName = argName.substring(0, argName.length() - 1);
+	        }
+	        if (!hasOptions) {
+	            sb.append("?" + argName + "=" + argValue);
+	            hasOptions = true;
+	        } else {
+	            sb.append("&" + argName + "=" + argValue);
+	        }
+	    }
+	    
+	    sb.append("\"");
+	    uri = sb.toString();
+	}else{
+		continue;
+	}
+		%>uriMap.put("<%=cid%>", <%=uri%>);<%
+}
+	%>
+		}
+
 	private java.util.Properties defaultProps = new java.util.Properties();
 	
 	public class ContextProperties extends java.util.Properties {

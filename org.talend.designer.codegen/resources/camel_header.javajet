@@ -47,6 +47,12 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 	protected CamelImpl instance;
 
 	public CamelImpl() {
+		try {
+			postProcessContext();
+			initRoute();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -66,8 +72,6 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 		notifier.setIgnoreCamelContextEvents(true);
 		notifier.setIgnoreRouteEvents(true);
 		notifier.setIgnoreServiceEvents(true);
-		
-		postProcessContext();
 		
 		getCamelContexts().get(0).getManagementStrategy().addEventNotifier(notifier);
 
@@ -101,9 +105,34 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 			method.invoke(sysloader, new Object[] { new java.io.File(jarFile).toURL() });
 		}
 	}
+	
+			getCamelContexts().get(0).start();
 
-		getCamelContexts().get(0).addRoutes(new org.apache.camel.builder.RouteBuilder() {
-			public void configure() throws Exception {
+<%
+
+			if(stats) {
+%>			
+
+			CamelStat runStat = new CamelStat(getCamelContexts().get(0));
+						
+			runStat.setParams();
+			
+			runStat.openSocket(true);
+			runStat.setAllPID(rootPid, fatherPid, pid, jobName);
+			runStat.startThreadStat(clientHost, portStats);
+			runStat.updateStatOnJob(RunStat.JOBSTART, "");
+			
+			MyStatThread statsThread = new MyStatThread(runStat);
+			statsThread.run();
+<%
+			} //if stats
+%>
+			
+		}
+		
+		public void initRoute() throws Exception {
+			routeBuilder = new org.apache.camel.builder.RouteBuilder() {
+				public void configure() throws Exception {
 <%	
 	for (INode node : processNodes) {
 		if (node.isActivate()) {
@@ -130,7 +159,7 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 							repo_<%=node.getUniqueName() %>.setMaximumRedeliveries(<%=maximumRedeliveries%>);
 							repo_<%=node.getUniqueName() %>.setDeadLetterUri(<%=deadLetterUri%>);
 							repo_<%=node.getUniqueName() %>.setRecoveryInterval(<%=recoveryInterval%>);
-<%
+<% 
 						}
 					} else if("HAWTDB".equals(repository)) {
 						boolean usePersistentFile = "true".equals(ElementParameterParser.getValue(node, "__USE_PERSISTENT_FILE__"));
