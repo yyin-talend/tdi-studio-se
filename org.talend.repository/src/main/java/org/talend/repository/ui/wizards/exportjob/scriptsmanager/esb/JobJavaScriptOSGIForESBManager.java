@@ -296,7 +296,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     protected Manifest getManifest(ExportFileResource libResource, List<ProcessItem> itemToBeExport) throws IOException {
-        boolean updateBundleClassPath = true;
         Manifest manifest = new Manifest();
         Attributes a = manifest.getMainAttributes();
         a.put(Attributes.Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
@@ -329,12 +328,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 /* need to fill bundle depedence informations for every component,feature 0023460 */
                 String requiredBundles = caculateDependenciesBundles(pi);
                 if (requiredBundles != null && !"".equals(requiredBundles)) {
-                    updateBundleClassPath = false;
                     a.put(new Attributes.Name("Require-Bundle"), requiredBundles);
                 }
             }
         }
-        if (updateBundleClassPath) {
+        if (!libResource.getAllResources().isEmpty()) {
             a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
         }
         a.put(new Attributes.Name("Export-Service"), "routines.system.api.TalendJob;name=" + jobName + ";type=" + itemType); //$NON-NLS-1$
@@ -361,7 +359,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         int index = 0;
         for (String segment : segments) {
             if (index != segments.size() - 1) {
-                segment = segment + ",\n";
+                segment = segment + ",";
             }
             requiredBundles.append(segment);
             index++;
