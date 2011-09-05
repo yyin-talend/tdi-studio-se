@@ -82,8 +82,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static final String OSGI_INF = "OSGI-INF"; //$NON-NLS-1$
 
-    private String packageName;
-
     private String jobName;
 
     private String jobClassName;
@@ -121,11 +119,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             itemToBeExport.add(processItem);
             jobName = processItem.getProperty().getLabel();
-            packageName = JavaResourcesHelper.getProjectFolderName(processItem)
-                    + PACKAGE_SEPARATOR
-                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
-                            .getVersion());
-            jobClassName = packageName + PACKAGE_SEPARATOR + jobName;
+            jobClassName = getPackageName(processItem) + PACKAGE_SEPARATOR + jobName;
 
             jobVersion = processItem.getProperty().getVersion();
             if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
@@ -167,24 +161,25 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             // dynamic db xml mapping
             addXmlMapping(process[i], isOptionChoosed(exportChoice, ExportChoice.needSourceCode));
 
+            List<String> esbFiles = generateESBFiles(process[i].getItem(), contextName);
+
+            List<URL> urlList = new ArrayList<URL>();
+            try {
+                for (String file : esbFiles) {
+                    urlList.add(new File(file).toURL());
+                }
+            } catch (MalformedURLException e) {
+                ExceptionHandler.process(e);
+                logger.error(e);
+            }
+            osgiResource.addResources(getOSGIInfFolder(), urlList);
+
+
         }
 
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(true, process, neededLibraries);
         libResource.addResources(talendLibraries);
-
-        List<String> esbFiles = generateESBFiles(process[0].getItem(), contextName);
-
-        List<URL> urlList = new ArrayList<URL>();
-        try {
-            for (String file : esbFiles) {
-                urlList.add(new File(file).toURL());
-            }
-        } catch (MalformedURLException e) {
-            ExceptionHandler.process(e);
-            logger.error(e);
-        }
-        osgiResource.addResources(getOSGIInfFolder(), urlList);
 
         // Gets system routines
         List<URL> systemRoutineList = getSystemRoutine(process, true);
@@ -199,6 +194,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         return list;
     }
+
+	private String getPackageName(ProcessItem processItem) {
+		return JavaResourcesHelper.getProjectFolderName(processItem)
+		        + PACKAGE_SEPARATOR
+		        + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
+		                .getVersion());
+	}
 
     protected List<String> generateESBFiles(Item processItem, String contextName) {
         List<String> files = new ArrayList<String>();
@@ -264,7 +266,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         FileOutputStream fos = null;
         try {
-            Manifest manifest = getManifest(libResource, itemToBeExport);
+            Manifest manifest = getManifest(libResource, itemToBeExport, jobName);
             fos = new FileOutputStream(manifestPath);
             manifest.write(fos);
         } catch (FileNotFoundException e1) {
@@ -295,15 +297,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return metaInfoResource;
     }
 
-    protected Manifest getManifest(ExportFileResource libResource, List<ProcessItem> itemToBeExport) throws IOException {
+    protected Manifest getManifest(ExportFileResource libResource, List<ProcessItem> itemToBeExport, String bundleName) throws IOException {
         Manifest manifest = new Manifest();
         Attributes a = manifest.getMainAttributes();
         a.put(Attributes.Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
-        a.put(new Attributes.Name("Bundle-Name"), jobName); //$NON-NLS-1$
-        a.put(new Attributes.Name("Bundle-SymbolicName"), jobName); //$NON-NLS-1$
+        a.put(new Attributes.Name("Bundle-Name"), bundleName); //$NON-NLS-1$
+        a.put(new Attributes.Name("Bundle-SymbolicName"), bundleName); //$NON-NLS-1$
         a.put(new Attributes.Name("Bundle-Version"), jobVersion); //$NON-NLS-1$
         a.put(new Attributes.Name("Bundle-ManifestVersion"), "2"); //$NON-NLS-1$ //$NON-NLS-2$
-        a.put(new Attributes.Name("Export-Package"), packageName); //$NON-NLS-1$
+        StringBuilder sb = new StringBuilder();
+        String delim = "";
+        for (ProcessItem pi : itemToBeExport) {
+			sb.append(delim).append(getPackageName(pi));
+            delim = ",";
+        }
+        a.put(new Attributes.Name("Export-Package"), sb.toString()); //$NON-NLS-1$
         if (ROUTE.equals(itemType)) {
             a.put(new Attributes.Name("Require-Bundle"), "org.apache.camel.camel-core");
             a.put(new Attributes.Name("Import-Package"), "javax.xml.bind,org.apache.camel;version=\"[2.7,3)\",org.apache.camel.builder;" + //$NON-NLS-1$
@@ -335,7 +343,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (!libResource.getAllResources().isEmpty()) {
             a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
         }
-        a.put(new Attributes.Name("Export-Service"), "routines.system.api.TalendJob;name=" + jobName + ";type=" + itemType); //$NON-NLS-1$
+        a.put(new Attributes.Name("Export-Service"), "routines.system.api.TalendJob;name=" + bundleName + ";type=" + itemType); //$NON-NLS-1$
 
         return manifest;
     }
