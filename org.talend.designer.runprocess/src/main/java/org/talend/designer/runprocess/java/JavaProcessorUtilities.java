@@ -47,7 +47,7 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.IRepositoryBundleService;
+import org.talend.core.ILibraryManagerService;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.ModuleNeeded;
@@ -227,7 +227,7 @@ public class JavaProcessorUtilities {
     public static void updateLibrariesAndClasspath(IProcess process) {
         try {
             Set<String> neededLibraries = getNeededLibrariesForProcess(process);
-            IRepositoryBundleService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
+            ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
 
             // Update libraries of java project.
             File libDir = getJavaProjectLibFolder();
