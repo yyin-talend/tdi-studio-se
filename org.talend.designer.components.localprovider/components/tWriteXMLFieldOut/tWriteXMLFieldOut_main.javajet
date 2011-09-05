@@ -613,6 +613,10 @@ if(("Dom4j").equals(mode)){
 			for(int i_<%=cid %>=0;i_<%=cid %><orders_<%=cid %>.length;i_<%=cid %>++){
 				orders_<%=cid %>[i_<%=cid %>] = 0;
 			}
+			
+			if(groupbyList_<%=cid%> != null && groupbyList_<%=cid%>.size() >= 0){
+				groupbyList_<%=cid%>.clear();
+			}
 			strCompCache_<%=cid %>=strTemp_<%=cid %>;
 <%
 		if(inputKeysColumns.size() !=0){
