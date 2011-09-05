@@ -67,6 +67,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.ITisLocalProviderService;
 import org.talend.designer.core.ITisLocalProviderService.ResClassLoader;
@@ -605,7 +606,13 @@ public class ComponentsFactory implements IComponentsFactory {
             }
 
         };
-        BundleContext context = Platform.getProduct().getDefiningBundle().getBundleContext();
+        BundleContext context = null;
+        if (Platform.getProduct() != null) {
+            context = Platform.getProduct().getDefiningBundle().getBundleContext();
+        } else {
+            context = CodeGeneratorActivator.getDefault().getBundle().getBundleContext();
+        }
+        // BundleContext context = Platform.getProduct().getDefiningBundle().getBundleContext();
         // if (context == null) {
         // context = CodeGeneratorActivator.getDefault().getBundle().getBundleContext();
         // }
@@ -1132,13 +1139,14 @@ public class ComponentsFactory implements IComponentsFactory {
         loadComponentsFromExtensions();
     }
 
-    public List<File> getComponentsProvidersFolder() {
-        List<File> list = new ArrayList<File>();
+    public Map<String, File> getComponentsProvidersFolder() {
+        Map<String, File> list = new HashMap<String, File>();
 
         ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
         for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
             try {
-                list.add(componentsProvider.getInstallationFolder());
+                // list.add(componentsProvider.getInstallationFolder());
+                list.put(componentsProvider.getContributer(), componentsProvider.getInstallationFolder());
             } catch (IOException e) {
                 ExceptionHandler.process(e);
                 continue;

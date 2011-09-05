@@ -59,6 +59,7 @@ public final class ComponentsProviderManager {
             for (IConfigurationElement configurationElement : configurationElements) {
                 String id = configurationElement.getAttribute("id"); //$NON-NLS-1$
                 String folderName = configurationElement.getAttribute("folderName"); //$NON-NLS-1$
+                String contributerName = configurationElement.getContributor().getName();
                 IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                         IBrandingService.class);
                 if (!brandingService.isPoweredOnlyCamel()
@@ -70,6 +71,7 @@ public final class ComponentsProviderManager {
                             .createExecutableExtension("class"); //$NON-NLS-1$
                     componentsProvider.setId(id);
                     componentsProvider.setFolderName(folderName);
+                    componentsProvider.setContributer(contributerName);
                     providers.add(componentsProvider);
                 } catch (CoreException e) {
                     log.error(Messages.getString("ComponentsProviderManager.unableLoad") + id, e); //$NON-NLS-1$
