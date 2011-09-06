@@ -14,6 +14,7 @@ package org.talend.repository.ui.actions;
 
 import java.util.List;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -24,11 +25,13 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.preference.ExportJobTokenCollector;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizard;
 
 /**
@@ -91,5 +94,10 @@ public class ExportJobScriptAction extends AContextualAction {
         workbench.saveAllEditors(true);
         dialog.setPageSize(830, 450);
         dialog.open();
+
+        // collector
+        IPreferenceStore preferenceStore = RepositoryPlugin.getDefault().getPreferenceStore();
+        int num = preferenceStore.getInt(ExportJobTokenCollector.NUM_JOB_EXPORT.getPrefKey());
+        preferenceStore.setValue(ExportJobTokenCollector.NUM_JOB_EXPORT.getPrefKey(), num + 1);
     }
 }

@@ -133,4 +133,12 @@
           id="org.talend.designer.runprocess.java.javaCompilationParticipant">
     </compilationParticipant>
  </extension>
+ <extension
+       point="org.talend.core.runtime.tokenInfo_provider">
+    <provider
+          collector="org.talend.designer.runprocess.prefs.RunProcessTokenCollector"
+          id="org.talend.designer.runprocess.tokenProvider"
+          name="RunProcess">
+    </provider>
+ </extension>
 </plugin>

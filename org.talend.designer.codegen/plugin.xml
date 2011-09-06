@@ -74,5 +74,13 @@
             class="org.talend.designer.codegen.components.ui.ComponentPreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.talend.core.runtime.tokenInfo_provider">
+      <provider
+            collector="org.talend.designer.codegen.components.model.UserComponentsTokenCollector"
+            id="org.talend.designer.codegen.UserComponentsprovider"
+            name="UserComponents">
+      </provider>
+   </extension>
    
 </plugin>

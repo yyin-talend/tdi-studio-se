@@ -120,6 +120,7 @@ import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.RunprocessConstants;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
+import org.talend.designer.runprocess.prefs.RunProcessTokenCollector;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
 import org.talend.designer.runprocess.ui.views.ProcessView;
@@ -623,6 +624,11 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
         ILaunch[] launches = manager.getLaunches();
         manager.removeLaunches(launches);
+
+        // trace debug to collect when tos
+        IPreferenceStore preferenceStore = RunProcessPlugin.getDefault().getPreferenceStore();
+        int num = preferenceStore.getInt(RunProcessTokenCollector.NUM_DEBUG_RUN.getPrefKey());
+        preferenceStore.setValue(RunProcessTokenCollector.NUM_DEBUG_RUN.getPrefKey(), num + 1);
     }
 
     protected static RunProcessContext getProcessContext() {
@@ -991,6 +997,9 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, false);
 
         preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, false);
+        // java debug to collect when tos
+        int num = RunProcessPlugin.getDefault().getPreferenceStore().getInt(RunProcessTokenCollector.NUM_DEBUG_RUN.getPrefKey());
+        RunProcessPlugin.getDefault().getPreferenceStore().setValue(RunProcessTokenCollector.NUM_DEBUG_RUN.getPrefKey(), num + 1);
 
         checkSaveBeforeRunSelection();
 

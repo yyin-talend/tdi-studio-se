@@ -1318,6 +1318,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
         ILaunch[] launches = manager.getLaunches();
         manager.removeLaunches(launches);
+
     }
 
     public void kill() {

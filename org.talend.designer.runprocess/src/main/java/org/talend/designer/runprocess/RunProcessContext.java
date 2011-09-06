@@ -38,6 +38,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -60,6 +61,7 @@ import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.data.TraceData;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
+import org.talend.designer.runprocess.prefs.RunProcessTokenCollector;
 import org.talend.designer.runprocess.ui.ProcessContextComposite;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
@@ -428,6 +430,12 @@ public class RunProcessContext {
         checkTraces();
 
         if (ProcessContextComposite.promptConfirmLauch(shell, getSelectedContext(), process)) {
+            if (getSelectedTargetExecutionConfig() == null || !getSelectedTargetExecutionConfig().isRemote()) {
+                // tos run to collect
+                IPreferenceStore preferenceStore = RunProcessPlugin.getDefault().getPreferenceStore();
+                int num = preferenceStore.getInt(RunProcessTokenCollector.NUM_RUN.getPrefKey());
+                preferenceStore.setValue(RunProcessTokenCollector.NUM_RUN.getPrefKey(), num + 1);
+            }
 
             ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
             clearPerfAction.setProcess(process);

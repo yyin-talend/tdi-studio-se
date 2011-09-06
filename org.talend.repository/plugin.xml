@@ -1581,5 +1581,19 @@
             name="Archive File">
       </wizard>
    </extension>
+   <extension
+         point="org.talend.core.runtime.tokenInfo_provider">
+      <provider
+            collector="org.talend.repository.preference.ExportJobTokenCollector"
+            id="org.talend.repository.exportjob.tokenProvider"
+            name="Export Job">
+      </provider>
+      <provider
+            collector="org.talend.repository.preference.TosTokenCollector"
+            description="for job, context, metadatas"
+            id="org.talend.repository.tosProvider"
+            name="TOS">
+      </provider>
+   </extension>
 
 </plugin>
