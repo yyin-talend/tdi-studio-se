@@ -47,7 +47,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%				
 					} else if(javaType == JavaTypesManager.FLOAT || javaType == JavaTypesManager.DOUBLE) {
 %>
-								String.format("%1.<%=column.getPrecision() %>f",<%=conn.getName() %>.<%=column.getLabel() %>)
+								String.format(java.util.Locale.ENGLISH,"%1.<%=column.getPrecision() %>f",<%=conn.getName() %>.<%=column.getLabel() %>)
 <%				
 					} else {
 %>
