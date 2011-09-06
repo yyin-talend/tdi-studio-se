@@ -1759,7 +1759,7 @@ public class EmfComponent extends AbstractComponent {
             int nbCustom = 0;
             for (int i = 0; i < xmlColumnList.size(); i++) {
                 xmlColumn = (COLUMNType) xmlColumnList.get(i);
-                System.out.println(xmlColumn.getNAME());
+
                 talendColumn = new MetadataColumn();
                 talendColumn.setLabel(xmlColumn.getNAME());
                 talendColumn.setOriginalDbColumnName(xmlColumn.getNAME());
