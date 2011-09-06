@@ -47,10 +47,27 @@ String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__D
 
 String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
 boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
+boolean ignoreDTD="true".equals(ElementParameterParser.getValue(node, "__IGNORE_DTD__"));
 
 String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
 %>
 int nb_line_<%=cid%> = 0;
+
+<%
+      if(ignoreDTD){
+%>
+class IgnoreDTDEntityResolver_<%=cid%> implements org.xml.sax.EntityResolver {
+
+ public org.xml.sax.InputSource resolveEntity(String publicId, String systemId)
+   throws org.xml.sax.SAXException, java.io.IOException {
+        return new org.xml.sax.InputSource(new java.io.ByteArrayInputStream("<?xml version='1.0' encoding='UTF-8'?>".getBytes()));
+ }
+
+}
+<%
+	}
+%>
+
 <%
 // *** Xerces *** //
 if(("Xerces").equals(mode)){
@@ -297,6 +314,13 @@ contentTool_<%=cid %>.field_separator=<%=fieldSeparator %>;
 XML_API_<%=cid%> xml_api_<%=cid%> = new XML_API_<%=cid%>();
 xml_api_<%=cid%>.loopPath=<%=loopQuery%>;
 org.apache.xerces.parsers.DOMParser parser_<%=cid%> = new org.apache.xerces.parsers.DOMParser();
+<%
+      if(ignoreDTD){
+%>
+parser_<%=cid%>.setEntityResolver(new IgnoreDTDEntityResolver_<%=cid%>());
+<%
+      }
+%>
 parser_<%=cid%>.setProperty("http://apache.org/xml/properties/dom/document-class-name",
         "org.apache.xerces.dom.PSVIDocumentImpl");
 parser_<%=cid%>.setFeature("http://xml.org/sax/features/validation", true);
@@ -527,6 +551,13 @@ class XML_API_<%=cid%>{
 %>
 
 org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
+<%
+      if(ignoreDTD){
+%>
+reader_<%=cid %>.setEntityResolver(new IgnoreDTDEntityResolver_<%=cid%>());
+<%
+      }
+%>
 Object filename_<%=cid %> = null;
 try {
 	filename_<%=cid %> = <%=filename %>;
@@ -668,6 +699,9 @@ boolean[] asXMLs_<%=cid%> = new boolean[]{
 String str_<%=cid %> = "";
 String[] node_<%=cid%> = null;
 org.talend.xml.sax.SAXLooper looper_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=loopQuery%>,queryPaths_<%=cid%>,asXMLs_<%=cid%>);
+<%if(ignoreDTD){%>
+looper_<%=cid%>.setIgnoreDTD(true);
+<%}%>
 looper_<%=cid%>.setEncoding(<%=encoding %>);
 Object filename_<%=cid %> = null;
 try {

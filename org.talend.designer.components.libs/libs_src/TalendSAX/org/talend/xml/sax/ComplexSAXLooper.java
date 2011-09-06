@@ -47,6 +47,8 @@ public class ComplexSAXLooper implements ISAXLooper {
     private LoopEntry entry;
 
     private SAXLoopCompositeHandler result;
+    
+    private boolean ignoreDTD=false;
 
     /**
      * DOC xzhang SAXLooper constructor comment.
@@ -135,7 +137,14 @@ public class ComplexSAXLooper implements ISAXLooper {
         this.charset = charset;
         try {
             DefaultHandler hd = null;
-            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+            SAXParser saxParser = null;
+            if(!ignoreDTD) { //orginal code
+            	saxParser = SAXParserFactory.newInstance().newSAXParser();
+            } else {
+	            SAXParserFactory spf = SAXParserFactory.newInstance();
+	            spf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+				saxParser = spf.newSAXParser();
+            }
             if (rootPath == null || rootPath.equals("")) {
                 hd = newHandler();
             } else {
@@ -484,4 +493,10 @@ public class ComplexSAXLooper implements ISAXLooper {
             e.printStackTrace();
         }
     }
+
+	public void setIgnoreDTD(boolean ignoreDTD) {
+		
+		this.ignoreDTD=ignoreDTD;
+		
+	}
 }

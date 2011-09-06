@@ -36,6 +36,8 @@ List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterPa
 
 String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
 
+boolean ignoreDTD="true".equals(ElementParameterParser.getValue(node, "__IGNORE_DTD__"));
+
 String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false; 
 
@@ -243,8 +245,20 @@ class XML_API_<%=cid %>{
         return false;
     }
 }
+<%
+      if(ignoreDTD){
+%>
+class IgnoreDTDEntityResolver implements org.xml.sax.EntityResolver {
 
+ public org.xml.sax.InputSource resolveEntity(String publicId, String systemId)
+   throws org.xml.sax.SAXException, java.io.IOException {
+        return new org.xml.sax.InputSource(new java.io.ByteArrayInputStream("<?xml version='1.0' encoding='UTF-8'?>".getBytes()));
+ }
 
+}
+<%
+      }
+%>
 String rootpath_<%=cid %> = <%=rootpath %>;
 if(rootpath_<%=cid %>.endsWith("/")){
 	rootpath_<%=cid %> = rootpath_<%=cid %>.substring(0,rootpath_<%=cid %>.length()-1);
@@ -273,7 +287,13 @@ if(rootpath_<%=cid %>.endsWith("/")){
 %>
 
 org.dom4j.io.SAXReader reader_<%=cid %> = new org.dom4j.io.SAXReader();
-
+<%
+      if(ignoreDTD){
+%>
+reader_<%=cid %>.setEntityResolver(new IgnoreDTDEntityResolver());
+<%
+      }
+%>
 org.dom4j.Document doc_<%=cid %>= reader_<%=cid %>.read(new java.io.File(<%=filename %>).toURI().toString());
 
 NameSpaceTool_<%=cid %> nsTool_<%=cid %> = new NameSpaceTool_<%=cid %>();
@@ -395,6 +415,9 @@ String str_<%=cid %> = "";
 String[] node_<%=cid%> = null;
 boolean isSingleNode_<%=cid %> = true;
 org.talend.xml.sax.SAXLooper looper_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=rootpath%>,arrLoop_<%=cid %>,arrQuery_<%=cid %>);
+<%if(ignoreDTD){%>
+looper_<%=cid%>.setIgnoreDTD(true);
+<%}%>
 looper_<%=cid%>.setEncoding(<%=encoding %>);
 looper_<%=cid%>.parse(<%=filename %>);
 	java.util.Iterator<java.util.Map<String, java.util.Map<String,String>>> it_<%=cid %>  = looper_<%=cid %>.multiIterator();

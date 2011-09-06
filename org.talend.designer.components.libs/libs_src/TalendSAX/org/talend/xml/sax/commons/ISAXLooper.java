@@ -27,4 +27,6 @@ public interface ISAXLooper {
     public Iterator<Map<String, String>> iterator();
 
     public Iterator<Map<String, Map<String, String>>> multiIterator();
+    
+    public void setIgnoreDTD(boolean ignoreDTD);
 }

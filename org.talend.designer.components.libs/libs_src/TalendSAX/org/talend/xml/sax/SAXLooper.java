@@ -140,6 +140,10 @@ public class SAXLooper {
     public java.util.Iterator<java.util.Map<String, java.util.Map<String, String>>> multiIterator() {
         return looper.multiIterator();
     }
+    
+	public void setIgnoreDTD(boolean ignoreDTD) {
+		this.looper.setIgnoreDTD(ignoreDTD);		
+	}
 
     /**
      * handle the exception in task.

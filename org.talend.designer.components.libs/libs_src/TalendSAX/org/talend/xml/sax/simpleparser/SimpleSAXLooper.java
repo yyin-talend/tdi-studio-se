@@ -38,6 +38,8 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
     
     private FutureTask futureTask;
     
+    private boolean ignoreDTD = false;
+    
     public SimpleSAXLooper(String loopPath, String[] nodePaths, boolean[] asXMLs) {
     	futureTask = new FutureTask(this);
     	task = new Thread(futureTask);
@@ -112,7 +114,14 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
     public Object call() throws Exception {
 		try {
             DefaultHandler hd = new SimpleSAXLoopHandler(nodes, bcache);
-            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+            SAXParser saxParser = null;
+            if(!ignoreDTD) { //orginal code
+            	saxParser = SAXParserFactory.newInstance().newSAXParser();
+            } else {
+	            SAXParserFactory spf = SAXParserFactory.newInstance();
+	            spf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+				saxParser = spf.newSAXParser();
+            }
             if (fileURL != null) {
                 org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(
                         new java.io.FileInputStream(fileURL));
@@ -186,5 +195,11 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
         // TODO Auto-generated method stub
         return null;
     }
+
+	public void setIgnoreDTD(boolean ignoreDTD) {
+		
+		this.ignoreDTD=ignoreDTD;
+		
+	}
 
 }
