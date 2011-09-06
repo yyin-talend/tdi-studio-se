@@ -2154,7 +2154,9 @@ public class Node extends Element implements IGraphicalNode {
                 if (paramValue.startsWith("\"") && paramValue.endsWith("\"")) {
                     tmpValue = paramValue.replaceAll("\"", "");
                 } else {
-                    tmpValue = paramValue;
+                    // tmpValue = paramValue;
+                    // don't count if don't start with "
+                    continue;
                 }
                 String factor = "\\\\\\\\";
                 Pattern pattern = Pattern.compile(factor);

@@ -31,7 +31,7 @@ public class FileOutputDelimitedNode extends ShadowNode {
         TextElementParameter param0 = new TextElementParameter("CSV_OPTION", "true"); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param1 = new TextElementParameter("FILENAME", filename); //$NON-NLS-1$
         TextElementParameter param2 = new TextElementParameter("ENCODING", encoding); //$NON-NLS-1$
-        TextElementParameter param3 = new TextElementParameter("ROWSEPARATOR", "\"\\n\""); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param3 = new TextElementParameter("CSVROWSEPARATOR", "\"\\n\""); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param4 = new TextElementParameter("FIELDSEPARATOR", TalendTextUtils.addQuotes(";")); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param5 = new TextElementParameter("LIMIT", ""); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param6 = new TextElementParameter("HEADER", ""); //$NON-NLS-1$ //$NON-NLS-2$

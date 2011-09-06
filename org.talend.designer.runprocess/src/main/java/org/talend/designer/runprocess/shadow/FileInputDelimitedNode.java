@@ -72,9 +72,11 @@ public class FileInputDelimitedNode extends FileInputNode {
                 int max = 0;
                 try {
 
-                    max = FileInputDelimited.getMaxColumnCount(trimParameter(filename), trimParameter(encoding),
-                            trimParameter(StringUtils.loadConvert(fieldSep, languageName)), trimParameter(StringUtils
-                                    .loadConvert(rowSep, languageName)), true, spitRecord, headerRows, limitRows);
+                    max = FileInputDelimited
+                            .getMaxColumnCount(trimParameter(filename), trimParameter(encoding),
+                                    trimParameter(StringUtils.loadConvert(fieldSep, languageName)),
+                                    trimParameter(StringUtils.loadConvert(rowSep, languageName)), true, spitRecord, headerRows,
+                                    limitRows);
 
                 } catch (IOException e) {
                     // e.printStackTrace();
@@ -148,8 +150,15 @@ public class FileInputDelimitedNode extends FileInputNode {
             break;
         }
 
-        String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-                "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW", "ENCODING", "CSV_OPTION", "SPLITRECORD" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        String[] paramNames = null;
+
+        if (!csvoption) {
+            paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                    "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW", "ENCODING", "CSV_OPTION", "SPLITRECORD" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        } else {
+            paramNames = new String[] { "FILENAME", "CSVROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                    "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW", "ENCODING", "CSV_OPTION", "SPLITRECORD" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        }
         String[] paramValues = new String[] { filename, rowSep, fieldSep, Integer.toString(limitRows),
                 Integer.toString(headerRows), Integer.toString(footerRows), escapeChar, textEnclosure,
                 Boolean.toString(removeEmptyRow), encoding, Boolean.toString(csvoption), Boolean.toString(spitRecord) };
