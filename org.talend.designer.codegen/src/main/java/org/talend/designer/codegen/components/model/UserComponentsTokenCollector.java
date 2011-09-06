@@ -30,9 +30,9 @@ import us.monoid.json.JSONObject;
  */
 public class UserComponentsTokenCollector extends AbstractTokenCollector {
 
-    private static final TokenKey NUM_USER_COMPONENTS = new TokenKey("userComponents"); //$NON-NLS-1$
+    private static final TokenKey TOS_COUNT_USER_COMPONENTS = new TokenKey("tos.count.usercomponents"); //$NON-NLS-1$
 
-    private static final TokenKey USER_COMPONENT_NAMES = new TokenKey("userComponentNames"); //$NON-NLS-1$
+    private static final TokenKey TOS_COUNT_USER_COMPONENT_NAMES = new TokenKey("tos.count.usercomponentnames"); //$NON-NLS-1$
 
     /**
      * ggu UserComponentTokenCollector constructor comment.
@@ -53,8 +53,8 @@ public class UserComponentsTokenCollector extends AbstractTokenCollector {
                 }
             }
         }
-        propertiesObject.put(NUM_USER_COMPONENTS.getKey(), customComponentsArray.length());
-        propertiesObject.put(USER_COMPONENT_NAMES.getKey(), customComponentsArray);
+        propertiesObject.put(TOS_COUNT_USER_COMPONENTS.getKey(), customComponentsArray.length());
+        propertiesObject.put(TOS_COUNT_USER_COMPONENT_NAMES.getKey(), customComponentsArray);
     }
 
 }

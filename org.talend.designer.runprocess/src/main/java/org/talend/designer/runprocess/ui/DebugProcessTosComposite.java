@@ -627,8 +627,8 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
         // trace debug to collect when tos
         IPreferenceStore preferenceStore = RunProcessPlugin.getDefault().getPreferenceStore();
-        int num = preferenceStore.getInt(RunProcessTokenCollector.NUM_DEBUG_RUN.getPrefKey());
-        preferenceStore.setValue(RunProcessTokenCollector.NUM_DEBUG_RUN.getPrefKey(), num + 1);
+        int num = preferenceStore.getInt(RunProcessTokenCollector.TOS_COUNT_DEBUG_RUNS.getPrefKey());
+        preferenceStore.setValue(RunProcessTokenCollector.TOS_COUNT_DEBUG_RUNS.getPrefKey(), num + 1);
     }
 
     protected static RunProcessContext getProcessContext() {
@@ -998,8 +998,10 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
         preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, false);
         // java debug to collect when tos
-        int num = RunProcessPlugin.getDefault().getPreferenceStore().getInt(RunProcessTokenCollector.NUM_DEBUG_RUN.getPrefKey());
-        RunProcessPlugin.getDefault().getPreferenceStore().setValue(RunProcessTokenCollector.NUM_DEBUG_RUN.getPrefKey(), num + 1);
+        int num = RunProcessPlugin.getDefault().getPreferenceStore()
+                .getInt(RunProcessTokenCollector.TOS_COUNT_DEBUG_RUNS.getPrefKey());
+        RunProcessPlugin.getDefault().getPreferenceStore()
+                .setValue(RunProcessTokenCollector.TOS_COUNT_DEBUG_RUNS.getPrefKey(), num + 1);
 
         checkSaveBeforeRunSelection();
 

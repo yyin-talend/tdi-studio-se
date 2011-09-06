@@ -24,9 +24,9 @@ import us.monoid.json.JSONObject;
  */
 public class RunProcessTokenCollector extends AbstractTokenCollector {
 
-    public static final PrefTokenKey NUM_RUN = new PrefTokenKey("runs", "times_run"); //$NON-NLS-1$  //$NON-NLS-2$
+    public static final PrefTokenKey TOS_COUNT_RUNS = new PrefTokenKey("tos.count.runs", "tos_count_runs"); //$NON-NLS-1$  //$NON-NLS-2$
 
-    public static final PrefTokenKey NUM_DEBUG_RUN = new PrefTokenKey("debugRuns", "times_debug_run"); //$NON-NLS-1$  //$NON-NLS-2$
+    public static final PrefTokenKey TOS_COUNT_DEBUG_RUNS = new PrefTokenKey("tos.count.debugRuns", "tos_count_debug_runs"); //$NON-NLS-1$  //$NON-NLS-2$
 
     /**
      * ggu RunProcessTokenCollector constructor comment.
@@ -37,11 +37,11 @@ public class RunProcessTokenCollector extends AbstractTokenCollector {
     @Override
     protected void collectProperties(JSONObject propertiesObject) throws Exception {
         IPreferenceStore preferenceStore = RunProcessPlugin.getDefault().getPreferenceStore();
-        int numRun = preferenceStore.getInt(NUM_RUN.getPrefKey());
-        propertiesObject.put(NUM_RUN.getKey(), numRun);
+        int numRun = preferenceStore.getInt(TOS_COUNT_RUNS.getPrefKey());
+        propertiesObject.put(TOS_COUNT_RUNS.getKey(), numRun);
 
-        int numDebugRun = preferenceStore.getInt(NUM_DEBUG_RUN.getPrefKey());
-        propertiesObject.put(NUM_DEBUG_RUN.getKey(), numDebugRun);
+        int numDebugRun = preferenceStore.getInt(TOS_COUNT_DEBUG_RUNS.getPrefKey());
+        propertiesObject.put(TOS_COUNT_DEBUG_RUNS.getKey(), numDebugRun);
     }
 
 }

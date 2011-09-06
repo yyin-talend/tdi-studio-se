@@ -433,8 +433,8 @@ public class RunProcessContext {
             if (getSelectedTargetExecutionConfig() == null || !getSelectedTargetExecutionConfig().isRemote()) {
                 // tos run to collect
                 IPreferenceStore preferenceStore = RunProcessPlugin.getDefault().getPreferenceStore();
-                int num = preferenceStore.getInt(RunProcessTokenCollector.NUM_RUN.getPrefKey());
-                preferenceStore.setValue(RunProcessTokenCollector.NUM_RUN.getPrefKey(), num + 1);
+                int num = preferenceStore.getInt(RunProcessTokenCollector.TOS_COUNT_RUNS.getPrefKey());
+                preferenceStore.setValue(RunProcessTokenCollector.TOS_COUNT_RUNS.getPrefKey(), num + 1);
             }
 
             ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();

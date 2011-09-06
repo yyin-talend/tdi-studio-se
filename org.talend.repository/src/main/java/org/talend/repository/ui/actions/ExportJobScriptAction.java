@@ -97,7 +97,7 @@ public class ExportJobScriptAction extends AContextualAction {
 
         // collector
         IPreferenceStore preferenceStore = RepositoryPlugin.getDefault().getPreferenceStore();
-        int num = preferenceStore.getInt(ExportJobTokenCollector.NUM_JOB_EXPORT.getPrefKey());
-        preferenceStore.setValue(ExportJobTokenCollector.NUM_JOB_EXPORT.getPrefKey(), num + 1);
+        int num = preferenceStore.getInt(ExportJobTokenCollector.TOS_COUNT_JOB_EXPORTS.getPrefKey());
+        preferenceStore.setValue(ExportJobTokenCollector.TOS_COUNT_JOB_EXPORTS.getPrefKey(), num + 1);
     }
 }

@@ -23,7 +23,7 @@ import us.monoid.json.JSONObject;
  */
 public class ExportJobTokenCollector extends AbstractTokenCollector {
 
-    public static final PrefTokenKey NUM_JOB_EXPORT = new PrefTokenKey("jobExports", "times_job_export"); //$NON-NLS-1$ //$NON-NLS-2$
+    public static final PrefTokenKey TOS_COUNT_JOB_EXPORTS = new PrefTokenKey("tos.count.jobexports", "tos_count_job_exports"); //$NON-NLS-1$ //$NON-NLS-2$
 
     /**
      * ggu ExportJobTokenCollector constructor comment.
@@ -33,8 +33,8 @@ public class ExportJobTokenCollector extends AbstractTokenCollector {
 
     @Override
     protected void collectProperties(JSONObject propertiesObject) throws Exception {
-        int num = RepositoryPlugin.getDefault().getPreferenceStore().getInt(NUM_JOB_EXPORT.getPrefKey());
-        propertiesObject.put(NUM_JOB_EXPORT.getKey(), num);
+        int num = RepositoryPlugin.getDefault().getPreferenceStore().getInt(TOS_COUNT_JOB_EXPORTS.getPrefKey());
+        propertiesObject.put(TOS_COUNT_JOB_EXPORTS.getKey(), num);
     }
 
 }
