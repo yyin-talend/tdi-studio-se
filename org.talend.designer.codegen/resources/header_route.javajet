@@ -377,7 +377,7 @@ for(INode node:(List< ? extends INode>)process.getGraphicalNodes())
 	    }
 		sb.append("\"");
 		uri = sb.toString();
-	}else if("cFTP".equals(componentName)){
+	}else if("cFtp".equals(componentName)){
 		String type = ElementParameterParser.getValue(node, "__TYPE__");
 	    String username = ElementParameterParser.getValue(node, "__USERNAME__");
 	    String server = ElementParameterParser.getValue(node, "__SERVER__");
