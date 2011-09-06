@@ -63,8 +63,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         out<%=cid%>.write(<%=fieldSeparator%>);
         
         String aggOut<%=cid%> = (String)aggregation<%=cid%>.get(group_Keys_Split<%=cid%>[i]);
-        
-        int gap<%=cid%> = aggOut<%=cid%>.split(<%=fieldSeparator%>).length - pivot_Keys<%=cid%>.split(<%=fieldSeparator%>).length;
+
+        int gap<%=cid%> = routines.system.StringUtils.splitNotRegex(aggOut<%=cid%>,<%=fieldSeparator%>).length - routines.system.StringUtils.splitNotRegex(pivot_Keys<%=cid%>,<%=fieldSeparator%>).length;
         
         if(gap<%=cid%> < 0){
         
@@ -91,7 +91,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
     <%}else{%>  ////////////////////////////////   CSV    /////////    
 
-    int rowSize<%=cid%> = pivot_Keys<%=cid%>.split(<%=fieldSeparator%>).length + <%=groupbys.size()%>;
+    int rowSize<%=cid%> = routines.system.StringUtils.splitNotRegex(pivot_Keys<%=cid%>,<%=fieldSeparator%>).length + <%=groupbys.size()%>;
     
     String[] finalStr<%=cid%> = new String[rowSize<%=cid%>];
 
@@ -120,8 +120,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     for(int i = 0;group_Keys_Split<%=cid%>!=null && i<group_Keys_Split<%=cid%>.length;i++){
         
         finalStr<%=cid%> = new String[rowSize<%=cid%>];
-        
-        String[] gkSplit<%=cid%> = group_Keys_Split<%=cid%>[i].split(<%=fieldSeparator%>);
+
+        String[] gkSplit<%=cid%> = routines.system.StringUtils.splitNotRegex(group_Keys_Split<%=cid%>[i],<%=fieldSeparator%>);
         
 <%  for (int i=0; i<groupbys.size(); i++) {
             
@@ -133,8 +133,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%  }  %>
         
         String aggOut<%=cid%> = (String)aggregation<%=cid%>.get(group_Keys_Split<%=cid%>[i]);
-        
-        String[] aggSplit<%=cid%> = aggOut<%=cid%>.split(<%=fieldSeparator%>);    
+
+        String[] aggSplit<%=cid%> = routines.system.StringUtils.splitNotRegex(aggOut<%=cid%>,<%=fieldSeparator%>);    
         
   for (int j=0; j<aggSplit<%=cid%>.length; j++) {
 

@@ -78,7 +78,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
              		}
 %>                   
     //pivot key  
-    pivot_Keys_Split<%=cid%> = pivot_Keys<%=cid%>.split(<%=fieldSeparator%>);
+    pivot_Keys_Split<%=cid%> = routines.system.StringUtils.splitNotRegex(pivot_Keys<%=cid%>,<%=fieldSeparator%>);
     
     pivot_Exists<%=cid%> = false;
     
@@ -104,7 +104,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         pivot_Keys<%=cid%> = pivot_Keys<%=cid%> + pivot_Key<%=cid%>.append(<%=inConnName%>.<%=pivotColumn%>).toString() + <%=fieldSeparator%>;
         
-        pivot_Keys_Split<%=cid%> = pivot_Keys<%=cid%>.split(<%=fieldSeparator%>);
+        pivot_Keys_Split<%=cid%> = routines.system.StringUtils.splitNotRegex(pivot_Keys<%=cid%>,<%=fieldSeparator%>);
         
         pivotNum<%=cid%> = pivot_Keys_Split<%=cid%>.length;
         
@@ -113,7 +113,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     
     //group key
 
-    group_Keys_Split<%=cid%> = group_Keys<%=cid%>.split(<%=rowSeparator%>);
+    group_Keys_Split<%=cid%> = routines.system.StringUtils.splitNotRegex(group_Keys<%=cid%>,<%=rowSeparator%>);
     
     group_Exists<%=cid%> = false;
     
@@ -154,7 +154,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         group_Keys<%=cid%> = group_Keys<%=cid%> + gKvalue<%=cid%> + <%=rowSeparator%>;
         
-        group_Keys_Split<%=cid%> = group_Keys<%=cid%>.split(<%=rowSeparator%>);
+        group_Keys_Split<%=cid%> = routines.system.StringUtils.splitNotRegex(group_Keys<%=cid%>,<%=rowSeparator%>);
     
         aggValues<%=cid%>.delete(0, aggValues<%=cid%>.length());
         
@@ -182,7 +182,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
         String aggStr<%=cid%> = (String)aggregation<%=cid%>.get(gKvalue<%=cid%>);
         
-        String[] aggStrSpli<%=cid%> = aggStr<%=cid%>.split(<%=fieldSeparator%>);
+        String[] aggStrSpli<%=cid%> = routines.system.StringUtils.splitNotRegex(aggStr<%=cid%>,<%=fieldSeparator%>);
         
         if(aggStrSpli<%=cid%>.length < pivotNum<%=cid%>){
             
@@ -234,7 +234,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             
             //step2: process the splitted data according to function
             
-            String[] aggStrSplit<%=cid%> = aggStr<%=cid%>.split(<%=fieldSeparator%>);
+            String[] aggStrSplit<%=cid%> = routines.system.StringUtils.splitNotRegex(aggStr<%=cid%>,<%=fieldSeparator%>);
             
             aggValues<%=cid%>.delete(0,aggValues<%=cid%>.length());
         
