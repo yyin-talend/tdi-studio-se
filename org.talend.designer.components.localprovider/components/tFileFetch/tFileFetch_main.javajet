@@ -47,7 +47,7 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 
 	if ("https".equals(protocol)) {
 	%>
-		class SocketFactory_<%=cid%> implements org.apache.commons.httpclient.protocol.ProtocolSocketFactory {
+		class SocketFactory_<%=cid%> implements org.apache.commons.httpclient.protocol.SecureProtocolSocketFactory {
 
 			private javax.net.ssl.SSLContext sslcontext = null;
 
@@ -144,9 +144,7 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 			Object obj_<%=cid%> = is_<%=cid%>.readObject();
 
 			while (obj_<%=cid%> != null) {
-				org.apache.commons.httpclient.Cookie cookie_<%=cid%> = (org.apache.commons.httpclient.Cookie) obj_<%=cid%>;
-				cookie_<%=cid%>.setSecure(false);
-				cookieList_<%=cid%>.add(cookie_<%=cid%>);
+				cookieList_<%=cid%>.add((org.apache.commons.httpclient.Cookie) obj_<%=cid%>);
 
 				try {
 					obj_<%=cid%> = is_<%=cid%>.readObject();
