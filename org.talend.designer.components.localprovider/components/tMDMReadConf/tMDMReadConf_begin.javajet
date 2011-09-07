@@ -162,7 +162,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 		                getitems_<%=cid%>=new org.talend.mdm.webservice.WSGetItems(dataCluster_<%=cid%>, <%=concept%>, wsItem_<%=cid%>,
 									    	<%=spellThrehold%>,  //spell Threshold
 											skip_<%=cid%> + retrievedCount_<%=cid%>,
-											readRecordsSize_<%=cid%>);
+											readRecordsSize_<%=cid%>,false);
 						String[] items_<%=cid%> = {};
 						try {
 							items_<%=cid%> = xtentisWS_<%=cid%>.getItems(getitems_<%=cid%>);
