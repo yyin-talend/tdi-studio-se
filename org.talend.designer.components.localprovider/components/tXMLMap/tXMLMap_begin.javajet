@@ -9,7 +9,7 @@
 			org.talend.core.model.metadata.MetadataTalendType
 			org.talend.core.model.metadata.types.JavaTypesManager
 			org.talend.core.model.metadata.types.JavaType
-			
+						
 			org.talend.designer.xmlmap.generation.GenerationManagerFactory
 			org.talend.designer.xmlmap.generation.GenerationManager
 
@@ -37,7 +37,7 @@
             java.util.ArrayList
             org.talend.core.model.metadata.types.JavaTypesManager
         	org.talend.core.model.metadata.types.JavaType
-        	org.talend.core.model.process.IHashableInputConnections;
+        	org.talend.core.model.process.IHashableInputConnections
 	" 
 	skeleton="tXMLMap_java.skeleton"
 %>
