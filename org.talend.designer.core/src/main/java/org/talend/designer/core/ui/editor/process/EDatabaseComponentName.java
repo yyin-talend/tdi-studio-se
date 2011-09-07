@@ -71,6 +71,7 @@ public enum EDatabaseComponentName {
 
     DBORACLESN(DatabaseConnectionItem.class, EDatabaseTypeName.ORACLESN, "tOracleInput", "tOracleOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     DBORACLEOCI(DatabaseConnectionItem.class, EDatabaseTypeName.ORACLE_OCI, "tOracleInput", "tOracleOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    DBORACLERAC(DatabaseConnectionItem.class, EDatabaseTypeName.ORACLE_RAC, "tOracleInput", "tOracleOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
 
     DBGODBC(DatabaseConnectionItem.class, EDatabaseTypeName.GODBC, "tDBInput", "tDBOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     MSODBC(DatabaseConnectionItem.class, EDatabaseTypeName.MSODBC, "tDBInput", "tDBOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
