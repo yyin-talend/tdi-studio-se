@@ -16,6 +16,7 @@
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -71,11 +72,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 		String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>);
 <%
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+%>
+		java.nio.charset.Charset.forName(<%=encoding %>).decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString();
+<%
 					} else {
 %>
 		String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
-<%				
-}					
+<%
+					}
 %>
 <% 
 	if(i==0) {
@@ -119,12 +124,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String operation = null;
 		boolean isMultiValue = false;   
 		String separator = null;
+		boolean isBinary = false;
+		boolean isBase64 = false;
 		for(Map<String, String> line:modifyColumns){// search in the configuration table
 				String columnName = line.get("SCHEMA_COLUMN");				
 				if(column.getLabel().equals(columnName)){
 					operation = line.get("OPERATION");					
 					isMultiValue = "true".equals(line.get("ISMULTIVALUE"));
-					separator = line.get("SEPARATOR");										
+					separator = line.get("SEPARATOR");
+					isBinary = "true".equals(line.get("BINARY"));
+					isBase64 = "true".equals(line.get("BASE64"));
 					break;
 				}
 		}	
@@ -138,10 +147,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	<%if(isMultiValue){%>		
 		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
 		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
-			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + item_<%=cid %>, wrap_<%=cid %>);
 		}				
 	<%}else{%>
-		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>); 
+		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>); 
 	<%}%>
 	needSeparator_<%=cid %> = true;
 	canOutput_<%=cid %> = true;   	
@@ -155,11 +164,15 @@ sb_<%=cid %>.append("-\n");
 <% if ("add".equals(changetype) || "none".equals(changetype)) {   
 		boolean isMultiValue = false;
 		String separator = null;
+		boolean isBinary = false;
+		boolean isBase64 = false;
 		for(Map<String, String> line:multiValueColumns){// search in the configuration table
 				String columnName = line.get("SCHEMA_COLUMN");				
 				if(column.getLabel().equals(columnName)){
 					isMultiValue = "true".equals(line.get("ISMULTIVALUE"));
-					separator = line.get("SEPARATOR");										
+					separator = line.get("SEPARATOR");
+					isBinary = "true".equals(line.get("BINARY"));
+					isBase64 = "true".equals(line.get("BASE64"));
 					break;
 				}
 		}
@@ -167,10 +180,10 @@ sb_<%=cid %>.append("-\n");
 	<%if(isMultiValue){%>
 		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
 		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
-			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + item_<%=cid %>, wrap_<%=cid %>);
 		}				
 	<%}else{%>
-		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 	<%}%>
 	canOutput_<%=cid %> = true;
 <%

@@ -57,6 +57,8 @@
 				</ITEM>							
 				<ITEM NAME="ISMULTIVALUE" FIELD="CHECK" />
 				<ITEM NAME="SEPARATOR" VALUE="&quot;,&quot;" />
+				<ITEM NAME="BINARY" FIELD="CHECK" />
+				<ITEM NAME="BASE64" FIELD="CHECK" />
 			</ITEMS>
 		</PARAMETER>		
 		
@@ -64,6 +66,8 @@
 			<ITEMS BASED_ON_SCHEMA="true">				
 				<ITEM NAME="ISMULTIVALUE" FIELD="CHECK" />
 				<ITEM NAME="SEPARATOR" VALUE="&quot;,&quot;" />
+				<ITEM NAME="BINARY" FIELD="CHECK" />
+				<ITEM NAME="BASE64" FIELD="CHECK" />
 			</ITEMS>
 		</PARAMETER>		
 
