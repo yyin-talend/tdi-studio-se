@@ -1169,21 +1169,24 @@ public class DataProcess {
             return;
         }
         // if the original component is in dummy state, no need to replace it
+        // but the next need to be checked.
         if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
-            return;
-        }
-        AbstractNode dataNode;
+            // return;
+        } else {
+            AbstractNode dataNode;
 
-        dataNode = (AbstractNode) buildCheckMap.get(graphicalNode);
-        checkMultipleMap.put(graphicalNode, dataNode);
-        if (dataNode.isGeneratedAsVirtualComponent()) {
-            List<IMultipleComponentManager> multipleComponentManagers = graphicalNode.getComponent()
-                    .getMultipleComponentManagers();
-            try {
-                addMultipleNode(graphicalNode, multipleComponentManagers);
-            } catch (Exception e) {
-                Exception warpper = new Exception(Messages.getString("DataProcess.checkComponent", graphicalNode.getLabel()), e); //$NON-NLS-1$
-                ExceptionHandler.process(warpper);
+            dataNode = (AbstractNode) buildCheckMap.get(graphicalNode);
+            checkMultipleMap.put(graphicalNode, dataNode);
+            if (dataNode.isGeneratedAsVirtualComponent()) {
+                List<IMultipleComponentManager> multipleComponentManagers = graphicalNode.getComponent()
+                        .getMultipleComponentManagers();
+                try {
+                    addMultipleNode(graphicalNode, multipleComponentManagers);
+                } catch (Exception e) {
+                    Exception warpper = new Exception(
+                            Messages.getString("DataProcess.checkComponent", graphicalNode.getLabel()), e); //$NON-NLS-1$
+                    ExceptionHandler.process(warpper);
+                }
             }
         }
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
@@ -1198,7 +1201,13 @@ public class DataProcess {
             return;
         }
         // if the original component is in dummy state, no need to replace it
+        // but the next need to be checked.
         if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
+            for (IConnection connection : graphicalNode.getOutgoingConnections()) {
+                if (connection.isActivate()) {
+                    replaceEltComponents(connection.getTarget());
+                }
+            }
             return;
         }
 
@@ -1373,7 +1382,13 @@ public class DataProcess {
             return;
         }
         // if the original component is in dummy state, no need to replace it
+        // but the next need to be checked
         if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
+            for (IConnection connection : graphicalNode.getOutgoingConnections()) {
+                if (connection.isActivate()) {
+                    replaceFileScalesComponents(connection.getTarget());
+                }
+            }
             return;
         }
 
@@ -2428,19 +2443,21 @@ public class DataProcess {
             return;
         }
         // if the original component is in dummy state, no need to replace it
+        // but the next need to be checked
         if (node.isDummy() && !node.isActivate()) {
-            return;
-        }
-        AbstractNode dataNode;
+            // return;
+        } else {
+            AbstractNode dataNode;
 
-        dataNode = (AbstractNode) buildCheckMap.get(node);
-        checktUniteMap.put(node, dataNode);
-        if (dataNode.getComponent().useMerge()) {
-            try {
-                changeForMultipleMergeComponents(node);
-            } catch (Exception e) {
-                Exception wrapper = new Exception(Messages.getString("DataProcess.checkComponent", node.getLabel()), e); //$NON-NLS-1$
-                ExceptionHandler.process(wrapper);
+            dataNode = (AbstractNode) buildCheckMap.get(node);
+            checktUniteMap.put(node, dataNode);
+            if (dataNode.getComponent().useMerge()) {
+                try {
+                    changeForMultipleMergeComponents(node);
+                } catch (Exception e) {
+                    Exception wrapper = new Exception(Messages.getString("DataProcess.checkComponent", node.getLabel()), e); //$NON-NLS-1$
+                    ExceptionHandler.process(wrapper);
+                }
             }
         }
         List<IConnection> outputConnections = new ArrayList<IConnection>(node.getOutgoingConnections());
