@@ -40,10 +40,12 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.EcoreUtil.ExternalCrossReferencer;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataManager;
@@ -134,6 +136,7 @@ public class ExportItemUtil {
         if (items == null || items.size() == 0) {
             return;
         }
+
         Collection<Item> otherVersions = new ArrayList<Item>();
         // get all versions of the exported items if wanted
         if (exportAllVersions) {
@@ -192,6 +195,7 @@ public class ExportItemUtil {
                     ExceptionHandler.process(e);
                 }
             }
+
         }
     }
 
@@ -268,6 +272,12 @@ public class ExportItemUtil {
         progressMonitor.beginTask("Export Items", items.size() + 1); //$NON-NLS-1$
         ResourceSetImpl resourceSet = new ResourceSetImpl();
 
+        TimeMeasure.display = CommonsPlugin.isDebugMode();
+        TimeMeasure.displaySteps = CommonsPlugin.isDebugMode();
+        TimeMeasure.measureActive = CommonsPlugin.isDebugMode();
+
+        TimeMeasure.begin("exportItems");
+
         try {
             // store item and its corresponding project
             Map<Item, Project> itemProjectMap = new HashMap<Item, Project>();
@@ -284,6 +294,8 @@ public class ExportItemUtil {
             while (iterator.hasNext()) {
                 Item item = iterator.next();
                 project = pManager.getProject(item);
+
+                String label = item.getProperty().getLabel();
 
                 computeProjectFileAndPath(destinationDirectory);
                 if (!toExport.containsKey(projectFile)) {
@@ -352,6 +364,8 @@ public class ExportItemUtil {
                 iterator.remove();
 
                 cleanResources(resourceSet);
+
+                TimeMeasure.step("exportItems", "export item: " + label);
             }
 
             progressMonitor.worked(1);
@@ -360,6 +374,11 @@ public class ExportItemUtil {
             throw e;
         } finally {
             cleanResources(resourceSet);
+
+            TimeMeasure.end("exportItems");
+            TimeMeasure.display = false;
+            TimeMeasure.displaySteps = false;
+            TimeMeasure.measureActive = false;
         }
 
         return toExport;

@@ -49,6 +49,7 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -355,6 +356,13 @@ public class ImportItemUtil {
     @SuppressWarnings("unchecked")
     public List<ItemRecord> importItemRecords(final ResourcesManager manager, final List<ItemRecord> itemRecords,
             final IProgressMonitor monitor, final boolean overwrite, final IPath destinationPath, final String contentType) {
+
+        TimeMeasure.display = CommonsPlugin.isDebugMode();
+        TimeMeasure.displaySteps = CommonsPlugin.isDebugMode();
+        TimeMeasure.measureActive = CommonsPlugin.isDebugMode();
+
+        TimeMeasure.begin("importItemRecords");
+
         hasJoblets = false;
         statAndLogsSettingsReloaded = false;
         implicitSettingsReloaded = false;
@@ -416,6 +424,7 @@ public class ImportItemUtil {
                         }
                     }
                 }
+
                 // deploy routines Jar
                 if (!getRoutineExtModulesMap().isEmpty()) {
                     Set<String> extRoutines = new HashSet<String>();
@@ -431,6 +440,7 @@ public class ImportItemUtil {
                         deployJarToDes(manager, extRoutines);
                     }
                 }
+
                 if (PluginChecker.isJobLetPluginLoaded()) {
                     IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                             IJobletProviderService.class);
@@ -448,6 +458,8 @@ public class ImportItemUtil {
                 // }
                 checkDeletedFolders();
                 monitor.done();
+
+                TimeMeasure.step("importItemRecords", "before save");
                 if (RelationshipItemBuilder.getInstance().isNeedSaveRelations()) {
                     RelationshipItemBuilder.getInstance().saveRelations();
                 } else {
@@ -455,6 +467,7 @@ public class ImportItemUtil {
                     // with relations
                     factory.saveProject(ProjectManager.getInstance().getCurrentProject());
                 }
+                TimeMeasure.step("importItemRecords", "save relateions or project");
             }
         };
         repositoryWorkUnit.setAvoidUnloadResources(true);
@@ -471,6 +484,11 @@ public class ImportItemUtil {
         if (hasJoblets) {
             ComponentsFactoryProvider.getInstance().resetSpecificComponents();
         }
+
+        TimeMeasure.end("importItemRecords");
+        TimeMeasure.display = false;
+        TimeMeasure.displaySteps = false;
+        TimeMeasure.measureActive = false;
 
         return itemRecords;
     }
@@ -773,6 +791,7 @@ public class ImportItemUtil {
             }
 
         }
+        String label = itemRecord.getLabel();
         for (Resource resource : itemRecord.getResourceSet().getResources()) {
             // Due to the system of lazy loading for db repository of ByteArray,
             // it can't be unloaded just after create the item.
@@ -780,8 +799,10 @@ public class ImportItemUtil {
                 resource.unload();
             }
         }
+        TimeMeasure.step("importItemRecords", "Import item: " + label);
 
         applyMigrationTasks(itemRecord, monitor);
+        TimeMeasure.step("importItemRecords", "applyMigrationTasks: " + label);
     }
 
     // added by dlin 2011-7-25 don't like .item and .property ,just copy .screenshot file will be ok
@@ -995,6 +1016,12 @@ public class ImportItemUtil {
      * need to returns sorted items by version to correctly import them later.
      */
     public List<ItemRecord> populateItems(ResourcesManager collector, boolean overwrite, IProgressMonitor progressMonitor) {
+        TimeMeasure.display = CommonsPlugin.isDebugMode();
+        TimeMeasure.displaySteps = CommonsPlugin.isDebugMode();
+        TimeMeasure.measureActive = CommonsPlugin.isDebugMode();
+
+        TimeMeasure.begin("populateItems");
+
         treeBuilder.clear();
         if (!CommonsPlugin.isHeadless() || !ProjectManager.getInstance().getCurrentProject().isLocal()) {
             cache.clear();
@@ -1073,6 +1100,11 @@ public class ImportItemUtil {
             }
             this.cache.getItemsFromRepository().clear();
         }
+
+        TimeMeasure.end("populateItems");
+        TimeMeasure.display = false;
+        TimeMeasure.displaySteps = false;
+        TimeMeasure.measureActive = false;
 
         return items;
     }
