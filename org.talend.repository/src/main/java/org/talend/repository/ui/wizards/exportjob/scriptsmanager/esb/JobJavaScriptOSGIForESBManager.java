@@ -100,7 +100,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         boolean needJob = true;
         ExportFileResource libResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME); //$NON-NLS-1$
-        ExportFileResource osgiResource = new ExportFileResource(null, ""); //$NON-NLS-1$
+        ExportFileResource osgiResource = getOsgiResource();
         ExportFileResource jobScriptResource = new ExportFileResource(null, ""); //$NON-NLS-1$
 
         List<ProcessItem> itemToBeExport = new ArrayList<ProcessItem>();
@@ -179,6 +179,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
 
         }
+        
+        
 
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(true, process, neededLibraries);
@@ -197,6 +199,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         return list;
     }
+
+	protected ExportFileResource getOsgiResource() {
+		return new ExportFileResource(null, ""); //$NON-NLS-1$;
+	}
 
 	private String getPackageName(ProcessItem processItem) {
 		return JavaResourcesHelper.getProjectFolderName(processItem)
