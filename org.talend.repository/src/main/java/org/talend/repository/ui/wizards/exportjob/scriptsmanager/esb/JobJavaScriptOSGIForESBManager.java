@@ -24,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,6 +55,8 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.LastGenerationInfo;
@@ -313,6 +316,30 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         a.put(new Attributes.Name("Export-Package"), sb.toString()); //$NON-NLS-1$
         if (ROUTE.equals(itemType)) {
+        	/*
+        	 * add external import-packages
+        	 * for Activemq
+        	 */
+        	String externalImport = "";
+        	for(ProcessItem pi:itemToBeExport){
+        		ProcessType process = pi.getProcess();
+        		if(process==null){
+        			continue;
+        		}
+        		EList nodes = process.getNode();
+        		Iterator iterator = nodes.iterator();
+        		while(iterator.hasNext()){
+        			NodeType next = (NodeType) iterator.next();
+        			if("cActiveMQ".equals(next.getComponentName())){
+        				externalImport = ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
+        				break;
+        			}
+        		}
+        		if(!"".equals(externalImport)){
+        			break;
+        		}
+        	}
+        	//end add
             a.put(new Attributes.Name("Require-Bundle"), "org.apache.camel.camel-core");
             a.put(new Attributes.Name("Import-Package"), "javax.xml.bind,org.apache.camel;version=\"[2.7,3)\",org.apache.camel.builder;" + //$NON-NLS-1$
                             "version=\"[2.7,3)\",org.apache.camel.impl;version=\"[2.7,3)\",org.apache.camel.management;version=\"[2.7,3)\","
@@ -320,7 +347,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                             "org.apache.camel.model;version=\"[2.7,3)\",org.apache.camel.osgi;version=\"[2.7,3)\"," + //$NON-NLS-1$
                             "org.apache.camel.spi;version=\"[2.7,3)\",org.apache.camel.view;version=\"[2.7,3)\"," + //$NON-NLS-1$
                             "org.osgi.framework;version=\"[1.5,2)\"," + //$NON-NLS-1$
-                            "org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\",routines.system.api"); //$NON-NLS-1$
+                            "org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\",routines.system.api"+externalImport); //$NON-NLS-1$
         } else {
             a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
                     "routines.system.api;resolution:=optional" + //$NON-NLS-1$
