@@ -67,6 +67,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.utils.BrandingChecker;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.ITisLocalProviderService;
@@ -259,7 +260,7 @@ public class ComponentsFactory implements IComponentsFactory {
         String installLocation = new Path(Platform.getConfigurationLocation().getURL().getPath()).toFile().getAbsolutePath();
         componentToProviderMap = new HashMap<IComponent, AbstractComponentsProvider>();
         boolean isNeedClean = cleanComponentCache();
-        isCreated = hasComponentFile(installLocation) && !isNeedClean && !CommonsPlugin.isHeadless();
+        isCreated = hasComponentFile(installLocation) && !isNeedClean;
         if (isReset) {
             isCreated = false;
         }
@@ -476,7 +477,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private boolean cleanComponentCache() {
         return ArrayUtils.contains(Platform.getApplicationArgs(), "--clean_component_cache")
-                || ArrayUtils.contains(Platform.getApplicationArgs(), "-clean");
+                || ArrayUtils.contains(Platform.getApplicationArgs(), "-clean") || BrandingChecker.isBrandingChanged();
     }
 
     private void loadComponentsFromComponentsProviderExtension() {
