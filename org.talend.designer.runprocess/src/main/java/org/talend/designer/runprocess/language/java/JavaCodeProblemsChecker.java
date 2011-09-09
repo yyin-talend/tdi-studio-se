@@ -168,8 +168,7 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                         // use working copy to hold source with error
                         org.eclipse.jdt.core.ICompilationUnit workingCopy = null;
                         try {
-                            // JavaProcessorUtilities.computeLibrariesPath(process.getNeededLibraries(false), process);
-                            JavaProcessorUtilities.updateLibrariesAndClasspath(process);
+                            JavaProcessorUtilities.computeLibrariesPath(process.getNeededLibraries(false), process);
                             try {
                                 WorkingCopyOwner workingCopyOwner = new WorkingCopyOwner() {
                                 };

@@ -39,7 +39,6 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -198,10 +197,15 @@ public class JavaProcessorUtilities {
         }
 
         listModulesReallyNeeded.addAll(additionalNeededJars);
-
-        File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
-        if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
-            for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
+        File libDir = getJavaProjectLibFolder();
+        if ((libDir != null) && (libDir.isDirectory())) {
+            Set<String> jarsNeedRetrieve = new HashSet<String>(listModulesReallyNeeded);
+            for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
+                jarsNeedRetrieve.remove(externalLib.getName());
+            }
+            ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
+            repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
+            for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
                     IClasspathEntry newEntry = JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null);
                     if (!ArrayUtils.contains(classpathEntryArray, newEntry)) {
@@ -224,7 +228,7 @@ public class JavaProcessorUtilities {
      * @param process
      * @throws CoreException
      */
-    public static void updateLibrariesAndClasspath(IProcess process) {
+    private static void updateLibrariesAndClasspath(IProcess process) {
         try {
             Set<String> neededLibraries = getNeededLibrariesForProcess(process);
             ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
@@ -434,7 +438,7 @@ public class JavaProcessorUtilities {
                     Context.REPOSITORY_CONTEXT_KEY);
             Project project = repositoryContext.getProject();
             if (projectSetup == null || !projectSetup.equals(project.getTechnicalLabel())) {
-                updateClasspath(jobModuleList);
+                // updateClasspath(jobModuleList);
                 projectSetup = project.getTechnicalLabel();
             }
             // see bug 5633
@@ -458,6 +462,28 @@ public class JavaProcessorUtilities {
     // // line in run mode
     private static void sortClasspath(Set<String> jobModuleList, IProcess process) throws CoreException, BusinessException {
         IClasspathEntry[] entries = javaProject.getRawClasspath();
+        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY));
+
+        boolean changesDone = false;
+        if (!ArrayUtils.contains(entries, jreClasspathEntry)) {
+            entries = (IClasspathEntry[]) ArrayUtils.add(entries, jreClasspathEntry);
+            changesDone = true;
+        }
+        if (!ArrayUtils.contains(entries, classpathEntry)) {
+            IClasspathEntry source = null;
+            for (IClasspathEntry entry : entries) {
+                if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+                    source = entry;
+                    break;
+                }
+            }
+            if (source != null) {
+                entries = (IClasspathEntry[]) ArrayUtils.remove(entries, ArrayUtils.indexOf(entries, source));
+            }
+            entries = (IClasspathEntry[]) ArrayUtils.add(entries, classpathEntry);
+            changesDone = true;
+        }
 
         Set<String> listModulesReallyNeeded = jobModuleList;
         if (listModulesReallyNeeded == null) {
@@ -480,9 +506,27 @@ public class JavaProcessorUtilities {
             }
         }
 
+        File libDir = getJavaProjectLibFolder();
+        if ((libDir != null) && (libDir.isDirectory())) {
+            Set<String> jarsNeedRetrieve = new HashSet<String>(listModulesReallyNeeded);
+            for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
+                jarsNeedRetrieve.remove(externalLib.getName());
+            }
+            ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
+            repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
+            for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
+                if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
+                    IClasspathEntry newEntry = JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null);
+                    if (!ArrayUtils.contains(entries, newEntry)) {
+                        entries = (IClasspathEntry[]) ArrayUtils.add(entries, newEntry);
+                        changesDone = true;
+                    }
+                }
+            }
+        }
+
         // sort
         int exchange = 2; // The first,second library is JVM and SRC.
-        boolean changesDone = false;
         for (String jar : listModulesReallyNeeded) {
             int index = indexOfEntry(entries, jar);
             if (index < 0) {
@@ -498,8 +542,9 @@ public class JavaProcessorUtilities {
             }
             exchange++;
         }
-        if (!CommonsPlugin.isHeadless() && changesDone) {
+        if (changesDone) {
             javaProject.setRawClasspath(entries, null);
+            javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
         }
     }
 
