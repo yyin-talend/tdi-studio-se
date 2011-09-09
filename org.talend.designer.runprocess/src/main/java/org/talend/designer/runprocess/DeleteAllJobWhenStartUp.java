@@ -14,13 +14,22 @@ package org.talend.designer.runprocess;
 
 import java.io.File;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IStartup;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -81,10 +90,10 @@ public class DeleteAllJobWhenStartUp implements IStartup {
         }
         IResource javaRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME);
         if (javaRecs != null && javaRecs.getType() == IResource.PROJECT) {
-            IProject javaProject = (IProject) javaRecs;
+            IProject rootProject = (IProject) javaRecs;
             try {
-                if (!javaProject.isOpen()) {
-                    javaProject.open(null);
+                if (!rootProject.isOpen()) {
+                    rootProject.open(null);
                 }
                 javaRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME + File.separator + JavaUtils.JAVA_SRC_DIRECTORY);
                 if (javaRecs != null && javaRecs.getType() == IResource.FOLDER) {
@@ -98,6 +107,47 @@ public class DeleteAllJobWhenStartUp implements IStartup {
                     }
 
                 }
+
+                IResource libRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME + File.separator + "lib");
+                if (libRecs != null && libRecs.getType() == IResource.FOLDER) {
+                    IFolder javaLibFolder = (IFolder) libRecs;
+
+                    IResource[] javaProRecs = javaLibFolder.members();
+                    if (javaProRecs.length > 0) {
+                        for (int i = 0; i < javaProRecs.length; i++) {
+                            javaProRecs[i].delete(true, null);
+                        }
+                    }
+
+                }
+                IExtensionRegistry registry = Platform.getExtensionRegistry();
+                IExtension nature = registry.getExtension("org.eclipse.core.resources.natures", JavaCore.NATURE_ID); //$NON-NLS-1$
+
+                if (rootProject.getNature(JavaCore.NATURE_ID) == null && nature != null) {
+                    IProjectDescription description = rootProject.getDescription();
+                    String[] natures = description.getNatureIds();
+                    String[] newNatures = new String[natures.length + 1];
+                    System.arraycopy(natures, 0, newNatures, 0, natures.length);
+                    newNatures[natures.length] = JavaCore.NATURE_ID;
+                    description.setNatureIds(newNatures);
+                    rootProject.open(IResource.BACKGROUND_REFRESH, null);
+                    rootProject.setDescription(description, null);
+                }
+                IJavaProject javaProject = JavaCore.create(rootProject);
+
+                IClasspathEntry[] entries = new IClasspathEntry[] {};
+
+                IClasspathEntry jreClasspathEntry = JavaCore
+                        .newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+                IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(
+                        JavaUtils.JAVA_SRC_DIRECTORY));
+
+                entries = (IClasspathEntry[]) ArrayUtils.add(entries, jreClasspathEntry);
+                entries = (IClasspathEntry[]) ArrayUtils.add(entries, classpathEntry);
+
+                javaProject.setRawClasspath(entries, null);
+                javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
+
             } catch (CoreException e) {
                 RuntimeExceptionHandler.process(e);
             }
