@@ -28,6 +28,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
         
+        boolean checkDiskSpace = ("true").equals(ElementParameterParser.getValue(node,"__CHECK_DISK_SPACE__"));
+        
         boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
         
         boolean isCreateDir = ("true").equals(ElementParameterParser.getValue(node,"__CREATE__"));
@@ -69,6 +71,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
       	csvWriter_<%=cid %>.setTextQualifier(textEnclosure_<%=cid %>); 
       	csvWriter_<%=cid %>.setForceQualifier(true);        
 <%
+		if(checkDiskSpace){
+%>
+      	long diskSpace_<%=cid %> = 0;
+<%
+		}
     }
 }
 %>
