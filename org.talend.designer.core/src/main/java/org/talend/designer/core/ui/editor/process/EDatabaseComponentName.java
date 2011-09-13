@@ -111,6 +111,7 @@ public enum EDatabaseComponentName {
     SAS(DatabaseConnectionItem.class, EDatabaseTypeName.SAS, "tSasInput", "tSasOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
 
     HIVE(DatabaseConnectionItem.class, EDatabaseTypeName.HIVE, (String) null, (String) null, true), //$NON-NLS-1$ //$NON-NLS-2$
+    HBASE(DatabaseConnectionItem.class, EDatabaseTypeName.HBASE, "tHBaseInput", "tHBaseOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
 
     // FILES
     FILEARFF(FakeFileConnectionItem.class, "tFileInputARFF", "tFileOutputARFF", "DELIMITED"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

@@ -43,10 +43,13 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.ColumnNameChangedExt;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.EDIFACTColumn;
 import org.talend.core.model.metadata.builder.connection.EDIFACTConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -56,6 +59,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.cwm.helper.ConnectionHelper;
@@ -64,6 +68,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import orgomg.cwm.objectmodel.core.TaggedValue;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -511,6 +516,58 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                                             break;
                                         }
                                     }
+                                }
+                            }
+
+                        }
+                        if (element instanceof Node) {
+                            Node node = (Node) element;
+                            String familyName = node.getComponent().getOriginalFamilyName();
+                            /** need add second parameter for hbase input/output component **/
+                            if (familyName != null && familyName.equals("Databases/HBase")) { //$NON-NLS-N$
+                                for (IElementParameter par : node.getElementParametersWithChildrens()) {
+                                    if (par.getName().equals("REPOSITORY_PROPERTY_TYPE")) {
+                                        String hbaseConnectionId = par.getValue().toString();
+                                        String columnFamily = null;
+                                        org.talend.core.model.metadata.builder.connection.Connection connection = MetadataTool
+                                                .getConnectionFromRepository(hbaseConnectionId);
+                                        if (connection != null && connection instanceof DatabaseConnection) {
+                                            /* use imetadataconnection because maybe it's in context model */
+                                            IMetadataConnection metadataConnection = ConvertionHelper
+                                                    .convert((DatabaseConnection) connection);
+                                            List<org.talend.core.model.metadata.builder.connection.MetadataTable> tables = ConnectionHelper
+                                                    .getTablesWithOrders(connection);
+                                            boolean find = false;
+                                            for (org.talend.core.model.metadata.builder.connection.MetadataTable table : tables) {
+
+                                                for (MetadataColumn column : table.getColumns()) {
+                                                    if (column.getLabel() != null && column.getLabel().equals(columnName)) {
+                                                        for (TaggedValue tv : column.getTaggedValue()) {
+                                                            String tag = tv.getTag();
+                                                            if (tag != null && tag.equals("COLUMN FAMILY")) {//$NON-NLS-N$
+                                                                String value = tv.getValue();
+                                                                if (value != null && value.equals(metadataConnection.getSchema())) {
+                                                                    columnFamily = value;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if (find) {
+                                                        break;
+                                                    }
+                                                }
+                                                if (find) {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (columnFamily != null) {
+                                            newLine.put(codes[1], TalendTextUtils.addQuotes(columnFamily));
+                                            break;
+                                        }
+                                    }
+
                                 }
                             }
 
