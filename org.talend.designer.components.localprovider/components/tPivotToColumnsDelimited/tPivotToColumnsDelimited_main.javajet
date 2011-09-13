@@ -60,6 +60,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     String columnTypeValue = null;
                     
                     String columnTypeFunName = null;
+                    
+                    String pattern = null;
              		
              		for(IMetadataColumn column:columnList){
              			
@@ -72,6 +74,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							columnTypeValue = JavaTypesManager.getShortNameFromJavaType(JavaTypesManager.getJavaTypeFromId(column.getTalendType()));
 							
 							columnTypeFunName = columnTypeValue.substring(0,1).toUpperCase()+columnTypeValue.substring(1);
+							
+							pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 
 							break;
 						}
@@ -124,10 +128,32 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     <%
     for (int i=0; i<groupbys.size(); i++) {
        
-      Map<String, String> groupby = groupbys.get(i);
-    %>
-
-        gKvalue<%=cid%> = gKvalue<%=cid%> + group_Key<%=cid%>.append(<%=inConnName%>.<%=groupby.get("INPUT_COLUMN")%>).toString()<%if(i!=groupbys.size()-1){%>+<%=fieldSeparator%><%}%>; 
+    	Map<String, String> groupby = groupbys.get(i);
+      
+      	String pattern_groupby = null;
+      
+      	JavaType columnType_groupby = null;
+      	
+		for(IMetadataColumn column:columnList){
+		
+			if(column.getLabel().equals(groupby.get("INPUT_COLUMN"))){
+			
+				columnType_groupby = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				
+				pattern_groupby = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+				
+				break;
+			}
+		}
+		if(columnType_groupby == JavaTypesManager.DATE){%>
+			
+				gKvalue<%=cid%> = gKvalue<%=cid%> + group_Key<%=cid%>.append(FormatterUtils.format_Date(<%=inConnName%>.<%=groupby.get("INPUT_COLUMN")%>, <%= pattern_groupby %>))<%if(i!=groupbys.size()-1){%>+<%=fieldSeparator%><%}%>;
+			
+		<%}else{%>
+					
+        		gKvalue<%=cid%> = gKvalue<%=cid%> + group_Key<%=cid%>.append(<%=inConnName%>.<%=groupby.get("INPUT_COLUMN")%>).toString()<%if(i!=groupbys.size()-1){%>+<%=fieldSeparator%><%}%>;
+        
+        <%}%>
         
         group_Key<%=cid%>.delete(0,group_Key<%=cid%>.length());
     <%
@@ -171,12 +197,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=inConnName%>.<%=aggColumn%>),<%=thousandsSeparator%>,<%=decimalSeparator%>)).append(<%=fieldSeparator%>).toString());
   
-  <%}else{%>
-		
-        aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).append(<%=fieldSeparator%>).toString());
-
-<%
-	}
+  <%}else{
+  
+  			if(("Date").equals(columnType)){%>
+			
+				aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(FormatterUtils.format_Date(<%=inConnName%>.<%=aggColumn%>, <%= pattern %>)).append(<%=fieldSeparator%>).toString());
+			  
+       	 	<%}else{%>
+        
+        		aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).append(<%=fieldSeparator%>).toString());
+        	<%}
+		}
   }%>
     }else{
 
@@ -204,11 +235,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             
             aggStr<%=cid%> = aggStr<%=cid%> + aggValues<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=inConnName%>.<%=aggColumn%>),<%=thousandsSeparator%>,<%=decimalSeparator%>)).toString() + <%=fieldSeparator%>;
 
-  <%}else{%>
-	
-            aggStr<%=cid%> = aggStr<%=cid%> + aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString() + <%=fieldSeparator%>;
-	
-<%	}
+  <%}else{
+  
+  			if(("Date").equals(columnType)){%>
+				
+				aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(FormatterUtils.format_Date(<%=inConnName%>.<%=aggColumn%>, <%= pattern %>)).append(<%=fieldSeparator%>).toString());
+				  
+        	<%}else{%>
+            
+            	aggStr<%=cid%> = aggStr<%=cid%> + aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString() + <%=fieldSeparator%>;
+            
+<%			}
+        }
   }%>
   
             aggregation<%=cid%>.remove(gKvalue<%=cid%>);
@@ -351,25 +389,50 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	
                 if (("").equals(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]))
                 
-                <%if(advancedSeparator){%>
-
-                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=inConnName%>.<%=aggColumn%>),<%=thousandsSeparator%>,<%=decimalSeparator%>)).toString();
-                    
-                <%}else{%>
-                
-                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(String.valueOf(<%=inConnName%>.<%=aggColumn%>)).toString();
+                <%if(advancedSeparator){
+                	if(("Date").equals(columnType)){%>
+				
+						aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(FormatterUtils.format_Date(<%=inConnName%>.<%=aggColumn%>, <%= pattern %>)).append(<%=fieldSeparator%>).toString());
+				  
+           			<%}else{%>
             
-            <%
-            	}
-            }else if( ("last").equals(aggFunction) ){
-            	if(advancedSeparator){%>
-    
-                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=inConnName%>.<%=aggColumn%>),<%=thousandsSeparator%>,<%=decimalSeparator%>)).toString();
+                    	aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=inConnName%>.<%=aggColumn%>),<%=thousandsSeparator%>,<%=decimalSeparator%>)).toString();
+                    
+                    <%}
+                  }else{
+               			if(("Date").equals(columnType)){%>
+				
+							aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(FormatterUtils.format_Date(<%=inConnName%>.<%=aggColumn%>, <%= pattern %>)).append(<%=fieldSeparator%>).toString());
+				  
+           				<%}else{%>
                 
-            <%}else{%>
-                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(String.valueOf(<%=inConnName%>.<%=aggColumn%>)).toString();
+                    	aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(String.valueOf(<%=inConnName%>.<%=aggColumn%>)).toString();
+                    
+                    	<%}
+            		}
+            }else if( ("last").equals(aggFunction) ){
+            	if(advancedSeparator){
             	
-            	<%}
+					if(("Date").equals(columnType)){%>
+				
+						aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(FormatterUtils.format_Date(<%=inConnName%>.<%=aggColumn%>, <%= pattern %>)).append(<%=fieldSeparator%>).toString());
+				  
+           			<%}else{%>
+            
+                    	aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(FormatterUtils.format_Number(String.valueOf(<%=inConnName%>.<%=aggColumn%>),<%=thousandsSeparator%>,<%=decimalSeparator%>)).toString();
+                    
+                    <%}
+                
+            	}else{
+           			if(("Date").equals(columnType)){%>
+				
+						aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(FormatterUtils.format_Date(<%=inConnName%>.<%=aggColumn%>, <%= pattern %>)).append(<%=fieldSeparator%>).toString());
+				  
+					<%}else{%>
+            
+                    	aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(String.valueOf(<%=inConnName%>.<%=aggColumn%>)).toString();
+                    <%}
+            	}
             }
             %> 
             
