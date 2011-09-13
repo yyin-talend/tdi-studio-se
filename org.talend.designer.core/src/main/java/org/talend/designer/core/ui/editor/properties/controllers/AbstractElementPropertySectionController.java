@@ -121,6 +121,7 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
@@ -1577,7 +1578,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return
      */
     protected String getImplicitRepositoryId() {
-        if (elem instanceof ImplicitContextLoadElement) {
+        // TDI-17078:when db connection with jdbc work as the implicit context,the elem is Process intance ,it also need
+        // get the ImplicitRepositoryId
+        if (elem instanceof ImplicitContextLoadElement || elem instanceof Process) {
             IElementParameter implicitContext = elem.getElementParameter("PROPERTY_TYPE_IMPLICIT_CONTEXT");//$NON-NLS-N$
             if (implicitContext != null) {
                 Map<String, IElementParameter> childParameters = implicitContext.getChildParameters();
