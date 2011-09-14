@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -96,7 +95,6 @@ import org.talend.core.ui.ISAPProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.cwm.helper.ModelElementHelper;
 import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
@@ -323,22 +321,12 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#openLoginDialog(org.eclipse.swt.widgets.Shell, boolean)
      */
-    public final static String ISFIRSTLOGIN = "isFirstLogin";
-
     public boolean openLoginDialog(Shell shell, boolean inuse) {
         if (isloginDialogDisabled()) {
             return true;
         }
-        IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-        if (prefStore.getString(ISFIRSTLOGIN) == null || prefStore.getString(ISFIRSTLOGIN).equals("")) {
-            MessageDialog.openInformation(shell, Messages.getString("RepositoryService.TalendProductGuide"),
-                    Messages.getString("RepositoryService.message"));
-        }
         LoginDialog loginDialog = new LoginDialog(shell, inuse);
         boolean logged = loginDialog.open() == LoginDialog.OK;
-        if (logged) {
-            prefStore.setValue(ISFIRSTLOGIN, "TRUE");
-        }
         return logged;
 
     }
