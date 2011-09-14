@@ -31,6 +31,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -48,7 +50,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.JobInfo;
@@ -696,10 +697,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (!needLibraries) {
             return list;
         }
-        ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-        String path = librariesService.getLibrariesPath();
-        // Gets all the jar files
-        File file = new File(path);
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
+        IJavaProject project = JavaCore.create(prj);
+        IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
+        File file = libPath.toFile();
         File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
         // Lists all the needed jar files
         Set<String> listModulesReallyNeeded = new HashSet<String>();
@@ -1215,10 +1217,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
 
         try {
-            ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-            String path = librariesService.getLibrariesPath();
-            // Gets all the jar files
-            File file = new File(path);
+            IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+            IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
+            IJavaProject project = JavaCore.create(prj);
+            IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
+            File file = libPath.toFile();
             File[] files = file.listFiles(new FilenameFilter() {
 
                 public boolean accept(File dir, String name) {

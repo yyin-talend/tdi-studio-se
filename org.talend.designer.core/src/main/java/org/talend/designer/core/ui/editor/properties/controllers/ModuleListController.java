@@ -13,7 +13,6 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
-import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -129,9 +128,8 @@ public class ModuleListController extends AbstractElementPropertySectionControll
             if (file != null && !file.equals("")) { //$NON-NLS-1$
                 String propertyName = (String) button.getData(PARAMETER_NAME);
                 String lastSegment = TalendTextUtils.addQuotes(Path.fromOSString(file).lastSegment());
-                File target = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath() + File.separator
-                        + lastSegment);
-                if (!elem.getPropertyValue(propertyName).equals(lastSegment) || !target.exists()) {
+
+                if (!elem.getPropertyValue(propertyName).equals(lastSegment)) {
                     try {
                         CorePlugin.getDefault().getLibrariesService().deployLibrary(Path.fromOSString(file).toFile().toURL());
                     } catch (Exception e) {

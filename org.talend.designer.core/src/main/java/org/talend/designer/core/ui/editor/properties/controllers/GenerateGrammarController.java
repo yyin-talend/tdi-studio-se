@@ -440,18 +440,15 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
      */
     private void addRequiredLib(RoutineItem routineItem) {
         List<IMPORTType> listRequiredJar = new ArrayList<IMPORTType>();
-        String javaLabPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath() + "/"; //$NON-NLS-1$
 
         IMPORTType type1 = ComponentFactory.eINSTANCE.createIMPORTType();
         type1.setMODULE("antlr-3.3.jar"); //$NON-NLS-1$
-        type1.setUrlPath(javaLabPath + "antlr-3.3.jar"); //$NON-NLS-1$
         type1.setREQUIRED(true);
         type1.setNAME(routineItem.getProperty().getLabel());
         listRequiredJar.add(type1);
 
         IMPORTType type2 = ComponentFactory.eINSTANCE.createIMPORTType();
         type2.setMODULE("org.talend.dataquality.parser.jar"); //$NON-NLS-1$
-        type2.setUrlPath(javaLabPath + "org.talend.dataquality.parser.jar"); //$NON-NLS-1$
         type2.setREQUIRED(true);
         type2.setNAME(routineItem.getProperty().getLabel());
         listRequiredJar.add(type2);
@@ -459,11 +456,6 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         routineItem.getImports().addAll(listRequiredJar);
 
         try {
-            File url1 = new File(javaLabPath + "antlr-3.3.jar"); //$NON-NLS-1$
-            File url2 = new File(javaLabPath + "org.talend.dataquality.parser.jar"); //$NON-NLS-1$
-
-            CorePlugin.getDefault().getLibrariesService().deployLibrary(url1.toURL());
-            CorePlugin.getDefault().getLibrariesService().deployLibrary(url2.toURL());
             CorePlugin.getDefault().getProxyRepositoryFactory().save(routineItem);
         } catch (Exception e) {
             ExceptionHandler.process(e);

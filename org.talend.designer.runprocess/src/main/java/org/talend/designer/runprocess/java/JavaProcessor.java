@@ -796,17 +796,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     }
 
     @Override
-    public String getLibraryPath() throws ProcessorException {
-        // if the library path has been set to a specific one (not standard),
-        // then this value won't be null
-        String libraryPath = super.getLibraryPath();
-        if (libraryPath != null) {
-            return libraryPath;
-        }
-        return CorePlugin.getDefault().getLibrariesService().getLibrariesPath();
-    }
-
-    @Override
     public String getCodeLocation() throws ProcessorException {
         // if the routine path has been set to a specific one (not standard),
         // then this value won't be null
@@ -894,12 +883,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                     if (!win32 && exportingJob) {
                         libPath.append(unixRootPath);
                     }
-                    if (exportingJob) {
-                        libPath.append(new Path(this.getLibraryPath()))
-                                .append("/").append(jarFile.getName()).append(classPathSeparator); //$NON-NLS-1$
-                    } else {
-                        libPath.append(new Path(jarFile.getAbsolutePath()).toPortableString()).append(classPathSeparator);
-                    }
+                    libPath.append(new Path(jarFile.getAbsolutePath()).toPortableString()).append(classPathSeparator);
                 }
             }
         }
@@ -954,11 +938,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         }
 
         String libFolder = ""; //$NON-NLS-1$
-        if (exportingJob) {
-            libFolder = new Path(this.getLibraryPath()) + classPathSeparator;
-        } else {
-            libFolder = new Path(libDir.getAbsolutePath()).toPortableString() + classPathSeparator;
-        }
+        libFolder = new Path(libDir.getAbsolutePath()).toPortableString() + classPathSeparator;
+
         String portableCommand = new Path(command).toPortableString();
         String portableProjectPath = new Path(projectPath).toPortableString();
 

@@ -413,29 +413,18 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
     // gcui:see bug 9733.
     private void addWsdlNeedLib(RoutineItem routineItem) {
         List<IMPORTType> wsdlNeedImport = new ArrayList<IMPORTType>();
-        String javaLabPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath() + "/";
         IMPORTType type1 = ComponentFactory.eINSTANCE.createIMPORTType();
         type1.setMODULE("axis.jar");
-        type1.setUrlPath(javaLabPath + "axis.jar");
         type1.setREQUIRED(true);
         type1.setNAME(routineItem.getProperty().getLabel());
         wsdlNeedImport.add(type1);
         IMPORTType type2 = ComponentFactory.eINSTANCE.createIMPORTType();
         type2.setMODULE("jaxrpc.jar");
-        type2.setUrlPath(javaLabPath + "jaxrpc.jar");
         type2.setREQUIRED(true);
         type2.setNAME(routineItem.getProperty().getLabel());
         wsdlNeedImport.add(type2);
         routineItem.getImports().addAll(wsdlNeedImport);
 
-        try {
-            File url1 = new File(javaLabPath + "axis.jar");
-            File url2 = new File(javaLabPath + "jaxrpc.jar");
-            CorePlugin.getDefault().getLibrariesService().deployLibrary(url1.toURL());
-            CorePlugin.getDefault().getLibrariesService().deployLibrary(url2.toURL());
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
         try {
             CorePlugin.getDefault().getProxyRepositoryFactory().save(routineItem);
         } catch (Exception e) {

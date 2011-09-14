@@ -363,15 +363,6 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.runprocess.IProcessor#getLibraryPath()
-     */
-    public String getLibraryPath() throws ProcessorException {
-        return libraryPath;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
      */
     public String getInterpreter() throws ProcessorException {
@@ -440,14 +431,15 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
         codeGenerated = true; // set the flag to true to tell the code has been
         // generated at least once.
     }
-    
+
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
      * boolean, boolean)
      */
-    public void generateCode(boolean statistics, boolean trace, boolean javaProperties, boolean exportAsOSGI) throws ProcessorException {
+    public void generateCode(boolean statistics, boolean trace, boolean javaProperties, boolean exportAsOSGI)
+            throws ProcessorException {
         if (context == null) {
             throw new IllegalStateException("Context is empty, context must be set before call"); //$NON-NLS-1$
         }

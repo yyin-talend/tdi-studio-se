@@ -48,6 +48,8 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ILibraryManagerService;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
@@ -278,19 +280,20 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
             type.setMESSAGE(desText.getText());
             String modelName = "modelName"; //$NON-NLS-1$
             boolean libExists = true; // hywang add
+            ILibraryManagerService libManager = (ILibraryManagerService) GlobalServiceRegister.getDefault().getService(
+                    ILibraryManagerService.class);
+
             if (typeNameRadioButton.getSelection()) {
                 modelName = nameText.getText();
-                String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath() + "/" + modelName; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
-                File f = new File(path);
-                if (!f.exists()) {
+                if (libManager.contains(modelName)) {
                     final String name = modelName;
                     libExists = false;
                     Display.getDefault().asyncExec(new Runnable() {
 
                         public void run() {
-                            MessageDialog.openError(getParentShell(), Messages.getString("ConfigExternalJarPage.error"), Messages.getString( //$NON-NLS-1$
-                                    "ConfigExternalJarPage.fileNotFound", name, CorePlugin.getDefault().getLibrariesService() //$NON-NLS-1$
-                                            .getJavaLibrariesPath()));
+                            MessageDialog.openError(getParentShell(),
+                                    Messages.getString("ConfigExternalJarPage.error"), Messages.getString( //$NON-NLS-1$
+                                            "ConfigExternalJarPage.fileNotFound", name));
 
                         }
                     });

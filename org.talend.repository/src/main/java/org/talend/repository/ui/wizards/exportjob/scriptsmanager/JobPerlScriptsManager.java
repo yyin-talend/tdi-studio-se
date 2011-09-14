@@ -91,8 +91,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             IProcess jobProcess = null;
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 jobProcess = generateJobFiles(processItem, context, selectedJobVersion,
-                        statisticPort != IProcessor.NO_STATISTICS, statisticPort != IProcessor.NO_TRACES, isOptionChoosed(
-                                exportChoice, ExportChoice.applyToChildren), progressMonitor);
+                        statisticPort != IProcessor.NO_STATISTICS, statisticPort != IProcessor.NO_TRACES,
+                        isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
             String contextName = context.getName();
@@ -133,8 +133,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             IProcess jobProcess = null;
             if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
                 jobProcess = generateJobFiles(processItem, contextName, selectedJobVersion,
-                        statisticPort != IProcessor.NO_STATISTICS, statisticPort != IProcessor.NO_TRACES, isOptionChoosed(
-                                exportChoice, ExportChoice.applyToChildren), progressMonitor);
+                        statisticPort != IProcessor.NO_STATISTICS, statisticPort != IProcessor.NO_TRACES,
+                        isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
             boolean needChildren = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
@@ -164,9 +164,10 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     private boolean posExportResource(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice, String contextName,
             String launcher, int statisticPort, int tracePort, int i, IProcess jobProcess, ProcessItem processItem,
             String selectedJobVersion, List<URL> resources, String... codeOptions) {
-        resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher), isOptionChoosed(exportChoice,
-                ExportChoice.setParameterValues), isOptionChoosed(exportChoice, ExportChoice.needContext), jobProcess,
-                processItem, escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
+        resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher),
+                isOptionChoosed(exportChoice, ExportChoice.setParameterValues),
+                isOptionChoosed(exportChoice, ExportChoice.needContext), jobProcess, processItem, escapeSpace(contextName),
+                escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
         // Gets system routines.
         List<URL> systemRoutineList = getSystemRoutine(isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
@@ -231,8 +232,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             return list;
         }
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-        String folderPath = librariesService.getLibrariesPath() + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
-                + PATH_SEPARATOR + projectName;
+        String folderPath = librariesService.getPerlLibrariesPath() + PATH_SEPARATOR
+                + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + PATH_SEPARATOR + projectName;
         File file = new File(folderPath);
         File[] files = file.listFiles();
         if (files != null) {
@@ -257,7 +258,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             return list;
         }
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-        String path = librariesService.getLibrariesPath() + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
+        String path = librariesService.getPerlLibrariesPath() + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
                 + PATH_SEPARATOR + SYSTEM_ROUTINES_FOLDER_NAME;
         File file = new File(path);
         File[] files = file.listFiles();
@@ -298,7 +299,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     private List<URL> getComponentModules(String componentName) {
         List<URL> modules = new ArrayList<URL>();
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-        String path = librariesService.getLibrariesPath() + PATH_SEPARATOR + componentName;
+        String path = librariesService.getPerlLibrariesPath() + PATH_SEPARATOR + componentName;
         File file = new File(path);
         if (!file.exists()) {
             return modules;
@@ -449,8 +450,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             }
             String rootProjectName = PerlResourcesHelper.getRootProjectName(subjobInfo.getProcessItem());
 
-            String jobScriptName = PerlResourcesHelper.getJobFileName(rootProjectName, subjobInfo.getJobName(), subjobInfo
-                    .getJobVersion());
+            String jobScriptName = PerlResourcesHelper.getJobFileName(rootProjectName, subjobInfo.getJobName(),
+                    subjobInfo.getJobVersion());
             String contextName = null;
             if (isOptionChoosed(exportChoice, ExportChoice.applyToChildren)) {
                 // see bug 0003862: Export job with the flag "Apply to children" if the child don't have the
@@ -466,8 +467,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 contextName = escapeSpace(subjobInfo.getContextName());
             }
 
-            String contextFullName = PerlResourcesHelper.getContextFileName(rootProjectName, subjobInfo.getJobName(), subjobInfo
-                    .getJobVersion(), contextName);
+            String contextFullName = PerlResourcesHelper.getContextFileName(rootProjectName, subjobInfo.getJobName(),
+                    subjobInfo.getJobVersion(), contextName);
 
             addToList(list, jobScriptName);
             addToList(list, contextFullName);
@@ -568,8 +569,9 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             List<URL> emfFileUrls = new ArrayList<URL>();
             emfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
             emfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-            curResource.addResources(JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
-                    + typeFolderPath.toOSString(), emfFileUrls);
+            curResource.addResources(
+                    JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR + typeFolderPath.toOSString(),
+                    emfFileUrls);
 
         } catch (Exception e) {
             ExceptionHandler.process(e);

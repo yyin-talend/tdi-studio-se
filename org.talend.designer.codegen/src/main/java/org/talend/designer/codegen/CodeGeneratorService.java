@@ -12,11 +12,10 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
-import java.io.File;
-
 import org.eclipse.core.runtime.jobs.Job;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ILibraryManagerService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess;
@@ -87,9 +86,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
             ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                     ICamelDesignerCoreService.class);
-            if (lan.equals(ECodeLanguage.PERL)) {
-                return service.createCamelPerlSynchronizer();
-            } else if (lan.equals(ECodeLanguage.JAVA)) {
+            if (lan.equals(ECodeLanguage.JAVA)) {
                 return service.createCamelJavaSynchronizer();
             }
         }
@@ -123,11 +120,9 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      */
     public void refreshTemplates() {
         // this will force to refresh all components libs when install run ctrl+f3
-        File componentsLibsSetupDone = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath()
-                + "/.componentsSetupDone");
-        if (componentsLibsSetupDone.exists()) {
-            componentsLibsSetupDone.delete();
-        }
+        ILibraryManagerService librairesManagerService = (ILibraryManagerService) GlobalServiceRegister.getDefault().getService(
+                ILibraryManagerService.class);
+        librairesManagerService.clearCache();
 
         ComponentsFactoryProvider.getInstance().resetCache();
         CodeGeneratorEmittersPoolFactory.initialize();

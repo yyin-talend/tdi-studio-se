@@ -32,16 +32,21 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -177,10 +182,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
             osgiResource.addResources(getOSGIInfFolder(), urlList);
 
-
         }
-        
-        
 
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(true, process, neededLibraries);
@@ -200,16 +202,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return list;
     }
 
-	protected ExportFileResource getOsgiResource() {
-		return new ExportFileResource(null, ""); //$NON-NLS-1$;
-	}
+    protected ExportFileResource getOsgiResource() {
+        return new ExportFileResource(null, ""); //$NON-NLS-1$;
+    }
 
-	private String getPackageName(ProcessItem processItem) {
-		return JavaResourcesHelper.getProjectFolderName(processItem)
-		        + PACKAGE_SEPARATOR
-		        + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
-		                .getVersion());
-	}
+    private String getPackageName(ProcessItem processItem) {
+        return JavaResourcesHelper.getProjectFolderName(processItem)
+                + PACKAGE_SEPARATOR
+                + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
+                        .getVersion());
+    }
 
     protected List<String> generateESBFiles(Item processItem, String contextName) {
         List<String> files = new ArrayList<String>();
@@ -306,7 +308,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return metaInfoResource;
     }
 
-    protected Manifest getManifest(ExportFileResource libResource, List<ProcessItem> itemToBeExport, String bundleName) throws IOException {
+    protected Manifest getManifest(ExportFileResource libResource, List<ProcessItem> itemToBeExport, String bundleName)
+            throws IOException {
         Manifest manifest = new Manifest();
         Attributes a = manifest.getMainAttributes();
         a.put(Attributes.Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
@@ -317,35 +320,34 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         StringBuilder sb = new StringBuilder();
         String delim = "";
         for (ProcessItem pi : itemToBeExport) {
-			sb.append(delim).append(getPackageName(pi));
+            sb.append(delim).append(getPackageName(pi));
             delim = ",";
         }
         a.put(new Attributes.Name("Export-Package"), sb.toString()); //$NON-NLS-1$
         if (ROUTE.equals(itemType)) {
-        	/*
-        	 * add external import-packages
-        	 * for Activemq
-        	 */
-        	String externalImport = "";
-        	for(ProcessItem pi:itemToBeExport){
-        		ProcessType process = pi.getProcess();
-        		if(process==null){
-        			continue;
-        		}
-        		EList nodes = process.getNode();
-        		Iterator iterator = nodes.iterator();
-        		while(iterator.hasNext()){
-        			NodeType next = (NodeType) iterator.next();
-        			if("cActiveMQ".equals(next.getComponentName())){
-        				externalImport = ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
-        				break;
-        			}
-        		}
-        		if(!"".equals(externalImport)){
-        			break;
-        		}
-        	}
-        	//end add
+            /*
+             * add external import-packages for Activemq
+             */
+            String externalImport = "";
+            for (ProcessItem pi : itemToBeExport) {
+                ProcessType process = pi.getProcess();
+                if (process == null) {
+                    continue;
+                }
+                EList nodes = process.getNode();
+                Iterator iterator = nodes.iterator();
+                while (iterator.hasNext()) {
+                    NodeType next = (NodeType) iterator.next();
+                    if ("cActiveMQ".equals(next.getComponentName())) {
+                        externalImport = ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
+                        break;
+                    }
+                }
+                if (!"".equals(externalImport)) {
+                    break;
+                }
+            }
+            // end add
             a.put(new Attributes.Name("Require-Bundle"), "org.apache.camel.camel-core");
             a.put(new Attributes.Name("Import-Package"), "javax.xml.bind,org.apache.camel;version=\"[2.7,3)\",org.apache.camel.builder;" + //$NON-NLS-1$
                             "version=\"[2.7,3)\",org.apache.camel.impl;version=\"[2.7,3)\",org.apache.camel.management;version=\"[2.7,3)\","
@@ -353,7 +355,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                             "org.apache.camel.model;version=\"[2.7,3)\",org.apache.camel.osgi;version=\"[2.7,3)\"," + //$NON-NLS-1$
                             "org.apache.camel.spi;version=\"[2.7,3)\",org.apache.camel.view;version=\"[2.7,3)\"," + //$NON-NLS-1$
                             "org.osgi.framework;version=\"[1.5,2)\"," + //$NON-NLS-1$
-                            "org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\",routines.system.api"+externalImport); //$NON-NLS-1$
+                            "org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\",routines.system.api" + externalImport); //$NON-NLS-1$
         } else {
             a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
                     "routines.system.api;resolution:=optional" + //$NON-NLS-1$
@@ -466,9 +468,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         // Lists all the needed jar files
         Set<String> listModulesReallyNeeded = new HashSet<String>();
-        ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-        String path = librariesService.getLibrariesPath();
-        File file = new File(path);
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
+        IJavaProject project = JavaCore.create(prj);
+        IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
+        File file = libPath.toFile();
         File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
 
         if (!useBeans) {

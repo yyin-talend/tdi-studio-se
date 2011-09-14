@@ -92,7 +92,7 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
             if (!routineItem.isBuiltIn()) {
                 // Copy the routine in external "lib/perl" folder:
-                String librariesPath = CorePlugin.getDefault().getLibrariesService().getLibrariesPath() + IPath.SEPARATOR
+                String librariesPath = CorePlugin.getDefault().getLibrariesService().getPerlLibrariesPath() + IPath.SEPARATOR
                         + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + IPath.SEPARATOR + project.getTechnicalLabel()
                         + IPath.SEPARATOR + routineItem.getProperty().getLabel() + service.getRoutineFilenameExt();
                 File target = new File(librariesPath);

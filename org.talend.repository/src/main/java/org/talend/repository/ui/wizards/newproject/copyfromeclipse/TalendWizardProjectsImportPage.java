@@ -24,9 +24,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -46,7 +44,6 @@ import org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage;
 import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.CorePlugin;
 
 /**
  * DOC zhangchao.wang class global comment. Detailled comment
@@ -205,19 +202,19 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
         if (sourcePath == null || sourcePath.length() == 0) {
             return;
         }
-        String destinationJavaPath = null;
-        String destinationPerlPath = null;
+        // String destinationJavaPath = null;
+        // String destinationPerlPath = null;
         this.sourcePath = sourcePath;
         try {
             if (!("".equals(sourcePath))) { //$NON-NLS-1$
-                destinationJavaPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
-                destinationPerlPath = CorePlugin.getDefault().getLibrariesService().getPerlLibrariesPath();
-
-                IPathVariableManager pathVariableManager = ResourcesPlugin.getWorkspace().getPathVariableManager();
-                pathVariableManager.setValue(EXTERNAL_LIB_JAVA_PATH, new Path(destinationJavaPath));
-                if (destinationPerlPath != null) {
-                    pathVariableManager.setValue(EXTERNAL_LIB_PERL_PATH, new Path(destinationPerlPath));
-                }
+                // destinationJavaPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
+                // destinationPerlPath = CorePlugin.getDefault().getLibrariesService().getPerlLibrariesPath();
+                //
+                // IPathVariableManager pathVariableManager = ResourcesPlugin.getWorkspace().getPathVariableManager();
+                // pathVariableManager.setValue(EXTERNAL_LIB_JAVA_PATH, new Path(destinationJavaPath));
+                // if (destinationPerlPath != null) {
+                // pathVariableManager.setValue(EXTERNAL_LIB_PERL_PATH, new Path(destinationPerlPath));
+                // }
 
                 super.updateProjectsList(sourcePath);
             }

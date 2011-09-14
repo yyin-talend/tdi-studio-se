@@ -512,8 +512,10 @@ public class JavaProcessorUtilities {
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 jarsNeedRetrieve.remove(externalLib.getName());
             }
-            ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
-            repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
+            if (!jarsNeedRetrieve.isEmpty()) {
+                ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
+                repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
+            }
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
                     IClasspathEntry newEntry = JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null);

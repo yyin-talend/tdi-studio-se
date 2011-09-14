@@ -158,7 +158,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             return list;
         }
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-        String path = librariesService.getLibrariesPath() + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
+        String path = librariesService.getPerlLibrariesPath() + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
                 + PATH_SEPARATOR + SYSTEM_ROUTINES_FOLDER_NAME;
         File file = new File(path);
         File[] files = file.listFiles();
@@ -186,8 +186,8 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             return list;
         }
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-        String folderPath = librariesService.getLibrariesPath() + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
-                + PATH_SEPARATOR + this.getCorrespondingProjectName(null);
+        String folderPath = librariesService.getPerlLibrariesPath() + PATH_SEPARATOR
+                + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + PATH_SEPARATOR + this.getCorrespondingProjectName(null);
         File file = new File(folderPath);
         File[] files = file.listFiles();
         if (files != null) {
@@ -355,7 +355,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
     private List<URL> getComponentModules(String componentName) {
         List<URL> modules = new ArrayList<URL>();
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-        String path = librariesService.getLibrariesPath() + PATH_SEPARATOR + componentName;
+        String path = librariesService.getPerlLibrariesPath() + PATH_SEPARATOR + componentName;
         File file = new File(path);
         if (!file.exists()) {
             return modules;

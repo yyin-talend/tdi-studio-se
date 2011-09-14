@@ -15,13 +15,10 @@ package org.talend.repository.ui.wizards.newproject;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IPathVariableManager;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -33,7 +30,6 @@ import org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.CorePlugin;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
@@ -129,11 +125,11 @@ public class ImportProjectAsWizard extends Wizard {
                                 ImportProjectsUtilities.importArchiveProjectAs(getShell(), name, technicalName, sourcePath,
                                         new SubProgressMonitor(monitor, 1));
                             } catch (TarException e) {
-                                throw new InvocationTargetException(e, Messages
-                                        .getString("ImportProjectAsWizard.encouteringProblem")); //$NON-NLS-1$
+                                throw new InvocationTargetException(e,
+                                        Messages.getString("ImportProjectAsWizard.encouteringProblem")); //$NON-NLS-1$
                             } catch (IOException e) {
-                                throw new InvocationTargetException(e, Messages
-                                        .getString("ImportProjectAsWizard.encouteringProblem")); //$NON-NLS-1$
+                                throw new InvocationTargetException(e,
+                                        Messages.getString("ImportProjectAsWizard.encouteringProblem")); //$NON-NLS-1$
                             }
                         }
 
@@ -173,16 +169,16 @@ public class ImportProjectAsWizard extends Wizard {
      * DOC hcw Comment method "updateExternalLibPath".
      */
     private void updateExternalLibPath() {
-        String destinationJavaPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
-        String destinationPerlPath = CorePlugin.getDefault().getLibrariesService().getPerlLibrariesPath();
+        // String destinationJavaPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
+        // String destinationPerlPath = CorePlugin.getDefault().getLibrariesService().getPerlLibrariesPath();
 
-        IPathVariableManager pathVariableManager = ResourcesPlugin.getWorkspace().getPathVariableManager();
-        try {
-            pathVariableManager.setValue(EXTERNAL_LIB_JAVA_PATH, new Path(destinationJavaPath));
-            pathVariableManager.setValue(EXTERNAL_LIB_PERL_PATH, new Path(destinationPerlPath));
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
-        }
+        // IPathVariableManager pathVariableManager = ResourcesPlugin.getWorkspace().getPathVariableManager();
+        // try {
+        // pathVariableManager.setValue(EXTERNAL_LIB_JAVA_PATH, new Path(destinationJavaPath));
+        // pathVariableManager.setValue(EXTERNAL_LIB_PERL_PATH, new Path(destinationPerlPath));
+        // } catch (CoreException e) {
+        // ExceptionHandler.process(e);
+        // }
 
     }
 
