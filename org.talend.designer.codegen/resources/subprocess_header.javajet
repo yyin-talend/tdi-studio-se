@@ -468,7 +468,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 						if(!hasInteger1 && (!isLookup || hashableColumnsNames.contains(column.getLabel()))) {
 							hasInteger1 = true;
 %>
-	private int readInteger(ObjectInputStream dis) throws IOException{
+	private Integer readInteger(ObjectInputStream dis) throws IOException{
 		Integer intReturn;
         int length = 0;
         length = dis.readByte();
