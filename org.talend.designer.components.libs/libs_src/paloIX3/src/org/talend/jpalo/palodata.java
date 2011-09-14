@@ -1,195 +1,216 @@
 package org.talend.jpalo;
 
-import static java.util.Arrays.asList;
-
+import com.csvreader.CsvReader;
 import java.nio.charset.Charset;
 import java.util.*;
-
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-
-import com.csvreader.CsvReader;
 
 public class palodata {
 
-	
-	public final static int PALO_SPLASH_DISABLE=0;
-	public final static int PALO_SPLASH_DEFAULT=1;
-	public final static int PALO_SPLASH_BASE_SET=3;
-	public final static int PALO_SPLASH_BASE_ADD=2;
-
-		
-	private paloconnection plConn;
-	private palodimensions plDims;
-	private long lDatabaseId;
-	private ArrayList<paloelements> alPaloElements = new ArrayList<paloelements>();
-	
-	private Hashtable <String[], palodatavalue> htPaloResultData= new Hashtable<String[], palodatavalue>();
-	private palocube plCube;
-	private String[][] strDimensionElementsArray;
-	private List<Collection<String>> lstDimensionElements = new LinkedList<Collection<String>>();
-	private Iterator<List<String>> itDimensionElements;
-	private int iBatchSize, iDimensionElementLength;
-	
-	public palodata(paloconnection plConn, palodatabase plDB, palocube paloCube){
-		super();
-		this.plConn = plConn;
-		this.lDatabaseId = plDB.getDatabaseId();
-		this.plCube =paloCube;
-		
-		
+	public palodata() {
+		alPaloElements = new ArrayList();
+		htPaloResultData = new Hashtable();
+		lstDimensionElements = new LinkedList();
 	}
-	
-	public palodata(paloconnection plConn, palodatabase plDB, palocube paloCube, ArrayList<paloelements> alPaloElements, String[][] strDimensionElementsArray, int iBatchSize){
-		super();
+
+	public palodata(paloconnection plConn, palodatabase plDB, palocube paloCube)
+
+	{
+		alPaloElements = new ArrayList();
+		htPaloResultData = new Hashtable();
+		lstDimensionElements = new LinkedList();
 		this.plConn = plConn;
-		this.lDatabaseId = plDB.getDatabaseId();
-		this.plCube =paloCube;
+		lDatabaseId = plDB.getDatabaseId();
+		plCube = paloCube;
+	}
+
+	public palodata(paloconnection plConn, palodatabase plDB,
+			palocube paloCube, ArrayList alPaloElements,
+			String strDimensionElementsArray[][], int iBatchSize) {
+		this.alPaloElements = new ArrayList();
+		htPaloResultData = new Hashtable();
+		lstDimensionElements = new LinkedList();
+		this.plConn = plConn;
+		lDatabaseId = plDB.getDatabaseId();
+		plCube = paloCube;
 		this.alPaloElements = alPaloElements;
 		this.strDimensionElementsArray = strDimensionElementsArray;
-		this.iBatchSize=iBatchSize;
-		htPaloResultData= new Hashtable<String[], palodatavalue>();
+
+		this.iBatchSize = iBatchSize;
+		htPaloResultData = new Hashtable();
 		buildDimElemIteratorFromArray();
 	}
-	
-	private void buildDimElemIteratorFromArray(){
-		this.iDimensionElementLength = strDimensionElementsArray.length;
-		for(int i=0;i<strDimensionElementsArray.length;i++){
-			lstDimensionElements.add(asList(strDimensionElementsArray[i]));
-		}
-		itDimensionElements = palohelpers.finiteCartesianProduct(lstDimensionElements).iterator();
+
+	private void buildDimElemIteratorFromArray() {
+		iDimensionElementLength = strDimensionElementsArray.length;
+		for (int i = 0; i < strDimensionElementsArray.length; i++)
+
+			lstDimensionElements.add(Arrays
+					.asList(strDimensionElementsArray[i]));
+
+		itDimensionElements = palohelpers.finiteCartesianProduct(
+				lstDimensionElements).iterator();
 	}
 
-	public boolean getResults()  throws paloexception{
+	public boolean getResults() throws paloexception {
 		int iRowCounter = 0;
-		List<String> lstDimensionElementArray = new LinkedList<String>();
-		List<String> x;
-		htPaloResultData= new Hashtable<String[], palodatavalue>();
-		while(itDimensionElements.hasNext() && iRowCounter < iBatchSize){
-			
-			x = (List<String>)itDimensionElements.next();
-			for(int i=0;i<x.size();i++)lstDimensionElementArray.add(x.get(i));
-			iRowCounter++;
+		List lstDimensionElementArray = new LinkedList();
+		htPaloResultData = new Hashtable();
+		for (; itDimensionElements.hasNext() && iRowCounter < iBatchSize; iRowCounter++) {
+			List x = (List) itDimensionElements.next();
+			for (int i = 0; i < x.size(); i++)
+				lstDimensionElementArray.add((String) x.get(i));
+
 		}
-		
-		int iPos=0;
-		int iCoordPos=0;
+
+		int iPos = 0;
+		int iCoordPos = 0;
 		StringBuilder sbCoordinates = new StringBuilder();
-		
-		for(String strCoordElement : lstDimensionElementArray){
-			if(iPos>0) sbCoordinates.append(",");
-			paloelement plElm = alPaloElements.get(iCoordPos).getElement(strCoordElement);
-			if(null==plElm)sbCoordinates.append("-1");
-			else sbCoordinates.append(plElm.getElementIdentifier());
+		for (Iterator iterator = lstDimensionElementArray.iterator(); iterator
+				.hasNext();) {
+			String strCoordElement = (String) iterator.next();
+			if (iPos > 0)
+				sbCoordinates.append(",");
+			paloelement plElm = ((paloelements) alPaloElements.get(iCoordPos))
+					.getElement(strCoordElement);
+			if (plElm == null)
+				sbCoordinates.append("-1");
+			else
+				sbCoordinates.append(plElm.getElementIdentifier());
 			iPos++;
-			iCoordPos++;
-			if(iCoordPos>=iDimensionElementLength){
-				iCoordPos=0;
+			if (++iCoordPos >= iDimensionElementLength) {
+				iCoordPos = 0;
 				sbCoordinates.append(":");
-				iPos=0;
+				iPos = 0;
 			}
 		}
-		
-		if(iRowCounter>0){
-		
-			List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+
+		if (iRowCounter > 0) {
+			List qparams = new ArrayList();
 			qparams.add(new BasicNameValuePair("sid", plConn.getPaloToken()));
-			qparams.add(new BasicNameValuePair("database", String.valueOf(this.lDatabaseId)));
-			qparams.add(new BasicNameValuePair("cube", String.valueOf(plCube.getCubeId())));
-			qparams.add(new BasicNameValuePair("paths", sbCoordinates.toString()));
-		
-			try{
-				HttpEntity entity = this.plConn.sendToServer(qparams, "/cell/values");
-				CsvReader csv = new CsvReader(entity.getContent(), Charset.forName("UTF-8"));
+			qparams.add(new BasicNameValuePair("database", String
+					.valueOf(lDatabaseId)));
+			qparams.add(new BasicNameValuePair("cube", String.valueOf(plCube
+					.getCubeId())));
+			qparams.add(new BasicNameValuePair("paths", sbCoordinates
+					.toString()));
+			try {
+				HttpEntity entity = plConn
+						.sendToServer(qparams, "/cell/values");
+				CsvReader csv = new CsvReader(entity.getContent(),
+						Charset.forName("UTF-8"));
 				csv.setDelimiter(';');
 				csv.setTextQualifier('"');
-				int iCoordElem=0;
-				while(csv.readRecord()){
+				int iCoordElem = 0;
+				while (csv.readRecord()) {
 					String strArrCoord[] = new String[iDimensionElementLength];
-					for(int i=0;i<iDimensionElementLength;i++){
-						strArrCoord[i]=lstDimensionElementArray.get(iCoordElem++);
-					}
-					
-					if(palohelpers.StringToInt(csv.get(0))==palodatavalue.PALO_NUMERIC){
-						if(palohelpers.StringToInt(csv.get(1))>0){
-							htPaloResultData.put(strArrCoord, new palodatavalue(strArrCoord, palohelpers.StringToDouble(csv.get(2))));
-						}else{
-							htPaloResultData.put(strArrCoord, new palodatavalue(strArrCoord, 0d));
-						}
-					}else if(palohelpers.StringToInt(csv.get(0))==palodatavalue.PALO_STRING){
-						htPaloResultData.put(strArrCoord, new palodatavalue(strArrCoord, csv.get(2)));
-					}
+					for (int i = 0; i < iDimensionElementLength; i++)
+						strArrCoord[i] = (String) lstDimensionElementArray
+								.get(iCoordElem++);
+
+					if (palohelpers.StringToInt(csv.get(0)) == 1) {
+						if (palohelpers.StringToInt(csv.get(1)) > 0)
+							htPaloResultData.put(
+									strArrCoord,
+									new palodatavalue(strArrCoord, palohelpers
+											.StringToDouble(csv.get(2))));
+						else
+							htPaloResultData.put(strArrCoord,
+									new palodatavalue(strArrCoord, 0.0D));
+					} else if (palohelpers.StringToInt(csv.get(0)) == 0)
+						htPaloResultData.put(strArrCoord, new palodatavalue(
+								strArrCoord, csv.get(2)));
 				}
 				csv.close();
 				entity.consumeContent();
-			}catch(Exception e){
+			} catch (Exception e) {
 				throw new paloexception(e.getMessage());
 			}
 		}
-
-		if(iRowCounter<=iBatchSize && iRowCounter > 0) return true;
-		else return false;
-
+		return iRowCounter <= iBatchSize && iRowCounter > 0;
 	}
-	
-	public Hashtable <String[], palodatavalue> getResultHashTable(){
+
+	public Hashtable getResultHashTable() {
 		return htPaloResultData;
 	}
-	
-	public palodatavalue getValue(String[] strDimensionElementArray, boolean bRefreshElements) throws paloexception{
-		long[] lDimensionElementIdentifierArray = new long[strDimensionElementArray.length];
-		if(null==plDims || bRefreshElements) plDims = plCube.getDimensions();
-		for(int i=0;i<strDimensionElementArray.length;i++){
-			paloelement plElm = plDims.getDimension(i).getElements(false).getElement(strDimensionElementArray[i]);
-			if(null==plElm)lDimensionElementIdentifierArray[i] = -1;
-			else lDimensionElementIdentifierArray[i] = plElm.getElementIdentifier();
+
+	public palodatavalue getValue(String strDimensionElementArray[],
+			boolean bRefreshElements) throws paloexception {
+		long lDimensionElementIdentifierArray[] = new long[strDimensionElementArray.length];
+		if (plDims == null || bRefreshElements)
+			plDims = plCube.getDimensions();
+		for (int i = 0; i < strDimensionElementArray.length; i++) {
+			paloelement plElm = plDims.getDimension(i).getElements(false)
+					.getElement(strDimensionElementArray[i]);
+			if (plElm == null)
+				lDimensionElementIdentifierArray[i] = -1L;
+			else
+				lDimensionElementIdentifierArray[i] = plElm
+						.getElementIdentifier();
 		}
+
 		return getValue(lDimensionElementIdentifierArray);
 	}
 
-	
-	public palodatavalue getValue(long[] lDimensionElementIdentifierArray) throws paloexception{
-		
-		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+	public palodatavalue getValue(long lDimensionElementIdentifierArray[])
+			throws paloexception {
+		List qparams = new ArrayList();
 		qparams.add(new BasicNameValuePair("sid", plConn.getPaloToken()));
-		qparams.add(new BasicNameValuePair("database", String.valueOf(this.lDatabaseId)));
-		qparams.add(new BasicNameValuePair("cube", String.valueOf(plCube.getCubeId())));
-		
+		qparams.add(new BasicNameValuePair("database", String
+				.valueOf(lDatabaseId)));
+		qparams.add(new BasicNameValuePair("cube", String.valueOf(plCube
+				.getCubeId())));
 		StringBuilder sbCoordinates = new StringBuilder();
-		int iPos=0;
-		for(long lDimensionElementIdentifier : lDimensionElementIdentifierArray){
-			if(iPos>0) sbCoordinates.append(",");
+		int iPos = 0;
+		long al[];
+		int j = (al = lDimensionElementIdentifierArray).length;
+		for (int i = 0; i < j; i++) {
+			long lDimensionElementIdentifier = al[i];
+			if (iPos > 0)
+				sbCoordinates.append(",");
 			sbCoordinates.append(lDimensionElementIdentifier);
 			iPos++;
 		}
-		
+
 		qparams.add(new BasicNameValuePair("path", sbCoordinates.toString()));
-		palodatavalue rcDataValue=null;
-		
-		try{
-			HttpEntity entity = this.plConn.sendToServer(qparams, "/cell/value");
-			CsvReader csv = new CsvReader(entity.getContent(), Charset.forName("UTF-8"));
+		palodatavalue rcDataValue = null;
+		try {
+			HttpEntity entity = plConn.sendToServer(qparams, "/cell/value");
+			CsvReader csv = new CsvReader(entity.getContent(),
+					Charset.forName("UTF-8"));
 			csv.setDelimiter(';');
 			csv.setTextQualifier('"');
-			while(csv.readRecord()){
-			
-				if(palohelpers.StringToInt(csv.get(0))==palodatavalue.PALO_NUMERIC){
-					if(palohelpers.StringToInt(csv.get(1))>0){
-						rcDataValue = new palodatavalue(palohelpers.StringToDouble(csv.get(2)));
-					}else{
-						rcDataValue = new palodatavalue(0d);
-					}
-				}else if(palohelpers.StringToInt(csv.get(0))==palodatavalue.PALO_STRING){
+			while (csv.readRecord())
+				if (palohelpers.StringToInt(csv.get(0)) == 1) {
+					if (palohelpers.StringToInt(csv.get(1)) > 0)
+						rcDataValue = new palodatavalue(
+								palohelpers.StringToDouble(csv.get(2)));
+					else
+						rcDataValue = new palodatavalue(0.0D);
+				} else if (palohelpers.StringToInt(csv.get(0)) == 0)
 					rcDataValue = new palodatavalue(csv.get(2));
-				}
-			}				
 			csv.close();
 			entity.consumeContent();
 			return rcDataValue;
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new paloexception(e.getMessage());
 		}
 	}
-	
+
+	public static final int PALO_SPLASH_DISABLE = 0;
+	public static final int PALO_SPLASH_DEFAULT = 1;
+	public static final int PALO_SPLASH_BASE_SET = 3;
+	public static final int PALO_SPLASH_BASE_ADD = 2;
+	private paloconnection plConn;
+	private palodimensions plDims;
+	private long lDatabaseId;
+	private ArrayList alPaloElements;
+	private Hashtable htPaloResultData;
+	private palocube plCube;
+	private String strDimensionElementsArray[][];
+	private List lstDimensionElements;
+	private Iterator itDimensionElements;
+	private int iBatchSize;
+	private int iDimensionElementLength;
 }
