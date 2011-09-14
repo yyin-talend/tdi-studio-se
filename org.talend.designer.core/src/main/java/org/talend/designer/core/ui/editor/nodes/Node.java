@@ -143,6 +143,8 @@ public class Node extends Element implements IGraphicalNode {
 
     public static final String MODIFY_NODELABEL = "modifyNodeLabel"; //$NON-NLS-1$
 
+    public static final String RETURNS_CHANGED = "returns changed";
+
     public static final int DEFAULT_SIZE = 32;
 
     protected Point location = new Point(0, 0);
@@ -679,7 +681,12 @@ public class Node extends Element implements IGraphicalNode {
             getFlowToIterateReturns(allReturns);
         }
 
-        allReturns.addAll(listReturn);
+        for (INodeReturn returnNode : listReturn) {
+            if (returnNode.isShow(this.getElementParameters())) {
+                allReturns.add(returnNode);
+            }
+        }
+
         return allReturns;
     }
 
@@ -1616,6 +1623,10 @@ public class Node extends Element implements IGraphicalNode {
         parameter.setValue(value);
         if (id.equals(EParameterName.INFORMATION.getName())) {
             firePropertyChange(UPDATE_STATUS, null, new Integer(this.currentStatus));
+        }
+
+        if (id.equals(EParameterName.FORLOOP.getName())) {
+            firePropertyChange(RETURNS_CHANGED, null, null);
         }
 
         updateVisibleData();

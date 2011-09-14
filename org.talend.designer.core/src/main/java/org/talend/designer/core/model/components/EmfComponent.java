@@ -438,6 +438,7 @@ public class EmfComponent extends AbstractComponent {
             nodeRet.setDisplayName(getTranslatedValue(retType.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
             nodeRet.setName(retType.getNAME());
             nodeRet.setType(retType.getTYPE());
+            nodeRet.setShowIf(retType.getSHOWIF());
             listReturn.add(nodeRet);
         }
         return listReturn;

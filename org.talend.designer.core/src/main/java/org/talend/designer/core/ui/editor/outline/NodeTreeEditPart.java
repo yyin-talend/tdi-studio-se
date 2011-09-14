@@ -84,6 +84,10 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(final PropertyChangeEvent change) {
+        if (Node.RETURNS_CHANGED.equals(change.getPropertyName())) {
+            refreshChildren();
+            return;
+        }
         Display.getDefault().syncExec(new Runnable() {
 
             public void run() {

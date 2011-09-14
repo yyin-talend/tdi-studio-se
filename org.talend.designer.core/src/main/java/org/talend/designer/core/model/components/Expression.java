@@ -194,7 +194,7 @@ public final class Expression {
         // #LINK@NODE, #PREVIOUS@NODE, #NEXT@NODE ----->implement them later
         if ((variableName != null) && (variableValue != null)) {
             if (varNames[0].equals("#LINK@NODE")) {
-                if (currentParam.getElement() instanceof INode) {
+                if (currentParam != null && currentParam.getElement() instanceof INode) {
                     INode node = (INode) currentParam.getElement();
                     String relatedNodeName = ElementParameterParser.getValue(node, "__" + varNames[1] + "__");
                     List<? extends INode> generatingNodes = node.getProcess().getGeneratingNodes();
@@ -222,6 +222,9 @@ public final class Expression {
                     boolean found = false;
                     if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
                         List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
+                        if (currentParam == null) {
+                            continue;
+                        }
                         Map<String, Object> currentRow = tableValues.get(currentParam.getCurrentRow());
                         if (currentRow.containsKey(varNames[1])) {
                             for (Object curObj : param.getListItemsValue()) {
@@ -300,8 +303,8 @@ public final class Expression {
                                         if (baseColumn != null) {
                                             switch (LanguageManager.getCurrentLanguage()) {
                                             case JAVA:
-                                                value = JavaTypesManager.getTypeToGenerate(baseColumn.getTalendType(), baseColumn
-                                                        .isNullable());
+                                                value = JavaTypesManager.getTypeToGenerate(baseColumn.getTalendType(),
+                                                        baseColumn.isNullable());
                                                 break;
                                             default:
                                                 value = baseColumn.getTalendType();

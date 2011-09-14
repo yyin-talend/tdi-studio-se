@@ -299,6 +299,9 @@ public enum EParameterName {
     VALUES("VALUES"), //$NON-NLS-1$
     JAVA_LIBRARY_PATH("JAVA_LIBRARY_PATH"), //$NON-NLS-1$
 
+    // for tloop
+    FORLOOP("For"),
+
     // for validation rule
     VALIDATION_RULES(Messages.getString("EParameterName.validationRules")), //$NON-NLS-1$
     VALIDATION_RULE_TYPE(Messages.getString("EParameterName.validationRuleType")), //$NON-NLS-1$

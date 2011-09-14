@@ -12,8 +12,11 @@
 // ============================================================================
 package org.talend.designer.core.model.components;
 
+import java.util.List;
+
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.designer.core.i18n.Messages;
 
@@ -34,6 +37,8 @@ public class NodeReturn implements INodeReturn {
     private String availability;
 
     private String varName;
+
+    private String showIf;
 
     protected final static String UNIQUE_NAME = "__UNIQUE_NAME__"; //$NON-NLS-1$
 
@@ -156,6 +161,18 @@ public class NodeReturn implements INodeReturn {
             return displayType;
         default:
             return type;
+        }
+    }
+
+    public void setShowIf(String showIf) {
+        this.showIf = showIf;
+    }
+
+    public boolean isShow(List<? extends IElementParameter> listParam) {
+        if (showIf == null || "".equals(showIf)) {
+            return true;
+        } else {
+            return Expression.evaluate(showIf, listParam);
         }
     }
 }
