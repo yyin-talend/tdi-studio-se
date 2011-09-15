@@ -1,33 +1,33 @@
 public class CLASS {
 
 
-	public boolean hasConcurrencyContext(List<IConnection> inputConnections) {
+	public boolean hasConcurrencyContext(List<IConnection> inputConnections, List<? extends INode> graphicalNodes) {
 
 		for(IConnection connection : inputConnections) {
             EConnectionType connectionType = connection.getLineStyle();
             if (connectionType == EConnectionType.FLOW_MAIN) {
 	            INode node = connection.getSource();
-				return recursiveSearchIterateForConcurrency(node);
+				return recursiveSearchIterateForConcurrency(node, graphicalNodes);
 			}
 		}
 		return false;
 	
 	}
 
-	public boolean hasIterateConnectionBefore(List<IConnection> inputConnections) {
+	public boolean hasIterateConnectionBefore(List<IConnection> inputConnections, List<? extends INode> graphicalNodes) {
 
 		for(IConnection connection : inputConnections) {
             EConnectionType connectionType = connection.getLineStyle();
             if (connectionType == EConnectionType.FLOW_MAIN) {
 	            INode node = connection.getSource();
-				return recursiveSearchIterate(node);
+				return recursiveSearchIterate(node, graphicalNodes);
 			}
 		}
 		return false;
 	
 	}
 	
-	public boolean recursiveSearchIterate(INode node) {
+	public boolean recursiveSearchIterate(INode node, List<? extends INode> graphicalNodes) {
 	
 		//System.out.println(node);
 	
@@ -38,10 +38,26 @@ public class CLASS {
             if (connectionType == EConnectionType.FLOW_MAIN) {
 	            node = connection.getSource();
 				//System.out.println(connection.getName() + " connectionType=" + connectionType + " connection=" + String.valueOf(connection));
-    	        return recursiveSearchIterate(node);
+    	        return recursiveSearchIterate(node, graphicalNodes);
             } else if(connectionType == EConnectionType.ITERATE) {
 				//System.out.println("ITERATE return true");
     	        return true;
+            }else{
+            	//for virtual component
+            	boolean find = false;
+				for(INode loopNode : graphicalNodes) {
+					if(loopNode.getUniqueName().equals(node.getUniqueName())){
+						find = true;
+					}
+				}
+				if(!find){
+					List<IConnection> vConnections = (List<IConnection>) node.getIncomingConnections();
+					for(IConnection vConnection : vConnections) {
+						node = vConnection.getSource();
+						break;
+					}
+					return recursiveSearchIterate(node, graphicalNodes);
+				}
             }
 		}
 		
@@ -50,8 +66,7 @@ public class CLASS {
 	
 	}
 
-	public boolean recursiveSearchIterateForConcurrency(INode node) {
-	
+	public boolean recursiveSearchIterateForConcurrency(INode node, List<? extends INode> graphicalNodes) {
 		//System.out.println(node);
 	
 		List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
@@ -61,11 +76,27 @@ public class CLASS {
             if (connectionType == EConnectionType.FLOW_MAIN) {
 	            node = connection.getSource();
 				//System.out.println(connection.getName() + " connectionType=" + connectionType + " connection=" + String.valueOf(connection));
-    	        return recursiveSearchIterateForConcurrency(node);
+    	        return recursiveSearchIterateForConcurrency(node, graphicalNodes);
             } else if(connectionType == EConnectionType.ITERATE) {
 				//System.out.println("ITERATE return true");
 				boolean parallelIterate = "true".equals(ElementParameterParser.getValue(connection, "__ENABLE_PARALLEL__"));
     	        return parallelIterate;
+            }else{
+            	//for virtual component
+            	boolean find = false;
+				for(INode loopNode : graphicalNodes) {
+					if(loopNode.getUniqueName().equals(node.getUniqueName())){
+						find = true;
+					}
+				}
+				if(!find){
+					List<IConnection> vConnections = (List<IConnection>) node.getIncomingConnections();
+					for(IConnection vConnection : vConnections) {
+						node = vConnection.getSource();
+						break;
+					}
+					return recursiveSearchIterateForConcurrency(node, graphicalNodes);
+				}
             }
 		}
 		

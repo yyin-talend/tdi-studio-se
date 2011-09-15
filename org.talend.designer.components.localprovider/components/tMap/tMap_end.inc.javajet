@@ -17,7 +17,7 @@
 	skeleton="tMap_commons.skeleton"
 %>
 
-<%
+<% 
 
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
@@ -48,7 +48,7 @@
 		// Bug partially fixed, see bug:785	
 		// Bug partially fixed, see bug:3966	
 		
-		boolean hasIterate = hasIterateConnectionBefore(inputConnections);
+		boolean hasIterate = hasIterateConnectionBefore(inputConnections, node.getProcess().getGraphicalNodes());
         
         
 %>
