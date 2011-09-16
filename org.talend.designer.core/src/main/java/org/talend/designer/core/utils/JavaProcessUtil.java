@@ -58,16 +58,37 @@ public class JavaProcessUtil {
                 searchItems.add(processItem);
             }
         }
-        return getNeededLibraries(process, withChildrens, searchItems, isExportOSGI);
+        Set<String> neededLibraries = new HashSet<String>();
+        Set<String> bundleDefinedLibraries = new HashSet<String>();
+        getNeededLibraries(process, withChildrens, searchItems, neededLibraries, bundleDefinedLibraries, isExportOSGI);
+        neededLibraries.removeAll(bundleDefinedLibraries);
+        return neededLibraries;
     }
 
-    private static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens, Set<ProcessItem> searchItems,
-            boolean... isExportOSGI) {
+    private static void getNeededLibraries(final IProcess process, boolean withChildrens, Set<String> neededLibraries,
+            Set<String> bundleDefinedLibraries, boolean... isExportOSGI) {
+        // see bug 4939: making tRunjobs work loop will cause a error of "out of memory"
+        Set<ProcessItem> searchItems = new HashSet<ProcessItem>();
+        if (withChildrens) {
+            ProcessItem processItem = null;
+            if (process.getVersion() != null) {
+                processItem = ItemCacheManager.getProcessItem(process.getId(), process.getVersion());
+            } else {
+                processItem = ItemCacheManager.getProcessItem(process.getId());
+            }
+            if (processItem != null) {
+                searchItems.add(processItem);
+            }
+        }
+        getNeededLibraries(process, withChildrens, searchItems, neededLibraries, bundleDefinedLibraries, isExportOSGI);
+    }
+
+    private static void getNeededLibraries(final IProcess process, boolean withChildrens, Set<ProcessItem> searchItems,
+            Set<String> neededLibraries, Set<String> bundleDefinedLibraries, boolean... isExportOSGI) {
         boolean exportOSGI = false;
         if (isExportOSGI != null && isExportOSGI.length == 1) {
             exportOSGI = isExportOSGI[0];
         }
-        Set<String> neededLibraries = new HashSet<String>();
         IElementParameter headerParameter = process.getElementParameter(EParameterName.HEADER_LIBRARY.getName());
         if (headerParameter != null) {
             Object value = headerParameter.getValue();
@@ -131,6 +152,8 @@ public class JavaProcessUtil {
                         neededLibraries.add(needed.getModuleName());
                     } else if (needed.getBundleName() == null && needed.getBundleVersion() == null) {
                         neededLibraries.add(needed.getModuleName());
+                    } else {
+                        bundleDefinedLibraries.add(needed.getModuleName());
                     }
                 }
             }
@@ -183,14 +206,12 @@ public class JavaProcessUtil {
                         IProcess child = service.getProcessFromItem(subJobInfo.getProcessItem());
                         // Process child = new Process(subJobInfo.getProcessItem().getProperty());
                         // child.loadXmlFile();
-                        neededLibraries.addAll(JavaProcessUtil.getNeededLibraries(child, true, searchItems));
+                        JavaProcessUtil.getNeededLibraries(child, true, searchItems, neededLibraries, bundleDefinedLibraries,
+                                isExportOSGI);
                     }
                 }
             }
         }
-        // return the jars needed for the job.
-        return neededLibraries;
-
     }
 
     private static void getModulsInTable(final IProcess process, IElementParameter curParam, Set<String> neededLibraries) {
@@ -323,7 +344,7 @@ public class JavaProcessUtil {
                 }
 
                 if (flag == true) {
-					String jars = (jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
+                    String jars = (jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
                             TalendTextUtils.SINGLE_QUOTE, "");
                     String separator = ";"; //$NON-NLS-1$
                     if (jars.contains(separator)) {
