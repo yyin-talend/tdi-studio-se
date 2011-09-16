@@ -95,7 +95,7 @@ try {
 			int counter = 1;
 			for(IMetadataColumn column:columnList){	
 				if( columnList.size() != counter){	%>
-				fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>)),"+"<%=lineSeparator%>");
+				fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>))<%if(separator.length()>0 && !"\"\"".equals(separator)){%>||'"+<%=separator%>+"'||<%}else{%>,<%}%>"+"<%=lineSeparator%>");
 			<%
 				} else {
 			%>
@@ -120,7 +120,13 @@ try {
 	fw_<%=cid %>.close();
 	
 	<%//run fexp command----------------------------------------------------%>
-	String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>fexp < \""+<%=scriptPath%>+<%=table%>+"<%=("Windows").equals(execution)?".script":".scr"%>\"<%if(!dieOnError) {%> > \""+<%=errorFile%>+"\"<%}%> 2>&1");
+	<%
+	if("Windows".equals(execution)){
+	%>
+	String[] sb_<%=cid%> = {"cmd","/c","fexp < \""+<%=scriptPath%>+<%=table%>+".script\"<%if(!dieOnError) {%> > \""+<%=errorFile%>+"\"<%}%> 2>&1"};
+	<%}else{%>
+	String[] sb_<%=cid%> = {"sh","-c","fexp < "+<%=scriptPath%>+<%=table%>+".scr"+"<%if(!dieOnError) {%> > \""+<%=errorFile%>+"\"<%}%> 2>&1"};
+	<%}%>
 	final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
 	<%if(dieOnError) {%>
 	final String returnCodePrefix<%=cid%> = "Highest return code encountered = '";
