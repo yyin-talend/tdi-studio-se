@@ -7,7 +7,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -59,8 +61,10 @@ public class ExcelTool {
 
     private Font font = null;
 
-    public ExcelTool() {
+    private Map<String, CellStyle> cellStylesMapping = null;
 
+    public ExcelTool() {
+        cellStylesMapping = new HashMap<String, CellStyle>();
     }
 
     public void setAppend(boolean appendWorkbook, boolean appendSheet) {
@@ -168,64 +172,83 @@ public class ExcelTool {
         xOffset++;
     }
 
-    private CellStyle getCellStyle() {
-        CellStyle preCellStyle = null;
-        if (isAbsY && keepCellFormat) {
-            preCellStyle = getPreCellStyle();
-        }
+    private CellStyle getNormalCellStyle() {
+        CellStyle preCellStyle = getPreCellStyle();
         if (preCellStyle == null) {
-            CellStyle style = wb.createCellStyle();
-            if (font != null) {
-                style.setFont(font);
+            if (cellStylesMapping.get("normal") != null) {
+                return cellStylesMapping.get("normal");
+            } else {
+                CellStyle style = wb.createCellStyle();
+                if (font != null) {
+                    style.setFont(font);
+                }
+                cellStylesMapping.put("normal", style);
+                return style;
             }
-            return style;
         } else {
             return preCellStyle;
         }
 
     }
 
-    private CellStyle getCellStyle(String pattern) {
-        CellStyle style = getCellStyle();
-        if (pattern != null || !"".equals(pattern)) {
-            style.setDataFormat(wb.getCreationHelper().createDataFormat().getFormat(pattern));
+    private CellStyle getDateCellStyle(String pattern) {
+        CellStyle preCellStyle = getPreCellStyle();
+        if (preCellStyle == null) {
+            if (cellStylesMapping.get(pattern) != null) {
+                return cellStylesMapping.get(pattern);
+            } else {
+                CellStyle style = wb.createCellStyle();
+                if (font != null) {
+                    style.setFont(font);
+                }
+                if (pattern != null || !"".equals(pattern)) {
+                    style.setDataFormat(wb.getCreationHelper().createDataFormat().getFormat(pattern));
+                }
+                cellStylesMapping.put(pattern, style);
+                return style;
+            }
+        } else {
+            return preCellStyle;
         }
-        return style;
     }
 
     private CellStyle getPreCellStyle() {
-        if (preCell == null) {
-            return null;
+        if (isAbsY && keepCellFormat) {
+            if (preCell == null) {
+                return null;
+            } else {
+                CellStyle preCellStyle = preCell.getCellStyle();
+                CellStyle targetCellStyle = wb.createCellStyle();
+                targetCellStyle.cloneStyleFrom(preCellStyle);
+                return targetCellStyle;
+            }
         } else {
-            CellStyle preCellStyle = preCell.getCellStyle();
-            CellStyle targetCellStyle = wb.createCellStyle();
-            targetCellStyle.cloneStyleFrom(preCellStyle);
-            return targetCellStyle;
+            return null;
         }
     }
 
     public void addCellValue(boolean booleanValue) {
         addCell();
         curCell.setCellValue(booleanValue);
-        curCell.setCellStyle(getCellStyle());
+        curCell.setCellStyle(getNormalCellStyle());
     }
 
     public void addCellValue(Date dateValue, String pattern) {
         addCell();
         curCell.setCellValue(dateValue);
-        curCell.setCellStyle(getCellStyle(pattern));
+        curCell.setCellStyle(getDateCellStyle(pattern));
     }
 
     public void addCellValue(double doubleValue) {
         addCell();
         curCell.setCellValue(doubleValue);
-        curCell.setCellStyle(getCellStyle());
+        curCell.setCellStyle(getNormalCellStyle());
     }
 
     public void addCellValue(String stringValue) {
         addCell();
         curCell.setCellValue(stringValue);
-        curCell.setCellStyle(getCellStyle());
+        curCell.setCellStyle(getNormalCellStyle());
     }
 
     public void setColAutoSize(int colNum) {
