@@ -364,6 +364,15 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
     }
 
     /**
+     * DOC ycbai Comment method "istWriteJSONField".
+     * 
+     * @return
+     */
+    public boolean istWriteJSONField() {
+        return getComponent().getName().equals("tWriteJSONField"); //$NON-NLS-1$
+    }
+
+    /**
      * DOC gke Comment method "getMetadataTable".
      * 
      * @return

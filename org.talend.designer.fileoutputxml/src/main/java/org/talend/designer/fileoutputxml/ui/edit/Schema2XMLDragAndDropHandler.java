@@ -327,7 +327,12 @@ public class Schema2XMLDragAndDropHandler {
                     linker.getSource().getShell().setCursor(null);
                 }
             } else if (dragdedData.size() > 0) {
-                DragAndDrogDialog dialog = new DragAndDrogDialog(null);
+                DragAndDrogDialog dialog = null;
+                if (getManager().getFoxComponent().istWriteJSONField()) {
+                    dialog = new DragAndDrogDialog(null, true);
+                } else {
+                    dialog = new DragAndDrogDialog(null);
+                }
                 dialog.open();
                 if (dialog.getReturnCode() == IDialogConstants.CANCEL_ID) {
                     return;
