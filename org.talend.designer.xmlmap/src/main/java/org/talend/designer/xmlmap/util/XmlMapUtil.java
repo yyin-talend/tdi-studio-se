@@ -325,6 +325,9 @@ public class XmlMapUtil {
 
         if (treeNode instanceof OutputTreeNode) {
             OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
+            if (outputTreeNode.isAggregate()) {
+                outputTreeNode.setAggregate(false);
+            }
             if (detachChildren && !outputTreeNode.getChildren().isEmpty()) {
                 for (int i = 0; i < outputTreeNode.getChildren().size(); i++) {
                     TreeNode child = outputTreeNode.getChildren().get(i);

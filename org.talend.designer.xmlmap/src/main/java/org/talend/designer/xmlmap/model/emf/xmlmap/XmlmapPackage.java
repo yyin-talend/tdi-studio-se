@@ -908,13 +908,22 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_TREE_NODE__DEFAULT_VALUE = TREE_NODE__DEFAULT_VALUE;
 
     /**
+     * The feature id for the '<em><b>Aggregate</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__AGGREGATE = TREE_NODE_FEATURE_COUNT + 0;
+
+    /**
      * The number of structural features of the '<em>Output Tree Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int OUTPUT_TREE_NODE_FEATURE_COUNT = TREE_NODE_FEATURE_COUNT + 0;
+    int OUTPUT_TREE_NODE_FEATURE_COUNT = TREE_NODE_FEATURE_COUNT + 1;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarNodeImpl <em>Var Node</em>}' class.
@@ -1632,6 +1641,17 @@ public interface XmlmapPackage extends EPackage {
     EClass getOutputTreeNode();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#isAggregate <em>Aggregate</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Aggregate</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#isAggregate()
+     * @see #getOutputTreeNode()
+     * @generated
+     */
+    EAttribute getOutputTreeNode_Aggregate();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarNode <em>Var Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2192,6 +2212,14 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EClass OUTPUT_TREE_NODE = eINSTANCE.getOutputTreeNode();
+
+        /**
+         * The meta object literal for the '<em><b>Aggregate</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute OUTPUT_TREE_NODE__AGGREGATE = eINSTANCE.getOutputTreeNode_Aggregate();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarNodeImpl <em>Var Node</em>}' class.

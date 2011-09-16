@@ -302,6 +302,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             switch (featureId) {
             case XmlmapPackage.TREE_NODE__LOOP:
             case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
+            case XmlmapPackage.OUTPUT_TREE_NODE__AGGREGATE:
                 treeNodeFigure.getElement().getBranchContent().updateStatus();
                 break;
             case XmlmapPackage.TREE_NODE__NAME:

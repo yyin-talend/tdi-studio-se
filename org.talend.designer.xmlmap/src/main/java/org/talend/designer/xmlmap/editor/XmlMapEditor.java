@@ -36,6 +36,7 @@ import org.talend.designer.xmlmap.editor.actions.DeleteTreeNodeAction;
 import org.talend.designer.xmlmap.editor.actions.FixValueAction;
 import org.talend.designer.xmlmap.editor.actions.ImportTreeFromRepository;
 import org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml;
+import org.talend.designer.xmlmap.editor.actions.SetAggregateAction;
 import org.talend.designer.xmlmap.editor.actions.SetGroupAction;
 import org.talend.designer.xmlmap.editor.actions.SetLoopAction;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -130,6 +131,10 @@ public class XmlMapEditor extends GraphicalEditor {
         FixValueAction fixValueAction = new FixValueAction(this);
         getActionRegistry().registerAction(fixValueAction);
         getSelectionActions().add(fixValueAction.getId());
+
+        SetAggregateAction aggreagteAction = new SetAggregateAction(this);
+        getActionRegistry().registerAction(aggreagteAction);
+        getSelectionActions().add(aggreagteAction.getId());
     }
 
     /**
@@ -284,6 +289,13 @@ public class XmlMapEditor extends GraphicalEditor {
                         importFromRepository.setInput(false);
                         if (importFromRepository.isEnabled()) {
                             menu.add(importFromRepository);
+                        }
+
+                        SetAggregateAction aggreateAction = (SetAggregateAction) getActionRegistry().getAction(
+                                SetAggregateAction.ID);
+                        aggreateAction.update(object);
+                        if (aggreateAction.isEnabled()) {
+                            menu.add(aggreateAction);
                         }
 
                     }

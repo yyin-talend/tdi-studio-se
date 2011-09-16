@@ -94,15 +94,21 @@ public class CreateNodeAndConnectionCommand extends Command {
                     return;
                 }
 
-                if (!update && !targetOutputNode.getIncomingConnections().isEmpty()) {
-                    boolean canContinue = MessageDialog
-                            .openConfirm(null, "Warning",
-                                    "Do you want to disconnect the existing linker and then add an sub element for the selected element ?");
-                    if (canContinue) {
-                        XmlMapUtil.detachNodeConnections(targetOutputNode, xmlMapData, true);
-                        targetOutputNode.setExpression("");
+                if (!update) {
+                    if (!targetOutputNode.getIncomingConnections().isEmpty()) {
+                        boolean canContinue = MessageDialog
+                                .openConfirm(null, "Warning",
+                                        "Do you want to disconnect the existing linker and then add an sub element for the selected element ?");
+                        if (canContinue) {
+                            XmlMapUtil.detachNodeConnections(targetOutputNode, xmlMapData, true);
+                        } else {
+                            return;
+                        }
                     } else {
-                        return;
+                        targetOutputNode.setExpression("");
+                        if (targetOutputNode.isAggregate()) {
+                            targetOutputNode.setAggregate(false);
+                        }
                     }
                 }
             }

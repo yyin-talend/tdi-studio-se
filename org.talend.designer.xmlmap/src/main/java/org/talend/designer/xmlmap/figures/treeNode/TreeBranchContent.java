@@ -110,12 +110,18 @@ public class TreeBranchContent extends Figure {
         String status = "";
         if (node.isLoop()) {
             status = "(loop :" + String.valueOf(node.isLoop()) + ")";
-        } else if (node instanceof OutputTreeNode) {
+        }
+        if (node instanceof OutputTreeNode) {
             OutputTreeNode outputNode = (OutputTreeNode) node;
             if (outputNode.isGroup()) {
                 status = "(group :" + String.valueOf(outputNode.isGroup()) + ")";
             }
+
+            if (outputNode.isAggregate()) {
+                status = status + " (aggregate :" + String.valueOf(outputNode.isAggregate()) + ")";
+            }
         }
+
         return status;
     }
 
