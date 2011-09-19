@@ -441,16 +441,10 @@ public class JavaProcessorUtilities {
                 // updateClasspath(jobModuleList);
                 projectSetup = project.getTechnicalLabel();
             }
-            // see bug 5633
             try {
                 sortClasspath(jobModuleList, process);
-            } catch (BusinessException be) {
-                updateClasspath(jobModuleList);
-                try {
-                    sortClasspath(jobModuleList, process);
-                } catch (BusinessException be1) {
-                    ExceptionHandler.process(be1);
-                }
+            } catch (BusinessException be1) {
+                ExceptionHandler.process(be1);
             }
         } catch (CoreException e) {
             ExceptionHandler.process(e);
@@ -527,12 +521,17 @@ public class JavaProcessorUtilities {
             }
         }
 
+        String missingJars = null;
         // sort
         int exchange = 2; // The first,second library is JVM and SRC.
         for (String jar : listModulesReallyNeeded) {
             int index = indexOfEntry(entries, jar);
             if (index < 0) {
-                throw new BusinessException("Missing jar:" + jar);
+                if (missingJars == null) {
+                    missingJars = "Missing jar:" + jar;
+                } else {
+                    missingJars = missingJars + ", " + jar;
+                }
             }
             if (index >= 0 && index != exchange) {
                 // exchange
@@ -541,12 +540,15 @@ public class JavaProcessorUtilities {
                 entries[index] = first;
                 entries[exchange] = entry;
                 changesDone = true;
+                exchange++;
             }
-            exchange++;
         }
         if (changesDone) {
             javaProject.setRawClasspath(entries, null);
             javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
+        }
+        if (missingJars != null) {
+            throw new BusinessException(missingJars);
         }
     }
 
