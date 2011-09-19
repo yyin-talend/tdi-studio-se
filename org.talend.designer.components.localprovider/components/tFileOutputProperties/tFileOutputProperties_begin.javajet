@@ -29,6 +29,7 @@ if(("PROPERTIES_FORMAT").equals(fileFormat)){
 	java.io.InputStream fis_<%=cid%> = new java.io.FileInputStream(file_<%=cid%>);
 	java.util.Properties properties_<%=cid%> = new java.util.Properties();
 	properties_<%=cid%>.load(fis_<%=cid%>);
+	fis_<%=cid%>.close();
 <%
 }else if(("INI_FORMAT").equals(fileFormat)){
 	

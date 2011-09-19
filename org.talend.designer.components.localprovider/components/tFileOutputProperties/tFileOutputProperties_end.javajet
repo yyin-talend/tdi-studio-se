@@ -15,6 +15,7 @@ if(("PROPERTIES_FORMAT").equals(fileFormat)){
 %>
 	java.io.OutputStream fos_<%=cid%> = new java.io.FileOutputStream(file_<%=cid%>);
 	properties_<%=cid%>.store(fos_<%=cid%>, "");
+	fos_<%=cid%>.close();
 <%
 }else if(("INI_FORMAT").equals(fileFormat)){
 %>
