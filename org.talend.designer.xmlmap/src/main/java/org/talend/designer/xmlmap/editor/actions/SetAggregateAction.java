@@ -18,6 +18,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * DOC talend class global comment. Detailled comment
@@ -48,7 +49,7 @@ public class SetAggregateAction extends SelectionAction {
             if (NodeType.NAME_SPACE.equals(model.getNodeType()) || !(model.eContainer() instanceof OutputTreeNode)) {
                 return false;
             }
-            if (!model.getChildren().isEmpty()) {
+            if (!XmlMapUtil.isExpressionEditable(model)) {
                 return false;
             }
 

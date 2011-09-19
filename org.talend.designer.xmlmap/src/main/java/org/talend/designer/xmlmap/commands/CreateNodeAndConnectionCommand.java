@@ -104,11 +104,6 @@ public class CreateNodeAndConnectionCommand extends Command {
                         } else {
                             return;
                         }
-                    } else {
-                        targetOutputNode.setExpression("");
-                        if (targetOutputNode.isAggregate()) {
-                            targetOutputNode.setAggregate(false);
-                        }
                     }
                 }
             }
@@ -163,6 +158,12 @@ public class CreateNodeAndConnectionCommand extends Command {
             if (NodeType.NAME_SPACE.equals(model.getNodeType()) && model.getExpression() != null
                     && !"".equals(model.getExpression())) {
                 model.setDefaultValue("");
+            }
+            if (!XmlMapUtil.isExpressionEditable(model)) {
+                model.setExpression("");
+                if (model.isAggregate()) {
+                    model.setAggregate(false);
+                }
             }
         }
     }

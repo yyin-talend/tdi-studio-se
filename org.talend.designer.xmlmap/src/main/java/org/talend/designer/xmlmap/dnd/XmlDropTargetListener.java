@@ -197,7 +197,7 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
                 return;
             }
 
-            if (targetFigure instanceof ExpressionFigure && !model.getChildren().isEmpty()) {
+            if (targetFigure instanceof ExpressionFigure && !XmlMapUtil.isExpressionEditable(model)) {
                 event.detail = DND.DROP_NONE;
             }
 
@@ -260,7 +260,7 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
                 return;
             }
 
-            if (!model.getChildren().isEmpty()) {
+            if (!XmlMapUtil.isExpressionEditable(model)) {
                 event.detail = DND.DROP_NONE;
                 return;
             }

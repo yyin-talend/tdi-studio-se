@@ -60,7 +60,7 @@ public class RowFigure extends Figure {
         if (isLookup) {
             expression = new ExpressionFigure();
             expression.setText(treeNode.getExpression());
-            if (!treeNode.getChildren().isEmpty()) {
+            if (!XmlMapUtil.isExpressionEditable(treeNode)) {
                 expression.setOpaque(true);
                 expression.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_EXPREESION_DISABLE));
             } else {

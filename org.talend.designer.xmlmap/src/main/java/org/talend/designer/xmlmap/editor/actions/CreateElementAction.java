@@ -85,6 +85,13 @@ public class CreateElementAction extends SelectionAction {
                 treeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                 parent.getChildren().add(treeNode);
                 parent.setExpression("");
+
+                if (!input) {
+                    OutputTreeNode output = (OutputTreeNode) parent;
+                    if (!XmlMapUtil.isExpressionEditable(output) && output.isAggregate()) {
+                        output.setAggregate(false);
+                    }
+                }
             }
 
             if (open == Window.OK && mapperManager != null) {

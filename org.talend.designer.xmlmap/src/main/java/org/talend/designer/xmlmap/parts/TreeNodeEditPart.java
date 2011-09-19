@@ -357,11 +357,14 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             switch (featureId) {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 refreshChildren();
-                ExpressionFigure expression = treeNodeFigure.getElement().getExpressionFigure();
-                if (expression != null) {
-                    expression.setOpaque(true);
-                    expression.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_EXPREESION_DISABLE));
+                boolean expressionEditable = XmlMapUtil.isExpressionEditable((TreeNode) getModel());
+                if (!expressionEditable) {
+                    ExpressionFigure expression = treeNodeFigure.getElement().getExpressionFigure();
+                    if (expression != null) {
+                        expression.setOpaque(true);
+                        expression.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_EXPREESION_DISABLE));
 
+                    }
                 }
 
                 break;
@@ -417,7 +420,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             }
             if (directEditManager != null) {
                 TreeNode outputTreeNode = (TreeNode) getModel();
-                if (outputTreeNode.getChildren().isEmpty()) {
+                if (XmlMapUtil.isExpressionEditable(outputTreeNode)) {
                     DirectEditRequest drequest = (DirectEditRequest) req;
                     Point location = drequest.getLocation();
                     if (figure.containsPoint(location)) {
