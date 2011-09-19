@@ -92,7 +92,7 @@ try{
 		if(inputCol.getLabel().equals(field)){
 %>
 	String field_<%=cid%> = <%=inConn.getName()%>.<%=field%>;
-	String[] newFields_<%=cid%> = field_<%=cid%>.split(<%=separator%>);
+	String[] newFields_<%=cid%> = field_<%=cid%>.split(<%=separator%>,-1);
 	int length_<%=cid%> = newFields_<%=cid%>.length;
 <%
 			if(trim){
