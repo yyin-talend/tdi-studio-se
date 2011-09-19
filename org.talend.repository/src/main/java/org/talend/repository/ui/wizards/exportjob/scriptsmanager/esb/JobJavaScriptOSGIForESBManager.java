@@ -254,6 +254,18 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         }
                     }
                 }
+                //Deal with cTalendJob. LiXiaopeng 2011-9-19 TESB 3121
+                if ("cTalendJob".equals(componentName)) {
+                    for (Object e : currentNode.getElementParameter()) {
+                        ElementParameterType p = (ElementParameterType) e;
+                        if ("LIBRARY".equals(p.getName())) {
+                            String evtValue = p.getValue();
+                            evtValue = unquotes(evtValue);
+                            IPath path = libPath.append(evtValue);
+                            libFiles.add(path.toFile());
+                        }
+                    }
+                }
             }
         }
         
@@ -268,6 +280,25 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             ExceptionHandler.process(e);
         }
         return new ArrayList<URL>(list);
+    }
+    
+    /**
+     * 
+     * Ensure that the string is not surrounded by quotes.
+     * 
+     * @param string
+     * @return
+     */
+    protected String unquotes(String string) {
+        String result = string;
+        if (result.startsWith("\"")) {
+            result = result.substring(1);
+        }
+
+        if (result.endsWith("\"")) {
+            result = result.substring(0, result.length() - 1);
+        }
+        return result;
     }
 
     /**
@@ -300,6 +331,19 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     for (Object e : currentNode.getElementParameter()) {
                         ElementParameterType p = (ElementParameterType) e;
                         if ("DRIVER_JAR".equals(p.getName())) {
+                            for(Object pv:  p.getElementValue()){
+                                ElementValueType evt = (ElementValueType) pv;
+                                String evtValue = evt.getValue();
+                                sb.append(evtValue);
+                                sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+                            }
+                        }
+                    }
+                }
+                if ("cTalendJob".equals(componentName)) {
+                    for (Object e : currentNode.getElementParameter()) {
+                        ElementParameterType p = (ElementParameterType) e;
+                        if ("LIBRARY".equals(p.getName())) {
                             for(Object pv:  p.getElementValue()){
                                 ElementValueType evt = (ElementValueType) pv;
                                 String evtValue = evt.getValue();
