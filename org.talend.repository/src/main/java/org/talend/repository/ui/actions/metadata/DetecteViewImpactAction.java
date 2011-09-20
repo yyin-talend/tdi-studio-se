@@ -64,7 +64,7 @@ public class DetecteViewImpactAction extends AContextualAction {
     }
 
     public boolean isOnlySimpleShow() {
-        return this.onlySimpleShow;
+        return onlySimpleShow;
     }
 
     /**
@@ -74,7 +74,7 @@ public class DetecteViewImpactAction extends AContextualAction {
      * only work for impact analysis
      */
     public void setOnlySimpleShow(boolean onlySimpleShow) {
-        this.onlySimpleShow = onlySimpleShow;
+        onlySimpleShow = onlySimpleShow;
     }
 
     /*

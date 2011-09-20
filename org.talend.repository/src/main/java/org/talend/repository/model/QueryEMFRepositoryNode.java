@@ -63,6 +63,6 @@ public class QueryEMFRepositoryNode extends RepositoryNode {
      * @return the query
      */
     public Query getQuery() {
-        return this.query;
+        return query;
     }
 }

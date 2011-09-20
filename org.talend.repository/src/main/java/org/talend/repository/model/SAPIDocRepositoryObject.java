@@ -90,7 +90,7 @@ public class SAPIDocRepositoryObject extends RepositoryObject implements ISubRep
      * @see org.talend.repository.model.ISubRepositoryObject#getAbstractMetadataObject ()
      */
     public AbstractMetadataObject getAbstractMetadataObject() {
-        return this.iDocUnit;
+        return iDocUnit;
     }
 
     /*
@@ -133,7 +133,7 @@ public class SAPIDocRepositoryObject extends RepositoryObject implements ISubRep
     }
 
     public ModelElement getModelElement() {
-        return this.iDocUnit;
+        return iDocUnit;
     }
 
 }

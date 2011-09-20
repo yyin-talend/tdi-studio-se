@@ -47,9 +47,9 @@ public class ImportSchemaFileAction extends CreateGenericSchemaAction {
      * DOC ggu ImportSchemaFileAction constructor comment.
      */
     public ImportSchemaFileAction() {
-        this.setText(LABEL);
-        this.setToolTipText(LABEL);
-        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_GENERIC_ICON)));
+        setText(LABEL);
+        setToolTipText(LABEL);
+        setImageDescriptor(OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_GENERIC_ICON)));
 
     }
 

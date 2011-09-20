@@ -12,9 +12,12 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 
+import java.util.Map;
+
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptESBManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptOSGIForESBManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJobJavaScriptsManager;
@@ -25,57 +28,25 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJo
  */
 public class JobScriptsManagerFactory {
 
-    private static JobScriptsManagerFactory instance;
-
-    public static JobScriptsManagerFactory getInstance() {
-        if (instance == null) {
-            instance = new JobScriptsManagerFactory();
-        }
-        return instance;
-    }
-
-    public JobScriptsManager createDefaultManagerInstance() {
-
-        JobScriptsManager manager = null;
+    public static JobScriptsManager createManagerInstance(Map<ExportChoice, Object> exportChoiceMap, String contextName,
+			String launcher, int statisticPort, int tracePort, JobExportType jobExportType) {
         ECodeLanguage language = LanguageManager.getCurrentLanguage();
-        if (language == ECodeLanguage.JAVA) {
-            manager = new JobJavaScriptsManager();
-        } else if (language == ECodeLanguage.PERL) {
-            manager = new JobPerlScriptsManager();
-        }
-        return manager;
-    }
-
-    public JobScriptsManager createManagerInstance(ECodeLanguage language, JobExportType jobExportType) {
-
-        JobScriptsManager manager = null;
         if (language == ECodeLanguage.JAVA) {
             switch (jobExportType) {
             case POJO:
-                manager = new JobJavaScriptsManager();
-                break;
+                return new JobJavaScriptsManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
             case WSWAR:
-                manager = new JobJavaScriptsWSManager();
-                break;
+                return new JobJavaScriptsWSManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort, ".war");
             case WSZIP:
-                manager = new JobJavaScriptsWSManager();
-                break;
+                return new JobJavaScriptsWSManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort, ".zip");
             case JBOSSESB:
-                manager = new JobJavaScriptESBManager();
-                break;
+                return new JobJavaScriptESBManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
             case PETALSESB:
-                manager = new PetalsJobJavaScriptsManager();
-                break;
+                return new PetalsJobJavaScriptsManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
             case OSGI:
-                manager = new JobJavaScriptOSGIForESBManager();
-                break;
-            default:
-                throw new RuntimeException("Export type [" + jobExportType + "] not handled."); //$NON-NLS-1$ //$NON-NLS-2$
+                return new JobJavaScriptOSGIForESBManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
             }
-
-        } else if (language == ECodeLanguage.PERL) {
-            manager = new JobPerlScriptsManager();
-        }
-        return manager;
+        } 
+        return new JobJavaScriptsManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
     }
 }

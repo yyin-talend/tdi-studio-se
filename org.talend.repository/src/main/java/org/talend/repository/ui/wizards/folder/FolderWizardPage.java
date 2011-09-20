@@ -145,7 +145,7 @@ public class FolderWizardPage extends WizardPage {
     }
 
     public void setName(String name) {
-        this.nameText.setText(name);
+        nameText.setText(name);
     }
 
     private static IStatus createOkStatus() {

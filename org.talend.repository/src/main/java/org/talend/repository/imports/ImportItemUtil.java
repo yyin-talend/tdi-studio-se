@@ -150,7 +150,7 @@ public class ImportItemUtil {
     }
 
     public void setErrors(boolean errors) {
-        this.hasErrors = errors;
+        hasErrors = errors;
     }
 
     public boolean hasErrors() {
@@ -1095,10 +1095,10 @@ public class ImportItemUtil {
         });
 
         if (!CommonsPlugin.isHeadless() || !ProjectManager.getInstance().getCurrentProject().isLocal()) {
-            for (List<IRepositoryViewObject> list : this.cache.getItemsFromRepository().values()) {
+            for (List<IRepositoryViewObject> list : cache.getItemsFromRepository().values()) {
                 list.clear();
             }
-            this.cache.getItemsFromRepository().clear();
+            cache.getItemsFromRepository().clear();
         }
 
         TimeMeasure.end("populateItems");
@@ -1547,7 +1547,7 @@ public class ImportItemUtil {
     }
 
     public Map<String, Set<String>> getRoutineExtModulesMap() {
-        return this.routineExtModulesMap;
+        return routineExtModulesMap;
     }
 
 }

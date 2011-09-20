@@ -12,18 +12,16 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.custom.BusyIndicator;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.designer.runprocess.ProcessorException;
-import org.talend.repository.documentation.ExportFileResource;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
 /**
@@ -32,7 +30,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
  * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
  * 
  */
-public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
+public abstract class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
 
     // dialog store id constants
     public static final String STORE_SHELL_LAUNCHER_ID = "JavaJobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
@@ -60,16 +58,6 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
 
     public static final String EXTRACT_ZIP_FILE = "JavaJobScriptsExportWizardPage.EXTRACT_ZIP_FILE"; //$NON-NLS-1$
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#createJobScriptsManager()
-     */
-    @Override
-    public JobScriptsManager createJobScriptsManager() {
-        return new JobJavaScriptsManager();
-    }
-
     /**
      * Create an instance of this class.
      * 
@@ -79,33 +67,7 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
         super("JavaJobscriptsExportPage1", selection); //$NON-NLS-1$
     }
 
-    /**
-     * Returns resources to be exported. This returns file - for just the files use getSelectedResources.
-     * 
-     * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#getExportResources()
-     */
-    @Override
-    public List<ExportFileResource> getExportResources() throws ProcessorException {
-        final List<ExportFileResource>[] resourcesToExportxx = new List[1];
-
-        BusyIndicator.showWhile(this.getShell().getDisplay(), new Runnable() {
-
-            public void run() {
-                try {
-                    resourcesToExportxx[0] = JavaJobScriptsExportWizardPage.super.getExportResources();
-                } catch (ProcessorException e) {
-                    ExceptionHandler.process(e);
-                }
-            }
-        });
-        return resourcesToExportxx[0];
-    }
-
+    
     /**
      * Hook method for saving widget values for restoration by the next instance of this class.
      */
@@ -162,22 +124,20 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
             // genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
         }
 
-        launcherCombo.setItems(manager.getLauncher());
-        if (manager.getLauncher().length > 0) {
+        launcherCombo.setItems(JobScriptsManager.getLauncher());
+        if (JobScriptsManager.getLauncher().length > 0) {
             launcherCombo.select(0);
         }
-        if (process.length > 0) {
-            try {
-                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        process[0].getItem().getProperty()).getItem());
-            } catch (PersistenceException e) {
-                e.printStackTrace();
-            }
-            List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
-            contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
-            if (contextNames.size() > 0) {
-                contextCombo.select(0);
-            }
+        try {
+            setProcessItem((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                    getProcessItem().getProperty()).getItem());
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+        }
+        List<String> contextNames = getJobContexts(getProcessItem());
+        contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
+        if (contextNames.size() > 0) {
+            contextCombo.select(0);
         }
     }
 

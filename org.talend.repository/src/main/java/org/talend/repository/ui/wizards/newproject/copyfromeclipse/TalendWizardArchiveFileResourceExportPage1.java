@@ -72,7 +72,7 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
 
     public TalendWizardArchiveFileResourceExportPage1(IStructuredSelection selection) {
         super(selection);
-        this.initialResourceSelection = selection;
+        initialResourceSelection = selection;
         setTitle(DataTransferMessages.ArchiveExport_exportTitle);
         setDescription(DataTransferMessages.ArchiveExport_description);
     }
@@ -124,7 +124,7 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
             }
         }
 
-        this.resourceGroup = new ResourceTreeAndListGroup(parent, input,
+        resourceGroup = new ResourceTreeAndListGroup(parent, input,
                 getResourceProvider(IResource.FOLDER | IResource.PROJECT),
                 WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider(), getResourceProvider(IResource.FILE),
                 WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider(), SWT.NONE, DialogUtil.inRegularFontMode(parent));
@@ -136,26 +136,26 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
             }
         };
 
-        this.resourceGroup.addCheckStateListener(listener);
+        resourceGroup.addCheckStateListener(listener);
 
     }
 
     protected Iterator getSelectedResourcesIterator() {
-        return this.resourceGroup.getAllCheckedListItems().iterator();
+        return resourceGroup.getAllCheckedListItems().iterator();
     }
 
     protected List getWhiteCheckedResources() {
-        return this.resourceGroup.getAllWhiteCheckedItems();
+        return resourceGroup.getAllWhiteCheckedItems();
     }
 
     protected void setupBasedOnInitialSelections() {
-        Iterator it = this.initialResourceSelection.iterator();
+        Iterator it = initialResourceSelection.iterator();
         while (it.hasNext()) {
             IResource currentResource = (IResource) it.next();
             if (currentResource.getType() == IResource.FILE) {
-                this.resourceGroup.initialCheckListItem(currentResource);
+                resourceGroup.initialCheckListItem(currentResource);
             } else {
-                this.resourceGroup.initialCheckTreeItem(currentResource);
+                resourceGroup.initialCheckTreeItem(currentResource);
             }
         }
     }

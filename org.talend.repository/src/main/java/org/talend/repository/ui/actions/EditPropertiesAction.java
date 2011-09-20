@@ -88,9 +88,9 @@ public class EditPropertiesAction extends AContextualAction {
 
     public EditPropertiesAction() {
         super();
-        this.setText(Messages.getString("EditPropertiesAction.action.title")); //$NON-NLS-1$
-        this.setToolTipText(Messages.getString("EditPropertiesAction.action.toolTipText")); //$NON-NLS-1$
-        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EDIT_ICON));
+        setText(Messages.getString("EditPropertiesAction.action.title")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("EditPropertiesAction.action.toolTipText")); //$NON-NLS-1$
+        setImageDescriptor(ImageProvider.getImageDesc(EImage.EDIT_ICON));
     }
 
     protected void doRun() {
@@ -213,7 +213,7 @@ public class EditPropertiesAction extends AContextualAction {
                     RefactoringStatusEntry entry = entries[i];
                     errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
                 }
-                MessageDialog.openError(this.getViewPart().getViewSite().getShell(),
+                MessageDialog.openError(getViewPart().getViewSite().getShell(),
                         Messages.getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
                 return;
             }

@@ -83,6 +83,7 @@ import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -92,7 +93,13 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public class JobJavaScriptsManager extends JobScriptsManager {
 
-    private static final String USER_BEANS_PATH = "beans"; //$NON-NLS-1$
+    public JobJavaScriptsManager(Map<ExportChoice, Object> exportChoiceMap,
+			String contextName, String launcher, int statisticPort,
+			int tracePort) {
+		super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
+	}
+
+	private static final String USER_BEANS_PATH = "beans"; //$NON-NLS-1$
 
     private static final String USER_ROUTINES_PATH = "routines"; //$NON-NLS-1$
 
@@ -103,19 +110,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     protected static final String USERROUTINE_JAR = "userRoutines.jar"; //$NON-NLS-1$
 
     private boolean needMappingInSystemRoutine = false;
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.repository.ui.wizards.exportjob.JobScriptsManager#getExportResources(org.talend.core.model.properties
-     * .ProcessItem[], boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
-     */
-    @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            IContext context, String launcher, int statisticPort, int tracePort, String... codeOptions) throws ProcessorException {
-        return getExportResources(process, exportChoice, null, context, launcher, statisticPort, tracePort, codeOptions);
-    }
 
     /**
      * DOC informix Comment method "posExportResource".
@@ -136,22 +130,22 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     private List<URL> posExportResource(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice, String contextName,
             String launcher, int statisticPort, int tracePort, int i, IProcess jobProcess, ProcessItem processItem,
             String selectedJobVersion, List<URL> resources, String... codeOptions) {
-        resources.addAll(getLauncher(isOptionChoosed(exportChoice, ExportChoice.needLauncher),
-                isOptionChoosed(exportChoice, ExportChoice.setParameterValues),
-                isOptionChoosed(exportChoice, ExportChoice.needContext), jobProcess, processItem, escapeSpace(contextName),
+        resources.addAll(getLauncher(isOptionChoosed(ExportChoice.needLauncher),
+                isOptionChoosed(ExportChoice.setParameterValues),
+                isOptionChoosed(ExportChoice.needContext), jobProcess, processItem, escapeSpace(contextName),
                 escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
-        addSourceCode(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needSourceCode), process[i],
+        addSourceCode(process, processItem, isOptionChoosed(ExportChoice.needSourceCode), process[i],
                 selectedJobVersion);
 
-        addDependenciesSourceCode(process, process[i], isOptionChoosed(exportChoice, ExportChoice.needSourceCode));
-        addXmlMapping(process[i], isOptionChoosed(exportChoice, ExportChoice.needSourceCode));
+        addDependenciesSourceCode(process, process[i], isOptionChoosed(ExportChoice.needSourceCode));
+        addXmlMapping(process[i], isOptionChoosed(ExportChoice.needSourceCode));
 
-        addJobItem(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needJobItem), process[i], selectedJobVersion);
+        addJobItem(process, processItem, isOptionChoosed(ExportChoice.needJobItem), process[i], selectedJobVersion);
 
-        addDependencies(process, processItem, isOptionChoosed(exportChoice, ExportChoice.needDependencies), process[i]);
+        addDependencies(process, processItem, isOptionChoosed(ExportChoice.needDependencies), process[i]);
         resources
-                .addAll(getJobScripts(processItem, selectedJobVersion, isOptionChoosed(exportChoice, ExportChoice.needJobScript))); // always
+                .addAll(getJobScripts(processItem, selectedJobVersion, isOptionChoosed(ExportChoice.needJobScript))); // always
         // need
         // job
         // generation
@@ -159,7 +153,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         // workaround for problem on children jobs generation
         processItem.getProcess().getNode();
 
-        addContextScripts(process[i], selectedJobVersion, isOptionChoosed(exportChoice, ExportChoice.needContext));
+        addContextScripts(process[i], selectedJobVersion, isOptionChoosed(ExportChoice.needContext));
 
         // add children jobs
         boolean needChildren = true;
@@ -200,14 +194,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * .ProcessItem[], boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
      */
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
-            throws ProcessorException {
-        return getExportResources(process, exportChoice, contextName, null, launcher, statisticPort, tracePort, codeOptions);
-    }
-
-    protected List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            String contextName, IContext context, String launcher, int statisticPort, int tracePort, String... codeOptions)
+	public List<ExportFileResource> getExportResources(ExportFileResource[] process, String... codeOptions)
             throws ProcessorException {
 
         Set<String> neededLibraries = null;
@@ -220,21 +207,17 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             // TODO: option doNotCompileCode is deprecated now.
             // code is just kept like this to avoid too big changes right now.
-            if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
+            if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
                 if (neededLibraries == null) {
                     neededLibraries = new HashSet<String>();
                 }
                 if (contextName != null) {
                     jobProcess = generateJobFiles(processItem, contextName, selectedJobVersion,
                             statisticPort != IProcessor.NO_STATISTICS
-                                    || isOptionChoosed(exportChoice, ExportChoice.addStatistics),
-                            tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
+                                    || isOptionChoosed(ExportChoice.addStatistics),
+                            tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren),
                             progressMonitor);
-                } else if (context != null) {
-                    jobProcess = generateJobFiles(processItem, context, selectedJobVersion,
-                            statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES,
-                            isOptionChoosed(exportChoice, ExportChoice.applyToChildren), progressMonitor);
-                }
+                } 
                 neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                         processItem.getProperty().getId(), selectedJobVersion));
             } else {
@@ -243,12 +226,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 LastGenerationInfo.getInstance().setLastMainJob(null);
             }
             List<URL> resources = new ArrayList<URL>();
-            if (context != null) {
-                String contextName2 = context.getName();
-                if (contextName2 != null) {
-                    contextName = contextName2;
-                }
-            }
             List<URL> childrenList = posExportResource(process, exportChoice, contextName, launcher, statisticPort, tracePort, i,
                     jobProcess, processItem, selectedJobVersion, resources, codeOptions);
             resources.addAll(childrenList);
@@ -266,14 +243,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         ExportFileResource rootResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
         list.add(rootResource);
         // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(process, isOptionChoosed(exportChoice, ExportChoice.needSystemRoutine));
+        List<URL> systemRoutineList = getSystemRoutine(process, isOptionChoosed(ExportChoice.needSystemRoutine));
         rootResource.addResources(systemRoutineList);
         // Gets user routines
-        List<URL> userRoutineList = getUserRoutine(process, isOptionChoosed(exportChoice, ExportChoice.needUserRoutine));
+        List<URL> userRoutineList = getUserRoutine(process, isOptionChoosed(ExportChoice.needUserRoutine));
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(exportChoice, ExportChoice.needTalendLibraries),
+        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(ExportChoice.needTalendLibraries),
                 process, neededLibraries);
         rootResource.addResources(talendLibraries);
 
@@ -639,11 +616,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     childProjectName = project.getTechnicalLabel().toLowerCase(); // hywang modify for 7932
                 }
                 allJobScripts.addAll(getJobScripts(childProjectName, jobInfo.getJobName(), jobInfo.getJobVersion(),
-                        isOptionChoosed(exportChoice, ExportChoice.needJobScript)));
+                        isOptionChoosed(ExportChoice.needJobScript)));
                 addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
-                        isOptionChoosed(exportChoice, ExportChoice.needContext));
+                        isOptionChoosed(ExportChoice.needContext));
                 addDependencies(allResources, jobInfo.getProcessItem(),
-                        isOptionChoosed(exportChoice, ExportChoice.needDependencies), resource);
+                        isOptionChoosed(ExportChoice.needDependencies), resource);
             }
         }
 
@@ -658,9 +635,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             return;
         }
         processedJob.add(process);
-        addJobItem(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needJobItem), resource);
-        addDependencies(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needDependencies), resource);
-        addSourceCode(allResources, process, isOptionChoosed(exportChoice, ExportChoice.needSourceCode), resource);
+        addJobItem(allResources, process, isOptionChoosed(ExportChoice.needJobItem), resource);
+        addDependencies(allResources, process, isOptionChoosed(ExportChoice.needDependencies), resource);
+        addSourceCode(allResources, process, isOptionChoosed(ExportChoice.needSourceCode), resource);
 
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
@@ -1164,28 +1141,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return toReturn;
     }
 
-    /**
-     * 
-     * Gets the set of current job's context.
-     * 
-     * @return a List of context names.
-     * 
-     */
-    @Override
-    public List<String> getJobContexts(ProcessItem processItem) {
-        List<String> contextNameList = new ArrayList<String>();
-        for (Object o : ((ProcessTypeImpl) processItem.getProcess()).getContext()) {
-            if (o instanceof ContextType) {
-                ContextType context = (ContextType) o;
-                if (contextNameList.contains(context.getName())) {
-                    continue;
-                }
-                contextNameList.add(context.getName());
-            }
-        }
-        return contextNameList;
-    }
-
     public List<String> getJobContextsComboValue(ProcessItem processItem) {
         List<String> contextNameList = new ArrayList<String>();
         for (Object o : ((ProcessTypeImpl) processItem.getProcess()).getContext()) {
@@ -1311,33 +1266,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return map;
     }
 
-    // private List<File> getExcludeUerRoutines(ExportFileResource[] process) {
-    // List<File> userRoutines = null;
-    //
-    // try {
-    // String classRoot = getClassRootLocation();
-    // userRoutines = getAllFiles(classRoot, USER_ROUTINES_PATH);
-    // List<IRepositoryViewObject> allRoutines = ProxyRepositoryFactory.getInstance().getAll(
-    // ProjectManager.getInstance().getCurrentProject(), ERepositoryObjectType.ROUTINES);
-    // Iterator<File> iterator = userRoutines.iterator();
-    // while (iterator.hasNext()) {
-    // File file = (File) iterator.next();
-    // for (IRepositoryViewObject object : allRoutines) {
-    // RoutineItem item = (RoutineItem) object.getProperty().getItem();
-    //                    if (!item.isBuiltIn() && file.getName().equals(item.getProperty().getLabel() + ".class")) { //$NON-NLS-1$
-    // iterator.remove();
-    // }
-    // }
-    // }
-    //
-    // } catch (PersistenceException e) {
-    // ExceptionHandler.process(e);
-    // } catch (Exception e) {
-    // ExceptionHandler.process(e);
-    // }
-    // return userRoutines;
-    // }
-
     private List<File> getAllFiles(String rootPath, String childPath) {
         final List<File> list = new ArrayList<File>();
         File file = new File(rootPath, childPath);
@@ -1355,4 +1283,22 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         return list;
     }
+
+	@Override
+	public List<ExportFileResource> getExportResources(
+			ExportFileResource[] process, IContext context,
+			String... codeOptions) throws ProcessorException {
+		contextName = context.getName();
+		return getExportResources(process, codeOptions);
+	}
+	
+	@Override
+    public void setTopFolder(List<ExportFileResource> resourcesToExport) {
+		String topFolder = getRootFolderName(getDestinationPath());
+        for (ExportFileResource fileResource : resourcesToExport) {
+            String directory = fileResource.getDirectoryName();
+            fileResource.setDirectoryName(topFolder + "/" + directory); //$NON-NLS-1$
+        }
+    }
+
 }

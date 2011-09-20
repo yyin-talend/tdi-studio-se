@@ -32,21 +32,16 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -60,8 +55,6 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
-import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
-import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.runprocess.IProcessor;
@@ -71,7 +64,6 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JarBuilder;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 
 /**
@@ -79,7 +71,13 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsM
  */
 public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
-    private static final String PACKAGE_SEPARATOR = ".";
+    public JobJavaScriptOSGIForESBManager(
+			Map<ExportChoice, Object> exportChoiceMap, String contextName,
+			String launcher, int statisticPort, int tracePort) {
+		super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
+	}
+
+	private static final String PACKAGE_SEPARATOR = ".";
 
     private static final String JAVA = "java";
 
@@ -101,8 +99,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private String itemType = null;
 
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
-            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions)
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, String... codeOptions)
             throws ProcessorException {
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
 
@@ -149,23 +146,14 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
                     + PACKAGE_SEPARATOR; //$NON-NLS-1$
-            
-            /**
-             * Add additional route dependencies jars LiXiaopeng 2011-9-19
-             */
-            if(itemType.equals(ROUTE)){
-                String addtionalLibPath = computeAddtionalLibPath(processItem);
-                standardJars += addtionalLibPath;               
-            }
-            
             ProcessorUtilities.setExportConfig(JAVA, standardJars, libPath); //$NON-NLS-1$
 
-            if (!isOptionChoosed(exportChoice, ExportChoice.doNotCompileCode)) {
+            if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
                 if (neededLibraries == null) {
                     neededLibraries = new HashSet<String>();
                 }
                 generateJobFiles(processItem, contextName, jobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(exportChoice, ExportChoice.applyToChildren),
+                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren),
                         true /* isExportAsOSGI */, progressMonitor);
                 neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                         processItem.getProperty().getId() + "-osgi", jobVersion));
@@ -179,9 +167,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             getJobScriptsUncompressed(jobScriptResource, processItem);
 
             // dynamic db xml mapping
-            addXmlMapping(process[i], isOptionChoosed(exportChoice, ExportChoice.needSourceCode));
+            addXmlMapping(process[i], isOptionChoosed(ExportChoice.needSourceCode));
 
-            List<String> esbFiles = generateESBFiles(process[i].getItem(), contextName);
+            List<String> esbFiles = generateESBFiles(process[i].getItem());
 
             List<URL> urlList = new ArrayList<URL>();
             try {
@@ -194,7 +182,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
             osgiResource.addResources(getOSGIInfFolder(), urlList);
 
+
         }
+        
+        
 
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(true, process, neededLibraries);
@@ -214,162 +205,18 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return list;
     }
 
-    /**
-     * 
-     * Add additional dependency libraries.
-     * @param processItem
-     * @param libPath
-     * @return
-     */
-    private List<URL> computeAddtionalLibs(ProcessItem processItem, IPath libPath) {
-        List<File> libFiles = new ArrayList<File>();
-        ProcessType processType = processItem.getProcess();
-        for (Object o : processType.getNode()) {
-            if (o instanceof NodeType) {
-                NodeType currentNode = (NodeType) o;
-                String componentName = currentNode.getComponentName();
-                if ("cMessagingEndpoint".equals(componentName)) {
-                    for (Object e : currentNode.getElementParameter()) {
-                        ElementParameterType p = (ElementParameterType) e;
-                        if ("HOTLIBS".equals(p.getName())) {
-                            for (Object pv : p.getElementValue()) {
-                                ElementValueType evt = (ElementValueType) pv;
-                                String evtValue = evt.getValue();
-                                IPath path = libPath.append(evtValue);
-                                libFiles.add(path.toFile());
-                            }
-                        }
-                    }
-                }
-                if ("cContextConfig".equals(componentName) || "cJMS".equals(componentName)) {
-                    for (Object e : currentNode.getElementParameter()) {
-                        ElementParameterType p = (ElementParameterType) e;
-                        if ("DRIVER_JAR".equals(p.getName())) {
-                            for (Object pv : p.getElementValue()) {
-                                ElementValueType evt = (ElementValueType) pv;
-                                String evtValue = evt.getValue();
-                                IPath path = libPath.append(evtValue);
-                                libFiles.add(path.toFile());
-                            }
-                        }
-                    }
-                }
-                //Deal with cTalendJob. LiXiaopeng 2011-9-19 TESB 3121
-                if ("cTalendJob".equals(componentName)) {
-                    for (Object e : currentNode.getElementParameter()) {
-                        ElementParameterType p = (ElementParameterType) e;
-                        if ("LIBRARY".equals(p.getName())) {
-                            String evtValue = p.getValue();
-                            evtValue = unquotes(evtValue);
-                            IPath path = libPath.append(evtValue);
-                            libFiles.add(path.toFile());
-                        }
-                    }
-                }
-            }
-        }
-        
-        Set<URL> list = new HashSet<URL>();
-        try {
-            for(File lib: libFiles){
-                URL url = lib.toURL();
-                list.add(url);
-            }
-           
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-        return new ArrayList<URL>(list);
-    }
-    
-    /**
-     * 
-     * Ensure that the string is not surrounded by quotes.
-     * 
-     * @param string
-     * @return
-     */
-    protected String unquotes(String string) {
-        String result = string;
-        if (result.startsWith("\"")) {
-            result = result.substring(1);
-        }
+	protected ExportFileResource getOsgiResource() {
+		return new ExportFileResource(null, ""); //$NON-NLS-1$;
+	}
 
-        if (result.endsWith("\"")) {
-            result = result.substring(0, result.length() - 1);
-        }
-        return result;
-    }
+	private String getPackageName(ProcessItem processItem) {
+		return JavaResourcesHelper.getProjectFolderName(processItem)
+		        + PACKAGE_SEPARATOR
+		        + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
+		                .getVersion());
+	}
 
-    /**
-     * Add user input dependency library path.
-     * DOC LiXP Comment method "computeAddtionalLibPath".
-     * @param processItem
-     * @return
-     */
-    private String computeAddtionalLibPath(ProcessItem processItem) {
-        StringBuffer sb = new StringBuffer();
-        ProcessType processType = processItem.getProcess();
-        for (Object o : processType.getNode()) {
-            if (o instanceof NodeType) {
-                NodeType currentNode = (NodeType) o;
-                String componentName = currentNode.getComponentName();
-                if ("cMessagingEndpoint".equals(componentName)) {
-                    for (Object e : currentNode.getElementParameter()) {
-                        ElementParameterType p = (ElementParameterType) e;
-                        if ("HOTLIBS".equals(p.getName())) {
-                            for(Object pv:  p.getElementValue()){
-                                ElementValueType evt = (ElementValueType) pv;
-                                String evtValue = evt.getValue();
-                                sb.append(evtValue);
-                                sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-                            }
-                        }
-                    }
-                }
-                if ("cContextConfig".equals(componentName) || "cJMS".equals(componentName)) {
-                    for (Object e : currentNode.getElementParameter()) {
-                        ElementParameterType p = (ElementParameterType) e;
-                        if ("DRIVER_JAR".equals(p.getName())) {
-                            for(Object pv:  p.getElementValue()){
-                                ElementValueType evt = (ElementValueType) pv;
-                                String evtValue = evt.getValue();
-                                sb.append(evtValue);
-                                sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-                            }
-                        }
-                    }
-                }
-                if ("cTalendJob".equals(componentName)) {
-                    for (Object e : currentNode.getElementParameter()) {
-                        ElementParameterType p = (ElementParameterType) e;
-                        if ("LIBRARY".equals(p.getName())) {
-                            for(Object pv:  p.getElementValue()){
-                                ElementValueType evt = (ElementValueType) pv;
-                                String evtValue = evt.getValue();
-                                sb.append(evtValue);
-                                sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return sb.toString();
-    }
-
-    protected ExportFileResource getOsgiResource() {
-        return new ExportFileResource(null, ""); //$NON-NLS-1$;
-    }
-
-    private String getPackageName(ProcessItem processItem) {
-        return JavaResourcesHelper.getProjectFolderName(processItem)
-                + PACKAGE_SEPARATOR
-                + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
-                        .getVersion());
-    }
-
-    protected List<String> generateESBFiles(Item processItem, String contextName) {
+    protected List<String> generateESBFiles(Item processItem) {
         List<String> files = new ArrayList<String>();
         final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
         try {
@@ -464,8 +311,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return metaInfoResource;
     }
 
-    protected Manifest getManifest(ExportFileResource libResource, List<ProcessItem> itemToBeExport, String bundleName)
-            throws IOException {
+    protected Manifest getManifest(ExportFileResource libResource, List<ProcessItem> itemToBeExport, String bundleName) throws IOException {
         Manifest manifest = new Manifest();
         Attributes a = manifest.getMainAttributes();
         a.put(Attributes.Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
@@ -476,34 +322,35 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         StringBuilder sb = new StringBuilder();
         String delim = "";
         for (ProcessItem pi : itemToBeExport) {
-            sb.append(delim).append(getPackageName(pi));
+			sb.append(delim).append(getPackageName(pi));
             delim = ",";
         }
         a.put(new Attributes.Name("Export-Package"), sb.toString()); //$NON-NLS-1$
         if (ROUTE.equals(itemType)) {
-            /*
-             * add external import-packages for Activemq
-             */
-            String externalImport = "";
-            for (ProcessItem pi : itemToBeExport) {
-                ProcessType process = pi.getProcess();
-                if (process == null) {
-                    continue;
-                }
-                EList nodes = process.getNode();
-                Iterator iterator = nodes.iterator();
-                while (iterator.hasNext()) {
-                    NodeType next = (NodeType) iterator.next();
-                    if ("cActiveMQ".equals(next.getComponentName())) {
-                        externalImport = ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
-                        break;
-                    }
-                }
-                if (!"".equals(externalImport)) {
-                    break;
-                }
-            }
-            // end add
+        	/*
+        	 * add external import-packages
+        	 * for Activemq
+        	 */
+        	String externalImport = "";
+        	for(ProcessItem pi:itemToBeExport){
+        		ProcessType process = pi.getProcess();
+        		if(process==null){
+        			continue;
+        		}
+        		EList nodes = process.getNode();
+        		Iterator iterator = nodes.iterator();
+        		while(iterator.hasNext()){
+        			NodeType next = (NodeType) iterator.next();
+        			if("cActiveMQ".equals(next.getComponentName())){
+        				externalImport = ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
+        				break;
+        			}
+        		}
+        		if(!"".equals(externalImport)){
+        			break;
+        		}
+        	}
+        	//end add
             a.put(new Attributes.Name("Require-Bundle"), "org.apache.camel.camel-core");
             a.put(new Attributes.Name("Import-Package"), "javax.xml.bind,org.apache.camel;version=\"[2.7,3)\",org.apache.camel.builder;" + //$NON-NLS-1$
                             "version=\"[2.7,3)\",org.apache.camel.impl;version=\"[2.7,3)\",org.apache.camel.management;version=\"[2.7,3)\","
@@ -511,7 +358,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                             "org.apache.camel.model;version=\"[2.7,3)\",org.apache.camel.osgi;version=\"[2.7,3)\"," + //$NON-NLS-1$
                             "org.apache.camel.spi;version=\"[2.7,3)\",org.apache.camel.view;version=\"[2.7,3)\"," + //$NON-NLS-1$
                             "org.osgi.framework;version=\"[1.5,2)\"," + //$NON-NLS-1$
-                            "org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\",routines.system.api" + externalImport); //$NON-NLS-1$
+                            "org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\",routines.system.api"+externalImport); //$NON-NLS-1$
         } else {
             a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
                     "routines.system.api;resolution:=optional" + //$NON-NLS-1$
@@ -624,20 +471,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         // Lists all the needed jar files
         Set<String> listModulesReallyNeeded = new HashSet<String>();
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-        IJavaProject project = JavaCore.create(prj);
-        IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
-        File file = libPath.toFile();
+        ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
+        String path = librariesService.getLibrariesPath();
+        File file = new File(path);
         File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
 
-        for(ExportFileResource export: process){
-            Item item = export.getItem();
-            if(item instanceof ProcessItem){
-                list.addAll(computeAddtionalLibs((ProcessItem) item, libPath));
-            }
-        }
-        
         if (!useBeans) {
             // Gets all the jar files
             if (neededLibraries == null) {
@@ -697,4 +535,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         return list;
     }
+
+	@Override
+    public void setTopFolder(List<ExportFileResource> resourcesToExport) {
+        return;
+    }
+
+	@Override
+	public String getOutputSuffix() {
+		return ".jar";
+	}
+
 }

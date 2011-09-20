@@ -78,8 +78,8 @@ public class ConnectionsListComposite extends Composite {
 
         // PreferenceManipulator prefManipulator = new
         // PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-        // this.list = prefManipulator.readConnections();
-        this.list = ConnectionUserPerReader.getInstance().readConnections();
+        // list = prefManipulator.readConnections();
+        list = ConnectionUserPerReader.getInstance().readConnections();
 
         if (list.isEmpty()) {
             boolean isOnlyRemoteConnection = brandingService.getBrandingConfiguration().isOnlyRemoteConnection();
@@ -90,9 +90,9 @@ public class ConnectionsListComposite extends Composite {
             }
         }
 
-        this.model = new ExtendedTableModel<ConnectionBean>(null, list);
+        model = new ExtendedTableModel<ConnectionBean>(null, list);
 
-        toolkit = new FormToolkit(this.getDisplay());
+        toolkit = new FormToolkit(getDisplay());
         Form form = toolkit.createForm(this);
         Composite formBody = form.getBody();
 
@@ -129,7 +129,7 @@ public class ConnectionsListComposite extends Composite {
 
             @Override
             protected ExtendedToolbarView initToolBar() {
-                return new ConnectionsListButtonsToolBar(getMainComposite(), SWT.NONE, this.getExtendedTableViewer());
+                return new ConnectionsListButtonsToolBar(getMainComposite(), SWT.NONE, getExtendedTableViewer());
             }
 
             @Override
@@ -184,7 +184,7 @@ public class ConnectionsListComposite extends Composite {
     }
 
     public ConnectionFormComposite getConnectionsFormComposite() {
-        return this.connectionsFormComposite;
+        return connectionsFormComposite;
     }
 
     public void setConnectionsFormComposite(ConnectionFormComposite connectionsFormComposite) {
@@ -216,7 +216,7 @@ public class ConnectionsListComposite extends Composite {
     }
 
     public List<ConnectionBean> getList() {
-        return this.list;
+        return list;
     }
 
     /**

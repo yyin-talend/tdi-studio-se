@@ -109,7 +109,7 @@ public class ResourceFilenameHelper {
         }
 
         public String getResourceLabel() {
-            return this.resourceLabel;
+            return resourceLabel;
         }
 
         public void setResourceLabel(String resourceLabel) {
@@ -117,7 +117,7 @@ public class ResourceFilenameHelper {
         }
 
         public String getResourceVersion() {
-            return this.resourceVersion;
+            return resourceVersion;
         }
 
         public void setResourceVersion(String resourceVersion) {
@@ -125,7 +125,7 @@ public class ResourceFilenameHelper {
         }
 
         public Property getProperty() {
-            return this.property;
+            return property;
         }
 
         public void setProperty(Property property) {
@@ -133,7 +133,7 @@ public class ResourceFilenameHelper {
         }
 
         public Resource getResource() {
-            return this.resource;
+            return resource;
         }
 
         public void setResource(Resource resource) {
@@ -145,7 +145,7 @@ public class ResourceFilenameHelper {
         }
 
         public void setLastVersionProperty(Property lastVersionProperty) {
-            this.lastVersionProperty = lastVersionProperty;
+            lastVersionProperty = lastVersionProperty;
         }
     }
 }
