@@ -99,7 +99,6 @@ public class CreateNameSpaceAction extends SelectionAction {
         createdNode.setXpath(XmlMapUtil.getXPath(parent.getXpath(), label, NodeType.NAME_SPACE));
 
         final EList<TreeNode> children = parent.getChildren();
-
         int index = 0;
         for (int i = 0; i < children.size(); i++) {
             final TreeNode treeNode = children.get(i);

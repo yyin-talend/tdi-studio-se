@@ -386,8 +386,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 refreshChildren();
                 ExpressionFigure expression = treeNodeFigure.getElement().getExpressionFigure();
                 if (expression != null) {
-                    boolean isEmpty = ((TreeNode) getModel()).getChildren().isEmpty();
-                    if (isEmpty) {
+                    if (XmlMapUtil.isExpressionEditable((TreeNode) getModel())) {
                         expression.setOpaque(false);
                     }
                 }

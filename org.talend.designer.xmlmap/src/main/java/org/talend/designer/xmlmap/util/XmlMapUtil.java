@@ -548,9 +548,8 @@ public class XmlMapUtil {
         boolean haschild = false;
         for (int i = 0; i < children.size(); i++) {
             TreeNode child = (TreeNode) children.get(i);
-            // attribute is not treat as a subnode , so the expression of treeNode should be editable.
-            // for namespace ,will see it latter ,just do it the same as tAdvancedXMLOutput for now
-            if (NodeType.ATTRIBUT != child.getNodeType()) {
+            // attribute and namespace are not treat as subnode , so the expression of treeNode should be editable.
+            if (NodeType.ATTRIBUT != child.getNodeType() && NodeType.NAME_SPACE != child.getNodeType()) {
                 haschild = true;
                 break;
             }

@@ -15,11 +15,9 @@ package org.talend.designer.xmlmap.editor.actions;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchPart;
-import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -51,50 +49,44 @@ public class CreateAttributeAction extends SelectionAction {
     @Override
     public void run() {
         TreeNode treeNode = null;
-        boolean needWarning = false;
         if (input) {
             treeNode = XmlmapFactory.eINSTANCE.createTreeNode();
-            if (!parent.getOutgoingConnections().isEmpty()) {
-                needWarning = true;
-            }
         } else {
             treeNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
-            EList<Connection> incomingConnections = parent.getIncomingConnections();
-            if (!incomingConnections.isEmpty()) {
-                needWarning = true;
-            }
-        }
-        boolean canContinue = true;
-        if (needWarning) {
-            canContinue = MessageDialog.openConfirm(null, "Warning",
-                    "Do you want to disconnect the existing linker and then add an sub element for the selected element ?");
         }
 
-        if (canContinue) {
-            InputDialog dialog = new InputDialog(null, "Create New Element", "Input the new element's valid label", "", null);
-            int open = dialog.open();
-            if (open == Window.OK) {
-                XmlMapUtil.detachNodeConnections(parent, mapperManager.getCopyOfMapData(), false);
-                treeNode.setName(dialog.getValue());
-                treeNode.setNodeType(NodeType.ATTRIBUT);
-                treeNode.setXpath(XmlMapUtil.getXPath(this.parent.getXpath(), treeNode.getName(), treeNode.getNodeType()));
-                treeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                parent.getChildren().add(treeNode);
-                parent.setExpression("");
-            }
-            if (open == Window.OK && mapperManager != null) {
-                TreeNode docRoot = XmlMapUtil.getTreeNodeRoot(parent);
-                if (input) {
-                    if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
-                        mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) docRoot.eContainer());
-                    }
+        InputDialog dialog = new InputDialog(null, "Create New Element", "Input the new element's valid label", "", null);
+        int open = dialog.open();
+        if (open == Window.OK) {
+            treeNode.setName(dialog.getValue());
+            treeNode.setNodeType(NodeType.ATTRIBUT);
+            treeNode.setXpath(XmlMapUtil.getXPath(this.parent.getXpath(), treeNode.getName(), treeNode.getNodeType()));
+            treeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+            final EList<TreeNode> children = parent.getChildren();
+            int index = 0;
+            for (int i = 0; i < children.size(); i++) {
+                final TreeNode child = children.get(i);
+                if (child.getNodeType() == NodeType.NAME_SPACE || child.getNodeType() == NodeType.ATTRIBUT) {
+                    continue;
                 } else {
-                    if (docRoot != null && docRoot.eContainer() instanceof OutputXmlTree) {
-                        mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) docRoot.eContainer());
-                    }
+                    index = i;
+                    break;
                 }
-
             }
+            children.add(index, treeNode);
+        }
+        if (open == Window.OK && mapperManager != null) {
+            TreeNode docRoot = XmlMapUtil.getTreeNodeRoot(parent);
+            if (input) {
+                if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
+                    mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) docRoot.eContainer());
+                }
+            } else {
+                if (docRoot != null && docRoot.eContainer() instanceof OutputXmlTree) {
+                    mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) docRoot.eContainer());
+                }
+            }
+
         }
 
     }

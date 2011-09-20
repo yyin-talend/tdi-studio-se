@@ -95,7 +95,7 @@ public class CreateNodeAndConnectionCommand extends Command {
                 }
 
                 if (!update) {
-                    if (!targetOutputNode.getIncomingConnections().isEmpty()) {
+                    if (!targetOutputNode.getIncomingConnections().isEmpty() && nodeType != NodeType.ATTRIBUT) {
                         boolean canContinue = MessageDialog
                                 .openConfirm(null, "Warning",
                                         "Do you want to disconnect the existing linker and then add an sub element for the selected element ?");
