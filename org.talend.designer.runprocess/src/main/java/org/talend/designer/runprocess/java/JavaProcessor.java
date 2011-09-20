@@ -883,7 +883,11 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                     if (!win32 && exportingJob) {
                         libPath.append(unixRootPath);
                     }
-                    libPath.append(new Path(jarFile.getAbsolutePath()).toPortableString()).append(classPathSeparator);
+                    String singleLibPath = new Path(jarFile.getAbsolutePath()).toPortableString();
+                    if (exportingJob) {
+                        singleLibPath = singleLibPath.replace(new Path(libDir.getAbsolutePath()).toPortableString(), "../lib");
+                    }
+                    libPath.append(singleLibPath).append(classPathSeparator);
                 }
             }
         }
