@@ -96,16 +96,25 @@ import java.util.Comparator;
  * @version <%=version %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */                                
- public class <%=process.getName()%> implements TalendJob { 
+ public class <%=process.getName()%> implements TalendESBRoute { 
  		
 	private final String jobVersion = "<%=process.getVersion() %>";
 	private final String jobName = "<%=codeGenArgument.getJobName() %>";
 	private final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
 	public Integer errorCode = null;
 	private String currentComponent = "";
+	public TalendESBRoute stopDelegate = null;
 	
 	public <%=process.getName()%>(){
 		initUriMap();
+	}
+	
+	public void stop() throws Exception {
+		if (stopDelegate != null) stopDelegate.stop();
+	}
+	
+	public void shutdown() throws Exception {
+		if (stopDelegate != null) stopDelegate.shutdown();
 	}
 	
 <%
@@ -124,6 +133,7 @@ import java.util.Comparator;
 	public void setBundleContext(org.osgi.framework.BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 	}
+	
 <%
 	}
 %>
