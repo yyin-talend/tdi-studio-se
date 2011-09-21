@@ -261,7 +261,7 @@ public class ExportTreeViewer {
         ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).removeCheckStateListener(listener);
     }
 
-    private boolean filterRepositoryNode(RepositoryNode node) {
+    protected boolean filterRepositoryNode(RepositoryNode node) {
         if (node == null) {
             return false;
         }

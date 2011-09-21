@@ -391,10 +391,18 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     protected SashForm createExportTree(Composite parent) {
-        treeViewer = new ExportTreeViewer(selection, this);
+        //Using a protected method to provide the tree. LiXiaopeng 2011-9-21
+        treeViewer = getExportTree();
         SashForm sashForm = treeViewer.createContents(parent);
         treeViewer.addCheckStateListener(checkStateListener);
         return sashForm;
+    }
+
+    /**
+     * get ExportTreeViewer, subclass may override.
+     */
+    protected ExportTreeViewer getExportTree() {
+        return new ExportTreeViewer(selection, this);
     }
 
     /**
@@ -1347,6 +1355,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         // end
         RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
+        ok = true;
         return ok;
     }
 
