@@ -106,9 +106,6 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      */
     protected SpagicDeployWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
-
-        manager = createJobScriptsManager();
-
         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
@@ -150,8 +147,6 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
                     + ((RepositoryNode) nodes[i]).getProperties(EProperties.LABEL).toString(), list);
         }
     }
-
-    protected abstract JobScriptsManager createJobScriptsManager();
 
     /**
      * (non-Javadoc) Method declared on IDialogPage.
@@ -378,9 +373,6 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      * @returns boolean
      */
     public boolean finish() {
-
-        manager = createJobScriptsManager();
-
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         boolean canExport = false;
         for (ExportChoice choice : ExportChoice.values()) {
@@ -400,6 +392,9 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         if (!ensureTargetIsValid()) {
             return false;
         }
+        manager = new SpagicJavaDeployManager(exportChoiceMap, contextCombo.getText(), "all", IProcessor.NO_STATISTICS, //$NON-NLS-1$
+                IProcessor.NO_TRACES);
+
         String topFolder = getRootFolderName();
 
         List<ExportFileResource> resourcesToExport = null;
@@ -522,9 +517,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      * @throws ProcessorException
      */
     protected List<ExportFileResource> getExportResources() throws ProcessorException {
-        Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
-        return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
-                IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
+        return manager.getExportResources(process);
 
     }
 

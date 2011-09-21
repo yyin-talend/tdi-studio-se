@@ -36,9 +36,6 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.spagic.engines.client.i18n.Messages;
 
 /**
@@ -62,14 +59,6 @@ public class SpagicDeployWizard extends Wizard implements IExportWizard {
         IDialogSettings section = workbenchSettings.getSection("SapgicDeployWizard"); //$NON-NLS-1$
         if (section == null) {
             section = workbenchSettings.addNewSection("SapgicDeployWizard"); //$NON-NLS-1$
-            section.put(PerlSpagicDeployWizardPage.STORE_SHELL_LAUNCHER_ID, true);
-            section.put(PerlSpagicDeployWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
-            section.put(PerlSpagicDeployWizardPage.STORE_USER_ROUTINE_ID, true);
-            section.put(PerlSpagicDeployWizardPage.STORE_MODEL_ID, true);
-            section.put(PerlSpagicDeployWizardPage.STORE_JOB_ID, true);
-            section.put(PerlSpagicDeployWizardPage.STORE_CONTEXT_ID, true);
-            section.put(PerlSpagicDeployWizardPage.APPLY_TO_CHILDREN_ID, true);
-
             section.put(JavaSpagicDeployWizardPage.STORE_SHELL_LAUNCHER_ID, true);
             section.put(JavaSpagicDeployWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
             section.put(JavaSpagicDeployWizardPage.STORE_USER_ROUTINE_ID, true);
@@ -88,15 +77,7 @@ public class SpagicDeployWizard extends Wizard implements IExportWizard {
     public void addPages() {
         super.addPages();
 
-        switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage()) {
-        case JAVA:
-            mainPage = new JavaSpagicDeployWizardPage(selection);
-            break;
-        case PERL:
-            mainPage = new PerlSpagicDeployWizardPage(selection);
-            break;
-        }
+        mainPage = new JavaSpagicDeployWizardPage(selection);
         addPage(mainPage);
     }
 

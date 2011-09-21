@@ -26,9 +26,6 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.sbi.engines.client.i18n.Messages;
 
 /**
@@ -52,13 +49,6 @@ public class PublishOnSpagoExportWizard extends Wizard implements IExportWizard 
         IDialogSettings section = workbenchSettings.getSection("PublishOnSpagoExportWizard"); //$NON-NLS-1$
         if (section == null) {
             section = workbenchSettings.addNewSection("PublishOnSpagoExportWizard"); //$NON-NLS-1$
-            section.put(PerlPublishOnSpagoExportWizardPage.STORE_SHELL_LAUNCHER_ID, true);
-            section.put(PerlPublishOnSpagoExportWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
-            section.put(PerlPublishOnSpagoExportWizardPage.STORE_USER_ROUTINE_ID, true);
-            section.put(PerlPublishOnSpagoExportWizardPage.STORE_MODEL_ID, true);
-            section.put(PerlPublishOnSpagoExportWizardPage.STORE_JOB_ID, true);
-            section.put(PerlPublishOnSpagoExportWizardPage.STORE_CONTEXT_ID, true);
-
             section.put(JavaPublishOnSpagoExportWizardPage.STORE_SHELL_LAUNCHER_ID, true);
             section.put(JavaPublishOnSpagoExportWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
             section.put(JavaPublishOnSpagoExportWizardPage.STORE_USER_ROUTINE_ID, true);
@@ -76,15 +66,7 @@ public class PublishOnSpagoExportWizard extends Wizard implements IExportWizard 
     public void addPages() {
         super.addPages();
 
-        switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage()) {
-        case JAVA:
-            mainPage = new JavaPublishOnSpagoExportWizardPage(selection);
-            break;
-        case PERL:
-            mainPage = new PerlPublishOnSpagoExportWizardPage(selection);
-            break;
-        }
+        mainPage = new JavaPublishOnSpagoExportWizardPage(selection);
         addPage(mainPage);
     }
 

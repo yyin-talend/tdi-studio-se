@@ -64,9 +64,9 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.sbi.engines.client.i18n.Messages;
@@ -110,8 +110,6 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      */
     protected PublishOnSpagoExportWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
-        manager = JobScriptsManagerFactory.getInstance().createManagerInstance();
-
         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
@@ -382,8 +380,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
             }
         }
         if (!canExport) {
-            MessageDialog.openInformation(getContainer().getShell(), Messages
-                    .getString("PublishOnSpagoExportWizardPage.publishResourceError"), //$NON-NLS-1$
+            MessageDialog.openInformation(getContainer().getShell(),
+                    Messages.getString("PublishOnSpagoExportWizardPage.publishResourceError"), //$NON-NLS-1$
                     Messages.getString("PublishOnSpagoExportWizardPage.chooseResource")); //$NON-NLS-1$
             return false;
         }
@@ -392,6 +390,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
             return false;
         }
         String topFolder = getRootFolderName();
+        manager = new JobJavaScriptsManager(exportChoiceMap, contextCombo.getText(), "all", IProcessor.NO_STATISTICS, //$NON-NLS-1$
+                IProcessor.NO_TRACES);
 
         List<ExportFileResource> resourcesToExport = null;
         try {
@@ -550,9 +550,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      * @throws ProcessorException
      */
     protected List<ExportFileResource> getExportResources() throws ProcessorException {
-        Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
-        return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), "All", IProcessor.NO_STATISTICS, //$NON-NLS-1$
-                IProcessor.NO_TRACES);
+        return manager.getExportResources(process);
     }
 
     private Map<ExportChoice, Object> getExportChoiceMap() {
@@ -587,8 +585,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
 
         String filename = "SpagoBi" + idealSuffix; //$NON-NLS-1$
         IPath tempPath;
-        tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
-                ITalendCorePrefConstants.FILE_PATH_TEMP));
+        tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore()
+                .getString(ITalendCorePrefConstants.FILE_PATH_TEMP));
         tempPath = tempPath.append(filename);
         return tempPath.toOSString();
     }

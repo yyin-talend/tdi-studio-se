@@ -140,12 +140,12 @@ public class JavaPublishOnSpagoExportWizardPage extends PublishOnSpagoExportWiza
         // }
         if (process.length > 0) {
             try {
-                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                        process[0].getItem().getProperty()).getItem());
+                process[0].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance()
+                        .getUptodateProperty(process[0].getItem().getProperty()).getItem());
             } catch (PersistenceException e) {
                 e.printStackTrace();
             }
-            List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
+            List<String> contextNames = manager.getJobContextsComboValue((ProcessItem) process[0].getItem());
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
                 contextCombo.select(0);

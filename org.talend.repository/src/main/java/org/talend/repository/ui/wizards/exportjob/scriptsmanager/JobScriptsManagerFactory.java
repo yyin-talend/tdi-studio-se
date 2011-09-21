@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 
+import java.util.EnumMap;
 import java.util.Map;
 
 import org.talend.core.language.ECodeLanguage;
@@ -29,7 +30,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJo
 public class JobScriptsManagerFactory {
 
     public static JobScriptsManager createManagerInstance(Map<ExportChoice, Object> exportChoiceMap, String contextName,
-			String launcher, int statisticPort, int tracePort, JobExportType jobExportType) {
+            String launcher, int statisticPort, int tracePort, JobExportType jobExportType) {
         ECodeLanguage language = LanguageManager.getCurrentLanguage();
         if (language == ECodeLanguage.JAVA) {
             switch (jobExportType) {
@@ -46,7 +47,23 @@ public class JobScriptsManagerFactory {
             case OSGI:
                 return new JobJavaScriptOSGIForESBManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
             }
-        } 
+        }
         return new JobJavaScriptsManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
     }
+
+    public static Map<ExportChoice, Object> getDefaultExportChoiceMap() {
+        Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
+        exportChoiceMap.put(ExportChoice.needLauncher, true);
+        exportChoiceMap.put(ExportChoice.needSystemRoutine, true);
+        exportChoiceMap.put(ExportChoice.needUserRoutine, true);
+        exportChoiceMap.put(ExportChoice.needTalendLibraries, true);
+        exportChoiceMap.put(ExportChoice.needJobItem, true);
+        exportChoiceMap.put(ExportChoice.needJobScript, true);
+        exportChoiceMap.put(ExportChoice.needContext, true);
+        exportChoiceMap.put(ExportChoice.needSourceCode, true);
+        exportChoiceMap.put(ExportChoice.applyToChildren, false);
+        exportChoiceMap.put(ExportChoice.doNotCompileCode, false);
+        return exportChoiceMap;
+    }
+
 }

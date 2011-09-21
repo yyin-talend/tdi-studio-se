@@ -19,7 +19,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -103,42 +102,30 @@ public abstract class JobScriptsManager {
     protected List<ContextParameterType> contextEditableResultValuesList;
 
     protected Map<ExportChoice, Object> exportChoice;
-    protected String contextName;
-    protected String launcher;
-    protected int statisticPort;
-    protected int tracePort;
-    
-    public JobScriptsManager(Map<ExportChoice, Object> exportChoiceMap,
-			String contextName, String launcher, int statisticPort,
-			int tracePort) {
-		this.exportChoice = exportChoiceMap;
-		this.contextName = contextName;
-		this.launcher = launcher;
-		this.statisticPort = statisticPort;
-		this.tracePort = tracePort;
-	}
 
-	public List<ContextParameterType> getContextEditableResultValuesList() {
+    protected String contextName;
+
+    protected String launcher;
+
+    protected int statisticPort;
+
+    protected int tracePort;
+
+    public JobScriptsManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher, int statisticPort,
+            int tracePort) {
+        this.exportChoice = exportChoiceMap;
+        this.contextName = contextName;
+        this.launcher = launcher;
+        this.statisticPort = statisticPort;
+        this.tracePort = tracePort;
+    }
+
+    public List<ContextParameterType> getContextEditableResultValuesList() {
         return this.contextEditableResultValuesList;
     }
 
     public void setContextEditableResultValuesList(List<ContextParameterType> contextEditableResultValuesList) {
         this.contextEditableResultValuesList = contextEditableResultValuesList;
-    }
-
-    public Map<ExportChoice, Object> getDefaultExportChoiseMap() {
-        Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
-        exportChoiceMap.put(ExportChoice.needLauncher, true);
-        exportChoiceMap.put(ExportChoice.needSystemRoutine, true);
-        exportChoiceMap.put(ExportChoice.needUserRoutine, true);
-        exportChoiceMap.put(ExportChoice.needTalendLibraries, true);
-        exportChoiceMap.put(ExportChoice.needJobItem, true);
-        exportChoiceMap.put(ExportChoice.needJobScript, true);
-        exportChoiceMap.put(ExportChoice.needContext, true);
-        exportChoiceMap.put(ExportChoice.needSourceCode, true);
-        exportChoiceMap.put(ExportChoice.applyToChildren, false);
-        exportChoiceMap.put(ExportChoice.doNotCompileCode, false);
-        return exportChoiceMap;
     }
 
     public void setProgressMonitor(IProgressMonitor progressMonitor) {
@@ -204,9 +191,11 @@ public abstract class JobScriptsManager {
      * @return
      */
 
-    public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process, IContext context, String... codeOptions) throws ProcessorException;
+    public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process, IContext context,
+            String... codeOptions) throws ProcessorException;
 
-    public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process, String... codeOptions) throws ProcessorException;
+    public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process, String... codeOptions)
+            throws ProcessorException;
 
     protected String getTmpFolder() {
         String tmpFold = getTmpFolderPath();
@@ -565,7 +554,7 @@ public abstract class JobScriptsManager {
 
     private boolean isMultiNodes;
 
-	private String destinationPath;
+    private String destinationPath;
 
     protected void addNodeToResource(IResource[] resources, List<IResource> sourceFile) throws CoreException {
 
@@ -786,25 +775,25 @@ public abstract class JobScriptsManager {
         // TODO Auto-generated method stub
         return null;
     }
-    
-    public String getDestinationPath() {
-    	return destinationPath;
-    }
-    
-    /**
-	 * @param destinationPath the destinationPath to set
-	 */
-	public void setDestinationPath(String destinationPath) {
-		this.destinationPath = destinationPath;
-	}
 
-	/**
+    public String getDestinationPath() {
+        return destinationPath;
+    }
+
+    /**
+     * @param destinationPath the destinationPath to set
+     */
+    public void setDestinationPath(String destinationPath) {
+        this.destinationPath = destinationPath;
+    }
+
+    /**
      * Returns the root folder name.
      * 
      * @return
      */
     public String getRootFolderName(String path) {
-    	String subjectString = new Path(path).lastSegment();
+        String subjectString = new Path(path).lastSegment();
         Pattern regex = Pattern.compile("(.*)(?=(\\.(tar|zip))\\b)", Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
                 | Pattern.UNICODE_CASE);
         Matcher regexMatcher = regex.matcher(subjectString);
@@ -817,8 +806,8 @@ public abstract class JobScriptsManager {
     public void setTopFolder(List<ExportFileResource> resourcesToExport) {
         return;
     }
-    
+
     public String getOutputSuffix() {
-    	return ".zip";
+        return ".zip";
     }
 }
