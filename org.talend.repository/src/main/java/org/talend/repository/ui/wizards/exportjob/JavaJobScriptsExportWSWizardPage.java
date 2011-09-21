@@ -68,7 +68,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.TalendUt
 
 /**
  * DOC x class global comment. Detailled comment <br/>
- *
+ * 
  */
 public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizardPage {
 
@@ -192,7 +192,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.jface.wizard.WizardPage#setWizard(org.eclipse.jface.wizard.IWizard)
      */
     @Override
@@ -277,8 +277,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         setPageComplete(determinePageCompletion());
 
         giveFocusToDestination();
-        
-        manager = createJobScriptsManager();
     }
 
     protected void createExportTypeGroup(Composite parent) {
@@ -371,7 +369,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWizardPage#createJobScriptsManager()
      */
     @Override
@@ -379,7 +377,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         String launcher = (getCurrentExportType() == JobExportType.POJO) ? launcherCombo.getText() : "all";
         String context = (contextCombo == null || contextCombo.isDisposed()) ? "Default" : contextCombo.getText();
-        JobScriptsManager manager = JobScriptsManagerFactory.createManagerInstance(exportChoiceMap, context, launcher, IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, getCurrentExportType());
+        JobScriptsManager manager = JobScriptsManagerFactory.createManagerInstance(exportChoiceMap, context, launcher,
+                IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, getCurrentExportType());
         manager.setDestinationPath(getDestinationValue());
         return manager;
     }
@@ -465,9 +464,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             String s = (String) getDefaultFileName().get(0);
 
             if (str.equals(s)) {
-//                selectedFileName = b + "_" + getDefaultFileName().get(1) + getOutputSuffix(); //$NON-NLS-1$
-                selectedFileName = b + ((JobExportType.OSGI.equals(jobExportType)) ? "-" : "_")
-                        + getDefaultFileName().get(1) + getOutputSuffix(); //$NON-NLS-1$
+                //                selectedFileName = b + "_" + getDefaultFileName().get(1) + getOutputSuffix(); //$NON-NLS-1$
+                selectedFileName = b + ((JobExportType.OSGI.equals(jobExportType)) ? "-" : "_") + getDefaultFileName().get(1)
+                        + getOutputSuffix(); //$NON-NLS-1$
             } else {
                 selectedFileName = b + getOutputSuffix();
             }
@@ -667,7 +666,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (getProcessItem() != null && contextCombo != null) {
             try {
-            	setProcessItem((ProcessItem) ProxyRepositoryFactory.getInstance()
+                setProcessItem((ProcessItem) ProxyRepositoryFactory.getInstance()
                         .getUptodateProperty(getProcessItem().getProperty()).getItem());
             } catch (PersistenceException e) {
                 e.printStackTrace();
@@ -761,8 +760,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (directoryNames == null) {
                 directoryNames = new String[0];
             }
-            manager.setDestinationPath(getDestinationValue());
-            String destinationValue = manager.getDestinationPath();
+            String destinationValue = getDestinationValue();
             directoryNames = addToHistory(directoryNames, destinationValue);
 
             settings.put(STORE_EXPORTTYPE_ID, getCurrentExportType().toString());
@@ -1140,7 +1138,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         contextCombo = new Combo(left, SWT.PUSH);
         if (getProcessItem() != null) {
             try {
-            	setProcessItem((ProcessItem) ProxyRepositoryFactory.getInstance()
+                setProcessItem((ProcessItem) ProxyRepositoryFactory.getInstance()
                         .getUptodateProperty(getProcessItem().getProperty()).getItem());
             } catch (PersistenceException e) {
                 e.printStackTrace();
@@ -1321,14 +1319,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#checkExport()
      */
     @Override
     public boolean checkExport() {
         setErrorMessage(null);
         if (!super.checkExport()) {
-        	return false;
+            return false;
         }
         if (getCurrentExportType().equals(JobExportType.PETALSESB)) {
             chkButton.setVisible(false);
@@ -1373,7 +1371,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     @Override
     public boolean finish() {
-    	manager.setDestinationPath(getDestinationValue());
+        manager = createJobScriptsManager();
+        manager.setDestinationPath(getDestinationValue());
         if (exportTypeCombo != null && JobExportType.getTypeFromString(exportTypeCombo.getText()).equals(JobExportType.PETALSESB)) {
             if (!ensureTargetFileIsValid(new File(saDestinationFilePath)))
                 return true;

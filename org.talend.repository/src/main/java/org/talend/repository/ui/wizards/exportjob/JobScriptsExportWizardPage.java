@@ -123,11 +123,17 @@ import org.talend.repository.utils.JobVersionUtils;
 public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPage1 {
 
     protected static final String DESTINATION_FILE = "destinationFile";//$NON-NLS-1$
+
     protected static final String ESB_EXPORT_TYPE = "esbExportType";//$NON-NLS-1$
+
     protected static final String ESB_SERVICE_NAME = "serviceName";//$NON-NLS-1$
+
     protected static final String ESB_CATEGORY = "category";//$NON-NLS-1$
+
     protected static final String QUERY_MESSAGE_NAME = "queryMessageName";//$NON-NLS-1$
+
     public static final String ALL_VERSIONS = "all"; //$NON-NLS-1$
+
     private static final String outputFileSuffix = ".zip"; //$NON-NLS-1$
 
     // widgets
@@ -145,10 +151,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected Button jobScriptButton;
 
-//    protected ExportFileResource[] process;
+    // protected ExportFileResource[] process;
 
     protected ProcessItem processItem = null;
-    
+
     protected Combo contextCombo;
 
     protected Combo launcherCombo;
@@ -205,17 +211,17 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         }
         return contextNameList;
     }
-    
+
     /**
      * Create an instance of this class.
      * 
      * @param name java.lang.String
      */
     @SuppressWarnings("unchecked")
-	public JobScriptsExportWizardPage(String name, IStructuredSelection selection) {
+    public JobScriptsExportWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
         this.selection = selection;
-        manager = null; 
+        manager = null;
         nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
     }
 
@@ -224,17 +230,17 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     protected ProcessItem getProcessItem() {
-    	if ((processItem == null) && (nodes != null) && (nodes.length >= 1)) {
-    		IRepositoryViewObject repositoryObject = nodes[0].getObject();
+        if ((processItem == null) && (nodes != null) && (nodes.length >= 1)) {
+            IRepositoryViewObject repositoryObject = nodes[0].getObject();
             if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                 processItem = (ProcessItem) repositoryObject.getProperty().getItem();
             }
-    	}
-    	return processItem;
+        }
+        return processItem;
     }
-    
+
     protected void setProcessItem(ProcessItem value) {
-    	processItem = value;
+        processItem = value;
     }
 
     public abstract JobScriptsManager createJobScriptsManager();
@@ -371,8 +377,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     public boolean checkExport() {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         boolean canExport = false;
-		for (ExportChoice choice : ExportChoice.values()) {
-			if (exportChoiceMap.get(choice) != null && exportChoiceMap.get(choice) instanceof Boolean
+        for (ExportChoice choice : ExportChoice.values()) {
+            if (exportChoiceMap.get(choice) != null && exportChoiceMap.get(choice) instanceof Boolean
                     && (Boolean) exportChoiceMap.get(choice)) {
                 canExport = true;
                 break;
@@ -631,7 +637,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     @SuppressWarnings("rawtypes")
-	public List<ContextParameterType> getJobContextValues(ProcessItem processItem, String contextName) {
+    public List<ContextParameterType> getJobContextValues(ProcessItem processItem, String contextName) {
         if (contextName == null) {
             return null;
         }// else do next line
@@ -661,7 +667,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * 
      * DOC yhch Comment method "exportDependenciesSelected".
      */
-    private void exportDependenciesSelected() { //TODO: unused method??? 
+    private void exportDependenciesSelected() { // TODO: unused method???
         final Collection<Item> selectedItems = getSelectedItems();
 
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
@@ -1279,24 +1285,24 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @returns boolean
      */
     public boolean finish() {
-    	//TODO
+        // TODO
         if (treeViewer != null) {
             treeViewer.removeCheckStateListener(checkStateListener);
         }
 
+        if (manager == null) {
+            manager = createJobScriptsManager();
+        }
         List<ContextParameterType> contextEditableResultValuesList = manager.getContextEditableResultValuesList();
 
         // Save dirty editors if possible but do not stop if not all are saved
         saveDirtyEditors();
         // about to invoke the operation so save our state
         saveWidgetValues();
-        
+
         if (!ensureTargetIsValid()) {
             return false;
         }
-
-
-        manager = createJobScriptsManager();
 
         // for feature:11976, recover back the old default manager value with ContextParameters
         if (contextEditableResultValuesList == null) {
@@ -1310,14 +1316,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         }
         manager.setMultiNodes(isMultiNodes());
         // achen modify to fix bug 0006222
-        
-        IRunnableWithProgress worker = new JobExportAction(
-        		Arrays.asList(getCheckNodes()), 
-        		getSelectedJobVersion(), 
-        		manager,
-        		originalRootFolderName
-        		);
-        
+
+        IRunnableWithProgress worker = new JobExportAction(Arrays.asList(getCheckNodes()), getSelectedJobVersion(), manager,
+                originalRootFolderName);
+
         IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
         try {
             progressService.run(false, true, worker);
@@ -1347,7 +1349,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
         return ok;
     }
-
 
     /**
      * Get the export operation.
