@@ -23,7 +23,7 @@ import us.monoid.json.JSONObject;
  */
 public class ExportJobTokenCollector extends AbstractTokenCollector {
 
-    public static final PrefTokenKey TOS_COUNT_JOB_EXPORTS = new PrefTokenKey("tos.count.jobexports", "tos_count_job_exports"); //$NON-NLS-1$ //$NON-NLS-2$
+    public static final PrefTokenKey TOS_COUNT_JOB_EXPORTS = new PrefTokenKey("tos.count.jobExports", "tos_count_job_exports"); //$NON-NLS-1$ //$NON-NLS-2$
 
     /**
      * ggu ExportJobTokenCollector constructor comment.

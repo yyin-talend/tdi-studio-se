@@ -47,25 +47,25 @@ public class TosTokenCollector extends AbstractTokenCollector {
 
     private static final String PREF_TOS_JOBS_RECORDS = "TOS_Jobs_Records"; //$NON-NLS-1$
 
-    private static final TokenKey TOS_COUNT_LOCALPROJECTS = new TokenKey("tos.count.localprojects"); //$NON-NLS-1$
+    private static final TokenKey TOS_COUNT_LOCALPROJECTS = new TokenKey("tos.count.localProjects"); //$NON-NLS-1$
 
     private static final TokenKey TOS_COUNT_JOBS = new TokenKey("tos.count.jobs"); //$NON-NLS-1$
 
-    private static final TokenKey TOS_COUNT_JOBS_PER_PROJECT = new TokenKey("tos.count.jobsperproject"); //$NON-NLS-1$
+    private static final TokenKey TOS_COUNT_JOBS_PER_PROJECT = new TokenKey("tos.count.jobsPerProject"); //$NON-NLS-1$
 
     private static final TokenKey TOS_COUNT_COMPONENTS = new TokenKey("tos.count.components"); //$NON-NLS-1$
 
-    private static final TokenKey TOS_COUNT_COMPONENTS_PER_JOB = new TokenKey("tos.count.componentsperjob"); //$NON-NLS-1$
+    private static final TokenKey TOS_COUNT_COMPONENTS_PER_JOB = new TokenKey("tos.count.componentsPerJob"); //$NON-NLS-1$
 
-    private static final TokenKey TOS_COUNT_CONTEXT_VARIABLES = new TokenKey("tos.count.contextvariables"); //$NON-NLS-1$
+    private static final TokenKey TOS_COUNT_CONTEXT_VARIABLES = new TokenKey("tos.count.contextVariables"); //$NON-NLS-1$
 
-    private static final TokenKey TOS_COUNT_CONTEXT_VARIABLES_PER_JOB = new TokenKey("tos.count.contextvariablesperjob"); //$NON-NLS-1$
+    private static final TokenKey TOS_COUNT_CONTEXT_VARIABLES_PER_JOB = new TokenKey("tos.count.contextVariablesPerJob"); //$NON-NLS-1$
 
-    private static final TokenKey TOS_COUNT_TOP20_JOB_COMPONENTS = new TokenKey("tos.count.top20jobcomponents"); //$NON-NLS-1$
+    private static final TokenKey TOS_JOB_TOP20_COMPONENTS = new TokenKey("tos.job.frequentComponents"); //$NON-NLS-1$
 
-    private static final TokenKey TOS_COUNT_GENERATED_JOB_DOCS = new TokenKey("tos.count.generatedjobdocs"); //$NON-NLS-1$
+    private static final TokenKey TOS_COUNT_GENERATED_JOB_DOCS = new TokenKey("tos.count.generatedJobDocs"); //$NON-NLS-1$
 
-    private static final TokenKey TOS_COUNT_BUSINESS_MODELS = new TokenKey("tos.count.businessmodels"); //$NON-NLS-1$
+    private static final TokenKey TOS_COUNT_BUSINESS_MODELS = new TokenKey("tos.count.businessModels"); //$NON-NLS-1$
 
     private static final TokenKey TOS_COUNT_METADATAS = new TokenKey("tos.count.metadatas"); //$NON-NLS-1$
 
@@ -170,7 +170,7 @@ public class TosTokenCollector extends AbstractTokenCollector {
         jObject.put(TOS_COUNT_COMPONENTS.getKey(), componentsNum);
 
         // top 20 component
-        jObject.put(TOS_COUNT_TOP20_JOB_COMPONENTS.getKey(),
+        jObject.put(TOS_JOB_TOP20_COMPONENTS.getKey(),
                 TokenInforUtil.convertTopComponents(numComponentMap, TOP_USED_COMPONENTS_MAX));
 
         return jObject;
@@ -201,7 +201,7 @@ public class TosTokenCollector extends AbstractTokenCollector {
                     contextVarsNum += object.getInt(TOS_COUNT_CONTEXT_VARIABLES.getKey());
                     componentsNum += object.getInt(TOS_COUNT_COMPONENTS.getKey());
 
-                    JSONObject top20Components = (JSONObject) object.get(TOS_COUNT_TOP20_JOB_COMPONENTS.getKey());
+                    JSONObject top20Components = (JSONObject) object.get(TOS_JOB_TOP20_COMPONENTS.getKey());
                     if (top20Components != null && top20Components.length() > 0) {
                         Iterator<String> componentKeys = top20Components.keys();
                         while (componentKeys.hasNext()) {
@@ -233,7 +233,7 @@ public class TosTokenCollector extends AbstractTokenCollector {
                 TokenInforUtil.calcAverageToStr(contextVarsNum, jobsNum));
 
         // top20
-        propertiesObject.put(TOS_COUNT_TOP20_JOB_COMPONENTS.getKey(),
+        propertiesObject.put(TOS_JOB_TOP20_COMPONENTS.getKey(),
                 TokenInforUtil.convertTopComponentsArray(numComponentMap, TOP_USED_COMPONENTS_MAX));
     }
 
