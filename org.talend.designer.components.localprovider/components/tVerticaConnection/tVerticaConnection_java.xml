@@ -51,6 +51,7 @@
 			<ITEM NAME="VERTICA_3.5" VALUE="vertica_3.5_jdk_5.jar" />
 			<ITEM NAME="VERTICA_4" VALUE="vertica_4.0_jdk_5.jar" />
 			<ITEM NAME="VERTICA_4.1" VALUE="vertica_4.1.7_jdk_5.jar" />
+			<ITEM NAME="VERTICA_5.0" VALUE="vertica_4.1.14_jdk_5.jar" /> 
 		</ITEMS>
 	</PARAMETER>
 
@@ -162,6 +163,7 @@
 		<IMPORT NAME="Driver-VERTICA_3.5" MODULE="vertica_3.5_jdk_5.jar" REQUIRED="false" />
 		<IMPORT NAME="Driver-VERTICA_4" MODULE="vertica_4.0_jdk_5.jar" REQUIRED="false" /> 
 		<IMPORT NAME="Driver-VERTICA_4.1" MODULE="vertica_4.1.7_jdk_5.jar" REQUIRED="false" />		
+		<IMPORT NAME="Driver-VERTICA_5.0" MODULE="vertica_4.1.14_jdk_5.jar" REQUIRED="false" />
     </IMPORTS>
   </CODEGENERATION>
 
