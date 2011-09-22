@@ -122,27 +122,27 @@
 	
 	final CamelImpl camelImplementation = new CamelImpl();
 	if(start){
+		stopDelegate = new TalendESBRoute() {
+			
+			public int runJobInTOS(String[] args) {
+				return 0;
+			}
+			
+			public String[][] runJob(String[] args) {
+				return null;
+			}
+			
+			public void stop() throws Exception {
+				camelImplementation.stop();
+			}
+			
+			public void shutdown() throws Exception {
+				camelImplementation.shutdown();
+			}
+		};	
 		camelImplementation.enableHangupSupport();
 		camelImplementation.run();
 	}
-	stopDelegate = new TalendESBRoute() {
-		
-		public int runJobInTOS(String[] args) {
-			return 0;
-		}
-		
-		public String[][] runJob(String[] args) {
-			return null;
-		}
-		
-		public void stop() throws Exception {
-			camelImplementation.stop();
-		}
-		
-		public void shutdown() throws Exception {
-			camelImplementation.shutdown();
-		}
-	};
 	return routeBuilder;
 	
 }
