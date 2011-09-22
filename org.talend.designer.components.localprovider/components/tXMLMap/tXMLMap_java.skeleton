@@ -5,9 +5,36 @@ public class CLASS {
 
 	class XMLMapUtil {
 	
+		private XmlMapData getXmlMapData(INode node) {
+		
+			XmlMapData xmlMapData = null;
+			
+			String cid = node.getUniqueName();
+			boolean isVirtualIn = cid.endsWith("TXMLMAP_IN");
+			boolean isVirtualOut = cid.endsWith("TXMLMAP_OUT");
+		
+			String uniqueNameComponent = cid.replaceAll("_TXMLMAP_IN", "");
+			uniqueNameComponent = uniqueNameComponent.replaceAll("_TXMLMAP_OUT", "");
+			
+			INode graphicalNode = null;
+			for(INode loopNode : node.getProcess().getGraphicalNodes()) {
+				if(loopNode.getUniqueName().equals(uniqueNameComponent)) {
+					graphicalNode = loopNode;
+				}
+			}
+		
+			if(isVirtualIn || isVirtualOut) {
+				xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(graphicalNode);
+			} else {
+				xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
+			}
+			
+			return xmlMapData;
+		}
+		
 		private List<IConnection> filterAndSort(INode node) {
 			
-			XmlMapData xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
+			XmlMapData xmlMapData= getXmlMapData(node);
 			EList<InputXmlTree> inputTables = xmlMapData.getInputTrees();
 			final List<String> tableNames = new ArrayList<String>();
 			HashMap<String, InputXmlTree> hNameToInputXmlTree = new HashMap<String, InputXmlTree>();
@@ -78,6 +105,11 @@ public class CLASS {
 		public MatchXmlTreeExpr(TreeNode node, String cid) {
 			this.cid = cid;
 			init(node);
+		}
+		
+		//NO TYPE CHECK 
+		public MatchXmlTreeExpr(String cid) {
+			this.cid = cid;
 		}
 		
 		private void init(TreeNode node) {

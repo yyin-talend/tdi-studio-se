@@ -32,4 +32,20 @@
 skeleton="../tXMLMap/tXMLMap_java.skeleton"
 %>
 
-<%@ include file="../tXMLMap/tXMLMap_end.inc.javajet" %>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	XmlMapComponent node = (XmlMapComponent) codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+	String uniqueNameComponent = cid.replaceAll("_TXMLMAP_IN", "");
+	
+	INode graphicalNode = null;
+	for(INode loopNode : node.getProcess().getGraphicalNodes()) {
+		if(loopNode.getUniqueName().equals(uniqueNameComponent)) {
+			graphicalNode = loopNode;
+		}
+	}
+	
+	XmlMapData xmlMapData = (XmlMapData)ElementParameterParser.getObjectValueXMLTree(graphicalNode);
+%>
+}//TD512

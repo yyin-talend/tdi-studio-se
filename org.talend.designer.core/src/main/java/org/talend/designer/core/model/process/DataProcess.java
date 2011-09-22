@@ -755,8 +755,13 @@ public class DataProcess {
                 // mapper
                 curNode = (AbstractNode) ExternalNodesFactory.getInstance(component.getPluginExtension());
                 IExternalData externalData = graphicalNode.getExternalData();
+                IExternalNode externalNode = graphicalNode.getExternalNode();
                 if (externalData != null) {
                     ((IExternalNode) curNode).setExternalData(externalData);
+                }
+                // xmlmap
+                if (externalNode != null) {
+                    ((IExternalNode) curNode).setExternalEmfData(externalNode.getExternalEmfData());
                 }
                 curNode.setStart(graphicalNode.isStart());
                 curNode.setElementParameters(graphicalNode.getComponent().createElementParameters(curNode));
