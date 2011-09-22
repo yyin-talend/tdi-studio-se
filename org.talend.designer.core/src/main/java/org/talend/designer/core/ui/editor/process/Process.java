@@ -40,7 +40,6 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
@@ -57,7 +56,6 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
-import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageUtils;
@@ -134,8 +132,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.SubjobType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
-import org.talend.designer.core.model.utils.emf.talendfile.TalendFilePackage;
-import org.talend.designer.core.model.utils.emf.talendfile.impl.ScreenshotsMapImpl;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
@@ -2345,10 +2341,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * @see org.talend.core.model.process.IRepositoryProcess#setAuthor(org.talend.core.model.temp.User)
      */
     public void setAuthor(User author) {
-        if (!getProperty().getAuthor().equals(author)) {
+        if (getProperty().getAuthor() == null && author != null || getProperty().getAuthor() != null
+                && !getProperty().getAuthor().equals(author)) {
             getProperty().setAuthor(author);
         }
-        setPropertyValue(EParameterName.AUTHOR.getName(), author.toString());
+        if (author != null) {
+            setPropertyValue(EParameterName.AUTHOR.getName(), author.toString());
+        }
     }
 
     /*
@@ -2357,7 +2356,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * @see org.talend.core.model.process.IRepositoryProcess#setId(int)
      */
     public void setId(String id) {
-        if (!getProperty().getId().equals(id)) {
+        if (getProperty().getId() == null && id != null || getProperty().getId() != null && !getProperty().getId().equals(id)) {
             getProperty().setId(id);
         }
     }
@@ -2368,7 +2367,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * @see org.talend.core.model.process.IRepositoryProcess#setLabel(java.lang.String)
      */
     public void setLabel(String label) {
-        if (!getProperty().getLabel().equals(label)) {
+        if (getProperty().getLabel() == null && label != null || getProperty().getLabel() != null
+                && !getProperty().getLabel().equals(label)) {
             getProperty().setLabel(label);
         }
         setPropertyValue(EParameterName.NAME.getName(), label);
@@ -2393,7 +2393,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * @see org.talend.core.model.process.IRepositoryProcess#setVersion(int)
      */
     public void setVersion(String version) {
-        if (!getProperty().getVersion().equals(version)) {
+        if (getProperty().getVersion() == null && version != null || getProperty().getVersion() != null
+                && !getProperty().getVersion().equals(version)) {
             getProperty().setVersion(version);
         }
         setPropertyValue(EParameterName.VERSION.getName(), version);

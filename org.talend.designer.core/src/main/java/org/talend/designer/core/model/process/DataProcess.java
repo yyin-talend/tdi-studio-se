@@ -58,6 +58,8 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.ValidationRulesConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -72,6 +74,7 @@ import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
+import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -122,13 +125,13 @@ public class DataProcess {
 
     private List<INode> dataNodeList;
 
-    private final Process process;
+    private final IProcess process;
 
     private IProcess duplicatedProcess;
 
     private List<String> shortUniqueNameList = null;
 
-    public DataProcess(Process process) {
+    public DataProcess(IProcess process) {
         this.process = process;
     }
 
@@ -159,6 +162,9 @@ public class DataProcess {
                 }
                 for (String name : targetParam.getChildParameters().keySet()) {
                     IElementParameter targetChildParam = targetParam.getChildParameters().get(name);
+                    if (sourceParam.getChildParameters() == null) {
+                        continue;
+                    }
                     IElementParameter sourceChildParam = sourceParam.getChildParameters().get(name);
                     targetChildParam.setValue(sourceChildParam.getValue());
                     if (targetChildParam.getFieldType() == EParameterFieldType.TABLE) {
@@ -1179,7 +1185,6 @@ public class DataProcess {
             // return;
         } else {
             AbstractNode dataNode;
-
             dataNode = (AbstractNode) buildCheckMap.get(graphicalNode);
             checkMultipleMap.put(graphicalNode, dataNode);
             if (dataNode.isGeneratedAsVirtualComponent()) {
@@ -1606,13 +1611,11 @@ public class DataProcess {
                 replaceForValidationRules(node);
             }
         }
-
         for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceMultipleComponents(node);
             }
         }
-
         for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceFileScalesComponents(node);
@@ -2818,7 +2821,6 @@ public class DataProcess {
             // incomingConnections.add(dataConnec);
             copyElementParametersValue(connection, dataConnec);
             dataConnec.setTraceConnection(connection.isTraceConnection());
-
         }
         newGraphicalNode.setActivate(graphicalNode.isActivate());
 
@@ -2837,13 +2839,24 @@ public class DataProcess {
         }
         buildGraphicalMap.clear();
 
-        duplicatedProcess = new Process(process.getProperty());
+        Property property = null;
+        if (process instanceof IProcess2) {
+            property = ((IProcess2) process).getProperty();
+        } else {
+            property = PropertiesFactory.eINSTANCE.createProperty();
+            property.setId(graphicalNodeList.get(0).getProcess().getId() + "_generated");
+        }
+        duplicatedProcess = new Process(property);
         duplicatedProcess.setDuplicate(true);
         duplicatedProcess.setActivate(false);
         ((Process) duplicatedProcess).setGeneratingProcess(this);
         ((Process) duplicatedProcess).setProcessModified(false);
         ((Process) duplicatedProcess).setNeededRoutines(process.getNeededRoutines());
-        ((Process) duplicatedProcess).setRoutineDependencies(process.getRoutineDependencies());
+        List<RoutinesParameterType> routines = null;
+        if (process instanceof Process) {
+            routines = ((Process) process).getRoutineDependencies();
+        }
+        ((Process) duplicatedProcess).setRoutineDependencies(routines);
 
         copyElementParametersValue(graphicalNodeList.get(0).getProcess(), duplicatedProcess);
 
