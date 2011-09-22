@@ -525,6 +525,11 @@
            class="org.talend.designer.core.ui.editor.properties.controllers.generator.GenerateGrammarControllerGenerator"
            mapping="GENERATEGRAMMARCONTROLLER"
            name="GenerateGrammarController launcher">
+     </generator>
+     <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.GenerateSurvivorshipRulesControllerGenerator"
+           mapping="GENERATE_SURVIVORSHIP_RULES_CONTROLLER"
+           name="GenerateSurvivorshipRulesController">
      </generator>     
 	 <generator
            class="org.talend.designer.core.ui.editor.properties.controllers.generator.DCSchemaGenerator"
