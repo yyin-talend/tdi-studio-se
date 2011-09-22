@@ -134,7 +134,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     public static final String ALL_VERSIONS = "all"; //$NON-NLS-1$
 
-    private static final String outputFileSuffix = ".zip"; //$NON-NLS-1$
+    private static final String OUTPUT_FILE_SUFFIX = ".zip"; //$NON-NLS-1$
 
     // widgets
     protected Button shellLauncherButton;
@@ -1460,7 +1460,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * 
      */
     protected String getOutputSuffix() {
-        return outputFileSuffix; //$NON-NLS-1$
+        return OUTPUT_FILE_SUFFIX; //$NON-NLS-1$
     }
 
     /**
