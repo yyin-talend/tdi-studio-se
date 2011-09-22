@@ -28,16 +28,10 @@
       <import plugin="org.talend.model"/>
       <import plugin="org.talend.core.runtime"/>
       <import plugin="org.talend.metadata.managment"/>
-      <import plugin="org.talend.libraries.dom4j-jaxen"/>
       <import plugin="org.talend.designer.components.localprovider"/>
       <import plugin="org.talend.commons"/>
       <import plugin="org.talend.commons.ui"/>
       <import plugin="org.talend.metadata.managment.ui"/>
-      <import plugin="org.talend.libraries.apache"/>
-      <import plugin="org.talend.libraries.javacsv"/>
-      <import plugin="org.talend.libraries.css"/>
-      <import plugin="org.talend.libraries.jexcel"/>
-      <import plugin="org.w3c.css.sac"/>
       <import plugin="org.eclipse.swt" version="3.6.0" match="compatible"/>
       <import plugin="org.eclipse.core.commands" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.common" version="3.3.0" match="compatible"/>
@@ -74,13 +68,14 @@
       <import plugin="org.eclipse.emf.edit.ui" version="2.6.0" match="compatible"/>
       <import plugin="org.eclipse.emf.ecore.edit" version="2.6.0" match="compatible"/>
       <import plugin="org.eclipse.emf.common" version="2.6.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.ecore" version="2.5.0" match="compatible"/>
       <import plugin="org.eclipse.jface" version="3.6.0" match="compatible"/>
       <import plugin="org.eclipse.core.runtime" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.update.configurator" version="3.1.0" match="compatible"/>
       <import plugin="org.eclipse.core.net" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.variables" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.help" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.100" match="compatible"/>
@@ -185,8 +180,8 @@
       <import plugin="org.eclipse.ui.editors" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.jet" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.jdt.ui" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.jet" version="0.8.0"/>
       <import plugin="org.eclipse.emf.codegen.ecore" version="2.2.0" match="compatible"/>
       <import plugin="org.eclipse.emf.codegen.ecore.ui" version="2.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.views" version="3.3.0" match="compatible"/>
@@ -204,7 +199,6 @@
       <import plugin="org.eclipse.gmf.runtime.gef.ui" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.notation" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.emf.common" version="2.5.0" match="compatible"/>
-      <import plugin="org.eclipse.emf.ecore" version="2.5.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.diagram.core" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.draw2d.ui.render" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.draw2d" version="3.2.0" match="compatible"/>
@@ -235,6 +229,8 @@
       <import plugin="org.eclipse.emf.validation" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.emf.edit" version="2.5.0" match="compatible"/>
       <import plugin="org.eclipse.emf.ecore" version="2.3.0" match="compatible"/>
+      <import plugin="javax.mail.glassfish"/>
+      <import plugin="org.talend.libraries.jdom"/>
    </requires>
 
    <plugin
@@ -1149,5 +1145,13 @@
          install-size="0"
          version="0.0.0"
          unpack="true"/>
+
+
+   <plugin
+         id="javax.mail.glassfish"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
