@@ -60,6 +60,8 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.runprocess.IProcessor;
@@ -150,6 +152,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
                     + PACKAGE_SEPARATOR; //$NON-NLS-1$
+
+            // Add additional route dependencies jars LiXiaopeng 2011-9-22
+            if (itemType.equals(ROUTE)) {
+                String addtionalLibPath = computeAddtionalLibPath(processItem);
+                standardJars += addtionalLibPath;
+            }
             ProcessorUtilities.setExportConfig(JAVA, standardJars, libPath); //$NON-NLS-1$
 
             if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
@@ -204,6 +212,151 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         list.add(0, metaInfoFolder);
 
         return list;
+    }
+
+    /**
+     * 
+     * Add additional dependency libraries.
+     * 
+     * @param processItem
+     * @param libPath
+     * @return
+     */
+    private List<URL> computeAddtionalLibs(ProcessItem processItem, IPath libPath) {
+        List<File> libFiles = new ArrayList<File>();
+        ProcessType processType = processItem.getProcess();
+        for (Object o : processType.getNode()) {
+            if (o instanceof NodeType) {
+                NodeType currentNode = (NodeType) o;
+                String componentName = currentNode.getComponentName();
+                if ("cMessagingEndpoint".equals(componentName)) {
+                    for (Object e : currentNode.getElementParameter()) {
+                        ElementParameterType p = (ElementParameterType) e;
+                        if ("HOTLIBS".equals(p.getName())) {
+                            for (Object pv : p.getElementValue()) {
+                                ElementValueType evt = (ElementValueType) pv;
+                                String evtValue = evt.getValue();
+                                IPath path = libPath.append(evtValue);
+                                libFiles.add(path.toFile());
+                            }
+                        }
+                    }
+                }
+                if ("cContextConfig".equals(componentName) || "cJMS".equals(componentName)) {
+                    for (Object e : currentNode.getElementParameter()) {
+                        ElementParameterType p = (ElementParameterType) e;
+                        if ("DRIVER_JAR".equals(p.getName())) {
+                            for (Object pv : p.getElementValue()) {
+                                ElementValueType evt = (ElementValueType) pv;
+                                String evtValue = evt.getValue();
+                                IPath path = libPath.append(evtValue);
+                                libFiles.add(path.toFile());
+                            }
+                        }
+                    }
+                }
+                // Deal with cTalendJob. LiXiaopeng 2011-9-19 TESB 3121
+                if ("cTalendJob".equals(componentName)) {
+                    for (Object e : currentNode.getElementParameter()) {
+                        ElementParameterType p = (ElementParameterType) e;
+                        if ("LIBRARY".equals(p.getName())) {
+                            String evtValue = p.getValue();
+                            evtValue = unquotes(evtValue);
+                            IPath path = libPath.append(evtValue);
+                            libFiles.add(path.toFile());
+                        }
+                    }
+                }
+            }
+        }
+
+        Set<URL> list = new HashSet<URL>();
+        try {
+            for (File lib : libFiles) {
+                URL url = lib.toURL();
+                list.add(url);
+            }
+
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return new ArrayList<URL>(list);
+    }
+
+    /**
+     * 
+     * Ensure that the string is not surrounded by quotes.
+     * 
+     * @param string
+     * @return
+     */
+    protected String unquotes(String string) {
+        String result = string;
+        if (result.startsWith("\"")) {
+            result = result.substring(1);
+        }
+
+        if (result.endsWith("\"")) {
+            result = result.substring(0, result.length() - 1);
+        }
+        return result;
+    }
+
+    /**
+     * Add user input dependency library path. DOC LiXP Comment method "computeAddtionalLibPath".
+     * 
+     * @param processItem
+     * @return
+     */
+    private String computeAddtionalLibPath(ProcessItem processItem) {
+        StringBuffer sb = new StringBuffer();
+        ProcessType processType = processItem.getProcess();
+        for (Object o : processType.getNode()) {
+            if (o instanceof NodeType) {
+                NodeType currentNode = (NodeType) o;
+                String componentName = currentNode.getComponentName();
+                if ("cMessagingEndpoint".equals(componentName)) {
+                    for (Object e : currentNode.getElementParameter()) {
+                        ElementParameterType p = (ElementParameterType) e;
+                        if ("HOTLIBS".equals(p.getName())) {
+                            for (Object pv : p.getElementValue()) {
+                                ElementValueType evt = (ElementValueType) pv;
+                                String evtValue = evt.getValue();
+                                sb.append(evtValue);
+                                sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+                            }
+                        }
+                    }
+                }
+                if ("cContextConfig".equals(componentName) || "cJMS".equals(componentName)) {
+                    for (Object e : currentNode.getElementParameter()) {
+                        ElementParameterType p = (ElementParameterType) e;
+                        if ("DRIVER_JAR".equals(p.getName())) {
+                            for (Object pv : p.getElementValue()) {
+                                ElementValueType evt = (ElementValueType) pv;
+                                String evtValue = evt.getValue();
+                                sb.append(evtValue);
+                                sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+                            }
+                        }
+                    }
+                }
+                if ("cTalendJob".equals(componentName)) {
+                    for (Object e : currentNode.getElementParameter()) {
+                        ElementParameterType p = (ElementParameterType) e;
+                        if ("LIBRARY".equals(p.getName())) {
+                            for (Object pv : p.getElementValue()) {
+                                ElementValueType evt = (ElementValueType) pv;
+                                String evtValue = evt.getValue();
+                                sb.append(evtValue);
+                                sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return sb.toString();
     }
 
     protected ExportFileResource getOsgiResource() {
@@ -478,6 +631,14 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
         File file = libPath.toFile();
         File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
+
+        // Add additional route dependencies jars LiXiaopeng 2011-9-22
+        for (ExportFileResource export : process) {
+            Item item = export.getItem();
+            if (item instanceof ProcessItem) {
+                list.addAll(computeAddtionalLibs((ProcessItem) item, libPath));
+            }
+        }
 
         if (!useBeans) {
             // Gets all the jar files
