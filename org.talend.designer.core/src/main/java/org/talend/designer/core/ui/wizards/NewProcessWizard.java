@@ -87,6 +87,36 @@ public class NewProcessWizard extends Wizard {
     }
 
     /**
+     * Constructs a new NewProjectWizard.
+     * 
+     * @param author Project author.
+     * @param server
+     * @param password
+     * @param label
+     */
+    public NewProcessWizard(IPath path, String label) {
+        super();
+        this.path = path;
+
+        this.property = PropertiesFactory.eINSTANCE.createProperty();
+        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getUser());
+        if (label != null) {
+            property.setLabel(label);
+        }
+        this.property.setVersion(VersionUtils.DEFAULT_VERSION);
+        this.property.setStatusCode(""); //$NON-NLS-1$
+
+        processItem = PropertiesFactory.eINSTANCE.createProcessItem();
+
+        processItem.setProperty(property);
+
+        repositoryFactory = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PROCESS_WIZ));
+    }
+
+    /**
      * @see org.eclipse.jface.wizard.Wizard#addPages()
      */
     @Override

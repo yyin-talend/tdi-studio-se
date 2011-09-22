@@ -62,7 +62,7 @@ public class NewProcessWizardPage extends PropertiesWizardPage {
         setControl(container);
         updateContent();
         addListeners();
-        setPageComplete(false);
+        // setPageComplete(false);
     }
 
     public ERepositoryObjectType getRepositoryObjectType() {

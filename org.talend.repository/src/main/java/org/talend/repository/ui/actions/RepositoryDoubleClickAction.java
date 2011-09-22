@@ -96,6 +96,14 @@ public class RepositoryDoubleClickAction extends Action {
                 && !isLinkCDCNode(node)) {
             view.expand(node);
             view.getViewer().refresh();
+            if (isSERVICES(node)) {
+                ITreeContextualAction actionToRun = getAction(node);
+                if (!(actionToRun == null)) {
+                    actionToRun.init((TreeViewer) getViewPart().getViewer(), (IStructuredSelection) selection);
+                    actionToRun.run();
+                    // showView();
+                }
+            }
         } else {
             ITreeContextualAction actionToRun = getAction(node);
             if (!(actionToRun == null)) {
@@ -155,6 +163,20 @@ public class RepositoryDoubleClickAction extends Action {
             if (nodeType == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    /**
+     * 
+     * hwang Comment method "isSERVICES".
+     * 
+     * for services
+     */
+    private boolean isSERVICES(RepositoryNode node) {
+        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        if (nodeType == ERepositoryObjectType.SERVICESOPERATION) {
+            return true;
         }
         return false;
     }
@@ -326,9 +348,14 @@ public class RepositoryDoubleClickAction extends Action {
                     return current;
                 }
 
+            } else if (nodeType != null && nodeType.equals(ERepositoryObjectType.SERVICESOPERATION)) {
+                if (current.getClassForDoubleClick().getSimpleName().equals("ServiceOperation")) {
+                    return current;
+                }
+
             } else if (obj.getObject() != null
-                    && current.getClassForDoubleClick().getSimpleName()
-                            .equals(obj.getObject().getProperty().getItem().eClass().getName())) {
+                    && current.getClassForDoubleClick().getSimpleName().equals(
+                            obj.getObject().getProperty().getItem().eClass().getName())) {
                 return current;
             }
         }
