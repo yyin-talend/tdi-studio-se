@@ -320,7 +320,7 @@ public class ConnectionManager {
         if (newTarget.isELTComponent() && newTarget.getComponent().getName().endsWith("Map")) {
             String targetName = newTarget.getComponent().getOriginalFamilyName();
             String sourceName = processStartNode.getComponent().getOriginalFamilyName();
-            if (!targetName.equals(sourceName)) {
+            if (!targetName.equals(sourceName) && !(lineStyle.hasConnectionCategory(IConnectionCategory.DEPENDENCY))) {
                 return false;
             }
         }
