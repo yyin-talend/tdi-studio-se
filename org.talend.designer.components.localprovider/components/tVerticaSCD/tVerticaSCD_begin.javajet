@@ -87,7 +87,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         <%        
     }
     %>
-    if(dbschema_<%=cid%>!=null){
+    if(dbschema_<%=cid%>!=null&&!"".equals(dbschema_<%=cid%>)){
     	tableName_<%=cid%> =dbschema_<%=cid%>+"."+tableName_<%=cid%>;
     }
     <%
