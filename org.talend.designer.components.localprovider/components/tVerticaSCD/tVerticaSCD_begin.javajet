@@ -87,7 +87,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         <%        
     }
     %>
-    
+    if(dbschema_<%=cid%>!=null){
+    	tableName_<%=cid%> =dbschema_<%=cid%>+"."+tableName_<%=cid%>;
+    }
     <%
     if(!("NONE").equals(tableAction)) {
         if(("CREATE").equals(tableAction)) {
