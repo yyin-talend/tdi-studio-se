@@ -85,17 +85,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	<%//Layout---------------------------------------------------------------%>
 	fw_<%=cid %>.write(".BEGIN EXPORT SESSIONS 8;"+"<%=lineSeparator%>");
 	<%if(!useQuery) {%>
-		fw_<%=cid %>.write("SELECT "+"<%=lineSeparator%>");
+		fw_<%=cid %>.write("SELECT <%if(separator.length()>0 && !"\"\"".equals(separator)){%>CAST(('' ||<%}%>"+"<%=lineSeparator%>");
 		<%
 		if(columnList!=null){
 			int counter = 1;
+			int columnsLength = 0;
 			for(IMetadataColumn column:columnList){	
-				if( columnList.size() != counter){	%>
-				fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>))<%if(separator.length()>0 && !"\"\"".equals(separator)){%>||'"+<%=separator%>+"'||<%}else{%>,<%}%>"+"<%=lineSeparator%>");
+				if( columnList.size() != counter){	
+					if(separator.length()>0 && !"\"\"".equals(separator)){
+						columnsLength+=column.getLength()+separator.length();
+				%>
+					fw_<%=cid %>.write("TRIM(COALESCE(CAST(<%=column.getOriginalDbColumnName()%> AS CHAR(<%=column.getLength()%>)),'')) || '"+<%=separator%>+"' ||"+"<%=lineSeparator%>");
+					<%}else{%>
+					fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>)),"+"<%=lineSeparator%>");
+					<%}%>
 			<%
 				} else {
+					if(separator.length()>0 && !"\"\"".equals(separator)){
+						columnsLength+=column.getLength()+1;
 			%>
-				fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>))"+"<%=lineSeparator%>");
+					fw_<%=cid %>.write("TRIM(COALESCE(CAST(<%=column.getOriginalDbColumnName()%> AS VARCHAR(<%=column.getLength()%>)),''))) AS CHAR(<%=columnsLength%>))"+"<%=lineSeparator%>");
+					<%}else{%>
+					fw_<%=cid %>.write("cast( <%=column.getOriginalDbColumnName()%> as CHAR(<%=column.getLength()%>))"+"<%=lineSeparator%>");
+					<%}%>
 			<% } 
 				counter++;
 			}
