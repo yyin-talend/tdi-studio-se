@@ -329,7 +329,9 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
         case PERSISTENT_MODEL:
         case OUTPUT_REJECT:
         case LOOK_UP_INNER_JOIN_REJECT:
-            return new String[] { String.valueOf(Boolean.TRUE), String.valueOf(Boolean.FALSE) };
+            // return new String[] { String.valueOf(Boolean.TRUE), String.valueOf(Boolean.FALSE) };
+            // TDI-17714:remove the true option in the Store temp data lookup property.
+            return new String[] { String.valueOf(Boolean.FALSE) };
         default:
             return new String[0];
         }
