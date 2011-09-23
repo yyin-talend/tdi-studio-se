@@ -98,7 +98,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
 
     }
 
-    protected SelectDeleteProjectDialog(Shell parentShell, boolean login) {
+    public SelectDeleteProjectDialog(Shell parentShell, boolean login) {
         this(parentShell);
         getProjectItem(login);
     }
@@ -352,5 +352,9 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         delProjectItem();
         projects = null;
         super.okPressed();
+    }
+
+    public List<Object> getDelList() {
+        return delItemList;
     }
 }

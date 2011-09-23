@@ -23,6 +23,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
@@ -34,11 +35,14 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
@@ -65,6 +69,12 @@ public class LoginDialog extends TrayDialog {
     private ConnectionUserPerReader perReader;
 
     private boolean inuse = false;
+
+    private Composite base;
+
+    private StackLayout stackLayout;
+
+    private TOSLoginComposite tosLoginComposite;
 
     /**
      * Construct a new LoginDialog.
@@ -144,13 +154,53 @@ public class LoginDialog extends TrayDialog {
         if (!perReader.isHaveUserPer()) {
             perReader.createPropertyFile();
         }
-        loginComposite = new LoginComposite(container, SWT.NONE, this, inuse);
+        base = new Composite(container, SWT.NONE);
+        base.setLayoutData(new GridData(GridData.FILL_BOTH));
+        stackLayout = new StackLayout();
+        base.setLayout(stackLayout);
+        if (!PluginChecker.isSVNProviderPluginLoaded()) {// tos
+            loginComposite = new LoginComposite(base, SWT.NONE, this, inuse, tosLoginComposite, stackLayout);
+            loginComposite.populateProjectList();
+            tosLoginComposite = new TOSLoginComposite(base, SWT.NONE, loginComposite, this);
+        } else {
+            loginComposite = new LoginComposite(base, SWT.NONE, this, inuse, tosLoginComposite, stackLayout);
+        }
         GridData data = new GridData(GridData.FILL_BOTH);
         // data.widthHint = INNER_LOGIN_COMPOSITE_WIDTH;
         // data.heightHint = DIALOG_HEIGHT;
         loginComposite.setLayoutData(data);
-
+        stackLayout.topControl = loginComposite;
+        base.layout();
+        if (!PluginChecker.isSVNProviderPluginLoaded()) {
+            Project[] projectList = readProject();
+            if (projectList.length > 0) {
+                advanced();
+            }
+        }
         return container;
+    }
+
+    private Project[] readProject() {
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        Project[] projects = null;
+        try {
+            projects = repositoryFactory.readProject();
+        } catch (PersistenceException e1) {
+            e1.printStackTrace();
+        } catch (BusinessException e1) {
+            e1.printStackTrace();
+        }
+        return projects;
+    }
+
+    public void advanced() {
+        stackLayout.topControl = tosLoginComposite;
+        base.layout();
+        Project[] projectCollection = tosLoginComposite.readProject();
+        for (int i = 0; i < projectCollection.length; i++) {
+            tosLoginComposite.getProjectList().add(projectCollection[i].getLabel().toUpperCase());
+            tosLoginComposite.getProjectMap().put(projectCollection[i].getLabel().toUpperCase(), projectCollection[i]);
+        }
     }
 
     /**
@@ -170,10 +220,14 @@ public class LoginDialog extends TrayDialog {
         if (LoginComposite.isRestart) {
             super.okPressed();
         } else {
-            boolean isLogInOk = logIn(loginComposite.getProject());
-            if (isLogInOk) {
+            if (PluginChecker.isSVNProviderPluginLoaded()) {
+                boolean isLogInOk = logIn(loginComposite.getProject());
+                if (isLogInOk) {
+                    super.okPressed();
+                }// else login failed so ignor the ok button.
+            } else {
                 super.okPressed();
-            }// else login failed so ignor the ok button.
+            }
         }
     }
 
@@ -227,6 +281,23 @@ public class LoginDialog extends TrayDialog {
             loginComposite.populateProjectList();
             MessageDialog.openError(getShell(), getShell().getText(), e.getMessage());
             return false;
+        }
+
+        if (!PluginChecker.isSVNProviderPluginLoaded()) {// tos
+            if (project.getExchangeUser().getLogin() == null || project.getExchangeUser().getLogin().equals("")) {
+                TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
+                tfDialog.open();
+            }
+        } else {// tis
+            IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+            int count = prefStore.getInt(TalendForgeDialog.LOGINCOUNT);
+            String connectionEmail = project.getAuthor().getLogin();
+            if (prefStore.getString(connectionEmail) == null || prefStore.getString(connectionEmail).equals("")) {
+                if (count < 6) {
+                    TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
+                    tfDialog.open();
+                }
+            }
         }
 
         final Shell shell = this.getShell();

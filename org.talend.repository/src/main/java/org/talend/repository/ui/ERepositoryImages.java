@@ -38,7 +38,8 @@ public enum ERepositoryImages implements IImage {
     DEFAULT_PROCESS_ICON("/icons/process_icon.gif"), //$NON-NLS-N$
     MODIFIED_ICON("/icons/refresh.gif"), //$NON-NLS-N$
     SCHEMA_ICON("/icons/table.gif"), //$NON-NLS-N$
-    CONNECTOR_ICON("/icons/connection.gif"); //$NON-NLS-N$
+    CONNECTOR_ICON("/icons/connection.gif"), //$NON-NLS-N$
+    TALENDFORGE_ICON("/icons/talendforge.jpg");
 
     private String path;
 
