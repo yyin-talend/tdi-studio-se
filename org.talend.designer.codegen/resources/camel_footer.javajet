@@ -103,7 +103,7 @@
 %>
 <%
 			//cCamelContextConfig 
-			List<? extends INode> camelContextNodes = process.getNodesOfType("cContextConfig");
+			List<? extends INode> camelContextNodes = process.getNodesOfType("cCamelContext");
 			for(INode node: camelContextNodes){
 %>
 			    <%=ElementParameterParser.getValue(node, "__CODE__")%>

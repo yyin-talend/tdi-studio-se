@@ -52,7 +52,6 @@ import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.exception.CodeGeneratorException;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
-import org.talend.designer.codegen.model.CodeGeneratorInternalTemplatesFactory;
 import org.talend.designer.codegen.model.CodeGeneratorInternalTemplatesFactoryProvider;
 import org.talend.designer.codegen.proxy.JetProxy;
 import org.talend.designer.core.ICamelDesignerCoreService;
@@ -272,16 +271,17 @@ public class CodeGenerator implements ICodeGenerator {
                             generateHeaders = false;
                         }
 
-                        //Fix bug TESB-2951 Generated Codes error when Route starts with cFile/cFTP/cActiveMQ/cFTP/cJMS LiXiaopeng 2011-09-05
+                        // Fix bug TESB-2951 Generated Codes error when Route starts with cFile/cFTP/cActiveMQ/cFTP/cJMS
+                        // LiXiaopeng 2011-09-05
                         String startNodeName = subTree.getRootNode().getSubProcessStartNode(true).getComponent().getName();
-                        if ("cMessagingEndpoint".equals(startNodeName) || "cFile".equals(startNodeName) || "cAvtiveMQ".equals(startNodeName) || "cFTP".equals(startNodeName)
+                        if ("cMessagingEndpoint".equals(startNodeName) || "cFile".equals(startNodeName)
+                                || "cAvtiveMQ".equals(startNodeName) || "cFTP".equals(startNodeName)
                                 || "cJMS".equals(startNodeName) || "cCXF".equals(startNodeName)) {
                             nodeSubTreeList.add(subTree);
-                        } else if ("cContextConfig".equals(startNodeName)) {
-                            //Customized remove the cContextConfig routeId codes. TESB-2825 LiXP 20110823
-                            //Do nothing.
-                        } 
-                        else {
+                        } else if ("cCamelContext".equals(startNodeName)) {
+                            // Customized remove the cCamelContext routeId codes. TESB-2825 LiXP 20110823
+                            // Do nothing.
+                        } else {
                             componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
                                     ETypeGen.CAMEL)); // And generate the component par of code
                             componentsCode.append(";");
@@ -295,12 +295,12 @@ public class CodeGenerator implements ICodeGenerator {
                         componentsCode.append(";");
                     }
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.CAMEL_FOOTER, headerArgument)); // Close
-                                                                                                                    // the
-                                                                                                                    // last
-                                                                                                                    // route
-                                                                                                                    // in
-                                                                                                                    // the
-                                                                                                                   // CamelContext
+                                                                                                                       // the
+                                                                                                                       // last
+                                                                                                                       // route
+                                                                                                                       // in
+                                                                                                                       // the
+                                                                                                                       // CamelContext
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER_ROUTE, lastSubtree));
                 }
             } else {
@@ -504,8 +504,9 @@ public class CodeGenerator implements ICodeGenerator {
             List<TemplateUtil> allTemplates = CodeGeneratorInternalTemplatesFactoryProvider.getInstance().getTemplates();
             for (TemplateUtil template : allTemplates) {
                 if (template.getResourceName().contains(EInternalTemplate.HEADER_ADDITIONAL.toString())) {
-                    jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + template.getResourceName() + TemplateUtil.EXT_SEP
-                            + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
+                    jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
+                            + template.getResourceName() + TemplateUtil.EXT_SEP + language.getExtension()
+                            + TemplateUtil.TEMPLATE_EXT);
                     content.append(instantiateJetProxy(jetBean));
                 }
             }
