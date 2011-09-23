@@ -31,9 +31,11 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IStartup;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
+import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 
 /**
  * Delete all the perl and java jobs when T.O.S start up.
@@ -88,9 +90,15 @@ public class DeleteAllJobWhenStartUp implements IStartup {
                 RuntimeExceptionHandler.process(e);
             }
         }
+        IProject rootProject = null;
+        try {
+            rootProject = JavaProcessorUtilities.getProcessorProject();
+        } catch (CoreException e1) {
+            ExceptionHandler.process(e1);
+        }
         IResource javaRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME);
         if (javaRecs != null && javaRecs.getType() == IResource.PROJECT) {
-            IProject rootProject = (IProject) javaRecs;
+            rootProject = (IProject) javaRecs;
             try {
                 if (!rootProject.isOpen()) {
                     rootProject.open(null);
