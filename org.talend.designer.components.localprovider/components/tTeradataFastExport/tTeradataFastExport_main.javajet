@@ -33,9 +33,6 @@ boolean useQuery = "true".equals(ElementParameterParser.getValue(node, "__USE_QU
 String query = ElementParameterParser.getValue(node, "__QUERY__"); 
 query = query.replaceAll("\n"," ").replaceAll("\r"," ");
 
-String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
-
 String execution= ElementParameterParser.getValue(node, "__EXECUTION__");
 String scriptPath= ElementParameterParser.getValue(node, "__SCRIPT_PATH__");
 String exportedFile= ElementParameterParser.getValue(node, "__EXPORTED_FILE__");
@@ -66,7 +63,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	}
 }
 %>
-try {
 	String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
 <%
 	if(("Windows").equals(execution)){
@@ -123,50 +119,21 @@ try {
 	<%
 	if("Windows".equals(execution)){
 	%>
-	String[] sb_<%=cid%> = {"cmd","/c","fexp < \""+<%=scriptPath%>+<%=table%>+".script\"<%if(!dieOnError) {%> > \""+<%=errorFile%>+"\"<%}%> 2>&1"};
+	String[] sb_<%=cid%> = {"cmd","/c","fexp < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1"};
 	<%}else{%>
-	String[] sb_<%=cid%> = {"sh","-c","fexp < "+<%=scriptPath%>+<%=table%>+".scr"+"<%if(!dieOnError) {%> > \""+<%=errorFile%>+"\"<%}%> 2>&1"};
+	String[] sb_<%=cid%> = {"sh","-c","fexp < "+<%=scriptPath%>+<%=table%>+".scr"+" > \""+<%=errorFile%>+"\" 2>&1"};
 	<%}%>
 	final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
-	<%if(dieOnError) {%>
-	final String returnCodePrefix<%=cid%> = "Highest return code encountered = '";
-	final String returnInfoBeginMark<%=cid%> = "================================";
-	globalMap.put("hasError<%=cid%>", null);
-	globalMap.put("hasCommonError<%=cid%>", null);
-	<%}%>
+	
 	Thread normal_<%=cid %> = new Thread() {
 	    public void run() {
 	    	try {
 	    		java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(process_<%=cid %>.getInputStream()));
 	    		String line = "";
-	    		<%if(dieOnError) {%>
-	    		int lineNum = 0;
-	    		<%}%>
+	    		
 	    		try {
-	    			while(true) {
-	    				if((line = reader.readLine())!=null){
-	    					<%if(dieOnError) {%>
-	    					if((++lineNum) == 1 && !line.contains(returnInfoBeginMark<%=cid%>)) {
-	    						globalMap.put("hasError<%=cid%>", true);
-	    						break;
-	    					}
-	    					int index = line.indexOf(returnCodePrefix<%=cid%>);
-							if(index!=-1) {
-								String returnCode = line.substring(index, index+2);
-								//Teradata errorCode : 08 or 12 
-								if("08 12".indexOf(returnCode)!=-1) {
-									globalMap.put("hasError<%=cid%>", true);
-									break;
-								}
-							}
-							<%}%>
-	    			   		System.out.println(line);
-	    			   	} else {
-	    			   		<%if(dieOnError) {%>
-	    			   		globalMap.put("hasError<%=cid%>", false);
-	    			   		<%}%>
-	    			   		break;
-	    			   	}
+	    			while((line = reader.readLine()) != null) {
+	    				System.out.println(line);
 	    	        }
 	    	    } finally {
 	    	         reader.close();
@@ -184,19 +151,8 @@ try {
 				java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(process_<%=cid %>.getErrorStream()));
 				String line = "";
 				try {
-					while(true) {
-						if((line = reader.readLine()) != null) {
-							System.err.println(line);
-							<%if(dieOnError) {%>
-							globalMap.put("hasCommonError<%=cid%>", true);
-							break;
-							<%}%>
-						} else {
-							<%if(dieOnError) {%>
-							globalMap.put("hasCommonError<%=cid%>", false);
-							<%}%>
-							break;
-						}
+					while((line = reader.readLine()) != null) {
+						System.err.println(line); 
 					}
 				} finally {
 					reader.close();
@@ -213,25 +169,3 @@ try {
 	normal_<%=cid %>.interrupt();
 	
 	error_<%=cid %>.interrupt();
-	
-	<%if(dieOnError) {%>
-	while(globalMap.get("hasError<%=cid%>") == null && globalMap.get("hasCommonError<%=cid%>") == null) {
-		try {
-			Thread.sleep(1);
-		} catch(InterruptedException e) {
-			//do nothing
-		}
-	}
-	
-	if((Boolean)globalMap.get("hasError<%=cid%>") || (Boolean)globalMap.get("hasCommonError<%=cid%>")) {
-		throw new RuntimeException("some error happen on fastexport");
-	}
-	<%}%>
-	
-} catch(Exception e) {
-	<% if(dieOnError) {%>
-		throw(e);
-	<% } else {%>
-		System.err.println(e.getMessage());
-	<% } %>		
-}
