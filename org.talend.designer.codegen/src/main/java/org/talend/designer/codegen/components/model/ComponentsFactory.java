@@ -959,7 +959,9 @@ public class ComponentsFactory implements IComponentsFactory {
         customComponentList = null;
         allComponents = null;
         isReset = true;
-        TalendEntryEditPart.resetImageCache();
+        if (!CommonsPlugin.isHeadless()) {
+            TalendEntryEditPart.resetImageCache();
+        }
     }
 
     /*
