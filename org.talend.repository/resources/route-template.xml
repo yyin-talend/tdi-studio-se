@@ -7,7 +7,7 @@
 		<property name="bundleContext" ref="blueprintBundleContext" />
 	</bean>
 
-	<service ref="job" interface="routines.system.api.TalendESBRoute">
+	<service ref="job" interface="routines.system.api.TalendJob">
 		<service-properties>
 			<entry key="name" value="@JOBNAME@" />
 			<entry key="type" value="@TYPE@" />
