@@ -66,6 +66,15 @@
     >
     </PARAMETER>
 
+	<PARAMETER
+      NAME="LOOP_QUERY_BASE"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      SHOW="false"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="LOOP_QUERY"
       FIELD="TEXT"

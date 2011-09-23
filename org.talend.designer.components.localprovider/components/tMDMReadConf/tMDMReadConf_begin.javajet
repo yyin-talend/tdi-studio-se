@@ -162,7 +162,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 		                getitems_<%=cid%>=new org.talend.mdm.webservice.WSGetItems(dataCluster_<%=cid%>, <%=concept%>, wsItem_<%=cid%>,
 									    	<%=spellThrehold%>,  //spell Threshold
 											skip_<%=cid%> + retrievedCount_<%=cid%>,
-											readRecordsSize_<%=cid%>,false);
+											readRecordsSize_<%=cid%>,true);
 						String[] items_<%=cid%> = {};
 						try {
 							items_<%=cid%> = xtentisWS_<%=cid%>.getItems(getitems_<%=cid%>);
@@ -173,16 +173,16 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 							System.err.println(e.getMessage());
 							<% } %>
 						}
-						retrievedCount_<%=cid%> += items_<%=cid%>.length;
-						if (recordsPerPage_<%=cid%> == -1 || items_<%=cid%>.length < readRecordsSize_<%=cid%> || limit_<%=cid%> == retrievedCount_<%=cid%>) {
+						retrievedCount_<%=cid%> += (items_<%=cid%>.length - 1);
+						if (recordsPerPage_<%=cid%> == -1 || (items_<%=cid%>.length - 1) < readRecordsSize_<%=cid%> || limit_<%=cid%> == retrievedCount_<%=cid%>) {
 		                    continueFlag_<%=cid%> = false;
 		                } else if (limit_<%=cid%> != -1 && limit_<%=cid%> < retrievedCount_<%=cid%> + readRecordsSize_<%=cid%>) {
 		                    readRecordsSize_<%=cid%> = limit_<%=cid%> - retrievedCount_<%=cid%>;
 		                }
                     	
-                    	for(String item_<%=cid%> : items_<%=cid%>){
+                    	for(int i_<%=cid%> = 1, itemsLength_<%=cid%> = items_<%=cid%>.length; i_<%=cid%> < itemsLength_<%=cid%>; i_<%=cid%>++){
 							nb_line_<%=cid%> ++;
-							String <%=outgoingConn.getName()%>_xml = item_<%=cid%>;	
+							String <%=outgoingConn.getName()%>_xml = items_<%=cid%>[i_<%=cid%>];	
             		
 				<%
 				}//end items

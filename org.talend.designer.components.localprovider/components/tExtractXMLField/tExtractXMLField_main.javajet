@@ -120,8 +120,10 @@ if (outConn!=null) {
     java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = null;
 <%if(useXMLField){%>
 	String loopQuery_<%=cid %> = <%=strXMLPrefix %>+<%=loopQuery %>;
-<%}else{%>
-    String loopQuery_<%=cid %> = <%=loopQuery %>;
+<%}else{
+	String loopQueryBase = ElementParameterParser.getValue(node, "__LOOP_QUERY_BASE__"); 
+	%>
+    String loopQuery_<%=cid %> = <%="\"\"".equals(loopQueryBase)?"":loopQueryBase+"+"%><%=loopQuery %>;
 <%}%>
     boolean isStructError_<%=cid %>= true;
         
