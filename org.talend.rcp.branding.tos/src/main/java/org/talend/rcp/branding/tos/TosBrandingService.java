@@ -33,10 +33,6 @@ public class TosBrandingService extends AbstractTalendBrandingService {
 
     protected IBrandingConfiguration brandingConfigure;
 
-    public String getFullProductName() {
-        return Messages.getString("productfullname"); //$NON-NLS-1$
-    }
-
     public String getShortProductName() {
         return Messages.getString("productshortname"); //$NON-NLS-1$
     }
@@ -78,5 +74,13 @@ public class TosBrandingService extends AbstractTalendBrandingService {
     @Override
     public String getJobLicenseHeader(String version) {
         return Messages.getString("TosBrandingService_job_license_header_content", this.getFullProductName(), version);
+    }
+
+    public String getProductName() {
+        return "Talend Open Studio";
+    }
+
+    public String getOptionName() {
+        return "for Data Integration";
     }
 }
