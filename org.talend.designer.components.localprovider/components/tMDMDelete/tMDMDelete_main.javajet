@@ -52,10 +52,10 @@ try{
 <%
 if(isDropItem){
 %>
-	org.talend.mdm.webservice.WSDropItem item_<%=cid %> = new org.talend.mdm.webservice.WSDropItem(wsPK_<%=cid %>,<%=partPath %>);
+	org.talend.mdm.webservice.WSDropItem item_<%=cid %> = new org.talend.mdm.webservice.WSDropItem(wsPK_<%=cid %>,<%=partPath %>,false);
 	xtentisWS_<%=cid %>.dropItem(item_<%=cid %>);
 <%}else{%>
-	org.talend.mdm.webservice.WSDeleteItem item_<%=cid %> = new org.talend.mdm.webservice.WSDeleteItem(wsPK_<%=cid %>);
+	org.talend.mdm.webservice.WSDeleteItem item_<%=cid %> = new org.talend.mdm.webservice.WSDeleteItem(wsPK_<%=cid %>,false);
 	xtentisWS_<%=cid %>.deleteItem(item_<%=cid %>);
 <%}%>
 }catch(Exception e){
