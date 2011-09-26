@@ -238,6 +238,7 @@
 %>
 		}    
 		try {
+			initUriMap();
 			Route(true);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
