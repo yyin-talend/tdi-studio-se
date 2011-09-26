@@ -278,8 +278,8 @@ public class CodeGenerator implements ICodeGenerator {
                                 || "cAvtiveMQ".equals(startNodeName) || "cFTP".equals(startNodeName)
                                 || "cJMS".equals(startNodeName) || "cCXF".equals(startNodeName)) {
                             nodeSubTreeList.add(subTree);
-                        } else if ("cCamelContext".equals(startNodeName)) {
-                            // Customized remove the cCamelContext routeId codes. TESB-2825 LiXP 20110823
+                        } else if ("cConfig".equals(startNodeName)) {
+                            // Customized remove the cConfig routeId codes. TESB-2825 LiXP 20110823
                             // Do nothing.
                         } else {
                             componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,

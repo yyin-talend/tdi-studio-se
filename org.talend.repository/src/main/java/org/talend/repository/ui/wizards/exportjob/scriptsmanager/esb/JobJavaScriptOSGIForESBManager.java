@@ -242,7 +242,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         }
                     }
                 }
-                if ("cCamelContext".equals(componentName) || "cJMS".equals(componentName)) {
+                if ("cConfig".equals(componentName) || "cJMS".equals(componentName)) {
                     for (Object e : currentNode.getElementParameter()) {
                         ElementParameterType p = (ElementParameterType) e;
                         if ("DRIVER_JAR".equals(p.getName())) {
@@ -328,7 +328,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         }
                     }
                 }
-                if ("cCamelContext".equals(componentName) || "cJMS".equals(componentName)) {
+                if ("cConfig".equals(componentName) || "cJMS".equals(componentName)) {
                     for (Object e : currentNode.getElementParameter()) {
                         ElementParameterType p = (ElementParameterType) e;
                         if ("DRIVER_JAR".equals(p.getName())) {
