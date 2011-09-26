@@ -145,19 +145,19 @@ public class TosTokenCollector extends AbstractTokenCollector {
 
             }
 
-            // business model
-            businessModelsNum += factory.getAll(currentProject, ERepositoryObjectType.BUSINESS_PROCESS).size();
-            // generated job docs
-            generatedJobDocsNum += factory.getAll(currentProject, ERepositoryObjectType.JOB_DOC).size();
-            // metadata
-            for (DynaEnum type : ERepositoryObjectType.values()) {
-                if (type instanceof ERepositoryObjectType) {
-                    ERepositoryObjectType repType = (ERepositoryObjectType) type;
-                    String folder = repType.getFolder();
-                    if (repType.isDIItemType() && repType.isResouce() && folder != null
-                            && folder.startsWith(ERepositoryObjectType.METADATA.getFolder())) {
-                        metadatasNum += factory.getAll(currentProject, repType).size();
-                    }
+        }
+        // business model
+        businessModelsNum += factory.getAll(currentProject, ERepositoryObjectType.BUSINESS_PROCESS).size();
+        // generated job docs
+        generatedJobDocsNum += factory.getAll(currentProject, ERepositoryObjectType.JOB_DOC).size();
+        // metadata
+        for (DynaEnum type : ERepositoryObjectType.values()) {
+            if (type instanceof ERepositoryObjectType) {
+                ERepositoryObjectType repType = (ERepositoryObjectType) type;
+                String folder = repType.getFolder();
+                if (repType.isDIItemType() && repType.isResouce() && folder != null
+                        && folder.startsWith(ERepositoryObjectType.METADATA.getFolder())) {
+                    metadatasNum += factory.getAll(currentProject, repType).size();
                 }
             }
         }
