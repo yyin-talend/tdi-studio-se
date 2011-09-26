@@ -19,7 +19,6 @@ String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
 String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
 
 boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
-boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__")); 
 
 String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
 boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
@@ -169,11 +168,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                         new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
                 file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
 <%
-    			}
-    			if(isDeleteEmptyFile) {
-%>              
-				try {
-                <%
     			}
     			
     			if(isIncludeHeader && !hasDynamic){
@@ -509,11 +503,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         	    if(csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n')
         	    	CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
 	    		<%
-	    		if(isDeleteEmptyFile) {
-	    		%>
-	    		try {
-	    		<%
-	    		}
 	    	    if(isIncludeHeader && !hasDynamic)
 	    	    {
     	        %>		   

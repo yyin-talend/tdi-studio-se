@@ -143,42 +143,11 @@
 %>
 
 <%if(!useStream && isDeleteEmptyFile){%>
-   } finally {
-		if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
-<%	
-	//before delele file,we should make sure that we have closed the stream
-	if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
-		List<IMetadataTable> metadatas = node.getMetadataList();
-		if ((metadatas!=null)&&(metadatas.size()>0)) {
-			IMetadataTable metadata = metadatas.get(0);
-			if (metadata!=null) {
-%>				
-			out<%=cid %>.close();
-<%						
-			}
-		}
-	} else {
-		List<IMetadataTable> metadatas = node.getMetadataList();
-		if ((metadatas!=null)&&(metadatas.size()>0)) {
-			IMetadataTable metadata = metadatas.get(0);
-			if (metadata!=null) {
-%>
-			CsvWriter<%=cid%>.close();
-<%
-				if(isInRowMode){
-%>
-			out<%=cid %>.close();
-<%
-				}
-			}
-		}
-	}
-%>
-		<%if(compress && !isAppend && !split){%>
-			file_<%=cid%>.delete();
-		<%}else{%>
-			file<%=cid%>.delete();
-		<%}%>
-		}
-   }		
+	if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
+	<%if(compress && !isAppend && !split){%>
+		file_<%=cid%>.delete();
+	<%}else{%>
+		file<%=cid%>.delete();
+	<%}%>
+	}		
 <%}%>
