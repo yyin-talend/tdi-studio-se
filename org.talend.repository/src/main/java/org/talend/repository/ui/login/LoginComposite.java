@@ -43,6 +43,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
@@ -466,11 +467,15 @@ public class LoginComposite extends Composite {
 
         Label welcomeLabel = toolkit.createLabel(repositoryComposite, Messages.getString("LoginComposite.welcomeTitle")); //$NON-NLS-1$
         welcomeLabel.setBackground(repositoryComposite.getBackground());
+        GC gc = new GC(welcomeLabel);
+        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.welcomeTitle"));
+        gc.dispose();
+
         FormData welcomeLabelFormData = new FormData();
         welcomeLabelFormData.top = new FormAttachment(0, 7);
         welcomeLabelFormData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        welcomeLabelFormData.right = new FormAttachment(0, 200);
-        welcomeLabelFormData.bottom = new FormAttachment(100, 0);
+        welcomeLabelFormData.right = new FormAttachment(0, HORIZONTAL_TWO_SPACE + labelSize.x);
+        welcomeLabelFormData.bottom = new FormAttachment(0, 7 + labelSize.y);
         welcomeLabel.setLayoutData(welcomeLabelFormData);
 
         passwordText = toolkit.createText(repositoryComposite, null, SWT.PASSWORD | SWT.BORDER);
@@ -528,7 +533,13 @@ public class LoginComposite extends Composite {
         FormData detailLabelFormData = new FormData();
         detailLabelFormData.top = new FormAttachment(0, 0);
         detailLabelFormData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        detailLabelFormData.right = new FormAttachment(0, 380);
+        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+            detailLabelFormData.right = new FormAttachment(0, 380);
+        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+            detailLabelFormData.right = new FormAttachment(0, 400);
+        } else {
+            detailLabelFormData.right = new FormAttachment(0, 400);
+        }
         detailLabelFormData.bottom = new FormAttachment(100, 0);
         detailLabel.setLayoutData(detailLabelFormData);
 
@@ -676,9 +687,12 @@ public class LoginComposite extends Composite {
 
         manageProjectLabel1 = toolkit.createLabel(tosActionComposite, Messages.getString("LoginComposite.selectADemoProject")); //$NON-NLS-1$
         manageProjectLabel1.setBackground(tosActionComposite.getBackground());
+        GC gc = new GC(manageProjectLabel1);
+        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.selectADemoProject"));
+        gc.dispose();
         data = new FormData();
         data.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        data.right = new FormAttachment(0, LEFTSPACE + 55);
+        data.right = new FormAttachment(0, HORIZONTAL_TWO_SPACE + labelSize.x);
         data.bottom = new FormAttachment(manageProjectsButtonTemp, HORIZONTAL_FOUR_SPACE, SWT.CENTER);
         manageProjectLabel1.setLayoutData(data);
 
@@ -850,10 +864,13 @@ public class LoginComposite extends Composite {
 
         Label createProjectLabel = toolkit
                 .createLabel(tosProjectComposite, Messages.getString("LoginComposite.projectTitleTemp"));
+        GC gc = new GC(createProjectLabel);
+        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.projectTitleTemp"));
+        gc.dispose();
         data = new FormData();
         data.top = new FormAttachment(0, 10);
         data.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        data.right = new FormAttachment(0, LEFTSPACE + 55);
+        data.right = new FormAttachment(0, HORIZONTAL_TWO_SPACE + labelSize.x);
         data.bottom = new FormAttachment(createProjectBtn, 0, SWT.BOTTOM);
         createProjectLabel.setLayoutData(data);
 
@@ -910,13 +927,16 @@ public class LoginComposite extends Composite {
         if (!PluginChecker.isSVNProviderPluginLoaded()) {
             Label workspaceLabel = toolkit.createLabel(tosWelcomeComposite, null);
             workspaceLabel.setText(Messages.getString("LoginComposite.label.workspace"));
+            GC gc = new GC(workspaceLabel);
+            Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.label.workspace"));
+            gc.dispose();
+
             formData2 = new FormData();
             formData2.height = 22;
             formData2.top = new FormAttachment(0, 15);
             formData2.left = new FormAttachment(0, 10);
-            formData2.right = new FormAttachment(0, 65);
+            formData2.right = new FormAttachment(0, 10 + labelSize.x);
             workspaceLabel.setLayoutData(formData2);
-
             Button changeButton = toolkit.createButton(tosWelcomeComposite, null, SWT.PUSH);
             changeButton.setText(Messages.getString("LoginComposite.buttons.changeButton"));
             formData2 = new FormData();
@@ -925,7 +945,7 @@ public class LoginComposite extends Composite {
             formData2.bottom = new FormAttachment(workspaceLabel, 0, SWT.CENTER);
             changeButton.setLayoutData(formData2);
 
-            final Text workspaceTextLabel = toolkit.createText(tosWelcomeComposite, null, SWT.READ_ONLY);
+            final Text workspaceTextLabel = toolkit.createText(tosWelcomeComposite, null, SWT.READ_ONLY | SWT.BORDER);
             workspaceTextLabel.setText(getConnection().getWorkSpace());
             formData2 = new FormData();
             formData2.width = 200;

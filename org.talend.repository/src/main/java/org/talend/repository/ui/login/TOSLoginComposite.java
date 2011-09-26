@@ -26,6 +26,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -179,7 +181,13 @@ public class TOSLoginComposite extends Composite {
         FormData welcomeLabelFormData = new FormData();
         welcomeLabelFormData.top = new FormAttachment(0, 7);
         welcomeLabelFormData.left = new FormAttachment(0, 10);
-        welcomeLabelFormData.right = new FormAttachment(0, 350);
+        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+            welcomeLabelFormData.right = new FormAttachment(0, 350);
+        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+            welcomeLabelFormData.right = new FormAttachment(0, 370);
+        } else {
+            welcomeLabelFormData.right = new FormAttachment(0, 370);
+        }
         welcomeLabelFormData.bottom = new FormAttachment(100, 0);
         welcomeLabel.setLayoutData(welcomeLabelFormData);
     }
@@ -212,10 +220,13 @@ public class TOSLoginComposite extends Composite {
         FormData data;
 
         Label projectLabel = toolkit.createLabel(tosActionComposite, Messages.getString("TOSLoginComposite.projectLabel"));
+        GC gc = new GC(projectLabel);
+        Point labelSize = gc.stringExtent(Messages.getString("TOSLoginComposite.projectLabel"));
+        gc.dispose();
         data = new FormData();
         data.top = new FormAttachment(0, 10);
         data.left = new FormAttachment(0, 20);
-        data.right = new FormAttachment(0, 65);
+        data.right = new FormAttachment(0, 20 + labelSize.x);
         data.bottom = new FormAttachment(0, 30);
         projectLabel.setBackground(tosActionComposite.getBackground());
         projectLabel.setLayoutData(data);
@@ -225,7 +236,13 @@ public class TOSLoginComposite extends Composite {
         data.top = new FormAttachment(projectLabel, 0, SWT.TOP);
         data.left = new FormAttachment(100, -75);
         data.right = new FormAttachment(100, -10);
-        data.bottom = new FormAttachment(projectLabel, 0, SWT.BOTTOM);
+        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+            data.bottom = new FormAttachment(projectLabel, 0, SWT.BOTTOM);
+        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+            data.bottom = new FormAttachment(projectLabel, 5, SWT.BOTTOM);
+        } else {
+            data.bottom = new FormAttachment(projectLabel, 5, SWT.BOTTOM);
+        }
         openButton.setText(Messages.getString("TOSLoginComposite.openButton"));
         openButton.setLayoutData(data);
 
@@ -242,7 +259,13 @@ public class TOSLoginComposite extends Composite {
         data.top = new FormAttachment(openButton, 5, SWT.BOTTOM);
         data.left = new FormAttachment(openButton, 0, SWT.LEFT);
         data.right = new FormAttachment(openButton, 0, SWT.RIGHT);
-        data.height = 20;
+        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+            data.height = 20;
+        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+            data.height = 25;
+        } else {
+            data.height = 25;
+        }
         deleteButton.setText(Messages.getString("TOSLoginComposite.deleteButton"));
         deleteButton.setLayoutData(data);
 
@@ -251,7 +274,13 @@ public class TOSLoginComposite extends Composite {
         data.top = new FormAttachment(projectList, 10, SWT.BOTTOM);
         data.left = new FormAttachment(projectList, 0, SWT.LEFT);
         data.right = new FormAttachment(projectList, 65, SWT.LEFT);
-        data.height = 20;
+        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+            data.height = 20;
+        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+            data.height = 25;
+        } else {
+            data.height = 25;
+        }
         createButton.setText(Messages.getString("TOSLoginComposite.createButton"));
         createButton.setLayoutData(data);
 
@@ -260,7 +289,13 @@ public class TOSLoginComposite extends Composite {
         data.top = new FormAttachment(createButton, 0, SWT.TOP);
         data.left = new FormAttachment(createButton, 10, SWT.RIGHT);
         data.right = new FormAttachment(createButton, 75, SWT.RIGHT);
-        data.height = 20;
+        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+            data.height = 20;
+        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+            data.height = 25;
+        } else {
+            data.height = 25;
+        }
         importButton.setText(Messages.getString("TOSLoginComposite.importButton"));
         importButton.setLayoutData(data);
 
@@ -269,7 +304,13 @@ public class TOSLoginComposite extends Composite {
         data.top = new FormAttachment(importButton, 0, SWT.TOP);
         data.left = new FormAttachment(importButton, 10, SWT.RIGHT);
         data.right = new FormAttachment(importButton, 125, SWT.RIGHT);
-        data.height = 20;
+        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+            data.height = 20;
+        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+            data.height = 25;
+        } else {
+            data.height = 25;
+        }
         demoProjectButton.setText(Messages.getString("TOSLoginComposite.demoProjectButton"));
         demoProjectButton.setLayoutData(data);
 
@@ -284,10 +325,13 @@ public class TOSLoginComposite extends Composite {
         FormData data;
 
         Label workSpaceLabel = toolkit.createLabel(tosWorkspaceComposite, Messages.getString("TOSLoginComposite.workspaceLabel"));
+        GC gc = new GC(workSpaceLabel);
+        Point labelSize = gc.stringExtent(Messages.getString("TOSLoginComposite.workspaceLabel"));
+        gc.dispose();
         data = new FormData();
         data.top = new FormAttachment(0, 10);
         data.left = new FormAttachment(0, 10);
-        data.right = new FormAttachment(0, 65);
+        data.right = new FormAttachment(0, 10 + labelSize.x);
         data.bottom = new FormAttachment(0, 30);
         workSpaceLabel.setLayoutData(data);
 
@@ -296,11 +340,17 @@ public class TOSLoginComposite extends Composite {
         data.top = new FormAttachment(workSpaceLabel, 0, SWT.TOP);
         data.left = new FormAttachment(100, -75);
         data.right = new FormAttachment(100, -10);
-        data.bottom = new FormAttachment(workSpaceLabel, 0, SWT.BOTTOM);
+        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+            data.bottom = new FormAttachment(workSpaceLabel, 0, SWT.BOTTOM);
+        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+            data.bottom = new FormAttachment(workSpaceLabel, 5, SWT.BOTTOM);
+        } else {
+            data.bottom = new FormAttachment(workSpaceLabel, 5, SWT.BOTTOM);
+        }
         changeButton.setText(Messages.getString("TOSLoginComposite.changeButton"));
         changeButton.setLayoutData(data);
 
-        workspaceText = toolkit.createText(tosWorkspaceComposite, null, SWT.READ_ONLY);
+        workspaceText = toolkit.createText(tosWorkspaceComposite, null, SWT.READ_ONLY | SWT.BORDER);
         workspaceText.setText(loginComposite.getConnection().getWorkSpace());
         oldPath = loginComposite.getConnection().getWorkSpace();
         data = new FormData();
@@ -313,10 +363,19 @@ public class TOSLoginComposite extends Composite {
 
         repositoryHyperlink = toolkit.createHyperlink(tosWorkspaceComposite,
                 Messages.getString("LoginComposite.sharedRepositoryMessage"), SWT.NONE);
+        gc = new GC(repositoryHyperlink);
+        labelSize = gc.stringExtent(Messages.getString("LoginComposite.sharedRepositoryMessage"));
+        gc.dispose();
         data = new FormData();
-        data.width = 160;
         data.top = new FormAttachment(workspaceText, 10, SWT.BOTTOM);
         data.left = new FormAttachment(workspaceText, 0, SWT.LEFT);
+        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+            data.right = new FormAttachment(workspaceText, 10 + labelSize.x, SWT.LEFT);
+        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+            data.right = new FormAttachment(workspaceText, 20 + labelSize.x, SWT.LEFT);
+        } else {
+            data.right = new FormAttachment(workspaceText, 20 + labelSize.x, SWT.LEFT);
+        }
         data.bottom = new FormAttachment(workspaceText, 30, SWT.BOTTOM);
         repositoryHyperlink.setLayoutData(data);
         repositoryHyperlink.addHyperlinkListener(new HyperlinkAdapter() {
