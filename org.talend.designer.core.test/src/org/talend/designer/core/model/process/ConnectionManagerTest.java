@@ -72,16 +72,16 @@ public class ConnectionManagerTest {
         File sourceXmlMainFile = new File(sourceComponentPath);
         String pathName = sourceXmlMainFile.getAbsolutePath();
         pathName = pathName.replace(componentDir, "");
-        EmfComponent sourceComponent = new EmfComponent(pathName, sourceXmlMainFile.getParentFile().getName(), componentDir,
-                cache, false);
+        EmfComponent sourceComponent = new EmfComponent(pathName, IComponentsFactory.COMPONENTS_LOCATION, sourceXmlMainFile
+                .getParentFile().getName(), componentDir, cache, false);
 
         String targetComponentPath = componentDir.concat(File.separator).concat("tFileOutputDelimited").concat(File.separator)
                 .concat("tFileOutputDelimited_java.xml");
         File targetXmlMainFile = new File(targetComponentPath);
         pathName = targetXmlMainFile.getAbsolutePath();
         pathName = pathName.replace(componentDir, "");
-        EmfComponent targetComponent = new EmfComponent(pathName, targetXmlMainFile.getParentFile().getName(), componentDir,
-                cache, false);
+        EmfComponent targetComponent = new EmfComponent(pathName, IComponentsFactory.COMPONENTS_LOCATION, targetXmlMainFile
+                .getParentFile().getName(), componentDir, cache, false);
 
         Property property = getMyProperty();
         org.talend.designer.core.ui.editor.process.Process process = new Process(property);
