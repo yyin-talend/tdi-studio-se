@@ -46,9 +46,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								<%=conn.getName() %>.<%=column.getLabel() %>
 <%				
 					} else if(javaType == JavaTypesManager.FLOAT || javaType == JavaTypesManager.DOUBLE) {
+						if(column.getPrecision()==null){
+%>
+								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
+<%
+						}else{
 %>
 								String.format(java.util.Locale.ENGLISH,"%1.<%=column.getPrecision() %>f",<%=conn.getName() %>.<%=column.getLabel() %>)
-<%				
+<%
+						}
 					} else {
 %>
 								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
