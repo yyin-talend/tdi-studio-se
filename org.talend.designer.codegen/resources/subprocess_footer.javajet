@@ -159,9 +159,11 @@
 				} 
 			<%
 			}
-			%>
-	    	<%= uniqueNameTargetNode %>Process(globalMap);
-	    	<%
+			if(!(conn.getTarget().getComponent().isTechnical())) {
+%>
+			   	<%= uniqueNameTargetNode %>Process(globalMap);
+<%
+			}
     	}
     }
 }

@@ -32,7 +32,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if(conns!=null && conns.size()>0){
     		IConnection conn = conns.get(0);
 %>
-<%=conn.getName()%>.<%=xmlField %> = strXmlField_<%=cid %>;
+<%=conn.getName()%>.<%=xmlField %> = queue_<%=cid %>.poll();
 nb_line_<%=cid%>++;
 <%
 		}
