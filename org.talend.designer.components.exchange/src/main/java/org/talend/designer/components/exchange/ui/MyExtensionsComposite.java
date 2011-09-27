@@ -14,6 +14,7 @@ package org.talend.designer.components.exchange.ui;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,24 +25,24 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.StackLayout;
-import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -51,6 +52,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.model.Category;
 import org.talend.designer.components.exchange.model.ComponentExtension;
@@ -74,8 +76,6 @@ public class MyExtensionsComposite extends ExchangeComposite {
 
     private Table itemTable;
 
-    private static final String ITEM_EDITOR_KEY = "ITEM_EDITOR_KEY"; //$NON-NLS-1$
-
     private static final String[] FILE_EXPORT_MASK = { "*.zip;*.tar;*.tar.gz", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$
 
     final StackLayout stackLayout;
@@ -95,6 +95,8 @@ public class MyExtensionsComposite extends ExchangeComposite {
     private List<Category> fCategorys = new ArrayList<Category>();
 
     private String listVersionCompatibles = "";
+
+    private Map<Integer, Image> imageMaps = new HashMap<Integer, Image>();
 
     /**
      * DOC hcyi MyExtensionsComposite constructor comment.
@@ -155,20 +157,15 @@ public class MyExtensionsComposite extends ExchangeComposite {
         //
         TableColumn itemColumn = new TableColumn(itemTable, SWT.CENTER);
         itemColumn.setText(Messages.getString("MyExtensionsComposite.ExtensionName")); //$NON-NLS-1$
-        itemColumn.setWidth(180);
+        itemColumn.setWidth(250);
 
         TableColumn versionColumn = new TableColumn(itemTable, SWT.CENTER);
         versionColumn.setText(Messages.getString("MyExtensionsComposite.Version")); //$NON-NLS-1$
-        versionColumn.setWidth(180);
+        versionColumn.setWidth(220);
 
         TableColumn dateColumn = new TableColumn(itemTable, SWT.CENTER);
         dateColumn.setText(Messages.getString("MyExtensionsComposite.UploadDate")); //$NON-NLS-1$
-        dateColumn.setWidth(180);
-
-        final TableColumn operateColumn = new TableColumn(itemTable, SWT.CENTER);
-        operateColumn.setText(""); //$NON-NLS-1$
-        operateColumn.setWidth(150);
-        operateColumn.setResizable(false);
+        dateColumn.setWidth(220);
 
         Object layoutData = listMyExtensonsComp.getLayoutData();
         if (layoutData instanceof GridData) {
@@ -210,19 +207,18 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 addNewExtensonBtn.setEnabled(false);
             }
         });
-
-        operateColumn.addControlListener(new ControlListener() {
-
-            public void controlMoved(ControlEvent e) {
-            }
-
-            public void controlResized(ControlEvent e) {
-            }
-        });
         itemTable.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
+                TableItem[] itemList = itemTable.getItems();
+                for (int i = 0; i < itemList.length; i++) {
+                    if (itemTable.isSelected(i)) {
+                        addOperateMenu(itemList[i]);
+                    } else {
+                        itemTable.setMenu(null);
+                    }
+                }
             }
         });
 
@@ -236,6 +232,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
             }
         }
         refreshTableItems();
+
     }
 
     private void refreshTableItems() {
@@ -261,70 +258,6 @@ public class MyExtensionsComposite extends ExchangeComposite {
             tableItem.setText(0, object.getLabel());
             tableItem.setText(1, object.getLastVersionAvailable());
             tableItem.setText(2, formatter.format(object.getPublicationDate()));
-
-            Composite operateComposit = new Composite(itemTable, SWT.NONE);
-            GridLayout layout = new GridLayout(3, false);
-            layout.horizontalSpacing = 1;
-            layout.verticalSpacing = 0;
-            layout.marginHeight = 0;
-            layout.marginWidth = 0;
-            operateComposit.setLayout(layout);
-
-            final CCombo statusItemCombo = new CCombo(operateComposit, SWT.BORDER | SWT.READ_ONLY);
-            GridData data = new GridData(GridData.FILL_HORIZONTAL);
-            statusItemCombo.setLayoutData(data);
-            statusItemCombo.setEditable(false);
-            statusItemCombo.setItems(getStatusItemCombos());
-            statusItemCombo.setData(tableItem);
-            statusItemCombo.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
-
-            statusItemCombo.addSelectionListener(new SelectionAdapter() {
-
-                public void widgetSelected(SelectionEvent event) {
-                    if (((CCombo) event.widget).getData() != null && ((CCombo) event.widget).getData() instanceof TableItem) {
-                        TableItem tableItem = (TableItem) ((CCombo) event.widget).getData();
-                        if (tableItem != null && tableItem.getData() != null && tableItem.getData() instanceof ComponentExtension) {
-                            setSelectedExtension((ComponentExtension) tableItem.getData());
-                        }
-                    }
-
-                    //
-                    FormLayout layout = new FormLayout();
-                    setLayout(layout);
-                    FormData thisFormData = new FormData();
-                    thisFormData.left = new FormAttachment(0, 0);
-                    thisFormData.right = new FormAttachment(100, 0);
-                    thisFormData.top = new FormAttachment(0, 0);
-                    thisFormData.bottom = new FormAttachment(100, 0);
-                    setLayoutData(thisFormData);
-                    formComp = widgetFactory.createFlatFormComposite(listMyExtensonsComp);
-                    FormData compositeData = new FormData();
-                    compositeData.left = new FormAttachment(0, 0);
-                    compositeData.right = new FormAttachment(100, 0);
-                    compositeData.top = new FormAttachment(0, 0);
-                    compositeData.bottom = new FormAttachment(100, 0);
-                    formComp.setLayoutData(thisFormData);
-                    //
-                    addNewExtensonBtn.setEnabled(false);
-                    getFormComposite(statusItemCombo.getSelectionIndex(), getSelectedExtension());
-                    if (statusItemCombo.getSelectionIndex() == 2) {
-                        //
-                        final DeleteExtensionAction delAction = new DeleteExtensionAction();
-                        if (delAction != null) {
-                            delAction.run();
-                        }
-                        addNewExtensonBtn.setEnabled(true);
-                    } else {
-                        stackLayout.topControl = formComp;
-                        listMyExtensonsComp.layout();
-                    }
-                }
-            });
-
-            TableEditor versionEditor = new TableEditor(itemTable);
-            versionEditor.minimumWidth = itemTable.getColumn(3).getWidth();
-            versionEditor.setEditor(operateComposit, tableItem, 3);
-            tableItem.setData(ITEM_EDITOR_KEY, new TableEditor[] { versionEditor });
         }
         itemTable.setRedraw(true);
     }
@@ -1582,14 +1515,83 @@ public class MyExtensionsComposite extends ExchangeComposite {
         if (item == null) {
             return;
         }
-        TableEditor[] editors = (TableEditor[]) item.getData(ITEM_EDITOR_KEY);
-        if (editors != null) {
-            for (int j = 0; j < editors.length; j++) {
-                editors[j].getEditor().dispose();
-                editors[j].dispose();
-            }
-        }
         item.dispose();
+    }
+
+    /**
+     * 
+     * DOC hcyi Comment method "addOperateMenu".
+     */
+    private void addOperateMenu(final TableItem item) {
+        if (item != null) {
+            setSelectedExtension((ComponentExtension) item.getData());
+        }
+        //
+        FormLayout layout = new FormLayout();
+        setLayout(layout);
+        FormData thisFormData = new FormData();
+        thisFormData.left = new FormAttachment(0, 0);
+        thisFormData.right = new FormAttachment(100, 0);
+        thisFormData.top = new FormAttachment(0, 0);
+        thisFormData.bottom = new FormAttachment(100, 0);
+        setLayoutData(thisFormData);
+        formComp = widgetFactory.createFlatFormComposite(listMyExtensonsComp);
+        FormData compositeData = new FormData();
+        compositeData.left = new FormAttachment(0, 0);
+        compositeData.right = new FormAttachment(100, 0);
+        compositeData.top = new FormAttachment(0, 0);
+        compositeData.bottom = new FormAttachment(100, 0);
+        formComp.setLayoutData(thisFormData);
+        addNewExtensonBtn.setEnabled(false);
+        //
+        initImages();
+        final String[] res = getStatusItemCombos();
+        Menu menu = new Menu(itemTable.getShell(), SWT.POP_UP);
+        MenuItem uploadMenu = new MenuItem(menu, SWT.PUSH);
+        uploadMenu.setText(res[0]);
+        uploadMenu.setImage(imageMaps.get(1));
+        uploadMenu.addListener(SWT.Selection, new Listener() {
+
+            public void handleEvent(Event event) {
+
+                getFormComposite(0, getSelectedExtension());
+                stackLayout.topControl = formComp;
+                listMyExtensonsComp.layout();
+
+            }
+        });
+        MenuItem modifyMenu = new MenuItem(menu, SWT.PUSH);
+        modifyMenu.setText(res[1]);
+        modifyMenu.setImage(imageMaps.get(2));
+        modifyMenu.addListener(SWT.Selection, new Listener() {
+
+            public void handleEvent(Event event) {
+                getFormComposite(1, getSelectedExtension());
+                stackLayout.topControl = formComp;
+                listMyExtensonsComp.layout();
+            }
+        });
+        MenuItem deleteMenu = new MenuItem(menu, SWT.PUSH);
+        deleteMenu.setText(res[2]);
+        deleteMenu.setImage(imageMaps.get(3));
+        deleteMenu.addListener(SWT.Selection, new Listener() {
+
+            public void handleEvent(Event event) {
+                final DeleteExtensionAction delAction = new DeleteExtensionAction();
+                if (delAction != null) {
+                    delAction.run();
+                }
+                addNewExtensonBtn.setEnabled(true);
+            }
+        });
+
+        itemTable.setMenu(menu);
+    }
+
+    private void initImages() {
+        imageMaps.put(1, ExchangePlugin.getImageDescriptor("icons/upload.gif").createImage());
+        imageMaps.put(2, ExchangePlugin.getImageDescriptor("icons/modify.gif").createImage());
+        imageMaps.put(3, ExchangePlugin.getImageDescriptor("icons/delete.gif").createImage());
     }
 
     /*
