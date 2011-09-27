@@ -263,7 +263,7 @@ if (conns!=null) {
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {	
 				    if(valueN%100==0){
 %>
-                     void setValue_<%=(valueN/100)%>(<%=firstConnName %>Struct <%=firstConnName %>,String[] columnValue<%=cid %>){
+                     void setValue_<%=(valueN/100)%>(<%=firstConnName %>Struct <%=firstConnName %>,String[] columnValue<%=cid %>)throws Exception{
 <%
                     }	
 %>
