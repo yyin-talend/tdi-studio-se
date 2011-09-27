@@ -48,10 +48,10 @@ boolean needRoot_<%=cid%>  = true;
 String  strCompCache_<%=cid %>= null;		
 
 java.util.Queue<String> listGroupby_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>();
-class Thread_XMLField extends Thread {
+class ThreadXMLField extends Thread {
 	java.util.Queue<String> queue;
 
-	MonThread(java.util.Queue q) {
+	ThreadXMLField(java.util.Queue q) {
 		this.queue = q;
 		globalMap.put("queue_<%=virtualTargetCid%>", queue);
 	}
@@ -65,7 +65,7 @@ class Thread_XMLField extends Thread {
 		}
 	}
 }
-new Thread_XMLField(listGroupby_<%=cid%>).start();
+new ThreadXMLField(listGroupby_<%=cid%>).start();
 
 java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
