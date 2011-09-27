@@ -252,7 +252,8 @@ if (inConn != null) {
 %>
 		//the data read is different from the data read last time. 
 		if(strCompCache_<%=cid %>.equals(strTemp_<%=cid %>)==false){	
-<%		}
+<%
+		}
 %>
 		    listGroupby_<%=cid %>.add(json_root_<%=cid%>.toJSONString());
 			needRoot_<%=cid %> = true;
@@ -260,7 +261,13 @@ if (inConn != null) {
 			if(groupbyList_<%=cid%> != null && groupbyList_<%=cid%>.size() >= 0){
 				groupbyList_<%=cid%>.clear();
 			}
+<%
+		if(inputKeysColumns.size() !=0){
+%>
 		}
+<%
+		}
+%>
 	}
 
 <%
