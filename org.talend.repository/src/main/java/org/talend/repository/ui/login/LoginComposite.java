@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.repository.ui.login;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -63,12 +66,17 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
+import org.eclipse.ui.internal.wizards.datatransfer.TarException;
+import org.osgi.framework.Bundle;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.WarningException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.utils.PasswordHelper;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
@@ -95,8 +103,11 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction;
+import org.talend.repository.ui.actions.importproject.DemoProjectBean;
+import org.talend.repository.ui.actions.importproject.EDemoProjectFileType;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
+import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.login.connections.ConnectionsDialog;
 import org.talend.repository.ui.login.sandboxProject.CreateSandboxProjectDialog;
@@ -181,6 +192,8 @@ public class LoginComposite extends Composite {
     private ComboViewer manageViewer;
 
     private Text importText;
+
+    private ComboViewer importCombo;
 
     private Text projectText;
 
@@ -536,9 +549,9 @@ public class LoginComposite extends Composite {
         if (Platform.getOS().equals(Platform.OS_WIN32)) {
             detailLabelFormData.right = new FormAttachment(0, 380);
         } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-            detailLabelFormData.right = new FormAttachment(0, 400);
+            detailLabelFormData.right = new FormAttachment(0, 420);
         } else {
-            detailLabelFormData.right = new FormAttachment(0, 400);
+            detailLabelFormData.right = new FormAttachment(0, 420);
         }
         detailLabelFormData.bottom = new FormAttachment(100, 0);
         detailLabel.setLayoutData(detailLabelFormData);
@@ -696,28 +709,102 @@ public class LoginComposite extends Composite {
         data.bottom = new FormAttachment(manageProjectsButtonTemp, HORIZONTAL_FOUR_SPACE, SWT.CENTER);
         manageProjectLabel1.setLayoutData(data);
 
-        importText = toolkit.createText(tosActionComposite, "", SWT.BORDER | SWT.READ_ONLY);
+        // importText = toolkit.createText(tosActionComposite, "", SWT.BORDER | SWT.READ_ONLY);
+        // data = new FormData();
+        // data.left = new FormAttachment(manageProjectLabel1, 5, SWT.RIGHT);
+        // data.bottom = new FormAttachment(manageProjectLabel1, HORIZONTAL_FOUR_SPACE, SWT.CENTER);
+        // Point btPoint = manageProjectsButtonTemp.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        // data.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - btPoint.x);
+        // importText.setLayoutData(data);
+
+        importCombo = new ComboViewer(tosActionComposite, SWT.BORDER | SWT.READ_ONLY);
         data = new FormData();
         data.left = new FormAttachment(manageProjectLabel1, 5, SWT.RIGHT);
         data.bottom = new FormAttachment(manageProjectLabel1, HORIZONTAL_FOUR_SPACE, SWT.CENTER);
         Point btPoint = manageProjectsButtonTemp.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         data.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - btPoint.x);
-        importText.setLayoutData(data);
+        importCombo.getCombo().setLayoutData(data);
+        importCombo.setContentProvider(new ArrayContentProvider());
+        List<DemoProjectBean> demoProjectList = ImportProjectsUtilities.getAllDemoProjects();
+        for (int i = 0; i < demoProjectList.size(); i++) {
+            DemoProjectBean bean = (DemoProjectBean) demoProjectList.get(i);
+            importCombo.add(bean.getProjectName());
+        }
+        importCombo.setSelection(new StructuredSelection(new Object[] { importCombo.getElementAt(0) }));
 
         manageProjectsButtonTemp.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                ImportDemoProjectAction.getInstance().setShell(getShell());
-                ImportDemoProjectAction.getInstance().run();
-                populateProjectList();
-                String newProject = ImportDemoProjectAction.getInstance().getProjectName();
-                if (newProject != null) {
-                    importText.setText(newProject);
+                // ImportDemoProjectAction.getInstance().setShell(getShell());
+                // ImportDemoProjectAction.getInstance().run();
+                // populateProjectList();
+                // String newProject = ImportDemoProjectAction.getInstance().getProjectName();
+                // if (newProject != null) {
+                // importText.setText(newProject);
+                // }
+
+                NewImportProjectWizard newPrjWiz = new NewImportProjectWizard();
+                WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
+                newProjectDialog.setTitle(Messages.getString("NewImportProjectWizard.windowTitle")); //$NON-NLS-1$
+                if (newProjectDialog.open() == Window.OK) {
+                    final String newName = newPrjWiz.getName();
+                    importCombo.add(newName);
+                    //
+                    ProgressDialog progressDialog = new ProgressDialog(getShell()) {
+
+                        private IProgressMonitor monitorWrap;
+
+                        @Override
+                        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                            monitorWrap = new EventLoopProgressMonitor(monitor);
+
+                            try {
+                                final List<DemoProjectBean> demoProjectList = ImportProjectsUtilities.getAllDemoProjects();
+                                DemoProjectBean demoProjectBean = demoProjectList.get(0);
+                                String techName = demoProjectBean.getProjectName();
+
+                                String demoFilePath = demoProjectBean.getDemoProjectFilePath();
+                                EDemoProjectFileType demoProjectFileType = demoProjectBean.getDemoProjectFileType();
+                                String pluginID = org.talend.resources.ResourcesPlugin.PLUGIN_ID;
+                                if (techName.equals("TALENDDEMOSPERL")) { //$NON-NLS-1$
+                                    pluginID = "org.talend.resources.perl"; //$NON-NLS-1$
+                                } else if (techName.equals("TDQEEDEMOJAVA")) { //$NON-NLS-1$
+                                    pluginID = "org.talend.datacleansing.core.ui"; //$NON-NLS-1$
+                                }
+                                Bundle bundle = Platform.getBundle(pluginID);
+
+                                URL url = FileLocator.resolve(bundle.getEntry(demoFilePath));
+
+                                String filePath = new Path(url.getFile()).toOSString();
+
+                                if (demoProjectFileType.getName().equalsIgnoreCase("folder")) { //$NON-NLS-1$
+                                    ImportProjectsUtilities.importProjectAs(getShell(), newName, newName, filePath, monitorWrap);
+                                } else {// type.equalsIgnoreCase("archive")
+                                    ImportProjectsUtilities.importArchiveProject(getShell(), newName, filePath, monitorWrap);
+
+                                }
+
+                            } catch (IOException e) {
+                                throw new InvocationTargetException(e);
+                            } catch (TarException e) {
+                                throw new InvocationTargetException(e);
+                            }
+
+                            monitorWrap.done();
+                        }
+                    };
+
+                    try {
+                        progressDialog.executeProcess();
+                    } catch (InvocationTargetException e1) {
+                        MessageBoxExceptionHandler.process(e1.getTargetException(), getShell());
+                    } catch (InterruptedException e1) {
+                        // Nothing to do
+                    }
                 }
             }
 
         });
-        importText.forceFocus();
     }
 
     private void createTosProjectArea(Composite parent) {
@@ -874,14 +961,14 @@ public class LoginComposite extends Composite {
         data.bottom = new FormAttachment(createProjectBtn, 0, SWT.BOTTOM);
         createProjectLabel.setLayoutData(data);
 
-        projectText = toolkit.createText(tosProjectComposite, "", SWT.BORDER | SWT.READ_ONLY);
-        data = new FormData();
-        data.top = new FormAttachment(tosProjectLabel, 0, SWT.TOP);
-        data.left = new FormAttachment(createProjectLabel, 5, SWT.RIGHT);
-        data.bottom = new FormAttachment(createProjectLabel, 0, SWT.BOTTOM);
-        Point btPoint = createProjectBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        data.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - btPoint.x);
-        projectText.setLayoutData(data);
+        // projectText = toolkit.createText(tosProjectComposite, "", SWT.BORDER | SWT.READ_ONLY);
+        // data = new FormData();
+        // data.top = new FormAttachment(tosProjectLabel, 0, SWT.TOP);
+        // data.left = new FormAttachment(createProjectLabel, 5, SWT.RIGHT);
+        // data.bottom = new FormAttachment(createProjectLabel, 0, SWT.BOTTOM);
+        // Point btPoint = createProjectBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        // data.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - btPoint.x);
+        // projectText.setLayoutData(data);
 
         advanced = toolkit.createButton(tosProjectComposite, null, SWT.PUSH);
         advanced.setText(Messages.getString("LoginComposite.buttons.advanced"));
@@ -901,7 +988,7 @@ public class LoginComposite extends Composite {
                 if (newProjectDialog.open() == Window.OK) {
                     project = newPrjWiz.getProject();
                     populateProjectList();
-                    projectText.setText(project.getLabel());
+                    // projectText.setText(project.getLabel());
                 }
             }
         });

@@ -12,14 +12,21 @@
 // ============================================================================
 package org.talend.repository.ui.login;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -47,8 +54,13 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
+import org.eclipse.ui.internal.wizards.datatransfer.TarException;
+import org.osgi.framework.Bundle;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -58,8 +70,11 @@ import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.actions.importproject.DemoProjectBean;
+import org.talend.repository.ui.actions.importproject.EDemoProjectFileType;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
+import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
 import org.talend.repository.ui.actions.importproject.SelectDeleteProjectDialog;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
@@ -156,6 +171,7 @@ public class TOSLoginComposite extends Composite {
         createTosActionArea(formBody);
         createTosWorkspaceArea(formBody);
         addListener();
+        formBody.layout();
     }
 
     private GridLayout createLayout(int numColumns) {
@@ -184,9 +200,9 @@ public class TOSLoginComposite extends Composite {
         if (Platform.getOS().equals(Platform.OS_WIN32)) {
             welcomeLabelFormData.right = new FormAttachment(0, 350);
         } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-            welcomeLabelFormData.right = new FormAttachment(0, 370);
+            welcomeLabelFormData.right = new FormAttachment(0, 390);
         } else {
-            welcomeLabelFormData.right = new FormAttachment(0, 370);
+            welcomeLabelFormData.right = new FormAttachment(0, 390);
         }
         welcomeLabelFormData.bottom = new FormAttachment(100, 0);
         welcomeLabel.setLayoutData(welcomeLabelFormData);
@@ -464,6 +480,7 @@ public class TOSLoginComposite extends Composite {
         importButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
+                ImportDemoProjectAction.getInstance().setShell(getShell());
                 ImportProjectAsAction.getInstance().run();
                 String newProject = ImportProjectAsAction.getInstance().getProjectName();
                 if (newProject != null) {
@@ -485,6 +502,23 @@ public class TOSLoginComposite extends Composite {
                             }
                         }
                     }
+                }
+                try {
+                    IRunnableWithProgress op = new IRunnableWithProgress() {
+
+                        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                            try {
+                                ProxyRepositoryFactory.getInstance().initialize();
+                            } catch (PersistenceException e) {
+                                throw new InvocationTargetException(e);
+                            }
+                        }
+                    };
+                    new ProgressMonitorDialog(getShell()).run(true, false, op);
+                } catch (InvocationTargetException e1) {
+                    e1.getTargetException();
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
                 }
             }
         });
@@ -544,16 +578,98 @@ public class TOSLoginComposite extends Composite {
         demoProjectButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                ImportDemoProjectAction.getInstance().setShell(getShell());
-                ImportDemoProjectAction.getInstance().run();
-                String newProject = ImportDemoProjectAction.getInstance().getProjectName();
-                if (newProject != null) {
-                    Project[] listProject = readProject();
-                    for (int i = 0; i < listProject.length; i++) {
-                        if (listProject[i].getLabel().equalsIgnoreCase(newProject)) {
-                            if (!projectsMap.containsKey(newProject.toUpperCase())) {
-                                projectsMap.put(listProject[i].getLabel(), listProject[i]);
-                                projectList.add(listProject[i].getLabel());
+                // ImportDemoProjectAction.getInstance().setShell(getShell());
+                // ImportDemoProjectAction.getInstance().run();
+                // String newProject = ImportDemoProjectAction.getInstance().getProjectName();
+                // if (newProject != null) {
+                // Project[] listProject = readProject();
+                // for (int i = 0; i < listProject.length; i++) {
+                // if (listProject[i].getLabel().equalsIgnoreCase(newProject)) {
+                // if (!projectsMap.containsKey(newProject.toUpperCase())) {
+                // projectsMap.put(listProject[i].getLabel(), listProject[i]);
+                // projectList.add(listProject[i].getLabel());
+                // }
+                // }
+                // }
+                // }
+                //
+                NewImportProjectWizard newPrjWiz = new NewImportProjectWizard();
+                WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
+                newProjectDialog.setTitle(Messages.getString("NewImportProjectWizard.windowTitle")); //$NON-NLS-1$
+                if (newProjectDialog.open() == Window.OK) {
+                    final String newName = newPrjWiz.getName();
+                    projectList.add(newName);
+                    projectsMap.put(newName, null);
+                    //
+                    ProgressDialog progressDialog = new ProgressDialog(getShell()) {
+
+                        private IProgressMonitor monitorWrap;
+
+                        @Override
+                        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                            monitorWrap = new EventLoopProgressMonitor(monitor);
+
+                            try {
+                                final java.util.List<DemoProjectBean> demoProjectList = ImportProjectsUtilities
+                                        .getAllDemoProjects();
+                                DemoProjectBean demoProjectBean = demoProjectList.get(0);
+                                String techName = demoProjectBean.getProjectName();
+
+                                String demoFilePath = demoProjectBean.getDemoProjectFilePath();
+                                EDemoProjectFileType demoProjectFileType = demoProjectBean.getDemoProjectFileType();
+                                String pluginID = org.talend.resources.ResourcesPlugin.PLUGIN_ID;
+                                if (techName.equals("TALENDDEMOSPERL")) { //$NON-NLS-1$
+                                    pluginID = "org.talend.resources.perl"; //$NON-NLS-1$
+                                } else if (techName.equals("TDQEEDEMOJAVA")) { //$NON-NLS-1$
+                                    pluginID = "org.talend.datacleansing.core.ui"; //$NON-NLS-1$
+                                }
+                                Bundle bundle = Platform.getBundle(pluginID);
+
+                                URL url = FileLocator.resolve(bundle.getEntry(demoFilePath));
+
+                                String filePath = new Path(url.getFile()).toOSString();
+
+                                if (demoProjectFileType.getName().equalsIgnoreCase("folder")) { //$NON-NLS-1$
+                                    ImportProjectsUtilities.importProjectAs(getShell(), newName, newName, filePath, monitorWrap);
+                                } else {// type.equalsIgnoreCase("archive")
+                                    ImportProjectsUtilities.importArchiveProject(getShell(), newName, filePath, monitorWrap);
+
+                                }
+
+                            } catch (IOException e) {
+                                throw new InvocationTargetException(e);
+                            } catch (TarException e) {
+                                throw new InvocationTargetException(e);
+                            }
+
+                            monitorWrap.done();
+                        }
+                    };
+
+                    try {
+                        progressDialog.executeProcess();
+                    } catch (InvocationTargetException e1) {
+                        MessageBoxExceptionHandler.process(e1.getTargetException(), getShell());
+                    } catch (InterruptedException e1) {
+                        // Nothing to do
+                    }
+                    ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+                    Project[] projects = null;
+                    try {
+                        projects = repositoryFactory.readProject();
+                    } catch (PersistenceException e1) {
+                        e1.printStackTrace();
+                    } catch (BusinessException e1) {
+                        e1.printStackTrace();
+                    }
+                    int count = projectList.getItemCount();
+                    for (Project project : projects) {
+                        String projectLabel = project.getLabel();
+                        for (int i = 0; i < count; i++) {
+                            String projectName = projectList.getItem(i);
+                            if (projectName.equalsIgnoreCase(projectLabel)) {
+                                projectsMap.remove(projectName);
+                                projectsMap.put(projectName, project);
                             }
                         }
                     }

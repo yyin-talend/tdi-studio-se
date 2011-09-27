@@ -161,7 +161,7 @@ public class TalendForgeDialog extends TrayDialog {
         Composite composite = new Composite(parent, 0);
         FormData data = new FormData();
         data.height = 500;
-        data.width = 650;
+        data.width = 670;
         composite.setLayoutData(data);
         composite.setLayout(new FormLayout());
         composite.setBackground(new Color(null, 255, 255, 255));
@@ -180,7 +180,7 @@ public class TalendForgeDialog extends TrayDialog {
         data.top = new FormAttachment(0, 0);
         data.left = new FormAttachment(0, 0);
         data.height = 120;
-        data.width = 650;
+        data.width = 670;
         upComposite.setLayoutData(data);
         upComposite.setLayout(new FormLayout());
         upComposite.setBackground(parent.getBackground());
@@ -191,7 +191,7 @@ public class TalendForgeDialog extends TrayDialog {
         data.top = new FormAttachment(0, 120);
         data.left = new FormAttachment(0, 0);
         data.height = 380;
-        data.width = 650;
+        data.width = 670;
         downComposite.setLayoutData(data);
         stackLayout = new StackLayout();
         downComposite.setLayout(stackLayout);
@@ -208,7 +208,7 @@ public class TalendForgeDialog extends TrayDialog {
         data = new FormData();
         data.top = new FormAttachment(0, 10);
         data.left = new FormAttachment(0, 10);
-        data.right = new FormAttachment(0, 430);
+        data.right = new FormAttachment(0, 450);
         data.bottom = new FormAttachment(0, 30);
         labelTitle.setText(Messages.getString("TalendForgeDialog.labelTitle"));
         labelTitle.setLayoutData(data);
@@ -218,7 +218,7 @@ public class TalendForgeDialog extends TrayDialog {
         data = new FormData();
         data.top = new FormAttachment(labelTitle, 10, SWT.BOTTOM);
         data.left = new FormAttachment(labelTitle, 10, SWT.LEFT);
-        data.right = new FormAttachment(0, 430);
+        data.right = new FormAttachment(0, 450);
         data.bottom = new FormAttachment(labelTitle, 30, SWT.BOTTOM);
         labelMessageOne.setText(Messages.getString("TalendForgeDialog.labelMessageOne"));
         labelMessageOne.setLayoutData(data);
@@ -229,20 +229,20 @@ public class TalendForgeDialog extends TrayDialog {
         data.top = new FormAttachment(labelMessageOne, 0, SWT.BOTTOM);
         data.left = new FormAttachment(labelMessageOne, 0, SWT.LEFT);
         data.right = new FormAttachment(labelMessageOne, 0, SWT.RIGHT);
-        data.bottom = new FormAttachment(labelMessageOne, 30, SWT.BOTTOM);
+        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+            data.bottom = new FormAttachment(labelMessageOne, 30, SWT.BOTTOM);
+        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+            data.bottom = new FormAttachment(labelMessageOne, 35, SWT.BOTTOM);
+        } else {
+            data.bottom = new FormAttachment(labelMessageOne, 35, SWT.BOTTOM);
+        }
         labelMessageTwo.setText(Messages.getString("TalendForgeDialog.labelMessageTwo"));
         labelMessageTwo.setLayoutData(data);
         labelMessageTwo.setBackground(parent.getBackground());
 
         Label labelMessageThree = new Label(parent, SWT.NONE);
         data = new FormData();
-        if (Platform.getOS().equals(Platform.OS_WIN32)) {
-            data.top = new FormAttachment(labelMessageTwo, 0, SWT.BOTTOM);
-        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-            data.top = new FormAttachment(labelMessageTwo, 5, SWT.BOTTOM);
-        } else {
-            data.top = new FormAttachment(labelMessageTwo, 5, SWT.BOTTOM);
-        }
+        data.top = new FormAttachment(labelMessageTwo, 0, SWT.BOTTOM);
         data.left = new FormAttachment(labelMessageTwo, 0, SWT.LEFT);
         data.right = new FormAttachment(labelMessageTwo, 0, SWT.RIGHT);
         data.bottom = new FormAttachment(labelMessageTwo, 20, SWT.BOTTOM);
@@ -469,7 +469,13 @@ public class TalendForgeDialog extends TrayDialog {
         data = new FormData();
         data.top = new FormAttachment(passwordAgainText, 20, SWT.BOTTOM);
         data.left = new FormAttachment(passwordAgainText, 0, SWT.LEFT);
-        data.right = new FormAttachment(passwordAgainText, labelSize.x, SWT.LEFT);
+        if (Platform.getOS().equals(Platform.OS_WIN32)) {
+            data.right = new FormAttachment(passwordAgainText, labelSize.x + 50, SWT.LEFT);
+        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+            data.right = new FormAttachment(passwordAgainText, labelSize.x + 80, SWT.LEFT);
+        } else {
+            data.right = new FormAttachment(passwordAgainText, labelSize.x + 80, SWT.LEFT);
+        }
         data.bottom = new FormAttachment(passwordAgainText, 40, SWT.BOTTOM);
         agreeButton.setText(Messages.getString("TalendForgeDialog.agreeButton"));
         agreeButton.setLayoutData(data);
@@ -480,7 +486,7 @@ public class TalendForgeDialog extends TrayDialog {
         data = new FormData();
         data.top = new FormAttachment(agreeButton, 0, SWT.BOTTOM);
         data.left = new FormAttachment(agreeButton, 0, SWT.LEFT);
-        data.right = new FormAttachment(agreeButton, 480, SWT.LEFT);
+        data.right = new FormAttachment(agreeButton, 500, SWT.LEFT);
         data.bottom = new FormAttachment(agreeButton, 30, SWT.BOTTOM);
         improveButton.setText(Messages.getString("TalendForgeDialog.improveButton"));
         improveButton.setLayoutData(data);
@@ -618,7 +624,7 @@ public class TalendForgeDialog extends TrayDialog {
         data = new FormData();
         data.top = new FormAttachment(passwordTextForconnect, 20, SWT.BOTTOM);
         data.left = new FormAttachment(passwordTextForconnect, 0, SWT.LEFT);
-        data.right = new FormAttachment(passwordTextForconnect, 480, SWT.LEFT);
+        data.right = new FormAttachment(passwordTextForconnect, 500, SWT.LEFT);
         data.bottom = new FormAttachment(passwordTextForconnect, 40, SWT.BOTTOM);
         improveButtonInConnect.setText(Messages.getString("TalendForgeDialog.improveButton"));
         improveButtonInConnect.setBackground(connectAccount.getBackground());

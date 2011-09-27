@@ -201,6 +201,9 @@ public class LoginDialog extends TrayDialog {
             tosLoginComposite.getProjectList().add(projectCollection[i].getLabel().toUpperCase());
             tosLoginComposite.getProjectMap().put(projectCollection[i].getLabel().toUpperCase(), projectCollection[i]);
         }
+        if (tosLoginComposite.getProjectList().getItemCount() > 0) {
+            tosLoginComposite.getProjectList().select(0);
+        }
     }
 
     /**
