@@ -121,10 +121,20 @@ if (outConn!=null) {
 <%if(useXMLField){%>
 	String loopQuery_<%=cid %> = <%=strXMLPrefix %>+<%=loopQuery %>;
 <%}else{
-	String loopQueryBase = ElementParameterParser.getValue(node, "__LOOP_QUERY_BASE__"); 
+	//useItems & loopQueryBase are only for tMDMInput
+	String strUseItems = ElementParameterParser.getValue(node, "__USE_ITEMS__");
+	boolean useItems = (strUseItems!=null&&!("").equals(strUseItems))?("true").equals(strUseItems):false;
+	if(useItems){
+		String loopQueryBase = ElementParameterParser.getValue(node, "__LOOP_QUERY_BASE__"); 
+		%>
+    	String loopQuery_<%=cid %> = <%="\"\"".equals(loopQueryBase)?"":loopQueryBase+"+"%><%=loopQuery %>;
+	<%
+	}else{
 	%>
-    String loopQuery_<%=cid %> = <%="\"\"".equals(loopQueryBase)?"":loopQueryBase+"+"%><%=loopQuery %>;
-<%}%>
+		String loopQuery_<%=cid %> = <%=loopQuery %>; 
+	<%
+	}
+}%>
     boolean isStructError_<%=cid %>= true;
         
     try{
