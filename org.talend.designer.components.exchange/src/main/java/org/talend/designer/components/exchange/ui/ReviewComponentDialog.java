@@ -51,6 +51,10 @@ public class ReviewComponentDialog extends TitleAreaDialog {
 
     private int rating = 0;
 
+    private String title;
+
+    private String review;
+
     public ReviewComponentDialog(Shell shell) {
         super(shell);
     }
@@ -92,7 +96,7 @@ public class ReviewComponentDialog extends TitleAreaDialog {
         final Label reviewLabel = new Label(container, SWT.NONE);
         reviewLabel.setText("Review:*");
 
-        reviewText = new Text(container, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+        reviewText = new Text(container, SWT.BORDER | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL);
         reviewText.setLayoutData(new GridData(GridData.FILL_BOTH));
         reviewText.addModifyListener(new ModifyListener() {
 
@@ -221,8 +225,8 @@ public class ReviewComponentDialog extends TitleAreaDialog {
 
     private void checkInput() {
         setError(null);
-        String title = StringUtils.trimToNull(getTitle());
-        String review = StringUtils.trimToNull(getReview());
+        String title = StringUtils.trimToNull(titleText.getText());
+        String review = StringUtils.trimToNull(reviewText.getText());
         if (title == null) {
             setError("Title can not be null.");
             return;
@@ -260,26 +264,28 @@ public class ReviewComponentDialog extends TitleAreaDialog {
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, true);
     }
 
+    protected void buttonPressed(int buttonId) {
+        if (buttonId == IDialogConstants.OK_ID) {
+            title = titleText.getText();
+            review = reviewText.getText();
+        }
+        super.buttonPressed(buttonId);
+    }
+
     protected Point getInitialSize() {
         return new Point(550, 500);
     }
 
     public String getTitle() {
-        if (titleText == null) {
-            return null;
-        }
-        return titleText.getText();
+        return title;
     }
 
     public String getReview() {
-        if (reviewText == null) {
-            return null;
-        }
-        return reviewText.getText();
+        return review;
     }
 
     public int getRating() {
-        return this.rating;
+        return rating;
     }
 
 }
