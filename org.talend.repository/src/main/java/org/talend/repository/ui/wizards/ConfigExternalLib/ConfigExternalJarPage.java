@@ -211,6 +211,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
         protected List<IMPORTType> getNewInputObject() {
             List<IMPORTType> importTypes = new ArrayList<IMPORTType>();
             ModulePropertyDialog dialog = new ModulePropertyDialog(this.getShell());
+            ConfigExternalJarPage.this.setPageComplete(false);
             if (dialog.open() == IDialogConstants.OK_ID) {
                 IMPORTType type = dialog.getImportType();
                 RoutineItem routine = getSelectedRoutine();
@@ -222,6 +223,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                 }
                 importTypes.add(type);
             }
+            ConfigExternalJarPage.this.setPageComplete(true);
             return importTypes;
         }
     }
