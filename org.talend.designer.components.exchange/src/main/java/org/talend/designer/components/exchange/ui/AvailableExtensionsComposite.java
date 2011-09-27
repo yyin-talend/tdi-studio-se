@@ -25,6 +25,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableLayout;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -33,6 +34,8 @@ import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -44,6 +47,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -56,6 +60,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.commons.ui.swt.tableviewer.behavior.AbstractElementFilter;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
@@ -83,6 +88,8 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
     private List<ComponentExtension> fAvailableExtensions = new ArrayList<ComponentExtension>();
 
     final StackLayout stackLayout;
+
+    private AbstractElementFilter<ComponentExtension> elementFilter;
 
     Composite addToolBarComp, listExtensonsComp, extensionViewDetailComp;
 
@@ -116,12 +123,19 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         FormLayout addToolBarCompLayout = new FormLayout();
         addToolBarComp.setLayout(addToolBarCompLayout);
 
-        Text filterText = widgetFactory.createText(addToolBarComp, ""); //$NON-NLS-1$
+        final Text filterText = widgetFactory.createText(addToolBarComp, ""); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(80, 0);
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
         filterText.setLayoutData(data);
+        filterText.addKeyListener(new KeyAdapter() {
+
+            public void keyReleased(KeyEvent ke) {
+                elementFilter.setSearchText(filterText.getText());
+                updateItems();
+            }
+        });
 
         CLabel filterTitle = widgetFactory.createCLabel(addToolBarComp,
                 Messages.getString("AvailableExtensionsComposite.FilterTitle")); //$NON-NLS-1$
@@ -185,6 +199,22 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         formData.bottom = new FormAttachment(100);
         itemTable.setLayoutData(formData);
 
+        elementFilter = new AbstractElementFilter<ComponentExtension>() {
+
+            protected boolean select(ComponentExtension element) {
+                ComponentExtension ce = (ComponentExtension) element;
+                if (ce.getLabel() != null && ce.getLabel().toUpperCase().matches(searchString)) {
+                    return true;
+                }
+                if (ce.getAuthor() != null && ce.getAuthor().toUpperCase().matches(searchString)) {
+                    return true;
+                }
+
+                return false;
+            }
+
+        };
+
         operateColumn.addControlListener(new ControlListener() {
 
             public void controlMoved(ControlEvent e) {
@@ -223,7 +253,27 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         checkDownloadedExtensions();
         removeItemElements(fAvailableExtensions);
         addItemElements(fAvailableExtensions);
+        elementFilter.setElements(fAvailableExtensions);
         refresh();
+    }
+
+    private void updateItems() {
+        clearTableContents(itemTable);
+        addItemElements(elementFilter.filter());
+    }
+
+    private void clearTableContents(Table table) {
+        if (table == null)
+            return;
+        table.removeAll();
+        Control[] children = table.getChildren();
+        if (children != null && children.length > 0) {
+            for (Control child : children) {
+                if (child != null) {
+                    child.dispose();
+                }
+            }
+        }
     }
 
     private void addItemElements(List<ComponentExtension> elements) {
