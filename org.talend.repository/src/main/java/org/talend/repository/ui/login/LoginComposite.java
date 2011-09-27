@@ -1020,14 +1020,14 @@ public class LoginComposite extends Composite {
 
             formData2 = new FormData();
             formData2.height = 22;
-            formData2.top = new FormAttachment(0, 15);
+            formData2.top = new FormAttachment(0, 5);
             formData2.left = new FormAttachment(0, 10);
             formData2.right = new FormAttachment(0, 10 + labelSize.x);
             workspaceLabel.setLayoutData(formData2);
-            Button changeButton = toolkit.createButton(tosWelcomeComposite, null, SWT.PUSH);
+            final Button changeButton = toolkit.createButton(tosWelcomeComposite, null, SWT.PUSH);
             changeButton.setText(Messages.getString("LoginComposite.buttons.changeButton"));
             formData2 = new FormData();
-            formData2.top = new FormAttachment(0, 15);
+            formData2.top = new FormAttachment(0, 5);
             formData2.right = new FormAttachment(100, -10);
             formData2.bottom = new FormAttachment(workspaceLabel, 0, SWT.CENTER);
             changeButton.setLayoutData(formData2);
@@ -1036,7 +1036,7 @@ public class LoginComposite extends Composite {
             workspaceTextLabel.setText(getConnection().getWorkSpace());
             formData2 = new FormData();
             formData2.width = 200;
-            formData2.top = new FormAttachment(0, 15);
+            formData2.top = new FormAttachment(0, 5);
             formData2.left = new FormAttachment(workspaceLabel, 5, SWT.RIGHT);
             Point btPoint = changeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
             formData2.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - btPoint.x);
@@ -1060,6 +1060,7 @@ public class LoginComposite extends Composite {
                             manageProjectsButtonTemp.setEnabled(false);
                             createProjectBtn.setEnabled(false);
                             advanced.setEnabled(false);
+                            changeButton.setEnabled(false);
                         }
                     }
                     PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
