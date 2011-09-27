@@ -195,7 +195,7 @@ if(columnList != null && columnList.size() > 0) {
     if(isEnableDebug) {
         %>
         StringBuffer query_<%=cid%> = null;
-       	<%@ include file="../../../templates/DB/Output/splitSQLForAllDBInBegin.javajet" %>
+       	<%@ include file="../templates/DB/Output/splitSQLForAllDBInBegin.javajet" %>
         <%
     }
 	if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {

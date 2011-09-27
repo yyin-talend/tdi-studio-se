@@ -17,7 +17,7 @@ imports="
 	java.util.HashMap
 	java.util.LinkedList
 "
-skeleton="../../../templates/db_output_bulk.skeleton"
+skeleton="../templates/db_output_bulk.skeleton"
 %>
 
 <%
