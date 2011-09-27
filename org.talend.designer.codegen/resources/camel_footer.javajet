@@ -72,12 +72,6 @@
 <%			}
 			for(INode node: activeMQNodes){
 				String url = ElementParameterParser.getValue(node, "__BROKER_URI__").trim();
-				if(!url.startsWith("\"")){
-					url = "\""+url;
-				}
-				if(!url.endsWith("\"")){
-					url += "\"";
-				}
 %>
 			amqConnectionFactory = new org.apache.activemq.ActiveMQConnectionFactory(<%=url%>);
 			camelContext.addComponent("<%=node.getUniqueName().replaceAll("_","")%>",
