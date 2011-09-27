@@ -69,7 +69,6 @@ public class UploadRevisionAction extends Action {
             if (wbs.isResult()) {
                 MessageDialog.openInformation(fView.getSite().getShell(),
                         Messages.getString("UploadRevisionJob.Title"), wbs.getMessageException()); //$NON-NLS-1$
-                ComponentManager.saveResource();
             } else {
                 String mainMsg = Messages.getString("UploadRevisionAction.InstalledFailure") + " "
                         + Messages.getString("UploadRevisionAction.InstalledFailureTip");

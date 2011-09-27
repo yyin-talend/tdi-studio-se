@@ -54,7 +54,11 @@ public class ShowContributedExtensionsJob extends Job {
         Future<List<ComponentExtension>> task = executor.submit(new Callable<List<ComponentExtension>>() {
 
             public List<ComponentExtension> call() throws Exception {
-                return ComponentSearcher.getContributedExtensions("4.2", ExchangeUtils.getCurrentLanguage());
+                if (ExchangeUtils.checkUserAndPassword()) {
+                    return ComponentSearcher.getContributedExtensions("4.2", ExchangeUtils.getCurrentLanguage(),
+                            ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash());
+                }
+                return null;
             }
         });
 

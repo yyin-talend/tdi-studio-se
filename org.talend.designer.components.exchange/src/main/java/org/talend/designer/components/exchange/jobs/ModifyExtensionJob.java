@@ -57,10 +57,16 @@ public class ModifyExtensionJob extends Job {
         Future<WebserviceStatus> task = executor.submit(new Callable<WebserviceStatus>() {
 
             public WebserviceStatus call() throws Exception {
-                WebserviceStatus webserviceStatus = ExchangeWebService.updateRevisionService(fExtension.getIdExtension(),
-                        ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(),
-                        fExtension.getLastVersionAvailable(), fExtension.getListVersionCompatibles(),
-                        fExtension.getDescription(), "false");
+                WebserviceStatus webserviceStatus;
+                if (ExchangeUtils.checkUserAndPassword()) {
+                    webserviceStatus = ExchangeWebService.updateRevisionService(fExtension.getIdExtension(),
+                            ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(),
+                            fExtension.getLastVersionAvailable(), fExtension.getListVersionCompatibles(),
+                            fExtension.getDescription(), "false");
+                } else {
+                    webserviceStatus = new WebserviceStatus();
+                    webserviceStatus.setMessageException(Messages.getString("MyExtensionsComposite.Form.checkUserAndPassword"));
+                }
                 return webserviceStatus;
             }
         });

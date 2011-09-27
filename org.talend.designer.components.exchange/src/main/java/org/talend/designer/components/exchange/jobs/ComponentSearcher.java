@@ -153,11 +153,11 @@ public class ComponentSearcher {
      * @param language The project language.
      * @return
      */
-    public static List<ComponentExtension> getContributedExtensions(String version, ECodeLanguage language) {
+    public static List<ComponentExtension> getContributedExtensions(String version, ECodeLanguage language, String username,
+            String passwordHash) {
         List<ComponentExtension> extensions = new ArrayList<ComponentExtension>();
         try {
-            JSONArray extensionsJSONArray = ExchangeWebService.searchContributedExtensionJSONArray(ExchangeUtils.getUserName(),
-                    ExchangeUtils.getPasswordHash());
+            JSONArray extensionsJSONArray = ExchangeWebService.searchContributedExtensionJSONArray(username, passwordHash);
             if (extensionsJSONArray != null) {
                 int size = extensionsJSONArray.length();
                 for (int i = 0; i < size; i++) {
@@ -192,11 +192,11 @@ public class ComponentSearcher {
      * @param language The project language.
      * @return
      */
-    public static List<ComponentExtension> getInstalledExtensions(String version, ECodeLanguage language) {
+    public static List<ComponentExtension> getInstalledExtensions(String version, ECodeLanguage language, String username,
+            String passwordHash) {
         List<ComponentExtension> extensions = new ArrayList<ComponentExtension>();
         try {
-            JSONArray extensionsJSONArray = ExchangeWebService.searchInstalledExtensionJSONArray(ExchangeUtils.getUserName(),
-                    ExchangeUtils.getPasswordHash());
+            JSONArray extensionsJSONArray = ExchangeWebService.searchInstalledExtensionJSONArray(username, passwordHash);
             if (extensionsJSONArray != null) {
                 int size = extensionsJSONArray.length();
                 for (int i = 0; i < size; i++) {

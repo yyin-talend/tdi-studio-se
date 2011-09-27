@@ -57,10 +57,16 @@ public class UploadRevisionJob extends Job {
         Future<WebserviceStatus> task = executor.submit(new Callable<WebserviceStatus>() {
 
             public WebserviceStatus call() throws Exception {
-                WebserviceStatus webserviceStatus = ExchangeWebService.insertionRevisionService(fe.getIdExtension(),
-                        ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(),
-                        fe.getLastVersionAvailable(), fe.getListVersionCompatibles(), fe.getFilename(), "content",
-                        fe.getDescription(), "true");
+                WebserviceStatus webserviceStatus;
+                if (ExchangeUtils.checkUserAndPassword()) {
+                    webserviceStatus = ExchangeWebService.insertionRevisionService(fe.getIdExtension(),
+                            ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(),
+                            fe.getLastVersionAvailable(), fe.getListVersionCompatibles(), fe.getFilename(), "content",
+                            fe.getDescription(), "true");
+                } else {
+                    webserviceStatus = new WebserviceStatus();
+                    webserviceStatus.setMessageException(Messages.getString("MyExtensionsComposite.Form.checkUserAndPassword"));
+                }
                 return webserviceStatus;
             }
         });

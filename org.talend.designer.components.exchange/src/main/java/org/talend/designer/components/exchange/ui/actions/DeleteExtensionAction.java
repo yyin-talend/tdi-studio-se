@@ -68,7 +68,6 @@ public class DeleteExtensionAction extends Action {
             if (wbs.isResult()) {
                 MessageDialog.openInformation(fView.getSite().getShell(),
                         Messages.getString("DeleteExtensionJob.DeleteExtensionJob.Title"), wbs.getMessageException()); //$NON-NLS-1$
-                ComponentManager.saveResource();
             } else {
                 String mainMsg = Messages.getString("DeleteExtensionJob.DeleteFailure") + " "
                         + Messages.getString("DeleteExtensionJob.DeleteFailureTip");

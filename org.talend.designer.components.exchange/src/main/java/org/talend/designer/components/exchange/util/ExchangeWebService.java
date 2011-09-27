@@ -252,10 +252,10 @@ public class ExchangeWebService {
         ws.setResult(false);
         JSONObject tokenMessage = new JSONObject();
         try {
-            tokenMessage.put("typeExtension", typeExtension);
-            tokenMessage.put("idExtension", idExtension);
             tokenMessage.put("username", username);
             tokenMessage.put("passwordHash", passwordHash);
+            tokenMessage.put("idExtension", idExtension);
+            tokenMessage.put("typeExtension", typeExtension);
             JSONObject token = new us.monoid.json.JSONObject();
             token.put("revision", tokenMessage);
 
@@ -263,11 +263,11 @@ public class ExchangeWebService {
             JSONObject result = readJsonFromUrl(u);
             //
             Object object = result.get("result");
-            if (object != null && object.equals("PARAMETER EMPTY")) {
-                ws.setMessageException(object.toString()); //$NON-NLS-1$
-            } else {
+            if (object != null && object.equals("DELETE OK")) {
                 ws.setResult(true);
                 ws.setMessageException(Messages.getString("ExchangeWebService.deleteExtensionSuccessful")); //$NON-NLS-1$
+            } else {
+                ws.setMessageException(object.toString()); //$NON-NLS-1$
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -394,8 +394,13 @@ public class ExchangeWebService {
             String u = exchangeWSServer + "downloadedExtension.php?data=" + token;
             JSONObject resultObj = readJsonFromUrl(u);
             //
-            ws.setResult(true);
-            ws.setMessageException(Messages.getString("ExchangeWebService.insertReviewSuccessful")); //$NON-NLS-1$
+            Object object = resultObj.get("result");
+            if (object != null && object.equals("INSERT OK")) {
+                ws.setResult(true);
+                ws.setMessageException(Messages.getString("ExchangeWebService.insertReviewSuccessful")); //$NON-NLS-1$
+            } else {
+                ws.setMessageException(object.toString()); //$NON-NLS-1$
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             ws.setMessageException(e.getMessage());
@@ -432,10 +437,10 @@ public class ExchangeWebService {
         ws.setResult(false);
         JSONObject tokenMessage = new JSONObject();
         try {
-            tokenMessage.put("idExtension", idExtension);
-            tokenMessage.put("typeExtension", typeExtension);
             tokenMessage.put("username", username);
             tokenMessage.put("passwordHash", passwordHash);
+            tokenMessage.put("idExtension", idExtension);
+            tokenMessage.put("typeExtension", typeExtension);
             tokenMessage.put("version", version);
             tokenMessage.put("versionCompatibles", listVersionCompatibles);
             tokenMessage.put("filename", filename);
@@ -487,10 +492,10 @@ public class ExchangeWebService {
         ws.setResult(false);
         JSONObject tokenMessage = new JSONObject();
         try {
-            tokenMessage.put("typeExtension", typeExtension);
-            tokenMessage.put("idExtension", idExtension);
             tokenMessage.put("username", username);
             tokenMessage.put("passwordHash", passwordHash);
+            tokenMessage.put("idExtension", idExtension);
+            tokenMessage.put("typeExtension", typeExtension);
             tokenMessage.put("version", version);
             tokenMessage.put("listVersionCompatibles", listVersionCompatibles);
             tokenMessage.put("description", description);
@@ -539,9 +544,9 @@ public class ExchangeWebService {
         ws.setResult(false);
         JSONObject tokenMessage = new JSONObject();
         try {
-            tokenMessage.put("typeExtension", typeExtension);
             tokenMessage.put("username", username);
             tokenMessage.put("passwordHash", passwordHash);
+            tokenMessage.put("typeExtension", typeExtension);
             tokenMessage.put("category", category);
             tokenMessage.put("name", name);
             tokenMessage.put("description", description);

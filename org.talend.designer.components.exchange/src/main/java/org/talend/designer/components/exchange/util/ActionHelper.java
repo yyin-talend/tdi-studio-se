@@ -12,7 +12,11 @@
 // ============================================================================
 package org.talend.designer.components.exchange.util;
 
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
+import org.talend.designer.components.exchange.ui.actions.RefreshComponenentsAction;
+import org.talend.designer.components.exchange.ui.actions.ShowInstalledExtensionsAction;
 import org.talend.designer.components.exchange.ui.views.ExchangeView;
 
 /**
@@ -21,8 +25,29 @@ import org.talend.designer.components.exchange.ui.views.ExchangeView;
  */
 public class ActionHelper {
 
-    public static ExchangeView getExchangeView() {
-        return (ExchangeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .findView("org.talend.designer.components.exchange.ui.views.ExchangeView"); //$NON-NLS-1$
+    public static IAction getRefreshComponenentsAction() {
+        ExchangeView exchangeView = ExchangeUtils.getExchangeView();
+        if (exchangeView != null) {
+            IContributionItem item = exchangeView.getViewSite().getActionBars().getToolBarManager()
+                    .find(RefreshComponenentsAction.ID);
+            if (item != null && item instanceof IContributionItem) {
+                IAction action = ((ActionContributionItem) item).getAction();
+                return action;
+            }
+        }
+        return null;
+    }
+
+    public static IAction getShowInstalledExtensionsAction() {
+        ExchangeView exchangeView = ExchangeUtils.getExchangeView();
+        if (exchangeView != null) {
+            IContributionItem item = exchangeView.getViewSite().getActionBars().getToolBarManager()
+                    .find(ShowInstalledExtensionsAction.ID);
+            if (item != null && item instanceof IContributionItem) {
+                IAction action = ((ActionContributionItem) item).getAction();
+                return action;
+            }
+        }
+        return null;
     }
 }

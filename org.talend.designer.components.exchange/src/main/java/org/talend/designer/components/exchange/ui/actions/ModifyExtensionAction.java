@@ -68,7 +68,6 @@ public class ModifyExtensionAction extends Action {
             if (wbs.isResult()) {
                 MessageDialog.openInformation(fView.getSite().getShell(),
                         Messages.getString("ModifyExtensionJob.Title"), wbs.getMessageException()); //$NON-NLS-1$
-                ComponentManager.saveResource();
             } else {
                 String mainMsg = Messages.getString("ModifyExtensionJob.ModifyFailure") + " "
                         + Messages.getString("ModifyExtensionJob.ModifyFailureTip");

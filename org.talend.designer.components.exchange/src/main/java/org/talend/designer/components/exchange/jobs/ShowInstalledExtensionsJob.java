@@ -59,7 +59,11 @@ public class ShowInstalledExtensionsJob extends Job {
         Future<List<ComponentExtension>> task = executor.submit(new Callable<List<ComponentExtension>>() {
 
             public List<ComponentExtension> call() throws Exception {
-                return ComponentSearcher.getInstalledExtensions(ExchangeUtils.VERSIONSTUDIO, ExchangeUtils.getCurrentLanguage());
+                if (ExchangeUtils.checkUserAndPassword()) {
+                    return ComponentSearcher.getInstalledExtensions(ExchangeUtils.VERSIONSTUDIO,
+                            ExchangeUtils.getCurrentLanguage(), ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash());
+                }
+                return null;
             }
         });
 

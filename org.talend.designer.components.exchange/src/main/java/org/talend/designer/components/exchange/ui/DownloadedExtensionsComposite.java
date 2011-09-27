@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -41,6 +42,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.ui.actions.DownloadComponenentsAction;
+import org.talend.designer.components.exchange.util.ActionHelper;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -132,6 +134,15 @@ public class DownloadedExtensionsComposite extends ExchangeComposite {
         //
         if (fExtensions != null && !fExtensions.isEmpty()) {
             updateInstalledExtensions(fExtensions);
+        }
+
+        IAction action1 = ActionHelper.getRefreshComponenentsAction();
+        if (action1 != null) {
+            action1.setEnabled(false);
+        }
+        IAction action2 = ActionHelper.getShowInstalledExtensionsAction();
+        if (action2 != null) {
+            action2.setEnabled(true);
         }
     }
 

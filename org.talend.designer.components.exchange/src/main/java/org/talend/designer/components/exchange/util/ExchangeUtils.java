@@ -366,7 +366,7 @@ public class ExchangeUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "f06bDFFD3093557270536c0bA80d0144dBAFA916";
+        return passwordTemp;
     }
 
     public static String getUserName() {
@@ -378,6 +378,13 @@ public class ExchangeUtils {
             IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
             userName = prefStore.getString("pseudonym");
         }
-        return "yi";
+        return userName;
+    }
+
+    public static boolean checkUserAndPassword() {
+        if (getUserName() != null && !getUserName().equals("") && getPasswordHash() != null && !getPasswordHash().equals("")) {
+            return true;
+        }
+        return false;
     }
 }

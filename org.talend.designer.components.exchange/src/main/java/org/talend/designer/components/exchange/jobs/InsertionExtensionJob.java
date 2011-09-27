@@ -57,21 +57,28 @@ public class InsertionExtensionJob extends Job {
         Future<WebserviceStatus> task = executor.submit(new Callable<WebserviceStatus>() {
 
             public WebserviceStatus call() throws Exception {
-                WebserviceStatus insertwbs = ExchangeWebService.insertionExtensionService(ExchangeUtils.TYPEEXTENSION,
-                        ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(), ExchangeUtils.CATEGORY, fe.getLabel(),
-                        fe.getDescription());
-                //
-                if (insertwbs.isResult()) {
-                    String idExtension = insertwbs.getValue();
-                    WebserviceStatus uploadReWbs = ExchangeWebService.insertionRevisionService(idExtension,
-                            ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(),
-                            fe.getLastVersionAvailable(), fe.getListVersionCompatibles(), fe.getFilename(), "content",
-                            fe.getDescription(), "true");
-                    uploadReWbs.setMessageException(insertwbs.getMessageException() + " " + uploadReWbs.getMessageException());
-                    return uploadReWbs;
+                WebserviceStatus webserviceStatus;
+                if (ExchangeUtils.checkUserAndPassword()) {
+                    webserviceStatus = ExchangeWebService.insertionExtensionService(ExchangeUtils.TYPEEXTENSION,
+                            ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(), ExchangeUtils.CATEGORY, fe.getLabel(),
+                            fe.getDescription());
+                    //
+                    if (webserviceStatus.isResult()) {
+                        String idExtension = webserviceStatus.getValue();
+                        WebserviceStatus uploadReWbs = ExchangeWebService.insertionRevisionService(idExtension,
+                                ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(),
+                                fe.getLastVersionAvailable(), fe.getListVersionCompatibles(), fe.getFilename(), "content",
+                                fe.getDescription(), "true");
+                        uploadReWbs.setMessageException(webserviceStatus.getMessageException() + " "
+                                + uploadReWbs.getMessageException());
+                        return uploadReWbs;
+                    }
+                } else {
+                    webserviceStatus = new WebserviceStatus();
+                    webserviceStatus.setMessageException(Messages.getString("MyExtensionsComposite.Form.checkUserAndPassword"));
                 }
+                return webserviceStatus;
 
-                return insertwbs;
             }
         });
 

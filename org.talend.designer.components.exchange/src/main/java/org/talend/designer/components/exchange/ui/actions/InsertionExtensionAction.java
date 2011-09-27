@@ -68,7 +68,6 @@ public class InsertionExtensionAction extends Action {
             if (wbs.isResult()) {
                 MessageDialog.openInformation(fView.getSite().getShell(),
                         Messages.getString("InstalledExtensionJob.Title"), wbs.getMessageException()); //$NON-NLS-1$
-                ComponentManager.saveResource();
             } else {
                 String mainMsg = Messages.getString("InsertionExtensionAction.InstalledFailure") + " "
                         + Messages.getString("InsertionExtensionAction.InstalledFailureTip");

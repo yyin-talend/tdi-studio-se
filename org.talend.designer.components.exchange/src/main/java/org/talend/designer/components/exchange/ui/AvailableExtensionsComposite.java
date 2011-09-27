@@ -13,8 +13,16 @@
 package org.talend.designer.components.exchange.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -36,12 +44,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -49,11 +55,17 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
+import org.talend.designer.components.exchange.model.AvailableExtensionViewDetail;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.ui.actions.DownloadComponenentsAction;
+import org.talend.designer.components.exchange.util.ActionHelper;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
+import org.talend.designer.components.exchange.util.ExchangeWebService;
+import org.talend.designer.components.exchange.util.WebserviceStatus;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -194,6 +206,14 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         stackLayout.topControl = itemTable;
         listExtensonsComp.layout();
 
+        IAction action1 = ActionHelper.getRefreshComponenentsAction();
+        if (action1 != null) {
+            action1.setEnabled(true);
+        }
+        IAction action2 = ActionHelper.getShowInstalledExtensionsAction();
+        if (action2 != null) {
+            action2.setEnabled(false);
+        }
     }
 
     public void updateAvailableExtensions(List<ComponentExtension> extensions) {
@@ -433,6 +453,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         fd_link.left = new FormAttachment(text, 10, SWT.LEFT);
         link.setLayoutData(fd_link);
         link.setText("<a>More...</a>");
+
         group_2.setLayout(new FormLayout());
         FormData fd_group_2 = new FormData();
         fd_group_2.bottom = new FormAttachment(100, -10);
@@ -440,6 +461,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         fd_group_2.left = new FormAttachment(group, 6);
         fd_group_2.right = new FormAttachment(100, -10);
         group_2.setLayoutData(fd_group_2);
+        group_2.setText("User Reviews");
 
         final Link link_1 = new Link(group_2, SWT.NONE);
         FormData fd_link_1 = new FormData();
@@ -448,28 +470,40 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         link_1.setLayoutData(fd_link_1);
         link_1.setText("<a>Write a review</a>");
 
-        Label lblNewLabel_5 = new Label(group_2, SWT.NONE);
-        FormData fd_lblNewLabel_5 = new FormData();
-        fd_lblNewLabel_5.top = new FormAttachment(0, 21);
-        fd_lblNewLabel_5.left = new FormAttachment(0, 10);
-        lblNewLabel_5.setLayoutData(fd_lblNewLabel_5);
-        if (componentExtension.getReviews() != null && !componentExtension.getReviews().isEmpty()) {
-            lblNewLabel_5.setText(getRate(componentExtension.getReviews().get(0).getReviewrate()));
-        } else {
-            lblNewLabel_5.setText(getRate("0"));
+        // review
+        Map<Integer, AvailableExtensionViewDetail> fViewDetails = new HashMap<Integer, AvailableExtensionViewDetail>();
+        Map<Integer, Label> fLabels = new HashMap<Integer, Label>();
+        EList<AvailableExtensionViewDetail> reviews = componentExtension.getReviews();
+        if (reviews != null && reviews.size() > 0) {
+            for (int i = 1; i <= reviews.size(); i++) {
+                fLabels.put(i, new Label(group_2, SWT.NONE));
+                fViewDetails.put(i, reviews.get(i - 1));
+            }
         }
+        if (fLabels != null && !fLabels.isEmpty()) {
 
-        Label lblNewLabel_6 = new Label(group_2, SWT.V_SCROLL);
-        FormData fd_lblNewLabel_6 = new FormData();
-        fd_lblNewLabel_6.bottom = new FormAttachment(lblNewLabel_5, 64, SWT.BOTTOM);
-        fd_lblNewLabel_6.right = new FormAttachment(link_1, 0, SWT.RIGHT);
-        fd_lblNewLabel_6.top = new FormAttachment(lblNewLabel_5, 6);
-        fd_lblNewLabel_6.left = new FormAttachment(lblNewLabel_5, 0, SWT.LEFT);
-        lblNewLabel_6.setLayoutData(fd_lblNewLabel_6);
-        if (componentExtension.getReviews() != null && !componentExtension.getReviews().isEmpty()) {
-            lblNewLabel_6.setText(componentExtension.getReviews().get(0).getComment());
-        } else {
-            lblNewLabel_5.setText("");
+            Iterator ite = fLabels.entrySet().iterator();
+            while (ite.hasNext()) {
+                Map.Entry<Integer, Label> entry = (Entry<Integer, Label>) ite.next();
+                int j = entry.getKey();
+                Label objectLabel = entry.getValue();
+                AvailableExtensionViewDetail viewDetail = fViewDetails.get(j);
+                String tstr = getRate(viewDetail.getReviewrate()) + " " + viewDetail.getTitle() + "\n\t"
+                        + viewDetail.getComment();
+                objectLabel.setText(tstr);
+                FormData data = new FormData();
+                if (j == 1) {
+                    data.left = new FormAttachment(0, 10);
+                    data.right = new FormAttachment(link_1, 0);
+                    data.top = new FormAttachment(0, 10);
+                    objectLabel.setLayoutData(data);
+                } else {
+                    data.left = new FormAttachment(0, 10);
+                    data.right = new FormAttachment(100, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 30);
+                    data.top = new FormAttachment(fLabels.get(j - 1), ITabbedPropertyConstants.VSPACE + 5);
+                    objectLabel.setLayoutData(data);
+                }
+            }
         }
 
         FormData fd_btnNewButton = new FormData();
@@ -510,7 +544,39 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         link_1.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent event) {
-                new WriteReviewDialog(link_1.getShell(), SWT.NONE).open();
+                ReviewComponentDialog reviewDialog = new ReviewComponentDialog(link_1.getShell());
+                if (reviewDialog.open() == IDialogConstants.OK_ID) {
+                    final String title = reviewDialog.getTitle();
+                    final String rate = reviewDialog.getRating() + "";
+                    final String review = reviewDialog.getReview();
+                    Display.getDefault().asyncExec(new Runnable() {
+
+                        public void run() {
+                            if (ExchangeUtils.checkUserAndPassword()) {
+                                WebserviceStatus ws = ExchangeWebService.insertReviewService(componentExtension.getIdExtension(),
+                                        ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(),
+                                        ExchangeUtils.getPasswordHash(), title, review, rate);
+                                if (ws.isResult()) {
+                                    MessageDialog.openInformation(
+                                            link_1.getShell(),
+                                            Messages.getString("AvailableExtensionsComposite.ViewDetail.WriteReview"), ws.getMessageException()); //$NON-NLS-1$
+                                } else {
+                                    String mainMsg = Messages
+                                            .getString("AvailableExtensionsComposite.ViewDetail.InsertionReviewFailure")
+                                            + " "
+                                            + Messages
+                                                    .getString("AvailableExtensionsComposite.ViewDetail.InsertionReviewFailureTip");
+                                    new ErrorDialogWidthDetailArea(link_1.getShell(), ExchangePlugin.PLUGIN_ID, mainMsg, ws
+                                            .getMessageException());
+                                }
+                            } else {
+                                MessageDialog.openInformation(
+                                        link_1.getShell(),
+                                        Messages.getString("AvailableExtensionsComposite.ViewDetail.WriteReview"), Messages.getString("MyExtensionsComposite.Form.checkUserAndPassword")); //$NON-NLS-1$
+                            }
+                        }
+                    });
+                }
             }
         });
     }
@@ -653,140 +719,5 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
 
     public void setParentWizard(IWizardPage parentWizard) {
         this.wizardPage = parentWizard;
-    }
-}
-
-/**
- * 
- * DOC hcyi class global comment. Detailled comment
- */
-class WriteReviewDialog extends Dialog {
-
-    protected Object result;
-
-    protected Shell shell;
-
-    public final static String strRateOne = "☆";
-
-    public final static String strRateTwo = "★";
-
-    /**
-     * Create the dialog.
-     * 
-     * @param parent
-     * @param style
-     */
-    public WriteReviewDialog(Shell parent, int style) {
-        super(parent, style);
-        setText("Write an Review");
-    }
-
-    /**
-     * Open the dialog.
-     * 
-     * @return the result
-     */
-    public Object open() {
-        createContents();
-        shell.open();
-        shell.layout();
-        Display display = getParent().getDisplay();
-        while (!shell.isDisposed()) {
-            if (!display.readAndDispatch()) {
-                display.sleep();
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Create contents of the dialog.
-     */
-    private void createContents() {
-        shell = new Shell(getParent(), SWT.DIALOG_TRIM);
-        shell.setSize(450, 300);
-        shell.setText(getText());
-
-        // title
-        Text titleText = new Text(shell, SWT.BORDER);
-        FormData data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(10, 0);
-        data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-        titleText.setLayoutData(data);
-
-        Label titleLabel = new Label(shell, SWT.NONE);
-        data = new FormData();
-        data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(50, 0);
-        data.top = new FormAttachment(titleText, ITabbedPropertyConstants.VSPACE);
-        titleLabel.setLayoutData(data);
-        titleLabel.setText("Title");
-
-        // Rate
-        Label rateLabel1 = new Label(shell, SWT.NONE);
-        data = new FormData();
-        data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(titleText, ITabbedPropertyConstants.VSPACE);
-        rateLabel1.setLayoutData(data);
-        rateLabel1.setText("☆");
-
-        Label rateLabel2 = new Label(shell, SWT.NONE);
-        data = new FormData();
-        data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(rateLabel1, ITabbedPropertyConstants.VSPACE);
-        rateLabel2.setLayoutData(data);
-        rateLabel2.setText("☆");
-
-        Label rateLabel3 = new Label(shell, SWT.NONE);
-        data = new FormData();
-        data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(rateLabel2, ITabbedPropertyConstants.VSPACE);
-        rateLabel3.setLayoutData(data);
-        rateLabel3.setText("☆");
-
-        Label rateLabel4 = new Label(shell, SWT.NONE);
-        data = new FormData();
-        data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(rateLabel3, ITabbedPropertyConstants.VSPACE);
-        rateLabel4.setLayoutData(data);
-        rateLabel4.setText("☆");
-
-        Label rateLabel5 = new Label(shell, SWT.NONE);
-        data = new FormData();
-        data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(rateLabel4, ITabbedPropertyConstants.VSPACE);
-        rateLabel5.setLayoutData(data);
-        rateLabel5.setText("☆");
-
-        // Description
-        Text descriptionText = new Text(shell, SWT.MULTI | SWT.V_SCROLL);
-        data = new FormData();
-        data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(rateLabel5, ITabbedPropertyConstants.VSPACE);
-        data.height = 4 * descriptionText.getLineHeight();
-        descriptionText.setLayoutData(data);
-
-        Label descriptionLabel = new Label(shell, SWT.NONE);
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(descriptionText, -ITabbedPropertyConstants.HSPACE);
-        data.top = new FormAttachment(descriptionText, 0, SWT.TOP);
-        descriptionLabel.setLayoutData(data);
-        descriptionLabel.setText("Description");
-
-        Button btnNewButton = new Button(shell, SWT.NONE);
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(descriptionText, -ITabbedPropertyConstants.HSPACE);
-        data.top = new FormAttachment(descriptionText, 0, SWT.TOP);
-        descriptionLabel.setLayoutData(data);
-        btnNewButton.setText("OK");
     }
 }

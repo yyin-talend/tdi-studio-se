@@ -49,6 +49,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.components.exchange.ExchangeComponentsProvider;
 import org.talend.designer.components.exchange.ExchangeConstants;
+import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.jobs.ComponentDownloader;
 import org.talend.designer.components.exchange.jobs.ComponentInstaller;
@@ -306,10 +307,6 @@ public class DownloadComponenentsAction extends Action {
                         ExceptionHandler.process(e);
                     }
                 }
-            } else {
-                String mainMsg = Messages.getString("DownloadComponenentsAction.DownloadFailure") + " "
-                        + Messages.getString("DownloadComponenentsAction.DownloadFailureTip");
-                new ErrorDialogWidthDetailArea(fView.getSite().getShell(), "", mainMsg, webserviceStatus.getMessageException());
             }
         }
 

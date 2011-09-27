@@ -57,8 +57,14 @@ public class DeleteExtensionJob extends Job {
         Future<WebserviceStatus> task = executor.submit(new Callable<WebserviceStatus>() {
 
             public WebserviceStatus call() throws Exception {
-                WebserviceStatus webserviceStatus = ExchangeWebService.deleteExtensionService(deleteExtensionId,
-                        ExchangeUtils.VERSIONSTUDIO, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash());
+                WebserviceStatus webserviceStatus;
+                if (ExchangeUtils.checkUserAndPassword()) {
+                    webserviceStatus = ExchangeWebService.deleteExtensionService(deleteExtensionId, ExchangeUtils.TYPEEXTENSION,
+                            ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash());
+                } else {
+                    webserviceStatus = new WebserviceStatus();
+                    webserviceStatus.setMessageException(Messages.getString("MyExtensionsComposite.Form.checkUserAndPassword"));
+                }
                 return webserviceStatus;
             }
         });
