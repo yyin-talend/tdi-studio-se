@@ -27,4 +27,4 @@ org.talend.mdm.bulkload.client.BulkloadClient bulkloadClient_<%=cid %> = new org
 bulkloadClient_<%=cid %>.startThreadCount();
 bulkloadClient_<%=cid %>.setOptions(new org.talend.mdm.bulkload.client.BulkloadOptions(<%=isGenerateId %>, <%=validate %>, <%=arraySize%>));
 int count_<%=cid%> = 0;
-org.talend.mdm.bulkload.client.InputStreamMerger inputStreamMerger_<%=cid%> = bulkloadClient_<%=cid %>.load();
+org.talend.mdm.bulkload.client.InputStreamMerger inputStreamMerger_<%=cid%> = null;

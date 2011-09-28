@@ -26,8 +26,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     	for (IConnection conn : conns) {//3
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
 %>
-if (count_<%=cid%> > 0 && count_<%=cid%> % <%=arraySize%> == 0) {
-	inputStreamMerger_<%=cid%>.close();
+if (count_<%=cid%> % <%=arraySize%> == 0) {
+	if(inputStreamMerger_<%=cid%> != null)
+		inputStreamMerger_<%=cid%>.close();
 	inputStreamMerger_<%=cid%> = bulkloadClient_<%=cid %>.load();
 }
 
