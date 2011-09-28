@@ -65,8 +65,7 @@ class ThreadXMLField extends Thread {
 		}
 	}
 }
-ThreadXMLField txf_<%=cid%> = new ThreadXMLField(listGroupby_<%=cid%>);
-txf_<%=cid%>.start();
+new ThreadXMLField(listGroupby_<%=cid%>).start();
 
 java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
