@@ -21,13 +21,12 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.ViewPart;
+import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -38,7 +37,6 @@ import org.talend.designer.components.exchange.ui.AvailableExtensionsComposite;
 import org.talend.designer.components.exchange.ui.DownloadedExtensionsComposite;
 import org.talend.designer.components.exchange.ui.MyExtensionsComposite;
 import org.talend.designer.components.exchange.ui.actions.ShowContributedExtensionsAction;
-import org.talend.designer.components.exchange.util.ExchangeUtils;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -68,6 +66,8 @@ public class ExchangeView extends ViewPart {
     private List<ComponentExtension> fContributedExtensions = new ArrayList<ComponentExtension>();
 
     private List<ComponentExtension> fInstalledExtensions = new ArrayList<ComponentExtension>();
+
+    private Image imageView;
 
     public ExchangeView() {
         tabFactory = new HorizontalTabFactory();
@@ -147,7 +147,10 @@ public class ExchangeView extends ViewPart {
         }
 
         tabFactory.setInput(descriptors);
-        tabFactory.setTitle("", ExchangeUtils.image);
+        if (imageView == null) {
+            imageView = ImageProvider.getImage(ECoreImage.EXCHNAGETAB);
+        }
+        tabFactory.setTitle("", imageView);
         tabFactory.setSelection(new IStructuredSelection() {
 
             public Object getFirstElement() {
