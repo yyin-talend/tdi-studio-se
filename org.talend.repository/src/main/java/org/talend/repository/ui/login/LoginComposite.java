@@ -58,7 +58,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
@@ -872,7 +871,7 @@ public class LoginComposite extends Composite {
             data.top = new FormAttachment(projectViewer.getControl(), HORIZONTAL_TWO_SPACE);
         }
         data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
-        data.bottom = new FormAttachment(100, -20);
+        // data.bottom = new FormAttachment(projectViewer.getControl(), HORIZONTAL_SPACE + 50);
         openProjectBtn.setLayoutData(data);
     }
 
@@ -882,6 +881,7 @@ public class LoginComposite extends Composite {
         tosProjectComposite.setLayout(new FormLayout());
         tosProjectComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
         tosProjectComposite.setBackground(parent.getBackground());
+        // tosProjectComposite.setBackground(RED_COLOR);
 
         openProjectBtn = toolkit.createButton(tosProjectComposite, null, SWT.PUSH);
         openProjectBtn.setText(Messages.getString("LoginComposite.buttons.open")); //$NON-NLS-1$
@@ -931,14 +931,14 @@ public class LoginComposite extends Composite {
         data.top = new FormAttachment(createProjectLabel, HORIZONTAL_TWO_SPACE);
         data.left = new FormAttachment(createProjectLabel, 10, SWT.RIGHT);
         // data.right = new FormAttachment(90, -HORIZONTAL_THREE_SPACE);
-        data.bottom = new FormAttachment(90, -20);
+        data.bottom = new FormAttachment(createProjectLabel, HORIZONTAL_TWO_SPACE + 50);
         advanced.setLayoutData(data);
 
         createProjectBtn.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
                 Project project = null;
-                NewProjectWizard newPrjWiz = new NewProjectWizard((Project[]) projectViewer.getInput());
+                NewProjectWizard newPrjWiz = new NewProjectWizard(new Project[] {});
                 newPrjWiz.setDefaultProjectName(projectText.getText());
                 WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
                 newProjectDialog.setTitle(Messages.getString("LoginDialog.newProjectTitle")); //$NON-NLS-1$
@@ -968,73 +968,6 @@ public class LoginComposite extends Composite {
         // tosWelcomeComposite.setBackground(RED_COLOR);
 
         FormData formData2 = null;
-
-        if (!PluginChecker.isSVNProviderPluginLoaded()) {
-            Label workspaceLabel = toolkit.createLabel(tosWelcomeComposite, null);
-            workspaceLabel.setText(Messages.getString("LoginComposite.label.workspace"));
-            workspaceLabel.setVisible(false);
-            GC gc = new GC(workspaceLabel);
-            Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.label.workspace"));
-            gc.dispose();
-
-            formData2 = new FormData();
-            formData2.height = 22;
-            formData2.top = new FormAttachment(0, 5);
-            formData2.left = new FormAttachment(0, 10);
-            formData2.right = new FormAttachment(0, 10 + labelSize.x);
-            workspaceLabel.setLayoutData(formData2);
-            final Button changeButton = toolkit.createButton(tosWelcomeComposite, null, SWT.PUSH);
-            changeButton.setText(Messages.getString("LoginComposite.buttons.changeButton"));
-            changeButton.setVisible(false);
-            formData2 = new FormData();
-            formData2.top = new FormAttachment(0, 5);
-            formData2.right = new FormAttachment(100, -10);
-            formData2.bottom = new FormAttachment(workspaceLabel, 0, SWT.CENTER);
-            changeButton.setLayoutData(formData2);
-
-            final Text workspaceTextLabel = toolkit.createText(tosWelcomeComposite, null, SWT.READ_ONLY | SWT.BORDER);
-            workspaceTextLabel.setText(getConnection().getWorkSpace());
-            workspaceTextLabel.setVisible(false);
-            formData2 = new FormData();
-            formData2.width = 200;
-            formData2.top = new FormAttachment(0, 5);
-            formData2.left = new FormAttachment(workspaceLabel, 5, SWT.RIGHT);
-            Point btPoint = changeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-            formData2.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - btPoint.x);
-            formData2.bottom = new FormAttachment(workspaceLabel, 0, SWT.CENTER);
-            workspaceTextLabel.setLayoutData(formData2);
-            oldPath = getConnection().getWorkSpace();
-
-            changeButton.addSelectionListener(new SelectionAdapter() {
-
-                public void widgetSelected(SelectionEvent e) {
-                    DirectoryDialog dirDialog = new DirectoryDialog(dialog.getShell());
-                    String path = dirDialog.open();
-                    if (path == null || "".equals(path)) { //$NON-NLS-1$
-                        workspaceTextLabel.setText(getRecentWorkSpace());
-                        getConnection().setWorkSpace(getRecentWorkSpace());
-                    } else {
-                        workspaceTextLabel.setText(path);
-                        getConnection().setWorkSpace(path);
-                        if (!path.equals(oldPath)) {
-                            oldPath = path;
-                            manageProjectsButtonTemp.setEnabled(false);
-                            createProjectBtn.setEnabled(false);
-                            advanced.setEnabled(false);
-                            changeButton.setEnabled(false);
-                        }
-                    }
-                    PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
-                            .getPreferenceStore());
-                    List<ConnectionBean> list = new ArrayList<ConnectionBean>();
-                    list.add(getConnection());
-                    prefManipulator.saveConnections(list);
-                    LoginComposite.this.storedConnections = list;
-                    perReader.saveConnections(LoginComposite.this.storedConnections);
-                    fillContents();
-                }
-            });
-        }
 
         colorComposite = toolkit.createComposite(tosWelcomeComposite);
 
