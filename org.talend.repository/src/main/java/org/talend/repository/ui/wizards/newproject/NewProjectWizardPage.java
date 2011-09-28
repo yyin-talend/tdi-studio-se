@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -172,7 +174,27 @@ public class NewProjectWizardPage extends WizardPage {
 
         setControl(container);
         addListeners();
-        setPageComplete(false);
+        init();
+    }
+
+    private void init() {
+        String defaultProjectName = getDefaultProjectName();
+        nameText.setText(defaultProjectName);
+        if ("".equals(defaultProjectName)) {
+            setPageComplete(false);
+        } else {
+            setPageComplete(true);
+        }
+    }
+
+    private String getDefaultProjectName() {
+        IWizard wizard = this.getWizard();
+        if (wizard != null && wizard instanceof NewProjectWizard) {
+            NewProjectWizard projectWizard = (NewProjectWizard) wizard;
+            return StringUtils.trimToEmpty(projectWizard.getDefaultProjectName());
+        }
+
+        return "";
     }
 
     Project[] projects;

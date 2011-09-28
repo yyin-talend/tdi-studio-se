@@ -146,7 +146,8 @@ public class LoginDialog extends TrayDialog {
         layout.horizontalSpacing = 0;
         layout.verticalSpacing = 0;
         container.setLayout(layout);
-        container.setBackground(new Color(null, 215, 215, 215));
+        // container.setBackground(new Color(null, 215, 215, 215));
+        container.setBackground(new Color(null, 255, 255, 255));
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         new ImageCanvas(container, brandingService.getLoginVImage()); //$NON-NLS-1$

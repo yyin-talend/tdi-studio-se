@@ -122,6 +122,8 @@ import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
  */
 public class LoginComposite extends Composite {
 
+    private static final String DEFAULT_PROJECT_NAME = "ProjectName";
+
     private static final String LOCAL = "local"; //$NON-NLS-1$
 
     private static final String FONT_ARIAL = "Arial"; //$NON-NLS-1$
@@ -476,7 +478,8 @@ public class LoginComposite extends Composite {
         repositoryComposite.setLayoutData(gd);
         repositoryComposite.setLayout(new FormLayout());
         repositoryComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        repositoryComposite.setBackground(GREY_COLOR);
+        repositoryComposite.setBackground(parent.getBackground());
+        // repositoryComposite.setBackground(GREY_COLOR);
 
         Label welcomeLabel = toolkit.createLabel(repositoryComposite, Messages.getString("LoginComposite.welcomeTitle")); //$NON-NLS-1$
         welcomeLabel.setBackground(repositoryComposite.getBackground());
@@ -537,7 +540,7 @@ public class LoginComposite extends Composite {
         // user E_mail
         userEmailComposite = toolkit.createComposite(parent);
         userEmailComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        userEmailComposite.setBackground(GREY_COLOR);
+        // userEmailComposite.setBackground(GREY_COLOR);
         userEmailComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         userEmailComposite.setLayout(new FormLayout());
 
@@ -547,11 +550,11 @@ public class LoginComposite extends Composite {
         detailLabelFormData.top = new FormAttachment(0, 0);
         detailLabelFormData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
         if (Platform.getOS().equals(Platform.OS_WIN32)) {
-            detailLabelFormData.right = new FormAttachment(0, 380);
+            detailLabelFormData.right = new FormAttachment(0, 440);
         } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-            detailLabelFormData.right = new FormAttachment(0, 420);
+            detailLabelFormData.right = new FormAttachment(0, 500);
         } else {
-            detailLabelFormData.right = new FormAttachment(0, 420);
+            detailLabelFormData.right = new FormAttachment(0, 500);
         }
         detailLabelFormData.bottom = new FormAttachment(100, 0);
         detailLabel.setLayoutData(detailLabelFormData);
@@ -592,10 +595,10 @@ public class LoginComposite extends Composite {
     private void createSeparator(Composite parent) {
         separatorComposite = toolkit.createComposite(parent);
         separatorComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        separatorComposite.setBackground(GREY_COLOR); // parent.getBackground()
+        separatorComposite.setBackground(parent.getBackground());// separatorComposite.setBackground(GREY_COLOR);
         separatorComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         GridLayout layout = new GridLayout();
-        layout.marginTop = HORIZONTAL_TWO_SPACE;
+        layout.marginTop = 0; // HORIZONTAL_TWO_SPACE;
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         layout.marginBottom = 0;
@@ -610,7 +613,8 @@ public class LoginComposite extends Composite {
         tosActionComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         tosActionComposite.setLayout(new FormLayout());
         tosActionComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        tosActionComposite.setBackground(GREY_COLOR);
+        tosActionComposite.setBackground(parent.getBackground());
+        // tosActionComposite.setBackground(GREY_COLOR);
 
         FormData data;
 
@@ -651,7 +655,8 @@ public class LoginComposite extends Composite {
         tosActionComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         tosActionComposite.setLayout(new FormLayout());
         tosActionComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        tosActionComposite.setBackground(GREY_COLOR);
+        repositoryComposite.setBackground(parent.getBackground());
+        // tosActionComposite.setBackground(GREY_COLOR);
 
         FormData data;
 
@@ -694,7 +699,7 @@ public class LoginComposite extends Composite {
         manageProjectsButtonTemp.setText(Messages.getString("LoginComposite.manageProjectsButtonTemp"));
         data = new FormData();
         data.top = new FormAttachment(0, HORIZONTAL_THREE_SPACE);
-        data.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
+        data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
         data.bottom = new FormAttachment(100, -HORIZONTAL_FOUR_SPACE);
         manageProjectsButtonTemp.setLayoutData(data);
 
@@ -704,8 +709,8 @@ public class LoginComposite extends Composite {
         Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.selectADemoProject"));
         gc.dispose();
         data = new FormData();
-        data.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        data.right = new FormAttachment(0, HORIZONTAL_TWO_SPACE + labelSize.x);
+        data.left = new FormAttachment(10, HORIZONTAL_TWO_SPACE);
+        data.right = new FormAttachment(10, HORIZONTAL_TWO_SPACE + labelSize.x);
         data.bottom = new FormAttachment(manageProjectsButtonTemp, HORIZONTAL_FOUR_SPACE, SWT.CENTER);
         manageProjectLabel1.setLayoutData(data);
 
@@ -719,10 +724,10 @@ public class LoginComposite extends Composite {
 
         importCombo = new ComboViewer(tosActionComposite, SWT.BORDER | SWT.READ_ONLY);
         data = new FormData();
-        data.left = new FormAttachment(manageProjectLabel1, 5, SWT.RIGHT);
+        data.left = new FormAttachment(manageProjectLabel1, 10, SWT.RIGHT);
         data.bottom = new FormAttachment(manageProjectLabel1, HORIZONTAL_FOUR_SPACE, SWT.CENTER);
         Point btPoint = manageProjectsButtonTemp.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        data.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - btPoint.x);
+        data.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - btPoint.x - 50);
         importCombo.getCombo().setLayoutData(data);
         importCombo.setContentProvider(new ArrayContentProvider());
         List<DemoProjectBean> demoProjectList = ImportProjectsUtilities.getAllDemoProjects();
@@ -801,6 +806,7 @@ public class LoginComposite extends Composite {
                     } catch (InterruptedException e1) {
                         // Nothing to do
                     }
+                    dialog.advanced();
                 }
             }
 
@@ -812,7 +818,7 @@ public class LoginComposite extends Composite {
         tosProjectComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         tosProjectComposite.setLayout(new FormLayout());
         tosProjectComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        // tosProjectComposite.setBackground(parent.getBackground());
+        tosProjectComposite.setBackground(parent.getBackground());
 
         svnBranchLabel = toolkit.createLabel(tosProjectComposite, null);
         branchesViewer = new ComboViewer(tosProjectComposite, SWT.BORDER | SWT.READ_ONLY);
@@ -876,7 +882,7 @@ public class LoginComposite extends Composite {
         tosProjectComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         tosProjectComposite.setLayout(new FormLayout());
         tosProjectComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        // tosProjectComposite.setBackground(parent.getBackground());
+        tosProjectComposite.setBackground(parent.getBackground());
 
         svnBranchLabel = toolkit.createLabel(tosProjectComposite, null);
         branchesViewer = new ComboViewer(tosProjectComposite, SWT.BORDER | SWT.READ_ONLY);
@@ -944,7 +950,7 @@ public class LoginComposite extends Composite {
         createProjectBtn.setText(Messages.getString("LoginComposite.buttons.createButton"));
         data = new FormData();
         data.top = new FormAttachment(projectViewer.getControl(), 0, SWT.CENTER);
-        data.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
+        data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
         data.bottom = new FormAttachment(0, 30);
         createProjectBtn.setLayoutData(data);
         createProjectBtn.setEnabled(true);
@@ -956,26 +962,28 @@ public class LoginComposite extends Composite {
         gc.dispose();
         data = new FormData();
         data.top = new FormAttachment(0, 10);
-        data.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        data.right = new FormAttachment(0, HORIZONTAL_TWO_SPACE + labelSize.x);
+        data.left = new FormAttachment(10, HORIZONTAL_TWO_SPACE);
+        data.right = new FormAttachment(10, HORIZONTAL_TWO_SPACE + labelSize.x);
         data.bottom = new FormAttachment(createProjectBtn, 0, SWT.BOTTOM);
         createProjectLabel.setLayoutData(data);
 
-        // projectText = toolkit.createText(tosProjectComposite, "", SWT.BORDER | SWT.READ_ONLY);
-        // data = new FormData();
-        // data.top = new FormAttachment(tosProjectLabel, 0, SWT.TOP);
-        // data.left = new FormAttachment(createProjectLabel, 5, SWT.RIGHT);
-        // data.bottom = new FormAttachment(createProjectLabel, 0, SWT.BOTTOM);
-        // Point btPoint = createProjectBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        // data.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - btPoint.x);
-        // projectText.setLayoutData(data);
+        projectText = toolkit.createText(tosProjectComposite, "", SWT.BORDER);
+        data = new FormData();
+        data.top = new FormAttachment(tosProjectLabel, 0, SWT.TOP);
+        data.left = new FormAttachment(createProjectLabel, 10, SWT.RIGHT);
+        data.bottom = new FormAttachment(createProjectLabel, 0, SWT.BOTTOM);
+        Point btPoint = createProjectBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        data.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - btPoint.x - 50);
+        projectText.setLayoutData(data);
+        projectText.setText(DEFAULT_PROJECT_NAME);
 
         advanced = toolkit.createButton(tosProjectComposite, null, SWT.PUSH);
         advanced.setText(Messages.getString("LoginComposite.buttons.advanced"));
+        advanced.setBackground(tosProjectComposite.getBackground());
         data = new FormData();
         data.top = new FormAttachment(projectViewer.getControl(), HORIZONTAL_TWO_SPACE);
         data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
-        data.bottom = new FormAttachment(100, -20);
+        data.bottom = new FormAttachment(90, -20);
         advanced.setLayoutData(data);
 
         createProjectBtn.addSelectionListener(new SelectionAdapter() {
@@ -983,12 +991,14 @@ public class LoginComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 Project project = null;
                 NewProjectWizard newPrjWiz = new NewProjectWizard((Project[]) projectViewer.getInput());
+                newPrjWiz.setDefaultProjectName(projectText.getText());
                 WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
                 newProjectDialog.setTitle(Messages.getString("LoginDialog.newProjectTitle")); //$NON-NLS-1$
                 if (newProjectDialog.open() == Window.OK) {
                     project = newPrjWiz.getProject();
                     populateProjectList();
-                    // projectText.setText(project.getLabel());
+                    projectText.setText(project.getLabel());
+                    dialog.advanced();
                 }
             }
         });
@@ -1014,6 +1024,7 @@ public class LoginComposite extends Composite {
         if (!PluginChecker.isSVNProviderPluginLoaded()) {
             Label workspaceLabel = toolkit.createLabel(tosWelcomeComposite, null);
             workspaceLabel.setText(Messages.getString("LoginComposite.label.workspace"));
+            workspaceLabel.setVisible(false);
             GC gc = new GC(workspaceLabel);
             Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.label.workspace"));
             gc.dispose();
@@ -1026,6 +1037,7 @@ public class LoginComposite extends Composite {
             workspaceLabel.setLayoutData(formData2);
             final Button changeButton = toolkit.createButton(tosWelcomeComposite, null, SWT.PUSH);
             changeButton.setText(Messages.getString("LoginComposite.buttons.changeButton"));
+            changeButton.setVisible(false);
             formData2 = new FormData();
             formData2.top = new FormAttachment(0, 5);
             formData2.right = new FormAttachment(100, -10);
@@ -1034,6 +1046,7 @@ public class LoginComposite extends Composite {
 
             final Text workspaceTextLabel = toolkit.createText(tosWelcomeComposite, null, SWT.READ_ONLY | SWT.BORDER);
             workspaceTextLabel.setText(getConnection().getWorkSpace());
+            workspaceTextLabel.setVisible(false);
             formData2 = new FormData();
             formData2.width = 200;
             formData2.top = new FormAttachment(0, 5);
@@ -1138,7 +1151,8 @@ public class LoginComposite extends Composite {
         tisRepositoryComposite = toolkit.createComposite(parent);
         tisRepositoryComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         tisRepositoryComposite.setLayout(new FormLayout());
-        tisRepositoryComposite.setBackground(GREY_COLOR);
+        tisRepositoryComposite.setBackground(parent.getBackground());
+        // tisRepositoryComposite.setBackground(GREY_COLOR);
 
         FormData formData;
         Composite group = new Composite(tisRepositoryComposite, SWT.None);
@@ -1259,6 +1273,7 @@ public class LoginComposite extends Composite {
         tisBlankCompoiste.setLayoutData(gd);
         tisBlankCompoiste.setVisible(false);
         tisBlankCompoiste.setBackgroundMode(SWT.INHERIT_DEFAULT);
+        tisBlankCompoiste.setBackground(parent.getBackground());
     }
 
     private GridLayout createLayout(int numColumns) {

@@ -42,6 +42,8 @@ public class NewProjectWizard extends Wizard {
 
     private Project[] projects;
 
+    private String defaultProjectName;
+
     /**
      * Constructs a new NewProjectWizard.
      * 
@@ -76,8 +78,8 @@ public class NewProjectWizard extends Wizard {
         Context ctx = CorePlugin.getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         try {
-            Project projectInfor = ProjectHelper.createProject(mainPage.getName(), mainPage.getDescription(), mainPage
-                    .getLanguage(), repositoryContext.getUser());
+            Project projectInfor = ProjectHelper.createProject(mainPage.getName(), mainPage.getDescription(),
+                    mainPage.getLanguage(), repositoryContext.getUser());
             project = repositoryFactory.createProject(projectInfor);
             return true;
         } catch (PersistenceException e) {
@@ -95,6 +97,14 @@ public class NewProjectWizard extends Wizard {
      */
     public Project getProject() {
         return this.project;
+    }
+
+    public String getDefaultProjectName() {
+        return this.defaultProjectName;
+    }
+
+    public void setDefaultProjectName(String defaultProjectName) {
+        this.defaultProjectName = defaultProjectName;
     }
 
 }
