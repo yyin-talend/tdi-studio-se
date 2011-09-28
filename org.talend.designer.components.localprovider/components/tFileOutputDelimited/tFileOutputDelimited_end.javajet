@@ -59,7 +59,6 @@
 		if (metadata!=null) {
 			if(!useStream){
 %>
-	out<%=cid %>.flush();
 	out<%=cid %>.close();
 <%
 			}else{
