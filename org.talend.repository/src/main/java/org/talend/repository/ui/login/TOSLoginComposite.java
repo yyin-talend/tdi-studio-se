@@ -181,7 +181,7 @@ public class TOSLoginComposite extends Composite {
         createLayout.marginWidth = 0;
         formBody.setLayout(createLayout);
         createTosRepositoryArea(formBody);
-        createSeparator(formBody);
+        // createSeparator(formBody);
         createTosActionArea(formBody);
         createTosWorkspaceArea(formBody);
         createStatusArea(formBody);

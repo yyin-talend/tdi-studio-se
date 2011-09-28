@@ -296,13 +296,13 @@ public class LoginComposite extends Composite {
 
         if (!PluginChecker.isSVNProviderPluginLoaded()) {
             createTosRepositoryArea(formBody);
-            createSeparator(formBody);
-            createTosActionArea1(formBody);
-            createTosProjectArea1(formBody);
+            // createSeparator(formBody);
+            createTosActionArea(formBody);
+            createTosProjectArea(formBody);
         } else {
             createTisRepositoryArea(formBody);
             createSeparator(formBody);
-            createTosActionArea(formBody);
+            createTisActionArea(formBody);
             createTisProjectArea(formBody);
             createTisBlankArea(formBody);
         }
@@ -608,13 +608,12 @@ public class LoginComposite extends Composite {
         separatorLabel.setBackground(GREY_COLOR);
     }
 
-    private void createTosActionArea(Composite parent) {
+    private void createTisActionArea(Composite parent) {
         tosActionComposite = toolkit.createComposite(parent);
         tosActionComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         tosActionComposite.setLayout(new FormLayout());
         tosActionComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        tosActionComposite.setBackground(parent.getBackground());
-        // tosActionComposite.setBackground(GREY_COLOR);
+        tosActionComposite.setBackground(GREY_COLOR);
 
         FormData data;
 
@@ -650,7 +649,7 @@ public class LoginComposite extends Composite {
         manageViewer.getControl().setLayoutData(data);
     }
 
-    private void createTosActionArea1(Composite parent) {
+    private void createTosActionArea(Composite parent) {
         tosActionComposite = toolkit.createComposite(parent);
         tosActionComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         tosActionComposite.setLayout(new FormLayout());
@@ -813,7 +812,7 @@ public class LoginComposite extends Composite {
         });
     }
 
-    private void createTosProjectArea(Composite parent) {
+    private void createBasicTisProjectArea(Composite parent) {
         tosProjectComposite = toolkit.createComposite(parent);
         tosProjectComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         tosProjectComposite.setLayout(new FormLayout());
@@ -877,86 +876,34 @@ public class LoginComposite extends Composite {
         openProjectBtn.setLayoutData(data);
     }
 
-    private void createTosProjectArea1(final Composite parent) {
+    private void createTosProjectArea(final Composite parent) {
         tosProjectComposite = toolkit.createComposite(parent);
         tosProjectComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         tosProjectComposite.setLayout(new FormLayout());
         tosProjectComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
         tosProjectComposite.setBackground(parent.getBackground());
 
-        svnBranchLabel = toolkit.createLabel(tosProjectComposite, null);
-        branchesViewer = new ComboViewer(tosProjectComposite, SWT.BORDER | SWT.READ_ONLY);
-        branchesViewer.setContentProvider(new ArrayContentProvider());
-        branchesViewer.setLabelProvider(new LabelProvider());
-        branchesViewer.getControl().setVisible(false);
-
-        Label tosProjectLabel = toolkit.createLabel(tosProjectComposite, Messages.getString("LoginComposite.projectTitle")); //$NON-NLS-1$
-
         openProjectBtn = toolkit.createButton(tosProjectComposite, null, SWT.PUSH);
         openProjectBtn.setText(Messages.getString("LoginComposite.buttons.open")); //$NON-NLS-1$
         openProjectBtn.setToolTipText(Messages.getString("LoginComposite.buttons.open.desc")); //$NON-NLS-1$
         Image image = ImageProvider.getImage(ERepositoryImages.OPEN_PROJECT_ICON);
         openProjectBtn.setImage(image);
-
-        projectViewer = new ComboViewer(tosProjectComposite, SWT.BORDER | SWT.READ_ONLY);
-        projectViewer.setContentProvider(new ArrayContentProvider());
-        projectViewer.setLabelProvider(new ProjectLabelProvider());
-
-        FormData data = new FormData();
-        if (PluginChecker.isSVNProviderPluginLoaded()) {
-            data.top = new FormAttachment(0, 12);
-        } else {
-            data.top = new FormAttachment(0, 10);
-        }
-        data.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);
-        data.right = new FormAttachment(0, LEFTSPACE);
-        tosProjectLabel.setLayoutData(data);
-        tosProjectLabel.setVisible(false);
-
-        // project
-        data = new FormData();
-        data.top = new FormAttachment(tosProjectLabel, 0, SWT.TOP);
-        data.left = new FormAttachment(tosProjectLabel, HORIZONTAL_SPACE);
-        data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
-        projectViewer.getControl().setLayoutData(data);
-        projectViewer.getCombo().setVisible(false);
-
-        // refresh button
-        fillProjectsBtn = toolkit.createButton(tosProjectComposite, null, SWT.PUSH);
-        fillProjectsBtn.setToolTipText(Messages.getString("LoginComposite.buttons.fill.desc")); //$NON-NLS-1$
-        fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
-        data = new FormData();
-        data.top = new FormAttachment(projectViewer.getControl(), 0, SWT.CENTER);
-        data.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
-        fillProjectsBtn.setLayoutData(data);
-        fillProjectsBtn.setVisible(false);
-
-        // open button
-        data = new FormData();
-        if (PluginChecker.isSVNProviderPluginLoaded()) {
-            data.top = new FormAttachment(projectViewer.getControl(), HORIZONTAL_SPACE);
-
-        } else {
-            data.top = new FormAttachment(projectViewer.getControl(), HORIZONTAL_TWO_SPACE);
-        }
-        data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
-        data.bottom = new FormAttachment(100, -20);
-        openProjectBtn.setLayoutData(data);
         openProjectBtn.setVisible(false);
+
+        Label createProjectLabel = toolkit
+                .createLabel(tosProjectComposite, Messages.getString("LoginComposite.projectTitleTemp"));
 
         //
         createProjectBtn = toolkit.createButton(tosProjectComposite, null, SWT.PUSH);
         createProjectBtn.setBackground(tosProjectComposite.getBackground());
         createProjectBtn.setText(Messages.getString("LoginComposite.buttons.createButton"));
-        data = new FormData();
-        data.top = new FormAttachment(projectViewer.getControl(), 0, SWT.CENTER);
+        FormData data = new FormData();
+        data.top = new FormAttachment(createProjectLabel, -HORIZONTAL_SPACE, SWT.CENTER);
         data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
-        data.bottom = new FormAttachment(0, 30);
+        data.bottom = new FormAttachment(0, 30 + HORIZONTAL_SPACE);
         createProjectBtn.setLayoutData(data);
         createProjectBtn.setEnabled(true);
 
-        Label createProjectLabel = toolkit
-                .createLabel(tosProjectComposite, Messages.getString("LoginComposite.projectTitleTemp"));
         GC gc = new GC(createProjectLabel);
         Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.projectTitleTemp"));
         gc.dispose();
@@ -969,7 +916,7 @@ public class LoginComposite extends Composite {
 
         projectText = toolkit.createText(tosProjectComposite, "", SWT.BORDER);
         data = new FormData();
-        data.top = new FormAttachment(tosProjectLabel, 0, SWT.TOP);
+        data.top = new FormAttachment(createProjectLabel, 0, SWT.TOP);
         data.left = new FormAttachment(createProjectLabel, 10, SWT.RIGHT);
         data.bottom = new FormAttachment(createProjectLabel, 0, SWT.BOTTOM);
         Point btPoint = createProjectBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -981,8 +928,9 @@ public class LoginComposite extends Composite {
         advanced.setText(Messages.getString("LoginComposite.buttons.advanced"));
         advanced.setBackground(tosProjectComposite.getBackground());
         data = new FormData();
-        data.top = new FormAttachment(projectViewer.getControl(), HORIZONTAL_TWO_SPACE);
-        data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
+        data.top = new FormAttachment(createProjectLabel, HORIZONTAL_TWO_SPACE);
+        data.left = new FormAttachment(createProjectLabel, 10, SWT.RIGHT);
+        // data.right = new FormAttachment(90, -HORIZONTAL_THREE_SPACE);
         data.bottom = new FormAttachment(90, -20);
         advanced.setLayoutData(data);
 
@@ -1099,9 +1047,6 @@ public class LoginComposite extends Composite {
         formData2.left = new FormAttachment(0, 8);
         formData2.right = new FormAttachment(0, 54);
         onIconLabel.setLayoutData(formData2);
-        if (!PluginChecker.isSVNProviderPluginLoaded()) {
-            onIconLabel.setVisible(false);
-        }
 
         colorComposite.setLayout(new FormLayout());
         formData2 = new FormData();
@@ -1110,9 +1055,6 @@ public class LoginComposite extends Composite {
         formData2.left = new FormAttachment(0);
         formData2.right = new FormAttachment(100);
         colorComposite.setLayoutData(formData2);
-        if (!PluginChecker.isSVNProviderPluginLoaded()) {
-            colorComposite.setVisible(false);
-        }
 
         // display the icon under the colorComposite
         iconLabel = toolkit.createLabel(tosWelcomeComposite, null);
@@ -1122,9 +1064,6 @@ public class LoginComposite extends Composite {
         formData2.left = new FormAttachment(0, 8);
         formData2.right = new FormAttachment(0, 54);
         iconLabel.setLayoutData(formData2);
-        if (!PluginChecker.isSVNProviderPluginLoaded()) {
-            iconLabel.setVisible(false);
-        }
 
         statusLabel = toolkit.createLabel(colorComposite, null);
         formData2 = new FormData();
@@ -1133,9 +1072,6 @@ public class LoginComposite extends Composite {
         formData2.left = new FormAttachment(0, 60);
         formData2.right = new FormAttachment(100, -5);
         statusLabel.setLayoutData(formData2);
-        if (!PluginChecker.isSVNProviderPluginLoaded()) {
-            statusLabel.setVisible(false);
-        }
 
         restartBut = toolkit.createButton(tosWelcomeComposite, Messages.getString("LoginComposite.RESTART"), SWT.PUSH); //$NON-NLS-1$
         restartBut.setVisible(false);
@@ -1151,8 +1087,7 @@ public class LoginComposite extends Composite {
         tisRepositoryComposite = toolkit.createComposite(parent);
         tisRepositoryComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         tisRepositoryComposite.setLayout(new FormLayout());
-        tisRepositoryComposite.setBackground(parent.getBackground());
-        // tisRepositoryComposite.setBackground(GREY_COLOR);
+        tisRepositoryComposite.setBackground(GREY_COLOR);
 
         FormData formData;
         Composite group = new Composite(tisRepositoryComposite, SWT.None);
@@ -1241,7 +1176,7 @@ public class LoginComposite extends Composite {
     }
 
     private void createTisProjectArea(Composite parent) {
-        createTosProjectArea(parent); // tosProjectComposite
+        createBasicTisProjectArea(parent); // tosProjectComposite
 
         FormData data;
 
@@ -1402,7 +1337,7 @@ public class LoginComposite extends Composite {
                 statusLabel.setForeground(WHITE_COLOR);
                 Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
-            } else if (projectViewer.getCombo().getItemCount() > 0) {
+            } else if (projectViewer == null || projectViewer.getCombo().getItemCount() > 0) {
 
                 if (PluginChecker.isSVNProviderPluginLoaded()) {
                     iconLabel.setVisible(true);
@@ -1550,8 +1485,12 @@ public class LoginComposite extends Composite {
             setRepositoryContextInContext();
         }
         boolean tisRemote = isSVNProviderPluginLoadedRemote();
-        svnBranchLabel.setVisible(tisRemote);
-        branchesViewer.getControl().setVisible(tisRemote);
+        if (svnBranchLabel != null) {
+            svnBranchLabel.setVisible(tisRemote);
+        }
+        if (branchesViewer != null) {
+            branchesViewer.getControl().setVisible(tisRemote);
+        }
         // updateButtons();
 
         // Validate data
@@ -1684,17 +1623,20 @@ public class LoginComposite extends Composite {
             });
         }
 
-        projectViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+        if (projectViewer != null) {
+            projectViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-            public void selectionChanged(SelectionChangedEvent event) {
-                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-                Project project = getProject();
-                prefManipulator.setLastProject(project.getLabel());
-                setBranchesSetting(project, false);
-                dialog.updateButtons();
-                setRepositoryContextInContext();
-            }
-        });
+                public void selectionChanged(SelectionChangedEvent event) {
+                    PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
+                            .getPreferenceStore());
+                    Project project = getProject();
+                    prefManipulator.setLastProject(project.getLabel());
+                    setBranchesSetting(project, false);
+                    dialog.updateButtons();
+                    setRepositoryContextInContext();
+                }
+            });
+        }
 
         manageConnectionsButton.addSelectionListener(new SelectionAdapter() {
 
@@ -1874,7 +1816,7 @@ public class LoginComposite extends Composite {
             if (branchesViewer != null) {
                 branchesViewer.getControl().setEnabled(false);
             }
-        } else if (getConnection() != null && projectViewer.getInput() == null) {
+        } else if (getConnection() != null && projectViewer != null && projectViewer.getInput() == null) {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             projectViewer.getControl().setEnabled(false);
@@ -1895,7 +1837,9 @@ public class LoginComposite extends Composite {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
-            projectViewer.getControl().setEnabled(false);
+            if (projectViewer != null) {
+                projectViewer.getControl().setEnabled(false);
+            }
             if (fillProjectsBtn != null) {
                 fillProjectsBtn.setEnabled(false);
             }
@@ -1921,10 +1865,12 @@ public class LoginComposite extends Composite {
             manageViewer.getControl().setEnabled(true);
             manageProjectsButton.setEnabled(true);
 
-            final Object input = projectViewer.getInput();
-            boolean enabled = input != null && ((input instanceof Project[]) && ((Project[]) input).length > 0);
+            if (projectViewer != null) {
+                final Object input = projectViewer.getInput();
+                boolean enabled = input != null && ((input instanceof Project[]) && ((Project[]) input).length > 0);
 
-            openProjectBtn.setEnabled(enabled);
+                openProjectBtn.setEnabled(enabled);
+            }
             if (fillProjectsBtn != null) {
                 fillProjectsBtn.setEnabled(true);
             }
@@ -1943,9 +1889,13 @@ public class LoginComposite extends Composite {
     }
 
     private void unpopulateProjectList() {
-        projectViewer.setInput(null);
-        projectViewer.getControl().setEnabled(false);
-        branchesViewer.getControl().setEnabled(false);
+        if (projectViewer != null) {
+            projectViewer.setInput(null);
+            projectViewer.getControl().setEnabled(false);
+        }
+        if (branchesViewer != null) {
+            branchesViewer.getControl().setEnabled(false);
+        }
     }
 
     public RepositoryContext getRepositoryContext() {
@@ -2056,19 +2006,28 @@ public class LoginComposite extends Composite {
                         Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$ 
             }
         }
-        projectViewer.setInput(projects);
-
+        if (projectViewer != null) {
+            projectViewer.setInput(projects);
+        }
         // importDemoProjectAction.setExistingProjects(projects);
         // if (PluginChecker.isTIS()) {
         if (projects.length > 0) {
             // Try to select the last recently used project
             selectLastUsedProject();
 
-            projectViewer.getControl().setEnabled(true);
-            branchesViewer.getControl().setEnabled(true);
+            if (projectViewer != null) {
+                projectViewer.getControl().setEnabled(true);
+            }
+            if (branchesViewer != null) {
+                branchesViewer.getControl().setEnabled(true);
+            }
         } else {
-            projectViewer.getControl().setEnabled(false);
-            branchesViewer.getControl().setEnabled(false);
+            if (projectViewer != null) {
+                projectViewer.getControl().setEnabled(false);
+            }
+            if (branchesViewer != null) {
+                branchesViewer.getControl().setEnabled(false);
+            }
         }
         // }
         // updateSandboxButton();
@@ -2103,23 +2062,25 @@ public class LoginComposite extends Composite {
      * @param projects
      */
     private void selectLastUsedProject() {
-        Project[] projects = (Project[]) projectViewer.getInput();
-        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-        String lastProject = prefManipulator.getLastProject();
-        if (lastProject != null) {
-            Project goodProject = null;
-            for (int i = 0; goodProject == null && i < projects.length; i++) {
-                if (lastProject.equals(projects[i].getTechnicalLabel()) || lastProject.equals(projects[i].getLabel())) {
-                    goodProject = projects[i];
+        if (projectViewer != null) {
+            Project[] projects = (Project[]) projectViewer.getInput();
+            PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+            String lastProject = prefManipulator.getLastProject();
+            if (lastProject != null) {
+                Project goodProject = null;
+                for (int i = 0; goodProject == null && i < projects.length; i++) {
+                    if (lastProject.equals(projects[i].getTechnicalLabel()) || lastProject.equals(projects[i].getLabel())) {
+                        goodProject = projects[i];
+                    }
                 }
-            }
 
-            if (goodProject == null && projects.length > 0) {
-                goodProject = projects[0];
-            }
+                if (goodProject == null && projects.length > 0) {
+                    goodProject = projects[0];
+                }
 
-            if (goodProject != null) {
-                selectProject(goodProject);
+                if (goodProject != null) {
+                    selectProject(goodProject);
+                }
             }
         }
     }
@@ -2202,7 +2163,7 @@ public class LoginComposite extends Composite {
 
     public Project getProject() {
         Project project = null;
-        if (!projectViewer.getSelection().isEmpty()) {
+        if (projectViewer != null && !projectViewer.getSelection().isEmpty()) {
             IStructuredSelection sel = (IStructuredSelection) projectViewer.getSelection();
             project = (Project) sel.getFirstElement();
         }
@@ -2328,7 +2289,7 @@ public class LoginComposite extends Composite {
     private boolean validateProject() {
         String errorMsg = null;
         boolean valid = true;
-        if (projectViewer.getCombo().getText().length() == 0) {
+        if (projectViewer != null && projectViewer.getCombo().getText().length() == 0) {
             valid = false;
             errorMsg = Messages.getString("LoginComposite.projectEmpty"); //$NON-NLS-1$
         }
@@ -2359,7 +2320,7 @@ public class LoginComposite extends Composite {
 
     public String getBranch() {
         Project project = getProject();
-        if (!branchesViewer.getSelection().isEmpty() && project != null) {
+        if (branchesViewer != null && !branchesViewer.getSelection().isEmpty() && project != null) {
             IStructuredSelection ss = (IStructuredSelection) branchesViewer.getSelection();
             String branch = (String) ss.getFirstElement();
             /*
@@ -2374,27 +2335,29 @@ public class LoginComposite extends Composite {
     }
 
     private void setBranchesSetting(Project project, boolean lastUsedBranch) {
-        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+        if (branchesViewer != null) {
+            PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
 
-        List<String> projectBranches = getProjectBranches(project);
-        branchesViewer.setInput(projectBranches);
-        if (!projectBranches.isEmpty()) {
-            String branch = null;
-            if (lastUsedBranch) {
-                String lastBranch = prefManipulator.getLastSVNBranch();
-                if (lastBranch != null && projectBranches.contains(lastBranch)) {
-                    branch = lastBranch;
+            List<String> projectBranches = getProjectBranches(project);
+            branchesViewer.setInput(projectBranches);
+            if (!projectBranches.isEmpty()) {
+                String branch = null;
+                if (lastUsedBranch) {
+                    String lastBranch = prefManipulator.getLastSVNBranch();
+                    if (lastBranch != null && projectBranches.contains(lastBranch)) {
+                        branch = lastBranch;
+                    }
                 }
-            }
-            if (branch == null) {
-                branch = projectBranches.get(0); // trunk
-                prefManipulator.setLastSVNBranch(branch);
-            }
+                if (branch == null) {
+                    branch = projectBranches.get(0); // trunk
+                    prefManipulator.setLastSVNBranch(branch);
+                }
 
-            branchesViewer.setSelection(new StructuredSelection(new Object[] { branch }));
+                branchesViewer.setSelection(new StructuredSelection(new Object[] { branch }));
 
-        } else {
-            prefManipulator.setLastSVNBranch(SVNConstant.EMPTY);
+            } else {
+                prefManipulator.setLastSVNBranch(SVNConstant.EMPTY);
+            }
         }
         // hideBranchesView();
     }
