@@ -25,7 +25,6 @@ import org.talend.designer.components.exchange.jobs.DeleteExtensionJob;
 import org.talend.designer.components.exchange.ui.views.ExchangeView;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.WebserviceStatus;
-import org.talend.designer.core.model.components.manager.ComponentManager;
 
 /**
  * DOC hcyi class global comment. Detailled comment

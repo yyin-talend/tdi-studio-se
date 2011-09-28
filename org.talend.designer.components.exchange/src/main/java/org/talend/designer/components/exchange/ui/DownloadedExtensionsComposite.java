@@ -31,9 +31,9 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -86,19 +86,19 @@ public class DownloadedExtensionsComposite extends ExchangeComposite {
         //
         TableColumn itemColumn = new TableColumn(itemTable, SWT.CENTER);
         itemColumn.setText(Messages.getString("DownloadedExtensionsComposite.ExtensionName")); //$NON-NLS-1$
-        itemColumn.setWidth(220);
+        itemColumn.setWidth(250);
 
         TableColumn versionColumn = new TableColumn(itemTable, SWT.CENTER);
         versionColumn.setText(Messages.getString("DownloadedExtensionsComposite.DownloadedVersion")); //$NON-NLS-1$
-        versionColumn.setWidth(180);
+        versionColumn.setWidth(200);
 
         TableColumn dateColumn = new TableColumn(itemTable, SWT.CENTER);
         dateColumn.setText(Messages.getString("DownloadedExtensionsComposite.DownloadDate")); //$NON-NLS-1$
-        dateColumn.setWidth(180);
+        dateColumn.setWidth(200);
 
         final TableColumn operateColumn = new TableColumn(itemTable, SWT.CENTER);
         operateColumn.setText(""); //$NON-NLS-1$
-        operateColumn.setWidth(150);
+        operateColumn.setWidth(100);
         operateColumn.setResizable(false);
 
         Object layoutData = parent.getLayoutData();
@@ -136,14 +136,19 @@ public class DownloadedExtensionsComposite extends ExchangeComposite {
             updateInstalledExtensions(fExtensions);
         }
 
-        IAction action1 = ActionHelper.getRefreshComponenentsAction();
-        if (action1 != null) {
-            action1.setEnabled(false);
-        }
-        IAction action2 = ActionHelper.getShowInstalledExtensionsAction();
-        if (action2 != null) {
-            action2.setEnabled(true);
-        }
+        Display.getDefault().asyncExec(new Runnable() {
+
+            public void run() {
+                IAction action1 = ActionHelper.getRefreshComponenentsAction();
+                if (action1 != null) {
+                    action1.setEnabled(false);
+                }
+                IAction action2 = ActionHelper.getShowInstalledExtensionsAction();
+                if (action2 != null) {
+                    action2.setEnabled(true);
+                }
+            }
+        });
     }
 
     public void updateInstalledExtensions(List<ComponentExtension> extensions) {
@@ -176,16 +181,15 @@ public class DownloadedExtensionsComposite extends ExchangeComposite {
             tableItem.setText(2, formatter.format(object.getDateDownload()));
 
             Composite operateComposit = new Composite(itemTable, SWT.CENTER);
-            GridLayout layout = new GridLayout(3, false);
-            layout.horizontalSpacing = 2;
-            layout.verticalSpacing = 1;
-            layout.marginHeight = 0;
-            layout.marginWidth = 5;
-            operateComposit.setLayout(layout);
+            FormData data = new FormData();
+            data.left = new FormAttachment(0, 0);
+            data.right = new FormAttachment(100, 0);
+            data.top = new FormAttachment(0, 0);
+            data.bottom = new FormAttachment(100, 0);
+            operateComposit.setLayoutData(data);
+            operateComposit.setLayout(new FormLayout());
 
             operateStatusBtn = new Button(operateComposit, SWT.CENTER);
-            GridData data = new GridData(GridData.FILL_HORIZONTAL);
-            data.horizontalAlignment = SWT.CENTER;
             operateStatusBtn.setLayoutData(data);
             operateStatusBtn.setText(getOperateStatus(object));
             operateStatusBtn.setToolTipText(Messages.getString("DownloadedExtensionsComposite.OperateStatus")); //$NON-NLS-1$

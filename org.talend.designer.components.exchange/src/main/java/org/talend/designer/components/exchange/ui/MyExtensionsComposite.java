@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -186,21 +187,14 @@ public class MyExtensionsComposite extends ExchangeComposite {
 
             public void widgetSelected(SelectionEvent e) {
                 //
-                FormLayout layout = new FormLayout();
-                setLayout(layout);
-                FormData thisFormData = new FormData();
-                thisFormData.left = new FormAttachment(0, 0);
-                thisFormData.right = new FormAttachment(100, 0);
-                thisFormData.top = new FormAttachment(0, 0);
-                thisFormData.bottom = new FormAttachment(100, 0);
-                setLayoutData(thisFormData);
                 formComp = widgetFactory.createFlatFormComposite(listMyExtensonsComp);
-                FormData compositeData = new FormData();
-                compositeData.left = new FormAttachment(0, 0);
-                compositeData.right = new FormAttachment(100, 0);
-                compositeData.top = new FormAttachment(0, 0);
-                compositeData.bottom = new FormAttachment(100, 0);
-                formComp.setLayoutData(thisFormData);
+                FormData data = new FormData();
+                data.left = new FormAttachment(0, 0);
+                data.right = new FormAttachment(100, 0);
+                data.top = new FormAttachment(0, 0);
+                data.bottom = new FormAttachment(100, 0);
+                formComp.setLayoutData(data);
+                formComp.setLayout(new FormLayout());
                 createUpLoadFormComposite();
                 stackLayout.topControl = formComp;
                 listMyExtensonsComp.layout();
@@ -278,25 +272,30 @@ public class MyExtensionsComposite extends ExchangeComposite {
     public void createUpLoadFormComposite() {
 
         //
-        FormLayout layout = new FormLayout();
-        formComp.setLayout(layout);
-        FormData thisFormData = new FormData();
-        thisFormData.left = new FormAttachment(0, 0);
-        thisFormData.right = new FormAttachment(100, 0);
-        thisFormData.top = new FormAttachment(0, 0);
-        thisFormData.bottom = new FormAttachment(100, 0);
-        setLayoutData(thisFormData);
-        Composite composite = widgetFactory.createFlatFormComposite(formComp);
-        FormData compositeData = new FormData();
-        compositeData.left = new FormAttachment(0, 0);
-        compositeData.right = new FormAttachment(100, 0);
-        compositeData.top = new FormAttachment(0, 0);
-        compositeData.bottom = new FormAttachment(100, 0);
-        composite.setLayoutData(thisFormData);
+        ScrolledComposite formScroll = new ScrolledComposite(formComp, SWT.V_SCROLL | SWT.H_SCROLL);
+        formScroll.setExpandHorizontal(true);
+        formScroll.setExpandVertical(true);
+        FormData data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        formScroll.setLayoutData(data);
+
+        Composite composite = new Composite(formScroll, SWT.NONE);
+        formScroll.setContent(composite);
+        formScroll.setLayout(new FormLayout());
+        data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        composite.setLayoutData(data);
+        composite.setLayout(new FormLayout());
 
         Button returnBtn = widgetFactory.createButton(composite, Messages.getString("MyExtensionsComposite.Form.Return"),
                 SWT.CENTER);
-        FormData data = new FormData();
+        data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(10, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
@@ -328,7 +327,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         CLabel initialVersion = widgetFactory.createCLabel(composite,
                 Messages.getString("MyExtensionsComposite.Form.InitialVersion")); //$NON-NLS-1$
         data = new FormData();
-        data.left = new FormAttachment(extensionTitleText, ITabbedPropertyConstants.HSPACE * 3);
+        data.left = new FormAttachment(extensionTitleText, ITabbedPropertyConstants.HSPACE - 3);
         data.right = new FormAttachment(85, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(versionText, 0, SWT.CENTER);
         initialVersion.setLayoutData(data);
@@ -338,7 +337,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         data = new FormData();
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(extensionTitleText, ITabbedPropertyConstants.VSPACE);
+        data.top = new FormAttachment(extensionTitleText, 0);
         compatibilityGroup.setLayoutData(data);
         FormLayout compatibilityGroupLayout = new FormLayout();
         compatibilityGroup.setLayout(compatibilityGroupLayout);
@@ -348,7 +347,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(extensionTitle, ITabbedPropertyConstants.VSPACE + 5);
+        data.top = new FormAttachment(extensionTitle, ITabbedPropertyConstants.VSPACE);
         allVersionsButton.setLayoutData(data);
 
         final Button versionOlderBtn = widgetFactory.createButton(compatibilityGroup,
@@ -379,14 +378,14 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersionsExcept"), SWT.RADIO);
         data = new FormData();
         data.left = new FormAttachment(andOlderLabel, 0);
-        data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE);
+        data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE + 20);
         data.top = new FormAttachment(andOlderLabel, 0, SWT.TOP);
         versionExceptBtn.setLayoutData(data);
 
         final Text versionExceptText = widgetFactory.createText(compatibilityGroup, ""); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(versionExceptBtn, 0);
-        data.right = new FormAttachment(80, -ITabbedPropertyConstants.HSPACE);
+        data.right = new FormAttachment(90, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(versionExceptBtn, 0, SWT.TOP);
         versionExceptText.setLayoutData(data);
         versionExceptText.setEnabled(false);
@@ -420,14 +419,14 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 Messages.getString("MyExtensionsComposite.Form.Compatibility.OnlyTheseVersions"), SWT.RADIO);
         data = new FormData();
         data.left = new FormAttachment(andNewerLabel, 0);
-        data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE);
+        data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE + 20);
         data.top = new FormAttachment(andNewerLabel, 0, SWT.TOP);
         versionOnlyTheseBtn.setLayoutData(data);
 
         final Text versionOnlyTheseText = widgetFactory.createText(compatibilityGroup, ""); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(versionOnlyTheseBtn, 0);
-        data.right = new FormAttachment(80, -ITabbedPropertyConstants.HSPACE);
+        data.right = new FormAttachment(90, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(versionOnlyTheseBtn, 0, SWT.TOP);
         versionOnlyTheseText.setLayoutData(data);
         versionOnlyTheseText.setEnabled(false);
@@ -495,7 +494,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         data = new FormData();
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(descriptionText, ITabbedPropertyConstants.VSPACE);
+        data.top = new FormAttachment(descriptionText, 0);
         uploadGroup.setLayoutData(data);
         FormLayout uploadGroupLayout = new FormLayout();
         uploadGroup.setLayout(uploadGroupLayout);
@@ -512,7 +511,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 Messages.getString("MyExtensionsComposite.Form.Upload.File"), SWT.RADIO);
         data = new FormData();
         data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(15, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 5);
+        data.right = new FormAttachment(15, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 20);
         data.top = new FormAttachment(uploadSelectItemBtn, ITabbedPropertyConstants.VSPACE);
         uploadFileBtn.setLayoutData(data);
 
@@ -546,6 +545,8 @@ public class MyExtensionsComposite extends ExchangeComposite {
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(uploadGroup, ITabbedPropertyConstants.VSPACE);
         opateBtn.setLayoutData(data);
+
+        formScroll.setMinSize(formComp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
         // event
         returnBtn.addSelectionListener(new SelectionAdapter() {
@@ -703,26 +704,30 @@ public class MyExtensionsComposite extends ExchangeComposite {
         if (operateStatus == 2) {
             enableControl = true;
         }
-        FormLayout layout = new FormLayout();
-        formComp.setLayout(layout);
-        FormData thisFormData = new FormData();
-        thisFormData.left = new FormAttachment(0, 0);
-        thisFormData.right = new FormAttachment(100, 0);
-        thisFormData.top = new FormAttachment(0, 0);
-        thisFormData.bottom = new FormAttachment(100, 0);
-        setLayoutData(thisFormData);
+        ScrolledComposite formScroll = new ScrolledComposite(formComp, SWT.V_SCROLL | SWT.H_SCROLL);
+        formScroll.setExpandHorizontal(true);
+        formScroll.setExpandVertical(true);
+        FormData data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        formScroll.setLayoutData(data);
 
-        Composite composite = widgetFactory.createFlatFormComposite(formComp);
-        FormData compositeData = new FormData();
-        compositeData.left = new FormAttachment(0, 0);
-        compositeData.right = new FormAttachment(100, 0);
-        compositeData.top = new FormAttachment(0, 0);
-        compositeData.bottom = new FormAttachment(100, 0);
-        composite.setLayoutData(thisFormData);
+        Composite composite = new Composite(formScroll, SWT.NONE);
+        formScroll.setContent(composite);
+        formScroll.setLayout(new FormLayout());
+        data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        composite.setLayoutData(data);
+        composite.setLayout(new FormLayout());
 
         Button returnBtn = widgetFactory.createButton(composite, Messages.getString("MyExtensionsComposite.Form.Return"),
                 SWT.CENTER);
-        FormData data = new FormData();
+        data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(10, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
@@ -792,14 +797,14 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersionsExcept"), SWT.RADIO);
         data = new FormData();
         data.left = new FormAttachment(andOlderLabel, 0);
-        data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE);
+        data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE + 20);
         data.top = new FormAttachment(andOlderLabel, 0, SWT.TOP);
         versionExceptBtn.setLayoutData(data);
 
         final Text versionExceptText = widgetFactory.createText(compatibilityGroup, ""); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(versionExceptBtn, 0);
-        data.right = new FormAttachment(80, -ITabbedPropertyConstants.HSPACE);
+        data.right = new FormAttachment(90, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(versionExceptBtn, 0, SWT.TOP);
         versionExceptText.setLayoutData(data);
         versionExceptText.setEnabled(false);
@@ -833,14 +838,14 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 Messages.getString("MyExtensionsComposite.Form.Compatibility.OnlyTheseVersions"), SWT.RADIO);
         data = new FormData();
         data.left = new FormAttachment(andNewerLabel, 0);
-        data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE);
+        data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE + 20);
         data.top = new FormAttachment(andNewerLabel, 0, SWT.TOP);
         versionOnlyTheseBtn.setLayoutData(data);
 
         final Text versionOnlyTheseText = widgetFactory.createText(compatibilityGroup, ""); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(versionOnlyTheseBtn, 0);
-        data.right = new FormAttachment(80, -ITabbedPropertyConstants.HSPACE);
+        data.right = new FormAttachment(90, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(versionOnlyTheseBtn, 0, SWT.TOP);
         versionOnlyTheseText.setLayoutData(data);
         versionOnlyTheseText.setEnabled(false);
@@ -875,7 +880,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 Messages.getString("MyExtensionsComposite.Form.Upload.File"), SWT.RADIO);
         data = new FormData();
         data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(15, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 5);
+        data.right = new FormAttachment(15, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 20);
         data.top = new FormAttachment(uploadSelectItemBtn, ITabbedPropertyConstants.VSPACE + 5);
         uploadFileBtn.setLayoutData(data);
 
@@ -910,6 +915,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         data.top = new FormAttachment(uploadGroup, ITabbedPropertyConstants.VSPACE);
         opateBtn.setLayoutData(data);
 
+        formScroll.setMinSize(formComp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         // event
         returnBtn.addSelectionListener(new SelectionAdapter() {
 
@@ -1066,26 +1072,30 @@ public class MyExtensionsComposite extends ExchangeComposite {
         if (operateStatus == 2) {
             enableControl = true;
         }
-        FormLayout layout = new FormLayout();
-        formComp.setLayout(layout);
-        FormData thisFormData = new FormData();
-        thisFormData.left = new FormAttachment(0, 0);
-        thisFormData.right = new FormAttachment(100, 0);
-        thisFormData.top = new FormAttachment(0, 0);
-        thisFormData.bottom = new FormAttachment(100, 0);
-        setLayoutData(thisFormData);
+        ScrolledComposite formScroll = new ScrolledComposite(formComp, SWT.V_SCROLL | SWT.H_SCROLL);
+        formScroll.setExpandHorizontal(true);
+        formScroll.setExpandVertical(true);
+        FormData data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        formScroll.setLayoutData(data);
 
-        Composite composite = widgetFactory.createFlatFormComposite(formComp);
-        FormData compositeData = new FormData();
-        compositeData.left = new FormAttachment(0, 0);
-        compositeData.right = new FormAttachment(100, 0);
-        compositeData.top = new FormAttachment(0, 0);
-        compositeData.bottom = new FormAttachment(100, 0);
-        composite.setLayoutData(thisFormData);
+        Composite composite = new Composite(formScroll, SWT.NONE);
+        formScroll.setContent(composite);
+        formScroll.setLayout(new FormLayout());
+        data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        composite.setLayoutData(data);
+        composite.setLayout(new FormLayout());
 
         Button returnBtn = widgetFactory.createButton(composite, Messages.getString("MyExtensionsComposite.Form.Return"),
                 SWT.CENTER);
-        FormData data = new FormData();
+        data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(10, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
@@ -1158,14 +1168,14 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersionsExcept"), SWT.RADIO);
         data = new FormData();
         data.left = new FormAttachment(andOlderLabel, 0);
-        data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE);
+        data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE + 20);
         data.top = new FormAttachment(andOlderLabel, 0, SWT.TOP);
         versionExceptBtn.setLayoutData(data);
 
         final Text versionExceptText = widgetFactory.createText(compatibilityGroup, ""); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(versionExceptBtn, 0);
-        data.right = new FormAttachment(80, -ITabbedPropertyConstants.HSPACE);
+        data.right = new FormAttachment(90, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(versionExceptBtn, 0, SWT.TOP);
         versionExceptText.setLayoutData(data);
         versionExceptText.setEnabled(false);
@@ -1199,14 +1209,14 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 Messages.getString("MyExtensionsComposite.Form.Compatibility.OnlyTheseVersions"), SWT.RADIO);
         data = new FormData();
         data.left = new FormAttachment(andNewerLabel, 0);
-        data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE);
+        data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE + 20);
         data.top = new FormAttachment(andNewerLabel, 0, SWT.TOP);
         versionOnlyTheseBtn.setLayoutData(data);
 
         final Text versionOnlyTheseText = widgetFactory.createText(compatibilityGroup, ""); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(versionOnlyTheseBtn, 0);
-        data.right = new FormAttachment(80, -ITabbedPropertyConstants.HSPACE);
+        data.right = new FormAttachment(90, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(versionOnlyTheseBtn, 0, SWT.TOP);
         versionOnlyTheseText.setLayoutData(data);
         versionOnlyTheseText.setEnabled(false);
@@ -1279,6 +1289,8 @@ public class MyExtensionsComposite extends ExchangeComposite {
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(descriptionText, ITabbedPropertyConstants.VSPACE);
         opateBtn.setLayoutData(data);
+
+        formScroll.setMinSize(formComp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
         // event
         returnBtn.addSelectionListener(new SelectionAdapter() {
@@ -1529,19 +1541,15 @@ public class MyExtensionsComposite extends ExchangeComposite {
         //
         FormLayout layout = new FormLayout();
         setLayout(layout);
-        FormData thisFormData = new FormData();
-        thisFormData.left = new FormAttachment(0, 0);
-        thisFormData.right = new FormAttachment(100, 0);
-        thisFormData.top = new FormAttachment(0, 0);
-        thisFormData.bottom = new FormAttachment(100, 0);
-        setLayoutData(thisFormData);
+        FormData data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        setLayoutData(data);
         formComp = widgetFactory.createFlatFormComposite(listMyExtensonsComp);
-        FormData compositeData = new FormData();
-        compositeData.left = new FormAttachment(0, 0);
-        compositeData.right = new FormAttachment(100, 0);
-        compositeData.top = new FormAttachment(0, 0);
-        compositeData.bottom = new FormAttachment(100, 0);
-        formComp.setLayoutData(thisFormData);
+        formComp.setLayoutData(data);
+        formComp.setLayout(new FormLayout());
         addNewExtensonBtn.setEnabled(false);
         //
         initImages();

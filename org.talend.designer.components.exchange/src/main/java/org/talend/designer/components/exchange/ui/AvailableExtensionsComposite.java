@@ -25,11 +25,11 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableLayout;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ControlEvent;
@@ -120,8 +120,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(0, 0);
         addToolBarComp.setLayoutData(data);
-        FormLayout addToolBarCompLayout = new FormLayout();
-        addToolBarComp.setLayout(addToolBarCompLayout);
+        addToolBarComp.setLayout(new FormLayout());
 
         final Text filterText = widgetFactory.createText(addToolBarComp, ""); //$NON-NLS-1$
         data = new FormData();
@@ -236,14 +235,19 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         stackLayout.topControl = itemTable;
         listExtensonsComp.layout();
 
-        IAction action1 = ActionHelper.getRefreshComponenentsAction();
-        if (action1 != null) {
-            action1.setEnabled(true);
-        }
-        IAction action2 = ActionHelper.getShowInstalledExtensionsAction();
-        if (action2 != null) {
-            action2.setEnabled(false);
-        }
+        Display.getDefault().asyncExec(new Runnable() {
+
+            public void run() {
+                IAction action1 = ActionHelper.getRefreshComponenentsAction();
+                if (action1 != null) {
+                    action1.setEnabled(true);
+                }
+                IAction action2 = ActionHelper.getShowInstalledExtensionsAction();
+                if (action2 != null) {
+                    action2.setEnabled(false);
+                }
+            }
+        });
     }
 
     public void updateAvailableExtensions(List<ComponentExtension> extensions) {
@@ -318,21 +322,14 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
                         }
                     }
                     //
-                    FormLayout layout = new FormLayout();
-                    setLayout(layout);
-                    FormData thisFormData = new FormData();
-                    thisFormData.left = new FormAttachment(0, 0);
-                    thisFormData.right = new FormAttachment(100, 0);
-                    thisFormData.top = new FormAttachment(0, 0);
-                    thisFormData.bottom = new FormAttachment(100, 0);
-                    setLayoutData(thisFormData);
                     extensionViewDetailComp = widgetFactory.createFlatFormComposite(listExtensonsComp);
                     FormData compositeData = new FormData();
                     compositeData.left = new FormAttachment(0, 0);
                     compositeData.right = new FormAttachment(100, 0);
                     compositeData.top = new FormAttachment(0, 0);
                     compositeData.bottom = new FormAttachment(100, 0);
-                    extensionViewDetailComp.setLayoutData(thisFormData);
+                    extensionViewDetailComp.setLayoutData(compositeData);
+                    extensionViewDetailComp.setLayout(new FormLayout());
                     //
                     createExtensionViewDetailControl(getSelectedExtension());
                     stackLayout.topControl = extensionViewDetailComp;
@@ -382,27 +379,29 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
      * @param componentExtension
      */
     private void createExtensionViewDetailControl(final ComponentExtension componentExtension) {
-        //
-        FormLayout layout = new FormLayout();
-        extensionViewDetailComp.setLayout(layout);
-        FormData thisFormData = new FormData();
-        thisFormData.left = new FormAttachment(0, 0);
-        thisFormData.right = new FormAttachment(100, 0);
-        thisFormData.top = new FormAttachment(0, 0);
-        thisFormData.bottom = new FormAttachment(100, 0);
-        setLayoutData(thisFormData);
 
-        Composite composite = new Composite(extensionViewDetailComp, SWT.NONE);
+        ScrolledComposite execScrolls = new ScrolledComposite(extensionViewDetailComp, SWT.V_SCROLL | SWT.H_SCROLL);
+        execScrolls.setExpandHorizontal(true);
+        execScrolls.setExpandVertical(true);
+        FormData data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        execScrolls.setLayoutData(data);
 
-        FormData fd_composite = new FormData();
-        fd_composite.top = new FormAttachment(0);
-        fd_composite.left = new FormAttachment(0);
-        fd_composite.bottom = new FormAttachment(100);
-        fd_composite.right = new FormAttachment(100);
-        composite.setLayoutData(fd_composite);
-        composite.setLayout(new FormLayout());
+        Composite viewDetailComposite = new Composite(execScrolls, SWT.NONE);
+        execScrolls.setContent(viewDetailComposite);
+        execScrolls.setLayout(new FormLayout());
+        data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        viewDetailComposite.setLayoutData(data);
+        viewDetailComposite.setLayout(new FormLayout());
 
-        Composite composite_1 = new Composite(composite, SWT.NONE);
+        Composite composite_1 = new Composite(viewDetailComposite, SWT.NONE);
         composite_1.setLayout(new FormLayout());
         FormData fd_composite_1 = new FormData();
         fd_composite_1.bottom = new FormAttachment(100, -12);
@@ -410,8 +409,8 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         fd_composite_1.left = new FormAttachment(0, 10);
         composite_1.setLayoutData(fd_composite_1);
 
-        Button btnNewButton = widgetFactory.createButton(composite, Messages.getString("MyExtensionsComposite.Form.Return"),
-                SWT.CENTER);
+        Button btnNewButton = widgetFactory.createButton(viewDetailComposite,
+                Messages.getString("MyExtensionsComposite.Form.Return"), SWT.CENTER);
         fd_composite_1.top = new FormAttachment(0, 33);
 
         Group group = new Group(composite_1, SWT.NONE);
@@ -513,7 +512,28 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         group_2.setLayoutData(fd_group_2);
         group_2.setText("User Reviews");
 
-        final Link link_1 = new Link(group_2, SWT.NONE);
+        ScrolledComposite execScroll = new ScrolledComposite(group_2, SWT.V_SCROLL | SWT.H_SCROLL);
+        execScroll.setExpandHorizontal(true);
+        execScroll.setExpandVertical(true);
+        data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        execScroll.setLayoutData(data);
+
+        Composite reviewsComposite = new Composite(execScroll, SWT.NONE);
+        execScroll.setContent(reviewsComposite);
+        execScroll.setLayout(new FormLayout());
+        data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, 0);
+        data.bottom = new FormAttachment(100, 0);
+        reviewsComposite.setLayoutData(data);
+        reviewsComposite.setLayout(new FormLayout());
+
+        final Link link_1 = new Link(reviewsComposite, SWT.NONE);
         FormData fd_link_1 = new FormData();
         fd_link_1.top = new FormAttachment(0);
         fd_link_1.right = new FormAttachment(100, -10);
@@ -526,7 +546,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         EList<AvailableExtensionViewDetail> reviews = componentExtension.getReviews();
         if (reviews != null && reviews.size() > 0) {
             for (int i = 1; i <= reviews.size(); i++) {
-                fLabels.put(i, new Label(group_2, SWT.NONE));
+                fLabels.put(i, new Label(reviewsComposite, SWT.NONE));
                 fViewDetails.put(i, reviews.get(i - 1));
             }
         }
@@ -541,7 +561,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
                 String tstr = getRate(viewDetail.getReviewrate()) + " " + viewDetail.getTitle() + "\n\t"
                         + viewDetail.getComment();
                 objectLabel.setText(tstr);
-                FormData data = new FormData();
+                data = new FormData();
                 if (j == 1) {
                     data.left = new FormAttachment(0, 10);
                     data.right = new FormAttachment(link_1, 0);
@@ -556,10 +576,14 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
             }
         }
 
+        execScroll.setMinSize(group_2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
         FormData fd_btnNewButton = new FormData();
         fd_btnNewButton.bottom = new FormAttachment(composite_1, -6);
         fd_btnNewButton.left = new FormAttachment(0, 21);
         btnNewButton.setLayoutData(fd_btnNewButton);
+        execScrolls.setMinSize(extensionViewDetailComp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
         // event
         btnNewButton.addSelectionListener(new SelectionAdapter() {
 
