@@ -4,7 +4,6 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     org.talend.core.model.metadata.IMetadataTable
-	org.talend.core.model.process.EConnectionType
 "
 %>
 <%
@@ -12,9 +11,6 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
-String virtualTargetCid = node.getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).get(0).getTarget().getUniqueName();
-
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
@@ -23,7 +19,7 @@ if(nb_line_<%=cid %> > 0){
 }
 globalMap.put("XMLFIELD",listGroupby_<%=cid %>);
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
-globalMap.put("<%=virtualTargetCid%>_FINISH", "true");
+globalMap.put("XMLOUT_FINISH", "true");
 txf_<%=cid%>.join(); 
 <%
 }
