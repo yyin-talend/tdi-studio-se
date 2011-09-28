@@ -28,9 +28,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		IConnection conn = conns.get(0);
 %>
 	int nb_line_<%=cid%> = 0;
-	java.util.Queue<String> queue_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
-	do {
-			if (!queue_<%=cid%>.isEmpty()) {
+	List<String> xmlFieldList_<%=cid%> = (List<String>)globalMap.get("XMLFIELD");
+
+	if(xmlFieldList_<%=cid%>!=null){
+		for(String strXmlField_<%=cid %> :xmlFieldList_<%=cid %>){
+//			<%=conn.getName()%>.<%=xmlField%> = strField_<%=cid %>;   //move to the main code
 <%
 		}
 	}

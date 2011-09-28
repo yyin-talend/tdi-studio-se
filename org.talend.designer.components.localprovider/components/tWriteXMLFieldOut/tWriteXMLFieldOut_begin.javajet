@@ -9,7 +9,6 @@ imports="
     java.util.ArrayList
    	org.talend.core.model.process.IConnection    
 	org.talend.core.model.process.IConnectionCategory
-	org.talend.core.model.process.EConnectionType
 "
 %>
 //tWriteXMLFieldOut_begin
@@ -17,9 +16,6 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
-
-String virtualTargetCid = node.getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).get(0).getTarget().getUniqueName();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -46,26 +42,7 @@ int nb_line_<%=cid%> = 0;
 boolean needRoot_<%=cid%>  = true;
 
 String  strCompCache_<%=cid %>= null;		
-
-java.util.Queue<String> listGroupby_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>();
-class ThreadXMLField extends Thread {
-	java.util.Queue<String> queue;
-
-	ThreadXMLField(java.util.Queue q) {
-		this.queue = q;
-		globalMap.put("queue_<%=virtualTargetCid%>", queue);
-	}
-
-	@Override
-	public void run() {
-		try {
-			<%=virtualTargetCid%>Process(globalMap);
-		} catch (TalendException e) {
-			e.printStackTrace();
-		}
-	}
-}
-new ThreadXMLField(listGroupby_<%=cid%>).start();
+List<String> listGroupby_<%=cid %>=new java.util.ArrayList<String>();
 
 java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
