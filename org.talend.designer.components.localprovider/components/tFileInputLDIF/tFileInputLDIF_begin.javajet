@@ -44,6 +44,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
 %>        
         };
+        
+        String[] filters_binary_<%=cid %> = new String[] {         
+<%
+        for (IMetadataColumn column: listColumns) {//fix bug TDI17707
+%> 
+		"<%=column.getLabel() %>;binary",
+<%
+        }
+%>        
+        };
+        
         String[] results_<%=cid %> = null;
         int nb_line_<%=cid %> = 0;
         
@@ -74,13 +85,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							
 						}else{
 						
-                            if (filters_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())) {
+                            if (filters_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())
+                            || filters_binary_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())) {
                             
-                                java.util.Enumeration values_<%=cid %> = attribute_<%=cid %>.getStringValues();
+                                byte[][] values_<%=cid %> = attribute_<%=cid %>.getByteValueArray();
                                 
-                                while (values_<%=cid %>.hasMoreElements()) {
-                                    String value_<%=cid %> = (String) values_<%=cid %>.nextElement();
-                                    results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
+                                for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
+                                	String value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
+                                	results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
                                 }
                             }
                         }
@@ -109,13 +121,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							
 						}else{
 						
-                            if (filters_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())) {
+                            if (filters_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())
+                            || filters_binary_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())) {
                             
-                                java.util.Enumeration values_<%=cid %> = attribute_<%=cid %>.getStringValues();
+                                byte[][] values_<%=cid %> = attribute_<%=cid %>.getByteValueArray();
                                 
-                                while (values_<%=cid %>.hasMoreElements()) {
-                                    String value_<%=cid %> = (String) values_<%=cid %>.nextElement();
-                                    results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
+                                for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
+                                	String value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
+                                	results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
                                 }
                             }
                         }
@@ -142,7 +155,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 							} else {
 
-								if (filters_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())) {
+								if (filters_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())
+								|| filters_binary_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())) {
 
 								<%if(addprefix){%>									
 									int op_<%=cid %> = modification_<%=cid %>.getOp();
@@ -161,18 +175,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 									}
 								<%}%>									
 
-									java.util.Enumeration values_<%=cid %> = attribute_<%=cid %>.getStringValues();
-									
-									boolean firstLoop_<%=cid %> = true;
-									while (values_<%=cid %>.hasMoreElements()) {
-										String value_<%=cid %> = (String) values_<%=cid %>.nextElement();																				
-										if(firstLoop_<%=cid %>){
+									byte[][] values_<%=cid %> = attribute_<%=cid %>.getByteValueArray();
+                                
+                                	boolean firstLoop_<%=cid %> = true;
+	                                for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
+	                                	String value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
+	                                	if(firstLoop_<%=cid %>){
 											results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + ":" + value_<%=cid %>;
 										}else{
 											results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
 										}
-										firstLoop_<%=cid %> = false;										
-									}
+										firstLoop_<%=cid %> = false;
+	                                }
+									
 								}
 							}
 
