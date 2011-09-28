@@ -19,6 +19,8 @@ if(nb_line_<%=cid %> > 0){
 }
 globalMap.put("XMLFIELD",listGroupby_<%=cid %>);
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+globalMap.put("XMLOUT_FINISH", "true");
+txf_<%=cid%>.join(); 
 <%
 }
 %>
