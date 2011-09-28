@@ -4,7 +4,8 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.IMetadataTable
     java.util.List
-   	org.talend.core.model.process.IConnection    
+   	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.EConnectionType 
 "
 %>
 //tWriteJSONFieldOut_begin
@@ -12,6 +13,7 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+String virtualTargetCid = node.getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).get(0).getTarget().getUniqueName();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -22,8 +24,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 int nb_line_<%=cid%> = 0;
 boolean needRoot_<%=cid%>  = true;
-String  strCompCache_<%=cid %>= null;		
-List<String> listGroupby_<%=cid %>=new java.util.ArrayList<String>();
+String  strCompCache_<%=cid %>= null;
+
+java.util.Queue<String> listGroupby_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>(); 
+class ThreadJSONField extends Thread { 
+    java.util.Queue<String> queue; 
+ 	 
+    ThreadJSONField(java.util.Queue q) { 
+        this.queue = q; 
+        globalMap.put("queue_<%=virtualTargetCid%>", queue); 
+    } 
+	 	 
+    @Override 
+    public void run() { 
+        try { 
+            <%=virtualTargetCid%>Process(globalMap); 
+        } catch (TalendException e) { 
+            e.printStackTrace(); 
+        } 
+    } 
+}
+ThreadJSONField txf_<%=cid%> = new ThreadJSONField(listGroupby_<%=cid%>); 
+txf_<%=cid%>.start(); 
+
 java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
 java.util.List<org.json.simple.JSONArray> groupElementList_<%=cid%> = new java.util.ArrayList<org.json.simple.JSONArray>();
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();

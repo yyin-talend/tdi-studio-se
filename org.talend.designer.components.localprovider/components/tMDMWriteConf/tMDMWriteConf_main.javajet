@@ -94,7 +94,7 @@ if (metadatas != null && metadatas.size()>0) {
     if (outConnName != null) {
     %>
       <%=outConnName %> = new <%=outConnName %>Struct();
-      <%=outConnName %>.<%=xmlField %> = strXmlField_<%=cid %>;
+      <%=outConnName %>.<%=xmlField %> = queue_<%=cid %>.peek();
        <%if(storeFlow){%>
       		java.util.Map<String,String> xmlFlow_<%=cid%> = xmlFlowList_<%=cid%>.get(flowNum_<%=cid%>);
       		String valueStr_<%=cid%>;
@@ -137,7 +137,7 @@ if (metadatas != null && metadatas.size()>0) {
 	      	}
       }%>
     <%}%>
-    input_<%=cid %> = strXmlField_<%=cid %>;
+    input_<%=cid %> = queue_<%=cid %>.peek();
 
     try {
 		<%if(usePartialUpdate && !withReport){ // partial%>
@@ -282,7 +282,7 @@ if (metadatas != null && metadatas.size()>0) {
 	      	}
       	  }%>
           
-          <%=rejectConnName %>.<%=xmlField %> = strXmlField_<%=cid %>;
+          <%=rejectConnName %>.<%=xmlField %> = queue_<%=cid %>.peek();
           <%=rejectConnName %>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
         <%} else {%>
           System.err.println(e.getMessage());
@@ -296,3 +296,4 @@ if (metadatas != null && metadatas.size()>0) {
   <%
   }
 }%>
+queue_<%=cid %>.remove();

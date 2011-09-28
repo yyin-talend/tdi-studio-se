@@ -31,8 +31,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if(conns!=null && conns.size()>0){
     		IConnection conn = conns.get(0);
 %>
-	}//for
-}//if
+	}
+} while (!queue_<%=cid%>.isEmpty() || !b);
+globalMap.remove("<%=cid%>_FINISH");
 <%
 		}
 	}

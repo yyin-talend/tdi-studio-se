@@ -9,6 +9,7 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	String virtualcid = cid;
 	String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 	if(destination!=null && !"".equals(destination)){
 		cid = destination;
@@ -94,12 +95,12 @@ String input_<%=cid %>;
 org.talend.mdm.webservice.WSItemPK[] wspks_<%=cid %>;
 org.talend.mdm.webservice.WSItemPK wspk_<%=cid %>;
 
-List<String> xmlFieldList_<%=cid%> = (List<String>)globalMap.get("XMLFIELD");
+
 <%if(storeFlow){%>
-	java.util.List<java.util.Map<String,String>> xmlFlowList_<%=cid%> = (java.util.List<java.util.Map<String,String>>)globalMap.get("XMLFLOWS");
+	java.util.List<java.util.Map<String,String>> xmlFlowList_<%=cid%> = (java.util.List<java.util.Map<String,String>>)globalMap.get("flows_<%=virtualcid%>");
 	int flowNum_<%=cid%> = 0;
 <%}%>
 
-if(xmlFieldList_<%=cid%>!=null){
-	for(String strXmlField_<%=cid %> :xmlFieldList_<%=cid %>){
-		strXmlField_<%=cid %> = strXmlField_<%=cid %>.trim();
+	java.util.Queue<String> queue_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=virtualcid%>"); 
+	do {
+		if (!queue_<%=cid%>.isEmpty()) {

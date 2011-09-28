@@ -9,6 +9,7 @@ imports="
     java.util.ArrayList
    	org.talend.core.model.process.IConnection    
 	org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.process.EConnectionType
 "
 %>
 //tWriteXMLFieldOut_begin
@@ -16,6 +17,9 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+
+String virtualTargetCid = node.getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).get(0).getTarget().getUniqueName();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -42,14 +46,48 @@ int nb_line_<%=cid%> = 0;
 boolean needRoot_<%=cid%>  = true;
 
 String  strCompCache_<%=cid %>= null;		
-List<String> listGroupby_<%=cid %>=new java.util.ArrayList<String>();
+
+java.util.Queue<String> listGroupby_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>();
+<%if(storeFlow){%>
+java.util.List<java.util.Map<String,String>> flows_<%=cid%> = java.util.Collections.synchronizedList(new java.util.ArrayList<java.util.Map<String,String>>());
+java.util.Map<String,String> flowValues_<%=cid%> = null;
+<%}%>
+
+class ThreadXMLField extends Thread {
+	java.util.Queue<String> queue;
+	java.util.List<java.util.Map<String,String>> flows;
+	
+	ThreadXMLField(java.util.Queue q) {
+		this.queue = q;
+		globalMap.put("queue_<%=virtualTargetCid%>", queue);
+	}
+	
+	ThreadXMLField(java.util.Queue q, java.util.List<java.util.Map<String,String>> l) {
+		this.queue = q;
+		this.flows = l;
+		globalMap.put("queue_<%=virtualTargetCid%>", queue);
+		globalMap.put("flows_<%=virtualTargetCid%>", flows);
+	}
+
+	@Override
+	public void run() {
+		try {
+			<%=virtualTargetCid%>Process(globalMap);
+		} catch (TalendException e) {
+			e.printStackTrace();
+		}
+	}
+}
+<%if(!storeFlow){%>
+	ThreadXMLField txf_<%=cid%> = new ThreadXMLField(listGroupby_<%=cid%>);
+<%} else {%>
+	ThreadXMLField txf_<%=cid%> = new ThreadXMLField(listGroupby_<%=cid%>, flows_<%=cid%>);
+<%}%>
+txf_<%=cid%>.start();
 
 java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
-<%if(storeFlow){%>
-java.util.List<java.util.Map<String,String>> flows_<%=cid%> = new java.util.ArrayList<java.util.Map<String,String>>();
-java.util.Map<String,String> flowValues_<%=cid%> = null;
-<%}%>
+
 <%
 				// *** generation mode init ***
 				if(("Dom4j").equals(mode)){

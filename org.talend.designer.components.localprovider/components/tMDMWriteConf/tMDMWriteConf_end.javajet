@@ -9,6 +9,7 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	String virtualcid = cid;
 	String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 	if(destination!=null && !"".equals(destination)){
 		cid = destination;
@@ -22,9 +23,9 @@ imports="
 	String taskID = ElementParameterParser.getValue(node,"__TASKID__");
 	boolean usePartialUpdate = ("true").equals(ElementParameterParser.getValue(node,"__USE_PARTIAL_UPDATE__"));
 %>
-	}//for
-}//if
-xmlFieldList_<%=cid%>.clear();
+	}
+} while (!queue_<%=cid%>.isEmpty() || !(globalMap.containsKey("<%=virtualcid%>_FINISH")));
+globalMap.remove("<%=virtualcid%>_FINISH");
 <%
 if(!usePartialUpdate){
 	if(isMassInsert){
