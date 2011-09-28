@@ -39,6 +39,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -162,7 +163,7 @@ public class LoginDialog extends TrayDialog {
         if (!PluginChecker.isSVNProviderPluginLoaded()) {// tos
             loginComposite = new LoginComposite(base, SWT.NONE, this, inuse, tosLoginComposite, stackLayout);
             loginComposite.populateProjectList();
-            tosLoginComposite = new TOSLoginComposite(base, SWT.NONE, loginComposite, this);
+            tosLoginComposite = new TOSLoginComposite(base, SWT.NONE, loginComposite, this, inuse);
         } else {
             loginComposite = new LoginComposite(base, SWT.NONE, this, inuse, tosLoginComposite, stackLayout);
         }
@@ -201,6 +202,11 @@ public class LoginDialog extends TrayDialog {
         for (int i = 0; i < projectCollection.length; i++) {
             tosLoginComposite.getProjectList().add(projectCollection[i].getLabel().toUpperCase());
             tosLoginComposite.getProjectMap().put(projectCollection[i].getLabel().toUpperCase(), projectCollection[i]);
+            try {
+                tosLoginComposite.setStatusArea();
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
         }
         if (tosLoginComposite.getProjectList().getItemCount() > 0) {
             tosLoginComposite.getProjectList().select(0);

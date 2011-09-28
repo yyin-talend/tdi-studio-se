@@ -126,7 +126,7 @@ public class LoginComposite extends Composite {
 
     private static final String LOCAL = "local"; //$NON-NLS-1$
 
-    private static final String FONT_ARIAL = "Arial"; //$NON-NLS-1$
+    public static final String FONT_ARIAL = "Arial"; //$NON-NLS-1$
 
     private static final int VERTICAL_SPACE = 0;
 
@@ -1846,7 +1846,7 @@ public class LoginComposite extends Composite {
         dialog.updateButtons();
     }
 
-    private boolean isWorkSpaceSame() {
+    public boolean isWorkSpaceSame() {
         ConnectionBean bean = getConnection();
         if (bean == null) {
             return false;
@@ -2419,7 +2419,7 @@ public class LoginComposite extends Composite {
         return brancesList;
     }
 
-    private int calStatusLabelFont(int defaultSize, String text) {
+    public int calStatusLabelFont(int defaultSize, String text) {
         int fontsize = defaultSize;
         if (text == null) {
             return fontsize;

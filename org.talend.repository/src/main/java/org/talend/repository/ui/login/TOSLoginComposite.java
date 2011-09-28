@@ -33,7 +33,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FormAttachment;
@@ -49,8 +51,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -59,17 +59,21 @@ import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.ui.TalendBrowserLaunchHelper;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.actions.importproject.DemoProjectBean;
 import org.talend.repository.ui.actions.importproject.EDemoProjectFileType;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
@@ -87,16 +91,6 @@ public class TOSLoginComposite extends Composite {
     private FormToolkit toolkit;
 
     private LoginComposite loginComposite;
-
-    public static final Color WHITE_COLOR = new Color(null, 255, 255, 255);
-
-    public static final Color GREY_COLOR = new Color(null, 215, 215, 215);
-
-    public static final Color YELLOW_GREEN_COLOR = new Color(null, 159, 181, 38);// 143, 163, 35
-
-    public static final Color YELLOW_COLOR = new Color(null, 255, 173, 37);// 254, 182, 84
-
-    private static final Color RED_COLOR = new Color(null, new RGB(240, 0, 0));// 255
 
     private Composite formBody;
 
@@ -124,6 +118,16 @@ public class TOSLoginComposite extends Composite {
 
     private Hyperlink repositoryHyperlink;
 
+    private Composite tosWelcomeComposite;
+
+    private Composite colorComposite;
+
+    private Label iconLabel;
+
+    private Label onIconLabel;
+
+    private Label statusLabel;
+
     private Map projectsMap = new HashMap();
 
     private Button restartBut;
@@ -136,16 +140,37 @@ public class TOSLoginComposite extends Composite {
 
     private String oldPath;
 
+    private boolean inuse;
+
+    private static final Image OPEN_IMAGE = ImageProvider.getImage(ERepositoryImages.OPEN_ICON);
+
+    public static final Color WHITE_COLOR = new Color(null, 255, 255, 255);
+
+    public static final Color GREY_COLOR = new Color(null, 215, 215, 215);
+
+    public static final Color YELLOW_GREEN_COLOR = new Color(null, 159, 181, 38);// 143, 163, 35
+
+    public static final Color YELLOW_COLOR = new Color(null, 255, 173, 37);// 254, 182, 84
+
+    private static final Color RED_COLOR = new Color(null, new RGB(240, 0, 0));// 255
+
+    private static final Image LOGIN_CRITICAL_IMAGE = ImageProvider.getImage(ERepositoryImages.LOGIN_CRITICAL_ICON);
+
+    private static final Image LOGIN_CORRECT_IMAGE = ImageProvider.getImage(ERepositoryImages.LOGIN_CORRECT_ICON);
+
+    IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+
     /**
      * DOC Administrator TOSLoginComposite constructor comment.
      * 
      * @param parent
      * @param style
      */
-    public TOSLoginComposite(Composite parent, int style, LoginComposite loginComposite, LoginDialog dialog) {
+    public TOSLoginComposite(Composite parent, int style, LoginComposite loginComposite, LoginDialog dialog, boolean inuse) {
         super(parent, style);
         this.loginComposite = loginComposite;
         this.dialog = dialog;
+        this.inuse = inuse;
 
         perReader = ConnectionUserPerReader.getInstance();
 
@@ -170,8 +195,72 @@ public class TOSLoginComposite extends Composite {
         createSeparator(formBody);
         createTosActionArea(formBody);
         createTosWorkspaceArea(formBody);
+        createStatusArea(formBody);
         addListener();
+
+        try {
+            setStatusArea();
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+
         formBody.layout();
+
+    }
+
+    private void createStatusArea(Composite parent) {
+        tosWelcomeComposite = toolkit.createComposite(parent);
+        tosWelcomeComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        tosWelcomeComposite.setLayout(new FormLayout());
+        tosWelcomeComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
+
+        FormData formData2 = null;
+
+        colorComposite = toolkit.createComposite(tosWelcomeComposite);
+
+        // display the icon on the colorComposite
+        // iconLabel and onIiconLabel both for the display of icon.
+        onIconLabel = toolkit.createLabel(colorComposite, null);
+        formData2 = new FormData();
+        formData2.height = 46;
+        formData2.top = new FormAttachment(0, -11);
+        formData2.left = new FormAttachment(0, 8);
+        formData2.right = new FormAttachment(0, 54);
+        onIconLabel.setLayoutData(formData2);
+
+        colorComposite.setLayout(new FormLayout());
+        formData2 = new FormData();
+        formData2.top = new FormAttachment(0, 11);
+        formData2.height = 24;
+        formData2.left = new FormAttachment(0);
+        formData2.right = new FormAttachment(100);
+        colorComposite.setLayoutData(formData2);
+
+        // display the icon under the colorComposite
+        iconLabel = toolkit.createLabel(tosWelcomeComposite, null);
+        formData2 = new FormData();
+        formData2.height = 46;
+        formData2.top = new FormAttachment(0, 0);
+        formData2.left = new FormAttachment(0, 8);
+        formData2.right = new FormAttachment(0, 54);
+        iconLabel.setLayoutData(formData2);
+
+        statusLabel = toolkit.createLabel(colorComposite, null);
+        formData2 = new FormData();
+        formData2.top = new FormAttachment(colorComposite, 4, SWT.CENTER);
+        formData2.height = 24;
+        formData2.left = new FormAttachment(0, 60);
+        formData2.right = new FormAttachment(100, -5);
+        statusLabel.setLayoutData(formData2);
+
+        restartBut = toolkit.createButton(tosWelcomeComposite, Messages.getString("LoginComposite.RESTART"), SWT.PUSH); //$NON-NLS-1$
+        restartBut.setVisible(false);
+        FormData formData = new FormData();
+        formData.top = new FormAttachment(colorComposite, 0);// 5, 315
+        // formData.left = new FormAttachment(0, 310);
+        formData.right = new FormAttachment(100, -5);
+        formData.bottom = new FormAttachment(100, 0);
+        restartBut.setLayoutData(formData);// new GridData(GridData.FILL_HORIZONTAL)
     }
 
     private GridLayout createLayout(int numColumns) {
@@ -190,7 +279,6 @@ public class TOSLoginComposite extends Composite {
         repositoryComposite.setLayoutData(gd);
         repositoryComposite.setLayout(new FormLayout());
         repositoryComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        repositoryComposite.setBackground(GREY_COLOR);
 
         Label welcomeLabel = toolkit.createLabel(repositoryComposite, Messages.getString("TOSLoginComposite.welcomeTitle")); //$NON-NLS-1$
         welcomeLabel.setBackground(repositoryComposite.getBackground());
@@ -211,7 +299,6 @@ public class TOSLoginComposite extends Composite {
     private void createSeparator(Composite parent) {
         separatorComposite = toolkit.createComposite(parent);
         separatorComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        separatorComposite.setBackground(GREY_COLOR); // parent.getBackground()
         separatorComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         GridLayout layout = new GridLayout();
         layout.marginTop = 10;
@@ -221,7 +308,7 @@ public class TOSLoginComposite extends Composite {
         separatorComposite.setLayout(layout);
         Label separatorLabel = toolkit.createSeparator(separatorComposite, SWT.HORIZONTAL | SWT.COLOR_DARK_GRAY);
         separatorLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        separatorLabel.setBackground(GREY_COLOR);
+        // separatorLabel.setBackground(GREY_COLOR);
     }
 
     private void createTosActionArea(Composite parent) {
@@ -231,7 +318,7 @@ public class TOSLoginComposite extends Composite {
         tosActionComposite.setLayoutData(gd);
         tosActionComposite.setLayout(new FormLayout());
         tosActionComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        tosActionComposite.setBackground(GREY_COLOR);
+        // tosActionComposite.setBackground(GREY_COLOR);
 
         FormData data;
 
@@ -241,8 +328,8 @@ public class TOSLoginComposite extends Composite {
         gc.dispose();
         data = new FormData();
         data.top = new FormAttachment(0, 10);
-        data.left = new FormAttachment(0, 20);
-        data.right = new FormAttachment(0, 20 + labelSize.x);
+        data.left = new FormAttachment(0, 50);
+        // data.right = new FormAttachment(0, 20 + labelSize.x);
         data.bottom = new FormAttachment(0, 30);
         projectLabel.setBackground(tosActionComposite.getBackground());
         projectLabel.setLayoutData(data);
@@ -252,15 +339,16 @@ public class TOSLoginComposite extends Composite {
         data.top = new FormAttachment(projectLabel, 0, SWT.TOP);
         data.left = new FormAttachment(100, -75);
         data.right = new FormAttachment(100, -10);
-        if (Platform.getOS().equals(Platform.OS_WIN32)) {
-            data.bottom = new FormAttachment(projectLabel, 0, SWT.BOTTOM);
-        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-            data.bottom = new FormAttachment(projectLabel, 5, SWT.BOTTOM);
-        } else {
-            data.bottom = new FormAttachment(projectLabel, 5, SWT.BOTTOM);
-        }
+        // if (Platform.getOS().equals(Platform.OS_WIN32)) {
+        // data.bottom = new FormAttachment(projectLabel, 0, SWT.BOTTOM);
+        // } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
+        // data.bottom = new FormAttachment(projectLabel, 5, SWT.BOTTOM);
+        // } else {
+        // data.bottom = new FormAttachment(projectLabel, 5, SWT.BOTTOM);
+        // }
         openButton.setText(Messages.getString("TOSLoginComposite.openButton"));
         openButton.setLayoutData(data);
+        openButton.setImage(OPEN_IMAGE);
 
         projectList = new List(tosActionComposite, SWT.BORDER | SWT.V_SCROLL);
         data = new FormData();
@@ -275,13 +363,7 @@ public class TOSLoginComposite extends Composite {
         data.top = new FormAttachment(openButton, 5, SWT.BOTTOM);
         data.left = new FormAttachment(openButton, 0, SWT.LEFT);
         data.right = new FormAttachment(openButton, 0, SWT.RIGHT);
-        if (Platform.getOS().equals(Platform.OS_WIN32)) {
-            data.height = 20;
-        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-            data.height = 25;
-        } else {
-            data.height = 25;
-        }
+
         deleteButton.setText(Messages.getString("TOSLoginComposite.deleteButton"));
         deleteButton.setLayoutData(data);
 
@@ -290,13 +372,7 @@ public class TOSLoginComposite extends Composite {
         data.top = new FormAttachment(projectList, 10, SWT.BOTTOM);
         data.left = new FormAttachment(projectList, 0, SWT.LEFT);
         data.right = new FormAttachment(projectList, 65, SWT.LEFT);
-        if (Platform.getOS().equals(Platform.OS_WIN32)) {
-            data.height = 20;
-        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-            data.height = 25;
-        } else {
-            data.height = 25;
-        }
+
         createButton.setText(Messages.getString("TOSLoginComposite.createButton"));
         createButton.setLayoutData(data);
 
@@ -304,14 +380,7 @@ public class TOSLoginComposite extends Composite {
         data = new FormData();
         data.top = new FormAttachment(createButton, 0, SWT.TOP);
         data.left = new FormAttachment(createButton, 10, SWT.RIGHT);
-        data.right = new FormAttachment(createButton, 75, SWT.RIGHT);
-        if (Platform.getOS().equals(Platform.OS_WIN32)) {
-            data.height = 20;
-        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-            data.height = 25;
-        } else {
-            data.height = 25;
-        }
+
         importButton.setText(Messages.getString("TOSLoginComposite.importButton"));
         importButton.setLayoutData(data);
 
@@ -319,14 +388,8 @@ public class TOSLoginComposite extends Composite {
         data = new FormData();
         data.top = new FormAttachment(importButton, 0, SWT.TOP);
         data.left = new FormAttachment(importButton, 10, SWT.RIGHT);
-        data.right = new FormAttachment(importButton, 125, SWT.RIGHT);
-        if (Platform.getOS().equals(Platform.OS_WIN32)) {
-            data.height = 20;
-        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-            data.height = 25;
-        } else {
-            data.height = 25;
-        }
+        data.right = new FormAttachment(100, -10);
+
         demoProjectButton.setText(Messages.getString("TOSLoginComposite.demoProjectButton"));
         demoProjectButton.setLayoutData(data);
 
@@ -377,41 +440,6 @@ public class TOSLoginComposite extends Composite {
         data.bottom = new FormAttachment(changeButton, 0, SWT.BOTTOM);
         workspaceText.setLayoutData(data);
 
-        repositoryHyperlink = toolkit.createHyperlink(tosWorkspaceComposite,
-                Messages.getString("LoginComposite.sharedRepositoryMessage"), SWT.NONE);
-        gc = new GC(repositoryHyperlink);
-        labelSize = gc.stringExtent(Messages.getString("LoginComposite.sharedRepositoryMessage"));
-        gc.dispose();
-        data = new FormData();
-        data.top = new FormAttachment(workspaceText, 10, SWT.BOTTOM);
-        data.left = new FormAttachment(workspaceText, 0, SWT.LEFT);
-        if (Platform.getOS().equals(Platform.OS_WIN32)) {
-            data.right = new FormAttachment(workspaceText, 10 + labelSize.x, SWT.LEFT);
-        } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-            data.right = new FormAttachment(workspaceText, 20 + labelSize.x, SWT.LEFT);
-        } else {
-            data.right = new FormAttachment(workspaceText, 20 + labelSize.x, SWT.LEFT);
-        }
-        data.bottom = new FormAttachment(workspaceText, 30, SWT.BOTTOM);
-        repositoryHyperlink.setLayoutData(data);
-        repositoryHyperlink.addHyperlinkListener(new HyperlinkAdapter() {
-
-            @Override
-            public void linkActivated(HyperlinkEvent e) {
-                String url = "http://www.talend.com/products-data-integration/sharedRepository.php"; //$NON-NLS-1$
-                TalendBrowserLaunchHelper.openURL(url);
-            }
-        });
-
-        restartBut = toolkit.createButton(tosWorkspaceComposite, Messages.getString("LoginComposite.RESTART"), SWT.PUSH); //$NON-NLS-1$
-        restartBut.setVisible(false);
-        FormData formData = new FormData();
-        formData.top = new FormAttachment(100, -20);
-        formData.left = new FormAttachment(100, -60);
-        formData.right = new FormAttachment(100, -5);
-        formData.bottom = new FormAttachment(100, 0);
-        restartBut.setLayoutData(formData);
-        restartBut.setVisible(false);
     }
 
     public Project[] readProject() {
@@ -449,6 +477,11 @@ public class TOSLoginComposite extends Composite {
                     if (!projectsMap.containsKey(project.getLabel().toUpperCase())) {
                         projectsMap.put(project.getLabel().toUpperCase(), project);
                         projectList.add(project.getLabel().toUpperCase());
+                        try {
+                            setStatusArea();
+                        } catch (PersistenceException e1) {
+                            ExceptionHandler.process(e1);
+                        }
                     }
                 }
             }
@@ -469,6 +502,11 @@ public class TOSLoginComposite extends Composite {
                                 if (projectsMap.containsKey(p.getName())) {
                                     projectsMap.remove(p.getName());
                                     projectList.remove(p.getName());
+                                    try {
+                                        setStatusArea();
+                                    } catch (PersistenceException e1) {
+                                        ExceptionHandler.process(e1);
+                                    }
                                 }
                             }
                         }
@@ -499,6 +537,11 @@ public class TOSLoginComposite extends Composite {
                             if (projects[i].getLabel().toUpperCase().equals(newProject.toUpperCase())) {
                                 projectsMap.put(newProject.toUpperCase(), project);
                                 projectList.add(newProject.toUpperCase().toUpperCase());
+                                try {
+                                    setStatusArea();
+                                } catch (PersistenceException e1) {
+                                    ExceptionHandler.process(e1);
+                                }
                             }
                         }
                     }
@@ -550,6 +593,15 @@ public class TOSLoginComposite extends Composite {
                 prefManipulator.saveConnections(list);
                 loginComposite.storedConnections = list;
                 perReader.saveConnections(loginComposite.storedConnections);
+
+                if (!loginComposite.isWorkSpaceSame()) {
+                    try {
+                        setStatusArea();
+                    } catch (PersistenceException e1) {
+                        ExceptionHandler.process(e1);
+                    }
+                }
+
             }
         });
         restartBut.addSelectionListener(new SelectionAdapter() {
@@ -673,6 +725,12 @@ public class TOSLoginComposite extends Composite {
                             }
                         }
                     }
+
+                    try {
+                        setStatusArea();
+                    } catch (PersistenceException e1) {
+                        ExceptionHandler.process(e1);
+                    }
                 }
             }
         });
@@ -690,4 +748,60 @@ public class TOSLoginComposite extends Composite {
     public Map getProjectMap() {
         return projectsMap;
     }
+
+    public void setStatusArea() throws PersistenceException {
+        String productName = brandingService.getFullProductName();
+        if (productName != null) {
+            String[] split = productName.split(" "); //$NON-NLS-1$
+            if (split != null && split.length > 3) {
+                productName = brandingService.getShortProductName();
+            }
+        }
+
+        if (loginComposite.getConnection() != null) {
+            if (!loginComposite.isWorkSpaceSame()) {
+                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                colorComposite.setBackground(RED_COLOR);
+                onIconLabel.setBackground(colorComposite.getBackground());
+                statusLabel.setText(Messages.getString("LoginComposite.DIFFERENT_WORKSPACES")); //$NON-NLS-1$
+                statusLabel.setBackground(RED_COLOR);
+                statusLabel.setForeground(WHITE_COLOR);
+                Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
+                statusLabel.setFont(font);
+            } else if (inuse) {
+                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                colorComposite.setBackground(RED_COLOR);
+                onIconLabel.setBackground(colorComposite.getBackground());
+                statusLabel.setText(Messages.getString("LoginComposite.Workspace_inuse")); //$NON-NLS-1$
+                statusLabel.setBackground(RED_COLOR);
+                statusLabel.setForeground(WHITE_COLOR);
+                Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
+                statusLabel.setFont(font);
+            } else if (projectList.getItemCount() > 0) {
+                iconLabel.setImage(LOGIN_CORRECT_IMAGE);
+                onIconLabel.setImage(LOGIN_CORRECT_IMAGE);
+                colorComposite.setBackground(YELLOW_GREEN_COLOR);
+                onIconLabel.setBackground(colorComposite.getBackground());
+                statusLabel.setText(Messages.getString("LoginComposite.TisWorkspace_welcome", productName)); //$NON-NLS-1$
+                int size = loginComposite.calStatusLabelFont(11, statusLabel.getText());
+                statusLabel.setBackground(YELLOW_GREEN_COLOR);
+                statusLabel.setForeground(WHITE_COLOR);
+                Font font = new Font(null, LoginComposite.FONT_ARIAL, size, SWT.BOLD);// Arial courier
+                statusLabel.setFont(font);
+            } else {
+                iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                colorComposite.setBackground(RED_COLOR);
+                onIconLabel.setBackground(colorComposite.getBackground());
+                statusLabel.setText(Messages.getString("LoginComposite.PROJECT_NEED")); //$NON-NLS-1$
+                statusLabel.setBackground(RED_COLOR);
+                statusLabel.setForeground(WHITE_COLOR);
+                Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
+                statusLabel.setFont(font);
+            }
+        }
+    }
+
 }
