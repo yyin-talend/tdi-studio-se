@@ -87,8 +87,7 @@
    </plugins>
 
    <features>
-      <feature id="org.talend.rcp.branding.tos-feature"/>
-      <feature id="org.talend.update.p2-feature"/>
+      <feature id="org.talend.rcp.branding.tos_feature" version="2.2.0.qualifier"/>
    </features>
 
 
