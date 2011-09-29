@@ -32,7 +32,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		IConnection conn = conns.get(0);
 %>
 	}
-} while (!queue_<%=cid%>.isEmpty() || !b);
+} while (!queue_<%=cid%>.isEmpty() || !(globalMap.containsKey("<%=cid%>_FINISH")) );
 globalMap.remove("<%=cid%>_FINISH");
 <%
 		}
