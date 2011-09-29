@@ -159,11 +159,9 @@
 				} 
 			<%
 			}
-			if(!(conn.getTarget().getComponent().isTechnical())) { 
 %>
-				<%= uniqueNameTargetNode %>Process(globalMap); 
+			<%= uniqueNameTargetNode %>Process(globalMap); 
 <%
-			}
     	}
     }
 }

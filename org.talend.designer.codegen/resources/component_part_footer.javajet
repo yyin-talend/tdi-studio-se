@@ -231,7 +231,11 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
    	 				runStat.updateStatOnConnection("<%=outgoingConn.getUniqueName() %>", 0, "ok");
 				}
 			<%}%>
-			<%=outgoingConn.getTarget().getUniqueName() %>Process(globalMap);
+			if((!node.isVirtualGenerateNode()) || node.isDesignSubjobStartNode()) {
+%>
+				<%=outgoingConn.getTarget().getUniqueName() %>Process(globalMap);
+<%  
+			}
 		<%  
   	    }        
        
