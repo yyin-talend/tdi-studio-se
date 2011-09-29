@@ -262,47 +262,49 @@ public class DownloadComponenentsAction extends Action {
         private void downloadExtension(ComponentExtension extension, IProgressMonitor monitor) {
 
             // get the url
-            WebserviceStatus webserviceStatus = ExchangeWebService.downloadingExtensionService(extension.getIdExtension(),
-                    ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash());
-            if (webserviceStatus.isResult()) {
-                String downloadUrl = webserviceStatus.getValue();
-                if (downloadUrl != null && !downloadUrl.equals("")) {
-                    monitor.setTaskName(ExchangeConstants.getDownloadTaskNameLable() + downloadUrl);
-                    String targetFolder = ExchangeUtils.getComponentFolder("downloaded").getAbsolutePath();
-                    try {
-                        String fileName = extension.getLabel() + ".zip";
-                        File localZipFile = new File(targetFolder, fileName);
+            if (ExchangeUtils.checkUserAndPassword()) {
+                WebserviceStatus webserviceStatus = ExchangeWebService.downloadingExtensionService(extension.getIdExtension(),
+                        ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash());
+                if (webserviceStatus.isResult()) {
+                    String downloadUrl = webserviceStatus.getValue();
+                    if (downloadUrl != null && !downloadUrl.equals("")) {
+                        monitor.setTaskName(ExchangeConstants.getDownloadTaskNameLable() + downloadUrl);
+                        String targetFolder = ExchangeUtils.getComponentFolder("downloaded").getAbsolutePath();
+                        try {
+                            String fileName = extension.getLabel() + ".zip";
+                            File localZipFile = new File(targetFolder, fileName);
 
-                        monitor.done();
+                            monitor.done();
 
-                        URL url = new URL(downloadUrl);
+                            URL url = new URL(downloadUrl);
 
-                        monitor.setTaskName(ExchangeConstants.getDownloadTaskNameLable() + url.toString());
-                        ComponentDownloader downloader = new ComponentDownloader();
-                        downloader.addDownloadListener(this);
-                        // block until download complete
-                        downloader.download(url, localZipFile);
+                            monitor.setTaskName(ExchangeConstants.getDownloadTaskNameLable() + url.toString());
+                            ComponentDownloader downloader = new ComponentDownloader();
+                            downloader.addDownloadListener(this);
+                            // block until download complete
+                            downloader.download(url, localZipFile);
 
-                        // check if the job is cancelled
-                        if (!monitor.isCanceled()) {
-                            File installedLocation = ComponentInstaller.unzip(localZipFile.getAbsolutePath(), targetFolder);
-                            if (installedLocation != null) {
-                                // update extesion status
-                                monitor.done();
-                                extensionDownloadCompleted(extension);
-                            } else {
-                                Display.getDefault().asyncExec(new Runnable() {
+                            // check if the job is cancelled
+                            if (!monitor.isCanceled()) {
+                                File installedLocation = ComponentInstaller.unzip(localZipFile.getAbsolutePath(), targetFolder);
+                                if (installedLocation != null) {
+                                    // update extesion status
+                                    monitor.done();
+                                    extensionDownloadCompleted(extension);
+                                } else {
+                                    Display.getDefault().asyncExec(new Runnable() {
 
-                                    public void run() {
-                                        fView.refresh();
-                                    }
-                                });
+                                        public void run() {
+                                            fView.refresh();
+                                        }
+                                    });
+                                }
                             }
+                            // the component zip file
+                            // localZipFile.delete();
+                        } catch (Exception e) {
+                            ExceptionHandler.process(e);
                         }
-                        // the component zip file
-                        // localZipFile.delete();
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
                     }
                 }
             }
