@@ -52,9 +52,12 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.general.Project;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
@@ -716,17 +719,33 @@ public class TalendForgeDialog extends TrayDialog {
                 boolean success = false;
                 String email = emailText.getText().trim();
                 String password = passwordText.getText().trim();
+                String pseudonym = userNameText.getText().trim();
                 try {
-                    success = RegisterManagement.getInstance().createUser(emailText.getText().trim(),
-                            userNameText.getText().trim(), passwordText.getText().trim(), "", "", countryCombo.getText(),
-                            isProxyEnable, proxyHost, proxyPort);
+                    success = RegisterManagement.getInstance().createUser(email, pseudonym, password, "", "",
+                            countryCombo.getText(), isProxyEnable, proxyHost, proxyPort);
+                    if (success) {
+                        if (!PluginChecker.isSVNProviderPluginLoaded()) {// tos
+                            project.getExchangeUser().setLogin(email);
+                            project.getExchangeUser().setUsername(pseudonym);
+                            project.getExchangeUser().setPassword(password);
+                        } else {// tis
+                            IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+                            String connectionEmail = project.getAuthor().getLogin();
+                            prefStore.setValue(connectionEmail, email + ":" + pseudonym + ":" + password);
+                        }
+                        MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
+                                Messages.getString("TalendForgeDialog.ConnectSuccessMessage"));
+                        okPressed(true);
+                    }
                 } catch (BusinessException e1) {
                     e1.printStackTrace();
                 } finally {
                     if (success) {
                         MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
                                 Messages.getString("TalendForgeDialog.Message"));
-                        okPressed();
+                        okPressed(true);
+                    } else {
+                        okPressed(false);
                     }
                 }
             }
@@ -785,7 +804,7 @@ public class TalendForgeDialog extends TrayDialog {
                 int count = prefStore.getInt(LOGINCOUNT);
                 count++;
                 prefStore.setValue(LOGINCOUNT, count);
-                okPressed();
+                okPressed(false);
             }
         });
 
@@ -796,7 +815,7 @@ public class TalendForgeDialog extends TrayDialog {
                 int count = prefStore.getInt(LOGINCOUNT);
                 count++;
                 prefStore.setValue(LOGINCOUNT, count);
-                okPressed();
+                okPressed(false);
             }
         });
 
@@ -981,11 +1000,11 @@ public class TalendForgeDialog extends TrayDialog {
                         }
                         MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
                                 Messages.getString("TalendForgeDialog.ConnectSuccessMessage"));
-                        okPressed();
+                        okPressed(true);
                     } else {
                         MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
                                 Messages.getString("TalendForgeDialog.ConnectFailureMessage"));
-                        okPressed();
+                        okPressed(false);
 
                     }
                 } catch (BusinessException e1) {
@@ -1005,6 +1024,17 @@ public class TalendForgeDialog extends TrayDialog {
             }
         }
         return false;
+    }
+
+    private void okPressed(boolean saveProject) {
+        if (saveProject) {
+            try {
+                ProxyRepositoryFactory.getInstance().saveProject(project);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        okPressed();
     }
 
     @Override
