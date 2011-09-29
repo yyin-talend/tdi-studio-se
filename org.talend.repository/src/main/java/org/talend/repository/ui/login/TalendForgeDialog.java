@@ -723,9 +723,6 @@ public class TalendForgeDialog extends TrayDialog {
                         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
                         String connectionEmail = project.getAuthor().getLogin();
                         prefStore.setValue(connectionEmail, email + ":" + pseudonym + ":" + password);
-                        MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
-                                Messages.getString("TalendForgeDialog.ConnectSuccessMessage"));
-                        okPressed();
                     }
                 } catch (BusinessException e1) {
                     e1.printStackTrace();
