@@ -144,7 +144,11 @@ public class DownloadComponenentsAction extends Action {
         Shell shell = this.fView.getSite().getShell();
         StringBuilder message = new StringBuilder();
         for (ComponentExtension component : fDownloadedComponents) {
-            String location = ExchangeUtils.getComponentFolder("downloaded").getAbsolutePath();
+            File componentFolder = ExchangeUtils.getComponentFolder("downloaded");
+            if (!componentFolder.exists()) {
+                componentFolder.mkdirs();
+            }
+            String location = componentFolder.getAbsolutePath();
             File folder = ExchangeComponentsProvider.searchComponentFolder(new File(location));
             File[] files = folder.listFiles(propertiesFilter);
             if (files == null) {
@@ -269,7 +273,11 @@ public class DownloadComponenentsAction extends Action {
                     String downloadUrl = webserviceStatus.getValue();
                     if (downloadUrl != null && !downloadUrl.equals("")) {
                         monitor.setTaskName(ExchangeConstants.getDownloadTaskNameLable() + downloadUrl);
-                        String targetFolder = ExchangeUtils.getComponentFolder("downloaded").getAbsolutePath();
+                        File componentFolder = ExchangeUtils.getComponentFolder("downloaded");
+                        if (!componentFolder.exists()) {
+                            componentFolder.mkdirs();
+                        }
+                        String targetFolder = componentFolder.getAbsolutePath();
                         try {
                             String fileName = extension.getLabel() + ".zip";
                             File localZipFile = new File(targetFolder, fileName);

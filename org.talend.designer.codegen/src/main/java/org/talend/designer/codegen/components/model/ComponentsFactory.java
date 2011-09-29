@@ -565,7 +565,8 @@ public class ComponentsFactory implements IComponentsFactory {
 
         boolean isCustom = false;
         if ("org.talend.designer.components.model.UserComponentsProvider".equals(provider.getId())
-                || "org.talend.designer.components.ecosystem.EcosystemComponentsProvider".equals(provider.getId())) {
+                || "org.talend.designer.components.ecosystem.EcosystemComponentsProvider".equals(provider.getId())
+                || "org.talend.designer.components.exchange.ExchangeComponentsProvider".equals(provider.getId())) {
             isCustom = true;
         }
 

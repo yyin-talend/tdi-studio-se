@@ -39,7 +39,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.revisions.Revision;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
@@ -49,9 +48,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.utils.PasswordEncryptUtil;
 import org.talend.core.CorePlugin;
-import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentUtilities;
@@ -348,32 +345,19 @@ public class ExchangeUtils {
     }
 
     public static String getPasswordHash() {
-        String passwordTemp = "";
-        if (!PluginChecker.isSVNProviderPluginLoaded()) {// tos
-            Project proj = ProjectManager.getInstance().getCurrentProject();
-            passwordTemp = proj.getExchangeUser().getPassword();
-        } else {// tis
-            IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-            passwordTemp = prefStore.getString("password");
-        }
+        Project proj = ProjectManager.getInstance().getCurrentProject();
+        String passwordTemp = proj.getExchangeUser().getPassword();
         try {
-            passwordTemp = PasswordEncryptUtil.encryptPassword(passwordTemp);
+            passwordTemp = SHA1Util.hex_sha1(passwordTemp);
         } catch (Exception e) {
-            e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         return passwordTemp;
     }
 
     public static String getUserName() {
-        String userName = null;
-        if (!PluginChecker.isSVNProviderPluginLoaded()) {// tos
-            Project proj = ProjectManager.getInstance().getCurrentProject();
-            userName = proj.getExchangeUser().getUsername();
-        } else {// tis
-            IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-            userName = prefStore.getString("pseudonym");
-        }
-        return userName;
+        Project proj = ProjectManager.getInstance().getCurrentProject();
+        return proj.getExchangeUser().getUsername();
     }
 
     public static boolean checkUserAndPassword() {
