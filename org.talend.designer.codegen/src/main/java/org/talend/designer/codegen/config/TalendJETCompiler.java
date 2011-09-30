@@ -61,39 +61,52 @@ public class TalendJETCompiler extends JETCompiler {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void handleDirective(String directive, JETMark start, JETMark stop, Map<String, String> attributes)
             throws JETException {
-        boolean done = false;
+
+        Map<String, String> newAttributes = new HashMap<String, String>();
+        newAttributes.putAll(attributes);
+
         if (directive.equals("include")) { //$NON-NLS-1$
             final String fileKey = "file"; //$NON-NLS-1$
 
-            Map<String, String> newAttributes = new HashMap<String, String>();
-            newAttributes.putAll(attributes);
-
             String fileURI = newAttributes.get(fileKey);
-            if (fileURI != null) {
-                Matcher matcher = PLUGIN_VAR_PATTERN.matcher(fileURI);
-                if (matcher.find()) {
-                    // get the plugin name from fileURI
-                    String refPluginName = matcher.group(1);
-                    // retrieve the plugin URI by pluginName.
-                    Bundle refBundle = Platform.getBundle(refPluginName);
-                    if (refBundle != null) {
-                        String realURI = Platform.getPlugin(refPluginName).getDescriptor().getInstallURL().toString();
-                        // replace the old fileURI to new one by pluginURI
-                        String newFileURI = fileURI.replaceFirst(PLUGIN_VAR_PATTERN.pattern(), realURI);
-                        newAttributes.put(fileKey, newFileURI);
-
-                        super.handleDirective(directive, start, stop, newAttributes);
-                        done = true;
-                    }
+            String newFileURI = checkAndReplace(fileURI);
+            if (newFileURI != null) {
+                newAttributes.put(fileKey, newFileURI);
+            }
+        } else if (directive.equals("jet")) { //$NON-NLS-1$
+            String skeletonKey = "skeleton"; //$NON-NLS-1$
+            String skeletonURI = attributes.get(skeletonKey);
+            if (skeletonURI != null) {
+                String newSkeletonURI = checkAndReplace(skeletonURI);
+                if (newSkeletonURI != null) {
+                    newAttributes.put(skeletonKey, newSkeletonURI);
                 }
             }
         }
-        if (!done) {
-            super.handleDirective(directive, start, stop, attributes);
+        super.handleDirective(directive, start, stop, newAttributes);
+    }
+
+    @SuppressWarnings("deprecation")
+    private String checkAndReplace(String fileURI) {
+        if (fileURI != null) {
+            Matcher matcher = PLUGIN_VAR_PATTERN.matcher(fileURI);
+            if (matcher.find()) {
+                // get the plugin name from fileURI
+                String refPluginName = matcher.group(1);
+                // retrieve the plugin URI by pluginName.
+                Bundle refBundle = Platform.getBundle(refPluginName);
+                if (refBundle != null) {
+                    String realURI = Platform.getPlugin(refPluginName).getDescriptor().getInstallURL().toString();
+                    // replace the old fileURI to new one by pluginURI
+                    String newFileURI = fileURI.replaceFirst(PLUGIN_VAR_PATTERN.pattern(), realURI);
+                    return newFileURI;
+
+                }
+            }
         }
+        return null; // not replace
     }
 }
