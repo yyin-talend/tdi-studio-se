@@ -78,7 +78,7 @@ public class TalendJETCompiler extends JETCompiler {
             }
         } else if (directive.equals("jet")) { //$NON-NLS-1$
             String skeletonKey = "skeleton"; //$NON-NLS-1$
-            String skeletonURI = attributes.get(skeletonKey);
+            String skeletonURI = newAttributes.get(skeletonKey);
             if (skeletonURI != null) {
                 String newSkeletonURI = checkAndReplace(skeletonURI);
                 if (newSkeletonURI != null) {
