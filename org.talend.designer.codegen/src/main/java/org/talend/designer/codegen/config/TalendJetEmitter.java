@@ -272,10 +272,13 @@ public class TalendJetEmitter extends JETEmitter {
             InputStream contents = null;
 
             try {
-                final JETCompiler jetCompiler = jetEmitter.templateURIPath == null ? new MyBaseJETCompiler(
-                        jetEmitter.templateURI, jetEmitter.encoding, jetEmitter.classLoader) : new MyBaseJETCompiler(
-                        jetEmitter.templateURIPath, jetEmitter.templateURI, jetEmitter.encoding, jetEmitter.classLoader);
-
+                JETCompiler jetCompiler = null;
+                if (jetEmitter.templateURIPath == null) {
+                    jetCompiler = new TalendJETCompiler(jetEmitter.templateURI, jetEmitter.encoding, jetEmitter.classLoader);
+                } else {
+                    jetCompiler = new TalendJETCompiler(jetEmitter.templateURIPath, jetEmitter.templateURI, jetEmitter.encoding,
+                            jetEmitter.classLoader);
+                }
                 progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETParsing_message", //$NON-NLS-1$
                         new Object[] { jetCompiler.getResolvedTemplateURI() }));
                 jetCompiler.parse();
