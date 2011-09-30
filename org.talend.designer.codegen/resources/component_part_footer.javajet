@@ -232,7 +232,23 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 				}
 <%
 			}
-			if((!node.isVirtualGenerateNode()) || node.isDesignSubjobStartNode()) {
+			
+			
+			/*
+			This boolean is created for the ON_COMPONENT_OK virtual components. 
+			This technic is used on the tWriteXMLField for example. Since the sub method is called in the Thread, we do not have to generate again in the component footer.
+			*/
+			boolean generateMethodCall = false; 
+			if((!node.isVirtualGenerateNode())) {
+				generateMethodCall = true;
+			} else {
+				if(node.getOutgoingConnections(EConnectionType.ON_ROWS_END).size()>0 || node.getOutgoingConnections(EConnectionType.FLOW_MAIN).size()>0) {
+					generateMethodCall = true;
+				}
+				// Else, that means the component is a ON_COMPONENT_OK virtual component typed.
+			}
+			
+			if(generateMethodCall) {
 %>
 				<%=outgoingConn.getTarget().getUniqueName() %>Process(globalMap);
 <%  
