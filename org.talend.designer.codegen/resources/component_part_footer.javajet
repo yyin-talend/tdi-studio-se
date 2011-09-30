@@ -226,17 +226,17 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
   	    if (outgoingConn.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)) { 
 			//send the ok status to socket
 			if(stat){
-			%>
+%>
 				if(execStat){   
    	 				runStat.updateStatOnConnection("<%=outgoingConn.getUniqueName() %>", 0, "ok");
 				}
-			<%}%>
+<%
+			}
 			if((!node.isVirtualGenerateNode()) || node.isDesignSubjobStartNode()) {
 %>
 				<%=outgoingConn.getTarget().getUniqueName() %>Process(globalMap);
 <%  
 			}
-		<%  
   	    }        
        
 
