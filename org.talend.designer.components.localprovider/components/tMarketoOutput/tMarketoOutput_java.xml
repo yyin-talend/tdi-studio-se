@@ -20,7 +20,7 @@
 
   <FAMILIES>
     <FAMILY>Business/Marketo</FAMILY>
-	<FAMILY>Cloud</FAMILY>
+    <FAMILY>Cloud/Marketo</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>

@@ -9,6 +9,7 @@
 
   <FAMILIES>
   	<FAMILY>Business/Healthcare</FAMILY>
+  	<FAMILY>Unstructured/HL7</FAMILY>
   </FAMILIES>
 
 	<DOCUMENTATION>

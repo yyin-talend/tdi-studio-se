@@ -7,7 +7,8 @@
 	</HEADER>
 
   <FAMILIES>
-    <FAMILY>Business/Healthcare</FAMILY>
+  	<FAMILY>Business/Healthcare</FAMILY>
+    <FAMILY>Unstructured/HL7</FAMILY>
   </FAMILIES>
 	<DOCUMENTATION>
 		<URL />

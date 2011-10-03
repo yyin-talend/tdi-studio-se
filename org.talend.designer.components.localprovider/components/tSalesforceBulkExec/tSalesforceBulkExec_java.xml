@@ -7,8 +7,8 @@
 	</HEADER>
 
  	<FAMILIES>
-    	<FAMILY>Business/Salesforce</FAMILY>
-		<FAMILY>Cloud</FAMILY>
+		<FAMILY>Business/Salesforce</FAMILY>
+		<FAMILY>Cloud/Salesforce</FAMILY>
   	</FAMILIES>
 
 	<DOCUMENTATION>

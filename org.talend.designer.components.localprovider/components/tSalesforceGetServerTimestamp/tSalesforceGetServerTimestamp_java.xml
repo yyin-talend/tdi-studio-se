@@ -16,7 +16,7 @@
 
   <FAMILIES>
     <FAMILY>Business/Salesforce</FAMILY>
-	<FAMILY>Cloud</FAMILY>
+	<FAMILY>Cloud/Salesforce</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>

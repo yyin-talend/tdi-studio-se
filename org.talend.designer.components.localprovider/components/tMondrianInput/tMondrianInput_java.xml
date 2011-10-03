@@ -15,7 +15,7 @@
   </HEADER>
 
   <FAMILIES>
-    <FAMILY>Business_Intelligence/OLAP_Cube</FAMILY>
+    <FAMILY>Business_Intelligence/OLAP_Cube/Mondrian</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>
