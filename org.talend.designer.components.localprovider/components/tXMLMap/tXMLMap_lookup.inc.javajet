@@ -389,7 +389,7 @@ skeleton="tXMLMap_java.skeleton"
 				  		boolean fromCache<%=tableName%> = hasResultFromLookupCache<%= tableName %>;
 				  		List<java.util.Map<String,Object>> multipleResultSet<%=tableName%> = new java.util.ArrayList<java.util.Map<String,Object>>();
 				  		//the var for cache the <%=tableName%>Struct
-				  		java.util.Map<String,Object> oneRow_<%=tableName%> = new java.util.HashMap<String,Object>();
+				  		java.util.Map<String,Object> oneRow_<%=tableName%> = null;
 						if(hasResultFromLookupCache<%= tableName %>) {
 					    	<%if(isCacheOrReloadLookupMode) {%>
 					    	java.util.Map<String,Object> cacheResult_<%=cid%> = tHash_Lookup_Cache_<%= tableName %>.next();
@@ -438,6 +438,7 @@ skeleton="tXMLMap_java.skeleton"
 									<%if(!findFromDocumentType){%>	
 									<%=tableName%> = fromLookup_<%=tableName%>;
 									//construct the resultset for mutiple lookup when no document lookup.
+									oneRow_<%=tableName%> = new java.util.HashMap<String, Object>();
 									oneRow_<%=tableName%>.put("<%=tableName%>",<%=tableName%>);
 									multipleResultSet<%=tableName%>.add(oneRow_<%=tableName%>);
 									<%}%>
