@@ -504,5 +504,7 @@ skeleton="tXMLMap_java.skeleton"
 				}
 			}
 		}
+	} else {
+		isXpathFromLookup = false;
 	}
 	%>
