@@ -80,6 +80,7 @@ skeleton="tXMLMap_java.skeleton"
 	boolean isExpressionEmpty = true;
 	boolean hasOutgoingConnection = false;
 	boolean hasDocumentInMainInputTable = false;
+	boolean atLeastOneInputTableWithInnerJoin = false;
 	boolean isPlainNode = true;
 	boolean isPlainNodeInLookup = false;
 	int closeWhileBlockCount = 0;
@@ -262,6 +263,11 @@ skeleton="tXMLMap_java.skeleton"
 	for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) {
 		hasOutgoingConnection = false;//reset the var for every lookup table 
 		InputXmlTree nextInputTable = inputTables.get(iInputTable);
+		if(!atLeastOneInputTableWithInnerJoin) {
+			if(nextInputTable.isInnerJoin()) {
+				atLeastOneInputTableWithInnerJoin = true;
+			}
+		}
 %>
 
 		<%@ include file="tXMLMap_lookup.inc.javajet" %>
@@ -368,19 +374,52 @@ for(OutputTreeNode tableEntry : tableEntries) {
 
 	});
 
+	boolean lastValueReject = false;
+	boolean allNotRejectTablesHaveFilter = true;
+	boolean atLeastOneReject = false;
+	boolean oneFilterForNotRejectTable = false;
+	
+	for (OutputXmlTree table : outputTablesSortedByReject) {
+		EList<OutputTreeNode> tableEntries = table.getNodes();
+		boolean hasFilter = table.isActivateExpressionFilter() && table.getExpressionFilter() != null && !("").equals(table.getExpressionFilter().trim());
+		if(tableEntries != null && tableEntries.size() > 0) {
+			if (!hasFilter && !(table.isReject() || table.isRejectInnerJoin())) {
+				if(!table.isErrorReject()){
+					allNotRejectTablesHaveFilter = false;
+				}
+			}
+			if (table.isReject()) {
+				atLeastOneReject = true;
+			}
+		}
+	}
+	
     for (OutputXmlTree table : outputTablesSortedByReject) {
         EList<OutputTreeNode> tableEntries = table.getNodes();
 
         if (tableEntries == null || nameToOutputConnection.get(table.getName()) == null) {
             continue;
         }
+		
+				
         String tableName1 = table.getName();
         isInnerJoinReject = table.isRejectInnerJoin();
 		isOutputReject = table.isReject();
+		boolean rejectValueHasJustChanged = lastValueReject != (isInnerJoinReject || isOutputReject);
+		boolean hasFilters = table.isActivateExpressionFilter() && table.getExpressionFilter() != null && !("").equals(table.getExpressionFilter());
+		boolean hasExpressionFilter = table.isActivateExpressionFilter() && table.getExpressionFilter() != null && !("").equals(table.getExpressionFilter().trim());
+		
+		oneFilterForNotRejectTable = !(isOutputReject || isInnerJoinReject) && (hasFilters || hasExpressionFilter);
+		
+		
         String instanceVarName = tableName1 + "__" + node.getUniqueName();
         String className = tableName1 + "Struct";
+		
 %>
 	<%= tableName1 %> = null;
+<%
+	if (!isOutputReject && !isInnerJoinReject || rejectValueHasJustChanged && oneFilterForNotRejectTable || isOutputReject && allNotRejectTablesHaveFilter || isInnerJoinReject && atLeastOneInputTableWithInnerJoin) { // IF_OUTPUT_START
+%>
 	//output table :'<%=tableName1%>'
 <%	if(!isXpathFromLookup){%>
 <%
@@ -474,7 +513,9 @@ for(OutputTreeNode tableEntry : tableEntries) {
 %>
 
 <%	
-}//for (OutputXmlTree table : outputTablesSortedByReject) {
+}//for (OutputXmlTree table : outputTablesSortedByReject)
+lastValueReject = isOutputReject || isInnerJoinReject;
+
 %>
 <%
 	if(hasDocument && !isPlainNode) {
@@ -504,7 +545,10 @@ for(OutputTreeNode tableEntry : tableEntries) {
 
 <%while(closeWhileBlockCount-- > 0) {%>
 	} // end for while loop(TD128)
-<%}%>
+<%
+}
+} // IF_OUTPUT_STOP	
+%>
 
 }// end var
 <%	if(!isXpathFromLookup){%>
@@ -512,7 +556,7 @@ for(OutputTreeNode tableEntry : tableEntries) {
 <% } %>
 
 <%
-	
+
 }// if(maininputtable)
 	
 //========================the input xml part end=============================
