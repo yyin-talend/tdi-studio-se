@@ -394,6 +394,7 @@ for(OutputTreeNode tableEntry : tableEntries) {
         String className = tableName1 + "Struct";
 %>
 	<%= tableName1 %> = null;
+	<%= tableName1 %>_tmp = new <%= tableName1 %>Struct();
 	//output table :'<%=tableName1%>'
 <%	if(!isXpathFromLookup){%>
 <%
@@ -550,16 +551,18 @@ for(OutputTreeNode tableEntry : tableEntries) {
 			resultExpression = matchXmlTreeExpr.generateExprCode(tableEntry.getExpression());
 			if(resultExpression!=null && !("").equals(resultExpression)){
 %>
-			
 			<%= tableName1 %>_tmp.<%=tableEntry.getName() %> = <%=resultExpression %>;
 			<%if(hasAggregateColumn) {%>
 			//set the flat column for aggregate
 			<%=tableName1 %>_aggregate.<%=tableEntry.getName() %> = <%=resultExpression %>;
-			<% } %>
+			<%
+			} 
+			%>
+				
 <%	
+			
 			}
 		}
-
 %>
 
 <%	
@@ -573,6 +576,22 @@ for(OutputTreeNode tableEntry : tableEntries) {
 	}
 %>
 <%= tableName1 %> = <%= tableName1 %>_tmp;
+<%
+// If an output table doesn't contain a Document, and if there is an aggregate element in the output tables
+
+boolean flat = true;
+for(OutputTreeNode table_ent : table.getNodes()) {
+	if(("id_Document").equals(table_ent.getType())){
+		flat = false;
+		break;
+	}
+}
+if(flat) {
+%>
+	allOutsForAggregate_<%=uniqueNameComponent %>.add(<%= tableName1 %>_tmp);
+<%
+}
+%>
 <% if(table.isActivateExpressionFilter() && table.getExpressionFilter() != null && !("").equals(table.getExpressionFilter())){ %>
 } else {
 	rejected_<%=cid%> = true;
