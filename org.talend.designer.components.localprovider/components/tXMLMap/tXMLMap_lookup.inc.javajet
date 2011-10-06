@@ -156,6 +156,9 @@ skeleton="tXMLMap_java.skeleton"
 				String[] aKeysNames = keysNames.toArray(new String[0]);
 				String[] aKeysValues = keysValues.toArray(new String[0]);
 				String className = tableName + "Struct";
+				
+				hasValidLookupTables = true;
+				
 				String matchingMode = nextInputTable.getMatchingMode();
 				if(matchingMode == null) {
 					if(aKeysValues.length > 0) {

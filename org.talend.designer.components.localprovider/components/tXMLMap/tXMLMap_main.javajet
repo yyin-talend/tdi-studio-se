@@ -12,6 +12,7 @@
 			org.talend.designer.xmlmap.generation.GenerationManagerFactory
 			org.talend.designer.xmlmap.generation.GenerationManager
 			org.talend.core.model.process.BlockCode
+			org.talend.designer.xmlmap.generation.HashedMetadataTable
 			
 			org.talend.designer.xmlmap.model.emf.xmlmap.VarNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.VarTable

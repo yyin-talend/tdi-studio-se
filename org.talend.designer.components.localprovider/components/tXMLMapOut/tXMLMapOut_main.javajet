@@ -73,6 +73,7 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 	boolean hasDocumentInMainInputTable = false;
 	boolean isPlainNode = true;
 	boolean isPlainNodeInLookup = false;
+	boolean hasValidLookupTables = false;
 	int closeWhileBlockCount = 0;
 	boolean hasDocumentGlobal = false;
 	
