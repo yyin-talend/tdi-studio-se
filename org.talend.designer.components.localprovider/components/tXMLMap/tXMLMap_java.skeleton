@@ -94,6 +94,15 @@ public class CLASS {
 			}
 			return "";
     	}
+    	
+    	public boolean tableHasADocument(EList<OutputTreeNode> outputTableEntries) {
+    		for (OutputTreeNode outputTableEntry : outputTableEntries) {
+    			if(("id_Document").equals(outputTableEntry.getType())){
+    				return true;
+    			}
+    		}
+    		return false;
+    	}
 	}
 
 	class MatchXmlTreeExpr {
