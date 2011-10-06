@@ -449,8 +449,8 @@ public class FOXUI {
     protected void fillContextMenu(IMenuManager manager) {
         if (!xmlViewer.getSelection().isEmpty()) {
             manager.add(createAction);
+            manager.add(createAttributeAction);
             if (!foxManager.getFoxComponent().istWriteJSONField()) {
-                manager.add(createAttributeAction);
                 manager.add(createNamespaceAction);
             }
             // manager.add(editAction);
