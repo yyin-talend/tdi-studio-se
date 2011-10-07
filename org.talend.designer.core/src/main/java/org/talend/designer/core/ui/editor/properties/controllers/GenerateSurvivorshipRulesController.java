@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -29,11 +30,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ITDQSurvivorshipService;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -97,6 +99,17 @@ public class GenerateSurvivorshipRulesController extends AbstractElementProperty
 
     private void generateSuvivorshipRules() {
         System.err.println("generate survivorship rules");
+        Node node = (Node) elem;
+
+        final String PROJECT_NAME = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel().toLowerCase();
+        final String JOB_NAME = node.getProcess().getName().toLowerCase();
+        final String COMPONENT_NAME = node.getUniqueName().toLowerCase();
+
+        String javaClassName = StringUtils.capitalize(PROJECT_NAME) + StringUtils.capitalize(JOB_NAME)
+                + StringUtils.capitalize(COMPONENT_NAME);
+        ITDQSurvivorshipService service = (ITDQSurvivorshipService) GlobalServiceRegister.getDefault().getService(
+                ITDQSurvivorshipService.class);
+        service.createSurvivorshipItems(node);
     }
 
     /*
@@ -111,8 +124,7 @@ public class GenerateSurvivorshipRulesController extends AbstractElementProperty
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
         Button btnEdit;
-        btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit = getWidgetFactory().createButton(subComposite, "Go", SWT.PUSH); //$NON-NLS-1$
         FormData data;
         btnEdit.addSelectionListener(listenerSelection);
 
