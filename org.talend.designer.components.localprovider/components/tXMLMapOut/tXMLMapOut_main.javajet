@@ -652,7 +652,7 @@ for (VarTable varsTable : varsTables) {
 								
 								sb.append(cr + cr +"gen_Doc_"+outputTableName+"_"+cid+".generateElements(");
 								if(hasDocumentInMainInputTable || hasDocumentInAnyLookupTable) {
-									sb.append("treeNodeAPI_"+uniqueNameComponent+",");
+									sb.append("treeNodeAPI_"+cid+",");
 								}
 								sb.append(rejectedDocInnerJoin);
 								for (InputXmlTree inputTable: inputTables) {
@@ -683,7 +683,7 @@ for (VarTable varsTable : varsTables) {
 	
 	                    if (connectionExists) {
 							if(hasDocument && !isPlainNode) {
-								sb.append("if(nb_line_"+uniqueNameComponent+">=nodeList_"+uniqueNameComponent+".size())");
+								sb.append("if(nb_line_"+cid+">=nodeList_"+cid+".size())");
 							}
 							sb.append(cr + outputTableName + " = " + outputTableName + "_tmp;");
 							if(hasDocument)
