@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.dnd.DND;
@@ -22,13 +24,20 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.business.BusinessType;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.utils.AbstractResourceChangesService;
+import org.talend.core.repository.utils.TDQServiceRegister;
 import org.talend.repository.RepositoryWorkUnit;
+import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.actions.CopyObjectAction;
 import org.talend.repository.model.actions.MoveObjectAction;
@@ -78,6 +87,28 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
                 ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
                 break;
             case DND.DROP_MOVE:
+                // MOD gdbu 2011-9-29 TDQ-3546
+                List<?> selectItems = ((org.eclipse.jface.viewers.TreeSelection) data).toList();
+                for (Object object : selectItems) {
+                    if (object instanceof RepositoryNode) {
+                        RepositoryNode repositoryNode = (RepositoryNode) object;
+                        ERepositoryObjectType sourceType = (ERepositoryObjectType) repositoryNode
+                                .getProperties(EProperties.CONTENT_TYPE);
+                        if (sourceType == ERepositoryObjectType.METADATA_CONNECTIONS
+                                || sourceType == ERepositoryObjectType.METADATA_FILE_DELIMITED
+                                || sourceType == ERepositoryObjectType.METADATA_MDMCONNECTION) {
+
+                            AbstractResourceChangesService resourceChangeService = TDQServiceRegister.getInstance()
+                                    .getResourceChangeService(AbstractResourceChangesService.class);
+                            boolean judgeCanMoveOrNotByDependency = judgeCanMoveOrNotByDependency(repositoryNode,
+                                    resourceChangeService);
+                            if (!judgeCanMoveOrNotByDependency) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                // ~TDQ-3546
                 String moveName = "User action : Move Object"; //$NON-NLS-1$
                 repositoryWorkUnit = new RepositoryWorkUnit<Object>(moveName, MoveObjectAction.getInstance()) {
 
@@ -103,6 +134,36 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
         }
 
         return toReturn;
+    }
+
+    /**
+     * ADD gdbu 2011-9-29 TDQ-3546
+     * 
+     * DOC gdbu(TDQ) Comment method "judgeCanMoveOrNotByDependency". If current connecton have dependencies in TDQ ,
+     * then return false and that means can not move it.
+     * 
+     * @param sourceNode
+     * @param resourceChangeService
+     * @return
+     */
+    private boolean judgeCanMoveOrNotByDependency(RepositoryNode sourceNode, AbstractResourceChangesService resourceChangeService) {
+        for (IRepositoryNode iRepositoryNode : sourceNode.getChildren()) {
+            RepositoryNode repositoryNode = (RepositoryNode) iRepositoryNode;
+            if (repositoryNode.getType().equals(ENodeType.SIMPLE_FOLDER)) {
+                judgeCanMoveOrNotByDependency(repositoryNode, resourceChangeService);
+            } else {
+                // iRepositoryNode.getObject().getProperty().getItem().eResource().unload();
+                Item item = repositoryNode.getObject() == null ? null : repositoryNode.getObject().getProperty().getItem();
+                if (resourceChangeService != null && null != item) {
+                    boolean handleResourceChange = resourceChangeService.handleResourceChange(((ConnectionItem) item)
+                            .getConnection());
+                    if (!handleResourceChange) {
+                        return handleResourceChange;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /*
