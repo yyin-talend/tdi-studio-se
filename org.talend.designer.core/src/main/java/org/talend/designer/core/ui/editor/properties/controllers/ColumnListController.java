@@ -546,7 +546,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                                                             String tag = tv.getTag();
                                                             if (tag != null && tag.equals("COLUMN FAMILY")) {//$NON-NLS-N$
                                                                 String value = tv.getValue();
-                                                                if (value != null && value.equals(metadataConnection.getSchema())) {
+                                                                if (value != null) {
                                                                     columnFamily = value;
                                                                     break;
                                                                 }
