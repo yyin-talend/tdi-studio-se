@@ -211,6 +211,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
                         addOperateMenu(itemList[i]);
                     } else {
                         itemTable.setMenu(null);
+                        addNewExtensonBtn.setEnabled(true);
                     }
                 }
             }
@@ -671,11 +672,11 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 } else if (versionOlderBtn.getSelection()) {
                     listVersionCompatibles = filterVersionRevisionsToString("older", versionOlderText.getText());
                 } else if (versionNewerBtn.getSelection()) {
-                    listVersionCompatibles = filterVersionRevisionsToString("newer", versionOlderText.getText());
+                    listVersionCompatibles = filterVersionRevisionsToString("newer", versionNewerText.getText());
                 } else if (versionExceptBtn.getSelection()) {
-                    listVersionCompatibles = filterVersionRevisionsToString("except", versionOlderText.getText());
+                    listVersionCompatibles = filterVersionRevisionsToString("except", versionExceptText.getText());
                 } else if (versionOnlyTheseBtn.getSelection()) {
-                    listVersionCompatibles = filterVersionRevisionsToString("only", versionOlderText.getText());
+                    listVersionCompatibles = filterVersionRevisionsToString("only", versionOnlyTheseText.getText());
                 }
                 extension.setListVersionCompatibles(listVersionCompatibles);
                 String descriptionStr = descriptionText.getText();
@@ -1039,11 +1040,11 @@ public class MyExtensionsComposite extends ExchangeComposite {
                     } else if (versionOlderBtn.getSelection()) {
                         listVersionCompatibles = filterVersionRevisionsToString("older", versionOlderText.getText());
                     } else if (versionNewerBtn.getSelection()) {
-                        listVersionCompatibles = filterVersionRevisionsToString("newer", versionOlderText.getText());
+                        listVersionCompatibles = filterVersionRevisionsToString("newer", versionNewerText.getText());
                     } else if (versionExceptBtn.getSelection()) {
-                        listVersionCompatibles = filterVersionRevisionsToString("except", versionOlderText.getText());
+                        listVersionCompatibles = filterVersionRevisionsToString("except", versionExceptText.getText());
                     } else if (versionOnlyTheseBtn.getSelection()) {
-                        listVersionCompatibles = filterVersionRevisionsToString("only", versionOlderText.getText());
+                        listVersionCompatibles = filterVersionRevisionsToString("only", versionOnlyTheseText.getText());
                     }
 
                     extension.setListVersionCompatibles(listVersionCompatibles);
@@ -1390,11 +1391,11 @@ public class MyExtensionsComposite extends ExchangeComposite {
                     } else if (versionOlderBtn.getSelection()) {
                         listVersionCompatibles = filterVersionRevisionsToString("older", versionOlderText.getText());
                     } else if (versionNewerBtn.getSelection()) {
-                        listVersionCompatibles = filterVersionRevisionsToString("newer", versionOlderText.getText());
+                        listVersionCompatibles = filterVersionRevisionsToString("newer", versionNewerText.getText());
                     } else if (versionExceptBtn.getSelection()) {
-                        listVersionCompatibles = filterVersionRevisionsToString("except", versionOlderText.getText());
+                        listVersionCompatibles = filterVersionRevisionsToString("except", versionExceptText.getText());
                     } else if (versionOnlyTheseBtn.getSelection()) {
-                        listVersionCompatibles = filterVersionRevisionsToString("only", versionOlderText.getText());
+                        listVersionCompatibles = filterVersionRevisionsToString("only", versionOnlyTheseText.getText());
                     }
 
                     extension.setListVersionCompatibles(listVersionCompatibles);
@@ -1465,7 +1466,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 sb.append(ver.getVersionId());
                 sb.append(",");
             }
-            return sb.toString();
+            return sb.substring(0, sb.length() - 1);
         } else if (status.equals("older")) {
             for (VersionRevision ver : fVersionRevisions) {
                 if (ver.getVersionName().equalsIgnoreCase(version)) {
@@ -1474,7 +1475,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 sb.append(ver.getVersionId());
                 sb.append(",");
             }
-            return sb.toString();
+            return sb.substring(0, sb.length() - 1);
         } else if (status.equals("newer")) {
             boolean newerb = false;
             for (VersionRevision ver : fVersionRevisions) {
@@ -1487,7 +1488,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 }
 
             }
-            return sb.toString();
+            return sb.substring(0, sb.length() - 1);
         } else if (status.equals("except")) {
             for (VersionRevision ver : fVersionRevisions) {
                 if (!ver.getVersionName().equalsIgnoreCase(version)) {
@@ -1495,12 +1496,12 @@ public class MyExtensionsComposite extends ExchangeComposite {
                     sb.append(",");
                 }
             }
-            return sb.toString();
+            return sb.substring(0, sb.length() - 1);
         } else if (status.equals("only")) {
             for (VersionRevision ver : fVersionRevisions) {
                 if (ver.getVersionName().equalsIgnoreCase(version)) {
                     sb.append(ver.getVersionId());
-                    sb.append(",");
+                    break;
                 }
             }
             return sb.toString();

@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.components.exchange.ui;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,6 +41,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -94,6 +96,8 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
     Composite addToolBarComp, listExtensonsComp, extensionViewDetailComp;
 
     private CCombo addTosVersionFilterCombo;
+
+    private Map<Integer, Image> exchangeStarImageMap = new HashMap<Integer, Image>();
 
     /**
      * DOC hcyi AvailableExtensionsComposite constructor comment.
@@ -165,7 +169,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         //
         TableColumn itemColumn = new TableColumn(itemTable, SWT.CENTER);
         itemColumn.setText(Messages.getString("AvailableExtensionsComposite.ExtensionName")); //$NON-NLS-1$
-        itemColumn.setWidth(180);
+        itemColumn.setWidth(280);
 
         TableColumn versionColumn = new TableColumn(itemTable, SWT.CENTER);
         versionColumn.setText(Messages.getString("AvailableExtensionsComposite.Version")); //$NON-NLS-1$
@@ -173,11 +177,11 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
 
         TableColumn ratingColumn = new TableColumn(itemTable, SWT.CENTER);
         ratingColumn.setText(Messages.getString("AvailableExtensionsComposite.Rating")); //$NON-NLS-1$
-        ratingColumn.setWidth(180);
+        ratingColumn.setWidth(120);
 
         TableColumn authorColumn = new TableColumn(itemTable, SWT.CENTER);
         authorColumn.setText(Messages.getString("AvailableExtensionsComposite.Author")); //$NON-NLS-1$
-        authorColumn.setWidth(180);
+        authorColumn.setWidth(150);
 
         final TableColumn operateColumn = new TableColumn(itemTable, SWT.CENTER);
         operateColumn.setText(""); //$NON-NLS-1$
@@ -293,10 +297,11 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
             //
             tableItem.setText(0, object.getLabel());
             tableItem.setText(1, object.getVersionExtension());
-            tableItem.setText(2, getRate(object.getRate()));
+            tableItem.setImage(2, getRateImage(object.getRate()));
             tableItem.setText(3, object.getAuthor());
 
             final Composite operateComposit = new Composite(itemTable, SWT.NONE);
+            operateComposit.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
             GridLayout layout = new GridLayout(5, false);
             layout.horizontalSpacing = 1;
             layout.verticalSpacing = 0;
@@ -481,11 +486,11 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
 
         Label lblNewLabel_4 = new Label(group_1, SWT.NONE);
         FormData fd_lblNewLabel_4 = new FormData();
-        fd_lblNewLabel_4.right = new FormAttachment(text, 128, SWT.RIGHT);
-        fd_lblNewLabel_4.left = new FormAttachment(text, 67);
+        fd_lblNewLabel_4.right = new FormAttachment(text, 158, SWT.RIGHT);
+        fd_lblNewLabel_4.left = new FormAttachment(text, 50);
         fd_lblNewLabel_4.top = new FormAttachment(lblNewLabel_3, 22);
         lblNewLabel_4.setLayoutData(fd_lblNewLabel_4);
-        lblNewLabel_4.setText(getRate(componentExtension.getRate()));
+        lblNewLabel_4.setImage(getRateImage(componentExtension.getRate()));
 
         final Button btnNewButton_1 = widgetFactory.createButton(group_1,
                 Messages.getString("AvailableExtensionsComposite.ViewDetail.installOperateStatus"), SWT.CENTER);
@@ -542,11 +547,11 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
 
         // review
         Map<Integer, AvailableExtensionViewDetail> fViewDetails = new HashMap<Integer, AvailableExtensionViewDetail>();
-        Map<Integer, Label> fLabels = new HashMap<Integer, Label>();
+        Map<Integer, CLabel> fLabels = new HashMap<Integer, CLabel>();
         EList<AvailableExtensionViewDetail> reviews = componentExtension.getReviews();
         if (reviews != null && reviews.size() > 0) {
             for (int i = 1; i <= reviews.size(); i++) {
-                fLabels.put(i, new Label(reviewsComposite, SWT.NONE));
+                fLabels.put(i, new CLabel(reviewsComposite, SWT.NONE));
                 fViewDetails.put(i, reviews.get(i - 1));
             }
         }
@@ -554,12 +559,12 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
 
             Iterator ite = fLabels.entrySet().iterator();
             while (ite.hasNext()) {
-                Map.Entry<Integer, Label> entry = (Entry<Integer, Label>) ite.next();
+                Map.Entry<Integer, CLabel> entry = (Entry<Integer, CLabel>) ite.next();
                 int j = entry.getKey();
-                Label objectLabel = entry.getValue();
+                CLabel objectLabel = entry.getValue();
                 AvailableExtensionViewDetail viewDetail = fViewDetails.get(j);
-                String tstr = getRate(viewDetail.getReviewrate()) + " " + viewDetail.getTitle() + "\n\t"
-                        + viewDetail.getComment();
+                String tstr = " " + viewDetail.getTitle() + "\n\t" + toFormaStr(3, viewDetail.getComment());
+                objectLabel.setImage(getRateImage(viewDetail.getReviewrate()));
                 objectLabel.setText(tstr);
                 data = new FormData();
                 if (j == 1) {
@@ -738,17 +743,18 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         }
     }
 
-    private static String getRate(String rate) {
+    private Image getRateImage(String rate) {
+        initStarImages();
         int num = 0;
-        num = Integer.parseInt(rate.substring(0, 1));
         String star = "";
-        for (int i = num; i > 0; i--) {
-            star = star + ExchangeUtils.strRateTwo;
+        if (rate != null && !"".equals(rate)) {
+            double rates = Double.parseDouble(rate);
+            DecimalFormat df = new DecimalFormat("#");
+            num = Integer.parseInt(df.format(rates));
+            return exchangeStarImageMap.get(num);
+
         }
-        for (int j = 5 - num; j > 0; j--) {
-            star = star + ExchangeUtils.strRateOne;
-        }
-        return star;
+        return exchangeStarImageMap.get(0);
     }
 
     private String toFormaStr(int num, String strTemp) {
@@ -767,11 +773,34 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
                     temp = strTemp.substring(0, 80);
                 }
                 break;
+            case 3:
+                StringBuffer sb = new StringBuffer();
+                if (strTemp.length() > 90) {
+                    int len = strTemp.length() / 90;
+                    for (int i = 0; i < len; i++) {
+                        sb.append(temp.substring(0, 90));
+                        sb.append("-\n");
+                        temp = temp.substring(90, temp.length());
+
+                    }
+                    sb.append(strTemp.substring(90 * len, strTemp.length()));
+                    temp = sb.toString();
+                }
+                break;
             default:
                 return "";
             }
         }
         return temp;
+    }
+
+    private void initStarImages() {
+        exchangeStarImageMap.put(0, ExchangePlugin.getImageDescriptor("icons/exchangeStar/star.jpg").createImage());
+        exchangeStarImageMap.put(1, ExchangePlugin.getImageDescriptor("icons/exchangeStar/star1.jpg").createImage());
+        exchangeStarImageMap.put(2, ExchangePlugin.getImageDescriptor("icons/exchangeStar/star2.jpg").createImage());
+        exchangeStarImageMap.put(3, ExchangePlugin.getImageDescriptor("icons/exchangeStar/star3.jpg").createImage());
+        exchangeStarImageMap.put(4, ExchangePlugin.getImageDescriptor("icons/exchangeStar/star4.jpg").createImage());
+        exchangeStarImageMap.put(5, ExchangePlugin.getImageDescriptor("icons/exchangeStar/star5.jpg").createImage());
     }
 
     /*

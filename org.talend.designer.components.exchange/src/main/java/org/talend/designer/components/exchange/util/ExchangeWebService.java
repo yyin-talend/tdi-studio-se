@@ -379,6 +379,7 @@ public class ExchangeWebService {
             String passwordHash, String title, String description, String userRating) {
         WebserviceStatus ws = new WebserviceStatus();
         ws.setResult(false);
+        Resty r = new Resty();
         JSONObject tokenMessage = new JSONObject();
         try {
             tokenMessage.put("typeExtension", typeExtension);
@@ -390,11 +391,12 @@ public class ExchangeWebService {
             tokenMessage.put("userRating", userRating);
             JSONObject token = new us.monoid.json.JSONObject();
             token.put("review", tokenMessage);
-
-            String u = exchangeWSServer + "downloadedExtension.php?data=" + token;
-            JSONObject resultObj = readJsonFromUrl(u);
+            AbstractContent ac = Resty.content(token);
+            MultipartContent mpc = Resty.form(new FormData("data", ac));
+            TextResource textResult = r.text(exchangeWSServer + "downloadedExtension.php", mpc);
+            JSONObject resultObject = new JSONObject(textResult.toString());
             //
-            Object object = resultObj.get("result");
+            Object object = resultObject.get("result");
             if (object != null && object.equals("INSERT OK")) {
                 ws.setResult(true);
                 ws.setMessageException(Messages.getString("ExchangeWebService.insertReviewSuccessful")); //$NON-NLS-1$
@@ -402,7 +404,6 @@ public class ExchangeWebService {
                 ws.setMessageException(object.toString()); //$NON-NLS-1$
             }
         } catch (JSONException e) {
-            e.printStackTrace();
             ws.setMessageException(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
@@ -435,6 +436,7 @@ public class ExchangeWebService {
             String description, String agreement) {
         WebserviceStatus ws = new WebserviceStatus();
         ws.setResult(false);
+        Resty r = new Resty();
         JSONObject tokenMessage = new JSONObject();
         try {
             tokenMessage.put("username", username);
@@ -449,18 +451,17 @@ public class ExchangeWebService {
             tokenMessage.put("agreement", agreement);
             JSONObject token = new us.monoid.json.JSONObject();
             token.put("newRevision", tokenMessage);
-
-            String u = exchangeWSServer + "publishExtension.php?data=" + token;
-            JSONObject result = readJsonFromUrl(u);
-
-            JSONObject resultObj = (JSONObject) result.get("resultNewRevision");
-            String idRevision = resultObj.getString("idRevision");
+            AbstractContent ac = Resty.content(token);
+            MultipartContent mpc = Resty.form(new FormData("data", filename, ac));
+            TextResource textResult = r.text(exchangeWSServer + "publishExtension.php", mpc);
+            JSONObject resultObject = new JSONObject(textResult.toString());
+            JSONObject result = (JSONObject) resultObject.get("resultNewRevision");
+            String idRevision = result.getString("idRevision");
             //
             ws.setValue(idRevision);
             ws.setResult(true);
             ws.setMessageException(Messages.getString("ExchangeWebService.insertionRevisionSuccessful")); //$NON-NLS-1$
         } catch (JSONException e) {
-            e.printStackTrace();
             ws.setMessageException(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
@@ -514,7 +515,6 @@ public class ExchangeWebService {
                 ws.setMessageException(object.toString()); //$NON-NLS-1$
             }
         } catch (JSONException e) {
-            e.printStackTrace();
             ws.setMessageException(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
@@ -542,6 +542,7 @@ public class ExchangeWebService {
             String category, String name, String description) {
         WebserviceStatus ws = new WebserviceStatus();
         ws.setResult(false);
+        Resty r = new Resty();
         JSONObject tokenMessage = new JSONObject();
         try {
             tokenMessage.put("username", username);
@@ -553,16 +554,17 @@ public class ExchangeWebService {
             JSONObject token = new us.monoid.json.JSONObject();
             token.put("newExtension", tokenMessage);
 
-            String u = exchangeWSServer + "publishExtension.php?data=" + token;
-            JSONObject result = readJsonFromUrl(u);
-            JSONObject resultObj = (JSONObject) result.get("resultNewExtension");
-            String idExtension = resultObj.getString("idExtension");
+            AbstractContent ac = Resty.content(token);
+            MultipartContent mpc = Resty.form(new FormData("data", ac));
+            TextResource textResult = r.text(exchangeWSServer + "publishExtension.php", mpc);
+            JSONObject resultObject = new JSONObject(textResult.toString());
+            JSONObject object = (JSONObject) resultObject.get("resultNewExtension");
+            String idExtension = object.getString("idExtension");
             //
             ws.setValue(idExtension);
             ws.setResult(true);
             ws.setMessageException(Messages.getString("ExchangeWebService.insertionExtensionSuccessful")); //$NON-NLS-1$
         } catch (JSONException e) {
-            e.printStackTrace();
             ws.setMessageException(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();

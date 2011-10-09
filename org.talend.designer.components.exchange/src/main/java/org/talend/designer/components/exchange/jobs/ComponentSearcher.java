@@ -13,9 +13,11 @@
 package org.talend.designer.components.exchange.jobs;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +27,6 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.components.exchange.model.AvailableExtensionViewDetail;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.model.ExchangeFactory;
-import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.ExchangeWebService;
 
 import us.monoid.json.JSONArray;
@@ -79,6 +80,7 @@ public class ComponentSearcher {
                             if ((extensionsViewDetailObj.get("reviews")) != null
                                     && (extensionsViewDetailObj.get("reviews") instanceof JSONArray)) {
                                 JSONArray o = extensionsViewDetailObj.getJSONArray("reviews");
+                                int sumRate = 0;
                                 int sizeDetail = o.length();
                                 for (int j = 0; j < sizeDetail; j++) {
                                     JSONObject review = o.getJSONObject(j);
@@ -89,6 +91,17 @@ public class ComponentSearcher {
                                     extensionViewDetail.setComment(review.getString("comment"));
                                     extensionViewDetail.setReviewrate(review.getString("rate"));
                                     reviews.add(extensionViewDetail);
+                                    sumRate = sumRate + Integer.parseInt(review.getString("rate"));
+                                }
+                                //
+                                if (sizeDetail > 0 && sumRate > 0) {
+                                    DecimalFormat df = new DecimalFormat("###.00");
+                                    String averageRate = df.format(Double.parseDouble(df.format(sumRate)) / sizeDetail);
+                                    if (averageRate != null && !"".equals(averageRate)) {
+                                        extension.setRate(averageRate);
+                                    } else {
+                                        extension.setRate("0");
+                                    }
                                 }
                             }
                             extension.getReviews().addAll((Collection<? extends AvailableExtensionViewDetail>) reviews);
@@ -170,7 +183,12 @@ public class ComponentSearcher {
                         extension.setIdExtension(extensionObj.getString("idExtension"));
                         extension.setTypeExtension(extensionObj.getString("typeExtension"));
                         extension.setLabel(extensionObj.getString("name"));
-                        extension.setPublicationDate(formatter.parse(extensionObj.getString("dateExtension")));
+                        if (extensionObj.getString("dateExtension") != null
+                                && !"".equals(extensionObj.getString("dateExtension"))) {
+                            extension.setPublicationDate(formatter.parse(extensionObj.getString("dateExtension")));
+                        } else {
+                            extension.setPublicationDate(formatter.parse(formatter.format(new Date())));
+                        }
                         extension.setLastVersionAvailable(extensionObj.getString("lastVersion"));
                         extensionsMap.put(extension.getIdExtension(), extension);
                         extensions.add(extension);

@@ -72,10 +72,6 @@ public class ExchangeUtils {
 
     public final static String exchangeWSServer = "http://www.talendforge.org/exchange/webservices/";
 
-    public final static String strRateOne = "☆";
-
-    public final static String strRateTwo = "★";
-
     public static String TYPEEXTENSION = "tos"; //$NON-NLS-1$
 
     public static String VERSIONSTUDIO = "4.2"; //$NON-NLS-1$
