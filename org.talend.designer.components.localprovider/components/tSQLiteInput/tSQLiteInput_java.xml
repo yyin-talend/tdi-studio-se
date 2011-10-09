@@ -149,7 +149,7 @@
 	
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Driver-SQLite" MODULE="sqlitejdbc_v037_nested.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-SQLite" MODULE="sqlitejdbc-v056.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 
