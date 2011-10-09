@@ -462,12 +462,15 @@ public class ImportItemUtil {
                 TimeMeasure.step("importItemRecords", "before save");
                 if (RelationshipItemBuilder.getInstance().isNeedSaveRelations()) {
                     RelationshipItemBuilder.getInstance().saveRelations();
+                    TimeMeasure.step("importItemRecords", "save relations");
                 } else {
                     // only save the project here if no relation need to be saved, since project will already be saved
                     // with relations
                     factory.saveProject(ProjectManager.getInstance().getCurrentProject());
+
+                    TimeMeasure.step("importItemRecords", "save project");
                 }
-                TimeMeasure.step("importItemRecords", "save relateions or project");
+
             }
         };
         repositoryWorkUnit.setAvoidUnloadResources(true);
