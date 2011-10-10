@@ -38,6 +38,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#isRejectInnerJoin <em>Reject Inner Join</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#isErrorReject <em>Error Reject</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#isAllInOne <em>All In One</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#isEnableEmptyElement <em>Enable Empty Element</em>}</li>
  * </ul>
  * </p>
  *
@@ -133,6 +134,26 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
      * @ordered
      */
     protected boolean allInOne = ALL_IN_ONE_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #isEnableEmptyElement() <em>Enable Empty Element</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isEnableEmptyElement()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean ENABLE_EMPTY_ELEMENT_EDEFAULT = false;
+
+    /**
+     * The cached value of the '{@link #isEnableEmptyElement() <em>Enable Empty Element</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isEnableEmptyElement()
+     * @generated
+     * @ordered
+     */
+    protected boolean enableEmptyElement = ENABLE_EMPTY_ELEMENT_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -254,6 +275,27 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
      * <!-- end-user-doc -->
      * @generated
      */
+    public boolean isEnableEmptyElement() {
+        return enableEmptyElement;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setEnableEmptyElement(boolean newEnableEmptyElement) {
+        boolean oldEnableEmptyElement = enableEmptyElement;
+        enableEmptyElement = newEnableEmptyElement;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT, oldEnableEmptyElement, enableEmptyElement));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -281,6 +323,8 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
                 return isErrorReject();
             case XmlmapPackage.OUTPUT_XML_TREE__ALL_IN_ONE:
                 return isAllInOne();
+            case XmlmapPackage.OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT:
+                return isEnableEmptyElement();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -310,6 +354,9 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
             case XmlmapPackage.OUTPUT_XML_TREE__ALL_IN_ONE:
                 setAllInOne((Boolean)newValue);
                 return;
+            case XmlmapPackage.OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT:
+                setEnableEmptyElement((Boolean)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -337,6 +384,9 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
             case XmlmapPackage.OUTPUT_XML_TREE__ALL_IN_ONE:
                 setAllInOne(ALL_IN_ONE_EDEFAULT);
                 return;
+            case XmlmapPackage.OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT:
+                setEnableEmptyElement(ENABLE_EMPTY_ELEMENT_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -359,6 +409,8 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
                 return errorReject != ERROR_REJECT_EDEFAULT;
             case XmlmapPackage.OUTPUT_XML_TREE__ALL_IN_ONE:
                 return allInOne != ALL_IN_ONE_EDEFAULT;
+            case XmlmapPackage.OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT:
+                return enableEmptyElement != ENABLE_EMPTY_ELEMENT_EDEFAULT;
         }
         return super.eIsSet(featureID);
     }
@@ -381,6 +433,8 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
         result.append(errorReject);
         result.append(", allInOne: ");
         result.append(allInOne);
+        result.append(", enableEmptyElement: ");
+        result.append(enableEmptyElement);
         result.append(')');
         return result.toString();
     }

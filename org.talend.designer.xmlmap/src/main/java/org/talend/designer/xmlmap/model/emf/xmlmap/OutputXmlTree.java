@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isRejectInnerJoin <em>Reject Inner Join</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isErrorReject <em>Error Reject</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isAllInOne <em>All In One</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isEnableEmptyElement <em>Enable Empty Element</em>}</li>
  * </ul>
  * </p>
  *
@@ -150,5 +151,31 @@ public interface OutputXmlTree extends AbstractInOutTree {
      * @generated
      */
     void setAllInOne(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Enable Empty Element</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Enable Empty Element</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Enable Empty Element</em>' attribute.
+     * @see #setEnableEmptyElement(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getOutputXmlTree_EnableEmptyElement()
+     * @model
+     * @generated
+     */
+    boolean isEnableEmptyElement();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isEnableEmptyElement <em>Enable Empty Element</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Enable Empty Element</em>' attribute.
+     * @see #isEnableEmptyElement()
+     * @generated
+     */
+    void setEnableEmptyElement(boolean value);
 
 } // OutputXmlTree
