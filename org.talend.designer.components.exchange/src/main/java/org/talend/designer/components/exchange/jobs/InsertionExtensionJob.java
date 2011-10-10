@@ -67,8 +67,8 @@ public class InsertionExtensionJob extends Job {
                         String idExtension = webserviceStatus.getValue();
                         WebserviceStatus uploadReWbs = ExchangeWebService.insertionRevisionService(idExtension,
                                 ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(),
-                                fe.getLastVersionAvailable(), fe.getListVersionCompatibles(), fe.getFilename(), "content",
-                                fe.getDescription(), "true");
+                                fe.getLastVersionAvailable(), fe.getListVersionCompatibles(), fe.getFilename(),
+                                "application/multipart-formdata", fe.getDescription(), "true");
                         uploadReWbs.setMessageException(webserviceStatus.getMessageException() + " "
                                 + uploadReWbs.getMessageException());
                         return uploadReWbs;

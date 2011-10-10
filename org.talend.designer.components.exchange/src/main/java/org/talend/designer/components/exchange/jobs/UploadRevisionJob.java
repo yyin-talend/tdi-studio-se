@@ -61,8 +61,8 @@ public class UploadRevisionJob extends Job {
                 if (ExchangeUtils.checkUserAndPassword()) {
                     webserviceStatus = ExchangeWebService.insertionRevisionService(fe.getIdExtension(),
                             ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(),
-                            fe.getLastVersionAvailable(), fe.getListVersionCompatibles(), fe.getFilename(), "content",
-                            fe.getDescription(), "true");
+                            fe.getLastVersionAvailable(), fe.getListVersionCompatibles(), fe.getFilename(),
+                            "application/multipart-formdata", fe.getDescription(), "true");
                 } else {
                     webserviceStatus = new WebserviceStatus();
                     webserviceStatus.setMessageException(Messages.getString("MyExtensionsComposite.Form.checkUserAndPassword"));

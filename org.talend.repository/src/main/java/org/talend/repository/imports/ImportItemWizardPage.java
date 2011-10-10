@@ -78,7 +78,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.model.general.IEcosystemService;
+import org.talend.core.model.general.IExchangeService;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.RepositoryViewObject;
@@ -475,10 +475,10 @@ class ImportItemWizardPage extends WizardPage {
 
                     archivePathField.setEditable(false);
 
-                    IEcosystemService service = (IEcosystemService) GlobalServiceRegister.getDefault().getService(
-                            IEcosystemService.class);
+                    IExchangeService service = (IExchangeService) GlobalServiceRegister.getDefault().getService(
+                            IExchangeService.class);
 
-                    selectedArchive = service.openEcosystemDialog();
+                    selectedArchive = service.openExchangeDialog();
                     if (selectedArchive != null) {
                         previouslyBrowsedArchive = selectedArchive;
                         archivePathField.setText(previouslyBrowsedArchive);

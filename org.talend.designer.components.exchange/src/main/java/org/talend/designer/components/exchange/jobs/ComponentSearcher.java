@@ -27,6 +27,9 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.components.exchange.model.AvailableExtensionViewDetail;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.model.ExchangeFactory;
+import org.talend.designer.components.exchange.model.Language;
+import org.talend.designer.components.exchange.model.RevisionInfo;
+import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.ExchangeWebService;
 
 import us.monoid.json.JSONArray;
@@ -50,10 +53,11 @@ public class ComponentSearcher {
      * @return
      */
     public static List<ComponentExtension> getAvailableComponentExtensions(String typeExtensionTemp, String versionStudioTemp,
-            ECodeLanguage language) {
+            ECodeLanguage language, String category) {
         List<ComponentExtension> extensions = new ArrayList<ComponentExtension>();
         try {
-            JSONArray extensionsJSONArray = ExchangeWebService.searchExtensionJSONArray(typeExtensionTemp, versionStudioTemp);
+            JSONArray extensionsJSONArray = ExchangeWebService.searchExtensionJSONArray(typeExtensionTemp, versionStudioTemp,
+                    category);
             if (extensionsJSONArray != null) {
                 int size = extensionsJSONArray.length();
                 for (int i = 0; i < size; i++) {
@@ -156,6 +160,38 @@ public class ComponentSearcher {
         }
 
         return extension;
+
+    }
+
+    public static List<ComponentExtension> getImportComponentExtensions(String version, ECodeLanguage language, String type) {
+        List<ComponentExtension> extensions = new ArrayList<ComponentExtension>();
+
+        try {
+            List<RevisionInfo> revisions = ExchangeUtils.getRevisionList(version, getLanguageId(language), type);
+
+            Map<String, ComponentExtension> extensionsMap = new HashMap<String, ComponentExtension>();
+
+            for (RevisionInfo revision : revisions) {
+                ComponentExtension extension = extensionsMap.get(revision.getExtension_id());
+                if (extension == null) {
+                    extension = ExchangeFactory.eINSTANCE.createComponentExtension();
+                    extension.setIdExtension(revision.getExtension_id() + "");
+                    extension.setLabel(revision.getExtension_name());
+                    extension.setAuthor(revision.getAuthor_name());
+                    extension.setLanguage(Language.get(getLanguageId(language)));
+                    extension.setDescription(revision.getExtension_description());
+                    extension.setLinkDownload(revision.getDownload_url());
+                    extension.setFilename(revision.getFilename());
+                    extension.setVersionExtension(revision.getRevision_name());
+                    extensionsMap.put(revision.getExtension_id() + "", extension);
+                    extensions.add(extension);
+                }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+
+        return extensions;
 
     }
 
@@ -269,5 +305,22 @@ public class ComponentSearcher {
         }
         return installed;
 
+    }
+
+    /**
+     * Convert the project language to id.
+     * 
+     * @param language
+     * @return
+     */
+    private static int getLanguageId(ECodeLanguage language) {
+        switch (language) {
+        case JAVA:
+            return Language.JAVA_VALUE;
+        case PERL:
+            return Language.PERL_VALUE;
+        }
+        // unknow language
+        return -1;
     }
 }

@@ -28,16 +28,6 @@
                toolbarPath="group1"
                tooltip="Refresh Componenents">
          </action>
-         <action
-               class="org.talend.designer.components.exchange.ui.actions.ShowInstalledExtensionsAction"
-               icon="icons/download.gif"
-               id="org.talend.designer.components.exchange.ui.actions.ShowInstalledExtensionsAction"
-               label="Synchronous Installed Extensions"
-               state="false"
-               style="push"
-               toolbarPath="group1"
-               tooltip="Synchronous Installed Extensions">
-         </action>
       </viewContribution>
    </extension>
    <extension
@@ -47,6 +37,13 @@
             folderName="exchange"
             id="org.talend.designer.components.exchange.ExchangeComponentsProvider">
       </ComponentsProvider>
+   </extension>
+   <extension
+         point="org.talend.core.runtime.service">
+      <Service
+            class="org.talend.designer.components.exchange.ui.dialog.ExchangeService"
+            serviceId="IExchangeService">
+      </Service>
    </extension>
 
 </plugin>

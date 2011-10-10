@@ -38,6 +38,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute exchange.ecore#//ComponentExtension/dateDownload"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute exchange.ecore#//ComponentExtension/listVersionCompatibles"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute exchange.ecore#//ComponentExtension/filename"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute exchange.ecore#//ComponentExtension/linkDownload"/>
     </genClasses>
     <genClasses ecoreClass="exchange.ecore#//AvailableExtensionViewDetail">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute exchange.ecore#//AvailableExtensionViewDetail/author"/>

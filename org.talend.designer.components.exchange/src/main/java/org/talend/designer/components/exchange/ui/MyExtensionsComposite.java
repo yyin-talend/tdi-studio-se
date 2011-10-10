@@ -149,7 +149,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         stackLayout = new StackLayout();
         listMyExtensonsComp.setLayout(stackLayout);
 
-        itemTable = new Table(listMyExtensonsComp, SWT.MULTI | SWT.BORDER | SWT.CHECK | SWT.FULL_SELECTION);
+        itemTable = new Table(listMyExtensonsComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
         TableLayout tableLayout = new TableLayout();
         itemTable.setLayout(tableLayout);
         itemTable.setHeaderVisible(true);
@@ -209,6 +209,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 for (int i = 0; i < itemList.length; i++) {
                     if (itemTable.isSelected(i)) {
                         addOperateMenu(itemList[i]);
+                        break;
                     } else {
                         itemTable.setMenu(null);
                         addNewExtensonBtn.setEnabled(true);

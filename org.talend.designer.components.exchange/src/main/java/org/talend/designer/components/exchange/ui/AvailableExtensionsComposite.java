@@ -246,10 +246,6 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
                 if (action1 != null) {
                     action1.setEnabled(true);
                 }
-                IAction action2 = ActionHelper.getShowInstalledExtensionsAction();
-                if (action2 != null) {
-                    action2.setEnabled(false);
-                }
             }
         });
     }
@@ -258,7 +254,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         loadDownloadedExtensionsFromFile();
         fAvailableExtensions = extensions;
         // update status of Downloaded extensions
-        checkDownloadedExtensions();
+        // checkDownloadedExtensions();
         removeItemElements(fAvailableExtensions);
         addItemElements(fAvailableExtensions);
         elementFilter.setElements(fAvailableExtensions);
@@ -297,7 +293,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
             //
             tableItem.setText(0, object.getLabel());
             tableItem.setText(1, object.getVersionExtension());
-            tableItem.setImage(2, getRateImage(object.getRate()));
+            // tableItem.setImage(2, getRateImage(object.getRate()));
             tableItem.setText(3, object.getAuthor());
 
             final Composite operateComposit = new Composite(itemTable, SWT.NONE);
@@ -311,6 +307,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
 
             //
             final Link linkView = new Link(operateComposit, SWT.RIGHT);
+            linkView.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
             GridData data = new GridData(GridData.FILL_HORIZONTAL);
             data.horizontalAlignment = SWT.RIGHT;
             linkView.setLayoutData(data);
@@ -344,6 +341,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
             });
 
             final Link linkDownload = new Link(operateComposit, SWT.LEFT);
+            linkDownload.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
             linkDownload.setText("<A>download</A>");
             linkDownload.setData(tableItem);
             linkDownload.addSelectionListener(new SelectionAdapter() {
@@ -372,6 +370,28 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
             versionEditor.setEditor(operateComposit, tableItem, 4);
             versionEditor.setItem(tableItem);
             tableItem.setData(ITEM_EDITOR_KEY, new TableEditor[] { versionEditor });
+
+            //
+            Composite operateRateComposit = new Composite(itemTable, SWT.CENTER);
+            operateRateComposit.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
+            FormData operFormData = new FormData();
+            operFormData.left = new FormAttachment(0, 0);
+            operFormData.right = new FormAttachment(100, 0);
+            operFormData.top = new FormAttachment(0, 0);
+            operFormData.bottom = new FormAttachment(100, 0);
+            operateRateComposit.setLayoutData(operFormData);
+            operateRateComposit.setLayout(new FormLayout());
+
+            CLabel operateRateCLabel = new CLabel(operateRateComposit, SWT.CENTER);
+            operateRateCLabel.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
+            operateRateCLabel.setImage(getRateImage(object.getRate()));
+            operateRateCLabel.setLayoutData(operFormData);
+            operateRateCLabel.setData(tableItem);
+
+            TableEditor rateEditor = new TableEditor(itemTable);
+            rateEditor.minimumWidth = itemTable.getColumn(2).getWidth();
+            rateEditor.setEditor(operateRateComposit, tableItem, 2);
+            tableItem.setData(ITEM_EDITOR_KEY, new TableEditor[] { rateEditor });
         }
         itemTable.setRedraw(true);
         refresh();

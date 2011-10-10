@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Path;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.model.Category;
 import org.talend.designer.components.exchange.model.ExchangeFactory;
@@ -82,13 +83,13 @@ public class ExchangeWebService {
      * 
      * @return
      */
-    public static JSONArray searchExtensionJSONArray(String typeExtension, String versionStudio) {
+    public static JSONArray searchExtensionJSONArray(String typeExtension, String versionStudio, String category) {
         JSONObject tokenMessage = new JSONObject();
         JSONArray o = null;
         try {
             tokenMessage.put("typeExtension", typeExtension);
             tokenMessage.put("versionStudio", versionStudio);
-            tokenMessage.put("search", "6");
+            tokenMessage.put("search", category);
 
             JSONObject token = new us.monoid.json.JSONObject();
             token.put("searchExtension", tokenMessage);
@@ -99,7 +100,7 @@ public class ExchangeWebService {
             o = p.getJSONArray("extensions");
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            //
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -445,7 +446,7 @@ public class ExchangeWebService {
             tokenMessage.put("typeExtension", typeExtension);
             tokenMessage.put("version", version);
             tokenMessage.put("versionCompatibles", listVersionCompatibles);
-            tokenMessage.put("filename", filename);
+            tokenMessage.put("filename", new Path(filename).lastSegment());
             tokenMessage.put("content", content);
             tokenMessage.put("description", description);
             tokenMessage.put("agreement", agreement);

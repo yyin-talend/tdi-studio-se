@@ -255,7 +255,6 @@ public class ExchangeView extends ViewPart {
         fInstalledExtensions.clear();
         if (extensions != null && !extensions.isEmpty()) {
             fInstalledExtensions = extensions;
-            downloadedExtensionsComposite.updateInstalledExtensions(fInstalledExtensions);
         }
     }
 

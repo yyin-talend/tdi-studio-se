@@ -143,10 +143,6 @@ public class DownloadedExtensionsComposite extends ExchangeComposite {
                 if (action1 != null) {
                     action1.setEnabled(false);
                 }
-                IAction action2 = ActionHelper.getShowInstalledExtensionsAction();
-                if (action2 != null) {
-                    action2.setEnabled(true);
-                }
             }
         });
     }

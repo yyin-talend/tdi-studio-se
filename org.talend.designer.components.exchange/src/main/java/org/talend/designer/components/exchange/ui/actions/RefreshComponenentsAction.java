@@ -23,6 +23,7 @@ import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.components.exchange.jobs.RefreshJob;
+import org.talend.designer.components.exchange.jobs.ShowInstalledExtensionsJob;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.ui.views.ExchangeView;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
@@ -65,6 +66,28 @@ public class RefreshComponenentsAction implements IViewActionDelegate {
 
         }
 
+        try {
+            final ShowInstalledExtensionsJob showInstalledJob = new ShowInstalledExtensionsJob();
+            showInstalledJob.addJobChangeListener(new JobChangeAdapter() {
+
+                @Override
+                public void done(final IJobChangeEvent event) {
+
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        public void run() {
+                            updateInstalledUI(action, showInstalledJob, event);
+                        }
+                    });
+                }
+            });
+            ExchangeUtils.scheduleUserJob(showInstalledJob);
+
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+
+        }
+
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
@@ -85,6 +108,26 @@ public class RefreshComponenentsAction implements IViewActionDelegate {
             // update exchange view
             List<ComponentExtension> extensions = job.getAvailableExtensions();
             fView.updateAvailableExtensions(extensions);
+            fView.refresh();
+        }
+    }
+
+    /**
+     * Update ui after job finished.
+     * 
+     * @param action
+     * @param job
+     * @param event
+     */
+    private void updateInstalledUI(final IAction action, final ShowInstalledExtensionsJob showInstalledJob,
+            final IJobChangeEvent event) {
+        // activate action again after job finished
+        action.setEnabled(true);
+
+        if (event.getResult().isOK()) {
+            // update exchange view
+            List<ComponentExtension> extensions = showInstalledJob.getfInstalledExtensions();
+            fView.updateInstalledExtensions(extensions);
             fView.refresh();
         }
     }

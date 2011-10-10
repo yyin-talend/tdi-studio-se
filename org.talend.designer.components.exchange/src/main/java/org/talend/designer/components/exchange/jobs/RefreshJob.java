@@ -49,7 +49,8 @@ public class RefreshJob extends Job {
         Future<List<ComponentExtension>> task = executor.submit(new Callable<List<ComponentExtension>>() {
 
             public List<ComponentExtension> call() throws Exception {
-                return ComponentSearcher.getAvailableComponentExtensions("TOS", "4.2.1", ExchangeUtils.getCurrentLanguage());
+                return ComponentSearcher.getAvailableComponentExtensions("tos", "4.2.1", ExchangeUtils.getCurrentLanguage(),
+                        ExchangeUtils.CATEGORY);
             }
 
         });

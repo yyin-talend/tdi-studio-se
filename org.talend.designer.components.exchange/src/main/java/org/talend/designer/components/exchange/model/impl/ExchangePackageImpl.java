@@ -336,6 +336,15 @@ public class ExchangePackageImpl extends EPackageImpl implements ExchangePackage
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getComponentExtension_LinkDownload() {
+        return (EAttribute)componentExtensionEClass.getEStructuralFeatures().get(15);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getAvailableExtensionViewDetail() {
         return availableExtensionViewDetailEClass;
     }
@@ -446,6 +455,7 @@ public class ExchangePackageImpl extends EPackageImpl implements ExchangePackage
         createEAttribute(componentExtensionEClass, COMPONENT_EXTENSION__DATE_DOWNLOAD);
         createEAttribute(componentExtensionEClass, COMPONENT_EXTENSION__LIST_VERSION_COMPATIBLES);
         createEAttribute(componentExtensionEClass, COMPONENT_EXTENSION__FILENAME);
+        createEAttribute(componentExtensionEClass, COMPONENT_EXTENSION__LINK_DOWNLOAD);
 
         availableExtensionViewDetailEClass = createEClass(AVAILABLE_EXTENSION_VIEW_DETAIL);
         createEAttribute(availableExtensionViewDetailEClass, AVAILABLE_EXTENSION_VIEW_DETAIL__AUTHOR);
@@ -512,6 +522,7 @@ public class ExchangePackageImpl extends EPackageImpl implements ExchangePackage
         initEAttribute(getComponentExtension_DateDownload(), ecorePackage.getEDate(), "dateDownload", null, 1, 1, ComponentExtension.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getComponentExtension_ListVersionCompatibles(), ecorePackage.getEString(), "listVersionCompatibles", null, 1, 1, ComponentExtension.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getComponentExtension_Filename(), ecorePackage.getEString(), "filename", null, 1, 1, ComponentExtension.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getComponentExtension_LinkDownload(), ecorePackage.getEString(), "linkDownload", null, 1, 1, ComponentExtension.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(availableExtensionViewDetailEClass, AvailableExtensionViewDetail.class, "AvailableExtensionViewDetail", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getAvailableExtensionViewDetail_Author(), ecorePackage.getEString(), "author", null, 1, 1, AvailableExtensionViewDetail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

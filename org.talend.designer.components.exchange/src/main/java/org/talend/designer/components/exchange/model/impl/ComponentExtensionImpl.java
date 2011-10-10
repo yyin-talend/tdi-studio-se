@@ -58,6 +58,7 @@ import org.talend.designer.components.exchange.model.Language;
  *   <li>{@link org.talend.designer.components.exchange.model.impl.ComponentExtensionImpl#getDateDownload <em>Date Download</em>}</li>
  *   <li>{@link org.talend.designer.components.exchange.model.impl.ComponentExtensionImpl#getListVersionCompatibles <em>List Version Compatibles</em>}</li>
  *   <li>{@link org.talend.designer.components.exchange.model.impl.ComponentExtensionImpl#getFilename <em>Filename</em>}</li>
+ *   <li>{@link org.talend.designer.components.exchange.model.impl.ComponentExtensionImpl#getLinkDownload <em>Link Download</em>}</li>
  * </ul>
  * </p>
  *
@@ -353,6 +354,26 @@ public class ComponentExtensionImpl extends EObjectImpl implements ComponentExte
      * @ordered
      */
     protected String filename = FILENAME_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getLinkDownload() <em>Link Download</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getLinkDownload()
+     * @generated
+     * @ordered
+     */
+    protected static final String LINK_DOWNLOAD_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getLinkDownload() <em>Link Download</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getLinkDownload()
+     * @generated
+     * @ordered
+     */
+    protected String linkDownload = LINK_DOWNLOAD_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -684,6 +705,27 @@ public class ComponentExtensionImpl extends EObjectImpl implements ComponentExte
      * <!-- end-user-doc -->
      * @generated
      */
+    public String getLinkDownload() {
+        return linkDownload;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setLinkDownload(String newLinkDownload) {
+        String oldLinkDownload = linkDownload;
+        linkDownload = newLinkDownload;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ExchangePackage.COMPONENT_EXTENSION__LINK_DOWNLOAD, oldLinkDownload, linkDownload));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @SuppressWarnings("unchecked")
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -746,6 +788,8 @@ public class ComponentExtensionImpl extends EObjectImpl implements ComponentExte
                 return getListVersionCompatibles();
             case ExchangePackage.COMPONENT_EXTENSION__FILENAME:
                 return getFilename();
+            case ExchangePackage.COMPONENT_EXTENSION__LINK_DOWNLOAD:
+                return getLinkDownload();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -805,6 +849,9 @@ public class ComponentExtensionImpl extends EObjectImpl implements ComponentExte
             case ExchangePackage.COMPONENT_EXTENSION__FILENAME:
                 setFilename((String)newValue);
                 return;
+            case ExchangePackage.COMPONENT_EXTENSION__LINK_DOWNLOAD:
+                setLinkDownload((String)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -862,6 +909,9 @@ public class ComponentExtensionImpl extends EObjectImpl implements ComponentExte
             case ExchangePackage.COMPONENT_EXTENSION__FILENAME:
                 setFilename(FILENAME_EDEFAULT);
                 return;
+            case ExchangePackage.COMPONENT_EXTENSION__LINK_DOWNLOAD:
+                setLinkDownload(LINK_DOWNLOAD_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -904,6 +954,8 @@ public class ComponentExtensionImpl extends EObjectImpl implements ComponentExte
                 return LIST_VERSION_COMPATIBLES_EDEFAULT == null ? listVersionCompatibles != null : !LIST_VERSION_COMPATIBLES_EDEFAULT.equals(listVersionCompatibles);
             case ExchangePackage.COMPONENT_EXTENSION__FILENAME:
                 return FILENAME_EDEFAULT == null ? filename != null : !FILENAME_EDEFAULT.equals(filename);
+            case ExchangePackage.COMPONENT_EXTENSION__LINK_DOWNLOAD:
+                return LINK_DOWNLOAD_EDEFAULT == null ? linkDownload != null : !LINK_DOWNLOAD_EDEFAULT.equals(linkDownload);
         }
         return super.eIsSet(featureID);
     }
@@ -946,6 +998,8 @@ public class ComponentExtensionImpl extends EObjectImpl implements ComponentExte
         result.append(listVersionCompatibles);
         result.append(", filename: ");
         result.append(filename);
+        result.append(", linkDownload: ");
+        result.append(linkDownload);
         result.append(')');
         return result.toString();
     }

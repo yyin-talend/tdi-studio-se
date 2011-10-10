@@ -43,6 +43,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.components.exchange.model.ComponentExtension#getDateDownload <em>Date Download</em>}</li>
  *   <li>{@link org.talend.designer.components.exchange.model.ComponentExtension#getListVersionCompatibles <em>List Version Compatibles</em>}</li>
  *   <li>{@link org.talend.designer.components.exchange.model.ComponentExtension#getFilename <em>Filename</em>}</li>
+ *   <li>{@link org.talend.designer.components.exchange.model.ComponentExtension#getLinkDownload <em>Link Download</em>}</li>
  * </ul>
  * </p>
  *
@@ -436,5 +437,31 @@ public interface ComponentExtension extends EObject {
      * @generated
      */
     void setFilename(String value);
+
+    /**
+     * Returns the value of the '<em><b>Link Download</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Link Download</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Link Download</em>' attribute.
+     * @see #setLinkDownload(String)
+     * @see org.talend.designer.components.exchange.model.ExchangePackage#getComponentExtension_LinkDownload()
+     * @model required="true"
+     * @generated
+     */
+    String getLinkDownload();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.components.exchange.model.ComponentExtension#getLinkDownload <em>Link Download</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Link Download</em>' attribute.
+     * @see #getLinkDownload()
+     * @generated
+     */
+    void setLinkDownload(String value);
 
 } // ComponentExtension

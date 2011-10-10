@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -25,6 +28,7 @@ import java.util.regex.Pattern;
 import org.apache.axis.components.net.TransportClientProperties;
 import org.apache.axis.components.net.TransportClientPropertiesFactory;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
@@ -46,8 +50,10 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.osgi.framework.Version;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.StringUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -57,6 +63,8 @@ import org.talend.core.model.general.Project;
 import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.model.ExchangePackage;
+import org.talend.designer.components.exchange.model.RevisionInfo;
+import org.talend.designer.components.exchange.model.VersionRevision;
 import org.talend.designer.components.exchange.ui.views.ExchangeView;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -65,6 +73,8 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  * DOC hcyi class global comment. Detailled comment
  */
 public class ExchangeUtils {
+
+    public static String REVISION_LIST_URL = "http://talendforge.org/exchange/tos/api/get_revision_list.php"; //$NON-NLS-1$
 
     private static Pattern VERSION_PATTERN = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)(\\.(RC|M)\\d+)?_r\\d+"); //$NON-NLS-1$
 
@@ -77,6 +87,8 @@ public class ExchangeUtils {
     public static String VERSIONSTUDIO = "4.2"; //$NON-NLS-1$
 
     public static String CATEGORY = "6"; //$NON-NLS-1$
+
+    private static MultiValueMap versionMap = new MultiValueMap();
 
     /**
      * Make sure that the version match x.x.x or x.x.xMx or x.x.xRCx, where x are all digit.
@@ -361,5 +373,58 @@ public class ExchangeUtils {
             return true;
         }
         return false;
+    }
+
+    public static String[] getVersionList(List<VersionRevision> fVersionRevisions) {
+        versionMap.clear();
+        try {
+
+            Pattern pattern = Pattern.compile("(\\d+\\.\\d+).*"); //$NON-NLS-1$
+            for (VersionRevision info : fVersionRevisions) {
+                String name = info.getVersionName();
+                Matcher matcher = pattern.matcher(name);
+                if (matcher.matches()) {
+                    versionMap.put(matcher.group(1), String.valueOf(info.getVersionId()));
+                }
+            }
+            // sort version
+            List<String> versions = new ArrayList<String>(versionMap.keySet());
+            Collections.sort(versions, new Comparator<String>() {
+
+                public int compare(String o1, String o2) {
+                    Version ver1 = new Version(o1);
+                    Version ver2 = new Version(o2);
+                    return ver2.compareTo(ver1);
+                }
+
+            });
+            return versions.toArray(new String[versions.size()]);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return new String[0];
+    }
+
+    public static List<RevisionInfo> getRevisionList(String version, int language, String type) throws Exception {
+        StringBuffer url = new StringBuffer();
+        url.append(REVISION_LIST_URL).append("?categories=").append(5).append(",").append(type).append("&version="); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String[] branch = getBranch(version);
+        url.append(StringUtils.join(branch, ",")); //$NON-NLS-1$
+        String jsonContent = sendGetRequest(url.toString());
+        return parseJsonObject(jsonContent, RevisionInfo.class);
+
+    }
+
+    public static String[] getBranch(String version) {
+        version = getMainVersion(version);
+        if (versionMap.getCollection(version) == null) {
+
+        }
+        Collection branch = versionMap.getCollection(version);
+        if (branch != null) {
+            return (String[]) branch.toArray(new String[branch.size()]);
+        } else {
+            return new String[0];
+        }
     }
 }

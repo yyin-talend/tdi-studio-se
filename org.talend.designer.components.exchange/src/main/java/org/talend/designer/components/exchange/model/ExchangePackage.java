@@ -288,13 +288,22 @@ public interface ExchangePackage extends EPackage {
     int COMPONENT_EXTENSION__FILENAME = 14;
 
     /**
+     * The feature id for the '<em><b>Link Download</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int COMPONENT_EXTENSION__LINK_DOWNLOAD = 15;
+
+    /**
      * The number of structural features of the '<em>Component Extension</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int COMPONENT_EXTENSION_FEATURE_COUNT = 15;
+    int COMPONENT_EXTENSION_FEATURE_COUNT = 16;
 
     /**
      * The meta object id for the '{@link org.talend.designer.components.exchange.model.impl.AvailableExtensionViewDetailImpl <em>Available Extension View Detail</em>}' class.
@@ -611,6 +620,17 @@ public interface ExchangePackage extends EPackage {
     EAttribute getComponentExtension_Filename();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.components.exchange.model.ComponentExtension#getLinkDownload <em>Link Download</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Link Download</em>'.
+     * @see org.talend.designer.components.exchange.model.ComponentExtension#getLinkDownload()
+     * @see #getComponentExtension()
+     * @generated
+     */
+    EAttribute getComponentExtension_LinkDownload();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.components.exchange.model.AvailableExtensionViewDetail <em>Available Extension View Detail</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -888,6 +908,14 @@ public interface ExchangePackage extends EPackage {
          * @generated
          */
         EAttribute COMPONENT_EXTENSION__FILENAME = eINSTANCE.getComponentExtension_Filename();
+
+        /**
+         * The meta object literal for the '<em><b>Link Download</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute COMPONENT_EXTENSION__LINK_DOWNLOAD = eINSTANCE.getComponentExtension_LinkDownload();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.components.exchange.model.impl.AvailableExtensionViewDetailImpl <em>Available Extension View Detail</em>}' class.
