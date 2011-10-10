@@ -48,7 +48,6 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -66,6 +65,7 @@ import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.metadata.RepositoryObjectHelper;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -133,14 +133,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
     WidgetFactory widgetFactory = new WidgetFactory();
 
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
-        ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
-        String aliasName = repositoryObjectType.getAlias();
-        Connection connection = connectionItem.getConnection();
-        if (connection instanceof DatabaseConnection) {
-            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
-            aliasName += " (" + currentDbType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        return aliasName;
+        String aliasName = RepositoryObjectHelper.getRepositoryAliasName(connectionItem);
+        return aliasName != null ? aliasName : ""; //$NON-NLS-1$
     }
 
     /**
