@@ -265,7 +265,12 @@ if(columnList != null && columnList.size() > 0) {
         String whereClauseString = StringUtils.join(whereClause.toArray(), " OR ");
         %>
         String updateForType2_<%=cid %> = "UPDATE " + tableName_<%=cid%> + " d SET <%=endDateField%> = " + 
-        dateValue_<%=cid %> 
+        <%if ("INPUT_FIELD".equals(l2StartDateFieldType)){%>
+	        "(SELECT t.<%=l2StartDateFieldInputFieldName%> FROM " + sourceTable_<%=cid%> + 
+	        " t WHERE <%=joinClauseString%>)"
+        <%}else{%>
+        	dateValue_<%=cid %>
+        <%}%> 
         + "<%if (isEnableActive) {%>, <%=activeField%> = 0<%}%> WHERE EXISTS (SELECT 1 FROM " + sourceTable_<%=cid%> + 
         " t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)) AND d.<%=endDateField%> "
         +
@@ -340,8 +345,15 @@ if(columnList != null && columnList.size() > 0) {
         sourceTable_<%=cid%> + " t, " + tableName_<%=cid%> + " d WHERE <%=joinClauseString%> AND (<%=whereClauseString%>) AND d.<%=endDateField%> = "
         
                  
-        + dateValue_<%=cid %>;  
-     
+        + 
+         <%if ("INPUT_FIELD".equals(l2StartDateFieldType)){%>
+	        "(SELECT t.<%=l2StartDateFieldInputFieldName%> FROM " + sourceTable_<%=cid%> + 
+	        " t WHERE <%=joinClauseString%>)"
+        <%}else{%>
+        	dateValue_<%=cid %>
+        <%}%> 
+        ;  
+     	
         java.sql.Statement stmtType2Insert_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtType2Insert_<%=cid%>.executeUpdate(insertForType2_<%=cid%>);
         stmtType2Insert_<%=cid%>.close();
