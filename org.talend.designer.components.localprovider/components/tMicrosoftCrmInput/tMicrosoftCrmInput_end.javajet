@@ -35,13 +35,16 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
     				}
-                    com.microsoft.schemas.crm._2006.query.PagingInfo pagingInfo_<%=cid%> = com.microsoft.schemas.crm._2006.query.PagingInfo.Factory.newInstance();
-                    pagingInfo_<%=cid%>.setPagingCookie(pagingCookie_<%=cid%>);
-                    query_<%=cid%>.setPageInfo(pagingInfo_<%=cid%>);
-                    rmr_<%=cid%>.setQuery(query_<%=cid%>);
-                    execute_<%=cid%>.setRequest(rmr_<%=cid%>);
-        			executeDoc_<%=cid%>.setExecute(execute_<%=cid%>);
-        			executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Factory.parse(executeDoc_<%=cid%>.toString());
+    				if(fetchMore_<%=cid%>){
+	                    pageNumber_<%=cid%>++;
+	                    pagingInfo_<%=cid%>.setPageNumber(pageNumber_<%=cid%>);
+	                    pagingInfo_<%=cid%>.setPagingCookie(pagingCookie_<%=cid%>);
+	                    query_<%=cid%>.setPageInfo(pagingInfo_<%=cid%>);
+	                    rmr_<%=cid%>.setQuery(query_<%=cid%>);
+	                    execute_<%=cid%>.setRequest(rmr_<%=cid%>);
+	        			executeDoc_<%=cid%>.setExecute(execute_<%=cid%>);
+	        			executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Factory.parse(executeDoc_<%=cid%>.toString());
+        			}
 				}
 			
 <%

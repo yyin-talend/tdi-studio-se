@@ -177,6 +177,15 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
         	query_<%=cid%>.setColumnSet(cols_<%=cid%>);
         	query_<%=cid%>.setEntityName("<%=entitynamealllower%>");
         	
+        	com.microsoft.schemas.crm._2006.query.PagingInfo pagingInfo_<%=cid%> = com.microsoft.schemas.crm._2006.query.PagingInfo.Factory.newInstance();
+        	int pageNumber_<%=cid%> = 1;
+        	pagingInfo_<%=cid%>.setPageNumber(pageNumber_<%=cid%>);
+        	<%boolean debugPaging=false;
+        	if(debugPaging){%>
+        	pagingInfo_<%=cid%>.setCount(5);
+        	<%}%>
+        	query_<%=cid%>.setPageInfo(pagingInfo_<%=cid%>);
+        	
         	com.microsoft.schemas.crm._2007.webservices.RetrieveMultipleRequest rmr_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.RetrieveMultipleRequest.Factory.newInstance();
         	com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Execute execute_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Execute.Factory.newInstance();
         	com.microsoft.schemas.crm._2007.webservices.ExecuteDocument executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Factory.newInstance();
