@@ -2823,6 +2823,7 @@ public class DataProcess {
             dataConnec.setTraceConnection(connection.isTraceConnection());
         }
         newGraphicalNode.setActivate(graphicalNode.isActivate());
+        newGraphicalNode.setStart(graphicalNode.isStart());
 
         return newGraphicalNode;
     }
