@@ -296,6 +296,9 @@ skeleton="tXMLMap_java.skeleton"
 				   			}
 				   		<% } %>
 				   
+				   		<%=tableName%>Struct fromLookup_<%=tableName%> = null;
+						<%=tableName%> = <%=tableName%>Default;
+				   
 				   		<% if(!isMultipleResult) {%>
 					    if(hasResultFromLookupCache<%= tableName %>) {//TD10086
 					    	<%if(isCacheOrReloadLookupMode) {%>
@@ -310,7 +313,7 @@ skeleton="tXMLMap_java.skeleton"
 						   	isMatchDocRow<%=cid%> = false;
 						  	<% } %>
 							while (tHash_Lookup_<%=tableName%>.hasNext()) {//TD119
-								<%=tableName%>Struct fromLookup_<%=tableName%> = null;
+								fromLookup_<%=tableName%> = null;
 								<%=tableName%> = <%=tableName%>Default;
 								fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
 								if (fromLookup_<%=tableName%> != null) {
@@ -403,7 +406,7 @@ skeleton="tXMLMap_java.skeleton"
 						   	isMatchDocRow<%=cid%> = false;
 						  	<% } %>
 					    	while (tHash_Lookup_<%=tableName%>.hasNext()) {
-					    		<%=tableName%>Struct fromLookup_<%=tableName%> = null;
+					    		fromLookup_<%=tableName%> = null;
 								<%=tableName%> = <%=tableName%>Default;
 								fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
 								if(fromLookup_<%=tableName%> != null) {
@@ -494,7 +497,7 @@ skeleton="tXMLMap_java.skeleton"
 						}
 						while (tHash_Lookup_<%=tableName%>.hasNext()) {//TD128 
 								
-							<%=tableName%>Struct fromLookup_<%=tableName%> = null;
+							fromLookup_<%=tableName%> = null;
 							<%=tableName%> = <%=tableName%>Default;
 					
 							fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
