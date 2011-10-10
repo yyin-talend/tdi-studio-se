@@ -20,5 +20,11 @@
             serviceId="ITisLocalProviderService">
       </Service>
    </extension>
-
+   <extension
+         point="org.talend.designer.codegen.additional_jetfile">
+      <jetProvider
+            class="org.talend.designer.components.localprovider.MDMTriggerJetFileProvider"
+            id="org.talend.designer.components.localprovider.MDMTriggerJetFileProvider">
+      </jetProvider>
+   </extension>
 </plugin>
