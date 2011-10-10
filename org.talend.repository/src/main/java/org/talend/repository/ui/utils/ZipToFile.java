@@ -106,6 +106,10 @@ public class ZipToFile {
         for (int i = 0; i < fileList.size(); i++) {
             File f = (File) fileList.get(i);
             ze = new ZipEntry(getAbsFileName(baseDir, f));
+			if (f.isDirectory()) {
+				zos.putNextEntry(ze);
+				continue;
+			}
             ze.setSize(f.length());
             ze.setTime(f.lastModified());
             zos.putNextEntry(ze);
@@ -130,6 +134,9 @@ public class ZipToFile {
         File real = realFileName;
         File base = new File(baseDir);
         String ret = real.getName();
+		if (real.equals(base)) {
+			return "/";
+		}
         while (true) {
             real = real.getParentFile();
             if (real == null)
@@ -139,6 +146,9 @@ public class ZipToFile {
             else
                 ret = real.getName() + "/" + ret; //$NON-NLS-1$
         }
+		if (realFileName.isDirectory()) {
+			ret += "/";
+		}
         return ret;
     }
 
@@ -151,6 +161,10 @@ public class ZipToFile {
      */
     private static List getSubFiles(File baseDir) {
         List ret = new ArrayList();
+		// GangLiu: Fix for 3432
+		ret.add(baseDir);
+		// 3432 end
+
         File[] tmp = baseDir.listFiles();
         for (int i = 0; i < tmp.length; i++) {
             File item = tmp[i];
