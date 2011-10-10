@@ -247,6 +247,16 @@ public class XmlMapUtil {
         return null;
     }
 
+    public static AbstractInOutTree getAbstractInOutTree(TreeNode model) {
+        if (model.eContainer() instanceof AbstractInOutTree) {
+            return (AbstractInOutTree) model.eContainer();
+        } else if (model.eContainer() instanceof TreeNode) {
+            return getAbstractInOutTree((TreeNode) model.eContainer());
+        }
+        return null;
+
+    }
+
     public static XmlMapData getXmlMapData(AbstractNode treeNode) {
         AbstractNode rootNode = null;
         if (treeNode instanceof TreeNode) {

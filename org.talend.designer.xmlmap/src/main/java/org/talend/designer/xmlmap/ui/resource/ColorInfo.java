@@ -42,7 +42,9 @@ public enum ColorInfo {
 
     COLOR_SEPARATOR_TOP_LEFT(172, 168, 153), // dark gray
 
-    COLOR_TREE_LINES(128, 128, 128)
+    COLOR_TREE_LINES(128, 128, 128),
+
+    COLOR_SELECTION(49, 106, 197)
 
     ;
 

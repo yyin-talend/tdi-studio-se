@@ -17,6 +17,8 @@ import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MarginBorder;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.talend.designer.xmlmap.figures.ComboCellLabel;
@@ -30,19 +32,29 @@ import org.talend.designer.xmlmap.model.tree.IUIMatchingMode;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_MATCHING_MODE;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
+import org.talend.designer.xmlmap.ui.resource.ColorInfo;
+import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class InputTreeSettingContainer extends Figure {
+public class InputTreeSettingContainer extends AbstractTreeSettingContainer {
 
     private InputXmlTree inputxmlTree;
 
+    private Figure lookupModelRow;
+
     private ComboCellLabel lookupModel;
+
+    private Figure matchModelRow;
 
     private ComboCellLabel matchModel;
 
+    private Figure joinModelRow;
+
     private ComboCellLabel joinModel;
+
+    private Figure persistentModelRow;
 
     private ComboCellLabel persistentModel;
 
@@ -58,8 +70,8 @@ public class InputTreeSettingContainer extends Figure {
 
         Figure container = new Figure();
         container.setLayoutManager(new ToolbarLayout());
-        Figure lookupModelRow = new Figure();
 
+        lookupModelRow = new Figure();
         lookupModelRow.setLayoutManager(new EqualWidthLayout());
         Label label = new Label();
         label.setText("Lookup Model");
@@ -75,7 +87,7 @@ public class InputTreeSettingContainer extends Figure {
         lookupModelRow.add(lookupModel);
         container.add(lookupModelRow);
 
-        Figure matchModelRow = new Figure();
+        matchModelRow = new Figure();
         matchModelRow.setLayoutManager(new EqualWidthLayout());
         label = new Label();
         label.setText("Match Model");
@@ -91,7 +103,7 @@ public class InputTreeSettingContainer extends Figure {
         matchModelRow.add(matchModel);
         container.add(matchModelRow);
 
-        Figure joinModelRow = new Figure();
+        joinModelRow = new Figure();
         joinModelRow.setLayoutManager(new EqualWidthLayout());
         label = new Label();
         label.setText("Join Model");
@@ -115,7 +127,7 @@ public class InputTreeSettingContainer extends Figure {
         joinModelRow.add(joinModel);
         container.add(joinModelRow);
 
-        Figure persistentModelRow = new Figure();
+        persistentModelRow = new Figure();
         persistentModelRow.setLayoutManager(new EqualWidthLayout());
         label = new Label();
         label.setText("Store Temp Data");
@@ -133,6 +145,64 @@ public class InputTreeSettingContainer extends Figure {
         container.setOpaque(true);
         container.setBackgroundColor(ColorConstants.white);
         this.add(container);
+
+        container.addMouseListener(new MouseListener() {
+
+            Figure selectedFigure = null;
+
+            public void mousePressed(MouseEvent me) {
+                boolean lookup = lookupModelRow.containsPoint(me.x, me.y);
+                if (lookup) {
+                    if (selectedFigure != lookupModelRow) {
+                        lookupModelRow.setOpaque(true);
+                        lookupModelRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        matchModelRow.setOpaque(false);
+                        joinModelRow.setOpaque(false);
+                        persistentModelRow.setOpaque(false);
+                    }
+                    return;
+                }
+                boolean matchModel = matchModelRow.containsPoint(me.x, me.y);
+                if (matchModel) {
+                    if (selectedFigure != matchModelRow) {
+                        matchModelRow.setOpaque(true);
+                        matchModelRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        lookupModelRow.setOpaque(false);
+                        joinModelRow.setOpaque(false);
+                        persistentModelRow.setOpaque(false);
+                    }
+                    return;
+                }
+                boolean joinModel = joinModelRow.containsPoint(me.x, me.y);
+                if (joinModel) {
+                    if (selectedFigure != joinModelRow) {
+                        joinModelRow.setOpaque(true);
+                        joinModelRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        lookupModelRow.setOpaque(false);
+                        matchModelRow.setOpaque(false);
+                        persistentModelRow.setOpaque(false);
+                    }
+                    return;
+                }
+                boolean persistentModel = persistentModelRow.containsPoint(me.x, me.y);
+                if (persistentModel) {
+                    if (selectedFigure != persistentModelRow) {
+                        persistentModelRow.setOpaque(true);
+                        persistentModelRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        lookupModelRow.setOpaque(false);
+                        matchModelRow.setOpaque(false);
+                        joinModelRow.setOpaque(false);
+                    }
+                }
+            }
+
+            public void mouseReleased(MouseEvent me) {
+            }
+
+            public void mouseDoubleClicked(MouseEvent me) {
+            }
+
+        });
     }
 
     private String getLookupDisplayName(String lookupModel) {
@@ -194,7 +264,22 @@ public class InputTreeSettingContainer extends Figure {
         default:
             break;
         }
+    }
 
+    @Override
+    public void deselectTreeSettingRows() {
+        if (lookupModelRow.isOpaque()) {
+            lookupModelRow.setOpaque(false);
+        }
+        if (matchModelRow.isOpaque()) {
+            matchModelRow.setOpaque(false);
+        }
+        if (joinModelRow.isOpaque()) {
+            joinModelRow.setOpaque(false);
+        }
+        if (persistentModelRow.isOpaque()) {
+            persistentModelRow.setOpaque(false);
+        }
     }
 
 }

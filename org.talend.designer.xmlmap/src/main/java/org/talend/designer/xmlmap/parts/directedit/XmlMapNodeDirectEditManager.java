@@ -42,6 +42,7 @@ import org.talend.designer.xmlmap.figures.cells.ITextCell;
 import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsManager;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.tree.IUILookupMode;
@@ -50,6 +51,7 @@ import org.talend.designer.xmlmap.model.tree.LOOKUP_MODE;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_MATCHING_MODE;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
+import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 
@@ -187,6 +189,11 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                         combo.setText(String.valueOf(outputTree.isRejectInnerJoin()));
                     }
                     break;
+                case ALL_IN_ONE:
+                    if (getCellEditor() instanceof ComboBoxCellEditor) {
+                        CCombo combo = (CCombo) getCellEditor().getControl();
+                        combo.setText(String.valueOf(outputTree.isAllInOne()));
+                    }
                 }
             }
 
@@ -260,6 +267,35 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                     }
                 }
 
+                if (source instanceof OutputXmlTreeEditPart) {
+                    if (DirectEditType.ALL_IN_ONE.equals(((IComboCell) figure).getDirectEditType())) {
+                        OutputXmlTree outputTree = (OutputXmlTree) ((OutputXmlTreeEditPart) source).getModel();
+                        boolean hasDocument = false;
+                        for (int i = 0; i < outputTree.getNodes().size(); i++) {
+                            OutputTreeNode outputTreeNode = outputTree.getNodes().get(i);
+                            if (XmlMapUtil.DOCUMENT.equals(outputTreeNode.getType())) {
+                                hasDocument = true;
+                                break;
+                            }
+                        }
+                        if (!hasDocument) {
+                            return null;
+                        }
+                        boolean hasAggregate = false;
+                        for (int i = 0; i < outputTree.getNodes().size(); i++) {
+                            OutputTreeNode outputTreeNode = outputTree.getNodes().get(i);
+                            hasAggregate = hasAggreage(outputTreeNode);
+                            if (hasAggregate) {
+                                break;
+                            }
+                        }
+                        if (hasAggregate) {
+                            return null;
+                        }
+                    }
+
+                }
+
                 cellEditor = new XmlComboCellEditor();
                 cellEditor.create(composite);
                 ((XmlComboCellEditor) cellEditor).setItems(getComboItemsByType(((IComboCell) figure).getDirectEditType()));
@@ -288,6 +324,22 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
 
         // }
         return cellEditor;
+    }
+
+    private boolean hasAggreage(OutputTreeNode outputTreeNode) {
+        if (outputTreeNode.isAggregate()) {
+            return true;
+        } else if (!outputTreeNode.getChildren().isEmpty()) {
+            for (int i = 0; i < outputTreeNode.getChildren().size(); i++) {
+                OutputTreeNode child = (OutputTreeNode) outputTreeNode.getChildren().get(i);
+                boolean hasAggreage = hasAggreage(child);
+                if (hasAggreage) {
+                    return true;
+                }
+
+            }
+        }
+        return false;
     }
 
     @Override
@@ -327,10 +379,11 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
         case JOIN_MODEL:
             return joinModel;
         case PERSISTENT_MODEL:
-        	// TDI-17714:remove the true option in the Store temp data lookup property.
+            // TDI-17714:remove the true option in the Store temp data lookup property.
             return new String[] { String.valueOf(Boolean.FALSE) };
         case OUTPUT_REJECT:
         case LOOK_UP_INNER_JOIN_REJECT:
+        case ALL_IN_ONE:
             return new String[] { String.valueOf(Boolean.TRUE), String.valueOf(Boolean.FALSE) };
         default:
             return new String[0];

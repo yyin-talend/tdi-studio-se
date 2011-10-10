@@ -15,8 +15,10 @@ package org.talend.designer.xmlmap.editor.actions;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -51,6 +53,13 @@ public class SetAggregateAction extends SelectionAction {
             }
             if (!XmlMapUtil.isExpressionEditable(model)) {
                 return false;
+            }
+
+            AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(model);
+            if (abstractTree instanceof OutputXmlTree) {
+                if (((OutputXmlTree) abstractTree).isAllInOne()) {
+                    return false;
+                }
             }
 
         } else {

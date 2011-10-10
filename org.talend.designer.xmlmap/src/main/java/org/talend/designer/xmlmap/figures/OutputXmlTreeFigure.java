@@ -24,8 +24,6 @@ import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
  */
 public class OutputXmlTreeFigure extends AbstractInOutTreeFigure {
 
-    private OutputTreeSettingContainer settingContainer;
-
     public OutputXmlTreeFigure(OutputXmlTreeEditPart treePart) {
         super(treePart);
         createContents();

@@ -17,6 +17,8 @@ import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MarginBorder;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.talend.designer.xmlmap.figures.ComboCellLabel;
@@ -26,17 +28,27 @@ import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
+import org.talend.designer.xmlmap.ui.resource.ColorInfo;
+import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class OutputTreeSettingContainer extends Figure {
+public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
 
     private OutputXmlTree outputxmlTree;
 
+    private Figure rejectRow;
+
     private ComboCellLabel reject;
 
+    private Figure innerJoinRejectRow;
+
     private ComboCellLabel innerJoinReject;
+
+    private Figure allInOneRow;
+
+    private ComboCellLabel allInOne;
 
     public OutputTreeSettingContainer(OutputXmlTree outputxmlTree) {
         this.outputxmlTree = outputxmlTree;
@@ -48,43 +60,106 @@ public class OutputTreeSettingContainer extends Figure {
         ColumnTitleFigure columnTitle = new ColumnTitleFigure();
         this.add(columnTitle);
 
-        Figure container = new Figure();
+        final Figure container = new Figure();
         container.setLayoutManager(new ToolbarLayout());
 
-        Figure joinModelRow = new Figure();
-        joinModelRow.setLayoutManager(new EqualWidthLayout());
+        rejectRow = new Figure();
+        rejectRow.setLayoutManager(new EqualWidthLayout());
         Label label = new Label();
         label.setText("Catch Output Reject");
         label.setLabelAlignment(PositionConstants.LEFT);
         CompoundBorder compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
         label.setBorder(compoundBorder);
-        joinModelRow.add(label);
+        rejectRow.add(label);
         reject = new ComboCellLabel();
         reject.setDirectEditType(DirectEditType.OUTPUT_REJECT);
         reject.setText(String.valueOf(outputxmlTree.isReject()));
         reject.setLabelAlignment(PositionConstants.LEFT);
         reject.setBorder(new RowBorder(2, 10, 2, -1));
-        joinModelRow.add(reject);
-        container.add(joinModelRow);
+        rejectRow.add(reject);
+        container.add(rejectRow);
 
-        Figure persistentModelRow = new Figure();
-        persistentModelRow.setLayoutManager(new EqualWidthLayout());
+        innerJoinRejectRow = new Figure();
+        innerJoinRejectRow.setLayoutManager(new EqualWidthLayout());
         label = new Label();
         label.setText("Catch Lookup Inner Join Reject");
         label.setLabelAlignment(PositionConstants.LEFT);
         compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
         label.setBorder(compoundBorder);
-        persistentModelRow.add(label);
+        innerJoinRejectRow.add(label);
         innerJoinReject = new ComboCellLabel();
         innerJoinReject.setDirectEditType(DirectEditType.LOOK_UP_INNER_JOIN_REJECT);
         innerJoinReject.setText(String.valueOf(outputxmlTree.isRejectInnerJoin()));
         innerJoinReject.setLabelAlignment(PositionConstants.LEFT);
         innerJoinReject.setBorder(new RowBorder(2, 10, 2, -1));
-        persistentModelRow.add(innerJoinReject);
-        container.add(persistentModelRow);
+        innerJoinRejectRow.add(innerJoinReject);
+        container.add(innerJoinRejectRow);
+
+        allInOneRow = new Figure();
+        allInOneRow.setLayoutManager(new EqualWidthLayout());
+        label = new Label();
+        label.setText("All in one");
+        label.setLabelAlignment(PositionConstants.LEFT);
+        compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
+        label.setBorder(compoundBorder);
+        allInOneRow.add(label);
+        allInOne = new ComboCellLabel();
+        allInOne.setDirectEditType(DirectEditType.ALL_IN_ONE);
+        allInOne.setText(String.valueOf(outputxmlTree.isAllInOne()));
+        allInOne.setLabelAlignment(PositionConstants.LEFT);
+        allInOne.setBorder(new RowBorder(2, 10, 2, -1));
+        allInOneRow.add(allInOne);
+        container.add(allInOneRow);
+
         container.setOpaque(true);
         container.setBackgroundColor(ColorConstants.white);
         this.add(container);
+
+        container.addMouseListener(new MouseListener() {
+
+            Figure selectedFigure = null;
+
+            public void mousePressed(MouseEvent me) {
+                boolean joinModel = rejectRow.containsPoint(me.x, me.y);
+                if (joinModel) {
+                    if (selectedFigure != rejectRow) {
+                        rejectRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        rejectRow.setOpaque(true);
+                        innerJoinRejectRow.setOpaque(false);
+                        allInOneRow.setOpaque(false);
+                    }
+                    return;
+                }
+                boolean persistentModel = innerJoinRejectRow.containsPoint(me.x, me.y);
+                if (persistentModel) {
+                    if (selectedFigure != innerJoinRejectRow) {
+                        innerJoinRejectRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        innerJoinRejectRow.setOpaque(true);
+                        rejectRow.setOpaque(false);
+                        allInOneRow.setOpaque(false);
+                    }
+                    return;
+                }
+
+                boolean allInOne = allInOneRow.containsPoint(me.x, me.y);
+                if (allInOne) {
+                    if (selectedFigure != allInOneRow) {
+                        allInOneRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        allInOneRow.setOpaque(true);
+                        rejectRow.setOpaque(false);
+                        innerJoinRejectRow.setOpaque(false);
+                    }
+                }
+            }
+
+            public void mouseReleased(MouseEvent me) {
+            }
+
+            public void mouseDoubleClicked(MouseEvent me) {
+            }
+
+        });
+
     }
 
     class ColumnTitleFigure extends Figure {
@@ -117,7 +192,20 @@ public class OutputTreeSettingContainer extends Figure {
         case XmlmapPackage.OUTPUT_XML_TREE__REJECT_INNER_JOIN:
             innerJoinReject.setText(String.valueOf(outputxmlTree.isRejectInnerJoin()));
             break;
+        case XmlmapPackage.OUTPUT_XML_TREE__ALL_IN_ONE:
+            allInOne.setText(String.valueOf(outputxmlTree.isAllInOne()));
         }
     }
 
+    public void deselectTreeSettingRows() {
+        if (rejectRow.isOpaque()) {
+            rejectRow.setOpaque(false);
+        }
+        if (innerJoinRejectRow.isOpaque()) {
+            innerJoinRejectRow.setOpaque(false);
+        }
+        if (allInOneRow.isOpaque()) {
+            allInOneRow.setOpaque(false);
+        }
+    }
 }

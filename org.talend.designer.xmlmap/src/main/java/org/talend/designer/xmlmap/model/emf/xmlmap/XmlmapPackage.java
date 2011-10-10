@@ -418,13 +418,22 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_XML_TREE__ERROR_REJECT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 3;
 
     /**
+     * The feature id for the '<em><b>All In One</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_XML_TREE__ALL_IN_ONE = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 4;
+
+    /**
      * The number of structural features of the '<em>Output Xml Tree</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int OUTPUT_XML_TREE_FEATURE_COUNT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 4;
+    int OUTPUT_XML_TREE_FEATURE_COUNT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 5;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarTableImpl <em>Var Table</em>}' class.
@@ -1370,6 +1379,17 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getOutputXmlTree_ErrorReject();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isAllInOne <em>All In One</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>All In One</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isAllInOne()
+     * @see #getOutputXmlTree()
+     * @generated
+     */
+    EAttribute getOutputXmlTree_AllInOne();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarTable <em>Var Table</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2004,6 +2024,14 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EAttribute OUTPUT_XML_TREE__ERROR_REJECT = eINSTANCE.getOutputXmlTree_ErrorReject();
+
+        /**
+         * The meta object literal for the '<em><b>All In One</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute OUTPUT_XML_TREE__ALL_IN_ONE = eINSTANCE.getOutputXmlTree_AllInOne();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarTableImpl <em>Var Table</em>}' class.

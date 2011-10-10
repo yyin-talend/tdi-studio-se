@@ -165,7 +165,9 @@ public class FiguresManager implements ISelectionChangedListener {
                 abstractPart = (OutputXmlTreeEditPart) obj;
             }
             if (abstractPart != null) {
-                ((AbstractInOutTreeFigure) abstractPart.getFigure()).highLightHeader(false);
+                if (obj != selectedTreePart) {
+                    ((AbstractInOutTreeFigure) abstractPart.getFigure()).highLightHeader(false);
+                }
                 abstractPart.updateChildrenConnections(abstractPart.getChildren(), false);
             }
         }

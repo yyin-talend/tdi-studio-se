@@ -25,6 +25,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.TreeLayout;
+import org.talend.designer.xmlmap.figures.treesettings.AbstractTreeSettingContainer;
 import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
 import org.talend.designer.xmlmap.figures.treetools.TreeToolBarContainer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
@@ -44,6 +45,8 @@ public abstract class AbstractInOutTreeFigure extends GenericFigure {
     protected TreeToolBarContainer imageButtonsFigure;
 
     protected FilterContainer filterFigure;
+
+    protected AbstractTreeSettingContainer settingContainer;
 
     protected Figure columnContainer;
 
@@ -66,6 +69,9 @@ public abstract class AbstractInOutTreeFigure extends GenericFigure {
         } else {
             header.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.ZONE_BACKGROUND_COLOR));
             imageButtonsFigure.updateButtonsColor(ColorProviderMapper.getColor(ColorInfo.ZONE_BACKGROUND_COLOR));
+            if (settingContainer != null) {
+                settingContainer.deselectTreeSettingRows();
+            }
         }
     }
 

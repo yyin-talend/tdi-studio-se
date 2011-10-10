@@ -63,6 +63,7 @@ public class XmlDirectEditPolicy extends DirectEditPolicy {
                 case PERSISTENT_MODEL:
                 case OUTPUT_REJECT:
                 case LOOK_UP_INNER_JOIN_REJECT:
+                case ALL_IN_ONE:
                     if ((editor instanceof ComboBoxCellEditor)) {
                         ComboBoxCellEditor combo = (ComboBoxCellEditor) editor;
                         int selectIndex = (Integer) combo.getValue();

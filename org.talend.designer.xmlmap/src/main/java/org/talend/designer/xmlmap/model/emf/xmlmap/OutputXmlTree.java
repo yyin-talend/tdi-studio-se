@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isReject <em>Reject</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isRejectInnerJoin <em>Reject Inner Join</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isErrorReject <em>Error Reject</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isAllInOne <em>All In One</em>}</li>
  * </ul>
  * </p>
  *
@@ -123,5 +124,31 @@ public interface OutputXmlTree extends AbstractInOutTree {
      * @generated
      */
     void setErrorReject(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>All In One</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>All In One</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>All In One</em>' attribute.
+     * @see #setAllInOne(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getOutputXmlTree_AllInOne()
+     * @model
+     * @generated
+     */
+    boolean isAllInOne();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isAllInOne <em>All In One</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>All In One</em>' attribute.
+     * @see #isAllInOne()
+     * @generated
+     */
+    void setAllInOne(boolean value);
 
 } // OutputXmlTree

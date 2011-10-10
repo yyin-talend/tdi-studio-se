@@ -99,6 +99,8 @@ public class TreeSettingDirectEditCommand extends DirectEditCommand {
                         calculateFilterConnections(outputTree, (String) newValue);
                         outputTree.setExpressionFilter((String) newValue);
                         break;
+                    case ALL_IN_ONE:
+                        outputTree.setAllInOne(Boolean.valueOf((String) newValue));
                     }
                 }
             }
