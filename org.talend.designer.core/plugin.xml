@@ -82,6 +82,12 @@
             id="org.talend.repository.prefs.documentation"
             name="%documentation">
       </page>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.ExchangePreferencePage"
+            id="org.talend.repository.prefs.exchange"
+            name="%exchange">
+      </page>
       
    </extension>
    <extension

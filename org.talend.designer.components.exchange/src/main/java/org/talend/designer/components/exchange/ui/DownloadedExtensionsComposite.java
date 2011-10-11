@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -37,11 +38,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.ui.actions.DownloadComponenentsAction;
+import org.talend.designer.components.exchange.ui.dialog.DownloadCheckUpdatesDialog;
 import org.talend.designer.components.exchange.util.ActionHelper;
 
 /**
@@ -202,9 +206,7 @@ public class DownloadedExtensionsComposite extends ExchangeComposite {
                             //
                             String operStatusText = ((Button) event.widget).getText();
                             if (operStatusText.trim().equals(
-                                    Messages.getString("DownloadedExtensionsComposite.installOperateStatus"))
-                                    || operStatusText.trim().equals(
-                                            Messages.getString("DownloadedExtensionsComposite.updateOperateStatus"))) {
+                                    Messages.getString("DownloadedExtensionsComposite.installOperateStatus"))) {
                                 DownloadComponenentsAction downloadAction = new DownloadComponenentsAction();
                                 if (downloadAction != null) {
                                     downloadAction.run();
@@ -214,9 +216,18 @@ public class DownloadedExtensionsComposite extends ExchangeComposite {
                                 refresh();
                             } else if (operStatusText.trim().equals(
                                     Messages.getString("DownloadedExtensionsComposite.updateOperateStatus"))) {
-                                DownloadComponenentsAction downloadAction = new DownloadComponenentsAction();
-                                if (downloadAction != null) {
-                                    downloadAction.run();
+                                IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+                                boolean checkUpdates = prefStore
+                                        .getBoolean(ITalendCorePrefConstants.EXCHANGE_DOWNLOADED_CHECK_UPDATES);
+                                if (checkUpdates) {
+                                    DownloadComponenentsAction downloadAction = new DownloadComponenentsAction();
+                                    if (downloadAction != null) {
+                                        downloadAction.run();
+                                    }
+                                } else {
+                                    DownloadCheckUpdatesDialog update = new DownloadCheckUpdatesDialog(operateStatusBtn
+                                            .getShell());
+                                    update.open();
                                 }
                                 operateStatusBtn.setEnabled(false);
                                 itemTable.layout();
