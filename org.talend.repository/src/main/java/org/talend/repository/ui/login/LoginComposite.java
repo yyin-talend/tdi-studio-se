@@ -58,6 +58,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
@@ -65,10 +66,12 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.osgi.service.prefs.BackingStoreException;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.WarningException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -94,9 +97,13 @@ import org.talend.core.repository.LoginConnectionManager;
 import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
+import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.updatesite.IPatchBean;
+import org.talend.json.JSONException;
+import org.talend.json.JSONObject;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
@@ -204,6 +211,8 @@ public class LoginComposite extends Composite {
 
     private Button restartBut;
 
+    private Button updateBtn;
+
     public List<ConnectionBean> storedConnections = null;
 
     private String lastConnection = null;
@@ -249,6 +258,21 @@ public class LoginComposite extends Composite {
     private ConnectionBean beforeConnBean;
 
     private ConnectionBean firstConnBean;
+
+    private List<IPatchBean> patchesToInstall = new ArrayList<IPatchBean>();
+
+    private ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
+
+    // only for test
+    // private static final String ARCHIVA_URL = "http://192.168.0.58:8080";
+
+    private static final String ARCHIVA_SERVICES_SEGMENT = "restServices/archivaServices/"; //$NON-NLS-N$
+
+    private static final String ARCHIVA_SERVICES_URL_KEY = "archivaUrl"; //$NON-NLS-N$
+
+    private static final String ARCHIVA_REPOSITORY_KEY = "repository"; //$NON-NLS-N$
+
+    private boolean afterUpdate = false;
 
     private TOSLoginComposite tosLoginComposite;
 
@@ -325,7 +349,10 @@ public class LoginComposite extends Composite {
         }
         try {
             setStatusArea();
+            validateUpdate();
         } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        } catch (JSONException e) {
             ExceptionHandler.process(e);
         }
         displayPasswordComposite();
@@ -1005,7 +1032,6 @@ public class LoginComposite extends Composite {
         formData2.left = new FormAttachment(0, 60);
         formData2.right = new FormAttachment(100, -5);
         statusLabel.setLayoutData(formData2);
-
         restartBut = toolkit.createButton(tosWelcomeComposite, Messages.getString("LoginComposite.RESTART"), SWT.PUSH); //$NON-NLS-1$
         restartBut.setVisible(false);
         FormData formData = new FormData();
@@ -1014,6 +1040,16 @@ public class LoginComposite extends Composite {
         formData.right = new FormAttachment(100, -5);
         formData.bottom = new FormAttachment(100, 0);
         restartBut.setLayoutData(formData);// new GridData(GridData.FILL_HORIZONTAL)
+        updateBtn = toolkit.createButton(tosWelcomeComposite, "update", SWT.PUSH); //$NON-NLS-1$
+        updateBtn.setVisible(false);
+        // updateBtn.setEnabled(needUpdate(ARCHIVA_SERVICES_URL, "internal"));
+        FormData updateBtnformData = new FormData();
+        updateBtnformData.top = new FormAttachment(colorComposite, 0);// 5, 315
+        // formData.left = new FormAttachment(restartBut, 100);
+        updateBtnformData.right = new FormAttachment(restartBut, -5);
+        updateBtnformData.bottom = new FormAttachment(100, 0);
+        updateBtn.setLayoutData(updateBtnformData);// new GridData(GridData.FILL_HORIZONTAL)
+
     }
 
     private void createTisRepositoryArea(Composite parent) {
@@ -1483,32 +1519,36 @@ public class LoginComposite extends Composite {
             connectionsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
                 public void selectionChanged(SelectionChangedEvent event) {
-                    final ConnectionBean connection = getConnection();
-                    if (connection == null) {
-                        return;
-                    }
-                    if (beforeConnBean != null && connection.equals(beforeConnBean)) {
-                        return;
-                    }
-                    beforeConnBean = connection;
-                    user.setText(connection.getUser());
-                    passwordText.setText(connection.getPassword());
-                    updateServerFields();
-                    // updateButtons();
-                    updateVisible();
-
-                    // Validate data
-                    if (validateFields()) {
-                        populateProjectList();
-                        validateProject();
-                    }
                     try {
+                        final ConnectionBean connection = getConnection();
+                        if (connection == null) {
+                            return;
+                        }
+                        if (beforeConnBean != null && connection.equals(beforeConnBean)) {
+                            return;
+                        }
+                        beforeConnBean = connection;
+                        user.setText(connection.getUser());
+                        passwordText.setText(connection.getPassword());
+                        updateServerFields();
+                        // updateButtons();
+                        updateVisible();
+
+                        // Validate data
+                        if (validateFields()) {
+                            populateProjectList();
+                            validateProject();
+                            validateUpdate();
+                        }
                         setStatusArea();
                     } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    } catch (JSONException e) {
                         ExceptionHandler.process(e);
                     }
                     displayPasswordComposite();
                 }
+
             });
         }
         if (PluginChecker.isSVNProviderPluginLoaded()) {
@@ -1575,23 +1615,26 @@ public class LoginComposite extends Composite {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ConnectionsDialog connectionsDialog = new ConnectionsDialog(getShell());
-                int open = connectionsDialog.open();
-                if (open == Window.OK) {
-                    PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
-                            .getPreferenceStore());
-                    prefManipulator.saveConnections(connectionsDialog.getConnections());
-
-                    LoginComposite.this.storedConnections = connectionsDialog.getConnections();
-                    perReader.saveConnections(LoginComposite.this.storedConnections);
-                    fillContents();
-                    displayPasswordComposite();
-                    updateVisible();
-                }
                 try {
+                    ConnectionsDialog connectionsDialog = new ConnectionsDialog(getShell());
+                    int open = connectionsDialog.open();
+                    if (open == Window.OK) {
+                        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
+                                .getPreferenceStore());
+                        prefManipulator.saveConnections(connectionsDialog.getConnections());
+
+                        LoginComposite.this.storedConnections = connectionsDialog.getConnections();
+                        perReader.saveConnections(LoginComposite.this.storedConnections);
+                        fillContents();
+                        displayPasswordComposite();
+                        updateVisible();
+                        validateUpdate();
+                    }
                     setStatusArea();
                 } catch (PersistenceException e1) {
                     ExceptionHandler.process(e1);
+                } catch (JSONException e2) {
+                    ExceptionHandler.process(e2);
                 }
             }
         });
@@ -1633,6 +1676,149 @@ public class LoginComposite extends Composite {
                 dialog.okPressed();
             }
         });
+
+        updateBtn.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                // install and update all patches;
+                try {
+                    afterUpdate = false;
+                    if (tisService != null) {
+                        // 1.get the artriva resource url from TAC,it's very important
+                        // String resourceURL =
+                        // "http://localhost:8080/archiva/repository/internal/org/talend/studio-all-update-site/1/studio-all-update-site-1-Patch_20110722_bug0022816_v1_fixed_a_bug_in_the_studio_gui.zip";
+                        // String resourceURL =
+                        // "http://localhost:8080/archiva/repository/internal/org/talend/studio-all-update-site/1/studio-all-update-site-1-Patch_20110722_bug0022816_v1_fixed_a_bug_in_the_studio_gui.zip";
+                        // String resourceURL =
+                        // "http://192.168.0.58:8080/archiva/repository/internal/org/talend/studio-all-update-site/1/studio-all-update-site-1-Patch_20110722_intergratePatch_v1_fixed_bugs_in_the_studio_gui.zip";
+                        JSONObject archivaProperties = getArchivaServicesProperties(getAdminURL());
+                        String archivaServicesURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY)
+                                + ARCHIVA_SERVICES_SEGMENT;
+                        String repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
+                        tisService.downLoadAndInstallPatches(archivaServicesURL, repository);
+                        // 2.according the patch url judge if update of not.
+                    }
+                    afterUpdate = true;
+                    setStatusArea();
+                    validateUpdate();
+                } catch (PersistenceException e1) {
+                    ExceptionHandler.process(e1);
+                } catch (JSONException e2) {
+                    ExceptionHandler.process(e2);
+                } catch (LoginException e3) {
+                    ExceptionHandler.process(e3);
+                }
+
+            }
+        });
+    }
+
+    private void validateUpdate() throws JSONException {
+        // need get archiva url and repository by tac
+        String archivaServiceURL;
+        String repository;
+        // if workspace different,no need to spent time check patches
+        try {
+            if (isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) {
+                JSONObject archivaProperties;
+                archivaProperties = getArchivaServicesProperties(getAdminURL());
+
+                archivaServiceURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY) + ARCHIVA_SERVICES_SEGMENT;
+                repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
+
+                if (archivaServiceURL != null) {
+                    boolean needUpdate = needUpdate(archivaServiceURL, repository);
+                    if (afterUpdate) {
+                        iconLabel.setVisible(true);
+                        onIconLabel.setVisible(true);
+                        iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                        onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                        colorComposite.setBackground(RED_COLOR);
+                        onIconLabel.setBackground(colorComposite.getBackground());
+                        statusLabel.setText("Update finished,need to restart"); //$NON-NLS-1$
+                        statusLabel.setBackground(RED_COLOR);
+                        statusLabel.setForeground(WHITE_COLOR);
+                        Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
+                        statusLabel.setFont(font);
+                        restartBut.setVisible(true);
+                        restartBut.setEnabled(true);
+                        openProjectBtn.setEnabled(false);
+                        updateBtn.setEnabled(false);
+
+                    } else if (needUpdate && isWorkSpaceSame()) {
+                        iconLabel.setVisible(true);
+                        onIconLabel.setVisible(true);
+                        iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                        onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+                        colorComposite.setBackground(RED_COLOR);
+                        onIconLabel.setBackground(colorComposite.getBackground());
+                        statusLabel.setText("Update is required,please click the button to update"); //$NON-NLS-1$
+                        statusLabel.setBackground(RED_COLOR);
+                        statusLabel.setForeground(WHITE_COLOR);
+                        Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
+                        statusLabel.setFont(font);
+                        openProjectBtn.setEnabled(!needUpdate);
+                        updateBtn.setVisible(needUpdate);
+                        updateBtn.setEnabled(needUpdate);
+                    }
+                }
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+            final String message = e.getMessage() + "Please check your archiva server"; //$NON-NLS-N$
+            Display.getDefault().asyncExec(new Runnable() {
+
+                public void run() {
+                    MessageDialog.openWarning(LoginComposite.this.getShell(), "Update site can't be detected", message);
+                }
+            });
+        } catch (LoginException e) {
+            ExceptionHandler.process(e);
+        }
+
+    }
+
+    private String getAdminURL() {
+        String tacURL = null;
+        ConnectionBean currentBean = getConnection();
+        if (currentBean != null && currentBean.getRepositoryId().equals("remote")) {
+            tacURL = currentBean.getDynamicFields().get("url");
+        }
+        return tacURL;
+    }
+
+    /* should use api of tac to get the properties */
+    private JSONObject getArchivaServicesProperties(String tacURL) throws PersistenceException, LoginException {
+        JSONObject archivaObject = null;
+        if (tisService != null) {
+            String userName = getConnection().getUser();
+            String password = getConnection().getPassword();
+            User user = PropertiesFactory.eINSTANCE.createUser();
+            user.setLogin(userName);
+            archivaObject = (JSONObject) tisService.getArchivaObject(user, password, tacURL);
+        }
+
+        return archivaObject;
+    }
+
+    // method need update is used to control the status of updateBtn
+    private boolean needUpdate(String archivaURL, String... repository) {
+
+        // 1.get all the update-set for current user from TAC
+
+        // 2.compare the patch to the records stored in local(from Preferences)
+        if (tisService != null) {
+            try {
+                if (patchesToInstall != null) {
+                    patchesToInstall.clear();
+                }
+                patchesToInstall = tisService.getPatchesToBeInstall(archivaURL, repository);
+            } catch (BackingStoreException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return !patchesToInstall.isEmpty();
     }
 
     public void createNewProject() {
@@ -1810,9 +1996,6 @@ public class LoginComposite extends Composite {
             if (PluginChecker.isSVNProviderPluginLoaded() && branchesViewer != null) {
                 branchesViewer.getControl().setEnabled(true);
             }
-            // fillProjectsBtn.setEnabled(true);
-            // projectViewer.getControl().setEnabled(true);
-            // warningLabel.setVisible(false);
             restartBut.setVisible(false);
         }
         if (PluginChecker.isSVNProviderPluginLoaded()) {
