@@ -11,6 +11,8 @@ imports="
     org.talend.core.model.process.IConnection
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.metadata.types.JavaType
+	org.talend.core.model.metadata.types.JavaTypesManager
 "
 %>
 <%
@@ -45,19 +47,32 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 <%
                 for (int i = 0; i < columns.size()-1; i++) {
                     IMetadataColumn column = columns.get(i);
+                    JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
                     if(keyCols.contains(i))
                     {
-            
-                        %>
-                        strBuffer_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
-                
+                %>
+                       strBuffer_<%=cid%>.append(
+				<%
+    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    				if (javaType == JavaTypesManager.BIGDECIMAL) {
+				%>
+								(<%=conn.getName() %>.<%=column.getLabel() %>==null)?null:(<%=conn.getName() %>.<%=column.getLabel() %>.stripTrailingZeros())
+				<%
+					}  else {
+				%>
+				                String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)			
+				<%				
+					}
+				%>				
+				);
+                		
                         <%  
                     }
          
                 }
                 if(("crc32").equals(crcType)){
                     %>
-        
+                    
                     java.util.zip.CRC32 crc32<%=cid%> = new java.util.zip.CRC32();  
                     crc32<%=cid%>.update(strBuffer_<%=cid%>.toString().getBytes());
                     crcComputedValue<%=cid %> = new Long(crc32<%=cid%>.getValue());
