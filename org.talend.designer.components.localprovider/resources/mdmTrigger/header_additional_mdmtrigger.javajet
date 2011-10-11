@@ -32,14 +32,18 @@ if(withMDMTrigger){
 	// These fields are defined for "MDM triggers"  
 	private routines.system.Document MDMOutputMessage = null;
 
-	public routines.system.Document getMDMOutputMessage() {
-		return this.MDMOutputMessage;
+	public org.dom4j.Document getMDMOutputMessage() {
+		if(this.MDMOutputMessage != null)
+			return this.MDMOutputMessage.getDocument();
+		else
+			return null;
 	}
 
 	private routines.system.Document MDMInputMessage = null;
 
-	public void setMDMInputMessage(routines.system.Document message) {
-		this.MDMInputMessage = message;
+	public void setMDMInputMessage(org.dom4j.Document message) {
+		if(message != null)
+			this.MDMInputMessage.setDocument(message);
 	}
 
 	public void setMDMInputMessage(String message) throws org.dom4j.DocumentException {
