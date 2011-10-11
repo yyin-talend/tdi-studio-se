@@ -1,0 +1,39 @@
+<%@ jet
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataTable
+    java.util.List
+   	org.talend.core.model.process.IConnection    
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+    	List< ? extends IConnection> conns = node.getOutgoingConnections();
+		if(conns!=null && conns.size()>0){
+%>
+	int nb_line_<%=cid%> = 0;
+	net.sf.json.xml.XMLSerializer xmlSerializer_<%=cid%> = new net.sf.json.xml.XMLSerializer(); 
+    xmlSerializer_<%=cid%>.clearNamespaces();
+    xmlSerializer_<%=cid%>.setSkipNamespaces(true);
+    xmlSerializer_<%=cid%>.setForceTopLevelObject(true);
+	java.util.Queue<String> queue_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
+	
+	String str_<%=cid %> = null;
+	
+	do {
+			if (!queue_<%=cid%>.isEmpty()) {
+<%
+		}
+	}
+}
+%>
