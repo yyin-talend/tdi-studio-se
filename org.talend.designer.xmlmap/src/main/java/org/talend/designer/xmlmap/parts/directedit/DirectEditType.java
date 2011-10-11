@@ -27,7 +27,8 @@ public enum DirectEditType {
     OUTPUT_REJECT(8),
     LOOK_UP_INNER_JOIN_REJECT(9),
     NODE_NAME(10),
-    ALL_IN_ONE(11);
+    ALL_IN_ONE(11),
+    ENABLE_EMPTY_ELEMENT(12);
 
     private int id;
 

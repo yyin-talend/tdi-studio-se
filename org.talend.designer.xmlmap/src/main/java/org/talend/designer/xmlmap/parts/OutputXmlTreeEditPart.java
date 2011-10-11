@@ -79,6 +79,7 @@ public class OutputXmlTreeEditPart extends AbstractInOutTreeEditPart {
             case XmlmapPackage.OUTPUT_XML_TREE__EXPRESSION_FILTER:
             case XmlmapPackage.OUTPUT_XML_TREE__MINIMIZED:
             case XmlmapPackage.OUTPUT_XML_TREE__ALL_IN_ONE:
+            case XmlmapPackage.OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT:
                 ((OutputXmlTreeFigure) getFigure()).update(featureId);
                 break;
 

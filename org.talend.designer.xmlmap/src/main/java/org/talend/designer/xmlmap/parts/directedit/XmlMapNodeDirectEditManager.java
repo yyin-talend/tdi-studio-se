@@ -194,6 +194,12 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                         CCombo combo = (CCombo) getCellEditor().getControl();
                         combo.setText(String.valueOf(outputTree.isAllInOne()));
                     }
+                    break;
+                case ENABLE_EMPTY_ELEMENT:
+                    if (getCellEditor() instanceof ComboBoxCellEditor) {
+                        CCombo combo = (CCombo) getCellEditor().getControl();
+                        combo.setText(String.valueOf(outputTree.isEnableEmptyElement()));
+                    }
                 }
             }
 
@@ -268,17 +274,9 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                 }
 
                 if (source instanceof OutputXmlTreeEditPart) {
+                    OutputXmlTree outputTree = (OutputXmlTree) ((OutputXmlTreeEditPart) source).getModel();
                     if (DirectEditType.ALL_IN_ONE.equals(((IComboCell) figure).getDirectEditType())) {
-                        OutputXmlTree outputTree = (OutputXmlTree) ((OutputXmlTreeEditPart) source).getModel();
-                        boolean hasDocument = false;
-                        for (int i = 0; i < outputTree.getNodes().size(); i++) {
-                            OutputTreeNode outputTreeNode = outputTree.getNodes().get(i);
-                            if (XmlMapUtil.DOCUMENT.equals(outputTreeNode.getType())) {
-                                hasDocument = true;
-                                break;
-                            }
-                        }
-                        if (!hasDocument) {
+                        if (!XmlMapUtil.hasDocument(outputTree)) {
                             return null;
                         }
                         boolean hasAggregate = false;
@@ -290,6 +288,10 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                             }
                         }
                         if (hasAggregate) {
+                            return null;
+                        }
+                    } else if (DirectEditType.ENABLE_EMPTY_ELEMENT.equals(((IComboCell) figure).getDirectEditType())) {
+                        if (!XmlMapUtil.hasDocument(outputTree)) {
                             return null;
                         }
                     }
@@ -384,6 +386,7 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
         case OUTPUT_REJECT:
         case LOOK_UP_INNER_JOIN_REJECT:
         case ALL_IN_ONE:
+        case ENABLE_EMPTY_ELEMENT:
             return new String[] { String.valueOf(Boolean.TRUE), String.valueOf(Boolean.FALSE) };
         default:
             return new String[0];

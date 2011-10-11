@@ -15,12 +15,16 @@ package org.talend.designer.xmlmap.parts;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.EditPart;
+import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
 import org.talend.designer.xmlmap.figures.treeNode.RowFigure;
 import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
@@ -59,4 +63,25 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
         super.addChildVisual(childEditPart, index);
     }
 
+    @Override
+    public void notifyChanged(Notification notification) {
+        super.notifyChanged(notification);
+        int type = notification.getEventType();
+        int featureId = notification.getFeatureID(XmlmapPackage.class);
+        switch (type) {
+        case Notification.SET:
+            switch (featureId) {
+            case XmlmapPackage.TREE_NODE__TYPE:
+                if (XmlMapUtil.DOCUMENT.equals(notification.getOldValue())
+                        || !XmlMapUtil.DOCUMENT.equals(notification.getOldValue())
+                        && XmlMapUtil.DOCUMENT.equals(notification.getNewValue())) {
+                    AbstractInOutTreeEditPart inOutTreeEditPart = getInOutTreeEditPart(this);
+                    if (inOutTreeEditPart.getFigure() instanceof OutputXmlTreeFigure) {
+                        ((OutputXmlTreeFigure) inOutTreeEditPart.getFigure()).update(XmlmapPackage.TREE_NODE__TYPE);
+                    }
+                }
+
+            }
+        }
+    }
 }

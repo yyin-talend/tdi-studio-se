@@ -43,7 +43,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
@@ -214,15 +213,6 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
 
     }
 
-    protected TreeNode getModelTreeRoot(TreeNode treeNode) {
-        if (treeNode.eContainer() instanceof OutputXmlTree || treeNode.eContainer() instanceof InputXmlTree) {
-            return treeNode;
-        } else {
-            return getModelTreeRoot((TreeNode) treeNode.eContainer());
-        }
-
-    }
-
     public void refreshChildrenSourceConnections(TreeNodeEditPart rootPart, boolean expanded) {
         for (Object obj : getChildren()) {
             if (obj instanceof TreeNodeEditPart) {
@@ -313,7 +303,6 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 break;
             case XmlmapPackage.TREE_NODE__TYPE:
                 refreshChildren();
-
                 break;
             case XmlmapPackage.TREE_NODE__EXPRESSION:
                 if (getModel() instanceof TreeNode && !(getModel() instanceof OutputTreeNode)) {

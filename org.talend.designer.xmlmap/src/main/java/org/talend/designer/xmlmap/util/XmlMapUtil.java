@@ -28,6 +28,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
@@ -565,6 +566,25 @@ public class XmlMapUtil {
             }
         }
         return !haschild;
+    }
+
+    public static boolean hasDocument(AbstractInOutTree abstractTree) {
+        if (abstractTree == null) {
+            return false;
+        }
+        List<TreeNode> children = new ArrayList<TreeNode>();
+        if (abstractTree instanceof OutputXmlTree) {
+            children.addAll(((OutputXmlTree) abstractTree).getNodes());
+        } else if (abstractTree instanceof InputXmlTree) {
+            children.addAll(((InputXmlTree) abstractTree).getNodes());
+        }
+        for (int i = 0; i < children.size(); i++) {
+            TreeNode treeNode = children.get(i);
+            if (XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

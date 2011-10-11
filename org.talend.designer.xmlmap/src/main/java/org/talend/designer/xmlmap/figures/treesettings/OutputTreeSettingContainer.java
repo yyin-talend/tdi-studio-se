@@ -30,6 +30,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
@@ -37,6 +38,8 @@ import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
 
     private OutputXmlTree outputxmlTree;
+
+    private Figure settingsContainer;
 
     private Figure rejectRow;
 
@@ -50,6 +53,10 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
 
     private ComboCellLabel allInOne;
 
+    private Figure enableEmptyElementRow;
+
+    private ComboCellLabel enableEmptyElement;
+
     public OutputTreeSettingContainer(OutputXmlTree outputxmlTree) {
         this.outputxmlTree = outputxmlTree;
         createContent();
@@ -60,8 +67,8 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
         ColumnTitleFigure columnTitle = new ColumnTitleFigure();
         this.add(columnTitle);
 
-        final Figure container = new Figure();
-        container.setLayoutManager(new ToolbarLayout());
+        settingsContainer = new Figure();
+        settingsContainer.setLayoutManager(new ToolbarLayout());
 
         rejectRow = new Figure();
         rejectRow.setLayoutManager(new EqualWidthLayout());
@@ -77,7 +84,7 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
         reject.setLabelAlignment(PositionConstants.LEFT);
         reject.setBorder(new RowBorder(2, 10, 2, -1));
         rejectRow.add(reject);
-        container.add(rejectRow);
+        settingsContainer.add(rejectRow);
 
         innerJoinRejectRow = new Figure();
         innerJoinRejectRow.setLayoutManager(new EqualWidthLayout());
@@ -93,7 +100,7 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
         innerJoinReject.setLabelAlignment(PositionConstants.LEFT);
         innerJoinReject.setBorder(new RowBorder(2, 10, 2, -1));
         innerJoinRejectRow.add(innerJoinReject);
-        container.add(innerJoinRejectRow);
+        settingsContainer.add(innerJoinRejectRow);
 
         allInOneRow = new Figure();
         allInOneRow.setLayoutManager(new EqualWidthLayout());
@@ -109,13 +116,32 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
         allInOne.setLabelAlignment(PositionConstants.LEFT);
         allInOne.setBorder(new RowBorder(2, 10, 2, -1));
         allInOneRow.add(allInOne);
-        container.add(allInOneRow);
+        // container.add(allInOneRow);
 
-        container.setOpaque(true);
-        container.setBackgroundColor(ColorConstants.white);
-        this.add(container);
+        enableEmptyElementRow = new Figure();
+        enableEmptyElementRow.setLayoutManager(new EqualWidthLayout());
+        label = new Label();
+        label.setText("Create empty element");
+        label.setLabelAlignment(PositionConstants.LEFT);
+        compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
+        label.setBorder(compoundBorder);
+        enableEmptyElementRow.add(label);
+        enableEmptyElement = new ComboCellLabel();
+        enableEmptyElement.setDirectEditType(DirectEditType.ENABLE_EMPTY_ELEMENT);
+        enableEmptyElement.setText(String.valueOf(outputxmlTree.isEnableEmptyElement()));
+        enableEmptyElement.setLabelAlignment(PositionConstants.LEFT);
+        enableEmptyElement.setBorder(new RowBorder(2, 10, 2, -1));
+        enableEmptyElementRow.add(enableEmptyElement);
+        // container.add(enableEmptyElementRow);
 
-        container.addMouseListener(new MouseListener() {
+        showOrHideDocumentSetting();
+
+        settingsContainer.setOpaque(true);
+        settingsContainer.setBackgroundColor(ColorConstants.white);
+        this.add(settingsContainer);
+
+        // show selection
+        settingsContainer.addMouseListener(new MouseListener() {
 
             Figure selectedFigure = null;
 
@@ -127,6 +153,7 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
                         rejectRow.setOpaque(true);
                         innerJoinRejectRow.setOpaque(false);
                         allInOneRow.setOpaque(false);
+                        enableEmptyElementRow.setOpaque(false);
                     }
                     return;
                 }
@@ -137,6 +164,7 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
                         innerJoinRejectRow.setOpaque(true);
                         rejectRow.setOpaque(false);
                         allInOneRow.setOpaque(false);
+                        enableEmptyElementRow.setOpaque(false);
                     }
                     return;
                 }
@@ -148,6 +176,19 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
                         allInOneRow.setOpaque(true);
                         rejectRow.setOpaque(false);
                         innerJoinRejectRow.setOpaque(false);
+                        enableEmptyElementRow.setOpaque(false);
+                    }
+                    return;
+                }
+
+                boolean emptyElement = enableEmptyElementRow.containsPoint(me.x, me.y);
+                if (emptyElement) {
+                    if (selectedFigure != enableEmptyElementRow) {
+                        enableEmptyElementRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        enableEmptyElementRow.setOpaque(true);
+                        rejectRow.setOpaque(false);
+                        innerJoinRejectRow.setOpaque(false);
+                        allInOneRow.setOpaque(false);
                     }
                 }
             }
@@ -160,6 +201,27 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
 
         });
 
+    }
+
+    private void showOrHideDocumentSetting() {
+        boolean show = XmlMapUtil.hasDocument(outputxmlTree);
+        if (show) {
+            if (!settingsContainer.getChildren().contains(allInOneRow)) {
+                settingsContainer.add(allInOneRow);
+            }
+            if (!settingsContainer.getChildren().contains(enableEmptyElementRow)) {
+                settingsContainer.add(enableEmptyElementRow);
+            }
+        } else {
+            if (settingsContainer.getChildren().contains(enableEmptyElementRow)) {
+                settingsContainer.remove(enableEmptyElementRow);
+                outputxmlTree.setEnableEmptyElement(false);
+            }
+            if (settingsContainer.getChildren().contains(allInOneRow)) {
+                settingsContainer.remove(allInOneRow);
+                outputxmlTree.setAllInOne(false);
+            }
+        }
     }
 
     class ColumnTitleFigure extends Figure {
@@ -194,6 +256,12 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
             break;
         case XmlmapPackage.OUTPUT_XML_TREE__ALL_IN_ONE:
             allInOne.setText(String.valueOf(outputxmlTree.isAllInOne()));
+            break;
+        case XmlmapPackage.OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT:
+            enableEmptyElement.setText(String.valueOf(outputxmlTree.isEnableEmptyElement()));
+            break;
+        case XmlmapPackage.TREE_NODE__TYPE:
+            showOrHideDocumentSetting();
         }
     }
 
@@ -206,6 +274,9 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
         }
         if (allInOneRow.isOpaque()) {
             allInOneRow.setOpaque(false);
+        }
+        if (enableEmptyElementRow.isOpaque()) {
+            enableEmptyElementRow.setOpaque(false);
         }
     }
 }

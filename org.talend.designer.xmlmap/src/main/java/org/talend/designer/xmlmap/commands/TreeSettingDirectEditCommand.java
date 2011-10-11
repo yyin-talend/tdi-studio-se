@@ -101,6 +101,9 @@ public class TreeSettingDirectEditCommand extends DirectEditCommand {
                         break;
                     case ALL_IN_ONE:
                         outputTree.setAllInOne(Boolean.valueOf((String) newValue));
+                        break;
+                    case ENABLE_EMPTY_ELEMENT:
+                        outputTree.setEnableEmptyElement(Boolean.valueOf((String) newValue));
                     }
                 }
             }
