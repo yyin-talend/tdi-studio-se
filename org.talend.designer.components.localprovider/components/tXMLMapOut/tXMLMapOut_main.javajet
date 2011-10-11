@@ -84,6 +84,8 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 	int closeWhileBlockCount = 0;
 	boolean hasDocumentGlobal = false;
 	
+	boolean isAllInOne = false;
+	
 	boolean hasMainFilter = false;
 	boolean mainFilterAlreadyDone = false;
 	
@@ -169,11 +171,13 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 			if(nameToOutputConnection.get(outputTableName) == null) {
 				continue;
 			}
+			isAllInOne = outputTable.isAllInOne();
 			for(OutputTreeNode outputNode: outputTable.getNodes()) {
 				if(("id_Document").equals(outputNode.getType())){
 				
 					//get the document aggregation columns
 					boolean hasAggregateColumn = false;
+					
 					
 					TreeUtil treeUtil = new TreeUtil();
 					List<TreeNode> allLeaf = new ArrayList<TreeNode>();
@@ -186,7 +190,7 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 						}
 					}
 					
-					if(!hasAggregateColumn) {
+					if(!hasAggregateColumn && !isAllInOne) {
 				%>
 				    gen_Doc_<%=outputTableName %>_<%=cid %> = new GenerateDocument_<%=outputTableName %>();
 				    
@@ -450,10 +454,12 @@ for (VarTable varsTable : varsTables) {
         // ///////////////////////////////////////////////////////////////////
         // run through output tables list for generating intilization of outputs arrays
         int dummyVarCounter = 0;
+		//sb.append(cr + "boolean docAlreadyInstanciate = false;" + cr);
         for (int indexCurrentTable = 0; indexCurrentTable < lstSizeOutputs; indexCurrentTable++) {
             OutputXmlTree outputTable = (OutputXmlTree) outputTablesSortedByReject.get(indexCurrentTable);
             EList<OutputTreeNode> outputTableEntries = outputTable.getNodes();
             String outputTableName = outputTable.getName();
+			isAllInOne = outputTable.isAllInOne();
             
             boolean connectionExists = true;
             IConnection outputConnection =null;
@@ -548,7 +554,7 @@ for (VarTable varsTable : varsTables) {
 	                if (outputTableEntries != null && (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
 	                        && atLeastOneInputTableWithInnerJoin || checkingSyntax)) {
 						if(!utilXML.tableHasADocument(outputTableEntries)) {
-							sb.append(outputTableName + "_tmp = new " + outputTableName + "Struct();");
+							sb.append(cr + cr + outputTableName + "_tmp = new " + outputTableName + "Struct();");
 						}
 						boolean hasDocument = false;
 	                    for (OutputTreeNode outputTableEntry : outputTableEntries) {
@@ -621,21 +627,28 @@ for (VarTable varsTable : varsTables) {
 									}
 								}
 								
-								if(xpaths.size() >0) {//TD256
-									sb.append(cr + cr + "if(");
+								if(hasAggregateColumn || isAllInOne) { //TD256
 									int size = xpaths.size();
-									for(int i=0; i<size; i++) {
-										String xpath = xpaths.get(i);
-										String exprCode = exprCodes.get(i);
-										sb.append("(");
-										sb.append(exprCode);
-										sb.append(")==null ||");
-										sb.append("!" + exprCode + ".equals(aggregateCacheMap_"+cid+".get(\""+xpath+"\"))");
-										if(i != size-1) {
-											sb.append(" || ");
+									if(xpaths.size() >0) {
+										sb.append(cr + cr + "if(");
+										for(int i=0; i<size; i++) {
+											String xpath = xpaths.get(i);
+											String exprCode = exprCodes.get(i);
+											sb.append("(");
+											sb.append(exprCode);
+											sb.append(")==null ||");
+											sb.append("!" + exprCode + ".equals(aggregateCacheMap_"+cid+".get(\""+xpath+"\"))");
+											if(i != size-1) {
+												sb.append(" || ");
+											}
 										}
+										sb.append(") {" + cr);
+									} else {
+										sb.append(cr + cr + "if(");
+										sb.append("!docAlreadyInstanciate");
+										sb.append(") {" + cr);
+										sb.append("docAlreadyInstanciate = true;");
 									}
-									sb.append(") {" + cr);
 									sb.append("gen_Doc_" + outputTableName + "_" + cid + " = new GenerateDocument_" + outputTableName + "();" + cr);
 									sb.append("//init one new out struct for cache the result." + cr);
 									sb.append(outputTableName + "_aggregate = new " + outputTableName + "Struct();" + cr);
@@ -651,7 +664,11 @@ for (VarTable varsTable : varsTables) {
 										sb.append("aggregateCacheMap_" + cid + ".put(\"" + xpath + "\", " + exprCode + ");" + cr);
 									}
 									sb.append("}" + cr);
-								}//TD256
+								} else if(!isAllInOne) { // If we have a document in output table entry, with allInOne = false and no aggregation
+									sb.append(cr + cr + "gen_Doc_" + outputTableName + "_" + cid + " = new GenerateDocument_" + outputTableName + "();" + cr);
+									sb.append(outputTableName + "_tmp = new " + outputTableName + "Struct();");
+									sb.append(cr + cr);
+								} //TD256
 								
 								sb.append(cr + cr +"gen_Doc_"+outputTableName+"_"+cid+".generateElements(");
 								if(hasDocumentInMainInputTable || hasDocumentInAnyLookupTable) {
@@ -669,7 +686,7 @@ for (VarTable varsTable : varsTables) {
 								sb.append("if("+assignationVar + " == null){" + cr);
 								sb.append(assignationVar + " = new " + typeToGenerate + "();" + cr);
 								sb.append(assignationVar + ".setDocument(gen_Doc_"+outputTableName+"_"+cid+".getDocument());" + cr);
-								if(!hasAggregateColumn) {
+								if(!hasAggregateColumn && !isAllInOne) {
 									sb.append("//construct the resultset when there is no aggregate column for the out table" + cr);
 									sb.append("allOutsForAggregate_" + uniqueNameComponent + ".add(" + outputTableName + "_tmp);");
 								}
