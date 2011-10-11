@@ -853,7 +853,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								if(("Dom4j").equals(mode) && ("true").equals(nodeCheck)){
 									if("id_Document".equals(column.getTalendType())) {
 %>
-										<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Document(str_<%=cid %>);
+										<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Document(str_<%=cid %>,<%=ignoreDTD%>);
 <%
 									} else {
 %>
