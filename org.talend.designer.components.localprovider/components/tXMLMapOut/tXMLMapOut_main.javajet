@@ -491,6 +491,8 @@ for (VarTable varsTable : varsTables) {
                 }
             }
 
+			boolean hasAggregateColumn = false;
+
             // No connection matching and no checking errors
             if (connectionExists || checkingSyntax) {
 	            if (rejectValueHasJustChanged) {
@@ -558,7 +560,7 @@ for (VarTable varsTable : varsTables) {
 						}
 						boolean hasDocument = false;
 	                    for (OutputTreeNode outputTableEntry : outputTableEntries) {
-							boolean hasAggregateColumn = false;
+							hasAggregateColumn = false;
 	                        String outputColumnName = outputTableEntry.getName();
 	                        IMetadataColumn metadataColumnFromConn = null;
 	                        if(connectionExists) {
@@ -736,6 +738,14 @@ for (VarTable varsTable : varsTables) {
 				&& (isLastTable || !checkingSyntax && (outputTableName.equals(lastValidOutputTableName) || lastValidOutputTableName == null))) {
 				sb.append(cr + "}  // closing inner join bracket (2)");
 				closeTestInnerJoinConditionsBracket = false;
+			}
+			
+			if (hasAggregateColumn || isAllInOne) {
+				for (OutputTreeNode outputTableEntry : outputTableEntries) {
+					if(!("id_Document".equals(outputTableEntry.getType()))) {
+						sb.append(cr + cr + outputTableName + "_aggregate." + outputTableEntry.getName() + " = " + outputTableName + "_tmp." + outputTableEntry.getName() + ";");
+					}
+				}
 			}
 
 		} // for output tables

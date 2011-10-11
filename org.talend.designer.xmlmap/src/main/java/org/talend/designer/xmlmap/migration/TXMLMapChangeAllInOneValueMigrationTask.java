@@ -75,9 +75,9 @@ public class TXMLMapChangeAllInOneValueMigrationTask extends
 									if (!outputTable.isAllInOne()) {
 										outputTable.setAllInOne(true);
 										modified = true;
+										break;
 									}
 								}
-								break;
 							}
 						}
 					}
