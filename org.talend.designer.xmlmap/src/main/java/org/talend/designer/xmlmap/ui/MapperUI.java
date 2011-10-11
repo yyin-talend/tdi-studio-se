@@ -51,7 +51,6 @@ import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.xmlmap.XmlMapComponent;
 import org.talend.designer.xmlmap.editor.XmlMapEditor;
-import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
@@ -172,7 +171,7 @@ public class MapperUI {
         editor.setContent(copyOfMapData);
 
         tabFolderEditors = new TabFolderEditors(mainSashForm, mapperManager, SWT.BORDER);
-        selectFirstInOutTree();
+        // selectFirstInOutTree();
         mainSashForm.setWeights(new int[] { 70, 30 });
 
         footerComposite = new FooterComposite(mapperShell, this);
@@ -188,20 +187,11 @@ public class MapperUI {
 
         });
 
+        editor.makeDefaultSelection();
+
         mapperShell.open();
         return mapperShell;
 
-    }
-
-    private void selectFirstInOutTree() {
-        if (!copyOfMapData.getInputTrees().isEmpty()) {
-            InputXmlTree inputXmlTree = copyOfMapData.getInputTrees().get(0);
-            mapperManager.selectInputXmlTree(inputXmlTree);
-        }
-        if (!copyOfMapData.getOutputTrees().isEmpty()) {
-            OutputXmlTree outputXmlTree = copyOfMapData.getOutputTrees().get(0);
-            mapperManager.selectOutputXmlTree(outputXmlTree);
-        }
     }
 
     public void closeMapperDialog(int response) {

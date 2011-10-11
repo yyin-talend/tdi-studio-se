@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
@@ -41,8 +42,11 @@ import org.talend.designer.xmlmap.editor.actions.SetGroupAction;
 import org.talend.designer.xmlmap.editor.actions.SetLoopAction;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
+import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
+import org.talend.designer.xmlmap.parts.XmlMapDataEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -171,6 +175,37 @@ public class XmlMapEditor extends GraphicalEditor {
 
     public void setContent(Object content) {
         getGraphicalViewer().setContents(content);
+    }
+
+    public void makeDefaultSelection() {
+        EditPart contents = getGraphicalViewer().getContents();
+        if (contents instanceof XmlMapDataEditPart) {
+            XmlMapDataEditPart mapdataPart = (XmlMapDataEditPart) contents;
+            List children = mapdataPart.getChildren();
+            InputXmlTreeEditPart firstInputPart = null;
+            OutputXmlTreeEditPart firstOutputPart = null;
+            if (children != null) {
+                for (int i = 0; i < children.size(); i++) {
+                    Object object = children.get(i);
+                    if (object instanceof InputXmlTreeEditPart && firstInputPart == null) {
+                        firstInputPart = (InputXmlTreeEditPart) object;
+                    }
+                    if (object instanceof OutputXmlTreeEditPart && firstOutputPart == null) {
+                        firstOutputPart = (OutputXmlTreeEditPart) object;
+                    }
+                    if (firstInputPart != null && firstOutputPart != null) {
+                        break;
+                    }
+                }
+
+                if (firstInputPart != null) {
+                    getGraphicalViewer().appendSelection(firstInputPart);
+                }
+                if (firstOutputPart != null) {
+                    getGraphicalViewer().appendSelection(firstOutputPart);
+                }
+            }
+        }
     }
 
     protected KeyHandler getCommonKeyHandler() {
