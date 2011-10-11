@@ -627,6 +627,9 @@ for (VarTable varsTable : varsTables) {
 									for(int i=0; i<size; i++) {
 										String xpath = xpaths.get(i);
 										String exprCode = exprCodes.get(i);
+										sb.append("(");
+										sb.append(exprCode);
+										sb.append(")==null ||");
 										sb.append("!" + exprCode + ".equals(aggregateCacheMap_"+cid+".get(\""+xpath+"\"))");
 										if(i != size-1) {
 											sb.append(" || ");

@@ -663,6 +663,7 @@ java.util.List<Object> allOutsForAggregate_<%=uniqueNameComponent %> = new java.
 //=====================================================output xml init part=======================================================================
 class GenerateToolByDom4j{
 	String cid = null;
+	boolean allowEmpty = false;
 	GenerateMethodUtil generateMethodUtil = null;
 	java.util.List<java.util.List<TreeNode>> groupList = new java.util.ArrayList<java.util.List<TreeNode>>();
 	java.util.List<java.util.List<java.util.List<TreeNode>>> groupbyNodeList = new java.util.ArrayList(new java.util.ArrayList<java.util.List<TreeNode>>());
@@ -715,13 +716,28 @@ class GenerateToolByDom4j{
 					generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName);
 				}
 			}
-
+			
+			createEmptyElement(node,currEleName,parentName);
+		}
+	}
+	
+	private void createEmptyElement(OutputTreeNode node,String currEleName,String parentName) {
+		if(!node.isMain() && !node.isGroup() && !node.isLoop() && !allowEmpty) {
+%>
+		if (<%=currEleName%>.content().size() == 0 
+			&& <%=currEleName%>.attributes().size() == 0 
+			&& <%=currEleName%>.declaredNamespaces().size() == 0) {
+            <%=parentName%>.remove(<%=currEleName%>);
+        }
+<%				
 		}
 	}
 
 	private void addNameSpace(String currEleName, OutputTreeNode node) {
 		if(node.getDefaultValue()==null || ("").equals(node.getDefaultValue())) {
 %>
+valueMap.put("<%=currEleName%>",<%generateMethodUtil.generateExprCode(node.getExpression() ); %>);
+if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 <%=currEleName%>.addNamespace("<%=node.getName() %>", TalendString.replaceSpecialCharForXML( <%generateMethodUtil.generateExprCode(node.getExpression() ); %>));
 <%
 		} else {
@@ -736,6 +752,7 @@ class GenerateToolByDom4j{
 %>
         	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>.getName(),
         	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML(<%generateMethodUtil.generateExprCode(node.getExpression() ); %>))));
+}//close if 8080
 <%
 				} else { // get the static value as the url
 %>
@@ -751,6 +768,7 @@ class GenerateToolByDom4j{
 %>
         	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName("<%=parent.getName().substring(index+1 ) %>",
         	org.dom4j.DocumentHelper.createNamespace("<%=node.getName() %>",TalendString.replaceSpecialCharForXML(<%generateMethodUtil.generateExprCode(node.getExpression() ); %>))));
+}//close if 8080
 <%
 				} else {
 %>
@@ -802,7 +820,10 @@ class GenerateToolByDom4j{
 			if(tmpNode.getNodeType()==NodeType.ATTRIBUT) {
 %>
 //		if(<%//tool.getValue(node);%>!=null){
-			<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>",String.valueOf(<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>));
+			valueMap.put("<%=currEleName%>",<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>);
+			if(valueMap.get("<%=currEleName%>")!=null) {
+				<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>",String.valueOf(<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>));
+			}
 //		}
 <%
 			}
@@ -812,7 +833,10 @@ class GenerateToolByDom4j{
 	private void setText(String currEleName, OutputTreeNode node){
 		if(node.getExpression()!=null && !("").equals(node.getExpression()) ){
 %>
-		nestXMLTool.setText(<%=currEleName%>, String.valueOf(<%generateMethodUtil.generateExprCode(node.getExpression()); %>));
+		valueMap.put("<%=currEleName%>",<%generateMethodUtil.generateExprCode(node.getExpression()); %>);
+		if(valueMap.get("<%=currEleName%>")!=null) {
+			nestXMLTool.setText(<%=currEleName%>, String.valueOf(<%generateMethodUtil.generateExprCode(node.getExpression()); %>));
+		}
 <%
 		}
 	}
@@ -975,6 +999,9 @@ int index = -1;
 	java.util.Map<String,Object> aggregateCacheMap_<%=cid%> = new java.util.HashMap<String,Object>();
 <%
 for(OutputXmlTree outputTable : outputTables) {
+	boolean allowEmptyElement = outputTable.isEnableEmptyElement();
+	generateToolByDom4j.allowEmpty = allowEmptyElement;
+	
 	String tableName = outputTable.getName();
 	for(OutputTreeNode outputNode: outputTable.getNodes()) {
 		if(("id_Document").equals(outputNode.getType())){
@@ -1006,6 +1033,7 @@ class GenerateDocument_<%=tableName %> {
 <%
 	}
 %>
+	java.util.Map<String,Object> valueMap = null;
 	
 	org.dom4j.Document doc = null;
 	
@@ -1033,6 +1061,8 @@ XMLMapUtil xmu = new XMLMapUtil();
     public GenerateDocument_<%=tableName %>() {
 //    	this.treeNodeAPI = treeNodeAPI;
     	
+    	valueMap = new java.util.HashMap<String,Object>();
+    	
     	nestXMLTool = new NestXMLTool_<%=cid%>();
     	
     	groupbyList =  new java.util.ArrayList<java.util.List<String>>();
@@ -1044,6 +1074,14 @@ XMLMapUtil xmu = new XMLMapUtil();
     }
     
     public org.dom4j.Document getDocument(){
+<%
+		//remove empty element
+		if(!allowEmptyElement) {
+%>
+		nestXMLTool.removeEmptyElement(this.doc.getRootElement());
+<%		
+		}
+%>
     	return this.doc;
     }
 	
