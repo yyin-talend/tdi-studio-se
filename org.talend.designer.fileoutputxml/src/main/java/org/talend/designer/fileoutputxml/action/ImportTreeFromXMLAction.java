@@ -17,12 +17,15 @@ import java.util.List;
 
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.xml.XmlUtil;
+import org.talend.core.ui.metadata.dialog.RootNodeSelectDialog;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
@@ -42,6 +45,8 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
 
     private FOXUI foxui;
 
+    private boolean isXsd;
+
     /**
      * CreateNode constructor comment.
      * 
@@ -59,22 +64,26 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         this.foxui = foxui;
     }
 
-    private List treeNodeAdapt() {
+    private List<FOXTreeNode> treeNodeAdapt() {
         List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
         FileDialog f = new FileDialog(foxui.getFoxUIParent().getShell());
         String file = f.open();
         if (file == null) {
             return list;
         }
+        isXsd = XmlUtil.isXSDFile(file);
         try {
             ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(file, true, 0);
             String schemaName = getSelectedSchema();
             FOXTreeNode root = cloneATreeNode(treeNode, schemaName);
-            root = ((Element) root).getElementChildren().get(0);
-            root.setParent(null);
-            list.add(root);
+            Element rootElement = (Element) root;
+            if (rootElement.getElementChildren() != null && rootElement.getElementChildren().size() > 0) {
+                for (FOXTreeNode foxTreeNode : rootElement.getElementChildren()) {
+                    foxTreeNode.setParent(null);
+                    list.add(foxTreeNode);
+                }
+            }
         } catch (Exception e) {
-            // e.printStackTrace();
             ExceptionHandler.process(e);
         }
         return list;
@@ -89,7 +98,7 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         }
         // zli fixed for bug 7414
         if (treeNode.getType() == ATreeNode.NAMESPACE_TYPE) {
-        	node = new NameSpaceNode();
+            node = new NameSpaceNode();
             node.setLabel("");//$NON-NLS-1$
             node.setDefaultValue((String) treeNode.getValue());
         } else {
@@ -134,19 +143,37 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
      */
     @Override
     public void run() {
-        List<FOXTreeNode> newInput = treeNodeAdapt();
-        if (newInput.size() == 0) {
+        List<FOXTreeNode> newInput = new ArrayList<FOXTreeNode>();
+        List<FOXTreeNode> nodes = treeNodeAdapt();
+        if (nodes.size() == 0) {
             return;
         }
-        List<FOXTreeNode> treeData = foxui.getFoxManager().getTreeData(getSelectedSchema());
-        treeData.clear();
-        treeData.addAll(newInput);
-        xmlViewer.setInput(foxui.getFoxManager().getTreeData());
-        // TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
-        xmlViewer.refresh();
-        xmlViewer.expandAll();
-        foxui.updateStatus();
-        foxui.redrawLinkers();
+
+        boolean changed = true;
+        if (nodes.size() > 1 && isXsd) {
+            RootNodeSelectDialog dialog = new RootNodeSelectDialog(xmlViewer.getControl().getShell(), nodes);
+            if (dialog.open() == IDialogConstants.OK_ID) {
+                FOXTreeNode selectedNode = dialog.getSelectedNode();
+                newInput.add(selectedNode);
+                changed = true;
+            } else {
+                changed = false;
+            }
+        } else {
+            newInput.add(nodes.get(0));
+        }
+
+        if (changed) {
+            List<FOXTreeNode> treeData = foxui.getFoxManager().getTreeData(getSelectedSchema());
+            treeData.clear();
+            treeData.addAll(newInput);
+            xmlViewer.setInput(foxui.getFoxManager().getTreeData());
+            // TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+            xmlViewer.refresh();
+            xmlViewer.expandAll();
+            foxui.updateStatus();
+            foxui.redrawLinkers();
+        }
     }
 
     /*
