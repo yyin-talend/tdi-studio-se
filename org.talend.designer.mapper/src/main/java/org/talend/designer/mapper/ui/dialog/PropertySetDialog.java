@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.formtools.LabelledDirectoryField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.core.model.components.IComponent;
-import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.MapperSettingsManager;
 import org.talend.designer.mapper.model.MapperSettingModel;
@@ -134,10 +133,7 @@ public class PropertySetDialog extends Dialog {
         lookupInParallelButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                IElementParameter paraEle = mapperManager.getAbstractMapComponent().getElementParameter("LKUP_PARALLELIZE");
-                if (paraEle != null) {
-                    paraEle.setValue(lookupInParallelButton.getSelection());
-                }
+                // shouldn't set value in here,need set value to component when close mapper ui,see TDI-17704
                 updateStatus();
             }
         });

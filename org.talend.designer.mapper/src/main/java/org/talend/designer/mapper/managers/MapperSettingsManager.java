@@ -28,7 +28,7 @@ public class MapperSettingsManager {
 
     public static final String ROWS_BUFFER_SIZE = "ROWS_BUFFER_SIZE"; //$NON-NLS-1$
 
-    public static final String LOOKUP_IN_PARALLEL = "LOOKUP_IN_PARALLEL"; //$NON-NLS-1$
+    public static final String LOOKUP_IN_PARALLEL = "LKUP_PARALLELIZE"; //$NON-NLS-1$
 
     private static MapperSettingsManager instance = null;
 
@@ -103,7 +103,7 @@ public class MapperSettingsManager {
         }
         // TODO: temporary set be true, handle after...
         boolean parallel = false;
-        IElementParameter paraEle = manager.getAbstractMapComponent().getElementParameter("LKUP_PARALLELIZE");
+        IElementParameter paraEle = manager.getAbstractMapComponent().getElementParameter(LOOKUP_IN_PARALLEL);
         if (paraEle != null) {
             parallel = (Boolean) paraEle.getValue();
         }
@@ -147,6 +147,10 @@ public class MapperSettingsManager {
         parameter = component.getElementParameter(ROWS_BUFFER_SIZE);
         if (parameter != null) {
             parameter.setValue(currnentModel.getRowBufferSize());
+        }
+        parameter = component.getElementParameter(LOOKUP_IN_PARALLEL);
+        if (parameter != null) {
+            parameter.setValue(currnentModel.isLookInParallel());
         }
     }
 
