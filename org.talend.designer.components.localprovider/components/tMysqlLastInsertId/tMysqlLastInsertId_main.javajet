@@ -46,7 +46,7 @@ imports="
 %>
 java.sql.ResultSet rs_<%=cid %> = pstmt_<%=cid %>.executeQuery();
 if(rs_<%=cid %>.next()){
-	<%=conn.getName() %>.last_insert_id = rs_<%=cid %>.getLong(1);
+	<%=conn.getName() %>.last_insert_id = rs_<%=cid %>.getInt(1);
 }
 nb_line_<%=cid%>++;
 <%
