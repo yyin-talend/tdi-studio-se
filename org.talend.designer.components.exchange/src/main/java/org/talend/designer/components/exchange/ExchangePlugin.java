@@ -1,8 +1,11 @@
 package org.talend.designer.components.exchange;
 
+import java.io.File;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.talend.designer.components.exchange.util.ExchangeUtils;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -29,6 +32,18 @@ public class ExchangePlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
+
+        createNecessaryFolders();
+    }
+
+    private void createNecessaryFolders() {
+        File file = ExchangeUtils.getComponentFolder("/"); //$NON-NLS-1$
+        if (file != null) {
+            File dowloadedFoder = new File(file, ExchangeUtils.FOLDER_DOWNLOADED);
+            if (!dowloadedFoder.exists()) {
+                dowloadedFoder.mkdir();
+            }
+        }
     }
 
     /*

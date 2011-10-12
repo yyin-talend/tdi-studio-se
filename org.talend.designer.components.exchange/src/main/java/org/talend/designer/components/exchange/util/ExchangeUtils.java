@@ -74,13 +74,15 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class ExchangeUtils {
 
+    public static final String FOLDER_DOWNLOADED = "downloaded"; //$NON-NLS-1$
+
     public static String REVISION_LIST_URL = "http://talendforge.org/exchange/tos/api/get_revision_list.php"; //$NON-NLS-1$
 
     private static Pattern VERSION_PATTERN = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)(\\.(RC|M)\\d+)?_r\\d+"); //$NON-NLS-1$
 
     private static Pattern DEFAULT_PATTERN = Pattern.compile("(\\d+)\\.(\\d+)\\.*(\\d*)"); //$NON-NLS-1$
 
-    public final static String exchangeWSServer = "http://www.talendforge.org/exchange/webservices/";
+    public final static String exchangeWSServer = "http://www.talendforge.org/exchange/webservices/"; //$NON-NLS-1$
 
     public static String TYPEEXTENSION = "tos"; //$NON-NLS-1$
 
@@ -199,14 +201,7 @@ public class ExchangeUtils {
      * @return
      */
     public static File getComponentFolder() {
-        URL url = FileLocator.find(ExchangePlugin.getDefault().getBundle(), new Path("downloaded"), null); //$NON-NLS-1$
-        try {
-            URL fileUrl = FileLocator.toFileURL(url);
-            return new File(fileUrl.getPath());
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-        return null;
+        return getComponentFolder(FOLDER_DOWNLOADED);
     }
 
     /**
