@@ -1142,7 +1142,7 @@ generateToolByDom4j.generateGroupCode(index);
     }
 
 	GenerateDocument_<%=tableName %> gen_Doc_<%=tableName %>_<%=cid %> = new GenerateDocument_<%=tableName %>();
-	boolean docAlreadyInstanciate = false;
+	boolean docAlreadyInstanciate_<%=tableName %> = false;
 <%
 		} // if(docuemnt)
 	}// for(outputNode)

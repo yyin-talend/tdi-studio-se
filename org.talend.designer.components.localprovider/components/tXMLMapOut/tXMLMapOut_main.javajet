@@ -647,9 +647,9 @@ for (VarTable varsTable : varsTables) {
 										sb.append(") {" + cr);
 									} else {
 										sb.append(cr + cr + "if(");
-										sb.append("!docAlreadyInstanciate");
+										sb.append("!docAlreadyInstanciate_" + outputTableName);
 										sb.append(") {" + cr);
-										sb.append("docAlreadyInstanciate = true;");
+										sb.append("docAlreadyInstanciate_" + outputTableName + " = true;");
 									}
 									sb.append("gen_Doc_" + outputTableName + "_" + cid + " = new GenerateDocument_" + outputTableName + "();" + cr);
 									sb.append("//init one new out struct for cache the result." + cr);
