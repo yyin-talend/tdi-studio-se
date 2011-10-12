@@ -75,7 +75,11 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         try {
             ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(file, true, 0);
             String schemaName = getSelectedSchema();
-            FOXTreeNode root = cloneATreeNode(treeNode, schemaName);
+            String rootName = "";
+            if (treeNode.getDataType() instanceof String) {
+                rootName += "/" + treeNode.getValue() + "@" + (String) treeNode.getDataType();
+            }
+            FOXTreeNode root = cloneATreeNode(treeNode, schemaName, rootName);
             Element rootElement = (Element) root;
             if (rootElement.getElementChildren() != null && rootElement.getElementChildren().size() > 0) {
                 for (FOXTreeNode foxTreeNode : rootElement.getElementChildren()) {
@@ -89,7 +93,7 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         return list;
     }
 
-    private FOXTreeNode cloneATreeNode(ATreeNode treeNode, String schemaName) throws Exception {
+    private FOXTreeNode cloneATreeNode(ATreeNode treeNode, String schemaName, String currentPath) throws Exception {
         FOXTreeNode node = null;
         if (treeNode.getType() == ATreeNode.ATTRIBUTE_TYPE) {
             node = new Attribute();
@@ -110,7 +114,20 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
             for (int i = 0; i < children.length; i++) {
                 if (children[i] instanceof ATreeNode) {
                     ATreeNode child = (ATreeNode) children[i];
-                    FOXTreeNode foxChild = cloneATreeNode(child, schemaName);
+                    String newPath = currentPath + "/";
+                    if (child.getDataType() instanceof String) {
+                        String elementName = (String) child.getDataType();
+                        if (currentPath.contains("@" + elementName + "/")) {
+                            ExceptionHandler.process(new Exception("XSD ERROR: loop found. Item: " + elementName
+                                    + " is already in the currentPath (" + currentPath + ")."));
+                            continue;
+                        }
+                        newPath += child.getValue() + "@" + elementName;
+                    } else {
+                        newPath += "unknownElement";
+                    }
+
+                    FOXTreeNode foxChild = cloneATreeNode(child, schemaName, newPath);
                     foxChild.setRow(schemaName);
                     node.addChild(foxChild);
                 }
