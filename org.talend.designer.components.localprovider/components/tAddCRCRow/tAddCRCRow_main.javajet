@@ -7,7 +7,6 @@ imports="
     java.util.List
     java.util.Map
     java.util.ArrayList
-    org.talend.commons.utils.StringUtils
     org.talend.core.model.process.IConnection
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.core.model.process.IConnectionCategory
@@ -53,7 +52,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 %>
                        strBuffer_<%=cid%>.append(
 				<%
-    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.BIGDECIMAL) {
 				%>
 								(<%=conn.getName() %>.<%=column.getLabel() %>==null)?null:(<%=conn.getName() %>.<%=column.getLabel() %>.stripTrailingZeros())
