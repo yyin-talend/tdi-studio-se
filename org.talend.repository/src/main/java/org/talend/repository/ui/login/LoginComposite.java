@@ -66,10 +66,10 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.osgi.service.prefs.BackingStoreException;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.osgi.framework.Bundle;
+import org.osgi.service.prefs.BackingStoreException;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
@@ -260,8 +260,6 @@ public class LoginComposite extends Composite {
     private ConnectionBean firstConnBean;
 
     private List<IPatchBean> patchesToInstall = new ArrayList<IPatchBean>();
-
-    private ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
 
     // only for test
     // private static final String ARCHIVA_URL = "http://192.168.0.58:8080";
@@ -1683,21 +1681,15 @@ public class LoginComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 // install and update all patches;
                 try {
+                    ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(
+                            ICoreTisService.class);
                     afterUpdate = false;
                     if (tisService != null) {
-                        // 1.get the artriva resource url from TAC,it's very important
-                        // String resourceURL =
-                        // "http://localhost:8080/archiva/repository/internal/org/talend/studio-all-update-site/1/studio-all-update-site-1-Patch_20110722_bug0022816_v1_fixed_a_bug_in_the_studio_gui.zip";
-                        // String resourceURL =
-                        // "http://localhost:8080/archiva/repository/internal/org/talend/studio-all-update-site/1/studio-all-update-site-1-Patch_20110722_bug0022816_v1_fixed_a_bug_in_the_studio_gui.zip";
-                        // String resourceURL =
-                        // "http://192.168.0.58:8080/archiva/repository/internal/org/talend/studio-all-update-site/1/studio-all-update-site-1-Patch_20110722_intergratePatch_v1_fixed_bugs_in_the_studio_gui.zip";
                         JSONObject archivaProperties = getArchivaServicesProperties(getAdminURL());
                         String archivaServicesURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY)
                                 + ARCHIVA_SERVICES_SEGMENT;
                         String repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
                         tisService.downLoadAndInstallPatches(archivaServicesURL, repository);
-                        // 2.according the patch url judge if update of not.
                     }
                     afterUpdate = true;
                     setStatusArea();
@@ -1791,6 +1783,7 @@ public class LoginComposite extends Composite {
     /* should use api of tac to get the properties */
     private JSONObject getArchivaServicesProperties(String tacURL) throws PersistenceException, LoginException {
         JSONObject archivaObject = null;
+        ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
         if (tisService != null) {
             String userName = getConnection().getUser();
             String password = getConnection().getPassword();
@@ -1805,9 +1798,7 @@ public class LoginComposite extends Composite {
     // method need update is used to control the status of updateBtn
     private boolean needUpdate(String archivaURL, String... repository) {
 
-        // 1.get all the update-set for current user from TAC
-
-        // 2.compare the patch to the records stored in local(from Preferences)
+        ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
         if (tisService != null) {
             try {
                 if (patchesToInstall != null) {
