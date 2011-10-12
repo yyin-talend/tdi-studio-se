@@ -685,15 +685,24 @@ for (VarTable varsTable : varsTables) {
 								}
 
 								sb.append(");" + cr + cr);
-								sb.append("if("+assignationVar + " == null){" + cr);
-								sb.append(assignationVar + " = new " + typeToGenerate + "();" + cr);
-								sb.append(assignationVar + ".setDocument(gen_Doc_"+outputTableName+"_"+cid+".getDocument());" + cr);
-								if(!hasAggregateColumn && !isAllInOne) {
-									sb.append("//construct the resultset when there is no aggregate column for the out table" + cr);
-									sb.append("allOutsForAggregate_" + uniqueNameComponent + ".add(" + outputTableName + "_tmp);");
-								}
 								
-								sb.append("}" + cr);
+								/*
+								Generate the following part if:
+								1 - Virtual generation = 1 document in main input table OR 1 document with aggregate in an output table OR 1 table with "All In One" activated.
+								2 - a table in output with a document (without aggregate column and without the "All in one" option.
+								*/
+								
+								if(!hasAggregateColumn && !isAllInOne) {
+									sb.append("if("+assignationVar + " == null){" + cr);
+									sb.append(assignationVar + " = new " + typeToGenerate + "();" + cr);
+									sb.append(assignationVar + ".setDocument(gen_Doc_"+outputTableName+"_"+cid+".getDocument());" + cr);
+									if(!hasAggregateColumn && !isAllInOne) {
+										sb.append("//construct the resultset when there is no aggregate column for the out table" + cr);
+										sb.append("allOutsForAggregate_" + uniqueNameComponent + ".add(" + outputTableName + "_tmp);");
+									}
+								
+									sb.append("}" + cr);
+								}
 							} else {
 								sb.append(cr).append(expression);
 								if(hasAggregateColumn) {
@@ -704,13 +713,6 @@ for (VarTable varsTable : varsTables) {
 	                    } // for entries
 	
 	                    if (connectionExists) {
-							if(hasDocument && !isPlainNode) {
-								sb.append("if(nb_line_"+cid+">=nodeList_"+cid+".size())");
-							}
-							sb.append(cr + outputTableName + " = " + outputTableName + "_tmp;");
-							if(hasDocument)
-								sb.append(cr + outputTableName + "_save = " + outputTableName + "_tmp;");
-							
 							// If an output table doesn't contain a Document, and if there is an aggregate element in the output tables
 							boolean flat = true;
 							for(OutputTreeNode table_ent : outputTable.getNodes()) {
@@ -776,35 +778,5 @@ for (VarTable varsTable : varsTables) {
 	
 	if((!isPlainNode && !hasDocumentGlobal) || (hasDocumentGlobal && !isPlainNode)) {
 		gm.addBlocksCodeToClose(new BlockCode("G_TXM_M_001 close"));
-%>
-		if(nb_line_<%=cid%> == nodeList_<%=cid%>.size()) {
-<%
-			boolean flat = true;
-			for (OutputXmlTree table : outputTables) {        
-				EList<OutputTreeNode> tableEntries = table.getNodes();
-				if (tableEntries == null || nameToOutputConnection.get(table.getName()) == null) {
-					continue;
-				}
-				for(OutputTreeNode tableEntry : tableEntries) {
-					if(("id_Document").equals(tableEntry.getType())){
-						flat = false;
-						break;
-					}
-				}
-				
-				String tableName1 = table.getName();
-            
-				String instanceVarName = tableName1 + "__" + node.getUniqueName();
-				String className = tableName1 + "Struct";
-				if(!flat) {
-            
-%>
-					<%= tableName1 %> = <%= tableName1 %>_save;
-<%
-				}
-			}
-%>
-		}
-<%
 	}
 %>
