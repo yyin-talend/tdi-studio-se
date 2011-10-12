@@ -5,7 +5,11 @@
 
 	<bean id="job" class="@JOBCLASSNAME@" />
 
-	<service ref="job" interface="routines.system.api.TalendJob">
+	<service ref="job">
+		<interfaces>
+			<value>routines.system.api.TalendJob</value>
+			<value>routines.system.api.TalendESBJob</value>
+		</interfaces>
 		<service-properties>
 			<entry key="name" value="@JOBNAME@" />
 			<entry key="type" value="@TYPE@" />
