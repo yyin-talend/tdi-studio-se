@@ -40,7 +40,7 @@
 	  NUM_ROW="10"
 	>
 	  <TABLE READONLY="true">
-		<COLUMN NAME="last_insert_id" TYPE="id_Integer" LENGTH="10" READONLY="false" CUSTOM="true" />
+		<COLUMN NAME="last_insert_id" TYPE="id_Long" LENGTH="10" READONLY="false" CUSTOM="true" />
 	  </TABLE>
 	</PARAMETER>
   
