@@ -128,19 +128,20 @@ public class InputTreeSettingContainer extends AbstractTreeSettingContainer {
         container.add(joinModelRow);
 
         persistentModelRow = new Figure();
-        persistentModelRow.setLayoutManager(new EqualWidthLayout());
-        label = new Label();
-        label.setText("Store Temp Data");
-        label.setLabelAlignment(PositionConstants.LEFT);
-        compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
-        label.setBorder(compoundBorder);
-        persistentModelRow.add(label);
-        persistentModel = new ComboCellLabel();
-        persistentModel.setDirectEditType(DirectEditType.PERSISTENT_MODEL);
-        persistentModel.setText(String.valueOf(inputxmlTree.isPersistent()));
-        persistentModel.setLabelAlignment(PositionConstants.LEFT);
-        persistentModel.setBorder(new RowBorder(2, 10, 2, -1));
-        persistentModelRow.add(persistentModel);
+        // TDI-17714:remove the true option in the Store temp data lookup property.
+        // persistentModelRow.setLayoutManager(new EqualWidthLayout());
+        // label = new Label();
+        // label.setText("Store Temp Data");
+        // label.setLabelAlignment(PositionConstants.LEFT);
+        // compoundBorder = new CompoundBorder(new RowBorder(), new ColumnBorder());
+        // label.setBorder(compoundBorder);
+        // persistentModelRow.add(label);
+        // persistentModel = new ComboCellLabel();
+        // persistentModel.setDirectEditType(DirectEditType.PERSISTENT_MODEL);
+        // persistentModel.setText(String.valueOf(inputxmlTree.isPersistent()));
+        // persistentModel.setLabelAlignment(PositionConstants.LEFT);
+        // persistentModel.setBorder(new RowBorder(2, 10, 2, -1));
+        // persistentModelRow.add(persistentModel);
         container.add(persistentModelRow);
         container.setOpaque(true);
         container.setBackgroundColor(ColorConstants.white);
