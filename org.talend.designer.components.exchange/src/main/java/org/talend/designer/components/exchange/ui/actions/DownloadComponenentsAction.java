@@ -17,6 +17,7 @@ import java.io.FileFilter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -37,6 +38,8 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.intro.IIntroSite;
+import org.eclipse.ui.intro.config.IIntroAction;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -66,7 +69,7 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  * 
  * DOC hcyi class global comment. Detailled comment
  */
-public class DownloadComponenentsAction extends Action {
+public class DownloadComponenentsAction extends Action implements IIntroAction {
 
     private ExchangeView fView = ExchangeUtils.getExchangeView();
 
@@ -359,5 +362,9 @@ public class DownloadComponenentsAction extends Action {
         private String toKbFormat(int size) {
             return String.format("%1$s KB", size >> 10); //$NON-NLS-1$
         }
+    }
+
+    public void run(IIntroSite site, Properties params) {
+        run();
     }
 }

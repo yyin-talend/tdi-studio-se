@@ -12,15 +12,16 @@
 // ============================================================================
 package org.talend.designer.components.exchange.ui;
 
+import java.io.IOException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Properties;
 
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -28,9 +29,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ControlEvent;
@@ -39,40 +40,48 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
+import org.eclipse.ui.internal.intro.impl.html.IIntroHTMLConstants;
+import org.eclipse.ui.internal.intro.impl.model.IntroContentProvider;
+import org.eclipse.ui.internal.intro.impl.model.loader.ContentProviderManager;
+import org.eclipse.ui.internal.intro.impl.model.loader.IntroContentParser;
+import org.eclipse.ui.internal.intro.impl.model.util.ModelUtil;
+import org.eclipse.ui.intro.config.IIntroContentProviderSite;
+import org.eclipse.ui.intro.config.IIntroXHTMLContentProvider;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
+import org.talend.commons.ui.html.BrowserDynamicPartLocationListener;
+import org.talend.commons.ui.html.TalendHtmlModelUtil;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.tableviewer.behavior.AbstractElementFilter;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
-import org.talend.designer.components.exchange.model.AvailableExtensionViewDetail;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.ui.actions.DownloadComponenentsAction;
+import org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider;
 import org.talend.designer.components.exchange.util.ActionHelper;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.ExchangeWebService;
 import org.talend.designer.components.exchange.util.WebserviceStatus;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -331,7 +340,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
                     compositeData.top = new FormAttachment(0, 0);
                     compositeData.bottom = new FormAttachment(100, 0);
                     extensionViewDetailComp.setLayoutData(compositeData);
-                    extensionViewDetailComp.setLayout(new FormLayout());
+                    extensionViewDetailComp.setLayout(new GridLayout());
                     //
                     createExtensionViewDetailControl(getSelectedExtension());
                     stackLayout.topControl = extensionViewDetailComp;
@@ -404,280 +413,120 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
      * @param componentExtension
      */
     private void createExtensionViewDetailControl(final ComponentExtension componentExtension) {
+        try {
+            Browser browser = new Browser(extensionViewDetailComp, SWT.NONE);
+            browser.addLocationListener(new BrowserDynamicPartLocationListener());
+            browser.setLayoutData(new GridData(GridData.FILL_BOTH));
+            String content = "";
+            URL entry = ExchangePlugin.getDefault().getBundle().getEntry("content/exchange.html");
+            if (entry != null) {
+                entry = FileLocator.toFileURL(entry);
+                String result = entry.toExternalForm();
+                if (result.startsWith("file:/")) { //$NON-NLS-1$
+                    if (result.startsWith("file:///") == false) { //$NON-NLS-1$
+                        result = "file:///" + result.substring(6); //$NON-NLS-1$
+                    }
+                }
 
-        ScrolledComposite execScrolls = new ScrolledComposite(extensionViewDetailComp, SWT.V_SCROLL | SWT.H_SCROLL);
-        execScrolls.setExpandHorizontal(true);
-        execScrolls.setExpandVertical(true);
-        FormData data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, 0);
-        data.bottom = new FormAttachment(100, 0);
-        execScrolls.setLayoutData(data);
+                IntroContentParser parser = new IntroContentParser(result);
+                Document dom = parser.getDocument();
+                if (dom != null) {
+                    resolveDynamicContent(dom, null);
+                    // insert base meta-tag,
+                    ModelUtil.insertBase(dom, ModelUtil.getParentFolderOSString(content));
 
-        Composite viewDetailComposite = new Composite(execScrolls, SWT.NONE);
-        execScrolls.setContent(viewDetailComposite);
-        execScrolls.setLayout(new FormLayout());
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, 0);
-        data.bottom = new FormAttachment(100, 0);
-        viewDetailComposite.setLayoutData(data);
-        viewDetailComposite.setLayout(new FormLayout());
+                    // resolve all relative resources relative to content file. Do it before
+                    // inserting shared style to enable comparing fully qualified styles.
+                    TalendHtmlModelUtil.updateResourceAttributes(dom.getDocumentElement(), "/content/", ExchangePlugin
+                            .getDefault().getBundle());
 
-        Composite composite_1 = new Composite(viewDetailComposite, SWT.NONE);
-        composite_1.setLayout(new FormLayout());
-        FormData fd_composite_1 = new FormData();
-        fd_composite_1.bottom = new FormAttachment(100, -12);
-        fd_composite_1.right = new FormAttachment(0, 907);
-        fd_composite_1.left = new FormAttachment(0, 10);
-        composite_1.setLayoutData(fd_composite_1);
-
-        Button btnNewButton = widgetFactory.createButton(viewDetailComposite,
-                Messages.getString("MyExtensionsComposite.Form.Return"), SWT.CENTER);
-        fd_composite_1.top = new FormAttachment(0, 33);
-
-        Group group = new Group(composite_1, SWT.NONE);
-        group.setLayout(new FormLayout());
-        FormData fd_group = new FormData();
-        fd_group.left = new FormAttachment(0, 10);
-        fd_group.bottom = new FormAttachment(0, 420);
-        fd_group.top = new FormAttachment(0);
-        group.setLayoutData(fd_group);
-
-        final Label lblNewLabel = new Label(group, SWT.WRAP | SWT.CENTER);
-        FontData newFontData = lblNewLabel.getFont().getFontData()[0];
-        newFontData.setStyle(SWT.BOLD);
-        newFontData.setHeight(10);
-        Font newFont = new Font(this.getShell().getDisplay(), newFontData);
-        lblNewLabel.setFont(newFont);
-        FormData fd_lblNewLabel = new FormData();
-        fd_lblNewLabel.top = new FormAttachment(0, 6);
-        fd_lblNewLabel.left = new FormAttachment(0, 18);
-        lblNewLabel.setLayoutData(fd_lblNewLabel);
-        // toFormaStr
-        String cEName = toFormaStr(1, componentExtension.getLabel());
-        lblNewLabel.setText(cEName != null ? cEName : "");
-
-        Label lblNewLabel_1 = new Label(group, SWT.NONE);
-        FormData fd_lblNewLabel_1 = new FormData();
-        fd_lblNewLabel_1.top = new FormAttachment(lblNewLabel, 22);
-        fd_lblNewLabel_1.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
-        lblNewLabel_1.setLayoutData(fd_lblNewLabel_1);
-        lblNewLabel_1.setText("Version " + componentExtension.getVersionExtension());
-
-        Label lblNewLabel_2 = new Label(group, SWT.NONE);
-        FormData fd_lblNewLabel_2 = new FormData();
-        fd_lblNewLabel_2.top = new FormAttachment(lblNewLabel_1, 6);
-        fd_lblNewLabel_2.right = new FormAttachment(lblNewLabel_1, 0, SWT.RIGHT);
-        lblNewLabel_2.setLayoutData(fd_lblNewLabel_2);
-        lblNewLabel_2.setText(formatter.format(componentExtension.getPublicationDate()));
-
-        Group group_1 = new Group(composite_1, SWT.NONE);
-        fd_group.right = new FormAttachment(100, -742);
-        group_1.setLayout(new FormLayout());
-        FormData fd_group_1 = new FormData();
-        fd_group_1.left = new FormAttachment(group, 6);
-        fd_group_1.top = new FormAttachment(0);
-        fd_group_1.right = new FormAttachment(100, -10);
-        group_1.setLayoutData(fd_group_1);
-
-        Group group_2 = new Group(composite_1, SWT.NONE);
-        fd_group_1.bottom = new FormAttachment(group_2, -6);
-
-        final Text text = new Text(group_1, SWT.H_SCROLL | SWT.V_SCROLL);
-        FormData fd_text = new FormData();
-        fd_text.top = new FormAttachment(0);
-        fd_text.left = new FormAttachment(0);
-        fd_text.bottom = new FormAttachment(100, -29);
-        fd_text.right = new FormAttachment(0, 528);
-        text.setLayoutData(fd_text);
-        // toFormaStr
-        String cEDescription = toFormaStr(2, componentExtension.getDescription());
-        text.setText(cEDescription != null ? cEDescription : "");
-
-        Label lblNewLabel_3 = new Label(group_1, SWT.NONE);
-        FormData fd_lblNewLabel_3 = new FormData();
-        fd_lblNewLabel_3.top = new FormAttachment(0, 10);
-        fd_lblNewLabel_3.left = new FormAttachment(text, 67);
-        lblNewLabel_3.setLayoutData(fd_lblNewLabel_3);
-        lblNewLabel_3.setImage(exchangeImageMissing);
-
-        Label lblNewLabel_4 = new Label(group_1, SWT.NONE);
-        FormData fd_lblNewLabel_4 = new FormData();
-        fd_lblNewLabel_4.right = new FormAttachment(text, 158, SWT.RIGHT);
-        fd_lblNewLabel_4.left = new FormAttachment(text, 50);
-        fd_lblNewLabel_4.top = new FormAttachment(lblNewLabel_3, 22);
-        lblNewLabel_4.setLayoutData(fd_lblNewLabel_4);
-        lblNewLabel_4.setImage(getRateImage(componentExtension.getRate()));
-
-        final Button btnNewButton_1 = widgetFactory.createButton(group_1,
-                Messages.getString("AvailableExtensionsComposite.ViewDetail.installOperateStatus"), SWT.CENTER);
-        FormData fd_btnNewButton_1 = new FormData();
-        fd_btnNewButton_1.top = new FormAttachment(lblNewLabel_4, 33);
-        fd_btnNewButton_1.right = new FormAttachment(text, 141, SWT.RIGHT);
-        fd_btnNewButton_1.left = new FormAttachment(text, 61);
-        btnNewButton_1.setLayoutData(fd_btnNewButton_1);
-        btnNewButton_1.setText("Install");
-
-        Link link = new Link(group_1, SWT.NONE);
-        FormData fd_link = new FormData();
-        fd_link.top = new FormAttachment(text, 5);
-        fd_link.left = new FormAttachment(text, 10, SWT.LEFT);
-        link.setLayoutData(fd_link);
-        link.setText("<a>More...</a>");
-
-        group_2.setLayout(new FormLayout());
-        FormData fd_group_2 = new FormData();
-        fd_group_2.bottom = new FormAttachment(100, -10);
-        fd_group_2.top = new FormAttachment(0, 195);
-        fd_group_2.left = new FormAttachment(group, 6);
-        fd_group_2.right = new FormAttachment(100, -10);
-        group_2.setLayoutData(fd_group_2);
-        group_2.setText("User Reviews");
-
-        ScrolledComposite execScroll = new ScrolledComposite(group_2, SWT.V_SCROLL | SWT.H_SCROLL);
-        execScroll.setExpandHorizontal(true);
-        execScroll.setExpandVertical(true);
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, 0);
-        data.bottom = new FormAttachment(100, 0);
-        execScroll.setLayoutData(data);
-
-        Composite reviewsComposite = new Composite(execScroll, SWT.NONE);
-        execScroll.setContent(reviewsComposite);
-        execScroll.setLayout(new FormLayout());
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, 0);
-        data.bottom = new FormAttachment(100, 0);
-        reviewsComposite.setLayoutData(data);
-        reviewsComposite.setLayout(new FormLayout());
-
-        final Link link_1 = new Link(reviewsComposite, SWT.NONE);
-        FormData fd_link_1 = new FormData();
-        fd_link_1.top = new FormAttachment(0);
-        fd_link_1.right = new FormAttachment(100, -10);
-        link_1.setLayoutData(fd_link_1);
-        link_1.setText("<a>Write a review</a>");
-
-        // review
-        Map<Integer, AvailableExtensionViewDetail> fViewDetails = new HashMap<Integer, AvailableExtensionViewDetail>();
-        Map<Integer, CLabel> fLabels = new HashMap<Integer, CLabel>();
-        EList<AvailableExtensionViewDetail> reviews = componentExtension.getReviews();
-        if (reviews != null && reviews.size() > 0) {
-            for (int i = 1; i <= reviews.size(); i++) {
-                fLabels.put(i, new CLabel(reviewsComposite, SWT.NONE));
-                fViewDetails.put(i, reviews.get(i - 1));
-            }
-        }
-        if (fLabels != null && !fLabels.isEmpty()) {
-
-            Iterator ite = fLabels.entrySet().iterator();
-            while (ite.hasNext()) {
-                Map.Entry<Integer, CLabel> entry = (Entry<Integer, CLabel>) ite.next();
-                int j = entry.getKey();
-                CLabel objectLabel = entry.getValue();
-                AvailableExtensionViewDetail viewDetail = fViewDetails.get(j);
-                String tstr = " " + viewDetail.getTitle() + "\n\t" + toFormaStr(3, viewDetail.getComment());
-                objectLabel.setImage(getRateImage(viewDetail.getReviewrate()));
-                objectLabel.setText(tstr);
-                data = new FormData();
-                if (j == 1) {
-                    data.left = new FormAttachment(0, 10);
-                    data.right = new FormAttachment(link_1, 0);
-                    data.top = new FormAttachment(0, 10);
-                    objectLabel.setLayoutData(data);
-                } else {
-                    data.left = new FormAttachment(0, 10);
-                    data.right = new FormAttachment(100, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 30);
-                    data.top = new FormAttachment(fLabels.get(j - 1), ITabbedPropertyConstants.VSPACE + 5);
-                    objectLabel.setLayoutData(data);
+                    content = IntroContentParser.convertToString(dom);
                 }
             }
+            browser.setText(content);
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
         }
 
-        execScroll.setMinSize(group_2.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+    }
 
-        FormData fd_btnNewButton = new FormData();
-        fd_btnNewButton.bottom = new FormAttachment(composite_1, -6);
-        fd_btnNewButton.left = new FormAttachment(0, 21);
-        btnNewButton.setLayoutData(fd_btnNewButton);
-        execScrolls.setMinSize(extensionViewDetailComp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+    private Document resolveDynamicContent(Document dom, IIntroContentProviderSite site) {
+        NodeList contentProviders = dom.getElementsByTagNameNS("*", //$NON-NLS-1$
+                IntroContentProvider.TAG_CONTENT_PROVIDER);
 
-        // event
-        btnNewButton.addSelectionListener(new SelectionAdapter() {
+        Node[] nodes = ModelUtil.getArray(contentProviders);
+        for (int i = 0; i < nodes.length; i++) {
+            Element contentProviderElement = (Element) nodes[i];
+            IntroContentProvider provider = new IntroContentProvider(contentProviderElement, ExchangePlugin.getDefault()
+                    .getBundle());
+            IIntroXHTMLContentProvider providerClass = (IIntroXHTMLContentProvider) ContentProviderManager.getInst()
+                    .getContentProvider(provider);
+            if (providerClass == null)
+                providerClass = (IIntroXHTMLContentProvider) ContentProviderManager.getInst().createContentProvider(provider,
+                        site);
 
-            public void widgetSelected(SelectionEvent e) {
-                stackLayout.topControl = itemTable;
-                listExtensonsComp.layout();
-            }
-        });
-
-        btnNewButton_1.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                DownloadComponenentsAction downloadAction = new DownloadComponenentsAction();
-                if (downloadAction != null) {
-                    downloadAction.run();
+            if (providerClass != null) {
+                if (providerClass instanceof ExchangeContentProvider) {
+                    ((ExchangeContentProvider) providerClass).setComponentExtension(getSelectedExtension());
                 }
-                btnNewButton_1.setEnabled(false);
+
+                Properties att = new Properties();
+                att.setProperty(IIntroHTMLConstants.ATTRIBUTE_ID, provider.getId());
+                Element contentDiv = ModelUtil.createElement(dom, ModelUtil.TAG_DIV, att);
+                providerClass.createContent(provider.getId(), contentDiv);
+                contentProviderElement.getParentNode().replaceChild(contentDiv, contentProviderElement);
+
+            } else {
+                // we couldn't load the content provider, so add any alternate
+                // text content if there is any.
+                // INTRO: do it. 3.0 intro content style uses text element as
+                // alt text. We can load XHTML content here.
             }
-        });
+        }
+        return dom;
+    }
 
-        link.addSelectionListener(new SelectionAdapter() {
+    public void returnToFirstPage() {
+        stackLayout.topControl = itemTable;
+        listExtensonsComp.layout();
+    }
 
-            public void widgetSelected(SelectionEvent event) {
-                // toFormaStr
-                String cEDescription = componentExtension.getDescription();
-                text.setText(cEDescription != null ? cEDescription : "");
-                extensionViewDetailComp.layout();
-            }
-        });
+    public void editReviews() {
+        if (getSelectedExtension() != null) {
+            ReviewComponentDialog reviewDialog = new ReviewComponentDialog(getShell());
+            if (reviewDialog.open() == IDialogConstants.OK_ID) {
+                final String title = reviewDialog.getTitle();
+                final String rate = reviewDialog.getRating() + "";
+                final String review = reviewDialog.getReview();
+                Display.getDefault().asyncExec(new Runnable() {
 
-        link_1.addSelectionListener(new SelectionAdapter() {
-
-            public void widgetSelected(SelectionEvent event) {
-                ReviewComponentDialog reviewDialog = new ReviewComponentDialog(link_1.getShell());
-                if (reviewDialog.open() == IDialogConstants.OK_ID) {
-                    final String title = reviewDialog.getTitle();
-                    final String rate = reviewDialog.getRating() + "";
-                    final String review = reviewDialog.getReview();
-                    Display.getDefault().asyncExec(new Runnable() {
-
-                        public void run() {
-                            if (ExchangeUtils.checkUserAndPassword()) {
-                                WebserviceStatus ws = ExchangeWebService.insertReviewService(componentExtension.getIdExtension(),
-                                        ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(),
-                                        ExchangeUtils.getPasswordHash(), title, review, rate);
-                                if (ws.isResult()) {
-                                    MessageDialog.openInformation(
-                                            link_1.getShell(),
-                                            Messages.getString("AvailableExtensionsComposite.ViewDetail.WriteReview"), ws.getMessageException()); //$NON-NLS-1$
-                                } else {
-                                    String mainMsg = Messages
-                                            .getString("AvailableExtensionsComposite.ViewDetail.InsertionReviewFailure")
-                                            + " "
-                                            + Messages
-                                                    .getString("AvailableExtensionsComposite.ViewDetail.InsertionReviewFailureTip");
-                                    new ErrorDialogWidthDetailArea(link_1.getShell(), ExchangePlugin.PLUGIN_ID, mainMsg, ws
-                                            .getMessageException());
-                                }
-                            } else {
+                    public void run() {
+                        if (ExchangeUtils.checkUserAndPassword()) {
+                            WebserviceStatus ws = ExchangeWebService.insertReviewService(getSelectedExtension().getIdExtension(),
+                                    ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(),
+                                    title, review, rate);
+                            if (ws.isResult()) {
                                 MessageDialog.openInformation(
-                                        link_1.getShell(),
-                                        Messages.getString("AvailableExtensionsComposite.ViewDetail.WriteReview"), Messages.getString("MyExtensionsComposite.Form.checkUserAndPassword")); //$NON-NLS-1$
+                                        getShell(),
+                                        Messages.getString("AvailableExtensionsComposite.ViewDetail.WriteReview"), ws.getMessageException()); //$NON-NLS-1$
+                            } else {
+                                String mainMsg = Messages
+                                        .getString("AvailableExtensionsComposite.ViewDetail.InsertionReviewFailure")
+                                        + " "
+                                        + Messages.getString("AvailableExtensionsComposite.ViewDetail.InsertionReviewFailureTip");
+                                new ErrorDialogWidthDetailArea(getShell(), ExchangePlugin.PLUGIN_ID, mainMsg, ws
+                                        .getMessageException());
                             }
+                        } else {
+                            MessageDialog.openInformation(
+                                    getShell(),
+                                    Messages.getString("AvailableExtensionsComposite.ViewDetail.WriteReview"), Messages.getString("MyExtensionsComposite.Form.checkUserAndPassword")); //$NON-NLS-1$
                         }
-                    });
-                }
+                    }
+                });
             }
-        });
+        }
+
     }
 
     private void removeItemElements(List<ComponentExtension> objects) {
@@ -843,4 +692,5 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
     public void setParentWizard(IWizardPage parentWizard) {
         this.wizardPage = parentWizard;
     }
+
 }

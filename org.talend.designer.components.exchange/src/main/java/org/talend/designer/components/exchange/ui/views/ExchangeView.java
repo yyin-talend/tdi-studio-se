@@ -280,4 +280,16 @@ public class ExchangeView extends ViewPart {
         return this.myExtensionsComposite;
     }
 
+    public void returnAvailableExtensionsCompositeToFirstPage() {
+        if (availableExtensionsComposite != null) {
+            availableExtensionsComposite.returnToFirstPage();
+        }
+    }
+
+    public void editAvailableExtensionReviews() {
+        if (availableExtensionsComposite != null) {
+            availableExtensionsComposite.editReviews();
+        }
+    }
+
 }

@@ -24,7 +24,8 @@ Require-Bundle: org.eclipse.ui,
  org.apache.commons.httpclient,
  org.apache.lucene,
  org.talend.libraries.jackson,
- javax.xml.rpc
+ javax.xml.rpc,
+ org.eclipse.ui.intro
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: .Talend SA.
 Export-Package: org.talend.designer.components.exchange,
