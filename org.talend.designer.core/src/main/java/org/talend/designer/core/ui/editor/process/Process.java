@@ -2886,21 +2886,25 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     public List<INode> getNodesOfType(String componentName) {
         List<INode> matchingNodes = new ArrayList<INode>();
         List<INode> generatingNodes = new ArrayList<INode>();
-        // wzhang added to fix bug 11621
-        // if (flag) {
-        // generatingNodes = (List<INode>) getGraphicalNodes();
-        // } else {
+
         generatingNodes = (List<INode>) getGeneratingNodes();
-        // }
+        getMatchingNodes(componentName, matchingNodes, generatingNodes);
+
+        generatingNodes = (List<INode>) getGraphicalNodes();
+        getMatchingNodes(componentName, matchingNodes, generatingNodes);
+        return matchingNodes;
+    }
+
+    private void getMatchingNodes(String componentName, List<INode> matchingNodes, List<INode> generatingNodes) {
         for (INode node : generatingNodes) {
             if (node.isActivate()) {
                 if (componentName == null) { // means all nodes will be
                     // returned
-                    matchingNodes.add(node);
+                    addNodeIfNotInTheList(matchingNodes, node);
                 } else if (componentName.startsWith("FAMILY:")) { //$NON-NLS-1$
                     String familly = componentName.substring("FAMILY:".length()); //$NON-NLS-1$
                     if (node.getComponent().getOriginalFamilyName().startsWith(familly)) {
-                        matchingNodes.add(node);
+                        addNodeIfNotInTheList(matchingNodes, node);
                     }
                 } else if (componentName.startsWith("REGEXP:")) { //$NON-NLS-1$
                     Perl5Matcher matcher = new Perl5Matcher();
@@ -2911,29 +2915,27 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     try {
                         pattern = compiler.compile(regexp);
                         if (matcher.matches(node.getComponent().getName(), pattern)) {
-                            matchingNodes.add(node);
+                            addNodeIfNotInTheList(matchingNodes, node);
                         }
                     } catch (MalformedPatternException e) {
                         throw new RuntimeException(e);
                     }
                 } else if ((node.getComponent().getName() != null)
                         && (node.getComponent().getName().compareTo(componentName)) == 0) {
-                    matchingNodes.add(node);
+                    addNodeIfNotInTheList(matchingNodes, node);
                 }
             }
         }
-        return matchingNodes;
     }
 
-    // /**
-    // * Return all Nodes of Component type componentName.
-    // *
-    // * @param componentName the component name
-    // * @return all the activated matching nodes in the process
-    // */
-    // public List<INode> getNodesOfType(String componentName) {
-    // return getNodesOfType(componentName, false);
-    // }
+    private void addNodeIfNotInTheList(List<INode> matchingNodes, INode node) {
+        for (INode currentNode : matchingNodes) {
+            if (currentNode.getUniqueName().equals(node.getUniqueName())) {
+                return; // don't add
+            }
+        }
+        matchingNodes.add(node);
+    }
 
     /**
      * Comment method "getAllConnections".
