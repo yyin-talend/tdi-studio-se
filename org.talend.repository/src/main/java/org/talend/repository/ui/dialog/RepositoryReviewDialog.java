@@ -355,10 +355,12 @@ public class RepositoryReviewDialog extends Dialog {
             ERepositoryObjectType t = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
             List<String> idList = this.getJobIDList();
             if (idList != null && t == ERepositoryObjectType.PROCESS) {
-                idList.contains(node.getObject().getId());
-                highlightOKButton = false;
-                MessageDialog.openWarning(getParentShell(), "warning", "This Operation is used in other job!");
-                return highlightOKButton;
+                if (idList.contains(node.getObject().getId())) {
+                    highlightOKButton = false;
+                    MessageDialog.openWarning(getParentShell(), "warning", "This Operation is used in other job!");
+                    return highlightOKButton;
+                }
+
             }
 
             if (node.getType() != ENodeType.REPOSITORY_ELEMENT) {
