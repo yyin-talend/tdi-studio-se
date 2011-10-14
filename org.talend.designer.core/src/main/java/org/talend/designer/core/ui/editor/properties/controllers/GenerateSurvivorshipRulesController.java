@@ -98,7 +98,6 @@ public class GenerateSurvivorshipRulesController extends AbstractElementProperty
     };
 
     private void generateSuvivorshipRules() {
-        System.err.println("generate survivorship rules");
         Node node = (Node) elem;
 
         final String PROJECT_NAME = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel().toLowerCase();
