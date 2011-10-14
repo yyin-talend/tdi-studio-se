@@ -735,19 +735,19 @@ for (VarTable varsTable : varsTables) {
 
 			// System.out.println("Output table: (2)" + outputTableName);
 
-			boolean isLastTable = indexCurrentTable == lstSizeOutputs - 1;
-			if (closeTestInnerJoinConditionsBracket 
-				&& (isLastTable || !checkingSyntax && (outputTableName.equals(lastValidOutputTableName) || lastValidOutputTableName == null))) {
-				sb.append(cr + "}  // closing inner join bracket (2)");
-				closeTestInnerJoinConditionsBracket = false;
-			}
-			
 			if (hasAggregateColumn || isAllInOne) {
 				for (OutputTreeNode outputTableEntry : outputTableEntries) {
 					if(!("id_Document".equals(outputTableEntry.getType()))) {
 						sb.append(cr + cr + outputTableName + "_aggregate." + outputTableEntry.getName() + " = " + outputTableName + "_tmp." + outputTableEntry.getName() + ";");
 					}
 				}
+			}
+			
+			boolean isLastTable = indexCurrentTable == lstSizeOutputs - 1;
+			if (closeTestInnerJoinConditionsBracket 
+				&& (isLastTable || !checkingSyntax && (outputTableName.equals(lastValidOutputTableName) || lastValidOutputTableName == null))) {
+				sb.append(cr + "}  // closing inner join bracket (2)");
+				closeTestInnerJoinConditionsBracket = false;
 			}
 
 		} // for output tables
