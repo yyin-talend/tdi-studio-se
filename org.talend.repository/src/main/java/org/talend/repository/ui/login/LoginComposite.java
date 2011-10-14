@@ -58,7 +58,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
@@ -264,7 +263,7 @@ public class LoginComposite extends Composite {
     // only for test
     // private static final String ARCHIVA_URL = "http://192.168.0.58:8080";
 
-    private static final String ARCHIVA_SERVICES_SEGMENT = "restServices/archivaServices/"; //$NON-NLS-N$
+    private static final String ARCHIVA_SERVICES_SEGMENT = "/restServices/archivaServices/"; //$NON-NLS-N$
 
     private static final String ARCHIVA_SERVICES_URL_KEY = "archivaUrl"; //$NON-NLS-N$
 
@@ -1713,8 +1712,7 @@ public class LoginComposite extends Composite {
         // if workspace different,no need to spent time check patches
         try {
             if (isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) {
-                JSONObject archivaProperties;
-                archivaProperties = getArchivaServicesProperties(getAdminURL());
+                JSONObject archivaProperties = getArchivaServicesProperties(getAdminURL());
 
                 archivaServiceURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY) + ARCHIVA_SERVICES_SEGMENT;
                 repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
@@ -1758,13 +1756,6 @@ public class LoginComposite extends Composite {
             }
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
-            final String message = e.getMessage() + "Please check your archiva server"; //$NON-NLS-N$
-            Display.getDefault().asyncExec(new Runnable() {
-
-                public void run() {
-                    MessageDialog.openWarning(LoginComposite.this.getShell(), "Update site can't be detected", message);
-                }
-            });
         } catch (LoginException e) {
             ExceptionHandler.process(e);
         }
