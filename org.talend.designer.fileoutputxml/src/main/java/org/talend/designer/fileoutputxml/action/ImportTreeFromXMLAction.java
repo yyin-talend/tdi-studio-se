@@ -15,10 +15,8 @@ package org.talend.designer.fileoutputxml.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.xerces.xs.XSModel;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
-import org.eclipse.datatools.enablement.oda.xml.util.ui.XSDPopulationUtil;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -27,15 +25,12 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.xml.XmlUtil;
-import org.talend.core.ui.metadata.dialog.RootNodeSelectDialog;
+import org.talend.designer.fileoutputxml.ui.FOXRootNodeSelectDialog;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
-import org.talend.repository.ui.swt.utils.AbstractXmlStepForm;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileOutputStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.NameSpaceNode;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil;
 
 /**
  * bqian Create a xml node. <br/>
@@ -45,209 +40,171 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeU
  */
 public class ImportTreeFromXMLAction extends SelectionProviderAction {
 
-	// the xml viewer, see FOXUI.
-	private TreeViewer xmlViewer;
-	
-	private AbstractXmlStepForm form; 
+    // the xml viewer, see FOXUI.
+    private TreeViewer xmlViewer;
 
-	private FOXUI foxui;
+    private FOXUI foxui;
 
-	private boolean isXsd;
+    private boolean isXsd;
 
-	/**
-	 * CreateNode constructor comment.
-	 * 
-	 * @param provider
-	 * @param text
-	 */
-	public ImportTreeFromXMLAction(TreeViewer xmlViewer, String text) {
-		super(xmlViewer, text);
-		this.xmlViewer = xmlViewer;
-	}
+    /**
+     * CreateNode constructor comment.
+     * 
+     * @param provider
+     * @param text
+     */
+    public ImportTreeFromXMLAction(TreeViewer xmlViewer, String text) {
+        super(xmlViewer, text);
+        this.xmlViewer = xmlViewer;
+    }
 
-	public ImportTreeFromXMLAction(TreeViewer xmlViewer, FOXUI foxui,
-			String text) {
-		super(xmlViewer, text);
-		this.xmlViewer = xmlViewer;
-		this.foxui = foxui;
-	}
+    public ImportTreeFromXMLAction(TreeViewer xmlViewer, FOXUI foxui, String text) {
+        super(xmlViewer, text);
+        this.xmlViewer = xmlViewer;
+        this.foxui = foxui;
+    }
 
-	private String getFilePath() {
-		List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
-		FileDialog f = new FileDialog(foxui.getFoxUIParent().getShell());
-		String file = f.open();
+    private List<FOXTreeNode> treeNodeAdapt() {
+        List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
+        FileDialog f = new FileDialog(foxui.getFoxUIParent().getShell());
+        String file = f.open();
+        if (file == null) {
+            return list;
+        }
+        isXsd = XmlUtil.isXSDFile(file);
+        try {
+            ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(file, true, 0);
+            String schemaName = getSelectedSchema();
+            String rootName = "";
+            if (treeNode.getValue() instanceof String) {
+                rootName += "/" + treeNode.getValue();
+            }
+            FOXTreeNode root = cloneATreeNode(treeNode, schemaName, rootName);
+            Element rootElement = (Element) root;
+            if (rootElement.getElementChildren() != null && rootElement.getElementChildren().size() > 0) {
+                for (FOXTreeNode foxTreeNode : rootElement.getElementChildren()) {
+                    foxTreeNode.setParent(null);
+                    list.add(foxTreeNode);
+                }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return list;
+    }
 
-		isXsd = XmlUtil.isXSDFile(file);
-		try {
-			ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(file, true,
-					0);
-			String schemaName = getSelectedSchema();
-			String rootName = "";
-			if (treeNode.getDataType() instanceof String) {
-				rootName += "/" + treeNode.getValue() + "@"
-						+ (String) treeNode.getDataType();
-			}
-			FOXTreeNode root = cloneATreeNode(treeNode, schemaName, rootName);
-			Element rootElement = (Element) root;
-			if (rootElement.getElementChildren() != null
-					&& rootElement.getElementChildren().size() > 0) {
-				for (FOXTreeNode foxTreeNode : rootElement.getElementChildren()) {
-					foxTreeNode.setParent(null);
-					list.add(foxTreeNode);
-				}
-			}
-		} catch (Exception e) {
-			ExceptionHandler.process(e);
-		}
-		return file;
-	}
+    private FOXTreeNode cloneATreeNode(ATreeNode treeNode, String schemaName, String currentPath) throws Exception {
+        FOXTreeNode node = null;
+        if (treeNode.getType() == ATreeNode.ATTRIBUTE_TYPE) {
+            node = new Attribute();
+        } else {
+            node = new Element();
+        }
+        // zli fixed for bug 7414
+        if (treeNode.getType() == ATreeNode.NAMESPACE_TYPE) {
+            node = new NameSpaceNode();
+            node.setLabel("");//$NON-NLS-1$
+            node.setDefaultValue((String) treeNode.getValue());
+        } else {
+            node.setLabel((String) treeNode.getValue());
+        }
 
-	private FOXTreeNode cloneATreeNode(ATreeNode treeNode, String schemaName,
-			String currentPath) throws Exception {
-		FOXTreeNode node = null;
-		if (treeNode.getType() == ATreeNode.ATTRIBUTE_TYPE) {
-			node = new Attribute();
-		} else {
-			node = new Element();
-		}
-		// zli fixed for bug 7414
-		if (treeNode.getType() == ATreeNode.NAMESPACE_TYPE) {
-			node = new NameSpaceNode();
-			node.setLabel("");//$NON-NLS-1$
-			node.setDefaultValue((String) treeNode.getValue());
-		} else {
-			node.setLabel((String) treeNode.getValue());
-		}
+        Object[] children = treeNode.getChildren();
+        if (children != null) {
+            for (int i = 0; i < children.length; i++) {
+                if (children[i] instanceof ATreeNode) {
+                    ATreeNode child = (ATreeNode) children[i];
+                    String newPath = currentPath + "/";
+                    if (child.getValue() instanceof String) {
+                        String elementName = (String) child.getValue();
+                        if (currentPath.contains("/" + elementName + "/")) {
+                            ExceptionHandler.process(new Exception("XSD ERROR: loop found. Item: " + elementName
+                                    + " is already in the currentPath (" + currentPath + ")."));
+                            continue;
+                        }
+                        newPath += elementName;
+                    } else {
+                        newPath += "unknownElement";
+                    }
 
-		Object[] children = treeNode.getChildren();
-		if (children != null) {
-			for (int i = 0; i < children.length; i++) {
-				if (children[i] instanceof ATreeNode) {
-					ATreeNode child = (ATreeNode) children[i];
-					String newPath = currentPath + "/";
-					if (child.getDataType() instanceof String) {
-						String elementName = (String) child.getDataType();
-						if (currentPath.contains("@" + elementName + "/")) {
-							ExceptionHandler
-									.process(new Exception(
-											"XSD ERROR: loop found. Item: "
-													+ elementName
-													+ " is already in the currentPath ("
-													+ currentPath + ")."));
-							continue;
-						}
-						newPath += child.getValue() + "@" + elementName;
-					} else {
-						newPath += "unknownElement";
-					}
+                    FOXTreeNode foxChild = cloneATreeNode(child, schemaName, newPath);
+                    foxChild.setRow(schemaName);
+                    node.addChild(foxChild);
+                }
+            }
+        }
+        return node;
+    }
 
-					FOXTreeNode foxChild = cloneATreeNode(child, schemaName,
-							newPath);
-					foxChild.setRow(schemaName);
-					node.addChild(foxChild);
-				}
-			}
-		}
-		return node;
-	}
+    /**
+     * 
+     * wzhang Comment method "getSelectedSchema".
+     * 
+     * @return
+     */
+    private String getSelectedSchema() {
+        TreeItem[] selection = xmlViewer.getTree().getSelection();
+        if (selection.length > 0) {
+            Object data = selection[0].getData();
+            if (data instanceof FOXTreeNode) {
+                return ((FOXTreeNode) data).getRow();
+            }
+        }
+        return foxui.getFoxManager().getCurrentSchema();
+    }
 
-	/**
-	 * 
-	 * wzhang Comment method "getSelectedSchema".
-	 * 
-	 * @return
-	 */
-	private String getSelectedSchema() {
-		TreeItem[] selection = xmlViewer.getTree().getSelection();
-		if (selection.length > 0) {
-			Object data = selection[0].getData();
-			if (data instanceof FOXTreeNode) {
-				return ((FOXTreeNode) data).getRow();
-			}
-		}
-		return foxui.getFoxManager().getCurrentSchema();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.Action#run()
+     */
+    @Override
+    public void run() {
+        List<FOXTreeNode> newInput = new ArrayList<FOXTreeNode>();
+        List<FOXTreeNode> nodes = treeNodeAdapt();
+        if (nodes.size() == 0) {
+            return;
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	@Override
-	public void run() {
-		List<FOXTreeNode> newInput = new ArrayList<FOXTreeNode>();
-		String filePath = getFilePath();
-		if (filePath == null) {
-			return;
-		}
+        boolean changed = true;
+        if (nodes.size() > 1 && isXsd) {
+            FOXRootNodeSelectDialog dialog = new FOXRootNodeSelectDialog(xmlViewer.getControl().getShell(), nodes);
+            if (dialog.open() == IDialogConstants.OK_ID) {
+                FOXTreeNode selectedNode = dialog.getSelectedNode();
+                newInput.add(selectedNode);
+                changed = true;
+            } else {
+                changed = false;
+            }
+        } else {
+            newInput.add(nodes.get(0));
+        }
 
-		boolean changed = true;
-		try {
-			if (XmlUtil.isXSDFile(filePath)) {
-				XSModel xsModel = TreeUtil.getXSModel(filePath);
-				List<ATreeNode> list = XSDPopulationUtil
-						.getAllRootNodes(xsModel);
-				if (list.size() > 1) {
-					RootNodeSelectDialog dialog = new RootNodeSelectDialog(
-							xmlViewer.getControl().getShell(), list);
-					if (dialog.open() == IDialogConstants.OK_ID) {
-						ATreeNode selectedNode = dialog.getSelectedNode();
-						newInput = TreeUtil.getFoxTreeNodesByRootNode(xsModel,
-								selectedNode);
-						if (form instanceof XmlFileOutputStep2Form) {
-							((XmlFileOutputStep2Form) form).resetRootCombo();
-						}
-						changed = true;
-					} else {
-						changed = false;
-					}
-				} else {
-					newInput = TreeUtil.getFoxTreeNodesByRootNode(xsModel,
-							list.get(0));
-					changed = true;
-				}
-			} else {
-				newInput = TreeUtil.getFoxTreeNodes(filePath);
-				changed = true;
+        if (changed) {
+            List<FOXTreeNode> treeData = foxui.getFoxManager().getTreeData(getSelectedSchema());
+            treeData.clear();
+            treeData.addAll(newInput);
+            xmlViewer.setInput(foxui.getFoxManager().getTreeData());
+            // TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+            xmlViewer.refresh();
+            xmlViewer.expandAll();
+            foxui.updateStatus();
+            foxui.redrawLinkers();
+        }
+    }
 
-			}
-		} catch (Exception e) {
-			ExceptionHandler.process(e);
-		}
-
-		if (newInput.size() == 0) {
-			return;
-		}
-
-		if (changed) {
-			List<FOXTreeNode> treeData = foxui.getFoxManager().getTreeData(
-					getSelectedSchema());
-			treeData.clear();
-			treeData.addAll(newInput);
-			xmlViewer.setInput(foxui.getFoxManager().getTreeData());
-			// TreeUtil.guessAndSetLoopNode((FOXTreeNode)
-			// xmlViewer.getTree().getItem(0).getData());
-			xmlViewer.refresh();
-			xmlViewer.expandAll();
-			foxui.updateStatus();
-			foxui.redrawLinkers();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse
-	 * .jface.viewers.IStructuredSelection)
-	 */
-	@Override
-	public void selectionChanged(IStructuredSelection selection) {
-		this.setEnabled(true);
-		FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection()
-				.getFirstElement();
-		if (node != null) {
-			foxui.setSelectedText(node.getLabel());
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+     */
+    @Override
+    public void selectionChanged(IStructuredSelection selection) {
+        this.setEnabled(true);
+        FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
+        if (node != null) {
+            foxui.setSelectedText(node.getLabel());
+        }
+    }
 }
