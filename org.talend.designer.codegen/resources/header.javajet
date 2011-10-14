@@ -95,7 +95,10 @@ import java.util.Comparator;
  */
 <%
 boolean talendEsbJob = !process.getNodesOfType("tESBProviderRequest").isEmpty() || !process.getNodesOfType("tESBConsumer").isEmpty();
-String talendJobInterfaceName = (talendEsbJob) ? "TalendESBJob" : "TalendJob";
+boolean talendMdmJob = !process.getNodesOfType("tMDMTriggerInput").isEmpty() || !process.getNodesOfType("tMDMTriggerOutput").isEmpty();
+
+String talendJobInterfaceName = (talendEsbJob) ? ((talendMdmJob) ? "TalendESBJob, TalendMDMJob" : "TalendESBJob") : ((talendMdmJob) ? "TalendMDMJob" : "TalendJob");
+
 %>
 public class <%=process.getName()%> implements <%=talendJobInterfaceName%> {
 
