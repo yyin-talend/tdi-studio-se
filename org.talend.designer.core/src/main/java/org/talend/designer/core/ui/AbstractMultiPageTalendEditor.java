@@ -889,7 +889,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                         ((JobEditorInput) designerEditor.getEditorInput()).checkInit(lastVersion, null, true);
                     }
                 }
-
+                getEditor(0).doSave(monitor);
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             }
