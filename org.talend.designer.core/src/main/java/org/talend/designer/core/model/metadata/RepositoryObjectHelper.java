@@ -35,6 +35,9 @@ public final class RepositoryObjectHelper {
         if (item != null) {
             ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(item);
             aliasName = repositoryObjectType.getAlias();
+            if (aliasName == null && repositoryObjectType.getType().equals("SERVICES")) {//$NON-NLS-1$
+                aliasName = "SERVICES";//$NON-NLS-1$
+            }
             if (aliasName != null && item instanceof ConnectionItem) {
                 ConnectionItem connectionItem = (ConnectionItem) item;
                 Connection connection = connectionItem.getConnection();

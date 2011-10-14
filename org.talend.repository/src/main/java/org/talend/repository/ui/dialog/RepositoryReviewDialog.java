@@ -17,8 +17,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -60,6 +65,7 @@ import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.HeaderFooterConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.repository.IExtendRepositoryNode;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.ProjectManager;
@@ -109,6 +115,8 @@ public class RepositoryReviewDialog extends Dialog {
     ViewerTextFilter textFilter = new ViewerTextFilter();
 
     private boolean needInitialize = true;
+
+    private List<String> jobIDList;
 
     /**
      * DOC bqian RepositoryReviewDialog constructor comment.
@@ -345,8 +353,18 @@ public class RepositoryReviewDialog extends Dialog {
         } else {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             ERepositoryObjectType t = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            List<String> idList = this.getJobIDList();
+            if (idList != null && t == ERepositoryObjectType.PROCESS) {
+                idList.contains(node.getObject().getId());
+                highlightOKButton = false;
+                MessageDialog.openWarning(getParentShell(), "warning", "This Operation is used in other job!");
+                return highlightOKButton;
+            }
+
             if (node.getType() != ENodeType.REPOSITORY_ELEMENT) {
                 highlightOKButton = false;
+            } else if (t == ERepositoryObjectType.SERVICESOPERATION) {
+                return highlightOKButton;
             } else if (!typeProcessor.isSelectionValid(node)) {
                 highlightOKButton = false;
             }
@@ -416,6 +434,14 @@ public class RepositoryReviewDialog extends Dialog {
 
     public RepositoryNode getResult() {
         return result;
+    }
+
+    public List<String> getJobIDList() {
+        return this.jobIDList;
+    }
+
+    public void setJobIDList(List<String> jobIDList) {
+        this.jobIDList = jobIDList;
     }
 
 }
@@ -1124,6 +1150,8 @@ class SchemaTypeProcessor implements ITypeProcessor {
         List<RepositoryNode> container = new NoNullList<RepositoryNode>();
         if (repositoryType != null && repositoryType.startsWith(ERepositoryCategoryType.DATABASE.getName())) {
             container.add(contentProvider.getMetadataConNode());
+        } else if (repositoryType != null && repositoryType == ERepositoryObjectType.SERVICESOPERATION.getType()) {
+            getSpecialNode(container, contentProvider);
         } else {
             container.add(contentProvider.getMetadataFileNode());
             container.add(contentProvider.getMetadataFilePositionalNode());
@@ -1150,6 +1178,29 @@ class SchemaTypeProcessor implements ITypeProcessor {
         node.getChildren().addAll(container);
 
         return node;
+    }
+
+    private void getSpecialNode(List<RepositoryNode> container, RepositoryContentProvider contentProvider) {
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IConfigurationElement[] configurationElements = registry
+                .getConfigurationElementsFor("org.talend.core.repository.repository_node_provider"); //$NON-NLS-1$
+        try {
+            for (int i = 0; i < configurationElements.length; i++) {
+                IConfigurationElement element = configurationElements[i];
+                Object extensionNode = element.createExecutableExtension("class");
+                //$NON-NLS-N$
+                String type = element.getAttribute("type"); //$NON-NLS-N$
+                if (extensionNode instanceof IExtendRepositoryNode) {
+                    ERepositoryObjectType repositoryNodeType = (ERepositoryObjectType) ERepositoryObjectType.valueOf(
+                            ERepositoryObjectType.class, type);
+                    if (repositoryNodeType != null) {
+                        container.add(contentProvider.getRootRepositoryNode(repositoryNodeType));
+                    }
+                }
+            }
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
     }
 
     private void addSubReferencedProjectNodes(ProjectRepositoryNode subRefProject) {
