@@ -74,7 +74,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				for (int i=0;i<mapping.size();i++) {
     				if(i % 100 == 0){
 %>
-	void setRowValue_<%=(i/100) %>(<%=firstConnName %>Struct <%=firstConnName %>, java.util.List<org.json.simple.JSONArray> JSONResultList_<%=cid%>, int nbResultArray_<%=cid%>) {
+	void setRowValue_<%=(i/100) %>(<%=firstConnName %>Struct <%=firstConnName %>, java.util.List<org.json.simple.JSONArray> JSONResultList_<%=cid%>, int nbResultArray_<%=cid%>) throws java.io.UnsupportedEncodingException{
 <%
     				}
 %>
@@ -164,11 +164,11 @@ java.io.InputStream jsonpathis_<%=cid%> = com.jsonpath.test.ReadJar.class.getRes
 jsEngine_<%=cid%>.eval(new java.io.BufferedReader(new java.io.InputStreamReader(jsonpathis_<%=cid%>)));
 
 <%if(!isUseUrl){//read from a file%>
-java.io.FileReader fr_<%=cid%> = new java.io.FileReader(<%=filename %>);
+java.io.BufferedReader fr_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>),<%=encoding %>));
 <%}else{ //read from internet%>
 java.net.URL url_<%=cid %> = new java.net.URL(<%=urlpath %>);
 java.net.URLConnection urlConn_<%=cid %> = url_<%=cid %>.openConnection();
-java.io.InputStreamReader fr_<%=cid %> = new java.io.InputStreamReader(urlConn_<%=cid %>.getInputStream());
+java.io.InputStreamReader fr_<%=cid %> = new java.io.InputStreamReader(urlConn_<%=cid %>.getInputStream(),<%=encoding %>);
 <%}%>
 java.lang.Object jsonText_<%=cid%> = org.json.simple.JSONValue.parse(fr_<%=cid%>);
 jsEngine_<%=cid%>.eval("var obj="+jsonText_<%=cid%>.toString());
