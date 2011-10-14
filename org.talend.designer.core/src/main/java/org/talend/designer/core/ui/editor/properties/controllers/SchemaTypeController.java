@@ -38,6 +38,8 @@ import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.ESelectionType;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IESBService;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -58,9 +60,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
@@ -244,8 +244,12 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 }
             }
             if (flowMainInput && !multipleInput && !tableReadOnly) {
-                resetBtn = createAdditionalButton(subComposite, btn, btnSize, param, Messages
-                        .getString("SchemaController.syncColumns"), Messages.getString("SchemaController.resetButton.tooltip"), //$NON-NLS-1$ //$NON-NLS-2$
+                resetBtn = createAdditionalButton(
+                        subComposite,
+                        btn,
+                        btnSize,
+                        param,
+                        Messages.getString("SchemaController.syncColumns"), Messages.getString("SchemaController.resetButton.tooltip"), //$NON-NLS-1$ //$NON-NLS-2$
                         top);
                 resetBtn.setData(NAME, RESET_COLUMNS);
 
@@ -275,9 +279,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 } else {
                     newButton = btn;
                 }
-                Button copySchemaButton = createAdditionalButton(subComposite, newButton, btnSize, param, Messages
-                        .getString("SchemaController.copyChildSchema"), Messages //$NON-NLS-1$
-                        .getString("SchemaController.copyChildSchema.tooltip"), top); //$NON-NLS-1$
+                Button copySchemaButton = createAdditionalButton(subComposite, newButton, btnSize, param,
+                        Messages.getString("SchemaController.copyChildSchema"), Messages //$NON-NLS-1$
+                                .getString("SchemaController.copyChildSchema.tooltip"), top); //$NON-NLS-1$
                 copySchemaButton.setData(NAME, COPY_CHILD_COLUMNS);
 
                 lastControlUsed = copySchemaButton;
@@ -928,8 +932,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         switchParam.setValue(Boolean.FALSE);
                     }
 
-                    for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
-                        handler.changeOperationLabel(dialog.getResult(), (Node) elem, connection);
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                        IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+                        service.changeOperationLabel(dialog.getResult(), (Node) elem, connection);
                     }
 
                     CompoundCommand cc = new CompoundCommand();
@@ -990,7 +995,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
         return null;
     }
 
-        /*
+    /*
      * (non-Javadoc)
      * 
      * @see
@@ -1077,8 +1082,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     }
                 }
 
-                IElementParameter repositorySchemaType = param.getParentParameter().getChildParameters().get(
-                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                IElementParameter repositorySchemaType = param.getParentParameter().getChildParameters()
+                        .get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                 String schemaSelected = (String) repositorySchemaType.getValue();
 
                 /* value can be devided means the value like "connectionid - label" */
@@ -1117,13 +1122,13 @@ public class SchemaTypeController extends AbstractRepositoryController {
                                 break;
                             }
                         }
-                        for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
-                            AbstractMetadataObject obj = handler.getServicesOperation(connection, tableLabel);
+                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                            IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+                            AbstractMetadataObject obj = service.getServicesOperation(connection, tableLabel);
                             if (obj != null) {
                                 repositoryMetadata = ConvertionHelper.convertServicesOperational(obj);
                                 newRepositoryIdValue = schemaSelected;
                                 findTable = true;
-                                break;
                             }
                         }
                         if (!findTable) {
