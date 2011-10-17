@@ -215,7 +215,7 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
         } else {
             if (settingsContainer.getChildren().contains(enableEmptyElementRow)) {
                 settingsContainer.remove(enableEmptyElementRow);
-                outputxmlTree.setEnableEmptyElement(false);
+                outputxmlTree.setEnableEmptyElement(true);
             }
             if (settingsContainer.getChildren().contains(allInOneRow)) {
                 settingsContainer.remove(allInOneRow);

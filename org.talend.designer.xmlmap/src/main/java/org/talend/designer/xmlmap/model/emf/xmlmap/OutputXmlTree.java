@@ -154,6 +154,7 @@ public interface OutputXmlTree extends AbstractInOutTree {
 
     /**
      * Returns the value of the '<em><b>Enable Empty Element</b></em>' attribute.
+     * The default value is <code>"true"</code>.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Enable Empty Element</em>' attribute isn't clear,
@@ -163,7 +164,7 @@ public interface OutputXmlTree extends AbstractInOutTree {
      * @return the value of the '<em>Enable Empty Element</em>' attribute.
      * @see #setEnableEmptyElement(boolean)
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getOutputXmlTree_EnableEmptyElement()
-     * @model
+     * @model default="true"
      * @generated
      */
     boolean isEnableEmptyElement();

@@ -143,7 +143,7 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
      * @generated
      * @ordered
      */
-    protected static final boolean ENABLE_EMPTY_ELEMENT_EDEFAULT = false;
+    protected static final boolean ENABLE_EMPTY_ELEMENT_EDEFAULT = true;
 
     /**
      * The cached value of the '{@link #isEnableEmptyElement() <em>Enable Empty Element</em>}' attribute.
