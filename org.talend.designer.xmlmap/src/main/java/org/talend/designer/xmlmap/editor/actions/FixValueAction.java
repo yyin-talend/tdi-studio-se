@@ -33,7 +33,7 @@ public class FixValueAction extends SelectionAction {
     public FixValueAction(IWorkbenchPart part) {
         super(part);
         setId(ID);
-        setText("Set A Fixed Value");
+        setText("Change Namespace Value");
     }
 
     @Override
