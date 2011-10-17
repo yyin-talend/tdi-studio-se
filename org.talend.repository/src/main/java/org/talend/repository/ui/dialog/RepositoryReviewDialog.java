@@ -1189,10 +1189,9 @@ class SchemaTypeProcessor implements ITypeProcessor {
         try {
             for (int i = 0; i < configurationElements.length; i++) {
                 IConfigurationElement element = configurationElements[i];
-                Object extensionNode = element.createExecutableExtension("class");
-                //$NON-NLS-N$
+                Object extensionNode = element.createExecutableExtension("class"); //$NON-NLS-N$
                 String type = element.getAttribute("type"); //$NON-NLS-N$
-                if (extensionNode instanceof IExtendRepositoryNode) {
+                if ((extensionNode instanceof IExtendRepositoryNode) && type != null && type.equals("SERVICES")) {//$NON-NLS-N$
                     ERepositoryObjectType repositoryNodeType = (ERepositoryObjectType) ERepositoryObjectType.valueOf(
                             ERepositoryObjectType.class, type);
                     if (repositoryNodeType != null) {
