@@ -37,7 +37,6 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
@@ -63,8 +62,6 @@ import org.talend.designer.components.exchange.ui.actions.DeleteExtensionAction;
 import org.talend.designer.components.exchange.ui.actions.InsertionExtensionAction;
 import org.talend.designer.components.exchange.ui.actions.ModifyExtensionAction;
 import org.talend.designer.components.exchange.ui.actions.UploadRevisionAction;
-import org.talend.designer.components.exchange.util.ExchangeUtils;
-import org.talend.designer.components.exchange.util.ExchangeWebService;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -77,7 +74,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
 
     private Table itemTable;
 
-    private static final String[] FILE_EXPORT_MASK = { "*.zip;*.tar;*.tar.gz", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String[] FILE_EXPORT_MASK = { "*.zip", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$
 
     final StackLayout stackLayout;
 
@@ -106,7 +103,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
      * @param style
      */
     public MyExtensionsComposite(Composite parent, int styles, TabbedPropertySheetWidgetFactory factory,
-            List<ComponentExtension> fExtensions) {
+            List<ComponentExtension> fExtensions, List<VersionRevision> fVersionRevisionsTemp, List<Category> fCategorysTemp) {
         super(parent, styles, factory);
         FormLayout layout = new FormLayout();
         setLayout(layout);
@@ -118,7 +115,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         setLayoutData(thisFormData);
 
         //
-        addToolBarComp = widgetFactory.createFlatFormComposite(this);
+        addToolBarComp = new Composite(this, SWT.NONE);
         FormData data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(100, 0);
@@ -136,7 +133,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         addNewExtensonBtn.setLayoutData(data);
 
         //
-        listMyExtensonsComp = widgetFactory.createFlatFormComposite(this);
+        listMyExtensonsComp = new Composite(this, SWT.NONE);
         FormData compositeData = new FormData();
         compositeData.left = new FormAttachment(0, 0);
         compositeData.right = new FormAttachment(100, 0);
@@ -227,13 +224,18 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 fContributedExtensions.put(ext.getIdExtension(), ext);
             }
         }
+        if (fVersionRevisionsTemp != null && !fVersionRevisionsTemp.isEmpty()) {
+            fVersionRevisions = fVersionRevisionsTemp;
+        }
+        if (fCategorysTemp != null && !fCategorysTemp.isEmpty()) {
+            fCategorys = fCategorysTemp;
+        }
         refreshTableItems();
 
     }
 
     private void refreshTableItems() {
         addItemElements(fContributedExtensions);
-        getVersionRevisionsAndCategorys();
     }
 
     private void addItemElements(Map<String, ComponentExtension> elements) {
@@ -335,7 +337,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         initialVersion.setLayoutData(data);
 
         // Compatibility
-        Group compatibilityGroup = widgetFactory.createGroup(composite, ""); //$NON-NLS-1$
+        Group compatibilityGroup = new Group(composite, SWT.NONE); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, 0);
@@ -344,16 +346,16 @@ public class MyExtensionsComposite extends ExchangeComposite {
         FormLayout compatibilityGroupLayout = new FormLayout();
         compatibilityGroup.setLayout(compatibilityGroupLayout);
 
-        final Button allVersionsButton = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersions"), SWT.RADIO);
+        final Button allVersionsButton = new Button(compatibilityGroup, SWT.RADIO);
+        allVersionsButton.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersions"));
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(extensionTitle, ITabbedPropertyConstants.VSPACE);
         allVersionsButton.setLayoutData(data);
 
-        final Button versionOlderBtn = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.Version"), SWT.RADIO);
+        final Button versionOlderBtn = new Button(compatibilityGroup, SWT.RADIO);
+        versionOlderBtn.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.Version"));
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(17, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 30);
@@ -376,8 +378,8 @@ public class MyExtensionsComposite extends ExchangeComposite {
         data.top = new FormAttachment(versionOlderText, 0, SWT.TOP);
         andOlderLabel.setLayoutData(data);
 
-        final Button versionExceptBtn = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersionsExcept"), SWT.RADIO);
+        final Button versionExceptBtn = new Button(compatibilityGroup, SWT.RADIO);
+        versionExceptBtn.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersionsExcept"));
         data = new FormData();
         data.left = new FormAttachment(andOlderLabel, 0);
         data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE + 20);
@@ -393,8 +395,8 @@ public class MyExtensionsComposite extends ExchangeComposite {
         versionExceptText.setEnabled(false);
 
         //
-        final Button versionNewerBtn = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.Version"), SWT.RADIO);
+        final Button versionNewerBtn = new Button(compatibilityGroup, SWT.RADIO);
+        versionNewerBtn.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.Version"));
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(17, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 30);
@@ -417,8 +419,8 @@ public class MyExtensionsComposite extends ExchangeComposite {
         data.top = new FormAttachment(versionNewerText, 0, SWT.TOP);
         andNewerLabel.setLayoutData(data);
 
-        final Button versionOnlyTheseBtn = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.OnlyTheseVersions"), SWT.RADIO);
+        final Button versionOnlyTheseBtn = new Button(compatibilityGroup, SWT.RADIO);
+        versionOnlyTheseBtn.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.OnlyTheseVersions"));
         data = new FormData();
         data.left = new FormAttachment(andNewerLabel, 0);
         data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE + 20);
@@ -492,7 +494,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         // visibility.setLayoutData(data);
 
         // Upload
-        Group uploadGroup = widgetFactory.createGroup(composite, ""); //$NON-NLS-1$
+        Group uploadGroup = new Group(composite, SWT.NONE); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, 0);
@@ -501,20 +503,28 @@ public class MyExtensionsComposite extends ExchangeComposite {
         FormLayout uploadGroupLayout = new FormLayout();
         uploadGroup.setLayout(uploadGroupLayout);
 
-        Button uploadSelectItemBtn = widgetFactory.createButton(uploadGroup,
-                Messages.getString("MyExtensionsComposite.Form.Upload.SelectAnItem"), SWT.RADIO);
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, 0);
-        uploadSelectItemBtn.setLayoutData(data);
+        // final Button uploadSelectItemBtn = new Button(uploadGroup, SWT.RADIO);
+        // uploadSelectItemBtn.setText(Messages.getString("MyExtensionsComposite.Form.Upload.SelectAnItem"));
+        // data = new FormData();
+        // data.left = new FormAttachment(0, 0);
+        // data.right = new FormAttachment(100, 0);
+        // data.top = new FormAttachment(0, 0);
+        // uploadSelectItemBtn.setLayoutData(data);
+        //
+        // final Button uploadFileBtn = new Button(uploadGroup, SWT.RADIO);
+        // uploadFileBtn.setText(Messages.getString("MyExtensionsComposite.Form.Upload.File"));
+        // data = new FormData();
+        // data.left = new FormAttachment(0, 0);
+        // data.right = new FormAttachment(15, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 20);
+        // data.top = new FormAttachment(uploadSelectItemBtn, ITabbedPropertyConstants.VSPACE);
+        // uploadFileBtn.setLayoutData(data);
 
-        Button uploadFileBtn = widgetFactory.createButton(uploadGroup,
-                Messages.getString("MyExtensionsComposite.Form.Upload.File"), SWT.RADIO);
+        final Button uploadFileBtn = new Button(uploadGroup, SWT.RADIO);
+        uploadFileBtn.setText(Messages.getString("MyExtensionsComposite.Form.Upload.File"));
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(15, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 20);
-        data.top = new FormAttachment(uploadSelectItemBtn, ITabbedPropertyConstants.VSPACE);
+        data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE + 5);
         uploadFileBtn.setLayoutData(data);
 
         selectUploadFileText = widgetFactory.createText(uploadGroup, ""); //$NON-NLS-1$
@@ -560,13 +570,13 @@ public class MyExtensionsComposite extends ExchangeComposite {
             }
         });
 
-        uploadSelectItemBtn.addSelectionListener(new SelectionAdapter() {
-
-            public void widgetSelected(SelectionEvent e) {
-                browseUploadFileBtn.setEnabled(false);
-            }
-
-        });
+        // uploadSelectItemBtn.addSelectionListener(new SelectionAdapter() {
+        //
+        // public void widgetSelected(SelectionEvent e) {
+        // browseUploadFileBtn.setEnabled(false);
+        // }
+        //
+        // });
 
         uploadFileBtn.addSelectionListener(new SelectionAdapter() {
 
@@ -754,7 +764,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         initialVersion.setLayoutData(data);
 
         // Compatibility
-        Group compatibilityGroup = widgetFactory.createGroup(composite, ""); //$NON-NLS-1$
+        Group compatibilityGroup = new Group(composite, SWT.NONE); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, 0);
@@ -763,16 +773,16 @@ public class MyExtensionsComposite extends ExchangeComposite {
         FormLayout compatibilityGroupLayout = new FormLayout();
         compatibilityGroup.setLayout(compatibilityGroupLayout);
 
-        final Button allVersionsButton = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersions"), SWT.RADIO);
+        final Button allVersionsButton = new Button(compatibilityGroup, SWT.RADIO);
+        allVersionsButton.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersions"));
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(0, 0);
         allVersionsButton.setLayoutData(data);
 
-        final Button versionOlderBtn = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.Version"), SWT.RADIO);
+        final Button versionOlderBtn = new Button(compatibilityGroup, SWT.RADIO);
+        versionOlderBtn.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.Version"));
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(17, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 30);
@@ -795,8 +805,8 @@ public class MyExtensionsComposite extends ExchangeComposite {
         data.top = new FormAttachment(versionOlderText, 0, SWT.TOP);
         andOlderLabel.setLayoutData(data);
 
-        final Button versionExceptBtn = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersionsExcept"), SWT.RADIO);
+        final Button versionExceptBtn = new Button(compatibilityGroup, SWT.RADIO);
+        versionExceptBtn.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersionsExcept"));
         data = new FormData();
         data.left = new FormAttachment(andOlderLabel, 0);
         data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE + 20);
@@ -812,8 +822,8 @@ public class MyExtensionsComposite extends ExchangeComposite {
         versionExceptText.setEnabled(false);
 
         //
-        final Button versionNewerBtn = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.Version"), SWT.RADIO);
+        final Button versionNewerBtn = new Button(compatibilityGroup, SWT.RADIO);
+        versionNewerBtn.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.Version"));
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(17, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 30);
@@ -836,8 +846,8 @@ public class MyExtensionsComposite extends ExchangeComposite {
         data.top = new FormAttachment(versionNewerText, 0, SWT.TOP);
         andNewerLabel.setLayoutData(data);
 
-        final Button versionOnlyTheseBtn = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.OnlyTheseVersions"), SWT.RADIO);
+        final Button versionOnlyTheseBtn = new Button(compatibilityGroup, SWT.RADIO);
+        versionOnlyTheseBtn.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.OnlyTheseVersions"));
         data = new FormData();
         data.left = new FormAttachment(andNewerLabel, 0);
         data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE + 20);
@@ -861,7 +871,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         compatibility.setLayoutData(data);
 
         // Upload
-        Group uploadGroup = widgetFactory.createGroup(composite, ""); //$NON-NLS-1$
+        Group uploadGroup = new Group(composite, SWT.NONE); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, 0);
@@ -870,20 +880,28 @@ public class MyExtensionsComposite extends ExchangeComposite {
         FormLayout uploadGroupLayout = new FormLayout();
         uploadGroup.setLayout(uploadGroupLayout);
 
-        Button uploadSelectItemBtn = widgetFactory.createButton(uploadGroup,
-                Messages.getString("MyExtensionsComposite.Form.Upload.SelectAnItem"), SWT.RADIO);
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, 0);
-        uploadSelectItemBtn.setLayoutData(data);
+        // final Button uploadSelectItemBtn = new Button(uploadGroup, SWT.RADIO);
+        // uploadSelectItemBtn.setText(Messages.getString("MyExtensionsComposite.Form.Upload.SelectAnItem"));
+        // data = new FormData();
+        // data.left = new FormAttachment(0, 0);
+        // data.right = new FormAttachment(100, 0);
+        // data.top = new FormAttachment(0, 0);
+        // uploadSelectItemBtn.setLayoutData(data);
+        //
+        // final Button uploadFileBtn = new Button(uploadGroup, SWT.RADIO);
+        // uploadFileBtn.setText(Messages.getString("MyExtensionsComposite.Form.Upload.File"));
+        // data = new FormData();
+        // data.left = new FormAttachment(0, 0);
+        // data.right = new FormAttachment(15, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 20);
+        // data.top = new FormAttachment(uploadSelectItemBtn, ITabbedPropertyConstants.VSPACE + 5);
+        // uploadFileBtn.setLayoutData(data);
 
-        Button uploadFileBtn = widgetFactory.createButton(uploadGroup,
-                Messages.getString("MyExtensionsComposite.Form.Upload.File"), SWT.RADIO);
+        final Button uploadFileBtn = new Button(uploadGroup, SWT.RADIO);
+        uploadFileBtn.setText(Messages.getString("MyExtensionsComposite.Form.Upload.File"));
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(15, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 20);
-        data.top = new FormAttachment(uploadSelectItemBtn, ITabbedPropertyConstants.VSPACE + 5);
+        data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE + 5);
         uploadFileBtn.setLayoutData(data);
 
         selectUploadFileText = widgetFactory.createText(uploadGroup, ""); //$NON-NLS-1$
@@ -928,13 +946,13 @@ public class MyExtensionsComposite extends ExchangeComposite {
             }
         });
 
-        uploadSelectItemBtn.addSelectionListener(new SelectionAdapter() {
-
-            public void widgetSelected(SelectionEvent e) {
-                browseUploadFileBtn.setEnabled(false);
-            }
-
-        });
+        // uploadSelectItemBtn.addSelectionListener(new SelectionAdapter() {
+        //
+        // public void widgetSelected(SelectionEvent e) {
+        // browseUploadFileBtn.setEnabled(false);
+        // }
+        //
+        // });
 
         uploadFileBtn.addSelectionListener(new SelectionAdapter() {
 
@@ -1125,7 +1143,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
         extensionTitle.setEnabled(enableControl);
 
         // Compatibility
-        Group compatibilityGroup = widgetFactory.createGroup(composite, ""); //$NON-NLS-1$
+        Group compatibilityGroup = new Group(composite, SWT.NONE); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, 0);
@@ -1134,16 +1152,16 @@ public class MyExtensionsComposite extends ExchangeComposite {
         FormLayout compatibilityGroupLayout = new FormLayout();
         compatibilityGroup.setLayout(compatibilityGroupLayout);
 
-        final Button allVersionsButton = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersions"), SWT.RADIO);
+        final Button allVersionsButton = new Button(compatibilityGroup, SWT.RADIO);
+        allVersionsButton.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersions"));
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(0, 0);
         allVersionsButton.setLayoutData(data);
 
-        final Button versionOlderBtn = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.Version"), SWT.RADIO);
+        final Button versionOlderBtn = new Button(compatibilityGroup, SWT.RADIO);
+        versionOlderBtn.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.Version"));
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(17, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 30);
@@ -1166,8 +1184,8 @@ public class MyExtensionsComposite extends ExchangeComposite {
         data.top = new FormAttachment(versionOlderText, 0, SWT.TOP);
         andOlderLabel.setLayoutData(data);
 
-        final Button versionExceptBtn = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersionsExcept"), SWT.RADIO);
+        final Button versionExceptBtn = new Button(compatibilityGroup, SWT.RADIO);
+        versionExceptBtn.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.AllVersionsExcept"));
         data = new FormData();
         data.left = new FormAttachment(andOlderLabel, 0);
         data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE + 20);
@@ -1183,8 +1201,8 @@ public class MyExtensionsComposite extends ExchangeComposite {
         versionExceptText.setEnabled(false);
 
         //
-        final Button versionNewerBtn = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.Version"), SWT.RADIO);
+        final Button versionNewerBtn = new Button(compatibilityGroup, SWT.RADIO);
+        versionNewerBtn.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.Version"));
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(17, -AbstractPropertySection.STANDARD_LABEL_WIDTH + 30);
@@ -1207,8 +1225,8 @@ public class MyExtensionsComposite extends ExchangeComposite {
         data.top = new FormAttachment(versionNewerText, 0, SWT.TOP);
         andNewerLabel.setLayoutData(data);
 
-        final Button versionOnlyTheseBtn = widgetFactory.createButton(compatibilityGroup,
-                Messages.getString("MyExtensionsComposite.Form.Compatibility.OnlyTheseVersions"), SWT.RADIO);
+        final Button versionOnlyTheseBtn = new Button(compatibilityGroup, SWT.RADIO);
+        versionOnlyTheseBtn.setText(Messages.getString("MyExtensionsComposite.Form.Compatibility.OnlyTheseVersions"));
         data = new FormData();
         data.left = new FormAttachment(andNewerLabel, 0);
         data.right = new FormAttachment(66, -ITabbedPropertyConstants.HSPACE + 20);
@@ -1446,18 +1464,6 @@ public class MyExtensionsComposite extends ExchangeComposite {
         res[1] = Messages.getString("MyExtensionsComposite.ModifyOperateStatus");
         res[2] = Messages.getString("MyExtensionsComposite.DeleteOperateStatus");
         return res;
-    }
-
-    private void getVersionRevisionsAndCategorys() {
-        Display.getDefault().asyncExec(new Runnable() {
-
-            public void run() {
-                fVersionRevisions.clear();
-                fVersionRevisions = ExchangeWebService.searchVersionRevisionJSONArray(ExchangeUtils.TYPEEXTENSION);
-                fCategorys.clear();
-                fCategorys = ExchangeWebService.searchCategoryExtensionJSONArray(ExchangeUtils.TYPEEXTENSION);
-            }
-        });
     }
 
     private String filterVersionRevisionsToString(String status, String version) {

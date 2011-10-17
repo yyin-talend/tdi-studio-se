@@ -127,7 +127,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         setLayoutData(thisFormData);
 
         //
-        addToolBarComp = widgetFactory.createFlatFormComposite(this);
+        addToolBarComp = new Composite(this, SWT.NONE);
         FormData data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(100, 0);
@@ -158,7 +158,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         filterTitle.setLayoutData(data);
 
         //
-        listExtensonsComp = widgetFactory.createFlatFormComposite(this);
+        listExtensonsComp = new Composite(this, SWT.NONE);
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(100, 0);

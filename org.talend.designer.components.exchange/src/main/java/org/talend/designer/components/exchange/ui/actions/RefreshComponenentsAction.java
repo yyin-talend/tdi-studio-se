@@ -23,10 +23,12 @@ import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.components.exchange.jobs.RefreshJob;
+import org.talend.designer.components.exchange.jobs.ShowContributedExtensionsJob;
 import org.talend.designer.components.exchange.jobs.ShowInstalledExtensionsJob;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.ui.views.ExchangeView;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
+import org.talend.designer.components.exchange.util.ExchangeWebService;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -66,6 +68,7 @@ public class RefreshComponenentsAction implements IViewActionDelegate {
 
         }
 
+        // Show Installed Extensions
         try {
             final ShowInstalledExtensionsJob showInstalledJob = new ShowInstalledExtensionsJob();
             showInstalledJob.addJobChangeListener(new JobChangeAdapter() {
@@ -88,9 +91,47 @@ public class RefreshComponenentsAction implements IViewActionDelegate {
 
         }
 
+        // Show Contributed Extensions
+        try {
+            final ShowContributedExtensionsJob showContributedJob = new ShowContributedExtensionsJob();
+            showContributedJob.addJobChangeListener(new JobChangeAdapter() {
+
+                @Override
+                public void done(final IJobChangeEvent event) {
+
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        public void run() {
+                            updateContributedUI(action, showContributedJob, event);
+                        }
+                    });
+                }
+            });
+            ExchangeUtils.scheduleUserJob(showContributedJob);
+
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+
+        }
+
+        //
+        getVersionRevisionsAndCategorys();
+
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
+    }
+
+    private void getVersionRevisionsAndCategorys() {
+        Display.getDefault().syncExec(new Runnable() {
+
+            public void run() {
+                fView.updateVersionRevisionsAndCategorys(
+                        ExchangeWebService.searchVersionRevisionJSONArray(ExchangeUtils.TYPEEXTENSION),
+                        ExchangeWebService.searchCategoryExtensionJSONArray(ExchangeUtils.TYPEEXTENSION));
+                fView.refresh();
+            }
+        });
     }
 
     /**
@@ -128,6 +169,25 @@ public class RefreshComponenentsAction implements IViewActionDelegate {
             // update exchange view
             List<ComponentExtension> extensions = showInstalledJob.getfInstalledExtensions();
             fView.updateInstalledExtensions(extensions);
+            fView.refresh();
+        }
+    }
+
+    /**
+     * 
+     * @param action
+     * @param showInstalledJob
+     * @param event
+     */
+    private void updateContributedUI(final IAction action, final ShowContributedExtensionsJob showContributedJob,
+            final IJobChangeEvent event) {
+        // activate action again after job finished
+        action.setEnabled(true);
+
+        if (event.getResult().isOK()) {
+            // update exchange view
+            List<ComponentExtension> extensions = showContributedJob.getfContributedExtensions();
+            fView.updateContributedExtensions(extensions);
             fView.refresh();
         }
     }

@@ -13,6 +13,8 @@
 package org.talend.designer.components.exchange.util;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,7 +71,7 @@ public class ExchangeWebService {
             System.out.println(result.toString());
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            //
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -126,7 +128,7 @@ public class ExchangeWebService {
             extension = resultViewDetail.getJSONObject("extension");
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            //
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -157,7 +159,7 @@ public class ExchangeWebService {
             o = p.getJSONArray("extensions");
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            //
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -186,7 +188,7 @@ public class ExchangeWebService {
             o = p.getJSONArray("extensions");
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            //
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -225,7 +227,7 @@ public class ExchangeWebService {
             ws.setResult(true);
             ws.setMessageException(Messages.getString("ExchangeWebService.downloadingExtensionSuccessful")); //$NON-NLS-1$
         } catch (JSONException e) {
-            e.printStackTrace();
+            //
             ws.setMessageException(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
@@ -271,7 +273,7 @@ public class ExchangeWebService {
                 ws.setMessageException(object.toString()); //$NON-NLS-1$
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            //
             ws.setMessageException(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
@@ -314,7 +316,7 @@ public class ExchangeWebService {
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            //
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -354,7 +356,7 @@ public class ExchangeWebService {
             }
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            //
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -435,6 +437,23 @@ public class ExchangeWebService {
     public static WebserviceStatus insertionRevisionService(String idExtension, String typeExtension, String username,
             String passwordHash, String version, String listVersionCompatibles, String filename, String content,
             String description, String agreement) {
+
+        byte[] fileBytes = null;
+        try {
+            File f = new File(filename);
+            if (f != null) {
+                FileInputStream fis = new FileInputStream(f);
+                if (fis != null) {
+                    int len = fis.available();
+                    fileBytes = new byte[len];
+                    fis.read(fileBytes);
+                }
+            }
+
+        } catch (Exception e) {
+            //
+        }
+
         WebserviceStatus ws = new WebserviceStatus();
         ws.setResult(false);
         Resty r = new Resty();
@@ -447,13 +466,13 @@ public class ExchangeWebService {
             tokenMessage.put("version", version);
             tokenMessage.put("versionCompatibles", listVersionCompatibles);
             tokenMessage.put("filename", new Path(filename).lastSegment());
-            tokenMessage.put("content", content);
+            tokenMessage.put("content", Resty.content(fileBytes));
             tokenMessage.put("description", description);
             tokenMessage.put("agreement", agreement);
             JSONObject token = new us.monoid.json.JSONObject();
             token.put("newRevision", tokenMessage);
             AbstractContent ac = Resty.content(token);
-            MultipartContent mpc = Resty.form(new FormData("data", filename, ac));
+            MultipartContent mpc = Resty.form(new FormData("data", ac));
             TextResource textResult = r.text(exchangeWSServer + "publishExtension.php", mpc);
             JSONObject resultObject = new JSONObject(textResult.toString());
             JSONObject result = (JSONObject) resultObject.get("resultNewRevision");
@@ -463,9 +482,6 @@ public class ExchangeWebService {
             ws.setResult(true);
             ws.setMessageException(Messages.getString("ExchangeWebService.insertionRevisionSuccessful")); //$NON-NLS-1$
         } catch (JSONException e) {
-            ws.setMessageException(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
             ws.setMessageException(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
@@ -488,7 +504,7 @@ public class ExchangeWebService {
      * @param agreement
      * @return
      */
-    public static WebserviceStatus updateRevisionService(String idExtension, String typeExtension, String username,
+    public static WebserviceStatus updateRevisionService(String idRevision, String typeExtension, String username,
             String passwordHash, String version, String listVersionCompatibles, String description, String agreement) {
         WebserviceStatus ws = new WebserviceStatus();
         ws.setResult(false);
@@ -496,7 +512,7 @@ public class ExchangeWebService {
         try {
             tokenMessage.put("username", username);
             tokenMessage.put("passwordHash", passwordHash);
-            tokenMessage.put("idExtension", idExtension);
+            tokenMessage.put("idRevision", idRevision);
             tokenMessage.put("typeExtension", typeExtension);
             tokenMessage.put("version", version);
             tokenMessage.put("listVersionCompatibles", listVersionCompatibles);

@@ -32,11 +32,12 @@ import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.designer.components.exchange.ExchangePlugin;
+import org.talend.designer.components.exchange.model.Category;
 import org.talend.designer.components.exchange.model.ComponentExtension;
+import org.talend.designer.components.exchange.model.VersionRevision;
 import org.talend.designer.components.exchange.ui.AvailableExtensionsComposite;
 import org.talend.designer.components.exchange.ui.DownloadedExtensionsComposite;
 import org.talend.designer.components.exchange.ui.MyExtensionsComposite;
-import org.talend.designer.components.exchange.ui.actions.ShowContributedExtensionsAction;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -66,6 +67,10 @@ public class ExchangeView extends ViewPart {
     private List<ComponentExtension> fContributedExtensions = new ArrayList<ComponentExtension>();
 
     private List<ComponentExtension> fInstalledExtensions = new ArrayList<ComponentExtension>();
+
+    private List<VersionRevision> fVersionRevisions = new ArrayList<VersionRevision>();
+
+    private List<Category> fCategorys = new ArrayList<Category>();
 
     private Image imageView;
 
@@ -121,7 +126,7 @@ public class ExchangeView extends ViewPart {
             dc = downloadedExtensionsComposite;
         } else if (EComponentCategory.MYEXTENSIONS.equals(category)) {
             myExtensionsComposite = new MyExtensionsComposite(parent, style, tabFactory.getWidgetFactory(),
-                    fContributedExtensions);
+                    fContributedExtensions, fVersionRevisions, fCategorys);
             dc = myExtensionsComposite;
         }
         if (dc != null) {
@@ -135,13 +140,6 @@ public class ExchangeView extends ViewPart {
         EComponentCategory[] categories = getCategories();
         final List<TalendPropertyTabDescriptor> descriptors = new ArrayList<TalendPropertyTabDescriptor>();
         for (EComponentCategory category : categories) {
-            //
-            if (EComponentCategory.MYEXTENSIONS.equals(category)) {
-                ShowContributedExtensionsAction actiond = new ShowContributedExtensionsAction();
-                if (actiond != null) {
-                    actiond.run();
-                }
-            }
             TalendPropertyTabDescriptor d = new TalendPropertyTabDescriptor(category);
             descriptors.add(d);
         }
@@ -258,17 +256,26 @@ public class ExchangeView extends ViewPart {
         }
     }
 
-    public void refresh() {
-
+    public void updateContributedExtensions(List<ComponentExtension> extensions) {
+        fContributedExtensions.clear();
+        if (extensions != null && !extensions.isEmpty()) {
+            fContributedExtensions = extensions;
+        }
     }
 
-    /**
-     * Sets the fContributedExtensions.
-     * 
-     * @param fContributedExtensions the fContributedExtensions to set
-     */
-    public void setfContributedExtensions(List<ComponentExtension> fContributedExtensions) {
-        this.fContributedExtensions = fContributedExtensions;
+    public void updateVersionRevisionsAndCategorys(List<VersionRevision> versionRevisions, List<Category> categorys) {
+        fVersionRevisions.clear();
+        if (versionRevisions != null && !versionRevisions.isEmpty()) {
+            fVersionRevisions = versionRevisions;
+        }
+        fCategorys.clear();
+        if (categorys != null && !categorys.isEmpty()) {
+            fCategorys = categorys;
+        }
+    }
+
+    public void refresh() {
+
     }
 
     /**
