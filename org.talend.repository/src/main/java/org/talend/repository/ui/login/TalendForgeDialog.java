@@ -731,8 +731,6 @@ public class TalendForgeDialog extends TrayDialog {
                         MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
                                 Messages.getString("TalendForgeDialog.Message"));
                         okPressed();
-                    } else {
-                        okPressed();
                     }
                 }
             }
