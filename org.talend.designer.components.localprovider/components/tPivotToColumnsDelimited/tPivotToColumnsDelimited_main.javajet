@@ -62,7 +62,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     String columnTypeFunName = null;
                     
                     String pattern = null;
-             		
+                    
+                    JavaType pivotJavaType = null;
+                    
+					String pivotTypeToGenerate = null;
+					
+					IMetadataColumn columnPivot = null;
+					
              		for(IMetadataColumn column:columnList){
              			
              			if(column.getLabel().equals(aggColumn)){
@@ -80,6 +86,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							break;
 						}
              		}
+	
+					for(IMetadataColumn column:columnList){
+					
+					   	if(column.getLabel().equals(pivotColumn)){
+					   	
+					    		pivotJavaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					    		
+					    		pivotTypeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+					    		
+					    		columnPivot = column;
+					    							    		
+					    		break;
+					    }
+					}
 %>                   
     //pivot key  
     pivot_Keys_Split<%=cid%> = routines.system.StringUtils.splitNotRegex(pivot_Keys<%=cid%>,<%=fieldSeparator%>);
@@ -89,17 +109,32 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     int pivotNum<%=cid%> = 0;
     
     for(int i = 0;i<pivot_Keys_Split<%=cid%>.length;i++){
-        
-        if(pivot_Keys_Split<%=cid%>[i].equals(<%=inConnName%>.<%=pivotColumn%>)){
+
+<%
+	if(JavaTypesManager.isNumberType(pivotJavaType,columnPivot.isNullable())){
+	
+			if(columnPivot.isNullable() || "BigDecimal".equals(pivotTypeToGenerate)){
+%>
+				if(ParserUtils.parseTo_<%= pivotTypeToGenerate %>(pivot_Keys_Split<%=cid%>[i]).equals(<%=inConnName%>.<%=pivotColumn%>)){
+<%
+			}else{
+%>
+				if(ParserUtils.parseTo_<%= pivotTypeToGenerate %>(pivot_Keys_Split<%=cid%>[i]) == <%=inConnName%>.<%=pivotColumn%>){
+<%
+			}
+	}else{
+%>
+	 		if(pivot_Keys_Split<%=cid%>[i].equals(<%=inConnName%>.<%=pivotColumn%>)){
+<%	
+	}
+%>
+	            pivot_Exists<%=cid%> = true;
+	            
+	            pivotNum<%=cid%> = i + 1;
+	            
+	            break;
             
-            pivot_Exists<%=cid%> = true;
-            
-            pivotNum<%=cid%> = i + 1;
-            
-            break;
-            
-        }
-        
+        	 }
     }
     
     if(!pivot_Exists<%=cid%>){
@@ -259,9 +294,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             int pivotIndex<%=cid%> = 0 ;
             
             for(int i = 0; i<pivot_Keys_Split<%=cid%>.length; i++){
-                
-                if(pivot_Keys_Split<%=cid%>[i].equals(<%=inConnName%>.<%=pivotColumn%>)){
-                    
+
+<%
+	if(JavaTypesManager.isNumberType(pivotJavaType,columnPivot.isNullable())){
+	
+			if(columnPivot.isNullable() || "BigDecimal".equals(pivotTypeToGenerate)){
+%>
+				if(ParserUtils.parseTo_<%= pivotTypeToGenerate %>(pivot_Keys_Split<%=cid%>[i]).equals(<%=inConnName%>.<%=pivotColumn%>)){
+<%
+			}else{
+%>
+				if(ParserUtils.parseTo_<%= pivotTypeToGenerate %>(pivot_Keys_Split<%=cid%>[i]) == <%=inConnName%>.<%=pivotColumn%>){
+<%
+			}
+	}else{
+%>
+	 		if(pivot_Keys_Split<%=cid%>[i].equals(<%=inConnName%>.<%=pivotColumn%>)){
+<%	
+	}
+%>
                     pivotIndex<%=cid%> = i;
                     
                     break;
