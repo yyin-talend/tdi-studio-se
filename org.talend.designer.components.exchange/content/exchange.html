@@ -40,94 +40,75 @@ li{ list-style-type:none; padding-left:6px;}
 .cf{clear:both;}
 div#header {height: 150px; margin-left: auto; margin-right: auto; }
 .bodyclass{vertical-align:middle; background:#FFFFFF;}
-.main{width:950px;  margin:auto; background:#FFFFFF;}
-.left_1{width:150px;margin-top:10px; float:left;padding-left:0px; vertical-align:top; margin-right:10px;}
+.main{width:99%; height:99%;  margin:1px 0px 0px 0px; background:#FFFFFF;}
+.left_1{width:100px;margin-top:10px; float:left;padding-left:0px; vertical-align:top; margin-right:10px;}
 .compDesc{width:650px; height:200px; margin-top:10px;margin-bottom:30px; padding-left:20px;overflow:auto;}
 .compImg{width:150px;height:200px; margin-top:10px;margin-bottom:30px; padding-left:10px;}
-.reviews{width:800px;margin-bottom:10px;padding-left:20px;word-break:break-all;WORD-WRAP: break-word;}
+.reviews{width:700px;height:350px ;margin-bottom:10px;padding-left:20px;word-break:break-all;WORD-WRAP: break-word;}
 .userreview{font-size:13px;color:#000000;font-weight:bold;padding-left:20px;}
+.left_11 {width:100px;margin-top:10px; float:left;padding-left:0px; vertical-align:top; margin-right:10px;}
 -->
 </style></head>
 
 <body class="bodyclass">
 
 <div class="main"> 
-	<table align="center" border="0" cellpadding="0" cellspacing="0" id="table">
-		<tr align="left" valign="top"><!--header over-->
-			<td >
-				<div class="left_1" id="div_left_part">
-			 		<a class="xh" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.ExchangeUrlAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.ExchangeUrlAction&amp;type=RETURN_TO_FIRST_PAGE">
-						<img src="imgs/return.jpg"/>
-			 		</a>
-				</div>
-		    </td>
-			<td>
-		    </td>
-		</tr>
-		<tr align="left" valign="top">
-			<td  valign="top">
-			<div class="left_1" id="div_name_part">
-			<contentProvider id="LEFT_NAME_PART" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange"> 
-			</contentProvider>
-			</div>
-		    </td>
-			<td  valign="top">
-				<table>
-					<tr>
-						<td>
-						<div class="compDesc" id="component_description_part">
-						<contentProvider id="COMPONENT_DESCRIPTION" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange"> 
-						</contentProvider>
-
-						</div>
-						</td>
-						<td>
-						<div class="compImg" id="component_Image_part">
-							<table border="0"  align="center">
-								<tr>
-									<td>
-										<img src="imgs/component_missing.gif" align="middle"/>									</td>
-								</tr>
-								<tr>
-									<td>
-										<contentProvider id="RATE_IMANGE" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange"> 
-										</contentProvider>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<contentProvider id="INSTALL_COMPONENT" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange"> 
-										</contentProvider>
-									</td>
-								</tr>
-								
-							</table>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td class="userreview">User Reviews </td>
-						<td>
-							<contentProvider id="WRITE_REVIEWS" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange"> 
-							</contentProvider>
-						</td>
-					</tr>
-					<tr>
-					<td colspan="2" >
-					<div class="reviews" id="component_reviews_part">
-					<contentProvider id="EXTENSION_REVIEWS" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange"> 
-					</contentProvider>
-					</div>
-					</td>
-					</tr>
-				</table>
-		    </td>
-		</tr>
-		
-	</table>
 	
-</div><!--page over-->
-	
-
+  <div align="justify">
+    <table width="99%" height="99%" align="center" border="1" cellpadding="0" cellspacing="0" id="table">
+      <tr align="left" valign="top"><!--header over-->
+        <td colspan="2" ><span class="left_11"><a class="xh" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.ExchangeUrlAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.ExchangeUrlAction&amp;type=RETURN_TO_FIRST_PAGE"><img src="imgs/return.jpg"/></a></span></td>
+        </tr>
+      <tr align="left" valign="top">
+        <td  valign="top">
+          <div class="left_1" id="div_name_part">
+            <contentProvider id="LEFT_NAME_PART" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">			</contentProvider>
+          </div>		    </td>
+          <td  valign="top">
+	          <table>
+	            <tr>
+	              <td>
+	                <div class="compDesc" id="component_description_part">
+	                  <contentProvider id="COMPONENT_DESCRIPTION" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">						</contentProvider>
+                    </div>						</td>
+			        <td>
+			          <div class="compImg" id="component_Image_part">
+				          <table border="0"  align="center">
+				            <tr>
+				              <td>
+				                <img src="imgs/component_missing.gif" align="middle"/>									</td>
+					          </tr>
+				            <tr>
+				              <td>
+				                <contentProvider id="RATE_IMANGE" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">										</contentProvider>									</td>
+					          </tr>
+				            <tr>
+				              <td>
+				                <contentProvider id="INSTALL_COMPONENT" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">										</contentProvider>									</td>
+					          </tr>
+			              </table>
+			          </div>						</td>
+		          </tr>
+	            <tr>
+	              <td class="userreview">User Reviews </td>
+			        <td>
+				        <contentProvider id="WRITE_REVIEWS" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">							</contentProvider>						</td>
+		          </tr>
+	            <tr>
+	              <td colspan="2" >
+	                <div class="reviews" id="component_reviews_part">
+	                  <contentProvider id="EXTENSION_REVIEWS" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">					</contentProvider>
+                  </div>					</td>
+		          </tr>
+            </table>		    </td>
+        </tr>
+      </table>
+  </div>
+</div>
+<div align="justify">
+  <!--page over-->
+  
+  
+</div>
 </body>
 </html>
