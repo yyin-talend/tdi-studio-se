@@ -1688,7 +1688,8 @@ public class LoginComposite extends Composite {
                         String archivaServicesURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY)
                                 + ARCHIVA_SERVICES_SEGMENT;
                         String repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
-                        tisService.downLoadAndInstallPatches(archivaServicesURL, repository);
+                        tisService.downLoadAndInstallPatches(archivaServicesURL, patchesToInstall, repository);
+                        patchesToInstall.clear();
                     }
                     afterUpdate = true;
                     setStatusArea();
