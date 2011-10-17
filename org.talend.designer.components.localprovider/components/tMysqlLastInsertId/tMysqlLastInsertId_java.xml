@@ -39,7 +39,7 @@
 	  REQUIRED="true"
 	  NUM_ROW="10"
 	>
-	  <TABLE READONLY="true">
+	  <TABLE>
 		<COLUMN NAME="last_insert_id" TYPE="id_Integer" LENGTH="10" READONLY="false" CUSTOM="true" />
 	  </TABLE>
 	</PARAMETER>
