@@ -3373,11 +3373,11 @@
 				REQUIRED="true" />
 			<IMPORT NAME="mail" MODULE="mail-1.4.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="neethi" MODULE="neethi-2.0.4.jar"
+			<IMPORT NAME="neethi" MODULE="neethi-3.0.1.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="wsdl4j" MODULE="wsdl4j-1.6.2.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="XmlSchema" MODULE="XmlSchema-1.4.3.jar"
+			<IMPORT NAME="XmlSchema" MODULE="xmlschema-core-2.0.1.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="axis2-adb" MODULE="axis2-adb-1.5.2.jar"
 				REQUIRED="true" />
