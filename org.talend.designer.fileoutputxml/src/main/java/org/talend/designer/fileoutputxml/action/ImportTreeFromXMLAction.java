@@ -15,16 +15,16 @@ package org.talend.designer.fileoutputxml.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.xerces.xs.XSModel;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
-import org.eclipse.datatools.enablement.oda.xml.util.ui.XSDPopulationUtil;
+import org.eclipse.datatools.enablement.oda.xml.util.ui.XSDPopulationUtil2;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.eclipse.xsd.XSDSchema;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.xml.XmlUtil;
 import org.talend.core.ui.metadata.dialog.RootNodeSelectDialog;
@@ -171,19 +171,19 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         boolean changed = true;
         try {
             if (XmlUtil.isXSDFile(filePath)) {
-                XSModel xsModel = TreeUtil.getXSModel(filePath);
-                List<ATreeNode> list = XSDPopulationUtil.getAllRootNodes(xsModel);
+                XSDSchema xsdSchema = TreeUtil.getXSDSchema(filePath);
+                List<ATreeNode> list = new XSDPopulationUtil2().getAllRootNodes(xsdSchema);
                 if (list.size() > 1) {
                     RootNodeSelectDialog dialog = new RootNodeSelectDialog(xmlViewer.getControl().getShell(), list);
                     if (dialog.open() == IDialogConstants.OK_ID) {
                         ATreeNode selectedNode = dialog.getSelectedNode();
-                        newInput = TreeUtil.getFoxTreeNodesByRootNode(xsModel, selectedNode);
+                        newInput = TreeUtil.getFoxTreeNodesByRootNode(xsdSchema, selectedNode);
                         changed = true;
                     } else {
                         changed = false;
                     }
                 } else {
-                    newInput = TreeUtil.getFoxTreeNodesByRootNode(xsModel, list.get(0));
+                    newInput = TreeUtil.getFoxTreeNodesByRootNode(xsdSchema, list.get(0));
                     changed = true;
                 }
             } else {
