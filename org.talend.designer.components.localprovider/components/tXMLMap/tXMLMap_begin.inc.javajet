@@ -801,10 +801,10 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
         }
 <%
 		}else{
-			if(node.isMain() && node.isGroup()) {
+			if(node.isMain() && (node.isGroup() || node.isLoop())) {
 %>
 				org.dom4j.Element <%=currEleName%> = org.dom4j.DocumentHelper.createElement("<%=node.getName()%>");
-				<%=parentName%>.elements().add(order++,<%=currEleName%>);
+				<%=parentName%>.elements().add(orderHelper.getInsertLocation(<%=XMLOrderUtil.getCurrPos(node) %>,<%=XMLOrderUtil.getCurrOrder(node) %>),<%=currEleName%>);
 <%
 			} else {
 %>
@@ -1010,6 +1010,11 @@ for(OutputXmlTree outputTable : outputTables) {
 	for(OutputTreeNode outputNode: outputTable.getNodes()) {
 		if(("id_Document").equals(outputNode.getType())){
 			index+=1;
+			
+			//get the group and loop node count(TDI-18000)
+			XMLOrderUtil xmlOrderUtil = new XMLOrderUtil();
+			int groupCount = xmlOrderUtil.getGroupCount(outputNode);
+			
 %>
 class GenerateDocument_<%=tableName %> {
 
@@ -1023,6 +1028,8 @@ class GenerateDocument_<%=tableName %> {
 %>
 	java.util.Map<String,Object> valueMap = null;
 	
+	DocumentGenerateOrderHelper orderHelper = new DocumentGenerateOrderHelper(<%=groupCount + 1%>);
+		
 	org.dom4j.Document doc = null;
 	
 	NestXMLTool_<%=cid%> nestXMLTool = null;

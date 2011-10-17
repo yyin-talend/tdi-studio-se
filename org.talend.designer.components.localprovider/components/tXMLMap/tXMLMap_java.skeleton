@@ -483,6 +483,79 @@ public class CLASS {
 		}
 	}
 	
+	static class XMLOrderUtil {
+		
+		int groupCount = 0;
+		
+		int getGroupCount(OutputTreeNode rootNode) {
+			groupCount = 0;
+			countGroupNode(rootNode);
+			return groupCount;
+		}
+		
+		static int getCurrOrder(OutputTreeNode currNode) {
+			int currOrder = 0;
+			if(isGroupOrLoopInMain(currNode)) {
+				OutputTreeNode parent = (OutputTreeNode)currNode.eContainer();
+				if(parent!=null) {
+					EList<TreeNode> children = parent.getChildren();
+					//the order not containing namespace and attribute
+					for(TreeNode child : children) {
+						NodeType nodeType = child.getNodeType();
+						if(nodeType != NodeType.ELEMENT) {
+							continue;
+						}
+						if(currNode.equals(child)) {
+							break;
+						} 
+						currOrder++;
+					}
+				}
+			}
+			return currOrder;
+		}
+		
+		static int getCurrPos(OutputTreeNode currNode) {
+			int currPos = 0;
+			if(isGroupOrLoopInMain(currNode)) {
+				OutputTreeNode parent = (OutputTreeNode)currNode.eContainer();
+				OutputTreeNode tmpNode = parent;
+				while(tmpNode!=null && isGroupOrLoopInMain(tmpNode)){
+    				currPos++;
+    				tmpNode = (OutputTreeNode)tmpNode.eContainer();
+    			}
+			}
+			return currPos;
+		}
+		
+		private static boolean isGroupOrLoopInMain(OutputTreeNode currNode) {
+			return currNode.isMain() && (currNode.isGroup() || currNode.isLoop());
+		}
+		
+		private void countGroupNode(OutputTreeNode node) {
+			EList<TreeNode> children = node.getChildren();
+			
+			if(children==null || children.size() == 0) {
+				//it is impossible that leaf is Group.
+				
+			} else {
+				//branch maybe Group
+				if(node.isGroup()) {
+					groupCount++;
+				}
+				
+				for(TreeNode child : children) {
+					if(child!=null) {
+						countGroupNode((OutputTreeNode)child);
+					}
+				}
+			}
+		}
+		
+		
+		
+	}
+	
 	public INode searchSubProcessStartNode(IConnection connection) {
        	INode source = connection.getSource();
     	INode subprocessStartNode = null;
