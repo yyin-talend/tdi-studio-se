@@ -294,11 +294,15 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         return root.getMetadataHeaderFooterConnectionNode();
     }
 
+    public RepositoryNode getMetadataMdmConnectionNode() {
+        return root.getMetadataMDMConnectionNode();
+    }
+
     public RepositoryNode getRootRepositoryNode(ERepositoryObjectType type) {
         return root.getRootRepositoryNode(type);
     }
 
-    public RepositoryNode getRoot() {
+    public ProjectRepositoryNode getRoot() {
         return root;
     }
 }

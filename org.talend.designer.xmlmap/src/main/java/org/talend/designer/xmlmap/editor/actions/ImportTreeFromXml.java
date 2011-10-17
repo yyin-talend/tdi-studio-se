@@ -64,36 +64,38 @@ public class ImportTreeFromXml extends SelectionAction {
         FileDialog f = new FileDialog(shell);
         String file = f.open();
         if (file != null) {
-            list = TreeUtil.getFoxTreeNodes(file);
-            TreeNode treeNodeRoot = XmlMapUtil.getTreeNodeRoot(parentNode);
+            boolean clickOk = TreeUtil.getFoxTreeNodesForXmlMap(file, shell, list);
+            if (clickOk) {
+                TreeNode treeNodeRoot = XmlMapUtil.getTreeNodeRoot(parentNode);
 
-            XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
-            parentNode.getChildren().clear();
-            prepareEmfTreeNode(list, parentNode);
+                XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
+                parentNode.getChildren().clear();
+                prepareEmfTreeNode(list, parentNode);
 
-            if (parentNode.getChildren().isEmpty()) {
-                TreeNode rootNode = null;
-                if (input) {
-                    rootNode = XmlmapFactory.eINSTANCE.createTreeNode();
-                } else {
-                    rootNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                if (parentNode.getChildren().isEmpty()) {
+                    TreeNode rootNode = null;
+                    if (input) {
+                        rootNode = XmlmapFactory.eINSTANCE.createTreeNode();
+                    } else {
+                        rootNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                    }
+                    rootNode.setName("root");
+                    rootNode.setNodeType(NodeType.ELEMENT);
+                    rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                    rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
+                    parentNode.getChildren().add(rootNode);
+                    showError();
                 }
-                rootNode.setName("root");
-                rootNode.setNodeType(NodeType.ELEMENT);
-                rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
-                parentNode.getChildren().add(rootNode);
-                showError();
-            }
 
-            if (parentNode.eContainer() instanceof InputXmlTree) {
-                mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
-            } else if (parentNode.eContainer() instanceof OutputXmlTree) {
-                mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
-            }
-            if (treeNodeRoot.eContainer() instanceof AbstractInOutTree) {
-                mapperManager.getProblemsAnalyser().checkLoopProblems((AbstractInOutTree) treeNodeRoot.eContainer());
-                mapperManager.getMapperUI().updateStatusBar();
+                if (parentNode.eContainer() instanceof InputXmlTree) {
+                    mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
+                } else if (parentNode.eContainer() instanceof OutputXmlTree) {
+                    mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
+                }
+                if (treeNodeRoot.eContainer() instanceof AbstractInOutTree) {
+                    mapperManager.getProblemsAnalyser().checkLoopProblems((AbstractInOutTree) treeNodeRoot.eContainer());
+                    mapperManager.getMapperUI().updateStatusBar();
+                }
             }
         }
 

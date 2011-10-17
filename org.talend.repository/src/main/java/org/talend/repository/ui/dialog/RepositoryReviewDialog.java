@@ -92,6 +92,8 @@ public class RepositoryReviewDialog extends Dialog {
 
     String repositoryType;
 
+    private String repositoryTypes[];
+
     protected FakeRepositoryView repositoryView;
 
     public FakeRepositoryView getRepositoryView() {
@@ -142,6 +144,13 @@ public class RepositoryReviewDialog extends Dialog {
          * borrow the repositoryType to set the current process id here.
          */
         this.repositoryType = repositoryType;
+        typeProcessor = createTypeProcessor();
+    }
+
+    public RepositoryReviewDialog(Shell parentShell, String[] repositoryTypes) {
+        super(parentShell);
+        setShellStyle(SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation());
+        this.repositoryTypes = repositoryTypes;
         typeProcessor = createTypeProcessor();
     }
 
@@ -229,6 +238,7 @@ public class RepositoryReviewDialog extends Dialog {
         if (type == ERepositoryObjectType.PROCESS) {
             return new JobTypeProcessor(repositoryType);
         }
+
         if (type == ERepositoryObjectType.METADATA) {
             return new RepositoryTypeProcessor(repositoryType);
         }
@@ -255,6 +265,11 @@ public class RepositoryReviewDialog extends Dialog {
         if (type == ERepositoryObjectType.METADATA_VALIDATION_RULES) {
             return new ValidationRuleTypeProcessor(repositoryType);
         }
+
+        if (repositoryTypes != null) {
+            return new MetadataMultiTypeProcessor(repositoryTypes);
+        }
+
         throw new IllegalArgumentException(Messages.getString("RepositoryReviewDialog.0", type)); //$NON-NLS-1$
     }
 
@@ -444,6 +459,93 @@ public class RepositoryReviewDialog extends Dialog {
 
     public void setJobIDList(List<String> jobIDList) {
         this.jobIDList = jobIDList;
+    }
+
+}
+
+/**
+ * 
+ * DOC talend class global comment. Detailled comment
+ */
+class MetadataMultiTypeProcessor implements ITypeProcessor {
+
+    String repositoryTypes[];
+
+    public MetadataMultiTypeProcessor(String repositoryTypes[]) {
+        this.repositoryTypes = repositoryTypes;
+    }
+
+    public boolean isSelectionValid(RepositoryNode node) {
+        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_XML
+                || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_MDMCONNECTION) {
+            return true;
+        }
+        return false;
+
+    }
+
+    public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
+        List<IRepositoryNode> refProjects = null;
+        if (contentProvider.getReferenceProjectNode() != null) {
+            refProjects = contentProvider.getReferenceProjectNode().getChildren();
+        } else {
+            refProjects = Collections.EMPTY_LIST;
+        }
+        List<RepositoryNode> container = new NoNullList<RepositoryNode>();
+        container.addAll(getMetadataNode(contentProvider.getRoot()));
+        getReferencedInputRoot(container, refProjects);
+
+        RepositoryNode node = new RepositoryNode(null, null, null);
+        node.getChildren().addAll(container);
+
+        return node;
+    }
+
+    private void getReferencedInputRoot(List<RepositoryNode> container, List<IRepositoryNode> refProjects) {
+        if (!refProjects.isEmpty()) {
+            for (IRepositoryNode repositoryNode : refProjects) {
+                List<RepositoryNode> refContainer = new NoNullList<RepositoryNode>();
+                ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
+                ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+                refContainer.addAll(getMetadataNode(refProject));
+                if (refProject.getReferenceProjectNode() != null && !refProject.getReferenceProjectNode().getChildren().isEmpty()) {
+                    getReferencedInputRoot(refContainer, refProject.getReferenceProjectNode().getChildren());
+                }
+                newProject.getChildren().addAll(refContainer);
+                container.add(newProject);
+            }
+        }
+    }
+
+    /**
+     * 
+     * DOC need add other types when needed
+     * 
+     * @param projectNode
+     * @return
+     */
+    private List<RepositoryNode> getMetadataNode(ProjectRepositoryNode projectNode) {
+        List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
+        if (repositoryTypes != null && repositoryTypes.length != 0) {
+            for (int i = 0; i < repositoryTypes.length; i++) {
+                if (ERepositoryCategoryType.XML.getName().equals(repositoryTypes[i])) {
+                    nodes.add(projectNode.getMetadataFileXmlNode());
+                } else if (ERepositoryCategoryType.MDM.getName().equals(repositoryTypes[i])) {
+                    nodes.add(projectNode.getMetadataMDMConnectionNode());
+                }
+            }
+        }
+        return nodes;
+    }
+
+    public ViewerFilter makeFilter() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getDialogTitle() {
+        // TODO Auto-generated method stub
+        return "Metadatas";
     }
 
 }
@@ -1302,24 +1404,6 @@ class SchemaTypeProcessor implements ITypeProcessor {
         }
     }
 
-    /**
-     * 
-     * DOC YeXiaowei SchemaTypeProcessor class global comment. Detailled comment
-     */
-    private static class NoNullList<T> extends ArrayList<T> {
-
-        private static final long serialVersionUID = 4564909079208559374L;
-
-        @Override
-        public boolean add(T t) {
-            if (t == null) {
-                return false;
-            }
-            return super.add(t);
-        }
-
-    }
-
     public boolean isSelectionValid(RepositoryNode node) {
         if (node.getObject() instanceof MetadataTable || node.getObject() instanceof SAPFunctionRepositoryObject) {
             return true;
@@ -1379,6 +1463,26 @@ class SchemaTypeProcessor implements ITypeProcessor {
         // TODO Auto-generated method stub
         return null;
     }
+}
+
+/**
+ * 
+ * DOC talend class global comment. Detailled comment
+ * 
+ * @param <T> on null object
+ */
+class NoNullList<T> extends ArrayList<T> {
+
+    private static final long serialVersionUID = 4564909079208559374L;
+
+    @Override
+    public boolean add(T t) {
+        if (t == null) {
+            return false;
+        }
+        return super.add(t);
+    }
+
 }
 
 /**
