@@ -49,6 +49,7 @@ import org.eclipse.ui.PartInitException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IESBService;
 import org.talend.core.PluginChecker;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.MetadataTable;
@@ -380,9 +381,11 @@ public class RepositoryReviewDialog extends Dialog {
 
             if (node.getType() != ENodeType.REPOSITORY_ELEMENT) {
                 highlightOKButton = false;
-            } else if (t == ERepositoryObjectType.SERVICESOPERATION) {
-                return highlightOKButton;
-            } else if (!typeProcessor.isSelectionValid(node)) {
+            }
+            // else if (t == ERepositoryObjectType.SERVICESOPERATION) {
+            // return highlightOKButton;
+            // }
+            else if (!typeProcessor.isSelectionValid(node)) {
                 highlightOKButton = false;
             }
         }
@@ -1033,6 +1036,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataConNode();
                 }
             }
+
             if (repositoryType.startsWith(ERepositoryCategoryType.SAP.getName())) {
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataSAPConnectionNode();
@@ -1058,6 +1062,21 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataEbcdicConnectionNode();
                 }
             }
+
+            if (repositoryType.equals("SERVICES:OPERATION")) {
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                    IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+                    ERepositoryObjectType servicesType = service.getServicesType();
+                    if (provider instanceof RepositoryContentProvider) {
+                        metadataNode = ((RepositoryContentProvider) provider).getRootRepositoryNode(servicesType);
+                    }
+                    if (provider instanceof ProjectRepositoryNode) {
+                        metadataNode = ((ProjectRepositoryNode) provider).getRootRepositoryNode(servicesType);
+                    }
+                }
+
+            }
+
             if (repositoryType.equals(ERepositoryCategoryType.MDM.getName())) {
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider)
@@ -1129,6 +1148,17 @@ class RepositoryTypeProcessor implements ITypeProcessor {
         if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.PROCESS) {
             return true;
         }
+        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.SERVICESPORT) {
+            return false;
+        }
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+            IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+            ERepositoryObjectType servicesType = service.getServicesType();
+            if (node.getProperties(EProperties.CONTENT_TYPE) == servicesType) {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -1199,6 +1229,33 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                         }
                     }
                 }
+
+                if (repositoryType.equals("SERVICES:OPERATION")) {
+                    if (item instanceof ConnectionItem) {
+                        ConnectionItem connectionItem = (ConnectionItem) item;
+                        Connection connection = connectionItem.getConnection();
+                        String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
+                        if (repositoryType.contains(":")) { // database //$NON-NLS-1$
+                            // is
+                            // specified
+                            // //$NON-NLS-1$
+                            String neededDbType = repositoryType.substring(repositoryType.indexOf(":") + 1); //$NON-NLS-1$
+                            if (hidenTypeSelection) {
+                                return true;
+                            }
+                            // if (node.getObjectType() == ERepositoryObjectType.SERVICESPORT) {
+                            // return false;
+                            // }
+                            // if (node.getObjectType() == ERepositoryObjectType.SERVICESOPERATION) {
+                            // return false;
+                            // }
+                            // if (!MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
+                            // return false;
+                            // }
+                        }
+                    }
+                }
+
                 if (repositoryType.startsWith(ERepositoryCategoryType.HEADERFOOTER.getName())) {
                     if (item instanceof HeaderFooterConnectionItem) {
                         HeaderFooterConnectionItem connectionItem = (HeaderFooterConnectionItem) item;
@@ -1254,9 +1311,11 @@ class SchemaTypeProcessor implements ITypeProcessor {
         List<RepositoryNode> container = new NoNullList<RepositoryNode>();
         if (repositoryType != null && repositoryType.startsWith(ERepositoryCategoryType.DATABASE.getName())) {
             container.add(contentProvider.getMetadataConNode());
-        } else if (repositoryType != null && repositoryType == ERepositoryObjectType.SERVICESOPERATION.getType()) {
-            getSpecialNode(container, contentProvider);
-        } else {
+        }
+        // else if (repositoryType != null && repositoryType == ERepositoryObjectType.SERVICESOPERATION.getType()) {
+        // getSpecialNode(container, contentProvider);
+        // }
+        else {
             container.add(contentProvider.getMetadataFileNode());
             container.add(contentProvider.getMetadataFilePositionalNode());
             container.add(contentProvider.getMetadataFileRegexpNode());

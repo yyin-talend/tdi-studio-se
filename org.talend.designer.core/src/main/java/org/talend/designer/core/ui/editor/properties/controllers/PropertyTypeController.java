@@ -35,6 +35,8 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IESBService;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.CDCType;
@@ -282,11 +284,11 @@ public class PropertyTypeController extends AbstractRepositoryController {
             RepositoryReviewDialog dialog = null;
             if (dbTypeParam != null) {
                 String[] listRepositoryItems = dbTypeParam.getListRepositoryItems();
-                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA,
-                        param.getRepositoryValue(), listRepositoryItems);
+                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA, param
+                        .getRepositoryValue(), listRepositoryItems);
             } else {
-                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA,
-                        param.getRepositoryValue());
+                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA, param
+                        .getRepositoryValue());
             }
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 String id = dialog.getResult().getObject().getId();
@@ -340,9 +342,23 @@ public class PropertyTypeController extends AbstractRepositoryController {
 
                 if (repositoryConnection != null) {
                     CompoundCommand compoundCommand = new CompoundCommand();
-
-                    ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem,
-                            repositoryConnection, fullParamName, id);
+                    RepositoryNode selectNode = dialog.getResult();
+                    ChangeValuesFromRepository changeValuesFromRepository = null;
+                    if (selectNode.getObjectType() == ERepositoryObjectType.SERVICESOPERATION) {
+                        String serviceId = item.getProperty().getId();
+                        String portId = selectNode.getParent().getObject().getId();
+                        String operationId = selectNode.getObject().getId();
+                        changeValuesFromRepository = new ChangeValuesFromRepository(
+                                elem,
+                                repositoryConnection,
+                                param.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), serviceId + " - " + portId + " - " + operationId); //$NON-NLS-1$
+                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                            IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+                            service.updateOperation((INode) elem, serviceId + " - " + portId + " - " + operationId, selectNode);
+                        }
+                    } else {
+                        changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection, fullParamName, id);
+                    }
 
                     compoundCommand.add(changeValuesFromRepository);
 
@@ -503,14 +519,13 @@ public class PropertyTypeController extends AbstractRepositoryController {
 
                             IElementParameter propertyParam = elem
                                     .getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-                            propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName())
-                                    .setValue(EmfComponent.REPOSITORY);
+                            propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(
+                                    EmfComponent.REPOSITORY);
 
                             // 2. commnd
-                            Command cmd = new ChangeValuesFromRepository(
-                                    (Element) node,
-                                    connItem.getConnection(),
-                                    propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), connItem.getProperty().getId()); //$NON-NLS-1$
+                            Command cmd = new ChangeValuesFromRepository((Element) node, connItem.getConnection(), propertyParam
+                                    .getName()
+                                    + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), connItem.getProperty().getId()); //$NON-NLS-1$
                             executeCommand(cmd);
                             // see bug in feature 5998.refresh repositoryList.
                             if (dynamicProperty instanceof MultipleThreadDynamicComposite) {
@@ -587,8 +602,8 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 repositoryFileItemMap = ((MultipleThreadDynamicComposite) dynamicProperty).getRepositoryFileItemMap();
             }
 
-            repositoryParam = param.getParentParameter().getChildParameters()
-                    .get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+            repositoryParam = param.getParentParameter().getChildParameters().get(
+                    EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             String connectionSelected = (String) repositoryParam.getValue();
 
             /* bug 16969 */
@@ -792,8 +807,8 @@ public class PropertyTypeController extends AbstractRepositoryController {
                         final String name = "SOURCE_LIB"; //$NON-NLS-1$
                         IElementParameter libParam = node.getElementParameter(name);
                         if (libParam != null) {
-                            Command libSettingCmd = new PropertyChangeCommand(node, name,
-                                    TalendTextUtils.addQuotes(databaseConnection.getSID()));
+                            Command libSettingCmd = new PropertyChangeCommand(node, name, TalendTextUtils
+                                    .addQuotes(databaseConnection.getSID()));
                             cc.add(libSettingCmd);
                         }
 

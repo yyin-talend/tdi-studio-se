@@ -149,6 +149,18 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     }
 
     /**
+     * Getter for metadataConNode.
+     * 
+     * @return the metadataConNode
+     */
+    public RepositoryNode getMetadataServicesNode() {
+        if (root.getMetadataConNode() == null) {
+            getChildren(root.getMetadataConNode());
+        }
+        return root.getMetadataConNode();
+    }
+
+    /**
      * Getter for codeNode.
      * 
      * @return the codeNode

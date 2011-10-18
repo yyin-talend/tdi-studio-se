@@ -38,14 +38,11 @@ import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.ESelectionType;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.IESBService;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
-import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -932,11 +929,6 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         switchParam.setValue(Boolean.FALSE);
                     }
 
-                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
-                        IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
-                        service.changeOperationLabel(dialog.getResult(), (Node) elem, connection);
-                    }
-
                     CompoundCommand cc = new CompoundCommand();
                     RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
                             fullParamName, value, repositoryMetadata, null, null);
@@ -1120,15 +1112,6 @@ public class SchemaTypeController extends AbstractRepositoryController {
                                 newRepositoryIdValue = schemaSelected;
                                 findTable = true;
                                 break;
-                            }
-                        }
-                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
-                            IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
-                            AbstractMetadataObject obj = service.getServicesOperation(connection, tableLabel);
-                            if (obj != null) {
-                                repositoryMetadata = ConvertionHelper.convertServicesOperational(obj);
-                                newRepositoryIdValue = schemaSelected;
-                                findTable = true;
                             }
                         }
                         if (!findTable) {

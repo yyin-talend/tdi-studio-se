@@ -40,6 +40,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IESBService;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
@@ -52,6 +54,7 @@ import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.RulesItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
@@ -326,13 +329,20 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
             Item item;
             String displayName = "";
             try {
-                IRepositoryViewObject object = factory.getLastVersion(linkedRepository);
+                IRepositoryViewObject object = factory.getLastVersion(linkedRepository.split(" - ")[0]);
                 if (object == null) {
                     return;
                 }
                 item = object.getProperty().getItem();
                 // Assert.isTrue(item instanceof ConnectionItem);
-                if (item instanceof ConnectionItem) {
+                IESBService service = null;
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                    service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+                }
+                if (service != null && ERepositoryObjectType.getItemType(item) == service.getServicesType()) {
+                    lastItemUsed = (ConnectionItem) item;
+                    displayName = "Service:" + service.getServiceLabel(item, linkedRepository);
+                } else if (item instanceof ConnectionItem) {
                     lastItemUsed = (ConnectionItem) item;
                     displayName = dynamicProperty.getRepositoryAliasName(lastItemUsed) + ":" //$NON-NLS-1$
                             + lastItemUsed.getProperty().getLabel();
