@@ -145,7 +145,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             } else {
                 itemType = ROUTE;
             }
-
+            boolean esbJob = JOB.equals(itemType) && isESBJob(processItem);
+            
             // generate the source files
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
@@ -181,7 +182,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             // dynamic db xml mapping
             addXmlMapping(process[i], isOptionChoosed(ExportChoice.needSourceCode));
 
-            List<String> esbFiles = generateESBFiles(process[i].getItem());
+            List<String> esbFiles = generateESBFiles(process[i].getItem(), esbJob);
 
             List<URL> urlList = new ArrayList<URL>();
             try {
@@ -303,6 +304,29 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
+     * This method will return <code>true</code> if given job contains tESBProviderRequest or 
+     * tESBConsumer component
+     * 
+     * @param processItem
+     * @author rzubairov
+     * @return
+     */
+    private boolean isESBJob(ProcessItem processItem) {
+        boolean result = false;
+    	ProcessType processType = processItem.getProcess();
+        for (Object o : processType.getNode()) {
+            if (o instanceof NodeType) {
+                String componentName = ((NodeType) o).getComponentName();
+                if ("tESBRProviderRequest".equals(componentName) || "tESBConsumer".equals(componentName)) {
+                	result = true;
+                	break;
+                }
+            }
+        }
+    	return result;
+    }
+    
+    /**
      * Add user input dependency library path. DOC LiXP Comment method "computeAddtionalLibPath".
      * 
      * @param processItem
@@ -370,7 +394,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         .getVersion());
     }
 
-    protected List<String> generateESBFiles(Item processItem) {
+    protected List<String> generateESBFiles(Item processItem, boolean isESBJob) {
         List<String> files = new ArrayList<String>();
         final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
         try {
@@ -380,7 +404,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     FileLocator.find(b, new Path("resources/" + itemType + "-template.xml"), null)) //$NON-NLS-1$
                     .getFile();
             String targetFile = getTmpFolder() + PATH_SEPARATOR + "job.xml"; //$NON-NLS-1$
-            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobClassName, itemType);
+            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobClassName, itemType, isESBJob);
             files.add(targetFile);
         } catch (IOException e) {
             ExceptionHandler.process(e);
@@ -393,8 +417,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     protected void readAndReplaceInXmlTemplate(String inputFile, String outputFile, String jobName, String jobClassName,
-            String itemType) {
+            String itemType, boolean isESBJob) {
         FileReader fr = null;
+        String additionalJobIF = "<value>routines.system.api.TalendESBJob</value>";
+        if (!isESBJob) {
+        	additionalJobIF = "";
+        }
         try {
             fr = new FileReader(inputFile);
             BufferedReader br = new BufferedReader(fr);
@@ -404,7 +432,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
             String line = br.readLine();
             while (line != null) {
-                line = line.replace("@JOBNAME@", jobName).replace("@TYPE@", itemType).replace("@JOBCLASSNAME@", jobClassName); //$NON-NLS-1$ //$NON-NLS-2$
+                line = line.replace("@JOBNAME@", jobName).replace("@TYPE@", itemType).replace("@JOBCLASSNAME@", jobClassName).replace("@ADDITIONAL_JOB_INTERFACE@", additionalJobIF); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 bw.write(line + "\n"); //$NON-NLS-1$
                 line = br.readLine();
             }
