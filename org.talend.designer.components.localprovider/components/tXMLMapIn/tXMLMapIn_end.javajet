@@ -49,18 +49,3 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 	XmlMapData xmlMapData = (XmlMapData)ElementParameterParser.getObjectValueXMLTree(graphicalNode);
 %>
 }//TD512
-<%
-for(OutputXmlTree outputTable : xmlMapData.getOutputTrees()) {
-	String outputTableName = outputTable.getName();
-	for(OutputTreeNode outputNode: outputTable.getNodes()) {
-		if(("id_Document").equals(outputNode.getType())){
-%>
-			docAlreadyInstanciate_<%=outputTableName%> = false;
-<%
-			break;
-		} // if(docuemnt)
-	}// for(outputNode)
-} // for (outputXMLTree)
-
-%>
-allOutsForAggregate_<%=uniqueNameComponent %> = new java.util.ArrayList<Object>();
