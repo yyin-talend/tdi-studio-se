@@ -8,7 +8,8 @@
 	<service ref="job">
 		<interfaces>
 			<value>routines.system.api.TalendJob</value>
-			<value>routines.system.api.TalendESBJob</value>
+<!--		Commented out because of TESB-3529 until the better solution found
+	 		<value>routines.system.api.TalendESBJob</value>  -->
 		</interfaces>
 		<service-properties>
 			<entry key="name" value="@JOBNAME@" />
