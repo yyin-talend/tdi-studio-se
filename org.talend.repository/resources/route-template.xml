@@ -10,7 +10,7 @@
 	<service ref="job">
 		<interfaces>
 			<value>routines.system.api.TalendJob</value>
-			<value>routines.system.api.TalendESBJob</value>
+			<value>routines.system.api.TalendESBRoute</value>
 		</interfaces>	
 		<service-properties>
 			<entry key="name" value="@JOBNAME@" />
