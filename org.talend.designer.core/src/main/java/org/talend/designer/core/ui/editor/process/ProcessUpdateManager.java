@@ -2050,7 +2050,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                 final Date oldDate = this.jobletReferenceMap.get(id);
 
-                if ((!modificationDate.equals(oldDate) || onlySimpleShow) && !getProcess().getId().equals(id)) {
+                if (((oldDate != null && !modificationDate.equals(oldDate)) || onlySimpleShow)
+                        && !getProcess().getId().equals(id)) {
                     List<INode> jobletNodes = findRelatedJobletNode(getProcess(), property.getLabel(), null);
                     if (jobletNodes != null && !jobletNodes.isEmpty()) {
                         String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + property.getLabel();
