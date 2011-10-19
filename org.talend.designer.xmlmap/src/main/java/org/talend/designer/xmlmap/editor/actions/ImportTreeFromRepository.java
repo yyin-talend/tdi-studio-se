@@ -135,10 +135,17 @@ public class ImportTreeFromRepository extends SelectionAction {
                 showError();
             }
 
+            AbstractInOutTree tree = null;
             if (parentNode.eContainer() instanceof InputXmlTree) {
                 mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
+                tree = (InputXmlTree) parentNode.eContainer();
             } else if (parentNode.eContainer() instanceof OutputXmlTree) {
                 mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
+                tree = (OutputXmlTree) parentNode.eContainer();
+            }
+            if (tree != null) {
+                mapperManager.getProblemsAnalyser().checkLoopProblems(tree);
+                mapperManager.getMapperUI().updateStatusBar();
             }
         }
     }
