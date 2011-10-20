@@ -300,13 +300,16 @@ public class LoginDialog extends TrayDialog {
         // }
         // } else {// tis
         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-        int count = prefStore.getInt(TalendForgeDialog.LOGINCOUNT);
-        if (project.getAuthor() != null) {
-            String connectionEmail = project.getAuthor().getLogin();
-            if (prefStore.getString(connectionEmail) == null || prefStore.getString(connectionEmail).equals("")) {
-                if (count < 6) {
-                    TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
-                    tfDialog.open();
+        boolean checkTisVersion = prefStore.getBoolean(ITalendCorePrefConstants.EXCHANGE_CHECK_TIS_VERSION);
+        if (!checkTisVersion) {
+            int count = prefStore.getInt(TalendForgeDialog.LOGINCOUNT);
+            if (project.getAuthor() != null) {
+                String connectionEmail = project.getAuthor().getLogin();
+                if (prefStore.getString(connectionEmail) == null || prefStore.getString(connectionEmail).equals("")) {
+                    if (count < 6) {
+                        TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
+                        tfDialog.open();
+                    }
                 }
             }
         }

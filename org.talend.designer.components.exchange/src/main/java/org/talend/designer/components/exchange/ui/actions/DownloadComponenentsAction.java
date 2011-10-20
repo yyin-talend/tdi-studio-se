@@ -183,7 +183,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
         }
 
         if (componentName != null) {
-            // see 0005051: [ecosystem view] select component in the palette once component is installed
+            // see 0005051: [exchange view] select component in the palette once component is installed
             selectPaletteEntry(componentName);
         }
         MessageDialog

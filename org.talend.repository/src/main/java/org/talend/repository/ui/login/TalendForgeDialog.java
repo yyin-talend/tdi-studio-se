@@ -138,7 +138,7 @@ public class TalendForgeDialog extends TrayDialog {
      * 
      * @param shell
      */
-    protected TalendForgeDialog(Shell shell, Project project) {
+    public TalendForgeDialog(Shell shell, Project project) {
         super(shell);
         this.project = project;
     }

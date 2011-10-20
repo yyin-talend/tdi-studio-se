@@ -24,7 +24,7 @@ public class ExchangeService implements IExchangeService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.general.IEcosystemService#openEcosystemDialog()
+     * @see org.talend.core.model.general.IExchangeService#openExchangeDialog()
      */
     public String openExchangeDialog() {
         ImportExchangeDialog dialog = new ImportExchangeDialog(Display.getCurrent().getActiveShell());

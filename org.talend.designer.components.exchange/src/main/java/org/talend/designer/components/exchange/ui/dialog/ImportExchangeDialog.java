@@ -126,17 +126,17 @@ public class ImportExchangeDialog extends Dialog {
     }
 
     protected Control createDialogArea(Composite parent) {
-        Composite ecosystemDialogCom = new Composite(parent, SWT.NONE);
+        Composite exchangeDialogCom = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
         layout.makeColumnsEqualWidth = false;
         layout.marginWidth = 0;
-        ecosystemDialogCom.setLayout(layout);
+        exchangeDialogCom.setLayout(layout);
         GridData gridData = new GridData(GridData.FILL_BOTH);
 
-        ecosystemDialogCom.setLayoutData(gridData);
+        exchangeDialogCom.setLayoutData(gridData);
 
-        ImportCompatibleEcoComponentsComposite eco = new ImportCompatibleEcoComponentsComposite(ecosystemDialogCom,
-                ecosystemDialogCom.getShell(), false);
+        ImportCompatibleEcoComponentsComposite eco = new ImportCompatibleEcoComponentsComposite(exchangeDialogCom,
+                exchangeDialogCom.getShell(), false);
 
         return parent;
 
@@ -290,8 +290,8 @@ public class ImportExchangeDialog extends Dialog {
          * 
          * There will create three radio button.
          */
-        private void creatOptions(Composite ecosystemDialogCom) {
-            Group group = new Group(ecosystemDialogCom, SWT.NONE);
+        private void creatOptions(Composite exchangeDialogCom) {
+            Group group = new Group(exchangeDialogCom, SWT.NONE);
             GridLayout layout = new GridLayout();
             layout.numColumns = 5;
             layout.makeColumnsEqualWidth = false;
