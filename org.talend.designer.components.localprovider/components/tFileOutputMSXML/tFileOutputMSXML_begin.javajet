@@ -44,10 +44,12 @@ String fileName_<%=cid%> = <%=fileName%>;
 <%
 		if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 %>
-java.io.File createFile<%=cid%> = new java.io.File(fileName_<%=cid%>); 
-if(!createFile<%=cid%>.exists()){ 
-	(new java.io.File(fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("/")))).mkdirs(); 
-}
+			//create directory only if not exists
+			java.io.File createFile<%=cid%> = new java.io.File(fileName_<%=cid%>);
+			java.io.File parentFile_<%=cid%> = createFile<%=cid%>.getParentFile();
+			if(parentFile_<%=cid%> != null && !parentFile_<%=cid%>.exists()) {
+				parentFile_<%=cid%>.mkdirs();
+			}
 <%
 		}
 %>

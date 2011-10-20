@@ -33,11 +33,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
  String fileNewName_<%=cid%> = <%=filename%>;
  java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
    <%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
-	 //create directory only if not exists
+	 	//create directory only if not exists
 
-	 if(!createFile<%=cid%>.exists()){
-	 	(new java.io.File(fileNewName_<%=cid%>.substring(0,fileNewName_<%=cid%>.lastIndexOf("/")))).mkdirs();
-	 }
+		java.io.File parentFile_<%=cid%> = createFile<%=cid%>.getParentFile();
+		if(parentFile_<%=cid%> != null && !parentFile_<%=cid%>.exists()) {
+			parentFile_<%=cid%>.mkdirs();
+		}
 <%
 	}
 
