@@ -270,11 +270,11 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 						    Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
 						    if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
 						    	str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
-						    	treeNodeAPI_<%=cid %>.put("<%=key %>", str_<%=cid %>);
 						    }else{
 						    	node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
-						    	treeNodeAPI_<%=cid %>.put("<%=key %>", node_<%=cid%>!=null ? xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>) : null);
+						    	str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
 						    }
+						    treeNodeAPI_<%=cid %>.put("<%=key %>", str_<%=cid %>);
 						<%
 							i++;
 						}
