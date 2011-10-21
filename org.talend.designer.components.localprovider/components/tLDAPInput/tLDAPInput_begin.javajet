@@ -60,8 +60,16 @@ if(("false").equals(useExistingConn)){
     env_<%=cid%>.put(javax.naming.Context.SECURITY_AUTHENTICATION, "simple");// "none","simple","strong"
 	env_<%=cid%>.put(javax.naming.Context.REFERRAL, "<%=referrals%>");
 	env_<%=cid%>.put("java.naming.ldap.derefAliases","<%=aliases%>");
-	env_<%=cid%>.put("java.naming.ldap.attributes.binary","objectGUID");
+<%	
+	// Types binaires
+	for(IMetadataColumn column:columnList){		
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+		if(javaType == JavaTypesManager.BYTE_ARRAY || javaType == JavaTypesManager.LIST ){
+%>
+	env_<%=cid%>.put("java.naming.ldap.attributes.binary","<%=column.getOriginalDbColumnName()%>");
 <%
+		}
+	}
 	if(baseDN == null || baseDN.length()<=2){
 %>
 	env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>);
@@ -252,6 +260,17 @@ do {
 %>
 			javax.naming.directory.Attribute attr_<%=column.getLabel()%>_<%=cid%> = attrs_<%=cid%>.get("<%=column.getOriginalDbColumnName()%>");
 			if(attr_<%=column.getLabel()%>_<%=cid%> != null){
+<%
+								if(javaType == JavaTypesManager.LIST){
+%>			
+					List list_<%=cid%> = new java.util.ArrayList();
+					for (javax.naming.NamingEnumeration e_<%=cid%> = attr_<%=column.getLabel()%>_<%=cid%>.getAll(); e_<%=cid%>.hasMore();){
+    				 	list_<%=cid%>.add(e_<%=cid%>.next());
+    				}
+    				<%=conn.getName() %>.<%=column.getLabel() %> = list_<%=cid%>;
+<%				
+								} else {
+%>
     			StringBuilder attrStr_<%=cid%> = new StringBuilder();
     			for (javax.naming.NamingEnumeration e_<%=cid%> = attr_<%=column.getLabel()%>_<%=cid%>.getAll(); e_<%=cid%>.hasMore();){
     				if(attrStr_<%=cid%>.length()>0){
@@ -260,6 +279,9 @@ do {
     				attrStr_<%=cid%>.append(e_<%=cid%>.next().toString());
     			}
     			<%=conn.getName() %>.<%=column.getLabel() %> = attrStr_<%=cid%>.toString();
+<%
+								}
+%>			
 			} else {
 				<%=conn.getName() %>.<%=column.getLabel() %> = null;
 			}
