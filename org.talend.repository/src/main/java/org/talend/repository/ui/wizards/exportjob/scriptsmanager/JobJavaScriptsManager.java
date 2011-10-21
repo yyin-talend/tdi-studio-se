@@ -83,7 +83,6 @@ import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -93,13 +92,12 @@ import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPa
  */
 public class JobJavaScriptsManager extends JobScriptsManager {
 
-    public JobJavaScriptsManager(Map<ExportChoice, Object> exportChoiceMap,
-			String contextName, String launcher, int statisticPort,
-			int tracePort) {
-		super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
-	}
+    public JobJavaScriptsManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
+            int statisticPort, int tracePort) {
+        super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
+    }
 
-	private static final String USER_BEANS_PATH = "beans"; //$NON-NLS-1$
+    private static final String USER_BEANS_PATH = "beans"; //$NON-NLS-1$
 
     private static final String USER_ROUTINES_PATH = "routines"; //$NON-NLS-1$
 
@@ -131,12 +129,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String launcher, int statisticPort, int tracePort, int i, IProcess jobProcess, ProcessItem processItem,
             String selectedJobVersion, List<URL> resources, String... codeOptions) {
         resources.addAll(getLauncher(isOptionChoosed(ExportChoice.needLauncher),
-                isOptionChoosed(ExportChoice.setParameterValues),
-                isOptionChoosed(ExportChoice.needContext), jobProcess, processItem, escapeSpace(contextName),
-                escapeSpace(launcher), statisticPort, tracePort, codeOptions));
+                isOptionChoosed(ExportChoice.setParameterValues), isOptionChoosed(ExportChoice.needContext), jobProcess,
+                processItem, escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
-        addSourceCode(process, processItem, isOptionChoosed(ExportChoice.needSourceCode), process[i],
-                selectedJobVersion);
+        addSourceCode(process, processItem, isOptionChoosed(ExportChoice.needSourceCode), process[i], selectedJobVersion);
 
         addDependenciesSourceCode(process, process[i], isOptionChoosed(ExportChoice.needSourceCode));
         addXmlMapping(process[i], isOptionChoosed(ExportChoice.needSourceCode));
@@ -144,8 +140,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         addJobItem(process, processItem, isOptionChoosed(ExportChoice.needJobItem), process[i], selectedJobVersion);
 
         addDependencies(process, processItem, isOptionChoosed(ExportChoice.needDependencies), process[i]);
-        resources
-                .addAll(getJobScripts(processItem, selectedJobVersion, isOptionChoosed(ExportChoice.needJobScript))); // always
+        resources.addAll(getJobScripts(processItem, selectedJobVersion, isOptionChoosed(ExportChoice.needJobScript))); // always
         // need
         // job
         // generation
@@ -194,7 +189,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * .ProcessItem[], boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
      */
     @Override
-	public List<ExportFileResource> getExportResources(ExportFileResource[] process, String... codeOptions)
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, String... codeOptions)
             throws ProcessorException {
 
         Set<String> neededLibraries = null;
@@ -213,11 +208,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 }
                 if (contextName != null) {
                     jobProcess = generateJobFiles(processItem, contextName, selectedJobVersion,
-                            statisticPort != IProcessor.NO_STATISTICS
-                                    || isOptionChoosed(ExportChoice.addStatistics),
-                            tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren),
-                            progressMonitor);
-                } 
+                            statisticPort != IProcessor.NO_STATISTICS || isOptionChoosed(ExportChoice.addStatistics),
+                            tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
+                }
                 neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                         processItem.getProperty().getId(), selectedJobVersion));
             } else {
@@ -250,8 +243,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(ExportChoice.needTalendLibraries),
-                process, neededLibraries);
+        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(ExportChoice.needTalendLibraries), process,
+                neededLibraries);
         rootResource.addResources(talendLibraries);
 
         if (PluginChecker.isRulesPluginLoaded()) {
@@ -619,8 +612,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         isOptionChoosed(ExportChoice.needJobScript)));
                 addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
                         isOptionChoosed(ExportChoice.needContext));
-                addDependencies(allResources, jobInfo.getProcessItem(),
-                        isOptionChoosed(ExportChoice.needDependencies), resource);
+                addDependencies(allResources, jobInfo.getProcessItem(), isOptionChoosed(ExportChoice.needDependencies), resource);
             }
         }
 
@@ -679,6 +671,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         IJavaProject project = JavaCore.create(prj);
         IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
         File file = libPath.toFile();
+        if (!file.exists()) {
+            file.mkdir();
+        }
         File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
         // Lists all the needed jar files
         Set<String> listModulesReallyNeeded = new HashSet<String>();
@@ -1284,17 +1279,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return list;
     }
 
-	@Override
-	public List<ExportFileResource> getExportResources(
-			ExportFileResource[] process, IContext context,
-			String... codeOptions) throws ProcessorException {
-		contextName = context.getName();
-		return getExportResources(process, codeOptions);
-	}
-	
-	@Override
+    @Override
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, IContext context, String... codeOptions)
+            throws ProcessorException {
+        contextName = context.getName();
+        return getExportResources(process, codeOptions);
+    }
+
+    @Override
     public void setTopFolder(List<ExportFileResource> resourcesToExport) {
-		String topFolder = getRootFolderName(getDestinationPath());
+        String topFolder = getRootFolderName(getDestinationPath());
         for (ExportFileResource fileResource : resourcesToExport) {
             String directory = fileResource.getDirectoryName();
             fileResource.setDirectoryName(topFolder + "/" + directory); //$NON-NLS-1$
