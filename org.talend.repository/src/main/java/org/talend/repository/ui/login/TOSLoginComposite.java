@@ -451,15 +451,15 @@ public class TOSLoginComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 Project project = null;
                 ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-                Project[] projects = null;
-                try {
-                    projects = repositoryFactory.readProject();
-                } catch (PersistenceException e1) {
-                    e1.printStackTrace();
-                } catch (BusinessException e1) {
-                    e1.printStackTrace();
-                }
-                NewProjectWizard newPrjWiz = new NewProjectWizard((Project[]) projects);
+                // Project[] projects = null;
+                // try {
+                // projects = repositoryFactory.readProject();
+                // } catch (PersistenceException e1) {
+                // e1.printStackTrace();
+                // } catch (BusinessException e1) {
+                // e1.printStackTrace();
+                // }
+                NewProjectWizard newPrjWiz = new NewProjectWizard(null);
                 WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
                 newProjectDialog.setTitle(Messages.getString("LoginDialog.newProjectTitle")); //$NON-NLS-1$
                 if (newProjectDialog.open() == Window.OK) {
@@ -512,7 +512,6 @@ public class TOSLoginComposite extends Composite {
                 ImportProjectAsAction.getInstance().run();
                 String newProject = ImportProjectAsAction.getInstance().getProjectName();
                 if (newProject != null) {
-                    Project project = null;
                     ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
                     Project[] projects = null;
                     try {
@@ -525,8 +524,8 @@ public class TOSLoginComposite extends Composite {
                     if (!projectsMap.containsKey(newProject.toUpperCase())) {
                         for (int i = 0; i < projects.length; i++) {
                             if (projects[i].getLabel().toUpperCase().equals(newProject.toUpperCase())) {
-                                projectsMap.put(newProject.toUpperCase(), project);
-                                projectList.add(newProject.toUpperCase().toUpperCase());
+                                projectsMap.put(newProject.toUpperCase(), projects[i]);
+                                projectList.add(newProject.toUpperCase());
                                 try {
                                     setStatusArea();
                                 } catch (PersistenceException e1) {
