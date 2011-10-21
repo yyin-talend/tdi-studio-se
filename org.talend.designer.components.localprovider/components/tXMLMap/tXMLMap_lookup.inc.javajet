@@ -304,7 +304,7 @@ skeleton="tXMLMap_java.skeleton"
 					    	<%if(isCacheOrReloadLookupMode) {%>
 					    	java.util.Map<String,Object> cacheResult_<%=cid%> = tHash_Lookup_Cache_<%= tableName %>.next();
 					    		<% for (Object key : outNodesXPath.keySet()) { %>
-					    			treeNodeAPI_<%=cid %>.put("<%=key%>",String.valueOf(cacheResult_<%=cid%>.get("<%=key%>")));
+					    			treeNodeAPI_<%=cid %>.put("<%=key%>",StringUtils.valueOf(cacheResult_<%=cid%>.get("<%=key%>")));
 					    		<% } %>
 				    			<%=tableName%> = (<%=className%>)cacheResult_<%=cid%>.get("<%=tableName%>");
 					    	<% } %>
@@ -343,9 +343,9 @@ skeleton="tXMLMap_java.skeleton"
 										<% } %>
 										for(java.util.Map<String,Object> docRow_<%=cid%> : result_<%=cid%>) {
 											for(String path_<%=cid%> : docRow_<%=cid%>.keySet()) {
-												treeNodeAPI_<%=cid %>.put(path_<%=cid%>, String.valueOf(docRow_<%=cid%>.get(path_<%=cid%>)));
+												treeNodeAPI_<%=cid %>.put(path_<%=cid%>, StringUtils.valueOf(docRow_<%=cid%>.get(path_<%=cid%>)));
 												<%if(isCacheOrReloadLookupMode) {%>
-												cacheResult<%=tableName%>.put(path_<%=cid%>,String.valueOf(docRow_<%=cid%>.get(path_<%=cid%>)));
+												cacheResult<%=tableName%>.put(path_<%=cid%>,StringUtils.valueOf(docRow_<%=cid%>.get(path_<%=cid%>)));
 												<% } %>
 											}
 										}
@@ -433,7 +433,7 @@ skeleton="tXMLMap_java.skeleton"
 											multipleResultSet<%=tableName%>.add(docRow_<%=cid%>);
 											<%if(isCacheOrReloadLookupMode) {%>
 											for(String path_<%=cid%> : docRow_<%=cid%>.keySet()) {
-												cacheResult<%=tableName%>.put(path_<%=cid%>,String.valueOf(docRow_<%=cid%>.get(path_<%=cid%>)));
+												cacheResult<%=tableName%>.put(path_<%=cid%>,StringUtils.valueOf(docRow_<%=cid%>.get(path_<%=cid%>)));
 											}
 											cacheResult<%=tableName%>.put("<%=tableName%>",fromLookup_<%=tableName%>);
 											tHash_Lookup_Cache_<%= tableName %>.put(lookupCacheKey<%=tableName%>,cacheResult<%=tableName%>);
@@ -463,7 +463,7 @@ skeleton="tXMLMap_java.skeleton"
 					    	if(!forceLoop<%= tableName %>) {
 						    	java.util.Map<String,Object> oneRow<%=tableName%> = iter<%=tableName%>.next();
 						   		<% for (Object key : outNodesXPath.keySet()) { %>
-						    			treeNodeAPI_<%=cid %>.put("<%=key%>",String.valueOf(oneRow<%=tableName%>.get("<%=key%>")));
+						    			treeNodeAPI_<%=cid %>.put("<%=key%>",StringUtils.valueOf(oneRow<%=tableName%>.get("<%=key%>")));
 						    	<% } %>
 					    		tempLookup<%=tableName%> = (<%=className%>)oneRow<%=tableName%>.get("<%=tableName%>");
 					    		if(tempLookup<%=tableName%>!=null) {

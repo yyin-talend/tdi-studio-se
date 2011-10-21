@@ -823,7 +823,10 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 			valueMap.put("<%=currEleName%>",<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>);
 			if(valueMap.get("<%=currEleName%>")!=null) {
 				<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>",String.valueOf(<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>));
+			}<% if(allowEmpty) { %>else {
+				<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>","");
 			}
+			<% } %>
 //		}
 <%
 			}
