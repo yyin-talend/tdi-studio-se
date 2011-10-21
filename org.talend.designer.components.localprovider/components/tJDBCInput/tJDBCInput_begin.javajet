@@ -63,12 +63,13 @@ imports="
 		//-----------according schema type to generate ResultSet
 		public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
 %>
-            java.sql.Timestamp timestamp_<%=cid%> = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
-            if(timestamp_<%=cid%> != null) {
-                <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
-            } else {
-                <%=firstConnName%>.<%=column.getLabel()%> =  null;
+            java.util.Date date_<%=cid%> = null;
+            try{
+            	date_<%=cid%> = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
+            }catch(Exception e){
+            	date_<%=cid%> = rs_<%=cid %>.getDate(<%=currentColNo%>);
             }
+            <%=firstConnName%>.<%=column.getLabel()%> = date_<%=cid%>;
 <%
 	    }  
 	    
