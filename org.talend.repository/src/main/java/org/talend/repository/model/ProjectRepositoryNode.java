@@ -914,8 +914,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         RepositoryNode currentParentNode = parentNode;
         if (item instanceof FolderItem) {
             itemType = getFolderContentType((FolderItem) item);
-            if (itemType == null || !ArrayUtils.contains(itemType.getProducts(), getCurrentRepositoryType())) {
-                // item not for the current product, so do nothing
+            if (itemType == null) {
                 return;
             }
 
