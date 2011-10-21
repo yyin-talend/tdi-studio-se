@@ -6,7 +6,6 @@ imports="
     org.talend.core.model.metadata.IMetadataTable
     java.util.List
     java.util.Map
-    java.util.ArrayList
    	org.talend.core.model.process.IConnection    
 	org.talend.core.model.process.IConnectionCategory
 	org.talend.core.model.process.EConnectionType
@@ -41,6 +40,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 List<Map<String, String>> loopTable = 
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOP__");
                 boolean storeFlow = ("true").equals(ElementParameterParser.getValue(node, "__STORE_FLOW__"));
+                boolean isCompactFormat = ("true").equals(ElementParameterParser.getValue(node, "__COMPACT_FORMAT__"));
 %>
 int nb_line_<%=cid%> = 0;
 boolean needRoot_<%=cid%>  = true;
@@ -145,8 +145,12 @@ NestXMLTool_<%=cid%> nestXMLTool_<%=cid%> = new NestXMLTool_<%=cid%>();
 java.util.List<org.dom4j.Element> groupElementList_<%=cid%> = new java.util.ArrayList<org.dom4j.Element>();
 org.dom4j.Element root4Group_<%=cid%> = null;
 org.dom4j.Document doc_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
-
+<%if(isCompactFormat) {%>
+org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createCompactFormat();
+format_<%=cid%>.setNewLineAfterDeclaration(false);
+<%} else {%>
 org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
+<%}%>
 format_<%=cid%>.setTrimText(false);
 format_<%=cid%>.setEncoding(<%=encoding%>);
 <%if(isAllowEmpty && expandEmptyElm){%>format_<%=cid%>.setExpandEmptyElements(true);<%}%>
@@ -163,6 +167,12 @@ format_<%=cid%>.setEncoding(<%=encoding%>);
 int[] orders_<%=cid %> = new int[<%=groupSize + 1%>];
 <%
 				}else if(("Null").equals(mode)){
+				    String whiteSpace = "";
+        			String rowSeparator = "";
+        			if(!isCompactFormat) { // pretty format
+        				whiteSpace = "  ";
+        				rowSeparator = "\\n";
+        			}
 %>
 java.util.List<String> endTabStrs_<%=cid%> = new java.util.ArrayList<String>();
 java.util.List<String> startTabStrs_<%=cid%> = new java.util.ArrayList<String>();
@@ -174,9 +184,9 @@ java.util.List<String> startTabStrs_<%=cid%> = new java.util.ArrayList<String>()
         				for(int len = 1; len<endTabs.length-1;len++){
 %>
 endTabStrs_<%=cid%>.add("<%=emptyspace%></<%=endTabs[len]%>>");
-startTabStrs_<%=cid%>.add("\n<%=emptyspace%><<%=endTabs[len]%>>");
+startTabStrs_<%=cid%>.add("<%=rowSeparator%><%=emptyspace%><<%=endTabs[len]%>>");
 <%
-	         				emptyspace += "  ";
+	         				emptyspace += whiteSpace;
             			}
         			}
 %>
@@ -190,7 +200,7 @@ java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(strWriter_<%=ci
 					if(!("true").equals(removeHeader)){
 %>
 out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding%>+"\"?>");
-out_<%=cid%>.newLine();
+out_<%=cid %>.write("<%=rowSeparator%>");
 <%
 					}
 %>

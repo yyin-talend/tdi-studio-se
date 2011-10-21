@@ -9,7 +9,6 @@ imports="
     java.util.ArrayList
     java.util.LinkedList
     java.util.Map
-    java.util.HashMap
   	org.talend.core.model.process.IConnection    
 	org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.metadata.types.JavaTypesManager
@@ -17,7 +16,24 @@ imports="
 "
 skeleton="tWriteXMLFieldOut_java.skeleton"
 %>
+<%
+//==========common part 1 begin===================================================================
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
+boolean isCompactFormat = ("true").equals(ElementParameterParser.getValue(node, "__COMPACT_FORMAT__"));
+final String whiteSpace;
+final String rowSeparator;
+if(!isCompactFormat) { // pretty format
+	whiteSpace = "  ";
+	rowSeparator = "\\n";
+} else { // compact format
+	whiteSpace = "";
+	rowSeparator = "";
+}
+//===========common part 1 end=============================================================
+%>
 <%
 //XMLTool
 class XMLTool{
@@ -324,12 +340,12 @@ class GenerateToolByNull{
                     	<%}%>
 		){
 <%
-						generateCode(child,emptySpace+"  ");
+						generateCode(child,emptySpace+whiteSpace);
 %>
 		}
 <%
             		}else{
-            			generateCode(child,emptySpace+"  ");
+            			generateCode(child,emptySpace+whiteSpace);
             		}
 				}
 			}
@@ -341,7 +357,7 @@ class GenerateToolByNull{
 	}
 	private void startElement(XMLNode node, String emptySpace){
 %>
-		buf_<%=cid%>.append("\n");
+		buf_<%=cid%>.append("<%=rowSeparator%>");
 		buf_<%=cid%>.append("<%=emptySpace%><<%=node.name%>");
 <%
 		if(outputAsXSD && node.parent==null){
@@ -371,7 +387,7 @@ class GenerateToolByNull{
 	public void endElement(XMLNode node, String emptySpace){
 		if(node.elements.size()>0){
 %>
-		buf_<%=cid%>.append("\n");
+		buf_<%=cid%>.append("<%=rowSeparator%>");
 		buf_<%=cid%>.append("<%=emptySpace%></<%=node.name%>>");
 <%
 		}else{
@@ -448,10 +464,6 @@ class GenerateToolByNull{
 // ------------------- *** Null generation mode end *** ------------------- //
 
 // ------------------- *** Common code start *** ------------------- //
-CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();
-
 IMetadataTable metadata = null;
 IConnection inConn = null;
 for (IConnection conn : node.getIncomingConnections()) {
@@ -752,7 +764,7 @@ else if(("Null").equals(mode)){
                 	if(endTabs_<%=cid %>[i_<%=cid%>]!=null){
                 		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
                 	}                	
-	                out_<%=cid %>.newLine();
+	                out_<%=cid %>.write("<%=rowSeparator%>");
 	                out_<%=cid %>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
 	            }
 	        } else {
@@ -760,7 +772,7 @@ else if(("Null").equals(mode)){
                 	if(endTabs_<%=cid %>[i_<%=cid%>]!=null){
                 		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
                 	}
-                	out_<%=cid%>.newLine();
+                	out_<%=cid %>.write("<%=rowSeparator%>");
 	                out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
 	            }
 	        }
@@ -773,7 +785,7 @@ else if(("Null").equals(mode)){
         	if(endTabs_<%=cid %>[i_<%=cid%>]!=null){
         		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
         	}
-	        out_<%=cid%>.newLine();
+	        out_<%=cid %>.write("<%=rowSeparator%>");
 	        out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
 	    }
 <%
@@ -785,7 +797,7 @@ else if(("Null").equals(mode)){
 			endTabs_<%=cid %>[i_<%=cid%>] = null;
 		}
 //		endTabStrs_<%=cid%>.clear();
-		out_<%=cid%>.newLine();
+		out_<%=cid %>.write("<%=rowSeparator%>");
 		out_<%=cid%>.close();
 		listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
 
@@ -797,7 +809,7 @@ else if(("Null").equals(mode)){
 	if(!("true").equals(removeHeader)){
 %>
 		out_<%=cid %>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding %>+"\"?>");
-		out_<%=cid %>.newLine();
+		out_<%=cid %>.write("<%=rowSeparator%>");
 <%
 	}
 %>
@@ -822,7 +834,7 @@ else if(("Null").equals(mode)){
 	String rootEmptySpace = "";
 	for(int i=0;i<mainList.size();i++){
 		generateToolByNull.generateCode(mainList.get(i),rootEmptySpace);
-		rootEmptySpace+="  ";
+		rootEmptySpace+=whiteSpace;
 		
 		if(!generateToolByNull.outputAsXSD && !generateToolByNull.allowEmpty){
 			if(mainList.get(i).relatedColumn != null || mainList.get(i).childrenColumnList.size()>0){
@@ -905,7 +917,7 @@ else if(("Null").equals(mode)){
 <%
 		String emptySpace = "";
 		for(int len = groupList.get(i).path.split("/").length-1;len>1;len--){
-			emptySpace +="  ";
+			emptySpace +=whiteSpace;
 		}
 		generateToolByNull.generateCode(groupList.get(i),emptySpace);
 		
@@ -972,7 +984,7 @@ else if(("Null").equals(mode)){
             		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
             	}
             	endTabs_<%=cid %>[i_<%=cid%>] = null;
-                out_<%=cid%>.newLine();
+                out_<%=cid %>.write("<%=rowSeparator%>");
                 out_<%=cid%>.write(endTabStrs_<%=cid%>
                         .get(i_<%=cid%>));
             }
@@ -985,7 +997,7 @@ else if(("Null").equals(mode)){
             		out_<%=cid%>.write(endTabs_<%=cid %>[i_<%=cid%>]);
             	}
             	endTabs_<%=cid %>[i_<%=cid%>] = null;
-                out_<%=cid%>.newLine();
+                out_<%=cid %>.write("<%=rowSeparator%>");
                 out_<%=cid%>.write(endTabStrs_<%=cid%>
                         .get(i_<%=cid%>));
             }
@@ -1026,7 +1038,7 @@ else if(("Null").equals(mode)){
 <%
 	String emptySpace = "";
 	for(int len =loop.path.split("/").length-1;len>1;len--){
-		emptySpace +="  ";
+		emptySpace +=whiteSpace;
 	}
 	if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
 %>

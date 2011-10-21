@@ -7,10 +7,8 @@ imports="
     java.util.ArrayList
     java.util.LinkedList
     java.util.Map
-    java.util.HashMap
     org.talend.core.model.metadata.IMetadataTable
     org.talend.core.model.metadata.IMetadataColumn
-    org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
 	org.talend.core.model.process.EConnectionType
 "
