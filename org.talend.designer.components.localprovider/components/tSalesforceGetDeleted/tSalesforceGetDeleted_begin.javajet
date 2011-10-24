@@ -114,57 +114,70 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
     		com.salesforce.soap.partner.DeletedRecord[] drs_<%=cid%> = gdr_<%=cid%>.getDeletedRecords();
     		
     		if (drs_<%=cid%> != null && drs_<%=cid%>.length > 0) {
+    			int batchSize_<%=cid%> = 500;
+    			int count_<%=cid%> = 0;
+    			StringBuilder soql_<%=cid%> = new StringBuilder();
+    			String soqlBase_<%=cid%> = "SELECT " + "<%=fieldlist%>" + " FROM " + "<%=module%>" + " WHERE ";
 				for(com.salesforce.soap.partner.DeletedRecord dr_<%=cid%> : drs_<%=cid%>){
+					count_<%=cid%>++;
 					nb_line_<%=cid%> ++;
-
-					qr_<%=cid%> = sfMgr_<%=cid%>.queryAll("SELECT " + "<%=fieldlist%>" + " FROM " + "<%=module%>" + " WHERE Id = '"+dr_<%=cid%>.getId().getID()+"'",250);
-					if(qr_<%=cid %>.getSize()>0){
 					
-        			 for(int i_<%=cid%> = 0; i_<%=cid%> < qr_<%=cid %>.getRecords().length; i_<%=cid%>++){
-        				org.apache.axiom.om.OMElement[] fields_<%=cid %> = qr_<%=cid %>.getRecords()[i_<%=cid%>].getExtraElement();
+					soql_<%=cid%>.append("Id='"+dr_<%=cid%>.getId().getID()+"'");
+					soql_<%=cid%>.append(" or ");
+					<%//By default, SOQL statements cannot exceed 10,000 characters in length%>
+					if((soql_<%=cid%>.length() > (10000 - 23 - soqlBase_<%=cid%>.length())) || count_<%=cid%> == drs_<%=cid%>.length){
+						soql_<%=cid%>.delete(soql_<%=cid%>.length() - 4, soql_<%=cid%>.length());
+						<%if(false){
+						%>
+							System.out.println(soqlBase_<%=cid%> + soql_<%=cid%>.toString());
+						<%
+						}%>
+						qr_<%=cid%> = sfMgr_<%=cid%>.queryAll(soqlBase_<%=cid%> + soql_<%=cid%>.toString(),batchSize_<%=cid%>);
 
-						int len_<%=cid%> = fields_<%=cid %>.length;
-<%
-						for( int i = 0; i < columnList.size(); i++) {
-						
-							IMetadataColumn column = columnList.get(i);
-							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						boolean bContinue_<%=cid %> = true;
+						while (bContinue_<%=cid %> && qr_<%=cid %> != null && qr_<%=cid %>.getRecords() != null) {
 							
-							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-							
-							String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-%>						
-							if (<%=i %> < len_<%=cid%> && fields_<%=cid %>[<%=i%>].getText() != null && !"".equals(fields_<%=cid %>[<%=i%>].getText())){
-<%
-									if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
-%>
-								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid %>[<%=i%>].getText();
-<%
-									} else if(javaType == JavaTypesManager.DATE) { // Date
-%>
-								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_Date(fields_<%=cid %>[<%=i%>].getText(), <%= patternValue %>);
-<%
-									} else if(javaType == JavaTypesManager.BYTE_ARRAY) { // byte[]
-%>
-								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid %>[<%=i%>].getText().getBytes();
-<%
-									} else  { // other
-%>						
-								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(fields_<%=cid %>[<%=i%>].getText());
-<%
+		        		    for(int i_<%=cid%> = 0; i_<%=cid%> < qr_<%=cid %>.getRecords().length; i_<%=cid%>++){
+			        			org.apache.axiom.om.OMElement[] fields_<%=cid %> = qr_<%=cid %>.getRecords()[i_<%=cid%>].getExtraElement();
+			
+								int len_<%=cid%> = fields_<%=cid %>.length;
+								<%
+								for( int i = 0; i < columnList.size(); i++) {
+								
+									IMetadataColumn column = columnList.get(i);
+									String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+									
+									JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+									
+									String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+									%>						
+									if (<%=i %> < len_<%=cid%> && fields_<%=cid %>[<%=i%>].getText() != null && !"".equals(fields_<%=cid %>[<%=i%>].getText())){
+										<%
+										if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
+										%>
+											<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid %>[<%=i%>].getText();
+										<%
+										} else if(javaType == JavaTypesManager.DATE) { // Date
+										%>
+											<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_Date(fields_<%=cid %>[<%=i%>].getText(), <%= patternValue %>);
+										<%
+										} else if(javaType == JavaTypesManager.BYTE_ARRAY) { // byte[]
+										%>
+											<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid %>[<%=i%>].getText().getBytes();
+										<%
+										} else  { // other
+										%>						
+											<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(fields_<%=cid %>[<%=i%>].getText());
+										<%
+										}
+										%>			
+									} else {
+										<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
 									}
-%>			
-							} else {
-								<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
-							}
-<%	
-							
-						}
-%>
-					 }
-					} 		
-					<%=outgoingConn.getName()%>.Id = dr_<%=cid%>.getId().getID();
-<%
+								<%	
+								}
+								%>
+			<%
 			}
 		}
 	}
