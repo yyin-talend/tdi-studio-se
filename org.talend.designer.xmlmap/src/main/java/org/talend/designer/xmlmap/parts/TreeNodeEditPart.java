@@ -13,6 +13,7 @@
 package org.talend.designer.xmlmap.parts;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.draw2d.TreeSearch;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.ConnectionEditPart;
@@ -398,22 +400,29 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
     public void performRequest(Request req) {
         if (RequestConstants.REQ_DIRECT_EDIT.equals(req.getType())) {
             Figure figure = null;
+            DirectEditRequest drequest = (DirectEditRequest) req;
+            Point figureLocation = drequest.getLocation();
             if (getFigure() instanceof TreeNodeFigure) {
-                figure = ((TreeNodeFigure) getFigure()).getElement().getExpressionFigure();
+                TreeNodeFigure treeNodeFigure = (TreeNodeFigure) getFigure();
+                ArrayList collection = new ArrayList();
+                collection.add(treeNodeFigure.getElement().getExpressionFigure());
+                collection.add(treeNodeFigure.getElement().getBranchContent());
+                figure = (Figure) treeNodeFigure.findFigureAt(figureLocation.x, figureLocation.y, new FigureSearch(collection));
             }
-            if (directEditManager == null) {
-                if (figure instanceof IWidgetCell) {
-                    directEditManager = new XmlMapNodeDirectEditManager(this, new XmlMapNodeCellEditorLocator(figure, this));
-                }
+            if (figure instanceof IWidgetCell) {
+                directEditManager = new XmlMapNodeDirectEditManager(this, new XmlMapNodeCellEditorLocator(figure, this));
             }
             if (directEditManager != null) {
                 TreeNode outputTreeNode = (TreeNode) getModel();
-                if (XmlMapUtil.isExpressionEditable(outputTreeNode)) {
-                    DirectEditRequest drequest = (DirectEditRequest) req;
-                    Point location = drequest.getLocation();
-                    if (figure.containsPoint(location)) {
-                        directEditManager.show();
+                if (figure instanceof ExpressionFigure) {
+                    if (XmlMapUtil.isExpressionEditable(outputTreeNode)) {
+                        Point location = drequest.getLocation();
+                        if (figure.containsPoint(location)) {
+                            directEditManager.show();
+                        }
                     }
+                } else if (!(((TreeNode) getModel()).eContainer() instanceof AbstractInOutTree)) {
+                    directEditManager.show();
                 }
             }
         }
@@ -444,6 +453,27 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
 
     protected void setRootAnchor(IFigure rootAnchor) {
         this.rootAnchor = rootAnchor;
+    }
+
+    class FigureSearch implements TreeSearch {
+
+        final Collection collection;
+
+        public FigureSearch(Collection collection) {
+            this.collection = collection;
+        }
+
+        @Override
+        public boolean accept(IFigure figure) {
+            return collection.contains(figure);
+        }
+
+        @Override
+        public boolean prune(IFigure figure) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
     }
 
 }

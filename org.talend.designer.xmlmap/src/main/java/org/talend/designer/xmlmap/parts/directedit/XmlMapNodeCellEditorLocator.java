@@ -55,6 +55,10 @@ public class XmlMapNodeCellEditorLocator implements CellEditorLocator {
                     copy.x = treeBounds.x + 1;
                 }
 
+                if (copy.x + copy.width > treeBounds.x + treeBounds.width) {
+                    copy.width = copy.width - ((copy.x + copy.width) - (treeBounds.x + treeBounds.width)) - 1;
+                }
+
             }
         }
 

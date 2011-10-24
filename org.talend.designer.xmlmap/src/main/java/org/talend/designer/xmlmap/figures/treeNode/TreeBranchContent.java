@@ -17,15 +17,17 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
+import org.talend.designer.xmlmap.figures.cells.ITextCell;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class TreeBranchContent extends Figure {
+public class TreeBranchContent extends Figure implements ITextCell {
 
     private int alpha = 255;
 
@@ -38,6 +40,7 @@ public class TreeBranchContent extends Figure {
     private TreeNode treeNode;
 
     public TreeBranchContent(TreeNode treeNode) {
+        setDirectEditType(DirectEditType.NODE_NAME);
         this.treeNode = treeNode;
         GridLayout manager = new GridLayout(4, false);
         manager.horizontalSpacing = 5;
@@ -135,6 +138,16 @@ public class TreeBranchContent extends Figure {
 
     public void updateDefaultValueFigure() {
         defaultValue.setText(getDefaultValue(treeNode));
+    }
+
+    private DirectEditType type;
+
+    public void setDirectEditType(DirectEditType type) {
+        this.type = type;
+    }
+
+    public DirectEditType getDirectEditType() {
+        return this.type;
     }
 
 }
