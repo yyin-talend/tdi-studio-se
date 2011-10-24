@@ -19,12 +19,10 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumnRepositoryObject;
@@ -77,12 +75,12 @@ public class RepositoryDoubleClickAction extends Action {
     @Override
     public void run() {
         ISelection selection = getSelection();
-        if (selection == null) {
+        if (selection == null || !(selection instanceof IStructuredSelection)) {
             return;
         }
 
         Object obj = ((IStructuredSelection) selection).getFirstElement();
-        if (obj == null) {
+        if (obj == null || !(obj instanceof RepositoryNode)) {
             return;
         }
 
@@ -354,8 +352,8 @@ public class RepositoryDoubleClickAction extends Action {
                 }
 
             } else if (obj.getObject() != null
-                    && current.getClassForDoubleClick().getSimpleName().equals(
-                            obj.getObject().getProperty().getItem().eClass().getName())) {
+                    && current.getClassForDoubleClick().getSimpleName()
+                            .equals(obj.getObject().getProperty().getItem().eClass().getName())) {
                 return current;
             }
         }
@@ -363,30 +361,27 @@ public class RepositoryDoubleClickAction extends Action {
     }
 
     protected ISelection getSelection() {
-        return getViewPart().getViewer().getSelection();
+        IRepositoryView view = getViewPart();
+        if (view != null) {
+            return view.getViewer().getSelection();
+        }
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (window != null) {
+            ISelection selection = window.getSelectionService().getSelection();
+            return selection;
+        }
+        return null;
     }
 
     protected IRepositoryView getViewPart() {
-        showView();
-
-        IViewPart viewPart = (IViewPart) getActivePage().getActivePart();
-        return (IRepositoryView) viewPart;
-    }
-
-    /**
-     * DOC smallet Comment method "showView".
-     */
-    private void showView() {
-        // Added to fix a newly appeared bug : ClassCastException on IViewPart
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-        try {
-            page.showView("org.talend.repository.views.repository"); //$NON-NLS-1$
-        } catch (PartInitException e) {
-            // e.printStackTrace();
-            ExceptionHandler.process(e);
+        IWorkbenchPage page = getActivePage();
+        if (page != null) {
+            IWorkbenchPart part = page.getActivePart();
+            if (part != null && part instanceof IRepositoryView) {
+                return (IRepositoryView) part;
+            }
         }
-        // ----------------
+        return null;
     }
 
     protected IWorkbenchPage getActivePage() {
