@@ -559,17 +559,20 @@ for (VarTable varsTable : varsTables) {
 							sb.append(cr + cr + outputTableName + "_tmp = new " + outputTableName + "Struct();");
 						}
 						boolean hasDocument = false;
-	                    for (OutputTreeNode outputTableEntry : outputTableEntries) {
-							hasAggregateColumn = false;
-	                        String outputColumnName = outputTableEntry.getName();
-	                        IMetadataColumn metadataColumnFromConn = null;
+						//cache flat column expressions and fix TDI-17811
+						List<String> flatExpressions = new ArrayList<String>();
+						Map<String,String> nameToAssignationVar = new HashMap<String,String>();
+						Map<String,String> nameToResultExpression = new HashMap<String,String>();
+						for (OutputTreeNode outputTableEntry : outputTableEntries) {//block 12580
+							String outputColumnName = outputTableEntry.getName();
+							IMetadataColumn metadataColumnFromConn = null;
 	                        if(connectionExists) {
 		                        metadataColumnFromConn = hashedMetadataTable.getColumn(outputColumnName);
 		                    }
-	                        
-	                        String outputExpression = outputTableEntry.getExpression();
-							String resultExpression = "";
-							if(matchXmlTreeExpr != null)
+		                    String outputExpression = outputTableEntry.getExpression();
+		                    
+		                    String resultExpression = "";
+		                    if(matchXmlTreeExpr != null)
 								resultExpression = matchXmlTreeExpr.generateExprCode(outputExpression);
 	                        if (resultExpression == null || resultExpression.trim().length() == 0) {
 	                        	if(metadataColumnFromConn == null) {
@@ -586,7 +589,7 @@ for (VarTable varsTable : varsTables) {
 								}	                        
 	                        
 	                        }
-		
+	                        
 	                        String assignationVar = null;
 	                        if (connectionExists) {                       
 	                        	assignationVar = gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTableName + "_tmp",outputColumnName, false);
@@ -601,6 +604,28 @@ for (VarTable varsTable : varsTables) {
 	                                    + " dummyVar" + (dummyVarCounter++);
 	                            }
 	                        }
+    	                    String expression = assignationVar + " = " + resultExpression + ";";
+    	                    
+    	                    nameToAssignationVar.put(outputColumnName,assignationVar);
+    	                    nameToResultExpression.put(outputColumnName,resultExpression);
+    	                    
+    	                    if(!("id_Document").equals(outputTableEntry.getType())){
+								flatExpressions.add(expression);
+							}
+    	                    
+						}//block 12580
+						
+	                    for (OutputTreeNode outputTableEntry : outputTableEntries) {
+							hasAggregateColumn = false;
+	                        String outputColumnName = outputTableEntry.getName();
+	                       	
+	                       	String assignationVar = nameToAssignationVar.get(outputColumnName);
+	                       	String resultExpression = nameToResultExpression.get(outputColumnName);
+	                       	
+	                       	if(resultExpression == null) {
+	                       		continue;
+	                       	}
+	                       	
     	                    String expression = assignationVar + " = " + resultExpression + ";";
 	
 							if(("id_Document").equals(outputTableEntry.getType())){
@@ -669,6 +694,10 @@ for (VarTable varsTable : varsTables) {
 								} else if(!isAllInOne) { // If we have a document in output table entry, with allInOne = false and no aggregation
 									sb.append(cr + cr + "gen_Doc_" + outputTableName + "_" + cid + " = new GenerateDocument_" + outputTableName + "();" + cr);
 									sb.append(outputTableName + "_tmp = new " + outputTableName + "Struct();");
+									//fix TDI-17811
+									for(String exp : flatExpressions) {
+										sb.append(cr).append(exp);
+									}
 									sb.append(cr + cr);
 								} //TD256
 								
