@@ -1047,4 +1047,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     public void setSalesForceModuleUnit(SalesforceModuleUnit moduleUnit) {
         this.moduleUnit = moduleUnit;
     }
+
+    public void setTable(IMetadataTable table) {
+        this.table = table;
+    }
 }

@@ -1424,6 +1424,10 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 node,
                 connectionItem.getConnection(),
                 param.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId()); //$NON-NLS-1$
+        if (selectedNode.getObject() instanceof IMetadataTable) {
+            IMetadataTable metadataTable = (IMetadataTable) selectedNode.getObject();
+            command2.setTable(metadataTable);
+        }
         return command2;
 
     }
