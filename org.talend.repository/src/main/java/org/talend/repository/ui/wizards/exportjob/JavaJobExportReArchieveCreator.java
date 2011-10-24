@@ -315,6 +315,15 @@ public class JavaJobExportReArchieveCreator {
                     sb.append(needjars[i] + " "); //$NON-NLS-3$
                 }
             }
+        } else { // TDI-17346:Exported Job as Unix script can't work when you export as Unix script only
+            if (shFile != null) {
+                String[] fn = getLibJarFilenames();
+                if (fn != null) {
+                    for (int i = 0; i < fn.length; i++) {
+                        sb.append("../" + LIB + "/" + fn[i] + " "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    }
+                }
+            }
         }
         // hywang add for set drl path in classpass.jar
         // String[] drls = getDrlFilenames();
