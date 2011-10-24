@@ -73,7 +73,7 @@ public class PropertySetDialog extends Dialog {
      */
     @Override
     protected Point getInitialSize() {
-        return new Point(600, 350);
+        return new Point(300, 200);
     }
 
     protected void configureShell(Shell newShell) {

@@ -91,6 +91,33 @@ public class OutputZoneToolBar extends ZoneToolBar {
         if (mapData.getOutputTrees().isEmpty()) {
             min_size.setEnabled(false);
         }
+        setTooltips();
+    }
+
+    private void setTooltips() {
+        Label tooltip = new Label();
+        tooltip.setText("Add output table");
+        add_btn.setToolTip(tooltip);
+
+        tooltip = new Label();
+        tooltip.setText("Remove selected output table");
+        remove_btn.setToolTip(tooltip);
+
+        tooltip = new Label();
+        tooltip.setText("Move up selected output table");
+        move_up.setToolTip(tooltip);
+
+        tooltip = new Label();
+        tooltip.setText("Move down selected output table");
+        move_down.setToolTip(tooltip);
+
+        tooltip = new Label();
+        tooltip.setText("Minimize all output tables");
+        min_size.setToolTip(tooltip);
+
+        tooltip = new Label();
+        tooltip.setText("Map automatically inputs and outputs (for empty expressions only)");
+        auto_map.setToolTip(tooltip);
 
     }
 

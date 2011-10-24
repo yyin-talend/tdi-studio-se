@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.eclipse.draw2d.Clickable;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -96,6 +97,25 @@ public class TreeToolBarContainer extends Figure {
         }
         min_size = new MinSizeButton(image);
         this.add(min_size);
+        setTooltips();
+    }
+
+    private void setTooltips() {
+        Label tooltip = new Label();
+        if (condensedButton != null) {
+            tooltip.setText("tXmlMap settings");
+            condensedButton.setToolTip(tooltip);
+        }
+
+        tooltip = new Label();
+        if (expressionFilterButton != null) {
+            tooltip.setText("Enable/disable expression filter");
+            expressionFilterButton.setToolTip(tooltip);
+        }
+
+        tooltip = new Label();
+        tooltip.setText("Minimize");
+        min_size.setToolTip(tooltip);
 
     }
 

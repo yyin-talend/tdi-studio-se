@@ -100,6 +100,25 @@ public class InputZoneToolBar extends ZoneToolBar {
             isDieOnError = Boolean.valueOf(elementParameter.getValue().toString());
             graphicViewer.getMapperManager().setDieOnError(isDieOnError);
         }
+        setTooltips();
+    }
+
+    private void setTooltips() {
+        Label tooltip = new Label();
+        tooltip.setText("Move up selected input lookup table");
+        move_up.setToolTip(tooltip);
+
+        tooltip = new Label();
+        tooltip.setText("Move down selected input lookup table");
+        move_down.setToolTip(tooltip);
+
+        tooltip = new Label();
+        tooltip.setText("Minimize all input tables");
+        min_size.setToolTip(tooltip);
+
+        tooltip = new Label();
+        tooltip.setText("Setup the configurations of tXMLMap");
+        propertyButton.setToolTip(tooltip);
 
     }
 
