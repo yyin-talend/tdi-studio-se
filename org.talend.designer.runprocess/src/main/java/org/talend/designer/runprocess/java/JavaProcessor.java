@@ -940,9 +940,14 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 exportJar += (!win32 && exportingJob ? unixRootPath : "") + jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
             }
         }
-
+        // TDI-17845:can't run job correctly in job Conductor
         String libFolder = ""; //$NON-NLS-1$
-        libFolder = new Path(libDir.getAbsolutePath()).toPortableString() + classPathSeparator;
+        // libFolder = new Path(libDir.getAbsolutePath()).toPortableString() + classPathSeparator;
+        if (exportingJob) {
+            libFolder = new Path(this.getCodeLocation()) + classPathSeparator;
+        } else {
+            libFolder = new Path(libDir.getAbsolutePath()).toPortableString() + classPathSeparator;
+        }
 
         String portableCommand = new Path(command).toPortableString();
         String portableProjectPath = new Path(projectPath).toPortableString();
