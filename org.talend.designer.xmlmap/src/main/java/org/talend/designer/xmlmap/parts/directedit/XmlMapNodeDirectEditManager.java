@@ -427,4 +427,8 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
     public void showFeedback() {
         getEditPart().showSourceFeedback(getDirectEditRequest());
     }
+
+    public CellEditor getCellEditor() {
+        return super.getCellEditor();
+    }
 }

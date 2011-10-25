@@ -34,6 +34,7 @@ import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.swt.SWT;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
+import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.figures.anchors.ConnectionColumnAnchor;
 import org.talend.designer.xmlmap.figures.anchors.FilterColumnAnchor;
@@ -419,10 +420,12 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                         Point location = drequest.getLocation();
                         if (figure.containsPoint(location)) {
                             directEditManager.show();
+                            ((XmlMapGraphicViewer) getViewer()).getMapperManager().setCurrentDirectEditManager(directEditManager);
                         }
                     }
                 } else if (!(((TreeNode) getModel()).eContainer() instanceof AbstractInOutTree)) {
                     directEditManager.show();
+                    ((XmlMapGraphicViewer) getViewer()).getMapperManager().setCurrentDirectEditManager(directEditManager);
                 }
             }
         }

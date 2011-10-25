@@ -31,6 +31,7 @@ import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.VarNodeFigure;
 import org.talend.designer.xmlmap.figures.VariableContainerFigure;
 import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
@@ -84,6 +85,7 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
             }
             // }
             directEditManager.show();
+            ((XmlMapGraphicViewer) getViewer()).getMapperManager().setCurrentDirectEditManager(directEditManager);
         }
     }
 

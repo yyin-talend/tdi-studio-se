@@ -47,7 +47,7 @@ public class XmlDelayedDirectEditHelper implements Runnable {
         else {
             hookControl(viewer.getControl());
             activeHelper = this;
-            Display.getCurrent().timerExec(400, this);
+            Display.getCurrent().timerExec(100, this);
         }
     }
 

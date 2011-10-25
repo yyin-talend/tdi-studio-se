@@ -233,6 +233,9 @@ public class MapperUI {
         List<IMetadataTable> newMetadatas = new ArrayList<IMetadataTable>();
         EList<OutputXmlTree> outputTrees = null;
         if (response == SWT.OK || response == SWT.APPLICATION_MODAL) {
+            // fix for bug TDI-18185
+            mapperManager.fireCurrentDirectEditApply();
+
             // if press ok or apply , use copyOfMapData to check the metadata list
             outputTrees = copyOfMapData.getOutputTrees();
         } else {

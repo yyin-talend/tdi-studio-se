@@ -287,4 +287,9 @@ public class ExpressionCellEditor extends ExtendedTextCellEditor {
         new AsynchronousThreading(50, true, parent.getDisplay(), runnable).start();
     }
 
+    @Override
+    public void fireApplyEditorValue() {
+        super.fireApplyEditorValue();
+    }
+
 }

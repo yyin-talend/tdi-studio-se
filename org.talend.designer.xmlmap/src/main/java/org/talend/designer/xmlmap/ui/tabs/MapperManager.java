@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -49,6 +50,8 @@ import org.talend.designer.xmlmap.parts.AbstractNodePart;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
+import org.talend.designer.xmlmap.parts.directedit.ExpressionCellEditor;
+import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
 import org.talend.designer.xmlmap.ui.MapperUI;
 import org.talend.designer.xmlmap.ui.tabs.table.TreeSchemaTableEntry;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -70,6 +73,8 @@ public class MapperManager implements ISelectionChangedListener {
     private OutputXmlTree selectedOutputTree;
 
     private ProblemsAnalyser problemsAnalyser;
+
+    private XmlMapNodeDirectEditManager currentDirectEditManager;
 
     private boolean isDieOnError;
 
@@ -584,4 +589,17 @@ public class MapperManager implements ISelectionChangedListener {
         return this.problemsAnalyser;
     }
 
+    public void setCurrentDirectEditManager(XmlMapNodeDirectEditManager currentDirectEditManager) {
+        this.currentDirectEditManager = currentDirectEditManager;
+    }
+
+    public void fireCurrentDirectEditApply() {
+        if (currentDirectEditManager != null) {
+            CellEditor cellEditor = currentDirectEditManager.getCellEditor();
+            if (cellEditor instanceof ExpressionCellEditor) {
+                ((ExpressionCellEditor) cellEditor).fireApplyEditorValue();
+            }
+        }
+        currentDirectEditManager = null;
+    }
 }
