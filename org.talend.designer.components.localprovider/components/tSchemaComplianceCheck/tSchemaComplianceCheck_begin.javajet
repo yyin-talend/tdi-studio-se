@@ -18,7 +18,7 @@
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
+final INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
     /*in shema:*/
@@ -73,6 +73,7 @@ String cid = node.getUniqueName();
   final boolean allEmptyAreNull = "true".equals(ElementParameterParser.getValue(node, "__ALL_EMPTY_ARE_NULL__"));
 
   class SchemaChecker {
+  	boolean anotherChecked = "true".equals(ElementParameterParser.getValue(node, "__CHECK_ANOTHER__"));
     public void  testDataType(boolean _bNullable, String _sInConnName, IMetadataColumn metadataColumn, String typeSelected, String cid) {
       JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
       boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, metadataColumn.isNullable());
@@ -116,10 +117,15 @@ String cid = node.getUniqueName();
       }
     }
     
-    public void testPrecision(int _maxLength, int iPrecision, String _sInConnName, IMetadataColumn metadataColumn,String typeSelected, String cid) {
+    public void testPrecision(int _maxLength, int iPrecision, String _sInConnName, IMetadataColumn metadataColumn, String typeSelected, String cid) {
       JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
       String colName = metadataColumn.getLabel();
-      if (javaType == JavaTypesManager.BIGDECIMAL) {
+      boolean needCheck = false;
+      if(anotherChecked) {
+      	if("BigDecimal".equalsIgnoreCase(typeSelected)) {
+      		needCheck = true;
+      	}
+      } else if (javaType == JavaTypesManager.BIGDECIMAL) {
         /* NULLable, in case input value is Null, do nothing... 
            Non-NULLable, 
              (1) in case input value is Non-null, go into...; 
@@ -128,32 +134,30 @@ String cid = node.getUniqueName();
         /*
           if precision value is not empty or Null, checking "Precision" at first, if passed then checking "Length"
         */
-      %>
+        	needCheck = true;
+       }
+       if(needCheck) {
+%>
         if (<%=_sInConnName%>.<%=colName%> != null){
-		  handleBigdecimalPrecision((<%=_sInConnName%>.<%=colName%>).toPlainString(), <%=iPrecision%>, <%=_maxLength%>);
+<%
+			if(javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+			handleBigdecimalPrecision((<%=_sInConnName%>.<%=colName%>).toPlainString(), <%=iPrecision%>, <%=_maxLength%>);
+<%
+			} else {
+%>
+		  	handleBigdecimalPrecision(String.valueOf(<%=_sInConnName%>.<%=colName%>), <%=iPrecision%>, <%=_maxLength%>);
+<%			}%>
           ifPassedThrough = ifPassedThrough?ifPassed:false;
           errorCodeThrough += errorCode;
           errorMessageThrough += errorMessage;
 
         }
-       <%}else{%>
-      try{
-         <%if("BigDecimal".equalsIgnoreCase(typeSelected)){%>
-         BigDecimal testBigDecimal_<%=cid%>=new BigDecimal(<%=_sInConnName%>.<%=colName%>);
-         <%}%>
-         <%if("BigDecimal".equalsIgnoreCase(typeSelected)){%>
-         handleBigdecimalPrecision((<%=_sInConnName%>.<%=colName%>).toString(), <%=iPrecision%>, <%=_maxLength%>);
-          ifPassedThrough = ifPassedThrough?ifPassed:false;
-          errorCodeThrough += errorCode;
-          errorMessageThrough += errorMessage;
-         <% }%>
-      }catch(Exception e_<%=cid%>){
-       
+<%
       }
-    <%}
     }
     
-    public void testDataLength(boolean _bNullable, String _sInConnName, IMetadataColumn metadataColumn, int maxLength, String sTestColType, String cid) {
+    public void testDataLength(boolean _bNullable, String _sInConnName, IMetadataColumn metadataColumn, int maxLength, String cid) {
       JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
       boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(javaType, metadataColumn.isNullable());
       boolean bIsStringType = (javaType == JavaTypesManager.STRING), bIsIntegerType = (javaType == JavaTypesManager.INTEGER);
@@ -197,25 +201,11 @@ String cid = node.getUniqueName();
           } else{          
             if (bIsStringType) {
             %>                   
-              try{
-                BigDecimal testBigDecimal_<%=cid%>=new BigDecimal(<%=_sInConnName%>.<%=colName%>);
-                  <%if(("String").equalsIgnoreCase(sTestColType)){%>
-                    if(!(<%=_sInConnName%>.<%=colName%>.indexOf(".")<0)){
-                    throw new Exception();
-                  }
-                  <%}%>
-               if (<%=_sInConnName%>.<%=colName%>.length()-1 > <%=maxLength%>) {
-                 ifPassedThrough = false;
-                 errorCodeThrough += 8;
-                 errorMessageThrough += "|exceed max length";
-               }
-             }catch(Exception e_<%=cid%>){
-               if (<%=_sInConnName%>.<%=colName%>.length() > <%=maxLength%>) {
-                 ifPassedThrough = false;
-                 errorCodeThrough += 8;
-                 errorMessageThrough += "|exceed max length";
+              if (<%=_sInConnName%>.<%=colName%>.length() > <%=maxLength%>) {
+                ifPassedThrough = false;
+                errorCodeThrough += 8;
+              errorMessageThrough += "|exceed max length";
               }
-            }   
             <%
             } else if (bIsIntegerType) {
               String generatedType = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());
@@ -492,7 +482,7 @@ class RowSetValueUtil_<%=cid %> {
     }
     // length checking
     if (bMaxLenLimited){
-      checker.testDataLength(bNullable, sInConnName, inColumn, maxLength, sTestColType, cid);
+      checker.testDataLength(bNullable, sInConnName, inColumn, maxLength, cid);
     }
     
     // precision checking
