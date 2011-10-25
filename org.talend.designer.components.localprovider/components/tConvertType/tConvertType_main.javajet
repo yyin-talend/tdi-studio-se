@@ -128,6 +128,10 @@
             
             if (("Date".equals(outType) && "String".equals(inType)) || ("String".equals(outType) && "Date".equals(inType))){%>
               <%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+        	<%} else if (("Document".equals(outType) && "String".equals(inType))){%>
+              <%=outconnName %>.<%=outLabel %>=ParserUtils.parseTo_Document(<%=preconnName %>.<%=preLabel %>);
+            <%} else if (("String".equals(outType) && "Document".equals(inType))){%>
+              <%=outconnName %>.<%=outLabel %>=<%=preconnName %>.<%=preLabel %>.toString();
             <%} else{%>
               <%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
             <%}
@@ -200,6 +204,10 @@
         
         if (("Date".equals(outType) && "String".equals(inType)) || ("String".equals(outType)&& "Date".equals(inType))){%>
           <%=outconnName %>.<%=outLabel %> = TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+        <%} else if (("Document".equals(outType) && "String".equals(inType))){%>
+          <%=outconnName %>.<%=outLabel %>=ParserUtils.parseTo_Document(<%=preconnName %>.<%=preLabel %>);
+		<%} else if (("String".equals(outType) && "Document".equals(inType))){%>
+          <%=outconnName %>.<%=outLabel %>=<%=preconnName %>.<%=preLabel %>.toString();
         <%} else {%>
           <%=outconnName %>.<%=outLabel %> = TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
         <%}
