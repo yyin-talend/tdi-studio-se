@@ -456,6 +456,13 @@ skeleton="tXMLMap_java.skeleton"
 					    <% if(findFromDocumentType && !isInnerJoin) {%>
 					    	forceLoop<%= tableName %> = !isMatchDocRow<%=cid%> && !hasResultFromLookupCache<%= tableName %>;
 					    <% } %>
+					    
+					    <% if(findFromDocumentType && isInnerJoin) {%>
+					   	<%= rejectedDocInnerJoin %> = !isMatchDocRow<%=cid%> && !hasResultFromLookupCache<%= tableName %>;
+					    <%= rejectedInnerJoin %> = <%= rejectedDocInnerJoin %>;
+					    forceLoop<%= tableName %> = <%= rejectedInnerJoin %>;
+					  	<% } %>
+					    
 					    java.util.Iterator<java.util.Map<String,Object>> iter<%=tableName%> = multipleResultSet<%=tableName%>.iterator();
 					    while(iter<%=tableName%>.hasNext() || forceLoop<%= tableName %>) { // G_TM_M_002
 					    	<%=tableName%> = <%=tableName%>Default;
