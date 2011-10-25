@@ -64,7 +64,7 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
      */
     public ImportDemoProjectPage(IStructuredSelection selection) {
         super(selection);
-        this.setMessage(Messages.getString("ImportDemoProjectPage.message")); //$NON-NLS-1$
+        this.setMessage(Messages.getString("ImportDemoProjectPage.message1")); //$NON-NLS-1$
         this.setTitle(Messages.getString("ImportDemoProjectPage.title")); //$NON-NLS-1$
     }
 
@@ -158,7 +158,7 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         URL url = null;
         String pluginPath = null;
         try {
-            //url = FileLocator.resolve(bundle.getEntry(relatedImagePath));
+            // url = FileLocator.resolve(bundle.getEntry(relatedImagePath));
             url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(relatedImagePath), null));
             pluginPath = new Path(url.getFile()).toOSString();
         } catch (IOException e1) {
@@ -208,6 +208,9 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
      */
     public void setImportDemoProjectList(List<DemoProjectBean> demoProjectList) {
         this.demoProjectList = demoProjectList;
+        if (demoProjectList != null && demoProjectList.size() > 1) {
+            this.setMessage(Messages.getString("ImportDemoProjectPage.message")); //$NON-NLS-1$
+        }
     }
 
     /**

@@ -14,6 +14,7 @@ package org.talend.repository.ui.login;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -382,6 +383,7 @@ public class TOSLoginComposite extends Composite {
         demoProjectButton.setText(Messages.getString("TOSLoginComposite.demoProjectButton"));
         demoProjectButton.setLayoutData(data);
 
+        enableOpenAndDelete(false);
     }
 
     private void createTosWorkspaceArea(Composite parent) {
@@ -467,6 +469,8 @@ public class TOSLoginComposite extends Composite {
                     if (!projectsMap.containsKey(project.getLabel().toUpperCase())) {
                         projectsMap.put(project.getLabel().toUpperCase(), project);
                         projectList.add(project.getLabel().toUpperCase());
+                        sorteProjects();
+                        enableOpenAndDelete(true);
                         try {
                             setStatusArea();
                         } catch (PersistenceException e1) {
@@ -492,6 +496,11 @@ public class TOSLoginComposite extends Composite {
                                 if (projectsMap.containsKey(p.getName())) {
                                     projectsMap.remove(p.getName());
                                     projectList.remove(p.getName());
+                                    if (projectList.getItemCount() == 0) {
+                                        enableOpenAndDelete(false);
+                                    } else if (projectList.getSelection().length == 0) {
+                                        projectList.select(0);
+                                    }
                                     try {
                                         setStatusArea();
                                     } catch (PersistenceException e1) {
@@ -526,6 +535,8 @@ public class TOSLoginComposite extends Composite {
                             if (projects[i].getLabel().toUpperCase().equals(newProject.toUpperCase())) {
                                 projectsMap.put(newProject.toUpperCase(), projects[i]);
                                 projectList.add(newProject.toUpperCase());
+                                sorteProjects();
+                                enableOpenAndDelete(true);
                                 try {
                                     setStatusArea();
                                 } catch (PersistenceException e1) {
@@ -640,6 +651,8 @@ public class TOSLoginComposite extends Composite {
                         Project pro = projects[i];
                         projectList.add(pro.getTechnicalLabel());
                         projectsMap.put(pro.getTechnicalLabel(), pro);
+                        sorteProjects();
+                        enableOpenAndDelete(true);
                     }
                 }
 
@@ -810,4 +823,43 @@ public class TOSLoginComposite extends Composite {
         }
     }
 
+    public void enableOpenAndDelete(boolean enable) {
+        openButton.setEnabled(enable);
+        deleteButton.setEnabled(enable);
+    }
+
+    private void selectLast(String lastObjectSelected, List projectList) {
+        if (lastObjectSelected != null) {
+            int userIndex = -1;
+            String[] items = projectList.getItems();
+            for (int i = 0; userIndex == -1 && i < items.length; i++) {
+                if (lastObjectSelected.equals(items[i])) {
+                    userIndex = i;
+                }
+            }
+            if (userIndex != -1) {
+                projectList.select(userIndex);
+            } else {
+                projectList.select(0);
+            }
+        }
+
+    }
+
+    private void sorteProjects() {
+        if (projectList.getItemCount() == 0) {
+            return;
+        }
+        String[] items = projectList.getItems();
+        String selected = null;
+        String[] selection = projectList.getSelection();
+        if (selection != null && selection.length != 0) {
+            selected = selection[0];
+        } else {
+            selected = projectList.getItem(0);
+        }
+        Arrays.sort(items);
+        projectList.setItems(items);
+        selectLast(selected, projectList);
+    }
 }

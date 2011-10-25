@@ -210,6 +210,7 @@ public class LoginDialog extends TrayDialog {
         }
         if (tosLoginComposite.getProjectList().getItemCount() > 0) {
             tosLoginComposite.getProjectList().select(0);
+            tosLoginComposite.enableOpenAndDelete(true);
         }
     }
 
