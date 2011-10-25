@@ -1084,6 +1084,7 @@ XMLMapUtil xmu = new XMLMapUtil();
     }
     
     public org.dom4j.Document getDocument(){
+    	nestXMLTool.replaceDefaultNameSpace(this.doc.getRootElement());
 <%
 		//remove empty element
 		if(!allowEmptyElement) {
