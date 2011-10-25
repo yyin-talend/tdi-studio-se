@@ -54,6 +54,8 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.general.Project;
+import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
@@ -513,6 +515,18 @@ public class TalendForgeDialog extends TrayDialog {
         improveButton.setLayoutData(data);
         improveButton.setBackground(createAccount.getBackground());
         improveButton.setSelection(true);
+        final IPreferenceStore preferenceStore = CoreRuntimePlugin.getInstance().getPreferenceStore();
+        if (preferenceStore.getBoolean(ITalendCorePrefConstants.DATA_COLLECTOR_ENABLED)) {
+            improveButton.setSelection(true);
+        } else {
+            improveButton.setSelection(false);
+        }
+        improveButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                preferenceStore.setValue(ITalendCorePrefConstants.DATA_COLLECTOR_ENABLED, improveButton.getSelection());
+            }
+        });
 
         Hyperlink readMore = new Hyperlink(createAccount, SWT.NONE);
         data = new FormData();
