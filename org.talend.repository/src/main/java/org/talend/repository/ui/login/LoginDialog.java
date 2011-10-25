@@ -306,7 +306,7 @@ public class LoginDialog extends TrayDialog {
             if (project.getAuthor() != null) {
                 String connectionEmail = project.getAuthor().getLogin();
                 if (prefStore.getString(connectionEmail) == null || prefStore.getString(connectionEmail).equals("")) {
-                    if (count < 6) {
+                    if (count < 10) {
                         TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
                         tfDialog.open();
                     }

@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.preferences;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -42,24 +43,13 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
 
     private Button logonButton;
 
+    Link userAccountLink;
+
     private String userAccount;
 
     public ExchangePreferencePage() {
         super(GRID);
-        IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-        Project project = ProjectManager.getInstance().getCurrentProject();
-        if (project.getAuthor() != null) {
-            String connectionEmail = project.getAuthor().getLogin();
-
-            String string = prefStore.getString(connectionEmail);
-            if (string != null) {
-                String[] split = string.split(":");
-                if (split.length == 3) {
-                    userAccount = split[0];
-                }
-            }
-        }
-        setPreferenceStore(prefStore);
+        initData();
     }
 
     /*
@@ -82,7 +72,7 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
         GridData data = new GridData(GridData.FILL, GridData.CENTER, true, false);
         userLabelTitle.setLayoutData(data);
 
-        Link userAccountLink = new Link(eGroup, SWT.NONE);
+        userAccountLink = new Link(eGroup, SWT.NONE);
         GridData dataLink = new GridData(GridData.FILL, GridData.CENTER, true, false);
         dataLink.widthHint = convertVerticalDLUsToPixels(150);
         userAccountLink.setLayoutData(dataLink);
@@ -116,10 +106,31 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
                 Project project = ProjectManager.getInstance().getCurrentProject();
                 if (project != null) {
                     TalendForgeDialog tfDialog = new TalendForgeDialog(logonButton.getShell(), project);
-                    tfDialog.open();
+                    if (tfDialog.open() == Window.OK) {
+                        initData();
+                        userAccountLink.setText(userAccount != null ? "<a> " + userAccount + " </a>" : "<a> " + "< None >"
+                                + " </a>");
+                    }
                 }
             }
         });
+    }
+
+    public void initData() {
+        IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+        Project project = ProjectManager.getInstance().getCurrentProject();
+        if (project.getAuthor() != null) {
+            String connectionEmail = project.getAuthor().getLogin();
+
+            String string = prefStore.getString(connectionEmail);
+            if (string != null) {
+                String[] split = string.split(":");
+                if (split.length == 3) {
+                    userAccount = split[0];
+                }
+            }
+        }
+        setPreferenceStore(prefStore);
     }
 
     /*
