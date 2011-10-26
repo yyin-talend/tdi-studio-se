@@ -109,7 +109,10 @@ if(("false").equals(useExistingConn)){
 		}
     }
 %>
-    javax.naming.ldap.InitialLdapContext ctx_<%=cid%> = new javax.naming.ldap.InitialLdapContext(env_<%=cid%>, null);
+   	int <%=cid%>_NB_LINE = 0;
+   	javax.naming.ldap.InitialLdapContext ctx_<%=cid%> = null;
+	try{
+	ctx_<%=cid%> = new javax.naming.ldap.InitialLdapContext(env_<%=cid%>, null);
 <%
 	if(("TLS").equals(protocol)){
 %>
@@ -125,7 +128,6 @@ if(("false").equals(useExistingConn)){
 <%
 }
 %>
-	int <%=cid%>_NB_LINE = 0;
 	
 	javax.naming.directory.SearchControls searchCtls_<%=cid%> = new javax.naming.directory.SearchControls();
     searchCtls_<%=cid%>.setSearchScope(javax.naming.directory.SearchControls.SUBTREE_SCOPE);
@@ -223,7 +225,7 @@ do {
 	if(firstConnName.length()>0){
 %>
 		<%=firstConnName %> = new <%=firstConnName %>Struct(); 
-	try{ 
+	try{
 <%
 	}
 %>
