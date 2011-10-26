@@ -469,7 +469,7 @@ public class TOSLoginComposite extends Composite {
                     if (!projectsMap.containsKey(project.getLabel().toUpperCase())) {
                         projectsMap.put(project.getLabel().toUpperCase(), project);
                         projectList.add(project.getLabel().toUpperCase());
-                        sorteProjects();
+                        sortProjects();
                         enableOpenAndDelete(true);
                         try {
                             setStatusArea();
@@ -535,7 +535,7 @@ public class TOSLoginComposite extends Composite {
                             if (projects[i].getLabel().toUpperCase().equals(newProject.toUpperCase())) {
                                 projectsMap.put(newProject.toUpperCase(), projects[i]);
                                 projectList.add(newProject.toUpperCase());
-                                sorteProjects();
+                                sortProjects();
                                 enableOpenAndDelete(true);
                                 try {
                                     setStatusArea();
@@ -651,7 +651,7 @@ public class TOSLoginComposite extends Composite {
                         Project pro = projects[i];
                         projectList.add(pro.getTechnicalLabel());
                         projectsMap.put(pro.getTechnicalLabel(), pro);
-                        sorteProjects();
+                        sortProjects();
                         enableOpenAndDelete(true);
                     }
                 }
@@ -846,7 +846,7 @@ public class TOSLoginComposite extends Composite {
 
     }
 
-    private void sorteProjects() {
+    private void sortProjects() {
         if (projectList.getItemCount() == 0) {
             return;
         }
