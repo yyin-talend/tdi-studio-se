@@ -1072,6 +1072,12 @@ XMLMapUtil xmu = new XMLMapUtil();
     }
     
     public org.dom4j.Document getDocument(){
+		generateOk();
+    	return this.doc;
+    }
+    
+    //do some work after document has been generated
+    private void generateOk() {
     	nestXMLTool.replaceDefaultNameSpace(this.doc.getRootElement());
 <%
 		//remove empty element
@@ -1081,7 +1087,6 @@ XMLMapUtil xmu = new XMLMapUtil();
 <%		
 		}
 %>
-    	return this.doc;
     }
 	
 	//We generate the TreeNode_API object only if there is a document in the main input table.

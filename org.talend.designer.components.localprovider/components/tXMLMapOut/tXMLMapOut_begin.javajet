@@ -1031,6 +1031,31 @@ for(OutputXmlTree outputTable : outputTables) {
 			int groupCount = xmlOrderUtil.getGroupCount(outputNode);
 			
 %>
+
+class GenerateDocumentHelper_<%=tableName%> {
+	
+	NestXMLTool_<%=cid%> nestXMLTool = new NestXMLTool_<%=cid%>();
+	
+	//do some work after document has been generated
+	void generateOk(Document doc) {
+		if(doc == null || doc.getDocument() == null) {
+			return;
+		}
+		nestXMLTool.replaceDefaultNameSpace(doc.getDocument().getRootElement());
+<%
+		//remove empty element
+		if(!allowEmptyElement) {
+%>
+		nestXMLTool.removeEmptyElement(doc.getDocument().getRootElement());
+<%		
+		}
+%>
+	}
+	
+}
+
+GenerateDocumentHelper_<%=tableName%> generateDocumentHelper_<%=tableName%> = new GenerateDocumentHelper_<%=tableName%>();
+
 class GenerateDocument_<%=tableName %> {
 
 <%
@@ -1084,18 +1109,9 @@ XMLMapUtil xmu = new XMLMapUtil();
     }
     
     public org.dom4j.Document getDocument(){
-    	nestXMLTool.replaceDefaultNameSpace(this.doc.getRootElement());
-<%
-		//remove empty element
-		if(!allowEmptyElement) {
-%>
-		nestXMLTool.removeEmptyElement(this.doc.getRootElement());
-<%		
-		}
-%>
     	return this.doc;
     }
-	
+    
 	//We generate the TreeNode_API object only if there is a document in the main input table.
     void generateElements(<%if(hasDocumentInMainInputTable || hasDocumentInAnyLookupTable){%>TreeNode_API_<%=cid %> treeNodeAPI,<%}%>boolean isInnerJoin<%
 		%><%=xmu.createSignature(node, false) %><%

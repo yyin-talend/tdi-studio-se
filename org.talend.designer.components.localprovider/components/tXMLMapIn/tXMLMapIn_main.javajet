@@ -70,6 +70,7 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 	}
 	
 	List<String> tableNames = new ArrayList<String>();
+	Map<String,String> tableNameToDocumentColumnName = new HashMap<String,String>();
 	
 	for(OutputXmlTree outputTable : outputTables) {
 		String outputTableName = outputTable.getName();
@@ -77,6 +78,13 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 			continue;
 		}
 		tableNames.add(outputTableName);
+		
+		for(OutputTreeNode outputNode: outputTable.getNodes()) {
+			if(("id_Document").equals(outputNode.getType())){
+				tableNameToDocumentColumnName.put(outputTableName,outputNode.getName());
+				break;
+			}
+		}
 	}
 	
 	for(String tableName : tableNames) {
@@ -84,6 +92,14 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 	<%=tableName%> = null;
 	if(row_out_<%=cid %>!=null && row_out_<%=cid %> instanceof <%=tableName%>Struct) {
 		<%=tableName%> = (<%=tableName%>Struct)row_out_<%=cid %>;
+<%
+	String docColumnName = tableNameToDocumentColumnName.get(tableName);
+	if(docColumnName!=null) {
+%>
+		generateDocumentHelper_<%=tableName%>.generateOk(<%=tableName%>.<%=docColumnName%>);
+<%
+	}
+%>		
 	}
 <%
 	}
