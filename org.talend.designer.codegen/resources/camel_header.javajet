@@ -5,6 +5,7 @@
 		org.talend.core.model.process.IConnection 
 		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.process.IElementParameter
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.runprocess.CodeGeneratorRoutine
 		org.talend.designer.codegen.i18n.Messages
@@ -133,6 +134,41 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 		public void initRoute() throws Exception {
 			routeBuilder = new org.apache.camel.builder.RouteBuilder() {
 				public void configure() throws Exception {
+<%
+for (INode node : processNodes) {
+			if (node.getComponent().getName().equals("cCXF")) {
+				IElementParameter param = node.getElementParameter("LABEL");
+				String cid = "";
+   				if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
+   					cid = (String)param.getValue();	
+   				}else{
+   					cid = node.getUniqueName();
+   				}
+   				String endpointVar = "endpoint" + cid;
+   				String uriRef = "uriMap.get(\"" + cid + "\")";
+%>
+   					org.apache.camel.Endpoint <%=endpointVar%> = endpoint(<%=uriRef%>);
+<%
+				String useSL = ElementParameterParser.getValue(node, "__ENABLE_SL__");
+				String useSAM = ElementParameterParser.getValue(node, "__ENABLE_SAM__");
+				if("true".equals(useSL)){
+%>					
+					if(locatorFeature != null){
+							((org.apache.camel.component.cxf.CxfEndpoint)<%=endpointVar%>).getFeatures().add(locatorFeature);
+					}
+<%				
+				}
+				if("true".equals(useSAM)){	
+%>
+					if(eventFeature != null){
+							((org.apache.camel.component.cxf.CxfEndpoint)<%=endpointVar%>).getFeatures().add(eventFeature);
+					}
+<%				
+				}	
+			}
+		
+}			
+%>
 <%	
 	for (INode node : processNodes) {
 		if (node.isActivate()) {

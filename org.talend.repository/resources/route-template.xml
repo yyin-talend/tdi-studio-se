@@ -5,8 +5,15 @@
 
 	<bean id="job" class="@JOBCLASSNAME@">
 		<property name="bundleContext" ref="blueprintBundleContext" />
+		
+		<!-- ESB Features For CXF-->
+		@ESBFeaturesProperties@
+		
 	</bean>
 
+	<!-- ESB Features Reference For CXF-->
+	@ESBFeaturesPropertiesRef@
+	
 	<service ref="job">
 		<interfaces>
 			<value>routines.system.api.TalendJob</value>

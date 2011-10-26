@@ -137,6 +137,33 @@ import java.util.Comparator;
 <%
 	}
 %>
+<%
+	boolean hasCXFCom = false;
+	for (INode node : (List< ? extends INode>)process.getGraphicalNodes()) {
+		String componentName = node.getComponent().getName();
+		if("cCXF".equals(componentName)){
+			hasCXFCom = true;
+			break;
+		}
+	}
+	if(hasCXFCom){
+%>
+
+	private org.apache.cxf.feature.AbstractFeature locatorFeature;
+	
+	private org.apache.cxf.feature.AbstractFeature eventFeature;
+
+	public void setLocatorFeature(org.apache.cxf.feature.AbstractFeature locatorFeature) {
+		this.locatorFeature = locatorFeature;
+	}
+	
+	public void setEventFeature(org.apache.cxf.feature.AbstractFeature eventFeature) {
+		this.eventFeature = eventFeature;
+	}
+
+<%
+	}
+%>
 	private org.apache.camel.builder.RouteBuilder routeBuilder;
 
 	private java.util.Map<String, String> uriMap; 

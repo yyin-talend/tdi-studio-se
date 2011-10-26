@@ -404,7 +404,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     FileLocator.find(b, new Path("resources/" + itemType + "-template.xml"), null)) //$NON-NLS-1$
                     .getFile();
             String targetFile = getTmpFolder() + PATH_SEPARATOR + "job.xml"; //$NON-NLS-1$
-            readAndReplaceInXmlTemplate(inputFile, targetFile, jobName, jobClassName, itemType, isESBJob);
+
+			readAndReplaceInRouteXmlTemplate(processItem, inputFile,
+						targetFile, jobName, jobClassName, itemType, isESBJob);
             files.add(targetFile);
         } catch (IOException e) {
             ExceptionHandler.process(e);
@@ -412,7 +414,93 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return files;
     }
 
-    private String getOSGIInfFolder() {
+	/**
+	 * 
+	 * Read and replace ESB feature for CXF if there is some cCXF component.
+	 * 
+	 * @param processItem
+	 * @param inputFile
+	 * @param targetFile
+	 * @param jobName
+	 * @param jobClassName
+	 * @param itemType
+	 * @param isESBJob
+	 */
+	private void readAndReplaceInRouteXmlTemplate(Item processItem,
+			String inputFile, String targetFile, String jobName,
+			String jobClassName, String itemType, boolean isESBJob) {
+
+		boolean hasCXF = false;
+
+		if (ROUTE.equals(itemType)) {
+
+			ProcessType process = ((ProcessItem) processItem).getProcess();
+			if (process != null) {
+				EList nodes = process.getNode();
+				Iterator iterator = nodes.iterator();
+
+				while (iterator.hasNext()) {
+					NodeType next = (NodeType) iterator.next();
+
+					if ("cCXF".equals(next.getComponentName())) {
+						hasCXF = true;
+						break;
+					}
+
+				}
+			}
+		}
+
+		FileReader fr = null;
+		String additionalJobIF = "<value>routines.system.api.TalendESBJob</value>";
+		if (!isESBJob) {
+			additionalJobIF = "";
+		}
+		try {
+			fr = new FileReader(inputFile);
+			BufferedReader br = new BufferedReader(fr);
+
+			FileWriter fw = new FileWriter(targetFile);
+			BufferedWriter bw = new BufferedWriter(fw);
+
+			String line = br.readLine();
+			while (line != null) {
+				line = line
+						.replace("@JOBNAME@", jobName).replace("@TYPE@", itemType).replace("@JOBCLASSNAME@", jobClassName).replace("@ADDITIONAL_JOB_INTERFACE@", additionalJobIF); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
+				if (hasCXF) {
+					line = line
+							.replace(
+									"@ESBFeaturesProperties@",
+									"<property name=\"locatorFeature\" "
+											+ "ref=\"locatorFeature\"/>\n<property name=\"eventFeature\" ref=\"eventFeature\"/>");
+					line = line
+							.replace(
+									"@ESBFeaturesPropertiesRef@",
+									"<reference id=\"locatorFeature\" interface=\"org.talend.esb.servicelocator.cxf.LocatorFeature\"/>"
+											+ "\n<reference id=\"eventFeature\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>");
+				} else {
+					line = line.replace("@ESBFeaturesProperties@", "");
+					line = line.replace("@ESBFeaturesPropertiesRef@", "");
+				}
+
+				bw.write(line + "\n"); //$NON-NLS-1$
+				line = br.readLine();
+			}
+			bw.flush();
+			fr.close();
+			fw.close();
+		} catch (FileNotFoundException e) {
+			ExceptionHandler.process(e);
+			logger.error(e);
+		} catch (IOException e) {
+			ExceptionHandler.process(e);
+			logger.error(e);
+		}
+
+	}
+
+	private String getOSGIInfFolder() {
         return OSGI_INF.concat(PATH_SEPARATOR).concat(BLUEPRINT);
     }
 
@@ -513,7 +601,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             /*
              * add external import-packages for Activemq
              */
-            String externalImport = "";
+			// http://jira.talendforge.org/browse/TESB-3624 Xiaopeng Li
+			// Add necessary for CXF dependency
+			String externalAMQImport = "";
+			String externalCXFImport = "";
             for (ProcessItem pi : itemToBeExport) {
                 ProcessType process = pi.getProcess();
                 if (process == null) {
@@ -521,15 +612,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
                 EList nodes = process.getNode();
                 Iterator iterator = nodes.iterator();
+
                 while (iterator.hasNext()) {
                     NodeType next = (NodeType) iterator.next();
                     if ("cActiveMQ".equals(next.getComponentName())) {
-                        externalImport = ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
-                        break;
+						externalAMQImport = ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
+						continue;
                     }
-                }
-                if (!"".equals(externalImport)) {
-                    break;
+
+					if ("cCXF".equals(next.getComponentName())) {
+						externalCXFImport = ",org.apache.camel.component.cxf,org.apache.cxf.feature,"
+								+ "org.talend.esb.servicelocator.cxf;version=\"[2.0.0,6.0.0)\","
+								+ "org.talend.esb.sam.agent.feature;version=\"[2.0.0,6.0.0)\"";
+						continue;
+					}
+
                 }
             }
             // end add
@@ -540,7 +637,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                             "org.apache.camel.model;version=\"[2.7,3)\",org.apache.camel.osgi;version=\"[2.7,3)\"," + //$NON-NLS-1$
                             "org.apache.camel.spi;version=\"[2.7,3)\",org.apache.camel.view;version=\"[2.7,3)\"," + //$NON-NLS-1$
                             "org.osgi.framework;version=\"[1.5,2)\"," + //$NON-NLS-1$
-                            "org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\",routines.system.api" + externalImport); //$NON-NLS-1$
+							"org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\",routines.system.api"
+							+ externalAMQImport + externalCXFImport); //$NON-NLS-1$
         } else {
             a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
                     "routines.system.api;resolution:=optional" + //$NON-NLS-1$
