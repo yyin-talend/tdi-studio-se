@@ -30,6 +30,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.xml.XmlUtil;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IESBService;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
@@ -1496,7 +1497,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         }
                         String repositoryValue = param.getRepositoryValue();
                         if ((repositoryValue != null)
-                                && (param.isShow(node.getElementParameters()) || (node instanceof INode && ((INode) node)
+                                && (param.isShow(node.getElementParameters())
+                                        || (node instanceof INode && ((INode) node).getComponent().getName().equals(
+                                                "tESBProviderRequest")) || (node instanceof INode && ((INode) node)
                                         .getComponent().getName().equals("tAdvancedFileOutputXML")))) { //$NON-NLS-1$
                             if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
                                     || (repositoryConnection instanceof SalesforceSchemaConnection
@@ -1510,6 +1513,16 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             }
                             Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue,
                                     table);
+                            if (objectValue == null) {
+                                if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                                    IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(
+                                            IESBService.class);
+                                    if (service != null) {
+                                        objectValue = service.getValue(item, repositoryValue, node);
+                                    }
+                                }
+
+                            }
                             if (param.getName().equals(EParameterName.CDC_TYPE_MODE.getName())
                                     && item instanceof DatabaseConnectionItem) {
                                 if (PluginChecker.isCDCPluginLoaded()) {

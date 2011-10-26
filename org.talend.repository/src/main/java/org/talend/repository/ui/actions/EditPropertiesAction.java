@@ -53,16 +53,20 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IESBService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ByteArray;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.IDesignerCoreService;
@@ -132,14 +136,24 @@ public class EditPropertiesAction extends AContextualAction {
                 designerCoreService.renameJobLaunch(node.getObject(), originalName);
             }
             // refresh ...
-            IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .findView(IJobSettingsView.ID);
+            IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+                    IJobSettingsView.ID);
             if (jobSettingView != null && jobSettingView instanceof IJobSettingsView) {
                 ((IJobSettingsView) jobSettingView).refreshCurrentViewTab();
             }
 
             if (node.getObjectType() == ERepositoryObjectType.ROUTINES) {
                 RepositoryManager.syncRoutineAndJoblet(ERepositoryObjectType.ROUTINES);
+            }
+            if (node.getObjectType().getType().equals("SERVICES")) {
+                ConnectionItem connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
+                RepositoryUpdateManager.updateServices(connectionItem);
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                    IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+                    if (service != null) {
+                        service.refreshComponentView(connectionItem);
+                    }
+                }
             }
         }
     }
@@ -213,8 +227,8 @@ public class EditPropertiesAction extends AContextualAction {
                     RefactoringStatusEntry entry = entries[i];
                     errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
                 }
-                MessageDialog.openError(getViewPart().getViewSite().getShell(),
-                        Messages.getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
+                MessageDialog.openError(getViewPart().getViewSite().getShell(), Messages
+                        .getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
                 return;
             }
 

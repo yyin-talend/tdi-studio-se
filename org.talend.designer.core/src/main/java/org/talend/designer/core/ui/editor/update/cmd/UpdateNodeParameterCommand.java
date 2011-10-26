@@ -25,6 +25,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.xml.XmlUtil;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IESBService;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -239,8 +240,10 @@ public class UpdateNodeParameterCommand extends Command {
                     for (IElementParameter param : node.getElementParameters()) {
                         String repositoryValue = param.getRepositoryValue();
                         if ((repositoryValue != null)
-                                && (param.isShow(node.getElementParameters()) || (node instanceof INode && ((INode) node)
-                                        .getComponent().getName().equals("tAdvancedFileOutputXML")))) { //$NON-NLS-1$
+                                && (param.isShow(node.getElementParameters())
+                                        || (node instanceof INode && ((INode) node).getComponent().getName().equals(
+                                                "tAdvancedFileOutputXML")) || (node instanceof INode && ((INode) node)
+                                        .getComponent().getName().equals("tESBProviderRequest")))) { //$NON-NLS-1$
                             if (param.getName().equals(EParameterName.PROPERTY_TYPE.getName())
                                     || param.getFieldType() == EParameterFieldType.MEMO_SQL) {
                                 continue;
@@ -255,6 +258,31 @@ public class UpdateNodeParameterCommand extends Command {
                             Object objectValue = RepositoryToComponentProperty.getValue(
                                     (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
                                     repositoryValue, table);
+                            if (objectValue == null) {
+                                if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                                    IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(
+                                            IESBService.class);
+                                    if (service != null) {
+                                        String propertyValue = (String) node
+                                                .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+
+                                        if (node.getComponent().getName().startsWith("tESB")) {
+                                            if (propertyValue.contains(" - ")) {
+                                                propertyValue = propertyValue.split(" - ")[0];
+                                            }
+                                        }
+
+                                        IRepositoryViewObject lastVersion = UpdateRepositoryUtils
+                                                .getRepositoryObjectById(propertyValue);
+                                        if (lastVersion != null) {
+                                            Item item = lastVersion.getProperty().getItem();
+                                            if (item != null) {
+                                                objectValue = service.getValue(item, repositoryValue, node);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             if (param.getName().equals(EParameterName.CDC_TYPE_MODE.getName())) {
                                 //
                                 String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
@@ -270,8 +298,8 @@ public class UpdateNodeParameterCommand extends Command {
                                     if (service != null) {
                                         try {
                                             List<IRepositoryViewObject> all;
-                                            all = CorePlugin.getDefault().getProxyRepositoryFactory()
-                                                    .getAll(ERepositoryObjectType.METADATA_CONNECTIONS);
+                                            all = CorePlugin.getDefault().getProxyRepositoryFactory().getAll(
+                                                    ERepositoryObjectType.METADATA_CONNECTIONS);
                                             for (IRepositoryViewObject obj : all) {
                                                 Item tempItem = obj.getProperty().getItem();
                                                 if (tempItem instanceof DatabaseConnectionItem) {
