@@ -47,6 +47,8 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
 
     private String userAccount;
 
+    IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+
     public ExchangePreferencePage() {
         super(GRID);
         initData();
@@ -80,7 +82,8 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
 
         logonButton = new Button(eGroup, SWT.PUSH);
         logonButton.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, false, false));
-        logonButton.setText(Messages.getString("ExchangePreferencePage.logonExchangeTitle")); //$NON-NLS-1$
+        logonButton.setText(userAccount != null ? Messages.getString("ExchangePreferencePage.logoutExchangeTitle") : Messages
+                .getString("ExchangePreferencePage.logonExchangeTitle"));
 
         if (PluginChecker.isSVNProviderPluginLoaded()) {
             BooleanFieldEditor checkTisLogonExchangeDialog = new BooleanFieldEditor(
@@ -105,11 +108,24 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
             public void widgetSelected(SelectionEvent e) {
                 Project project = ProjectManager.getInstance().getCurrentProject();
                 if (project != null) {
-                    TalendForgeDialog tfDialog = new TalendForgeDialog(logonButton.getShell(), project);
-                    if (tfDialog.open() == Window.OK) {
-                        initData();
-                        userAccountLink.setText(userAccount != null ? "<a> " + userAccount + " </a>" : "<a> " + "< None >"
-                                + " </a>");
+                    if (userAccount == null) {
+                        TalendForgeDialog tfDialog = new TalendForgeDialog(logonButton.getShell(), project);
+                        if (tfDialog.open() == Window.OK) {
+                            initData();
+                            userAccountLink.setText(userAccount != null ? "<a> " + userAccount + " </a>" : "<a> " + "< None >"
+                                    + " </a>");
+                            logonButton.setText(userAccount != null ? Messages
+                                    .getString("ExchangePreferencePage.logoutExchangeTitle") : Messages
+                                    .getString("ExchangePreferencePage.logonExchangeTitle"));
+                        }
+                    } else {
+                        logonButton.setText(Messages.getString("ExchangePreferencePage.logonExchangeTitle"));
+                        userAccountLink.setText("<a> " + "< None >" + " </a>");
+                        userAccount = null;
+                        if (project.getAuthor() != null) {
+                            String connectionEmail = project.getAuthor().getLogin();
+                            prefStore.setValue(connectionEmail, "");
+                        }
                     }
                 }
             }
@@ -117,7 +133,10 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
     }
 
     public void initData() {
-        IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+        String checkUpdate = prefStore.getString(ITalendCorePrefConstants.EXCHANGE_DOWNLOADED_CHECK_UPDATES);
+        if (checkUpdate == null || "".equals(checkUpdate)) {
+            prefStore.setValue(ITalendCorePrefConstants.EXCHANGE_DOWNLOADED_CHECK_UPDATES, true);
+        }
         Project project = ProjectManager.getInstance().getCurrentProject();
         if (project.getAuthor() != null) {
             String connectionEmail = project.getAuthor().getLogin();

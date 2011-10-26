@@ -219,7 +219,7 @@ public class DownloadedExtensionsComposite extends ExchangeComposite {
                                 IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
                                 boolean checkUpdates = prefStore
                                         .getBoolean(ITalendCorePrefConstants.EXCHANGE_DOWNLOADED_CHECK_UPDATES);
-                                if (checkUpdates) {
+                                if (!checkUpdates) {
                                     DownloadComponenentsAction downloadAction = new DownloadComponenentsAction();
                                     if (downloadAction != null) {
                                         downloadAction.run();
