@@ -153,6 +153,9 @@ Object filename_<%=cid %> = <%=filename %>;
 java.util.zip.ZipInputStream zis_<%=cid %> = null;
 try {
 	if(filename_<%=cid %> instanceof java.io.InputStream){
+		if(<%=footer %> > 0 || <%=random %> > 0){
+			throw new Exception("When the input source is a stream,footer and random shouldn't be bigger than 0.");
+		}
 		zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
 	}else{
 		zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>))));
@@ -195,6 +198,12 @@ while (true) {
 <%
 		}else{
 %>
+	Object filename_<%=cid %> = <%=filename %>;
+	if(filename_<%=cid %> instanceof java.io.InputStream){
+		if(<%=footer %> > 0 || <%=random %> > 0){
+			throw new Exception("When the input source is a stream,footer and random shouldn't be bigger than 0.");
+		}
+	}
 try {
 	fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %><%=hasDynamic?"-1":""%>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
 } catch(Exception e) {
@@ -531,6 +540,9 @@ routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
         java.util.zip.ZipInputStream zis_<%=cid %> = null;
         try {
 	        if(filename_<%=cid %> instanceof java.io.InputStream){
+		        if(<%=footer %> > 0 ){
+					throw new Exception("When the input source is a stream,footer shouldn't be bigger than 0.");
+				}
 	        	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
 	        }else{
 	        	zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>))));
@@ -574,6 +586,9 @@ routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
         int outputLine<%=cid %> = 0;
 		try {//TD110 begin
 			if(filename_<%=cid %> instanceof java.io.InputStream){
+				if(<%=footer %> > 0){
+					throw new Exception("When the input source is a stream,footer shouldn't be bigger than 0.");
+				}
 				csvReader<%=cid %>=new com.csvreader.CsvReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
 			}else{
 				csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(

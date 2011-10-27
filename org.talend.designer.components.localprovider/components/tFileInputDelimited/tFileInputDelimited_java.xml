@@ -30,6 +30,10 @@
 		<PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true"
 			NUM_ROW="10" REPOSITORY_VALUE="DELIMITED" />
 
+		<PARAMETER NAME="FILENAMETEXT" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="15" >
+			<DEFAULT>"When the input source is a stream or a zip file,footer and random shouldn't be bigger than 0."</DEFAULT>
+		</PARAMETER>
+		
 		<PARAMETER NAME="FILENAME" FIELD="FILE" NUM_ROW="20"
 			REQUIRED="true" REPOSITORY_VALUE="FILE_PATH">
 			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
@@ -144,7 +148,7 @@
 
 		<PARAMETER NAME="NB_RANDOM" FIELD="TEXT" REQUIRED="true"
 			NUM_ROW="45"
-			SHOW_IF="(CSV_OPTION == 'false') and (RANDOM == 'true')">
+			SHOW_IF="(CSV_OPTION == 'false') and (RANDOM == 'true') AND (UNCOMPRESS=='false')">
 			<DEFAULT>10</DEFAULT>
 		</PARAMETER>
 
