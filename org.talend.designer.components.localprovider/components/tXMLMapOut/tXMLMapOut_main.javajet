@@ -765,10 +765,22 @@ for (VarTable varsTable : varsTables) {
 			// System.out.println("Output table: (2)" + outputTableName);
 
 			if (hasAggregateColumn || isAllInOne) {
+				boolean checkNull = false;
+				boolean first = true;
+				
 				for (OutputTreeNode outputTableEntry : outputTableEntries) {
 					if(!("id_Document".equals(outputTableEntry.getType()))) {
+						if(first) {
+							first = false;
+							checkNull = true;
+							sb.append(cr).append(cr).append("if(").append(outputTableName).append("_aggregate").append("!=null){");
+						}
 						sb.append(cr + cr + outputTableName + "_aggregate." + outputTableEntry.getName() + " = " + outputTableName + "_tmp." + outputTableEntry.getName() + ";");
 					}
+				}
+				
+				if(checkNull) {
+					sb.append(cr).append("}");
 				}
 			}
 			
