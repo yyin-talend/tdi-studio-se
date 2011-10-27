@@ -27,6 +27,13 @@
 	boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
 %>
 
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata!=null) {
+%>
+} finally {
 <% 
     if(codeGenArgument.getIsRunInMultiThread()){
 %>
@@ -46,61 +53,53 @@
 <% 
 	}
 %>
-
-<%	
-	if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-%>
-
 <%
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			if(!useStream){
 %>
+if(out<%=cid %>!=null) {
 	out<%=cid %>.flush();
 	out<%=cid %>.close();
+}
 <%
 			}else{
 %>
+if(out<%=cid %>!=null) {
 	out<%=cid%>.flush();
 	writer_<%=cid %>.flush();
 	out<%=cid %> = null;
+}
 <%
 			}
 %>
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 	globalMap.put("<%=cid %>_FILE_NAME",fileName_<%=cid%>);
 <%
-		}
-	}
-%>
-
-<%
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}else{//the following is the tFileOutputCSV component
+		}else{//the following is the tFileOutputCSV component
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %>
 
 <%
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
 			if(!useStream){
 %>
+
     CsvWriter<%=cid%>.close();
 <%
 				if(isInRowMode){
 %>
+if(out<%=cid %>!=null) {
 	out<%=cid %>.flush();
 	out<%=cid %>.close();
+}
 <%
 				}
 			}else{
 				if(isInRowMode){
 %>
+
 	CsvWriter<%=cid%>.close();
 	out<%=cid %>.flush();
 	outWriter_<%=cid %>.flush();
@@ -118,12 +117,6 @@
     globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 		}
-	}
-%>
-
-<%
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  }
 %>
 <% 
 	if (isParallelize) {
@@ -140,9 +133,8 @@
 %>
 }
 <%
-}
+	}
 %>
-
 <%if(!useStream && isDeleteEmptyFile){%>
 	if(isFileGenerated_<%=cid %> && nb_line_<%=cid %> == 0){
 	<%if(compress && !isAppend && !split){%>
@@ -152,3 +144,10 @@
 	<%}%>
 	}		
 <%}%>
+} // finally
+<%
+	}
+}
+%>
+
+
