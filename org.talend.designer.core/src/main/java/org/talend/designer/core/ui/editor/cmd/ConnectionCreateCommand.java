@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -20,6 +22,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
@@ -35,6 +38,7 @@ import org.talend.designer.core.ui.dialog.mergeorder.ConnectionTableAndSchemaNam
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.views.properties.ComponentSettings;
 
 /**
  * Command that creates a new connection. <br/>
@@ -287,6 +291,25 @@ public class ConnectionCreateCommand extends Command {
                     }
                 }
 
+                // add for feature TDI-17358
+                IElementParameter elementParameter = source.getElementParameter("SCHEMAS"); //$NON-NLS-1$
+                if (elementParameter != null) {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    Object[] itemsValue = elementParameter.getListItemsValue();
+                    String[] items = elementParameter.getListItemsDisplayCodeName();
+                    map.put(IEbcdicConstant.FIELD_CODE, newMetadata.getTableName());
+                    map.put(IEbcdicConstant.FIELD_SCHEMA, newMetadata.getTableName());
+                    for (int i = 1; i < items.length; i++) {
+                        map.put(items[i], ((IElementParameter) itemsValue[i]).getValue());
+                    }
+                    Object value = elementParameter.getValue();
+                    if (value instanceof List) {
+                        List list = (List) value;
+                        list.add(map);
+                    }
+                    ComponentSettings.switchToCurComponentSettingsView();
+                }
+
             } else {
                 newMetadata = null;
 
@@ -396,4 +419,5 @@ public class ConnectionCreateCommand extends Command {
     public Connection getConnection() {
         return this.connection;
     }
+
 }

@@ -79,6 +79,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.designer.core.CheckNodeManager;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICheckNodesService;
@@ -1201,6 +1202,31 @@ public class Node extends Element implements IGraphicalNode {
                                     String removeQuotes = TalendTextUtils.removeQuotes(elemParam.getValue().toString());
                                     if (!removeQuotes.equals("") && "Default".equals(connection.getName())) { //$NON-NLS-1$ //$NON-NLS-2$
                                         connection.setName(removeQuotes);
+                                    }
+                                }
+                            }
+                        } else { // add for feature TDI-17358
+                            IMetadataTable sourceTable = connection.getMetadataTable();
+                            if (sourceTable != null) {
+                                MetadataDialog dialog = new MetadataDialog(new Shell(), sourceTable.clone(),
+                                        (Node) connection.getSource(), null);
+                                dialog.setInputReadOnly(false);
+                                dialog.setOutputReadOnly(false);
+                                if (dialog.open() == MetadataDialog.OK) {
+                                    final IMetadataTable oldTable = sourceTable;
+                                    final IMetadataTable newTable = dialog.getOutputMetaData();
+                                    if (!oldTable.sameMetadataAs(newTable, IMetadataColumn.OPTIONS_NONE)) {
+                                        CommandStack cmdStack = getCommandStack();
+                                        if (cmdStack != null) {
+                                            cmdStack.execute(new Command() {
+
+                                                @Override
+                                                public void execute() {
+                                                    oldTable.setListColumns(newTable.getListColumns());
+                                                }
+
+                                            });
+                                        }
                                     }
                                 }
                             }
