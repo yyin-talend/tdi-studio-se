@@ -147,12 +147,14 @@ for (INode node : processNodes) {
    				String endpointVar = "endpoint" + cid;
    				String uriRef = "uriMap.get(\"" + cid + "\")";
 %>
+					//CXF endpoint for <%=cid%>
    					org.apache.camel.Endpoint <%=endpointVar%> = endpoint(<%=uriRef%>);
 <%
 				String useSL = ElementParameterParser.getValue(node, "__ENABLE_SL__");
 				String useSAM = ElementParameterParser.getValue(node, "__ENABLE_SAM__");
 				if("true".equals(useSL)){
 %>					
+					//Add Service Locator Service to <%=endpointVar%>
 					if(locatorFeature != null){
 							((org.apache.camel.component.cxf.CxfEndpoint)<%=endpointVar%>).getFeatures().add(locatorFeature);
 					}
@@ -160,6 +162,7 @@ for (INode node : processNodes) {
 				}
 				if("true".equals(useSAM)){	
 %>
+					//Add Service Activity Monitor Service to <%=endpointVar%>
 					if(eventFeature != null){
 							((org.apache.camel.component.cxf.CxfEndpoint)<%=endpointVar%>).getFeatures().add(eventFeature);
 					}

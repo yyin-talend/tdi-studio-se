@@ -149,8 +149,10 @@ import java.util.Comparator;
 	if(hasCXFCom){
 %>
 
+	//ESB Service Locator Feature
 	private org.apache.cxf.feature.AbstractFeature locatorFeature;
 	
+	//ESB Service Activity Monitor Feature
 	private org.apache.cxf.feature.AbstractFeature eventFeature;
 
 	public void setLocatorFeature(org.apache.cxf.feature.AbstractFeature locatorFeature) {
