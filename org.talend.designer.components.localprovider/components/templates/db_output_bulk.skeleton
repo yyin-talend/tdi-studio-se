@@ -628,6 +628,45 @@ public class CLASS {
             }
             return actionSQLMap;
         }
+        /***
+         * @function: support Indentity Field with component tMSSqlOutput in SqlServer.
+         * @param stmtStructure:column Information
+         * @param isSpecifyIdentityField:choose the Identity Field
+         * @param identityInsert:generate identity field value manually(true-->manually;false-->automatically)
+         * @issue Url:http://jira.talendforge.org/browse/TDI-8412
+         * @since:2011-11-27
+         * @author Hu Jinyong
+         */
+        public Map<String, StringBuilder> createProcessSQL(List<Column> stmtStructure,boolean isSpecifyIdentityField,boolean identityInsert,String identityField) {
+            Map<String, StringBuilder> actionSQLMap = new HashMap<String, StringBuilder>();
+            if(stmtStructure==null || stmtStructure.size() < 1) {
+            	actionSQLMap.put(INSERT_COLUMN_NAME, new StringBuilder());
+            	actionSQLMap.put(INSERT_VALUE_STMT, new StringBuilder());
+            	actionSQLMap.put(UPDATE_SET_STMT, new StringBuilder());
+            	actionSQLMap.put(UPDATE_WHERE_STMT, new StringBuilder());
+            	actionSQLMap.put(DELETE_WHERE_STMT, new StringBuilder());
+            	actionSQLMap.put(FIRST_UPDATE_KEY, new StringBuilder());
+            	actionSQLMap.put(FIRST_DELETE_KEY, new StringBuilder());
+            	actionSQLMap.put(FIRST_INSERT_COLUMN, new StringBuilder());
+            	actionSQLMap.put(FIRST_UPDATE_COLUMN, new StringBuilder());
+            } else {
+	            for(Column column : stmtStructure) {
+	            	// 
+	            	if(isSpecifyIdentityField&&!identityInsert&&column.getName().equals(identityField)){
+	            		continue;
+	            	}
+	            	if(column.isReplaced()) {
+	                    List<Column> replacedColumns = column.getReplacement();
+	                    for(Column replacedColumn : replacedColumns) {
+	                        actionSQLMap = processSQLClause(replacedColumn, actionSQLMap);
+	                    }
+	                } else {
+	                    actionSQLMap = processSQLClause(column, actionSQLMap);        
+	                }
+	            }
+            }
+            return actionSQLMap;
+        }
         private Map<String, StringBuilder> processSQLClause(Column column, Map<String, StringBuilder> actionSQLMap) {
             StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
             if(insertColName == null) {

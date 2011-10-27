@@ -197,7 +197,7 @@ if(!isDynamic) {
 
    <%@ include file="../templates/_tableActionForOutput.javajet"%>
    <%
-    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
+    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure,isSpecifyIdentityField,identityInsert.equals("true"),identityField);
     StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
     StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
     StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    

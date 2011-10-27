@@ -52,6 +52,10 @@ skeleton="../templates/db_output_bulk.skeleton"
      
     String batchSize =ElementParameterParser.getValue(node, "__BATCH_SIZE__");
     
+    boolean isSpecifyIdentityField = ("true").equals(ElementParameterParser.getValue(node,"__SPECIFY_IDENTITY_FIELD__"));
+
+    String identityField = ElementParameterParser.getValue(node, "__IDENTITY_FIELD__");
+
     String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
     
     String incomingConnName = null;
@@ -472,6 +476,9 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
             for(Column column : colStruct) {
                 if(column.isInsertable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+                    if(isSpecifyIdentityField&&!identityInsert.equals("true")&&column.getName().equals(identityField)){
+                    	continue;
+                    }
                     %>
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
