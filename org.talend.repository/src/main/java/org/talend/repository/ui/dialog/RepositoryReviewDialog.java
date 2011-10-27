@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -79,6 +80,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
+import org.talend.repository.ui.views.RepositoryLabelProvider;
 import org.talend.repository.ui.views.RepositoryView;
 
 /**
@@ -313,7 +315,7 @@ public class RepositoryReviewDialog extends Dialog {
         viewContainer.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         IRepositoryView view = RepositoryView.show();
-        repositoryView = new FakeRepositoryView(typeProcessor, type, repositoryType);
+        repositoryView = new FakeRepositoryView(typeProcessor, type, jobIDList);
         try {
             repositoryView.init(view.getViewSite());
         } catch (PartInitException e) {
@@ -563,9 +565,10 @@ class FakeRepositoryView extends RepositoryView {
 
     ERepositoryObjectType type;
 
-    private String repositoryType;
-
     ITypeProcessor typeProcessor;
+
+    private List<String> jobIDList = null;
+
 
     /**
      * DOC bqian SnippetsDialogTrayView constructor comment.
@@ -575,11 +578,11 @@ class FakeRepositoryView extends RepositoryView {
      * @param type
      * @param type
      */
-    public FakeRepositoryView(ITypeProcessor typeProcessor, ERepositoryObjectType type, String repositoryValue) {
+    public FakeRepositoryView(ITypeProcessor typeProcessor, ERepositoryObjectType type, List<String> jobIDList) {
         super();
         this.typeProcessor = typeProcessor;
         this.type = type;
-        this.repositoryType = repositoryValue;
+		this.jobIDList = jobIDList;
     }
 
     /*
@@ -594,6 +597,21 @@ class FakeRepositoryView extends RepositoryView {
         ViewerFilter filter = typeProcessor.makeFilter();
         addFilter(filter);
         CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
+        viewer.setLabelProvider(new RepositoryLabelProvider(this) {
+
+			public Color getForeground(Object element) {
+            	if (jobIDList != null && !jobIDList.isEmpty()) {
+    				RepositoryNode node = (RepositoryNode) element;
+    				if (node.getObject() != null && jobIDList.contains(node.getObject().getId())) {
+    					return INACTIVE_ENTRY_COLOR;
+    				}
+            	}
+            	return super.getForeground(element);
+            }
+        });
+        
+
+
     }
 
     public void addFilter(ViewerFilter filter) {

@@ -65,7 +65,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
     private static final Color STABLE_PRIMARY_ENTRY_COLOR = new Color(null, 0, 0, 0);
 
-    private static final Color INACTIVE_ENTRY_COLOR = new Color(null, 200, 200, 200);
+    protected static final Color INACTIVE_ENTRY_COLOR = new Color(null, 200, 200, 200);
 
     private static final Color LOCKED_ENTRY = new Color(null, 200, 0, 0);
 
