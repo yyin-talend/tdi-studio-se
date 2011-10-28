@@ -31,9 +31,9 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
@@ -80,7 +80,9 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
                         && nodProperty != ERepositoryObjectType.METADATA_CON_CDC
                         && nodProperty != ERepositoryObjectType.METADATA_CON_TABLE
                         && nodProperty != ERepositoryObjectType.METADATA_CON_QUERY
-                        && nodProperty != ERepositoryObjectType.SVN_ROOT) {
+                        && nodProperty != ERepositoryObjectType.SVN_ROOT
+                        && nodProperty != ERepositoryObjectType.SERVICESOPERATION
+                        && nodProperty != ERepositoryObjectType.SERVICESPORT) {
                     visible = true;
                 }
                 // for cdc
