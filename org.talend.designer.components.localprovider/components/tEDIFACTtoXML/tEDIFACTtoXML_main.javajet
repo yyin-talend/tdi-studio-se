@@ -28,13 +28,14 @@ String modelURI_<%=cid%> = "urn:org.milyn.edi.unedifact:"+"<%=version%>"+"-mappi
 org.milyn.edisax.unedifact.UNEdifactInterchangeParser parser_<%=cid%> = new org.milyn.edisax.unedifact.UNEdifactInterchangeParser();
 
 routines.system.Document d_<%=cid%>=new routines.system.Document();
+java.io.FileInputStream fis_<%=cid%> = new java.io.FileInputStream(<%=filename%>);
 
 try {
 	parser_<%=cid%>.addMappingModels(modelURI_<%=cid%>, new java.net.URI("/"));
 	parser_<%=cid%>.setFeature(org.milyn.edisax.EDIParser.FEATURE_IGNORE_NEWLINES, <%="true".equals(ignoreNewLines)?"true":"false"%>);
 	org.dom4j.io.SAXContentHandler handler_<%=cid%> = new org.dom4j.io.SAXContentHandler();
 	parser_<%=cid%>.setContentHandler(handler_<%=cid%>);
-	parser_<%=cid%>.parse(new org.xml.sax.InputSource(new java.io.FileInputStream(<%=filename%>)));
+	parser_<%=cid%>.parse(new org.xml.sax.InputSource(fis_<%=cid%>));
 
 	d_<%=cid%>.setDocument((org.dom4j.Document)handler_<%=cid%>.getDocument());
 
@@ -62,6 +63,8 @@ try {
 <%
 	}
 %>
+} finally {
+	fis_<%=cid%>.close();
 }
 <%
 
