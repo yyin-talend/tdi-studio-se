@@ -258,7 +258,7 @@ public class UpdateNodeParameterCommand extends Command {
                             Object objectValue = RepositoryToComponentProperty.getValue(
                                     (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
                                     repositoryValue, table);
-                            if (objectValue == null) {
+                            if (objectValue == null || "".equals(objectValue)) {
                                 if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
                                     IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(
                                             IESBService.class);

@@ -1513,7 +1513,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             }
                             Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue,
                                     table);
-                            if (objectValue == null) {
+                            if (objectValue == null || "".equals(objectValue)) {
                                 if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
                                     IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(
                                             IESBService.class);
