@@ -1129,7 +1129,9 @@ public class Connection extends Element implements IConnection, IPerformance {
                         if (source.getMetadataList().size() > 0) {
                             table = source.getMetadataList().get(0);
                         }
-                    } else if (table == null) {
+                        // MOD by zshen when call the TGenkeyViewAction from tMatchGroup node which have tMap node
+                        // before it there only case about one output then need get metadata as follow:
+                    } else if (table == null && source.getMetadataList() != null && source.getMetadataList().size() == 1) {
                         table = source.getMetadataFromConnector(sourceNodeConnector.getName());
                     }
                     return table;
