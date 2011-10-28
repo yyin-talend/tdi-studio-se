@@ -208,7 +208,7 @@
 
 		throw new TalendException(e, currentComponent, globalMap);
 	
-	} catch(Error error) {
+	} catch(java.lang.Error error) {
 	
 <%
 	if(stat){
@@ -217,7 +217,7 @@
 <%
 	}
 %>
-		throw new Error(error);
+		throw new java.lang.Error(error);
 
 	}
 <%
