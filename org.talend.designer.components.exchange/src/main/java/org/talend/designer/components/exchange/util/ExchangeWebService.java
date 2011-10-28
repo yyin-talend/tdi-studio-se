@@ -97,10 +97,10 @@ public class ExchangeWebService {
             token.put("searchExtension", tokenMessage);
             String u = exchangeWSServer + "availableExtension.php?data=" + token;
             JSONObject answer = readJsonFromUrl(u);
-
-            JSONObject p = (JSONObject) answer.get("resultSearch");
-            o = p.getJSONArray("extensions");
-
+            if (answer != null) {
+                JSONObject p = (JSONObject) answer.get("resultSearch");
+                o = p.getJSONArray("extensions");
+            }
         } catch (JSONException e) {
             //
         } catch (IOException e) {
@@ -154,10 +154,10 @@ public class ExchangeWebService {
 
             String u = exchangeWSServer + "contributedExtension.php?data=" + token;
             JSONObject answer = readJsonFromUrl(u);
-
-            JSONObject p = (JSONObject) answer.get("listContributedExtension");
-            o = p.getJSONArray("extensions");
-
+            if (answer != null) {
+                JSONObject p = (JSONObject) answer.get("listContributedExtension");
+                o = p.getJSONArray("extensions");
+            }
         } catch (JSONException e) {
             //
         } catch (IOException e) {
@@ -183,10 +183,10 @@ public class ExchangeWebService {
 
             String u = exchangeWSServer + "installedExtension.php?data=" + token;
             JSONObject answer = readJsonFromUrl(u);
-
-            JSONObject p = (JSONObject) answer.get("listInstalledExtension");
-            o = p.getJSONArray("extensions");
-
+            if (answer != null) {
+                JSONObject p = (JSONObject) answer.get("listInstalledExtension");
+                o = p.getJSONArray("extensions");
+            }
         } catch (JSONException e) {
             //
         } catch (IOException e) {
@@ -220,12 +220,14 @@ public class ExchangeWebService {
 
             String u = exchangeWSServer + "downloadedExtension.php?data=" + token;
             JSONObject answer = readJsonFromUrl(u);
-            JSONObject resultObj = (JSONObject) answer.get("resultDownloadExtension");
-            String linkDownload = resultObj.getString("linkDownload");
-            //
-            ws.setValue(linkDownload);
-            ws.setResult(true);
-            ws.setMessageException(Messages.getString("ExchangeWebService.downloadingExtensionSuccessful")); //$NON-NLS-1$
+            if (answer != null) {
+                JSONObject resultObj = (JSONObject) answer.get("resultDownloadExtension");
+                String linkDownload = resultObj.getString("linkDownload");
+                //
+                ws.setValue(linkDownload);
+                ws.setResult(true);
+                ws.setMessageException(Messages.getString("ExchangeWebService.downloadingExtensionSuccessful")); //$NON-NLS-1$
+            }
         } catch (JSONException e) {
             //
             ws.setMessageException(e.getMessage());
@@ -260,17 +262,60 @@ public class ExchangeWebService {
             tokenMessage.put("idExtension", idExtension);
             tokenMessage.put("typeExtension", typeExtension);
             JSONObject token = new us.monoid.json.JSONObject();
-            token.put("revision", tokenMessage);
-
+            token.put("extension", tokenMessage);
             String u = exchangeWSServer + "deleteExtension.php?data=" + token;
             JSONObject result = readJsonFromUrl(u);
             //
-            Object object = result.get("result");
-            if (object != null && object.equals("DELETE OK")) {
-                ws.setResult(true);
-                ws.setMessageException(Messages.getString("ExchangeWebService.deleteExtensionSuccessful")); //$NON-NLS-1$
-            } else {
-                ws.setMessageException(object.toString()); //$NON-NLS-1$
+            if (result != null) {
+                Object object = result.get("result");
+                if (object != null && object.equals("DELETE OK")) {
+                    ws.setResult(true);
+                    ws.setMessageException(Messages.getString("ExchangeWebService.deleteExtensionSuccessful")); //$NON-NLS-1$
+                } else {
+                    ws.setMessageException(object.toString()); //$NON-NLS-1$
+                }
+            }
+        } catch (JSONException e) {
+            //
+            ws.setMessageException(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+            ws.setMessageException(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            ws.setMessageException(e.getMessage());
+        }
+        return ws;
+    }
+
+    /**
+     * 
+     * DOC hcyi Comment method "searchLastRevisionForExtensionService".
+     * 
+     * @param idExtension
+     * @param username
+     * @param passwordHash
+     * @return
+     */
+    public static WebserviceStatus searchLastRevisionForExtensionService(String idExtension, String username, String passwordHash) {
+        WebserviceStatus ws = new WebserviceStatus();
+        ws.setResult(false);
+        JSONObject tokenMessage = new JSONObject();
+        try {
+            tokenMessage.put("username", username);
+            tokenMessage.put("passwordHash", passwordHash);
+            tokenMessage.put("idExtension", idExtension);
+            JSONObject token = new us.monoid.json.JSONObject();
+            token.put("extension", tokenMessage);
+
+            String u = exchangeWSServer + "modifyExtension.php?data=" + token;
+            JSONObject answer = readJsonFromUrl(u);
+            if (answer != null) {
+                Object object = answer.get("lastRevision");
+                if (object != null && !object.equals("")) {
+                    ws.setValue(object.toString());
+                    ws.setResult(true);
+                }
             }
         } catch (JSONException e) {
             //
@@ -302,16 +347,18 @@ public class ExchangeWebService {
 
             String u = exchangeWSServer + "listCategoryExtension.php?data=" + token;
             JSONObject resultObj = readJsonFromUrl(u);
-            JSONObject p = (JSONObject) resultObj.get("listCategory");
-            JSONArray resultArry = p.getJSONArray("category");
-            if (resultArry != null) {
-                for (int i = 0; i < resultArry.length(); i++) {
-                    JSONObject extensionObj = resultArry.getJSONObject(i);
-                    if (extensionObj != null) {
-                        Category fCategory = ExchangeFactory.eINSTANCE.createCategory();
-                        fCategory.setCategoryId(extensionObj.getString("id_category"));
-                        fCategory.setCategoryName(extensionObj.getString("name"));
-                        fCategorys.add(fCategory);
+            if (resultObj != null) {
+                JSONObject p = (JSONObject) resultObj.get("listCategory");
+                JSONArray resultArry = p.getJSONArray("category");
+                if (resultArry != null) {
+                    for (int i = 0; i < resultArry.length(); i++) {
+                        JSONObject extensionObj = resultArry.getJSONObject(i);
+                        if (extensionObj != null) {
+                            Category fCategory = ExchangeFactory.eINSTANCE.createCategory();
+                            fCategory.setCategoryId(extensionObj.getString("id_category"));
+                            fCategory.setCategoryName(extensionObj.getString("name"));
+                            fCategorys.add(fCategory);
+                        }
                     }
                 }
             }
@@ -341,20 +388,21 @@ public class ExchangeWebService {
             token.put("extension", tokenMessage);
             String u = exchangeWSServer + "listVersionRevision.php?data=" + token;
             JSONObject resultObj = readJsonFromUrl(u);
-            JSONObject p = (JSONObject) resultObj.get("listVersion");
-            JSONArray resultArry = p.getJSONArray("version");
-            if (resultArry != null) {
-                for (int i = 0; i < resultArry.length(); i++) {
-                    JSONObject extensionObj = resultArry.getJSONObject(i);
-                    if (extensionObj != null) {
-                        VersionRevision versionRevision = ExchangeFactory.eINSTANCE.createVersionRevision();
-                        versionRevision.setVersionId(extensionObj.getString("id_version"));
-                        versionRevision.setVersionName(extensionObj.getString("version"));
-                        fVersionRevisions.add(versionRevision);
+            if (resultObj != null) {
+                JSONObject p = (JSONObject) resultObj.get("listVersion");
+                JSONArray resultArry = p.getJSONArray("version");
+                if (resultArry != null) {
+                    for (int i = 0; i < resultArry.length(); i++) {
+                        JSONObject extensionObj = resultArry.getJSONObject(i);
+                        if (extensionObj != null) {
+                            VersionRevision versionRevision = ExchangeFactory.eINSTANCE.createVersionRevision();
+                            versionRevision.setVersionId(extensionObj.getString("id_version"));
+                            versionRevision.setVersionName(extensionObj.getString("version"));
+                            fVersionRevisions.add(versionRevision);
+                        }
                     }
                 }
             }
-
         } catch (JSONException e) {
             //
         } catch (IOException e) {
@@ -418,6 +466,19 @@ public class ExchangeWebService {
         return ws;
     }
 
+    public static String asHex(byte[] buf) {
+        char[] hexArray = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+        char[] chars = new char[2 * buf.length];
+        int v;
+        for (int j = 0; j < buf.length; j++) {
+            v = buf[j] & 0xFF;
+            chars[j * 2] = hexArray[v / 16];
+            chars[j * 2 + 1] = hexArray[v % 16];
+        }
+
+        return new String(chars);
+    }
+
     /**
      * 
      * DOC hcyi Comment method "insertionRevisionService".
@@ -437,7 +498,6 @@ public class ExchangeWebService {
     public static WebserviceStatus insertionRevisionService(String idExtension, String typeExtension, String username,
             String passwordHash, String version, String listVersionCompatibles, String filename, String content,
             String description, String agreement) {
-
         byte[] fileBytes = null;
         try {
             File f = new File(filename);
@@ -466,14 +526,14 @@ public class ExchangeWebService {
             tokenMessage.put("version", version);
             tokenMessage.put("versionCompatibles", listVersionCompatibles);
             tokenMessage.put("filename", new Path(filename).lastSegment());
-            tokenMessage.put("content", Resty.content(fileBytes));
+            tokenMessage.put("content", asHex(fileBytes));
             tokenMessage.put("description", description);
             tokenMessage.put("agreement", agreement);
             JSONObject token = new us.monoid.json.JSONObject();
             token.put("newRevision", tokenMessage);
             AbstractContent ac = Resty.content(token);
             MultipartContent mpc = Resty.form(new FormData("data", ac));
-            TextResource textResult = r.text(exchangeWSServer + "publishExtension.php", mpc);
+            TextResource textResult = r.text(exchangeWSServer + "addRevision.php", mpc);
             JSONObject resultObject = new JSONObject(textResult.toString());
             JSONObject result = (JSONObject) resultObject.get("resultNewRevision");
             String idRevision = result.getString("idRevision");
@@ -524,12 +584,14 @@ public class ExchangeWebService {
             String u = exchangeWSServer + "publishExtension.php?data=" + token;
             JSONObject resultObj = readJsonFromUrl(u);
             //
-            Object object = resultObj.get("result");
-            if (object != null && object.equals("UPDATE OK")) {
-                ws.setResult(true);
-                ws.setMessageException(Messages.getString("ExchangeWebService.updateRevisionSuccessful")); //$NON-NLS-1$
-            } else {
-                ws.setMessageException(object.toString()); //$NON-NLS-1$
+            if (resultObj != null) {
+                Object object = resultObj.get("result");
+                if (object != null && object.equals("UPDATE OK")) {
+                    ws.setResult(true);
+                    ws.setMessageException(Messages.getString("ExchangeWebService.updateRevisionSuccessful")); //$NON-NLS-1$
+                } else {
+                    ws.setMessageException(object.toString()); //$NON-NLS-1$
+                }
             }
         } catch (JSONException e) {
             ws.setMessageException(e.getMessage());

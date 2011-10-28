@@ -59,10 +59,15 @@ public class ModifyExtensionJob extends Job {
             public WebserviceStatus call() throws Exception {
                 WebserviceStatus webserviceStatus;
                 if (ExchangeUtils.checkUserAndPassword()) {
-                    webserviceStatus = ExchangeWebService.updateRevisionService(fExtension.getIdExtension(),
-                            ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(),
-                            fExtension.getLastVersionAvailable(), fExtension.getListVersionCompatibles(),
-                            fExtension.getDescription(), "false");
+                    webserviceStatus = ExchangeWebService.searchLastRevisionForExtensionService(fExtension.getIdExtension(),
+                            ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash());
+                    if (webserviceStatus.isResult()) {
+                        String lastVersionIdRevision = webserviceStatus.getValue();
+                        webserviceStatus = ExchangeWebService.updateRevisionService(lastVersionIdRevision,
+                                ExchangeUtils.TYPEEXTENSION, ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(),
+                                fExtension.getLastVersionAvailable(), fExtension.getListVersionCompatibles(),
+                                fExtension.getDescription(), "false");
+                    }
                 } else {
                     webserviceStatus = new WebserviceStatus();
                     webserviceStatus.setMessageException(Messages.getString("MyExtensionsComposite.Form.checkUserAndPassword"));

@@ -37,6 +37,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
@@ -62,6 +63,8 @@ import org.talend.designer.components.exchange.ui.actions.DeleteExtensionAction;
 import org.talend.designer.components.exchange.ui.actions.InsertionExtensionAction;
 import org.talend.designer.components.exchange.ui.actions.ModifyExtensionAction;
 import org.talend.designer.components.exchange.ui.actions.UploadRevisionAction;
+import org.talend.designer.components.exchange.util.ExchangeUtils;
+import org.talend.designer.components.exchange.util.ExchangeWebService;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -196,6 +199,16 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 stackLayout.topControl = formComp;
                 listMyExtensonsComp.layout();
                 addNewExtensonBtn.setEnabled(false);
+
+                if (fVersionRevisions == null || fVersionRevisions.isEmpty()) {
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        public void run() {
+                            fVersionRevisions.clear();
+                            fVersionRevisions = ExchangeWebService.searchVersionRevisionJSONArray(ExchangeUtils.TYPEEXTENSION);
+                        }
+                    });
+                }
             }
         });
         itemTable.addSelectionListener(new SelectionAdapter() {
@@ -699,6 +712,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
                 if (uploadAction != null) {
                     uploadAction.run();
                 }
+                returnMyExtensionsComposite();
                 opateBtn.setEnabled(false);
             }
 
@@ -1074,6 +1088,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
                     if (uploadAction != null) {
                         uploadAction.run();
                     }
+                    returnMyExtensionsComposite();
                 }
                 opateBtn.setEnabled(false);
             }
@@ -1423,6 +1438,7 @@ public class MyExtensionsComposite extends ExchangeComposite {
                     if (modifyAction != null) {
                         modifyAction.run();
                     }
+                    returnMyExtensionsComposite();
                 }
                 opateBtn.setEnabled(false);
             }
@@ -1608,6 +1624,12 @@ public class MyExtensionsComposite extends ExchangeComposite {
         imageMaps.put(1, ExchangePlugin.getImageDescriptor("icons/upload.gif").createImage());
         imageMaps.put(2, ExchangePlugin.getImageDescriptor("icons/modify.gif").createImage());
         imageMaps.put(3, ExchangePlugin.getImageDescriptor("icons/delete.gif").createImage());
+    }
+
+    public void returnMyExtensionsComposite() {
+        stackLayout.topControl = itemTable;
+        listMyExtensonsComp.layout();
+        addNewExtensonBtn.setEnabled(true);
     }
 
     /*
