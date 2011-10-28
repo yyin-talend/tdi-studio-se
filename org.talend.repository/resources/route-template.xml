@@ -7,12 +7,14 @@
 		<property name="bundleContext" ref="blueprintBundleContext" />
 		
 		<!-- ESB Features For CXF-->
-		@ESBFeaturesProperties@
+		@ESBSLFeatureProperty@
+		@ESBSAMFeatureProperty@
 		
 	</bean>
 
 	<!-- ESB Features Reference For CXF-->
-	@ESBFeaturesPropertiesRef@
+	@ESBSLFeaturePropertyRef@
+	@ESBSAMFeaturePropertyRef@
 	
 	<service ref="job">
 		<interfaces>
