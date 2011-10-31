@@ -89,7 +89,11 @@ public class MyExchangeContentProvider implements IIntroXHTMLContentProvider {
             Element tr = dom.createElement("tr");
 
             Element td = dom.createElement("td");
-            td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#EBEBDB");
+            String style = "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#EBEBDB";
+            if (myExtensions == null || myExtensions.isEmpty()) {
+                style = style + ";border-bottom:1px solid #9BB9F5";
+            }
+            td.setAttribute("style", style);
             Element span = dom.createElement("span");
             span.setAttribute("class", "style_2 style_3");
             span.appendChild(dom.createTextNode("Extension Name"));
@@ -97,7 +101,11 @@ public class MyExchangeContentProvider implements IIntroXHTMLContentProvider {
             tr.appendChild(td);
 
             td = dom.createElement("td");
-            td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB");
+            style = "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB";
+            if (myExtensions == null || myExtensions.isEmpty()) {
+                style = style + ";border-bottom:1px solid #9BB9F5";
+            }
+            td.setAttribute("style", style);
             span = dom.createElement("span");
             span.setAttribute("class", "style_2 style_3");
             span.appendChild(dom.createTextNode("Version"));
@@ -105,7 +113,11 @@ public class MyExchangeContentProvider implements IIntroXHTMLContentProvider {
             tr.appendChild(td);
 
             td = dom.createElement("td");
-            td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB");
+            style = "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB";
+            if (myExtensions == null || myExtensions.isEmpty()) {
+                style = style + ";border-bottom:1px solid #9BB9F5";
+            }
+            td.setAttribute("style", style);
             span = dom.createElement("span");
             span.setAttribute("class", "style_2 style_3");
             span.appendChild(dom.createTextNode("Upload Date"));
@@ -113,8 +125,11 @@ public class MyExchangeContentProvider implements IIntroXHTMLContentProvider {
             tr.appendChild(td);
 
             td = dom.createElement("td");
-            td.setAttribute("style",
-                    "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;background:#EBEBDB");
+            style = "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;background:#EBEBDB";
+            if (myExtensions == null || myExtensions.isEmpty()) {
+                style = style + ";border-bottom:1px solid #9BB9F5";
+            }
+            td.setAttribute("style", style);
             span = dom.createElement("span");
             span.setAttribute("class", "style_2 style_3");
             span.appendChild(dom.createTextNode("Operation"));
@@ -134,7 +149,7 @@ public class MyExchangeContentProvider implements IIntroXHTMLContentProvider {
 
                 // extension name
                 Element tdExtension = dom.createElement("td");
-                String style = "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5";
+                style = "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5";
                 if (i == myExtensions.size() - 1) {
                     style = "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5";
                 }
