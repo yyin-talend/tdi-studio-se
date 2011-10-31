@@ -1691,11 +1691,11 @@ if(columnList != null && columnList.size() > 0) {
     		}
     	
     	}
-    	if (useBatchSize && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) &&(rejectConnName==null)) {
+    	if (useBatchSize && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) &&(rejectConnName==null)&& (("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
     		if(!("").equals(batchSize) && !("0").equals(batchSize)) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
-                <%if ( (rejectConnName==null) && (("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+                <%if (rejectConnName==null) {
                 %>                                                
                 try {
 						int countSum_<%=cid%> = 0;

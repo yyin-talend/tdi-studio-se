@@ -208,7 +208,7 @@ if(!useExistingConnection) {
 }
 %>
 <%
-if (useBatchSize && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) && !extendedInsert) {
+if (useBatchSize && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) && (("UPDATE").equals(dataAction)||("DELETE").equals(dataAction))) {
     if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
 %>
    int batchSize_<%=cid%> = <%=batchSize%>;
