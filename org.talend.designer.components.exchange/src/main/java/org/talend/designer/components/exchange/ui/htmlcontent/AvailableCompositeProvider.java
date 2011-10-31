@@ -111,7 +111,7 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
                 tr.appendChild(td);
 
                 td = dom.createElement("td");
-                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#EBEBDB");
+                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB");
                 span = dom.createElement("span");
                 span.setAttribute("class", "style_2 style_3");
                 span.appendChild(dom.createTextNode("Version"));
@@ -119,7 +119,7 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
                 tr.appendChild(td);
 
                 td = dom.createElement("td");
-                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#EBEBDB");
+                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB");
                 span = dom.createElement("span");
                 span.setAttribute("class", "style_2 style_3");
                 span.appendChild(dom.createTextNode("Rating"));
@@ -127,7 +127,7 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
                 tr.appendChild(td);
 
                 td = dom.createElement("td");
-                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#EBEBDB");
+                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB");
                 span = dom.createElement("span");
                 span.setAttribute("class", "style_2 style_3");
                 span.appendChild(dom.createTextNode("Auther"));
@@ -135,7 +135,8 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
                 tr.appendChild(td);
 
                 td = dom.createElement("td");
-                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#EBEBDB");
+                td.setAttribute("style",
+                        "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;background:#EBEBDB");
                 span = dom.createElement("span");
                 span.setAttribute("class", "style_2 style_3");
                 span.appendChild(dom.createTextNode("View"));
@@ -150,31 +151,64 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
                     Element trExtension = dom.createElement("tr");
 
                     Element tdExtension = dom.createElement("td");
-                    if (i % 2 == 1) {
-                        tdExtension.setAttribute("style",
-                                "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                    if (i == fAvailableExtensions.size() - 1) {
+                        if (i % 2 == 1) {
+                            tdExtension
+                                    .setAttribute("style",
+                                            "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
+                        } else {
+                            tdExtension.setAttribute("style",
+                                    "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5");
+                        }
                     } else {
-                        tdExtension.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5");
+                        if (i % 2 == 1) {
+                            tdExtension.setAttribute("style",
+                                    "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                        } else {
+                            tdExtension.setAttribute("style", "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5");
+                        }
                     }
                     tdExtension.appendChild(dom.createTextNode(extension.getLabel()));
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");
-                    if (i % 2 == 1) {
-                        tdExtension.setAttribute("style",
-                                "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                    if (i == fAvailableExtensions.size() - 1) {
+                        if (i % 2 == 1) {
+                            tdExtension
+                                    .setAttribute("style",
+                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
+                        } else {
+                            tdExtension.setAttribute("style",
+                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5");
+                        }
                     } else {
-                        tdExtension.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5");
+                        if (i % 2 == 1) {
+                            tdExtension.setAttribute("style",
+                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;background:#F7F7F7");
+                        } else {
+                            tdExtension.setAttribute("style", "border-top:1px solid #cccccc;border-left:1px solid #cccccc");
+                        }
                     }
                     tdExtension.appendChild(dom.createTextNode(extension.getVersionExtension()));
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");
-                    if (i % 2 == 1) {
-                        tdExtension.setAttribute("style",
-                                "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                    if (i == fAvailableExtensions.size() - 1) {
+                        if (i % 2 == 1) {
+                            tdExtension
+                                    .setAttribute("style",
+                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
+                        } else {
+                            tdExtension.setAttribute("style",
+                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5");
+                        }
                     } else {
-                        tdExtension.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5");
+                        if (i % 2 == 1) {
+                            tdExtension.setAttribute("style",
+                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;background:#F7F7F7");
+                        } else {
+                            tdExtension.setAttribute("style", "border-top:1px solid #cccccc;border-left:1px solid #cccccc");
+                        }
                     }
                     String rateImage = getRateImage(extension.getRate());
                     Element imgElem = dom.createElement("img");
@@ -183,21 +217,47 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");
-                    if (i % 2 == 1) {
-                        tdExtension.setAttribute("style",
-                                "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                    if (i == fAvailableExtensions.size() - 1) {
+                        if (i % 2 == 1) {
+                            tdExtension
+                                    .setAttribute("style",
+                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
+                        } else {
+                            tdExtension.setAttribute("style",
+                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5");
+                        }
                     } else {
-                        tdExtension.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5");
+                        if (i % 2 == 1) {
+                            tdExtension.setAttribute("style",
+                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;background:#F7F7F7");
+                        } else {
+                            tdExtension.setAttribute("style", "border-top:1px solid #cccccc;border-left:1px solid #cccccc");
+                        }
                     }
                     tdExtension.appendChild(dom.createTextNode(extension.getAuthor()));
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");
-                    if (i % 2 == 1) {
-                        tdExtension.setAttribute("style",
-                                "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                    if (i == fAvailableExtensions.size() - 1) {
+                        if (i % 2 == 1) {
+                            tdExtension
+                                    .setAttribute(
+                                            "style",
+                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
+                        } else {
+                            tdExtension
+                                    .setAttribute("style",
+                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5");
+                        }
                     } else {
-                        tdExtension.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5");
+                        if (i % 2 == 1) {
+                            tdExtension
+                                    .setAttribute("style",
+                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;background:#F7F7F7");
+                        } else {
+                            tdExtension.setAttribute("style",
+                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5");
+                        }
                     }
                     Element hyperlink = dom.createElement("a");
                     hyperlink.setAttribute(NUMBER, "" + i);
