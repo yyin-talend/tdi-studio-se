@@ -13,6 +13,7 @@
     	java.util.Map		
 	" 
 %>
+	<%@ include file="../templates/Row/RowHelper.javajet"%>
 	<% 
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
@@ -72,6 +73,162 @@
 
 	if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class RowUtil extends DefaultRowUtil{
+			public void codeForValueToConn(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName){
+				codeForValueToConnWithD(node, metadata, sourceValueClass, sourceValueName, targetConnName, null);
+			}
+			public void codeForValueToConnWithD(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, String dynamicName){
+				
+				String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+				
+				List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
+				String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
+				boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
+				
+				String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
+				boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
+				
+				String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
+				boolean checkNum = (checkNumStr!=null&&!("").equals(checkNumStr))?("true").equals(checkNumStr):false; 
+				
+				String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+				boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
+				String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
+				String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
+				
+				List<IMetadataColumn> listColumns = metadata.getListColumns();
+				int sizeListColumns = listColumns.size();
+				boolean noStringTypeExist = false;
+				
+				for (int valueN=0; valueN<sizeListColumns; valueN++) {
+					IMetadataColumn column = listColumns.get(valueN);
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+					}else{
+						noStringTypeExist = true;
+						break;
+					}
+				}
+				boolean hasStringDefault = false;
+				for (int valueM=0; valueM<sizeListColumns; valueM++) {
+					IMetadataColumn column = listColumns.get(valueM);
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+						if(hasStringDefault==false && column.getDefault()!=null && column.getDefault().length() > 0 ){
+							hasStringDefault = true;
+							break;
+						}
+					}
+				}
+				if(noStringTypeExist || hasStringDefault){
+				%>
+					String temp = ""; 
+				<%
+				}
+				for (int valueN=0; valueN<sizeListColumns; valueN++) {
+					IMetadataColumn column = listColumns.get(valueN);
+					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+						String defaultValue = column.getDefault();
+						if(defaultValue!=null && defaultValue.length()>0){
+						%>
+							temp  = <%=sourceValueName%>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
+							if(temp.length() > 0){
+								<%=targetConnName %>.<%=column.getLabel() %> = temp;
+							}else{
+								<%=targetConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
+							}
+						<%
+						}else{
+						%>
+							<%=targetConnName %>.<%=column.getLabel() %> = <%=sourceValueName%>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
+						<%
+						}
+					}else if(column.getTalendType().equals("id_Dynamic")){
+					%>
+						<%=dynamicName%>.clearColumnValues();
+						int fieldCount = <%=sourceValueName%>.getColumnsCountOfCurrentRow();
+						for (int i = 0; i < <%=dynamicName%>.getColumnCount(); i++) {
+							if ((<%=sizeListColumns%>-1+i) < fieldCount){
+								<%=dynamicName%>.addColumnValue(<%=sourceValueName%>.get(<%=sizeListColumns%>-1+i)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>);
+							}
+							else{
+								<%=dynamicName%>.addColumnValue("");
+							}
+						}
+						<%=targetConnName %>.<%=column.getLabel() %>=<%=dynamicName%>;
+					<%
+					}else{
+					%>
+						temp = <%=sourceValueName%>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
+						if(temp.length() > 0) {
+							<%
+							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+							} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+							%>
+								<%=targetConnName %>.<%=column.getLabel() %> = temp.getBytes(<%=encoding%>);
+							<%
+							}else if(javaType == JavaTypesManager.DATE) { 
+								if(checkNum || checkDate){
+								%>
+									<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp, <%= patternValue %>, false);
+								<%
+								}else{
+								%>
+									<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp, <%= patternValue %>);
+								<%
+								}
+							}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+							%>
+								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp, <%= thousandsSeparator %>, <%= decimalSeparator %>));
+							<%
+							} else { 
+							%>
+								<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp);
+							<%
+							}
+							%>
+						} else {						
+							<%
+							String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+							if(defaultValue == null) {
+							%>
+								throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=targetConnName %>' connection, value is invalid or this column should be nullable or have a default value.");
+							<%
+							} else {
+							%>
+								<%=targetConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
+							<%
+							}
+							%>
+						}
+					<%
+					}
+				}
+				%>
+				<%if(checkNum) {%>
+				 	int filedsum = <%=sourceValueName%>.getColumnsCountOfCurrentRow();
+				 	if(filedsum < <%=metadata.getListColumns().size() %>){
+					 	throw new RuntimeException("Column(s) missing");
+					 } else if(filedsum > <%=metadata.getListColumns().size() %>) {
+					 	throw new RuntimeException("Too many columns");
+					 }     
+				<%
+				}
+			}
+			
+			public void codeForConnToConn(INode node, IMetadataTable metadata, String sourceConnName, String targetConnName){
+    			for(IMetadataColumn column : metadata.getListColumns()) {
+    			%>
+    				<%=targetConnName%>.<%=column.getLabel()%> = <%=sourceConnName%>.<%=column.getLabel()%>;
+				<%
+				}
+				%>
+			<%
+			}
+		}//class defined end
 
 		List<IMetadataTable> metadatas = node.getMetadataList();
 		if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -105,13 +262,6 @@
 		    			random="0";
 		    		}
 		    	}
-		    	
-				List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
-				String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
-				boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
-				
-				String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
-				boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
 				
 		    	String fieldSeparator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
 		    	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
@@ -119,26 +269,47 @@
 		    	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 				boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false; 
 				
-				String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
-				boolean checkNum = (checkNumStr!=null&&!("").equals(checkNumStr))?("true").equals(checkNumStr):false; 
-				
-				String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-				boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
-				String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
-				String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
-				
 				String splitRecordStr = ElementParameterParser.getValue(node, "__SPLITRECORD__");
 				boolean splitRecord = (splitRecordStr!=null&&!("").equals(splitRecordStr))?("true").equals(splitRecordStr):false;
 				
 				boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
 				
+				//find main & reject conns;
+				List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+			    String rejectConnName = "";
+			    List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+			    if(rejectConns != null && rejectConns.size() > 0) {
+			        IConnection rejectConn = rejectConns.get(0);
+			        rejectConnName = rejectConn.getName();
+			    }
+			    List<IMetadataColumn> rejectColumnList = null;
+			    IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
+			    if(metadataTable != null) {
+			        rejectColumnList = metadataTable.getListColumns();      
+			    }
+			    String firstConnName = "";
+				if (conns!=null) {
+					if (conns.size()>0) {
+						IConnection conn = conns.get(0);
+						firstConnName = conn.getName();		
+					}
+				}			    
+				
+				RowUtil rowUtil = new RowUtil(); 
 				boolean hasDynamic = metadata.isDynamicSchema();
 				if(hasDynamic){
+					rowUtil.prepareValueToConnWithD(metadata, "org.talend.fileprocess.FileInputDelimited", "fid", firstConnName, "dynamic");
 				%>
 					boolean isFirstCheckDyn_<%=cid %> = true;
 					routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
 				<%
+				}else{
+					rowUtil.prepareValueToConn(metadata, "org.talend.fileprocess.FileInputDelimited", "fid", firstConnName);
 				}
+				if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
+					rowUtil.prepareConnToConn(metadata, firstConnName, rejectConnName);
+				}
+				rowUtil.generateClass(node);
 				%>
 				int nb_line_<%=cid%> = 0;
 				org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = null;
@@ -214,240 +385,102 @@
 					}
 					%>
 					while (fid_<%=cid %>!=null && fid_<%=cid %>.nextRecord()) {
-					
-					<%
-					List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-		
-				    String rejectConnName = "";
-				    List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
-				    if(rejectConns != null && rejectConns.size() > 0) {
-				        IConnection rejectConn = rejectConns.get(0);
-				        rejectConnName = rejectConn.getName();
-				    }
-				    List<IMetadataColumn> rejectColumnList = null;
-				    IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
-				    if(metadataTable != null) {
-				        rejectColumnList = metadataTable.getListColumns();      
-				    }
-		
-			    	if (conns!=null) {
-			    		if (conns.size()>0) {
-			    			for (int i=0;i<conns.size();i++) {
-			    				IConnection connTemp = conns.get(i);
-			    				if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-								%>
-		    						<%=connTemp.getName() %> = null;			
-								<%
-			    				}
-			    			}
-			    		}
-			    	}
-		    	
-					String firstConnName = "";
-					if (conns!=null) {
-						if (conns.size()>0) {
-							IConnection conn = conns.get(0);
-							firstConnName = conn.getName();			
-							if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-							%>			
-								boolean whetherReject_<%=cid %> = false;
-								<%=firstConnName %> = new <%=conn.getName() %>Struct();
-								try {
-									<%	
-									List<IMetadataColumn> listColumns = metadata.getListColumns();
-									int sizeListColumns = listColumns.size();
-									boolean noStringTypeExist = false;
-									
-									for (int valueN=0; valueN<sizeListColumns; valueN++) {
-										IMetadataColumn column = listColumns.get(valueN);
-										JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-										if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
-										}else{
-											noStringTypeExist = true;
-											break;
-										}
-									}
-									boolean hasStringDefault = false;
-									for (int valueM=0; valueM<sizeListColumns; valueM++) {
-										IMetadataColumn column = listColumns.get(valueM);
-										JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-										if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
-											if(hasStringDefault==false && column.getDefault()!=null && column.getDefault().length() > 0 ){
-												hasStringDefault = true;
-												break;
-											}
-										}
-									}
-									if(hasDynamic){// generate the dynamic schema code
-										generateCode.colLen = sizeListColumns;
-										generateCode.generateDynamicSchemaCode(false); //false: delimited mode
-									}
-									if(noStringTypeExist || hasStringDefault){
+						<%
+				    	if (conns!=null) {
+				    		if (conns.size()>0) {
+				    			for (int i=0;i<conns.size();i++) {
+				    				IConnection connTemp = conns.get(i);
+				    				if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 									%>
-										String temp_<%=cid %> = ""; 
+			    						<%=connTemp.getName() %> = null;			
 									<%
-									}
-									for (int valueN=0; valueN<sizeListColumns; valueN++) {
-										IMetadataColumn column = listColumns.get(valueN);
-										String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-										JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-										String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
-										if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
-											String defaultValue = column.getDefault();
-											if(defaultValue!=null && defaultValue.length()>0){
-											%>
-												temp_<%=cid %>  = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
-												if(temp_<%=cid %>.length() > 0){
-													<%=firstConnName %>.<%=column.getLabel() %> = temp_<%=cid %>;
-												}else{
-													<%=firstConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
-												}
-											<%}else{%>
-												<%=firstConnName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
-											<%
-											}
-										}else if(column.getTalendType().equals("id_Dynamic")){
-										%>
-											dynamic_<%=cid%>.clearColumnValues();
-											int fieldCount = fid_<%=cid%>.getColumnsCountOfCurrentRow();
-											for (int i = 0; i < dynamic_<%=cid%>.getColumnCount(); i++) {
-												if ((<%=sizeListColumns%>-1+i) < fieldCount){
-													dynamic_<%=cid%>.addColumnValue(fid_<%=cid%>.get(<%=sizeListColumns%>-1+i)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>);
-												}
-												else{
-													dynamic_<%=cid%>.addColumnValue("");
-												}
-											}
-											<%=firstConnName %>.<%=column.getLabel() %>=dynamic_<%=cid%>;
+				    				}
+				    			}
+				    	
+								IConnection conn = conns.get(0);
+								if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+								%>			
+									boolean whetherReject_<%=cid %> = false;
+									<%=firstConnName %> = new <%=conn.getName() %>Struct();
+									try {
 										<%
+										List<IMetadataColumn> listColumns = metadata.getListColumns();
+										int sizeListColumns = listColumns.size();
+										if(hasDynamic){// generate the dynamic schema code
+											generateCode.colLen = sizeListColumns;
+											generateCode.generateDynamicSchemaCode(false); //false: delimited mode
+											rowUtil.callValueToConnWithD("fid_"+cid, firstConnName, "dynamic_"+cid);
 										}else{
-										%>
-											temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
-											if(temp_<%=cid %>.length() > 0) {
-												<%
-												if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-												} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
-												%>
-													<%=firstConnName %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
-												<%
-												}else if(javaType == JavaTypesManager.DATE) { 
-													if(checkNum || checkDate){
-													%>
-														<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>, false);
-													<%
-													}else{
-													%>
-														<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
-													<%
-													}
-												}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
-												%>
-													<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
-												<%
-												} else { 
-												%>
-													<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
-												<%
-												}
-												%>
-											} else {						
-												<%
-												String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
-												if(defaultValue == null) {
-												%>
-													throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=firstConnName %>' connection, value is invalid or this column should be nullable or have a default value.");
-												<%
-												} else {
-												%>
-													<%=firstConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
-												<%
-												}
-												%>
-											}
+											rowUtil.callValueToConn("fid_"+cid, firstConnName);
+										}
+										
+			
+										
+										if(rejectConnName.equals(firstConnName)) {
+										%> 
+											<%=firstConnName %> = null; 
 										<%
 										}
-									}
-									if(checkNum) {
-									%>
-									 	int filedsum_<%=cid %> = fid_<%=cid %>.getColumnsCountOfCurrentRow();
-									 	if(filedsum_<%=cid %> < <%=metadata.getListColumns().size() %>){
-										 	throw new RuntimeException("Column(s) missing");
-										 } else if(filedsum_<%=cid %> > <%=metadata.getListColumns().size() %>) {
-										 	throw new RuntimeException("Too many columns");
-										 }     
-									<%
-									}
-									if(rejectConnName.equals(firstConnName)) {%> 
-										<%=firstConnName %> = null; 
-									<%
-									}
-									%>
-						
-		    					} catch (Exception e) {
-		        					whetherReject_<%=cid%> = true;
-		        					<%
-		        					if (dieOnError) {
-		            				%>
-		            					throw(e);
-		            				<%
-		        					} else {
-		            					if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
-						                %>                    
-		                    				<%=rejectConnName %> = new <%=rejectConnName %>Struct();
+										%>
+							
+			    					} catch (Exception e) {
+			        					whetherReject_<%=cid%> = true;
+			        					<%
+			        					if (dieOnError) {
+			            				%>
+			            					throw(e);
+			            				<%
+			        					} else {
+			            					if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
+							                %>                    
+			                    				<%=rejectConnName %> = new <%=rejectConnName %>Struct();
+				                				<%rowUtil.callConnToConn(firstConnName, rejectConnName);%>
+				                				<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
+			                					<%=firstConnName %> = null;
 			                				<%
-			                				for(IMetadataColumn column : metadata.getListColumns()) {
-			                    			%>
-		                    					<%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
-		                				    <%
-		                					}
-		                					%>
-		                					<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
-		                					<%=firstConnName %> = null;
-		                				<%
-		            					} else if(("").equals(rejectConnName)){
-		                				%>
-		                					System.err.println(e.getMessage());
-		                					<%=firstConnName %> = null;
-		                				<%
-		            					} else if(rejectConnName.equals(firstConnName)){%>
-		            						<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
-		            					<%
-		            					}
-		        					} 
-		        					%>
-		    					}
-							<%
-							}
-						}
-						if (conns.size()>0) {
-							boolean isFirstEnter = true;
-							for (int i=0;i<conns.size();i++) {
-								IConnection conn = conns.get(i);
-								if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getName().compareTo(rejectConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
-									if(isFirstEnter) {
-									%>
-										if(!whetherReject_<%=cid%>) { 
-											<%isFirstEnter = false; 
+			            					} else if(("").equals(rejectConnName)){
+			                				%>
+			                					System.err.println(e.getMessage());
+			                					<%=firstConnName %> = null;
+			                				<%
+			            					} else if(rejectConnName.equals(firstConnName)){%>
+			            						<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
+			            					<%
 									}
-									%>      
-		             				if(<%=conn.getName() %> == null){ 
-		            	 				<%=conn.getName() %> = new <%=conn.getName() %>Struct();
-		             				}				
-									<%
-					    	 		for (IMetadataColumn column: metadata.getListColumns()) {
-									%>
-			    	 					<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
-									<%
-						 			}
+			        					} 
+			        					%>
+			    					}
+								<%
 								}
 							}
-							if(!isFirstEnter) {
-							%> 
-								} 
-							<%
-							}	
-						}
-			  		}
+							if (conns.size()>0) {
+								boolean isFirstEnter = true;
+								for (int i=0;i<conns.size();i++) {
+									IConnection conn = conns.get(i);
+									if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getName().compareTo(rejectConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
+									
+										if(isFirstEnter) {
+										%>
+											if(!whetherReject_<%=cid%>) { 
+												<%isFirstEnter = false; 
+										}
+										%>      
+			             				if(<%=conn.getName() %> == null){ 
+			            	 				<%=conn.getName() %> = new <%=conn.getName() %>Struct();
+			             				}				
+										<%
+						    	 		rowUtil.callConnToConn(firstConnName, conn.getName());
+									}
+								}
+								 
+								if(!isFirstEnter) {
+								%> 
+									} 
+								<%
+								}
+								
+							}
+				  		}
 			}
 		}
 
@@ -455,11 +488,165 @@
 	}else{//the following is the tFileInputCSV component
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		class RowUtil extends DefaultRowUtil{
+			public void codeForValueToConn(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName){
+				codeForValueToConnWithD(node, metadata, sourceValueClass, sourceValueName, targetConnName, null);
+			}
+			public void codeForValueToConnWithD(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, String dynamicName){
+				
+				String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+				
+				List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
+				String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
+				boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
+				
+				String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
+				boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
+				
+				String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
+				boolean checkNum = (checkNumStr!=null&&!("").equals(checkNumStr))?("true").equals(checkNumStr):false; 
+				
+				String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+				boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
+				String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
+				String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
+				
+				List<IMetadataColumn> columns=metadata.getListColumns();
+				int columnSize = columns.size();
+				%>				
+				if(<%=sourceValueName%>.length == 1 && ("\015").equals(<%=sourceValueName%>[0])){//empty line when row separator is '\n'
+					<%
+					for (IMetadataColumn column1: metadata.getListColumns()) {
+					%>
+						<%=targetConnName %>.<%=column1.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column1.getTalendType(), column1.isNullable())%>;
+					<%
+					}
+					%>
+				}else{
+					<%
+					boolean hasStringDefault = false;
+					for (int valueM=0; valueM<columnSize; valueM++) {
+						IMetadataColumn column = columns.get(valueM);
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+							if(hasStringDefault==false && column.getDefault()!=null && column.getDefault().length() > 0 ){
+								hasStringDefault = true;
+								break;
+							}
+						}
+					}
+					
+					if(hasStringDefault==true){
+					%>
+						String temp = "";
+					<%
+					}
+					for (int i=0;i<columnSize;i++) {
+						IMetadataColumn column=columns.get(i);
+						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+						%>
+						if(<%=i %> < <%=sourceValueName%>.length){				
+							<%
+							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+								String defaultValue = column.getDefault();
+								if(defaultValue!=null && defaultValue.length()>0){
+								%>
+									temp = <%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>;
+									if(temp.length() > 0){
+										<%=targetConnName %>.<%=column.getLabel() %> = temp;
+									}else{
+										<%=targetConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
+									}
+								<%
+								}else{
+								%>
+									<%=targetConnName %>.<%=column.getLabel() %> = <%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>;
+								<%
+								}
+							} else {
+							%>
+								if(<%=sourceValueName%>[<%=i %>].length() > 0) {
+									<%
+									if(javaType == JavaTypesManager.DATE) {
+										if(checkNum || checkDate){
+										%>
+											<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(<%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>, false);
+										<%
+										}else{
+										%>
+											<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(<%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
+										<%
+										}
+									} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+									%>
+										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(<%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
+									<%
+									}else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+									%>							
+		    							<%=targetConnName %>.<%=column.getLabel() %> = <%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.getBytes(<%=encoding %>);
+									<%
+									}else if(column.getTalendType().equals("id_Dynamic")){
+									%>
+										for (int i = 0; i < <%=dynamicName%>.getColumnCount(); i++) {
+											<%=dynamicName%>.clearColumnValues();
+										}
+										int fieldCount = <%=sourceValueName%>.length;	
+										for (int i = 0; i < <%=dynamicName%>.getColumnCount(); i++) {
+											if ((<%=columnSize%>-1+i) < fieldCount)
+												<%=dynamicName%>.addColumnValue(<%=sourceValueName%>[<%=columnSize%>-1+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
+											else
+												<%=dynamicName%>.addColumnValue("");
+										}
+										<%=targetConnName %>.<%=column.getLabel() %> = <%=dynamicName%>;
+									<%
+									}else {
+									%>
+										<%=targetConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(<%=sourceValueName%>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
+									<%
+									}
+									%>					
+								}else{
+									<%=targetConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault())%>;
+								}
+							<%					
+							}
+							%>	
+						}else{
+							<%=targetConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault()) %>;
+						}
+					<%
+					}
+					%>
+				}
+				<%if(checkNum) {%>
+ 					int filedsum = <%=sourceValueName%>.length;
+ 					if(filedsum < <%=metadata.getListColumns().size() %>){
+ 						throw new Exception("Column(s) missing");
+ 					} else if(filedsum > <%=metadata.getListColumns().size() %>) {
+ 						throw new RuntimeException("Too many columns");
+ 					}     
+				<%
+				}
+			}
+			
+			public void codeForConnToConn(INode node, IMetadataTable metadata, String sourceConnName, String targetConnName){
+    			for(IMetadataColumn column : metadata.getListColumns()) {
+    			%>
+    				<%=targetConnName%>.<%=column.getLabel()%> = <%=sourceConnName%>.<%=column.getLabel()%>;
+				<%
+				}
+				%>
+			<%
+			}
+		}//class defined end
+		
 		List<IMetadataTable> metadatas = node.getMetadataList();
 		if ((metadatas!=null)&&(metadatas.size()>0)) {
 		    IMetadataTable metadata = metadatas.get(0);
 		    if (metadata!=null) {
-		        
+		    
 		        String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
 		    	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 		    	String header = ElementParameterParser.getValue(node, "__HEADER__");
@@ -494,33 +681,46 @@
 		    	
 		    	String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
 		    	
-		    	List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
-				String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
-				boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
-				
 		    	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 				boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 				
-				String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
-				boolean checkNum = (checkNumStr!=null&&!("").equals(checkNumStr))?("true").equals(checkNumStr):false; 
-				
-				String checkDateStr = ElementParameterParser.getValue(node,"__CHECK_DATE__");
-				boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").equals(checkDateStr):false;
-				
-				String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-				boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
-				String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
-				String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
-				
 				boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
 				
+				List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+			    String rejectConnName = "";
+    			List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+    			if(rejectConns != null && rejectConns.size() > 0) {
+        			IConnection rejectConn = rejectConns.get(0);
+        			rejectConnName = rejectConn.getName();
+   				}
+    			List<IMetadataColumn> rejectColumnList = null;
+    			IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
+    			if(metadataTable != null) {
+        			rejectColumnList = metadataTable.getListColumns();      
+    			}
+    			String firstConnName = "";
+				if (conns!=null) {
+					if (conns.size()>0) {
+						IConnection conn = conns.get(0);
+						firstConnName = conn.getName();		
+					}
+				}
+				
+				RowUtil rowUtil = new RowUtil(); 
 				boolean hasDynamic = metadata.isDynamicSchema();
 				if(hasDynamic){
-				%>
+					rowUtil.prepareValueToConnWithD(metadata, "String[]", "row", firstConnName, "dynamic");
+					%>
 					boolean isFirstCheckDyn_<%=cid %> = true;
 					routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
 				<%
+				}else{
+					rowUtil.prepareValueToConn(metadata, "String[]", "row", firstConnName);
 				}
+				if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
+					rowUtil.prepareConnToConn(metadata, firstConnName, rejectConnName);
+				}
+				rowUtil.generateClass(node);	
 				%>
 				int nb_line_<%=cid%> = 0;
 				int footer_<%=cid %> = <%= footer%>;
@@ -692,6 +892,7 @@
 							<%
 							}
 							%>
+	                
 			            }
 	            		int lastLineTemp<%=cid %> = totalLine<%=cid %> - footer_<%=cid %>   < 0? 0 : totalLine<%=cid %> - footer_<%=cid %> ;
 	            		if(lastLine<%=cid %> > 0){
@@ -774,6 +975,7 @@
 					}
 					%>
 	        	
+	        	
 	        		currentLine<%=cid %>++;
 	            
 		            if(lastLine<%=cid %> > -1 && currentLine<%=cid %> > lastLine<%=cid %>) {
@@ -785,20 +987,6 @@
 	            	}  
 	                                                                      
 					<%
-					List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-	
-				    String rejectConnName = "";
-	    			List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
-	    			if(rejectConns != null && rejectConns.size() > 0) {
-	        			IConnection rejectConn = rejectConns.get(0);
-	        			rejectConnName = rejectConn.getName();
-	   				}
-	    			List<IMetadataColumn> rejectColumnList = null;
-	    			IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
-	    			if(metadataTable != null) {
-	        			rejectColumnList = metadataTable.getListColumns();      
-	    			}
-	
 			    	if (conns!=null) {
 	    				if (conns.size()>0) {
 	    					for (int i=0;i<conns.size();i++) {
@@ -809,15 +997,8 @@
 								<%
 	    						}
 	    					}
-	    				}
-	    			}
-	    	
-					String firstConnName = "";
-					if (conns!=null) {
-						if (conns.size()>0) {
+	    					
 							IConnection conn = conns.get(0);
-							firstConnName = conn.getName();
-				
 							if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 							%>
 								boolean whetherReject_<%=cid %> = false;
@@ -826,137 +1007,21 @@
 									<%
 									List<IMetadataColumn> columns=metadata.getListColumns();
 									int columnSize = columns.size();
-									%>				
-					
-									if(row<%=cid %>.length == 1 && ("\015").equals(row<%=cid %>[0])){//empty line when row separator is '\n'
-					
-										<%
-										for (IMetadataColumn column1: metadata.getListColumns()) {
-										%>
-	
-											<%=firstConnName %>.<%=column1.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column1.getTalendType(), column1.isNullable())%>;
-					
-										<%}%>
-					
+									if(hasDynamic){// generate the dynamic schema code
+										generateCode.colLen = columnSize;
+										generateCode.generateDynamicSchemaCode(true); //true: CSV mode
+										rowUtil.callValueToConnWithD("row"+cid, firstConnName, "dynamic_"+cid);
 									}else{
-				
-										<%
-										boolean hasStringDefault = false;
-										for (int valueM=0; valueM<columnSize; valueM++) {
-											IMetadataColumn column = columns.get(valueM);
-											JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-											if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
-												if(hasStringDefault==false && column.getDefault()!=null && column.getDefault().length() > 0 ){
-													hasStringDefault = true;
-													break;
-												}
-											}
-										}
-										if(hasDynamic){// generate the dynamic schema code
-											generateCode.colLen = columnSize;
-											generateCode.generateDynamicSchemaCode(true); //true: CSV mode
-										}
-										if(hasStringDefault==true){
-										%>
-											String temp_<%=cid %> = "";
-										<%
-										}
-										for (int i=0;i<columnSize;i++) {
-											IMetadataColumn column=columns.get(i);
-											String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-											JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-											String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-											%>
-							
-											if(<%=i %> < row<%=cid %>.length){				
-												<%
-												if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-													String defaultValue = column.getDefault();
-													if(defaultValue!=null && defaultValue.length()>0){
-													%>
-														temp_<%=cid %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>;
-														if(temp_<%=cid %>.length() > 0){
-															<%=firstConnName %>.<%=column.getLabel() %> = temp_<%=cid %>;
-														}else{
-															<%=firstConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
-														}
-													<%
-													}else{
-													%>
-														<%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>;
-													<%
-													}
-												} else {
-												%>
-													if(row<%=cid %>[<%=i %>].length() > 0) {
-														<%
-														if(javaType == JavaTypesManager.DATE) {
-															if(checkNum || checkDate){
-															%>
-																<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>, false);
-															<%
-															}else{
-															%>
-																<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
-															<%
-															}
-														} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
-														%>
-															<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
-														<%
-														}else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
-														%>							
-								    						<%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.getBytes(<%=encoding %>);
-														<%
-														}else if(column.getTalendType().equals("id_Dynamic")){
-														%>
-															for (int i = 0; i < dynamic_<%=cid%>.getColumnCount(); i++) {
-																dynamic_<%=cid%>.clearColumnValues();
-															}
-															int fieldCount = row<%=cid %>.length;	
-															for (int i = 0; i < dynamic_<%=cid%>.getColumnCount(); i++) {
-																if ((<%=columnSize%>-1+i) < fieldCount)
-																	dynamic_<%=cid%>.addColumnValue(row<%=cid %>[<%=columnSize%>-1+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
-																else
-																	dynamic_<%=cid%>.addColumnValue("");
-															}
-															<%=firstConnName %>.<%=column.getLabel() %> = dynamic_<%=cid%>;
-														<%
-														}else {
-														%>
-															<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
-														<%
-														}
-														%>					
-													}else{
-														<%=firstConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault())%>;
-													}
-												<%					
-												}
-												%>	
-									
-											}else{
-												<%=firstConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault()) %>;
-											}
-										<%
-										}
-										%>
+										rowUtil.callValueToConn("row"+cid, firstConnName);
 									}
-				
-									<%
-									if(checkNum) {
-									%>
-		 								int filedsum_<%=cid %> = row<%=cid %>.length;
-		 								if(filedsum_<%=cid %> < <%=metadata.getListColumns().size() %>){
-		 									throw new Exception("Column(s) missing");
-		 								} else if(filedsum_<%=cid %> > <%=metadata.getListColumns().size() %>) {
-		 									throw new RuntimeException("Too many columns");
-		 								}     
-									<%
-									}
-									if(rejectConnName.equals(firstConnName)) {%> 
+										
+	
+									if(rejectConnName.equals(firstConnName)) {
+									%> 
 										<%=firstConnName %> = null; 
-									<%}%>
+									<%
+									}
+									%>
 	    						} catch (Exception e) {
 							        whetherReject_<%=cid%> = true;
         							<%
@@ -969,11 +1034,7 @@
 						                %>
 						                    <%=rejectConnName %> = new <%=rejectConnName %>Struct();
                 							<%
-                							for(IMetadataColumn column : metadata.getListColumns()) {
-                    						%>
-                    							<%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
-                    						<%
-                							}
+                							rowUtil.callConnToConn(firstConnName, rejectConnName);
                 							%>
                 							<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
                 							<%=firstConnName %> = null;
@@ -991,6 +1052,7 @@
         							} 
         							%>
 	    						}
+	
 							<%			
 							}
 						}
@@ -999,23 +1061,17 @@
 							for (int i=0;i<conns.size();i++) {
 								IConnection conn = conns.get(i);
 								if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getName().compareTo(rejectConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
-								%>
-									<%
 									if(isFirstEnter) {
 									%>
 										if(!whetherReject_<%=cid%>) { 
 											<%isFirstEnter = false; 
-									} 
+									}
 									%>      
 	             					if(<%=conn.getName() %> == null){ 
 	            	 					<%=conn.getName() %> = new <%=conn.getName() %>Struct();
 	             					}
 									<%
-				    	 			for (IMetadataColumn column: metadata.getListColumns()) {
-									%>
-		    	 						<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
-									<%
-					 				}
+        							rowUtil.callConnToConn(firstConnName, conn.getName());
 								}
 							}
 							if(!isFirstEnter) {
