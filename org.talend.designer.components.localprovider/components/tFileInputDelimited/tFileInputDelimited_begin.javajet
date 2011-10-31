@@ -314,19 +314,23 @@
 				
 				RowUtil rowUtil = new RowUtil(); 
 				boolean hasDynamic = metadata.isDynamicSchema();
-				if(hasDynamic){
-					rowUtil.prepareValueToConnWithD(metadata, "org.talend.fileprocess.FileInputDelimited", "fid", firstConnName, "dynamic");
-				%>
-					boolean isFirstCheckDyn_<%=cid %> = true;
-					routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
-				<%
-				}else{
-					rowUtil.prepareValueToConn(metadata, "org.talend.fileprocess.FileInputDelimited", "fid", firstConnName);
+				if (conns!=null) {
+				    if (conns.size()>0) {
+						if(hasDynamic){
+							rowUtil.prepareValueToConnWithD(metadata, "org.talend.fileprocess.FileInputDelimited", "fid", firstConnName, "dynamic");
+							%>
+							boolean isFirstCheckDyn_<%=cid %> = true;
+							routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
+						<%
+						}else{
+							rowUtil.prepareValueToConn(metadata, "org.talend.fileprocess.FileInputDelimited", "fid", firstConnName);
+						}
+						if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
+							rowUtil.prepareConnToConn(metadata, firstConnName, rejectConnName);
+						}
+						rowUtil.generateClass(node);
+					}
 				}
-				if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
-					rowUtil.prepareConnToConn(metadata, firstConnName, rejectConnName);
-				}
-				rowUtil.generateClass(node);
 				%>
 				int nb_line_<%=cid%> = 0;
 				org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = null;
@@ -725,19 +729,23 @@
 				
 				RowUtil rowUtil = new RowUtil(); 
 				boolean hasDynamic = metadata.isDynamicSchema();
-				if(hasDynamic){
-					rowUtil.prepareValueToConnWithD(metadata, "String[]", "row", firstConnName, "dynamic");
-					%>
-					boolean isFirstCheckDyn_<%=cid %> = true;
-					routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
-				<%
-				}else{
-					rowUtil.prepareValueToConn(metadata, "String[]", "row", firstConnName);
-				}
-				if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
-					rowUtil.prepareConnToConn(metadata, firstConnName, rejectConnName);
-				}
-				rowUtil.generateClass(node);	
+				if (conns!=null) {
+				    if (conns.size()>0) {
+						if(hasDynamic){
+							rowUtil.prepareValueToConnWithD(metadata, "String[]", "row", firstConnName, "dynamic");
+							%>
+							boolean isFirstCheckDyn_<%=cid %> = true;
+							routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
+						<%
+						}else{
+							rowUtil.prepareValueToConn(metadata, "String[]", "row", firstConnName);
+						}
+						if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
+							rowUtil.prepareConnToConn(metadata, firstConnName, rejectConnName);
+						}
+						rowUtil.generateClass(node);
+					}
+				}	
 				%>
 				int nb_line_<%=cid%> = 0;
 				int footer_<%=cid %> = <%= footer%>;
