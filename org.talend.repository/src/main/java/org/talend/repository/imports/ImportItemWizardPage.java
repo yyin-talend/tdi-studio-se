@@ -74,7 +74,9 @@ import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.eclipse.ui.internal.wizards.datatransfer.TarFile;
 import org.eclipse.ui.internal.wizards.datatransfer.TarLeveledStructureProvider;
 import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -82,8 +84,11 @@ import org.talend.core.model.general.IExchangeService;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.RepositoryViewObject;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.imports.TreeBuilder.IContainerNode;
+import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -856,6 +861,27 @@ class ImportItemWizardPage extends WizardPage {
             Item item = itemRecord.getProperty().getItem();
             if (item instanceof JobletProcessItem) {
                 needToRefreshPalette = true;
+            }
+
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            if (item.getState().isLocked()) {
+                try {
+                    factory.unlock(item);
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                } catch (LoginException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+            ERepositoryStatus status = factory.getStatus(item);
+            if (status == ERepositoryStatus.LOCK_BY_USER) {
+                try {
+                    factory.unlock(item);
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                } catch (LoginException e) {
+                    ExceptionHandler.process(e);
+                }
             }
         }
 
