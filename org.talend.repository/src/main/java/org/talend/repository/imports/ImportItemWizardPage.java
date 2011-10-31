@@ -874,7 +874,7 @@ class ImportItemWizardPage extends WizardPage {
                 }
             }
             ERepositoryStatus status = factory.getStatus(item);
-            if (status == ERepositoryStatus.LOCK_BY_USER) {
+            if (status != null && status == ERepositoryStatus.LOCK_BY_USER) {
                 try {
                     factory.unlock(item);
                 } catch (PersistenceException e) {
