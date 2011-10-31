@@ -22,10 +22,10 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.jobs.InsertionExtensionJob;
+import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.ui.views.ExchangeView;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.WebserviceStatus;
-import org.talend.designer.core.model.components.manager.ComponentManager;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -34,9 +34,18 @@ public class InsertionExtensionAction extends Action {
 
     private ExchangeView fView = ExchangeUtils.getExchangeView();
 
+    private ComponentExtension extension;
+
+    public InsertionExtensionAction(ComponentExtension extension) {
+        this.extension = extension;
+    }
+
     public void run() {
+        if (extension == null) {
+            return;
+        }
         try {
-            final InsertionExtensionJob job = new InsertionExtensionJob(fView.getSelectedExtension());
+            final InsertionExtensionJob job = new InsertionExtensionJob(extension);
             job.addJobChangeListener(new JobChangeAdapter() {
 
                 @Override
@@ -68,6 +77,7 @@ public class InsertionExtensionAction extends Action {
             if (wbs.isResult()) {
                 MessageDialog.openInformation(fView.getSite().getShell(),
                         Messages.getString("InstalledExtensionJob.Title"), wbs.getMessageException()); //$NON-NLS-1$
+                fView.returnMyExtensionCompositeToFirstPage();
             } else {
                 String mainMsg = Messages.getString("InsertionExtensionAction.InstalledFailure") + " "
                         + Messages.getString("InsertionExtensionAction.InstalledFailureTip");

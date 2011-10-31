@@ -299,4 +299,41 @@ public class ExchangeView extends ViewPart {
         }
     }
 
+    public void setSelectedExtension(ComponentExtension setComponentExtension) {
+        if (currentSelectedTab != null) {
+            if (currentSelectedTab.getCategory().equals(EComponentCategory.AVAILABLEEXTENSIONS)) {
+                availableExtensionsComposite.setSelectedExtension(setComponentExtension);
+            } else if (currentSelectedTab.getCategory().equals(EComponentCategory.DOWNLOADEDEXTENSIONS)) {
+                downloadedExtensionsComposite.setSelectedExtension(setComponentExtension);
+            } else if (currentSelectedTab.getCategory().equals(EComponentCategory.MYEXTENSIONS)) {
+                myExtensionsComposite.setSelectedExtension(setComponentExtension);
+            }
+        }
+    }
+
+    public void returnMyExtensionCompositeToFirstPage() {
+        if (myExtensionsComposite != null) {
+            myExtensionsComposite.returnMyExtensionsComposite();
+        }
+    }
+
+    public void myExtensionModifyOrUploadVersion(int operateStatus, ComponentExtension componentExtension) {
+        if (myExtensionsComposite != null) {
+            myExtensionsComposite.myExtensionModifyOrUploadVersion(operateStatus, componentExtension);
+        }
+    }
+
+    public void myExtensionAddNew() {
+        if (myExtensionsComposite != null) {
+            myExtensionsComposite.myExtensionAddNew();
+        }
+    }
+
+    public List<VersionRevision> getVersionRevisions() {
+        if (fVersionRevisions == null) {
+            return new ArrayList<VersionRevision>();
+        }
+        return this.fVersionRevisions;
+    }
+
 }

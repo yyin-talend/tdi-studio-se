@@ -22,6 +22,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.jobs.DeleteExtensionJob;
+import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.ui.views.ExchangeView;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.WebserviceStatus;
@@ -33,9 +34,18 @@ public class DeleteExtensionAction extends Action {
 
     private ExchangeView fView = ExchangeUtils.getExchangeView();
 
+    private ComponentExtension extension;
+
+    public DeleteExtensionAction(ComponentExtension extension) {
+        this.extension = extension;
+    }
+
     public void run() {
+        if (extension == null) {
+            return;
+        }
         try {
-            final DeleteExtensionJob job = new DeleteExtensionJob(fView.getSelectedExtension());
+            final DeleteExtensionJob job = new DeleteExtensionJob(extension);
             job.addJobChangeListener(new JobChangeAdapter() {
 
                 @Override
