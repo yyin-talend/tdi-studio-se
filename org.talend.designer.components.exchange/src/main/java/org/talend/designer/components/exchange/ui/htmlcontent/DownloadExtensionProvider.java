@@ -119,7 +119,7 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
                 tr.appendChild(td);
 
                 td = dom.createElement("td");
-                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#EBEBDB");
+                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB");
                 span = dom.createElement("span");
                 span.setAttribute("class", "style_2 style_3");
                 span.appendChild(dom.createTextNode("Downloaded Version"));
@@ -127,7 +127,7 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
                 tr.appendChild(td);
 
                 td = dom.createElement("td");
-                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#EBEBDB");
+                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB");
                 span = dom.createElement("span");
                 span.setAttribute("class", "style_2 style_3");
                 span.appendChild(dom.createTextNode("Download Data"));
@@ -135,7 +135,8 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
                 tr.appendChild(td);
 
                 td = dom.createElement("td");
-                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#EBEBDB");
+                td.setAttribute("style",
+                        "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;background:#EBEBDB");
                 span = dom.createElement("span");
                 span.setAttribute("class", "style_2 style_3");
                 span.appendChild(dom.createTextNode("Install/Update"));
@@ -147,6 +148,7 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
 
             componentMap.clear();
             Iterator ite = fInstalledExtensions.entrySet().iterator();
+            int size = fInstalledExtensions.size();
             count = 0;
             while (ite.hasNext()) {
                 count++;
@@ -156,31 +158,65 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
                 Element trExtension = dom.createElement("tr");
 
                 Element tdExtension = dom.createElement("td");
-                if (count % 2 == 1) {
-                    tdExtension.setAttribute("style",
-                            "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                if (count == size) {
+                    if (count % 2 == 1) {
+                        tdExtension
+                                .setAttribute("style",
+                                        "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
+                    } else {
+                        tdExtension.setAttribute("style",
+                                "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5");
+                    }
                 } else {
-                    tdExtension.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5");
+                    if (count % 2 == 1) {
+                        tdExtension.setAttribute("style",
+                                "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                    } else {
+                        tdExtension.setAttribute("style", "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5");
+                    }
                 }
+
                 tdExtension.appendChild(dom.createTextNode(object.getLabel()));
                 trExtension.appendChild(tdExtension);
 
                 tdExtension = dom.createElement("td");
-                if (count % 2 == 1) {
-                    tdExtension.setAttribute("style",
-                            "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                if (count == size) {
+                    if (count % 2 == 1) {
+                        tdExtension
+                                .setAttribute("style",
+                                        "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
+                    } else {
+                        tdExtension.setAttribute("style",
+                                "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5");
+                    }
                 } else {
-                    tdExtension.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5");
+                    if (count % 2 == 1) {
+                        tdExtension.setAttribute("style",
+                                "border-top:1px solid #cccccc;border-left:1px solid #cccccc;background:#F7F7F7");
+                    } else {
+                        tdExtension.setAttribute("style", "border-top:1px solid #cccccc;border-left:1px solid #cccccc");
+                    }
                 }
                 tdExtension.appendChild(dom.createTextNode(object.getDownloadedVersion()));
                 trExtension.appendChild(tdExtension);
 
                 tdExtension = dom.createElement("td");
-                if (count % 2 == 1) {
-                    tdExtension.setAttribute("style",
-                            "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                if (count == size) {
+                    if (count % 2 == 1) {
+                        tdExtension
+                                .setAttribute("style",
+                                        "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
+                    } else {
+                        tdExtension.setAttribute("style",
+                                "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5");
+                    }
                 } else {
-                    tdExtension.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5");
+                    if (count % 2 == 1) {
+                        tdExtension.setAttribute("style",
+                                "border-top:1px solid #cccccc;border-left:1px solid #cccccc;background:#F7F7F7");
+                    } else {
+                        tdExtension.setAttribute("style", "border-top:1px solid #cccccc;border-left:1px solid #cccccc");
+                    }
                 }
                 tdExtension.appendChild(dom.createTextNode(formatter.format(object.getDateDownload())));
                 trExtension.appendChild(tdExtension);
@@ -188,11 +224,27 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
                 if (object != null && fDownloadedExtensions.containsKey(object.getIdExtension())) {
                     if (object.getVersionExtension().equals(object.getDownloadedVersion())) {
                         tdExtension = dom.createElement("td");
-                        if (count % 2 == 1) {
-                            tdExtension.setAttribute("style",
-                                    "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                        if (count == size) {
+                            if (count % 2 == 1) {
+                                tdExtension
+                                        .setAttribute(
+                                                "style",
+                                                "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
+                            } else {
+                                tdExtension
+                                        .setAttribute("style",
+                                                "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5");
+                            }
                         } else {
-                            tdExtension.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5");
+                            if (count % 2 == 1) {
+                                tdExtension
+                                        .setAttribute("style",
+                                                "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;background:#F7F7F7");
+                            } else {
+                                tdExtension
+                                        .setAttribute("style",
+                                                "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5");
+                            }
                         }
                         Text view = dom
                                 .createTextNode(Messages.getString("DownloadedExtensionsComposite.installedOperateStatus"));
@@ -200,11 +252,27 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
                         trExtension.appendChild(tdExtension);
                     } else {
                         tdExtension = dom.createElement("td");
-                        if (count % 2 == 1) {
-                            tdExtension.setAttribute("style",
-                                    "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                        if (count == size) {
+                            if (count % 2 == 1) {
+                                tdExtension
+                                        .setAttribute(
+                                                "style",
+                                                "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
+                            } else {
+                                tdExtension
+                                        .setAttribute("style",
+                                                "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5");
+                            }
                         } else {
-                            tdExtension.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5");
+                            if (count % 2 == 1) {
+                                tdExtension
+                                        .setAttribute("style",
+                                                "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;background:#F7F7F7");
+                            } else {
+                                tdExtension
+                                        .setAttribute("style",
+                                                "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5");
+                            }
                         }
                         Element hyperlink = dom.createElement("a");
                         String url = "http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&"
@@ -220,11 +288,26 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
                     }
                 } else {
                     tdExtension = dom.createElement("td");
-                    if (count % 2 == 1) {
-                        tdExtension.setAttribute("style",
-                                "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#F7F7F7");
+                    if (count == size) {
+                        if (count % 2 == 1) {
+                            tdExtension
+                                    .setAttribute(
+                                            "style",
+                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
+                        } else {
+                            tdExtension
+                                    .setAttribute("style",
+                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5");
+                        }
                     } else {
-                        tdExtension.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5");
+                        if (count % 2 == 1) {
+                            tdExtension
+                                    .setAttribute("style",
+                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;background:#F7F7F7");
+                        } else {
+                            tdExtension.setAttribute("style",
+                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5");
+                        }
                     }
                     Element hyperlink = dom.createElement("a");
                     String url = "http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&"
