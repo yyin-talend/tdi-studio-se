@@ -27,7 +27,6 @@ public class MyExtensionLocationListener implements LocationListener {
      * 
      * @see org.eclipse.swt.browser.LocationListener#changing(org.eclipse.swt.browser.LocationEvent)
      */
-    @Override
     public void changing(LocationEvent event) {
         String url = event.location;
         if (url == null)
@@ -52,7 +51,6 @@ public class MyExtensionLocationListener implements LocationListener {
      * 
      * @see org.eclipse.swt.browser.LocationListener#changed(org.eclipse.swt.browser.LocationEvent)
      */
-    @Override
     public void changed(LocationEvent event) {
 
     }

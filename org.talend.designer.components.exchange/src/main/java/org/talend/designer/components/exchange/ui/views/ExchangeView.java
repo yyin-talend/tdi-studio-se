@@ -287,6 +287,10 @@ public class ExchangeView extends ViewPart {
         return this.myExtensionsComposite;
     }
 
+    public DownloadedExtensionsComposite getDownloadedExtensionsComposite() {
+        return this.downloadedExtensionsComposite;
+    }
+
     public void returnAvailableExtensionsCompositeToFirstPage() {
         if (availableExtensionsComposite != null) {
             availableExtensionsComposite.returnToFirstPage();
@@ -296,6 +300,24 @@ public class ExchangeView extends ViewPart {
     public void editAvailableExtensionReviews() {
         if (availableExtensionsComposite != null) {
             availableExtensionsComposite.editReviews();
+        }
+    }
+
+    public void openDetailPage(ComponentExtension extension) {
+        if (availableExtensionsComposite != null) {
+            availableExtensionsComposite.openDetailPage(extension);
+        }
+    }
+
+    public void editDownloadedExtensionsReviews() {
+        if (downloadedExtensionsComposite != null) {
+            downloadedExtensionsComposite.review();
+        }
+    }
+
+    public void filterAvailableExtensions(String filter) {
+        if (availableExtensionsComposite != null) {
+            availableExtensionsComposite.updateItems(filter);
         }
     }
 

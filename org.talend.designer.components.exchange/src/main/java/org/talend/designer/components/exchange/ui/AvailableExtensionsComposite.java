@@ -26,20 +26,11 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.StackLayout;
-import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -47,13 +38,8 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.internal.intro.impl.html.IIntroHTMLConstants;
 import org.eclipse.ui.internal.intro.impl.model.IntroContentProvider;
 import org.eclipse.ui.internal.intro.impl.model.loader.ContentProviderManager;
@@ -61,7 +47,6 @@ import org.eclipse.ui.internal.intro.impl.model.loader.IntroContentParser;
 import org.eclipse.ui.internal.intro.impl.model.util.ModelUtil;
 import org.eclipse.ui.intro.config.IIntroContentProviderSite;
 import org.eclipse.ui.intro.config.IIntroXHTMLContentProvider;
-import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.commons.ui.html.BrowserDynamicPartLocationListener;
 import org.talend.commons.ui.html.TalendHtmlModelUtil;
@@ -72,7 +57,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.model.ComponentExtension;
-import org.talend.designer.components.exchange.ui.actions.DownloadComponenentsAction;
+import org.talend.designer.components.exchange.ui.htmlcontent.AvailableCompositeProvider;
 import org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider;
 import org.talend.designer.components.exchange.util.ActionHelper;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
@@ -98,15 +83,23 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
 
     private List<ComponentExtension> fAvailableExtensions = new ArrayList<ComponentExtension>();
 
+    private List<ComponentExtension> fAvailableExtensionsFilter = new ArrayList<ComponentExtension>();
+
     final StackLayout stackLayout;
 
     private AbstractElementFilter<ComponentExtension> elementFilter;
 
-    Composite addToolBarComp, listExtensonsComp, extensionViewDetailComp;
+    Composite addToolBarComp, listExtensonsComp, extensionViewDetailComp, tableComp;
 
     private CCombo addTosVersionFilterCombo;
 
     private Map<Integer, Image> exchangeStarImageMap = new HashMap<Integer, Image>();
+
+    private Browser tableBrowser;
+
+    private Browser toolbarBrowser;
+
+    private ComponentExtension selectComponentExtension;
 
     /**
      * DOC hcyi AvailableExtensionsComposite constructor comment.
@@ -127,37 +120,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         setLayoutData(thisFormData);
 
         //
-        addToolBarComp = new Composite(this, SWT.NONE);
         FormData data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, 0);
-        addToolBarComp.setLayoutData(data);
-        addToolBarComp.setLayout(new FormLayout());
-
-        final Text filterText = widgetFactory.createText(addToolBarComp, ""); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(80, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-        filterText.setLayoutData(data);
-        filterText.addKeyListener(new KeyAdapter() {
-
-            public void keyReleased(KeyEvent ke) {
-                elementFilter.setSearchText(filterText.getText());
-                updateItems();
-            }
-        });
-
-        CLabel filterTitle = widgetFactory.createCLabel(addToolBarComp,
-                Messages.getString("AvailableExtensionsComposite.FilterTitle")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(75, 0);
-        data.right = new FormAttachment(filterText, -ITabbedPropertyConstants.HSPACE);
-        data.top = new FormAttachment(filterText, 0, SWT.CENTER);
-        filterTitle.setLayoutData(data);
-
-        //
         listExtensonsComp = new Composite(this, SWT.NONE);
         data = new FormData();
         data.left = new FormAttachment(0, 0);
@@ -169,85 +132,9 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
         stackLayout = new StackLayout();
         listExtensonsComp.setLayout(stackLayout);
 
-        itemTable = new Table(listExtensonsComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-        TableLayout tableLayout = new TableLayout();
-        itemTable.setLayout(tableLayout);
-        itemTable.setHeaderVisible(true);
-        itemTable.setLinesVisible(true);
-
-        //
-        TableColumn itemColumn = new TableColumn(itemTable, SWT.CENTER);
-        itemColumn.setText(Messages.getString("AvailableExtensionsComposite.ExtensionName")); //$NON-NLS-1$
-        itemColumn.setWidth(280);
-
-        TableColumn versionColumn = new TableColumn(itemTable, SWT.CENTER);
-        versionColumn.setText(Messages.getString("AvailableExtensionsComposite.Version")); //$NON-NLS-1$
-        versionColumn.setWidth(180);
-
-        TableColumn ratingColumn = new TableColumn(itemTable, SWT.CENTER);
-        ratingColumn.setText(Messages.getString("AvailableExtensionsComposite.Rating")); //$NON-NLS-1$
-        ratingColumn.setWidth(120);
-
-        TableColumn authorColumn = new TableColumn(itemTable, SWT.CENTER);
-        authorColumn.setText(Messages.getString("AvailableExtensionsComposite.Author")); //$NON-NLS-1$
-        authorColumn.setWidth(150);
-
-        final TableColumn operateColumn = new TableColumn(itemTable, SWT.CENTER);
-        operateColumn.setText(""); //$NON-NLS-1$
-        operateColumn.setWidth(150);
-        operateColumn.setResizable(false);
-
-        Object layoutData = listExtensonsComp.getLayoutData();
-        if (layoutData instanceof GridData) {
-            GridData gridData = (GridData) layoutData;
-            gridData.grabExcessVerticalSpace = true;
-            gridData.verticalAlignment = SWT.FILL;
-        }
-
-        FormData formData = new FormData();
-        formData.left = new FormAttachment(0);
-        formData.top = new FormAttachment(0);
-        formData.right = new FormAttachment(100);
-        formData.bottom = new FormAttachment(100);
-        itemTable.setLayoutData(formData);
-
-        elementFilter = new AbstractElementFilter<ComponentExtension>() {
-
-            protected boolean select(ComponentExtension element) {
-                ComponentExtension ce = (ComponentExtension) element;
-                if (ce.getLabel() != null && ce.getLabel().toUpperCase().matches(searchString)) {
-                    return true;
-                }
-                if (ce.getAuthor() != null && ce.getAuthor().toUpperCase().matches(searchString)) {
-                    return true;
-                }
-
-                return false;
-            }
-
-        };
-
-        operateColumn.addControlListener(new ControlListener() {
-
-            public void controlMoved(ControlEvent e) {
-            }
-
-            public void controlResized(ControlEvent e) {
-            }
-        });
-        itemTable.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-            }
-        });
-        //
         if (fExtensions != null && !fExtensions.isEmpty()) {
             updateAvailableExtensions(fExtensions);
         }
-        stackLayout.topControl = itemTable;
-        listExtensonsComp.layout();
-
         Display.getDefault().asyncExec(new Runnable() {
 
             public void run() {
@@ -257,153 +144,94 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
                 }
             }
         });
+        createAvailableComposite(null);
     }
 
     public void updateAvailableExtensions(List<ComponentExtension> extensions) {
         loadDownloadedExtensionsFromFile();
         fAvailableExtensions = extensions;
-        // update status of Downloaded extensions
-        // checkDownloadedExtensions();
-        removeItemElements(fAvailableExtensions);
-        addItemElements(fAvailableExtensions);
-        elementFilter.setElements(fAvailableExtensions);
+        createAvailableComposite(null);
         refresh();
     }
 
-    private void updateItems() {
-        clearTableContents(itemTable);
-        addItemElements(elementFilter.filter());
+    public void updateItems(String filter) {
+        createAvailableComposite(filter);
     }
 
-    private void clearTableContents(Table table) {
-        if (table == null)
-            return;
-        table.removeAll();
-        Control[] children = table.getChildren();
-        if (children != null && children.length > 0) {
-            for (Control child : children) {
-                if (child != null) {
-                    child.dispose();
+    public void createToolBarComposite() {
+        try {
+            toolbarBrowser = new Browser(listExtensonsComp, SWT.NONE);
+            toolbarBrowser.addLocationListener(new BrowserDynamicPartLocationListener());
+            toolbarBrowser.setLayoutData(new GridData(GridData.FILL_BOTH));
+            String content = "";
+            URL entry = ExchangePlugin.getDefault().getBundle().getEntry("content/AvailableComposite.html");
+            if (entry != null) {
+                entry = FileLocator.toFileURL(entry);
+                String result = entry.toExternalForm();
+                if (result.startsWith("file:/")) { //$NON-NLS-1$
+                    if (result.startsWith("file:///") == false) { //$NON-NLS-1$
+                        result = "file:///" + result.substring(6); //$NON-NLS-1$
+                    }
+                }
+
+                IntroContentParser parser = new IntroContentParser(result);
+                Document dom = parser.getDocument();
+                if (dom != null) {
+                    resolveDynamicContent(dom, null, null, null);
+                    // insert base meta-tag,
+                    ModelUtil.insertBase(dom, ModelUtil.getParentFolderOSString(content));
+
+                    // resolve all relative resources relative to content file. Do it before
+                    // inserting shared style to enable comparing fully qualified styles.
+                    TalendHtmlModelUtil.updateResourceAttributes(dom.getDocumentElement(), "/content/", ExchangePlugin
+                            .getDefault().getBundle());
+
+                    content = IntroContentParser.convertToString(dom);
                 }
             }
+            toolbarBrowser.setText(content);
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
         }
     }
 
-    private void addItemElements(List<ComponentExtension> elements) {
-        if (elements == null || elements.isEmpty()) {
-            return;
-        }
-        itemTable.setRedraw(false);
-
-        for (final ComponentExtension object : elements) {
-            final TableItem tableItem = new TableItem(itemTable, SWT.NONE);
-            tableItem.setData(object);
-
-            //
-            tableItem.setText(0, object.getLabel());
-            tableItem.setText(1, object.getVersionExtension());
-            // tableItem.setImage(2, getRateImage(object.getRate()));
-            tableItem.setText(3, object.getAuthor());
-
-            final Composite operateComposit = new Composite(itemTable, SWT.NONE);
-            operateComposit.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
-            GridLayout layout = new GridLayout(5, false);
-            layout.horizontalSpacing = 1;
-            layout.verticalSpacing = 0;
-            layout.marginHeight = 0;
-            layout.marginWidth = 0;
-            operateComposit.setLayout(layout);
-
-            //
-            final Link linkView = new Link(operateComposit, SWT.RIGHT);
-            linkView.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
-            GridData data = new GridData(GridData.FILL_HORIZONTAL);
-            data.horizontalAlignment = SWT.RIGHT;
-            linkView.setLayoutData(data);
-            linkView.setText("<A>view</A> /");
-            linkView.setData(tableItem);
-            linkView.addSelectionListener(new SelectionAdapter() {
-
-                public void widgetSelected(SelectionEvent event) {
-                    //
-                    if (((Link) event.widget).getData() != null && ((Link) event.widget).getData() instanceof TableItem) {
-                        TableItem tableItem = (TableItem) ((Link) event.widget).getData();
-                        if (tableItem != null && tableItem.getData() != null && tableItem.getData() instanceof ComponentExtension) {
-                            setSelectedExtension((ComponentExtension) tableItem.getData());
-                        }
+    public void createAvailableComposite(String filter) {
+        try {
+            tableBrowser = new Browser(listExtensonsComp, SWT.NONE);
+            tableBrowser.addLocationListener(new BrowserDynamicPartLocationListener());
+            tableBrowser.setLayoutData(new GridData(GridData.FILL_BOTH));
+            String content = "";
+            URL entry = ExchangePlugin.getDefault().getBundle().getEntry("content/AvailableComposite.html");
+            if (entry != null) {
+                entry = FileLocator.toFileURL(entry);
+                String result = entry.toExternalForm();
+                if (result.startsWith("file:/")) { //$NON-NLS-1$
+                    if (result.startsWith("file:///") == false) { //$NON-NLS-1$
+                        result = "file:///" + result.substring(6); //$NON-NLS-1$
                     }
-                    //
-                    extensionViewDetailComp = widgetFactory.createFlatFormComposite(listExtensonsComp);
-                    FormData compositeData = new FormData();
-                    compositeData.left = new FormAttachment(0, 0);
-                    compositeData.right = new FormAttachment(100, 0);
-                    compositeData.top = new FormAttachment(0, 0);
-                    compositeData.bottom = new FormAttachment(100, 0);
-                    extensionViewDetailComp.setLayoutData(compositeData);
-                    extensionViewDetailComp.setLayout(new GridLayout());
-                    //
-                    createExtensionViewDetailControl(getSelectedExtension());
-                    stackLayout.topControl = extensionViewDetailComp;
-                    listExtensonsComp.layout();
                 }
 
-            });
+                IntroContentParser parser = new IntroContentParser(result);
+                Document dom = parser.getDocument();
+                if (dom != null) {
+                    resolveDynamicContent(dom, null, null, filter);
+                    // insert base meta-tag,
+                    ModelUtil.insertBase(dom, ModelUtil.getParentFolderOSString(content));
 
-            final Link linkDownload = new Link(operateComposit, SWT.LEFT);
-            linkDownload.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
-            linkDownload.setText("<A>download</A>");
-            linkDownload.setData(tableItem);
-            linkDownload.addSelectionListener(new SelectionAdapter() {
+                    // resolve all relative resources relative to content file. Do it before
+                    // inserting shared style to enable comparing fully qualified styles.
+                    TalendHtmlModelUtil.updateResourceAttributes(dom.getDocumentElement(), "/content/", ExchangePlugin
+                            .getDefault().getBundle());
 
-                public void widgetSelected(SelectionEvent event) {
-                    //
-                    if (((Link) event.widget).getData() != null && ((Link) event.widget).getData() instanceof TableItem) {
-                        TableItem tableItem = (TableItem) ((Link) event.widget).getData();
-                        if (tableItem != null && tableItem.getData() != null && tableItem.getData() instanceof ComponentExtension) {
-                            setSelectedExtension((ComponentExtension) tableItem.getData());
-                        }
-                    }
-                    //
-                    DownloadComponenentsAction downloadAction = new DownloadComponenentsAction();
-                    if (downloadAction != null) {
-                        downloadAction.run();
-                    }
-                    // removeItemElement(selected);
-                    itemTable.layout();
-                    refresh();
+                    content = IntroContentParser.convertToString(dom);
                 }
-            });
-
-            TableEditor versionEditor = new TableEditor(itemTable);
-            versionEditor.minimumWidth = itemTable.getColumn(4).getWidth();
-            versionEditor.setEditor(operateComposit, tableItem, 4);
-            versionEditor.setItem(tableItem);
-            tableItem.setData(ITEM_EDITOR_KEY, new TableEditor[] { versionEditor });
-
-            //
-            Composite operateRateComposit = new Composite(itemTable, SWT.CENTER);
-            operateRateComposit.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
-            FormData operFormData = new FormData();
-            operFormData.left = new FormAttachment(0, 0);
-            operFormData.right = new FormAttachment(100, 0);
-            operFormData.top = new FormAttachment(0, 0);
-            operFormData.bottom = new FormAttachment(100, 0);
-            operateRateComposit.setLayoutData(operFormData);
-            operateRateComposit.setLayout(new FormLayout());
-
-            CLabel operateRateCLabel = new CLabel(operateRateComposit, SWT.CENTER);
-            operateRateCLabel.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
-            operateRateCLabel.setImage(getRateImage(object.getRate()));
-            operateRateCLabel.setLayoutData(operFormData);
-            operateRateCLabel.setData(tableItem);
-
-            TableEditor rateEditor = new TableEditor(itemTable);
-            rateEditor.minimumWidth = itemTable.getColumn(2).getWidth();
-            rateEditor.setEditor(operateRateComposit, tableItem, 2);
-            tableItem.setData(ITEM_EDITOR_KEY, new TableEditor[] { rateEditor });
+            }
+            tableBrowser.setText(content);
+            stackLayout.topControl = tableBrowser;
+            listExtensonsComp.layout();
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
         }
-        itemTable.setRedraw(true);
-        refresh();
     }
 
     /**
@@ -431,7 +259,7 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
                 IntroContentParser parser = new IntroContentParser(result);
                 Document dom = parser.getDocument();
                 if (dom != null) {
-                    resolveDynamicContent(dom, null);
+                    resolveDynamicContent(dom, null, componentExtension, null);
                     // insert base meta-tag,
                     ModelUtil.insertBase(dom, ModelUtil.getParentFolderOSString(content));
 
@@ -450,7 +278,8 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
 
     }
 
-    private Document resolveDynamicContent(Document dom, IIntroContentProviderSite site) {
+    private Document resolveDynamicContent(Document dom, IIntroContentProviderSite site,
+            final ComponentExtension componentExtension, String filter) {
         NodeList contentProviders = dom.getElementsByTagNameNS("*", //$NON-NLS-1$
                 IntroContentProvider.TAG_CONTENT_PROVIDER);
 
@@ -467,7 +296,24 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
 
             if (providerClass != null) {
                 if (providerClass instanceof ExchangeContentProvider) {
-                    ((ExchangeContentProvider) providerClass).setComponentExtension(getSelectedExtension());
+                    if (componentExtension != null) {
+                        ((ExchangeContentProvider) providerClass).setComponentExtension(componentExtension);
+                    } else {
+                        ((ExchangeContentProvider) providerClass).setComponentExtension(getSelectedExtension());
+                    }
+                }
+                if (providerClass instanceof AvailableCompositeProvider) {
+                    if (filter == null) {
+                        ((AvailableCompositeProvider) providerClass).setfAvailableExtensions(fAvailableExtensions);
+                    } else {
+                        fAvailableExtensionsFilter.clear();
+                        for (ComponentExtension Extension : fAvailableExtensions) {
+                            if (Extension.getLabel().toUpperCase().contains(filter.toUpperCase())) {
+                                fAvailableExtensionsFilter.add(Extension);
+                            }
+                        }
+                        ((AvailableCompositeProvider) providerClass).setfAvailableExtensions(fAvailableExtensionsFilter);
+                    }
                 }
 
                 Properties att = new Properties();
@@ -487,7 +333,22 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
     }
 
     public void returnToFirstPage() {
-        stackLayout.topControl = itemTable;
+        stackLayout.topControl = tableBrowser;
+        listExtensonsComp.layout();
+    }
+
+    public void openDetailPage(ComponentExtension extension) {
+        setSelectedExtension(extension);
+        extensionViewDetailComp = widgetFactory.createFlatFormComposite(listExtensonsComp);
+        FormData compositeData = new FormData();
+        compositeData.left = new FormAttachment(0, 0);
+        compositeData.right = new FormAttachment(100, 0);
+        compositeData.top = new FormAttachment(0, 0);
+        compositeData.bottom = new FormAttachment(100, 0);
+        extensionViewDetailComp.setLayoutData(compositeData);
+        extensionViewDetailComp.setLayout(new GridLayout());
+        createExtensionViewDetailControl(extension);
+        stackLayout.topControl = extensionViewDetailComp;
         listExtensonsComp.layout();
     }
 
@@ -527,50 +388,6 @@ public class AvailableExtensionsComposite extends ExchangeComposite {
             }
         }
 
-    }
-
-    private void removeItemElements(List<ComponentExtension> objects) {
-        itemTable.setRedraw(false);
-        TableItem[] items = itemTable.getItems();
-        for (TableItem item : items) {
-            if (item.getData() != null && item.getData() instanceof ComponentExtension) {
-                ComponentExtension itemObject = (ComponentExtension) item.getData();
-                for (ComponentExtension object : objects) {
-                    if (itemObject != null && itemObject.getIdExtension().equals(object.getIdExtension())) {
-                        removeTableItem(item);
-                    }
-                }
-            }
-        }
-        itemTable.setRedraw(true);
-    }
-
-    private void removeItemElement(ComponentExtension object) {
-        itemTable.setRedraw(false);
-        TableItem[] items = itemTable.getItems();
-        for (TableItem item : items) {
-            if (item.getData() != null && item.getData() instanceof ComponentExtension) {
-                ComponentExtension itemObject = (ComponentExtension) item.getData();
-                if (itemObject != null && itemObject.getIdExtension().equals(object.getIdExtension())) {
-                    removeTableItem(item);
-                }
-            }
-        }
-        itemTable.setRedraw(true);
-    }
-
-    private void removeTableItem(TableItem item) {
-        if (item == null) {
-            return;
-        }
-        TableEditor[] editors = (TableEditor[]) item.getData(ITEM_EDITOR_KEY);
-        if (editors != null) {
-            for (int j = 0; j < editors.length; j++) {
-                editors[j].getEditor().dispose();
-                editors[j].dispose();
-            }
-        }
-        item.dispose();
     }
 
     private void checkDownloadedExtensions() {
