@@ -180,8 +180,8 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
                 ElementParameter param = (ElementParameter) object;
                 if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                     schemaType = param.getName();
-                    cancel = !MessageDialog.openQuestion(this.getTableViewer().getTable().getShell(), Messages
-                            .getString("PropertiesTableEditorModel.removeSchema"), //$NON-NLS-1$
+                    cancel = !MessageDialog.openQuestion(this.getTableViewer().getTable().getShell(),
+                            Messages.getString("PropertiesTableEditorModel.removeSchema"), //$NON-NLS-1$
                             Messages.getString("PropertiesTableEditorModel.popWindow")); //$NON-NLS-1$
                 }
             }
@@ -195,7 +195,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
             List<IMetadataTable> metadatasToRemove = new ArrayList<IMetadataTable>();
             for (Map<String, Object> line : (List<Map<String, Object>>) c) {
                 String schemaName = (String) line.get(schemaType);
-                IMetadataTable metadata = MetadataTool.getMetadataTableFromNode(node, schemaName);
+                IMetadataTable metadata = MetadataTool.getMetadataTableFromNodeTableName(node, schemaName);
                 if (metadata != null) {
                     metadatasToRemove.add(metadata);
                     IDesignerCoreService service = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
