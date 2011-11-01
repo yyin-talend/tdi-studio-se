@@ -424,8 +424,10 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                         }
                     }
                 } else if (!(((TreeNode) getModel()).eContainer() instanceof AbstractInOutTree)) {
-                    directEditManager.show();
-                    ((XmlMapGraphicViewer) getViewer()).getMapperManager().setCurrentDirectEditManager(directEditManager);
+                    // disable for RC2
+                    // directEditManager.show();
+                    // ((XmlMapGraphicViewer)
+                    // getViewer()).getMapperManager().setCurrentDirectEditManager(directEditManager);
                 }
             }
         }
