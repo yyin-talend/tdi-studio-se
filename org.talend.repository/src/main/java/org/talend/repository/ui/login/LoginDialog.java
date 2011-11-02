@@ -343,11 +343,20 @@ public class LoginDialog extends TrayDialog {
             dialog.run(true, true, runnable);
 
         } catch (InvocationTargetException e) {
-            loginComposite.populateProjectList();
-            MessageBoxExceptionHandler.process(e.getTargetException(), getShell());
+            if (PluginChecker.isSVNProviderPluginLoaded()) {
+                loginComposite.populateProjectList();
+                MessageBoxExceptionHandler.process(e.getTargetException(), getShell());
+            } else {
+                loginComposite.populateTOSProjectList();
+                MessageBoxExceptionHandler.process(e.getTargetException(), getShell());
+            }
             return false;
         } catch (InterruptedException e) {
-            loginComposite.populateProjectList();
+            if (PluginChecker.isSVNProviderPluginLoaded()) {
+                loginComposite.populateProjectList();
+            } else {
+                loginComposite.populateTOSProjectList();
+            }
             return false;
         }
 

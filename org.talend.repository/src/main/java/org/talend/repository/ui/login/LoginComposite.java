@@ -2155,6 +2155,66 @@ public class LoginComposite extends Composite {
         // }
     }
 
+    protected void populateTOSProjectList() {
+        Project[] projects = null;
+        if (getConnection() != null) {
+            String user2 = getConnection().getUser();
+            String repositoryId2 = getConnection().getRepositoryId();
+            String workSpace = getConnection().getWorkSpace();
+            String name = getConnection().getName();
+            if (user2 != null && !"".equals(user2) && repositoryId2 != null && !"".equals(repositoryId2) && workSpace != null //$NON-NLS-1$ //$NON-NLS-2$
+                    && !"".equals(workSpace) && name != null && !"".equals(name)) { //$NON-NLS-1$ //$NON-NLS-2$
+                getConnection().setComplete(true);
+            }
+        }
+
+        if (getConnection() == null || !getConnection().isComplete()) {
+            return;
+        }
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(getConnection()
+                .getRepositoryId()));
+
+        boolean initialized = false;
+
+        final String newLine = ":\n"; //$NON-NLS-1$
+        try {
+            try {
+                repositoryFactory.checkAvailability();
+            } catch (WarningException e) {
+                String warnings = e.getMessage();
+                if (warnings != null && !warnings.equals(lastWarnings)) {
+                    lastWarnings = warnings;
+                    MessageDialog.openWarning(getShell(), "Warning", warnings); //$NON-NLS-1$
+                }
+            }
+
+            try {
+                IRunnableWithProgress op = new IRunnableWithProgress() {
+
+                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                        try {
+                            ProxyRepositoryFactory.getInstance().initialize();
+                        } catch (PersistenceException e) {
+                            throw new InvocationTargetException(e);
+                        }
+                    }
+                };
+                new ProgressMonitorDialog(getShell()).run(true, false, op);
+            } catch (InvocationTargetException e) {
+                throw (Exception) e.getTargetException();
+            } catch (InterruptedException e) {
+            }
+
+            initialized = true;
+        } catch (Exception e) {
+            projects = new Project[0];
+
+            MessageDialog.openError(getShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
+                    Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
+        }
+    }
+
     /**
      * smallet Comment method "selectLastUsedProject".
      * 

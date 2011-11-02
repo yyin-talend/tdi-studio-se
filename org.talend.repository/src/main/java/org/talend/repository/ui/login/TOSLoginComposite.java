@@ -621,8 +621,10 @@ public class TOSLoginComposite extends Composite {
                     String selection = projectList.getSelection()[0];
                     if (selection != null && !selection.equals("")) {
                         Project project = (Project) projectsMap.get(selection);
-                        dialog.logIn(project);
-                        dialog.okPressed();
+                        boolean flag = dialog.logIn(project);
+                        if (flag) {
+                            dialog.okPressed();
+                        }
                     }
                 }
             }
