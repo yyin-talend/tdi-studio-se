@@ -268,7 +268,8 @@
 					limit = "-1";
 				}
 		    	String footer = ElementParameterParser.getValue(node, "__FOOTER__");
-		    	if(("").equals(footer)){
+				boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
+		    	if(("").equals(footer) || uncompress){
 		    		footer="0";
 		    	}
 		    	String random = "-1";
@@ -288,8 +289,6 @@
 				
 				String splitRecordStr = ElementParameterParser.getValue(node, "__SPLITRECORD__");
 				boolean splitRecord = (splitRecordStr!=null&&!("").equals(splitRecordStr))?("true").equals(splitRecordStr):false;
-				
-				boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
 				
 				//find main & reject conns;
 				List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
