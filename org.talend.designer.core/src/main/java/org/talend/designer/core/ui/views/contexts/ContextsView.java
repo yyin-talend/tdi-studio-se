@@ -335,4 +335,8 @@ public class ContextsView extends ViewPart {
         part = null;
         contextComposite.setPart(null);
     }
+
+    public ContextViewComposite getContextViewComposite() {
+        return this.contextComposite;
+    }
 }

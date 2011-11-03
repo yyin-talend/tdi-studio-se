@@ -58,6 +58,7 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -136,6 +137,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.ui.views.contexts.ContextsView;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -538,6 +540,16 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 } catch (PersistenceException e) {
                     ExceptionHandler.process(e);
                 }
+                IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                if (workbenchPage != null) {
+                    IViewPart view = workbenchPage.findView(ContextsView.ID);
+                    if (view != null) {
+                        ContextsView contextsView = (ContextsView) view;
+                        contextsView.getContextViewComposite().setTabEnable(true);
+                        contextsView.getContextViewComposite().getContextTemplateComposite().getViewer().getTree()
+                                .setEnabled(true);
+                    }
+                }
             }
 
         } else if (newPageIndex == 2) {
@@ -587,6 +599,16 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     ExceptionHandler.process(e);
                 } catch (InvocationTargetException e) {
                     ExceptionHandler.process(e);
+                }
+                IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                if (workbenchPage != null) {
+                    IViewPart view = workbenchPage.findView(ContextsView.ID);
+                    if (view != null) {
+                        ContextsView contextsView = (ContextsView) view;
+                        contextsView.getContextViewComposite().setTabEnable(false);
+                        contextsView.getContextViewComposite().getContextTemplateComposite().getViewer().getTree()
+                                .setEnabled(false);
+                    }
                 }
             }
         }
