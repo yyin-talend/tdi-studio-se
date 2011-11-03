@@ -69,6 +69,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					
 					IMetadataColumn columnPivot = null;
 					
+					String pivotpattern = null; 
+					
              		for(IMetadataColumn column:columnList){
              			
              			if(column.getLabel().equals(aggColumn)){
@@ -96,6 +98,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					    		pivotTypeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					    		
 					    		columnPivot = column;
+					    		
+					    		pivotpattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern(); 
 					    							    		
 					    		break;
 					    }
@@ -122,6 +126,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				if(ParserUtils.parseTo_<%= pivotTypeToGenerate %>(pivot_Keys_Split<%=cid%>[i]) == <%=inConnName%>.<%=pivotColumn%>){
 <%
 			}
+	}else if(pivotJavaType == JavaTypesManager.DATE) { 
+%> 
+ 	 		    if(pivot_Keys_Split<%=cid%>[i].equals(FormatterUtils.format_Date(<%=inConnName%>.<%=pivotColumn%>,<%=pivotpattern%>))){ 
+<%
 	}else{
 %>
 	 		if(pivot_Keys_Split<%=cid%>[i].equals(<%=inConnName%>.<%=pivotColumn%>)){
@@ -140,9 +148,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if(!pivot_Exists<%=cid%>){
         
         pivot_Key<%=cid%>.delete(0, pivot_Key<%=cid%>.length());
-        
-        pivot_Keys<%=cid%> = pivot_Keys<%=cid%> + pivot_Key<%=cid%>.append(<%=inConnName%>.<%=pivotColumn%>).toString() + <%=fieldSeparator%>;
-        
+<% 
+		if(pivotJavaType == JavaTypesManager.DATE) { 
+%> 
+ 	  	    pivot_Keys<%=cid%> = pivot_Keys<%=cid%> + pivot_Key<%=cid%>.append(FormatterUtils.format_Date(<%=inConnName%>.<%=pivotColumn%>,<%=pivotpattern%>)) + <%=fieldSeparator%>; 
+<% 
+        }else{
+%> 
+            pivot_Keys<%=cid%> = pivot_Keys<%=cid%> + pivot_Key<%=cid%>.append(<%=inConnName%>.<%=pivotColumn%>).toString() + <%=fieldSeparator%>; 
+<% 
+		} 
+%> 
+
         pivot_Keys_Split<%=cid%> = routines.system.StringUtils.splitNotRegex(pivot_Keys<%=cid%>,<%=fieldSeparator%>);
         
         pivotNum<%=cid%> = pivot_Keys_Split<%=cid%>.length;
@@ -307,6 +324,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				if(ParserUtils.parseTo_<%= pivotTypeToGenerate %>(pivot_Keys_Split<%=cid%>[i]) == <%=inConnName%>.<%=pivotColumn%>){
 <%
 			}
+	}else if(pivotJavaType == JavaTypesManager.DATE) { 
+%> 
+ 	 			if(pivot_Keys_Split<%=cid%>[i].equals(FormatterUtils.format_Date(<%=inConnName%>.<%=pivotColumn%>,<%=pivotpattern%>))){ 
+<%
 	}else{
 %>
 	 		if(pivot_Keys_Split<%=cid%>[i].equals(<%=inConnName%>.<%=pivotColumn%>)){
