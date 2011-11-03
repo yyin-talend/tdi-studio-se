@@ -86,11 +86,55 @@
 				javax.jms.ConnectionFactory connectionFactory = null;
 <%			}
 			for(INode node: jmsNodes){
-			    String name = ElementParameterParser.getValue(node, "__NAME__").trim();
+				//Component Name
+				String name = ElementParameterParser.getValue(node, "__NAME__").trim();
     				name += "+";
     				name += ElementParameterParser.getValue(node, "__SUBFIX__").trim();
+			
+				//ActiveMQ
+				String mqType = ElementParameterParser.getValue(node, "__MQ_TYPE__");
+				if("ActiveMQ".equals(mqType)){
+					String amqUri = ElementParameterParser.getValue(node, "__AMQ_BROKER_URI__").trim();
 %>
-			    <%=ElementParameterParser.getValue(node, "__CODE__")%>
+				connectionFactory = new org.apache.activemq.ActiveMQConnectionFactory(<%=amqUri%>);
+<%				
+				}else if("WebSphere MQ".equals(mqType)){
+					String wmqServer = ElementParameterParser.getValue(node, "__WQM_SEVER__");
+					String wmqPort = ElementParameterParser.getValue(node, "__WMQ_PORT__");
+					String wmqTransportType = ElementParameterParser.getValue(node, "__WMQ_TRANSPORT_TYPE__");
+					String wmqUM = ElementParameterParser.getValue(node, "__WMQ_QUEUE_MANAGER__");
+					
+					if(wmqPort.startsWith("\"")){
+						wmqPort = wmqPort.substring(1);
+					}
+					if(wmqPort.endsWith("\"")){
+						wmqPort = wmqPort.substring(0, wmqPort.length() - 1);
+					}
+					if(wmqTransportType.startsWith("\"")){
+						wmqTransportType = wmqTransportType.substring(1);
+					}
+					if(wmqTransportType.endsWith("\"")){
+						wmqTransportType = wmqTransportType.substring(0, wmqTransportType.length() - 1);
+					}
+%>
+				connectionFactory = new com.ibm.mq.jms.MQQueueConnectionFactory();
+       			((com.ibm.mq.jms.MQConnectionFactory) connectionFactory).setHostName(<%=wmqServer%>);
+       			try {
+       				((com.ibm.mq.jms.MQConnectionFactory) connectionFactory).setPort(<%=wmqPort%>);
+       				((com.ibm.mq.jms.MQConnectionFactory) connectionFactory).setTransportType(<%=wmqTransportType%>);
+       				((com.ibm.mq.jms.MQConnectionFactory) connectionFactory).setQueueManager(<%=wmqUM%>);	
+       			} catch (javax.jms.JMSException e) {
+					e.printStackTrace();
+				}
+<%		
+					
+				}else if("Other".equals(mqType)){
+%>
+					<%=ElementParameterParser.getValue(node, "__OTHER_CODE__")%>
+<%
+				}
+			
+%>
 			   camelContext.addComponent(<%=name%>,
 					org.apache.activemq.camel.component.ActiveMQComponent.jmsComponent(connectionFactory));
 <%
