@@ -280,6 +280,9 @@
 		    			random="0";
 		    		}
 		    	}
+		    	if(uncompress){
+		    		random="-1";
+		    	}
 				
 		    	String fieldSeparator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
 		    	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
@@ -341,9 +344,6 @@
 						java.util.zip.ZipInputStream zis_<%=cid %> = null;
 						try {
 							if(filename_<%=cid %> instanceof java.io.InputStream){
-							<%
-								generateCode.checkFooterAndRandom(footer,random);
-							%>
 								zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
 							}else{
 								zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>))));
@@ -705,6 +705,9 @@
 				boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 				
 				boolean uncompress = ("true").equals(ElementParameterParser.getValue(node,"__UNCOMPRESS__"));
+				if(uncompress){
+					footer = "0";
+				}
 				
 				List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 			    String rejectConnName = "";
@@ -780,9 +783,6 @@
 	        			java.util.zip.ZipInputStream zis_<%=cid %> = null;
 	        			try {
 		        			if(filename_<%=cid %> instanceof java.io.InputStream){
-							<%
-								generateCode.checkFooter(footer);
-							%>
 		        				zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream((java.io.InputStream)filename_<%=cid %>));
 		        			}else{
 		        				zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>))));
