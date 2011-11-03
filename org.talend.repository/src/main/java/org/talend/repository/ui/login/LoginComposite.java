@@ -1535,9 +1535,9 @@ public class LoginComposite extends Composite {
                         if (validateFields()) {
                             populateProjectList();
                             validateProject();
-                            validateUpdate();
                         }
                         setStatusArea();
+                        validateUpdate();
                     } catch (PersistenceException e) {
                         ExceptionHandler.process(e);
                     } catch (JSONException e) {
@@ -1689,9 +1689,10 @@ public class LoginComposite extends Composite {
                                 + ARCHIVA_SERVICES_SEGMENT;
                         String repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
                         tisService.downLoadAndInstallPatches(archivaServicesURL, patchesToInstall, repository);
+                        afterUpdate = true;
+                        tisService.setNeedResartAfterUpdate(afterUpdate);
                         patchesToInstall.clear();
                     }
-                    afterUpdate = true;
                     setStatusArea();
                     validateUpdate();
                 } catch (PersistenceException e1) {
@@ -1710,9 +1711,11 @@ public class LoginComposite extends Composite {
         // need get archiva url and repository by tac
         String archivaServiceURL;
         String repository;
+        ConnectionBean currentBean = getConnection();
+        String repositoryId = currentBean.getRepositoryId();
         // if workspace different,no need to spent time check patches
         try {
-            if (isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) {
+            if (repositoryId != null && repositoryId.equals("remote") && isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) {
                 JSONObject archivaProperties = getArchivaServicesProperties(getAdminURL());
 
                 archivaServiceURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY) + ARCHIVA_SERVICES_SEGMENT;
@@ -1754,6 +1757,9 @@ public class LoginComposite extends Composite {
                         updateBtn.setEnabled(needUpdate);
                     }
                 }
+            } else {
+                updateBtn.setVisible(false);
+                updateBtn.setEnabled(false);
             }
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
