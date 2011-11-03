@@ -122,6 +122,9 @@ for(IConnection inComminConn : incomingConns){
 org.dom4j.Element root_<%=sourceName %>_<%=cid %> = null;
 //used to judge branch root tags
 boolean needRoot_<%=sourceName %>_<%=cid %>  = true;
+//namespace support
+java.util.Map<String,String> uriToPrefixForDefaultNamespace_<%=sourceName %>_<%=cid%> = new java.util.HashMap<String,String>();
+java.util.Map<String,String> prefixToUriForNamespace_<%=sourceName %>_<%=cid%> = new java.util.HashMap<String,String>();
 <%
 	}
 }

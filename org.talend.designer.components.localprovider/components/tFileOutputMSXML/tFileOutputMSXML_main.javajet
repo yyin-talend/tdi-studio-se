@@ -106,6 +106,7 @@ class GenerateToolByDom4j{
 	boolean allowEmpty = false;
 	boolean outputAsXSD = false;
 	XMLTool tool = null;
+	NamespaceHelper namespaceHelper = null;
 	public void generateCode(XMLNode node, String currEleName, String parentName){
 		if(("ELEMENT").equals(node.type)){
 			createElement(currEleName,node,parentName);
@@ -116,9 +117,12 @@ class GenerateToolByDom4j{
 			for(XMLNode attri:node.attributes){
 				addAttribute(currEleName,attri);
 			}
-			if(node.name.indexOf(":")>0){
+			int idx = node.name.indexOf(":");
+			if(idx>0){
+				String prefix = node.name.substring(0,idx);
+				String localName = node.name.substring(idx + 1);
 %>
-			<%=currEleName%>_<%=cid%>.setName("<%=node.name%>");
+			<%=currEleName%>_<%=cid%>.setQName(org.dom4j.DocumentHelper.createQName("<%=localName%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>",<%=currEleName%>_<%=cid%>.getNamespace().getURI())));
 <%
 			}
 			int index = 0;
@@ -202,16 +206,37 @@ class GenerateToolByDom4j{
 		}
 	}
 	private void addAttribute(String currEleName, XMLNode node){
+		namespaceHelper.lookupNamespace(node);
+		String uri = namespaceHelper.getUri();
+		String prefix = namespaceHelper.getPrefix();
+		String localName = namespaceHelper.getLocalName();
+		
 		if(node.relatedColumn!=null){
 %>
 		if(<%tool.getValue(node);%>!=null){
-			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>",<%tool.getValue(node);%>);
+<%
+			if(uri==null) {
+%>
+			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.name%>",<%tool.getValue(node);%>);
+<%
+			} else {
+%>
+			<%=currEleName%>_<%=cid%>.addAttribute(org.dom4j.DocumentHelper.createQName("<%=localName%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>","<%=uri%>")),<%tool.getValue(node);%>);
+<%
+			}
+%>
 		}
 <%
 		}else if(node.defaultValue != null && !("").equals(node.defaultValue) ){
+			if(uri==null) {
 %>
-		<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>", "<%=node.defaultValue %>");
+			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.name%>", "<%=node.defaultValue %>");
 <%
+			} else {
+%>
+			<%=currEleName%>_<%=cid%>.addAttribute(org.dom4j.DocumentHelper.createQName("<%=localName%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>","<%=uri%>")),"<%=node.defaultValue %>");
+<%
+			}
 		}
 	}
 	private void addNameSpace(String currEleName, XMLNode node){
@@ -249,9 +274,18 @@ class GenerateExprCmpByDom4j{
 	XMLTool tool = null;
 	XMLNode groupNode = null;
 	boolean needEmptyNode = true;
+	NamespaceHelper namespaceHelper = null;
+	//cache prefix and uris of namespace
+	List<String> prefixs = null;
+	List<String> uris = null;
 	public void generateCode(XMLNode node, String parentName){
 		String tmpPath = node.path.replaceFirst(groupNode.path,"");
 		String[] arrNames = tmpPath.split("/");
+		prefixs = new ArrayList<String>();
+		uris = new ArrayList<String>();
+
+		namespaceHelper.buildInfoForNamespace(node,arrNames,prefixs,uris);
+		
 		if(node==groupNode){
 %>true
 <%
@@ -280,22 +314,32 @@ class GenerateExprCmpByDom4j{
 		//first generate the attribute comparision	
 		if(node.attributes!=null){
 			for(XMLNode attri:node.attributes){
+				
+				namespaceHelper.lookupNamespace(attri);
+				String prefix = namespaceHelper.getPrefix();
+				String uri = namespaceHelper.getUri();
+				String localName = namespaceHelper.getLocalName();
+				String param =  "\"" + localName + "\"";
+				if(uri!=null) {
+					param = "org.dom4j.DocumentHelper.createQName(\"" + localName + "\",org.dom4j.DocumentHelper.createNamespace(\"" + prefix + "\",\"" + uri + "\"))";
+				}
+				
 				if(attri.relatedColumn !=null){
 %> && (<%
 					if(!needEmptyNode){
-%>(<%tool.getValue(attri); %>==null && <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>") == null) || (true && 
+%>(<%tool.getValue(attri); %>==null && <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>) == null) || (true && 
 <%					}%>
- <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>")!=null
-&& <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText()!=null
-&& <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText().equals(<%tool.getValue(attri); %>)
+ <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>)!=null
+&& <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>).getText()!=null
+&& <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>).getText().equals(<%tool.getValue(attri); %>)
 <%
 					if(!needEmptyNode){%>)<%}
 %>)<%
 				}else if(attri.defaultValue!=null && !"".equals(attri.defaultValue)){
 %> && (
- <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>")!=null
-&& <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText()!=null
-&& <%generateCmnExpr(arrNames, parentName); %>.attribute("<%=attri.name %>").getText().equals("<%=attri.defaultValue %>")
+ <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>)!=null
+&& <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>).getText()!=null
+&& <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>).getText().equals("<%=attri.defaultValue %>")
  )
 <%
 				}
@@ -316,8 +360,15 @@ class GenerateExprCmpByDom4j{
 <%=parentName %>
 <%
 		for(int i=1;arrNames != null && i<arrNames.length; i++){
+			String uri = uris.get(i);
+			String prefix = (prefixs.get(i) == null ? "" : prefixs.get(i));
+		 	if(uri!=null) {
+%>.element(org.dom4j.DocumentHelper.createQName("<%=arrNames[i]%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>","<%=uri%>")))
+<%			
+			} else {
 %>.element("<%=arrNames[i]%>")
 <%
+			}
 		}
 	}
 }
@@ -400,6 +451,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 XMLNode root = mainList.get(0);                
             	XMLNode loop = (XMLNode)treeObjs[2];
             	
+        		NamespaceHelper namespaceHelper = new NamespaceHelper(root);
+    	        
                 if(!("true").equals(allowEmpty)){
                 	removeEmptyElement(root);
                 }
@@ -411,6 +464,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 	nb_line_<%=cid%>++;
 	valueMap_<%=cid%>.clear();
+	<%=namespaceHelper.buildUriToPrefixForDefaultNamespaceMapping("uriToPrefixForDefaultNamespace_" + sourceName + "_" + cid)%>
+	<%=namespaceHelper.buildPrefixToUriForNamespaceMapping("prefixToUriForNamespace_" + sourceName + "_" + cid)%>
 <%
 					for(IMetadataColumn column :preMetadata.getListColumns()){
 %>
@@ -431,6 +486,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    }
 	    generateToolByDom4j.cid = cid;
 	    generateToolByDom4j.tool = tool;
+	    generateToolByDom4j.namespaceHelper = namespaceHelper;
 	    
 	    //start generate code
 %>
@@ -464,17 +520,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			
 			XMLNode rootNode = getRootTree(rootTable);
 			XMLNode branchNode = getInsertNode(rootNode, mainList, listConnNames);
+			String finalXpath = namespaceHelper.buildXPathWithPrefix(branchNode);
 			if(branchNode.path.equals(mainList.get(mainList.size()-1).path)==true){// the last main node
 %>
 	// build root xml tree 
 	if (needRoot_<%=sourceName%>_<%=cid%>) {
 		needRoot_<%=sourceName%>_<%=cid%> = false;
+		org.dom4j.XPath xpath_<%=sourceName%>_<%=cid%> = doc_<%=cid %>.createXPath("<%=finalXpath%>");
+		xpath_<%=sourceName%>_<%=cid%>.setNamespaceURIs(prefixToUriForNamespace_<%=sourceName %>_<%=cid%>);
 		root_<%=sourceName %>_<%=cid %> = 
-			(org.dom4j.Element)doc_<%=cid %>.selectSingleNode("<%=branchNode.path %>");
+			(org.dom4j.Element)xpath_<%=sourceName%>_<%=cid%>.selectSingleNode(doc_<%=cid %>);
 		if(root_<%=sourceName %>_<%=cid %>==null) {
 			System.err.println("warn:::the pre input source content is empty!");
 			<%generateToolByDom4j.generateCode(root,"root","doc");%>
-			root_<%=sourceName %>_<%=cid %> = (org.dom4j.Element)doc_<%=cid %>.selectSingleNode("<%=branchNode.path %>");
+			root_<%=sourceName %>_<%=cid %> = (org.dom4j.Element)xpath_<%=sourceName%>_<%=cid%>.selectSingleNode(doc_<%=cid %>);
 		}
 		subTreeRootParent_<%=cid%>= root_<%=sourceName%>_<%=cid %>;
 	}else{
@@ -494,8 +553,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	// build root xml tree 
 	if (needRoot_<%=sourceName %>_<%=cid %>) {
 		needRoot_<%=sourceName %>_<%=cid %> = false;
+		org.dom4j.XPath xpath_<%=sourceName%>_<%=cid%> = doc_<%=cid %>.createXPath("<%=finalXpath%>");
+		xpath_<%=sourceName%>_<%=cid%>.setNamespaceURIs(prefixToUriForNamespace_<%=sourceName %>_<%=cid%>);
 		root_<%=sourceName %>_<%=cid %> = 
-			(org.dom4j.Element)doc_<%=cid %>.selectSingleNode("<%=branchNode.path %>");
+			(org.dom4j.Element)xpath_<%=sourceName%>_<%=cid%>.selectSingleNode(doc_<%=cid %>);
 	<%generateToolByDom4j.generateCode(tempNode,"root", "root_"+sourceName); %>
 		root_<%=sourceName%>_<%=cid%> = subTreeRootParent_<%=cid%>;
 	}else{
@@ -515,9 +576,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 			for( int i=0; i<groupList.size();i++){
 				XMLNode groupNode= groupList.get(i);
+				namespaceHelper.setGroupNode(groupNode);
+				String currentFinalGroupXpath = namespaceHelper.getCurrentFinalGroupXpath();
 				GenerateExprCmpByDom4j generateExprCmpByDom4j = new GenerateExprCmpByDom4j();
 				generateExprCmpByDom4j.tool = tool;
 				generateExprCmpByDom4j.groupNode = groupNode;
+				generateExprCmpByDom4j.namespaceHelper = namespaceHelper;
 				generateExprCmpByDom4j.needEmptyNode = ("true").equals(allowEmpty);
 %>
 		if(bl_<%=cid %>==false){
@@ -530,7 +594,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //					if(tempElem.getNamespacePrefix() !=null && !tempElem.getNamespacePrefix().equals("")){
 //						tmpPath = tempElem.getNamespacePrefix() + ":" + tmpPath;
 //					}
-					if(("<%=groupNode.path %>").equals(tempElem.getPath())){
+					
+					if(("<%=currentFinalGroupXpath %>").equals(DocumentHelper.getPath(tempElem,uriToPrefixForDefaultNamespace_<%=sourceName %>_<%=cid%>))){
 						if(<%generateExprCmpByDom4j.generateCode(groupNode, "tempElem"); %>){
 							subTreeRootParent_<%=cid %> =  tempElem;
 							break;

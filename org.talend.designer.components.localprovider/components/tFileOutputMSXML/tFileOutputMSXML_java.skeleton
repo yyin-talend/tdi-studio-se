@@ -52,8 +52,11 @@ public class CLASS {
             }else{
             	this.sourceName = column;
             } 
-            if (type.equals("ELEMENT")) {
+            if ("ELEMENT".equals(type)) {
                 this.name = path.substring(path.lastIndexOf("/") + 1);
+            } else if("ATTRIBUTE".equals(type)) {
+            	this.name = path;
+            	this.path = parent.path + "/@" + path;
             } else {
                 this.name = path;
             }
@@ -421,6 +424,208 @@ public class CLASS {
             return null;
         }
     }
+    
+    //support namespace helper
+    //we need to set namespace or qname where there is select action
+    class NamespaceHelper{
+		
+		int defaultPrefixCount = 0;
+		
+		XMLNode currentGroupNode = null;
+		
+		String currentFinalGroupXpath = null;
+		
+		Map<String,String> prefixToUriForNamespace = new HashMap<String,String>();
+		
+		Map<String,String> xpathToPrefixForDefaultNamespace = new HashMap<String,String>();
+		
+		Map<String,String> uriToPrefixForDefaultNamespace = new HashMap<String,String>();
+		
+		String prefix = null;
+		
+		String uri = null;
+		
+		String localname = null;
+		
+		public void lookupNamespace(XMLNode node) {
+			String name = node.name;
+			String xpath = node.path;
+			int idx = name.indexOf(":");
+			if(idx == -1) {
+				String defualtPrefix = xpathToPrefixForDefaultNamespace.get(xpath);
+				uri = prefixToUriForNamespace.get(defualtPrefix);
+				prefix = "";
+				localname = name;
+			} else {
+				prefix = name.substring(0,idx);
+				uri = prefixToUriForNamespace.get(prefix);
+				localname = (uri == null ? name : name.substring(idx + 1));
+			}
+		}
+		
+		public String getPrefix() {
+			return prefix;
+		}
+		
+		public String getUri() {
+			return uri;
+		}
+		
+		public String getLocalName() {
+			return localname;
+		}
+		
+		public NamespaceHelper(XMLNode rootNode){
+			collectionNS(rootNode,null);
+		}
+		
+		//init method for one group node in UI.
+		public void setGroupNode(XMLNode currentGroup) {
+			currentGroupNode = currentGroup;
+			currentFinalGroupXpath = buildXPathWithPrefix(currentGroup);
+		}
+		
+		public void buildInfoForNamespace(XMLNode node, String[] arrNames ,List<String> prefixs, List<String> uris){
+			String groupNodeXPath = currentGroupNode.path;
+			String currentNodeXPath = node.path;
+			int idx = 0;
+			//cache current node prefix and uri of namespace
+			idx = node.name.indexOf(":");
+			if(idx!=-1) {//not default namespace
+				String prefix = node.name.substring(0,idx);
+				prefixs.add(prefix);
+				uris.add(prefixToUriForNamespace.get(prefix));
+			} else {//default namespace
+				prefixs.add(null);
+				String defaultPrefix = xpathToPrefixForDefaultNamespace.get(currentNodeXPath);
+				uris.add(prefixToUriForNamespace.get(defaultPrefix));
+			}
+			
+			//cache sub nodes prefix and uri of namespace
+			String xpath = groupNodeXPath;
+			for(int i=1; i<arrNames.length; i++){
+				String arrName = arrNames[i];
+				xpath = xpath + "/" + arrName;
+				
+				idx = arrName.indexOf(":");
+				if(idx!=-1) {//not default namespace
+					String prefix = node.name.substring(0,idx);
+					prefixs.add(prefix);
+					uris.add(prefixToUriForNamespace.get(prefix));
+				} else {//default namespace
+					prefixs.add(null);
+					String defaultPrefix = xpathToPrefixForDefaultNamespace.get(xpath);
+					uris.add(prefixToUriForNamespace.get(defaultPrefix));
+				}
+				
+				//change to localname
+				if(arrName!=null) {
+					idx = arrName.indexOf(":");
+					if(idx!=-1) {
+						arrNames[i] = arrName.substring(idx + 1);
+					}
+				}
+			}
+					
+		}
+		
+		private String buildXPathWithPrefix(XMLNode node){
+			String xpath = node.path;
+			StringBuilder finalXPath = new StringBuilder();
+			return buildXPathWithPrefix(finalXPath, xpath);
+		}
+		
+		private String buildXPathWithPrefix(StringBuilder finalXPath, String xpath){
+			List<String> nodePaths = new ArrayList<String>();
+			
+			while(xpath.lastIndexOf("/") != -1){
+				nodePaths.add(xpath);
+				xpath = xpath.substring(0,xpath.lastIndexOf("/"));
+			}
+			
+			for(int i=nodePaths.size()-1; i>=0; i--){
+				String nodePath = nodePaths.get(i);
+				String prefix = xpathToPrefixForDefaultNamespace.get(nodePath);
+				String nodeName = nodePath.substring(nodePath.lastIndexOf("/")+1);
+				
+				finalXPath.append("/");
+				if(prefix != null && !"".equals(prefix)){
+					finalXPath.append(prefix);
+					finalXPath.append(":");
+					finalXPath.append(nodeName);
+				}else{
+					finalXPath.append(nodeName);
+				}
+			}
+			
+			return finalXPath.toString();
+		}
+		
+		public String buildUriToPrefixForDefaultNamespaceMapping(String name){
+			StringBuilder sb = new StringBuilder();
+			for (Object key : uriToPrefixForDefaultNamespace.keySet()) { 
+			    Object val = uriToPrefixForDefaultNamespace.get(key);
+			    sb.append(name+".put(\""+key+"\",\""+val+"\");"); 
+			} 
+			return sb.toString();
+		}
+		
+		public String buildPrefixToUriForNamespaceMapping(String name){
+			StringBuilder sb = new StringBuilder();
+			for (Object key : prefixToUriForNamespace.keySet()) { 
+			    Object val = prefixToUriForNamespace.get(key);
+			    sb.append(name+".put(\""+key+"\",\""+val+"\");"); 
+			} 
+			return sb.toString();
+		}
+		
+		public String getCurrentFinalGroupXpath() {
+			return currentFinalGroupXpath;
+		}
+		
+		private void collectionNS(XMLNode currentNode, String parentDefaultPrefix){
+			for(XMLNode namespace : currentNode.namespaces){
+				if(namespace.name != null && !"".equals(namespace.name)){
+					prefixToUriForNamespace.put(namespace.name,namespace.defaultValue);
+				}else{//default namespace setting
+					//when default namespace,for the same uri,we need to make sure that default prefix is the same
+					String defaultPrefix = uriToPrefixForDefaultNamespace.get(namespace.defaultValue);
+					if(defaultPrefix == null) {
+						defaultPrefix = findVaildDefaultPrefix();
+					}
+					prefixToUriForNamespace.put(defaultPrefix,namespace.defaultValue);
+					parentDefaultPrefix = defaultPrefix;
+				}
+			}
+			
+			if(!currentNode.name.contains(":")){
+				if(parentDefaultPrefix != null && !"".equals(parentDefaultPrefix)){
+					xpathToPrefixForDefaultNamespace.put(currentNode.path,parentDefaultPrefix);
+					uriToPrefixForDefaultNamespace.put(prefixToUriForNamespace.get(parentDefaultPrefix),parentDefaultPrefix);
+				}
+			}
+			
+			for(XMLNode attribute : currentNode.attributes){
+				collectionNS(attribute, parentDefaultPrefix);
+			}
+			
+			for(XMLNode element : currentNode.elements){
+				collectionNS(element, parentDefaultPrefix);
+			}
+			
+		}
+		
+		private String findVaildDefaultPrefix(){
+			String prefix = "TPrefix"+defaultPrefixCount;
+			defaultPrefixCount++;
+			if(prefixToUriForNamespace.get(prefix)==null || "".equals(prefixToUriForNamespace.get(prefix))){
+				return prefix;
+			}else{
+				return findVaildDefaultPrefix();
+			}
+		}
+		
+	}
 
     public String generate(Object argument) {
         return "";
