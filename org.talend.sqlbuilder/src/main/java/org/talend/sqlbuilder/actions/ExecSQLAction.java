@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.model.context.ContextUtils;
 import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
@@ -148,6 +149,7 @@ public class ExecSQLAction extends AbstractEditorAction {
         SessionTreeNode runNode = null;
 
         try {
+            ContextUtils.setSqlBuilderDialogShell(editor.getDialog().getShell());
             runNode = nodeManager.getSessionTreeNode(node, editor.getDialog().getSelectedContext());
         } catch (Exception e) {
             // e.printStackTrace();

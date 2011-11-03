@@ -102,7 +102,7 @@ public class SessionTreeNodeUtils {
         // bug 17980
         SQLConnection connection = null;
         DriverShim wapperDriver = null;
-        List list = createSQLConnection(dbconnection, selectedContext);
+        List list = createSQLConnection(dbconnection, selectedContext, iMetadataConnection);
         if (list != null && list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i) instanceof SQLConnection) {
@@ -178,8 +178,8 @@ public class SessionTreeNodeUtils {
         return sqlConnection;
     }
 
-    private static List createSQLConnection(DatabaseConnection con, String selectedContext) throws Exception {
-        IMetadataConnection iMetadataConnection = ConvertionHelper.convert(con, false, selectedContext);
+    private static List createSQLConnection(DatabaseConnection con, String selectedContext,
+            IMetadataConnection iMetadataConnection) throws Exception {
         // bug 17980
         List list = ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
                 iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(),
