@@ -717,20 +717,19 @@ public class CodeGenerator implements ICodeGenerator {
                 subTreeArgument.setMultiplyingOutputComponents(node.isMultiplyingOutputs());
             }
 
-            if (ETypeGen.ETL == typeGen) {       	
-            	/**
-            	 * fix for bug: TDI-8508
-            	 * aim: change the order of end parts to be the opposite order of begin parts
-            	 */
-//                for (IConnection connection : node.getOutgoingConnections()) {
-            	for (int i=0; i< node.getOutgoingConnections().size();i++) {
+            if (ETypeGen.ETL == typeGen) {
+                /**
+                 * fix for bug: TDI-8508 aim: change the order of end parts to be the opposite order of begin parts
+                 */
+                // for (IConnection connection : node.getOutgoingConnections()) {
+                for (int i = 0; i < node.getOutgoingConnections().size(); i++) {
 
-            		IConnection connection = null;
-            		if(part == ECodePart.END) {
-            			connection = node.getOutgoingConnections().get(node.getOutgoingConnections().size()-(i+1));
-            		} else {
-            			connection = node.getOutgoingConnections().get(i);
-            		}
+                    IConnection connection = null;
+                    if (part == ECodePart.END) {
+                        connection = node.getOutgoingConnections().get(node.getOutgoingConnections().size() - (i + 1));
+                    } else {
+                        connection = node.getOutgoingConnections().get(i);
+                    }
 
                     if ((connection.getLineStyle() == EConnectionType.ITERATE) && (part != ECodePart.MAIN)) {
                         continue;
@@ -952,6 +951,7 @@ public class CodeGenerator implements ICodeGenerator {
                 headerArgument.add(process);
                 headerArgument.add(CodeGeneratorActivator.getDefault().getBundle().getHeaders()
                         .get(org.osgi.framework.Constants.BUNDLE_VERSION));
+                headerArgument.add("false"); // not osgi export
 
                 this.checkingSyntax = true;
 
