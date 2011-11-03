@@ -321,7 +321,7 @@ public abstract class DbGenerationManager {
             boolean isFirstClause = true;
             for (int i = 0; i < lstSizeInputTables; i++) {
                 ExternalDbMapTable inputTable = inputTables.get(i);
-                if (buildConditions(sbWhere, inputTable, false, isFirstClause)) {
+                if (buildConditions(component, sbWhere, inputTable, false, isFirstClause)) {
                     isFirstClause = false;
                 }
             }
@@ -375,7 +375,7 @@ public abstract class DbGenerationManager {
                         sb.append(DbMapSqlConstants.ON);
                         sb.append(DbMapSqlConstants.LEFT_BRACKET);
                         sb.append(DbMapSqlConstants.SPACE);
-                        if (!buildConditions(sb, inputTable, true, true)) {
+                        if (!buildConditions(component, sb, inputTable, true, true)) {
                             sb.append(DbMapSqlConstants.LEFT_COMMENT);
                             sb.append(DbMapSqlConstants.SPACE);
                             sb.append(Messages.getString("DbGenerationManager.conditionNotSet")); //$NON-NLS-1$
@@ -541,14 +541,15 @@ public abstract class DbGenerationManager {
      * @param writeForJoin TODO
      * @param isFirstClause TODO
      */
-    private boolean buildConditions(StringBuilder sb, ExternalDbMapTable inputTable, boolean writeForJoin, boolean isFirstClause) {
+    private boolean buildConditions(DbMapComponent component, StringBuilder sb, ExternalDbMapTable inputTable,
+            boolean writeForJoin, boolean isFirstClause) {
         List<ExternalDbMapEntry> inputEntries = inputTable.getMetadataTableEntries();
         int lstSizeEntries = inputEntries.size();
         boolean atLeastOneConditionWritten = false;
         for (int j = 0; j < lstSizeEntries; j++) {
             ExternalDbMapEntry dbMapEntry = inputEntries.get(j);
             if (writeForJoin == dbMapEntry.isJoin()) {
-                boolean conditionWritten = buildCondition(sb, inputTable, isFirstClause, dbMapEntry, !writeForJoin);
+                boolean conditionWritten = buildCondition(component, sb, inputTable, isFirstClause, dbMapEntry, !writeForJoin);
                 if (conditionWritten) {
                     atLeastOneConditionWritten = true;
                 }
@@ -569,9 +570,10 @@ public abstract class DbGenerationManager {
      * @param dbMapEntry
      * @param writeCr TODO
      */
-    private boolean buildCondition(StringBuilder sbWhere, ExternalDbMapTable table, boolean isFirstClause,
-            ExternalDbMapEntry dbMapEntry, boolean writeCr) {
+    private boolean buildCondition(DbMapComponent component, StringBuilder sbWhere, ExternalDbMapTable table,
+            boolean isFirstClause, ExternalDbMapEntry dbMapEntry, boolean writeCr) {
         String expression = dbMapEntry.getExpression();
+        expression = initExpression(component, dbMapEntry);
         IDbOperator dbOperator = getOperatorsManager().getOperatorFromValue(dbMapEntry.getOperator());
         boolean operatorIsSet = dbOperator != null;
         boolean expressionIsSet = expression != null && expression.trim().length() > 0;
@@ -589,10 +591,11 @@ public abstract class DbGenerationManager {
                 sbWhere.append(DbMapSqlConstants.AND);
                 sbWhere.append(DbMapSqlConstants.SPACE);
             }
-            String locationInputEntry = language.getLocation(table.getName(), dbMapEntry.getName());
+            String entryName = dbMapEntry.getName();
+            entryName = getOriginalColumnName(entryName, component, table);
+            String locationInputEntry = language.getLocation(table.getName(), entryName);
             sbWhere.append(DbMapSqlConstants.SPACE);
             sbWhere.append(locationInputEntry);
-
             sbWhere.append(getSpecialRightJoin(table));
 
             sbWhere.append(DbMapSqlConstants.SPACE);
@@ -601,19 +604,19 @@ public abstract class DbGenerationManager {
             } else if (!operatorIsSet && expressionIsSet) {
                 sbWhere.append(DbMapSqlConstants.LEFT_COMMENT);
                 sbWhere.append(DbMapSqlConstants.SPACE);
-                sbWhere.append(Messages.getString("DbGenerationManager.InputOperationSetMessage", dbMapEntry.getName())); //$NON-NLS-1$
+                sbWhere.append(Messages.getString("DbGenerationManager.InputOperationSetMessage", entryName)); //$NON-NLS-1$
                 sbWhere.append(DbMapSqlConstants.SPACE);
                 sbWhere.append(DbMapSqlConstants.RIGHT_COMMENT);
             }
             if (operatorIsSet && !expressionIsSet && !dbOperator.isMonoOperand()) {
-                String str = table.getName() + DbMapSqlConstants.DOT + dbMapEntry.getName();
+                String str = table.getName() + DbMapSqlConstants.DOT + entryName;
                 sbWhere.append(DbMapSqlConstants.LEFT_COMMENT);
                 sbWhere.append(DbMapSqlConstants.SPACE);
                 sbWhere.append(Messages.getString("DbGenerationManager.InputExpSetMessage", str)); //$NON-NLS-1$
                 sbWhere.append(DbMapSqlConstants.SPACE);
                 sbWhere.append(DbMapSqlConstants.RIGHT_COMMENT);
             } else if (expressionIsSet) {
-                sbWhere.append(dbMapEntry.getExpression());
+                sbWhere.append(expression);
                 sbWhere.append(getSpecialLeftJoin(table));
             }
             conditionWritten = true;
@@ -791,6 +794,27 @@ public abstract class DbGenerationManager {
 
         }
         return expression;
+    }
+
+    private String getOriginalColumnName(String entryName, DbMapComponent component, ExternalDbMapTable table) {
+        List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+        if (inputConnections != null) {
+            for (IConnection iconn : inputConnections) {
+                IMetadataTable metadataTable = iconn.getMetadataTable();
+                String tName = iconn.getName();
+                String tableValue = table.getTableName();
+                if (tableValue != null && tableValue.equals(tName) && metadataTable != null) {
+                    List<IMetadataColumn> lColumn = metadataTable.getListColumns();
+                    for (IMetadataColumn colu : lColumn) {
+                        if (colu.getLabel().equals(entryName)) {
+                            entryName = colu.getOriginalDbColumnName();
+                            return entryName;
+                        }
+                    }
+                }
+            }
+        }
+        return entryName;
     }
 
 }
