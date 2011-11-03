@@ -275,7 +275,7 @@ public class CodeGenerator implements ICodeGenerator {
                         // LiXiaopeng 2011-09-05
                         String startNodeName = subTree.getRootNode().getSubProcessStartNode(true).getComponent().getName();
                         if ("cMessagingEndpoint".equals(startNodeName) || "cFile".equals(startNodeName)
-                                || "cAvtiveMQ".equals(startNodeName) || "cFTP".equals(startNodeName)
+                                || "cActiveMQ".equals(startNodeName) || "cFTP".equals(startNodeName)
                                 || "cJMS".equals(startNodeName) || "cCXF".equals(startNodeName)) {
                             nodeSubTreeList.add(subTree);
                         } else if ("cConfig".equals(startNodeName)) {
