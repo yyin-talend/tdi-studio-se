@@ -30,7 +30,7 @@ java.io.File dir_<%=cid%> = file_<%=cid%>.getParentFile();
 <%
 if(create){
 %>
-	if(!dir_<%=cid%>.exists()){
+	if(dir_<%=cid%>!=null && !dir_<%=cid%>.exists()){
 		dir_<%=cid%>.mkdirs();
 	}
 <%

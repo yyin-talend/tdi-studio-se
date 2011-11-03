@@ -21,7 +21,10 @@ java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);
 
 <%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
 //create directory only if not exists
-file_<%=cid %>.getParentFile().mkdirs();
+ java.io.File parentFile_<%=cid%> = file_<%=cid %>.getParentFile();  
+ 	if(parentFile_<%=cid%> != null && !parentFile_<%=cid%>.exists()) {  
+ 	   parentFile_<%=cid%>.mkdirs();
+ 	} 
 <%}%>	
 		    class Util_<%=cid %>
             {
