@@ -109,10 +109,25 @@
       NUM_ROW="60"
       CONTEXT="REJECT"
       SHOW="true">
-      <TABLE READONLY="true">
-        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
-        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
-      </TABLE>
+	<TABLE READONLY="true">
+		<COLUMN NAME="host" TYPE="id_String" LENGTH="50" />
+		<COLUMN NAME="identity" TYPE="id_String" LENGTH="10" />
+		<COLUMN NAME="user" TYPE="id_String" LENGTH="20" />
+		<COLUMN NAME="date" TYPE="id_String" LENGTH="13" />
+		<COLUMN NAME="time" TYPE="id_String" LENGTH="10" />
+		<COLUMN NAME="diffgmt" TYPE="id_String" LENGTH="10" />
+		<COLUMN NAME="rtype" TYPE="id_String" LENGTH="10" />
+		<COLUMN NAME="file" TYPE="id_String" LENGTH="50" />
+		<COLUMN NAME="proto" TYPE="id_String" LENGTH="8" />
+		<COLUMN NAME="code" TYPE="id_Integer" LENGTH="5" />
+		<COLUMN NAME="bytes" TYPE="id_Integer" LENGTH="11" />
+		<COLUMN NAME="refer" TYPE="id_String" LENGTH="255" />
+		<COLUMN NAME="agent" TYPE="id_String" LENGTH="255" />
+		<COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255"
+			READONLY="false" CUSTOM="true" />
+		<COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255"
+			READONLY="false" CUSTOM="true" />
+	</TABLE>
     </PARAMETER>
 
   </PARAMETERS>
