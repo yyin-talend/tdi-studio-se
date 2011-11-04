@@ -829,53 +829,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         if (getActivePage() == 0) {
             getEditor(0).doSave(monitor);
-
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
-                ICreateXtextProcessService convertJobtoScriptService = CorePlugin.getDefault().getCreateXtextProcessService();
-
-                Item item = getDesignerEditor().getProcess().getProperty().getItem();
-                ProcessType processType = null;
-
-                if (item instanceof ProcessItem) {
-                    processType = ((ProcessItem) item).getProcess();
-                } else if (item instanceof JobletProcessItem) {
-                    processType = ((JobletProcessItem) item).getJobletProcess();
-                }
-
-                if (item instanceof ProcessItem) { // disable for joblet for now
-                    String scriptValue = convertJobtoScriptService.convertJobtoScript(processType);
-                    try {
-                        IFile file = (IFile) getEditor(2).getEditorInput().getAdapter(IResource.class);
-                        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(scriptValue.getBytes());
-                        if (file.exists()) {
-                            ((AbstractDecoratedTextEditor) getEditor(2)).getDocumentProvider()
-                                    .getDocument(getEditor(2).getEditorInput()).set(scriptValue);
-
-                            IAction action = ((AbstractDecoratedTextEditor) getEditor(2)).getAction("FoldingRestore"); //$NON-NLS-1$
-                            action.run();
-                            getEditor(2).doSave(monitor);
-                        } else {
-                            file.create(byteArrayInputStream, true, null);
-                        }
-                    } catch (PartInitException e) {
-                        ExceptionHandler.process(e);
-                    } catch (CoreException e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
-            }
         } else if (getActivePage() == 2) {
             getEditor(2).doSave(monitor);
             try {
-                // ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
-                //
-                // ProcessType processType = n.convertDesignerEditorInput(
-                // ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
-                // designerEditor.getProcess().getProperty());
-                // ProcessItem processItem = (ProcessItem) getProcess().getProperty().getItem();
-                // processItem.setProcess(processType);
-                // getProcess().loadXmlFile();
-
                 IProcess2 oldProcess = getProcess();
 
                 ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
@@ -883,16 +839,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                         ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
                         oldProcess.getProperty());
 
-                // designerEditor.getProcess().dispose();
-                // ProcessItem processItem = (ProcessItem) getProcess().getProperty().getItem();
-                // processItem.setProcess(processType);
                 IProcess2 newProcess = null;
                 Item item = getProcess().getProperty().getItem();
 
                 if (item instanceof ProcessItem) {
-                    // ((ProcessItem) item).setProcess(processType);
-                    // newProcess = new Process(item.getProperty());
-
                     ((Process) designerEditor.getProcess()).updateProcess(processType);
                 } else if (item instanceof JobletProcessItem) {
                     AbstractProcessProvider processProvider = AbstractProcessProvider
