@@ -271,21 +271,35 @@ public class CodeGenerator implements ICodeGenerator {
                             generateHeaders = false;
                         }
 
-                        // Fix bug TESB-2951 Generated Codes error when Route starts with cFile/cFTP/cActiveMQ/cFTP/cJMS
-                        // LiXiaopeng 2011-09-05
-                        String startNodeName = subTree.getRootNode().getSubProcessStartNode(true).getComponent().getName();
-                        if ("cMessagingEndpoint".equals(startNodeName) || "cFile".equals(startNodeName)
-                                || "cActiveMQ".equals(startNodeName) || "cFTP".equals(startNodeName)
-                                || "cJMS".equals(startNodeName) || "cCXF".equals(startNodeName)) {
-                            nodeSubTreeList.add(subTree);
-                        } else if ("cConfig".equals(startNodeName)) {
-                            // Customized remove the cConfig routeId codes. TESB-2825 LiXP 20110823
-                            // Do nothing.
-                        } else {
-                            componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
-                                    ETypeGen.CAMEL)); // And generate the component par of code
-                            componentsCode.append(";");
-                        }
+						// Fix bug TESB-2951 Generated Codes error when Route
+						// starts with cFile/cFTP/cActiveMQ/cFTP/cJMS
+						// LiXiaopeng 2011-09-05
+						String startNodeName = subTree.getRootNode()
+								.getSubProcessStartNode(true).getComponent()
+								.getName();
+						//http://jira.talendforge.org/browse/TESB-3734 Remove cActiveMQ
+						if ("cMessagingEndpoint".equals(startNodeName)
+								|| "cFile".equals(startNodeName)
+								|| "cFTP".equals(startNodeName)
+								|| "cJMS".equals(startNodeName)
+								|| "cCXF".equals(startNodeName)) {
+							nodeSubTreeList.add(subTree);
+						} else if ("cConfig".equals(startNodeName)) {
+							// Customized remove the cConfig routeId codes.
+							// TESB-2825 LiXP 20110823
+							// Do nothing.
+						} else {
+							componentsCode.append(generateComponentsCode(
+									subTree, subTree.getRootNode(),
+									ECodePart.MAIN, null, ETypeGen.CAMEL)); // And
+																			// generate
+																			// the
+																			// component
+																			// par
+																			// of
+																			// code
+							componentsCode.append(";");
+						}
                     }
 
                     for (NodesSubTree subTree : nodeSubTreeList) {

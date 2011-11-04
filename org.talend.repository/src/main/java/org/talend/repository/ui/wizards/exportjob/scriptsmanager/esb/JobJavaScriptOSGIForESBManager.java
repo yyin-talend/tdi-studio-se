@@ -694,10 +694,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
 				while (iterator.hasNext()) {
 					NodeType next = (NodeType) iterator.next();
-					if ("cActiveMQ".equals(next.getComponentName())) {
-						externalAMQImport = ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
-						continue;
-					}
+					// http://jira.talendforge.org/browse/TESB-3734 remove
+					// cActiveMQ
+					// if ("cActiveMQ".equals(next.getComponentName())) {
+					// externalAMQImport =
+					// ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
+					// continue;
+					// }
 
 					if ("cCXF".equals(next.getComponentName())) {
 						externalCXFImport = ",org.apache.camel.component.cxf,org.apache.cxf.feature,"

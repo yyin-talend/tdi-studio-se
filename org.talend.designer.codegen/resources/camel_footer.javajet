@@ -65,21 +65,6 @@
 %>
 			typeConverterRegistry = camelContext.getTypeConverterRegistry();
 <%
-			List<? extends INode> activeMQNodes = process.getNodesOfType("cActiveMQ");
-			if(activeMQNodes.size()>0){
-%>
-			org.apache.activemq.ActiveMQConnectionFactory amqConnectionFactory = null;
-<%			}
-			for(INode node: activeMQNodes){
-				String url = ElementParameterParser.getValue(node, "__BROKER_URI__").trim();
-%>
-			amqConnectionFactory = new org.apache.activemq.ActiveMQConnectionFactory(<%=url%>);
-			camelContext.addComponent("<%=node.getUniqueName().replaceAll("_","")%>",
-					org.apache.activemq.camel.component.ActiveMQComponent.jmsComponent(amqConnectionFactory));
-<%   
-		}
-%>
-<%
 			List<? extends INode> jmsNodes = process.getNodesOfType("cJMS");
 			if(jmsNodes.size()>0){
 %>
