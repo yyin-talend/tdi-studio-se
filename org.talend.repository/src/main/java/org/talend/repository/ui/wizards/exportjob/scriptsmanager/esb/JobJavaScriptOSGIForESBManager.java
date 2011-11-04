@@ -266,8 +266,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 						}
 					}
 				}
-				if ("cConfig".equals(componentName)
-						|| "cJMS".equals(componentName)) {
+				// http: // jira.talendforge.org/browse/TESB-3812
+				if ("cConfig".equals(componentName)) {
 					for (Object e : currentNode.getElementParameter()) {
 						ElementParameterType p = (ElementParameterType) e;
 						if ("DRIVER_JAR".equals(p.getName())) {
@@ -276,6 +276,45 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 								String evtValue = evt.getValue();
 								IPath path = libPath.append(evtValue);
 								libFiles.add(path.toFile());
+							}
+						}
+					}
+				}
+
+				if ("cJMS".equals(componentName)) {
+					String value = computeTextElementValue("MQ_TYPE",
+							currentNode.getElementParameter());
+					if ("WebSphere MQ".equals(value)) {
+						String jarName = "com.ibm.mq.jar";
+						IPath path = libPath.append(jarName);
+						libFiles.add(path.toFile());
+
+						jarName = "com.ibm.mq.jmqi.jar";
+						path = libPath.append(jarName);
+						libFiles.add(path.toFile());
+
+						jarName = "com.ibm.mqjms.jar";
+						path = libPath.append(jarName);
+						libFiles.add(path.toFile());
+
+						jarName = "connector.jar";
+						path = libPath.append(jarName);
+						libFiles.add(path.toFile());
+
+						jarName = "dhbcore.jar";
+						path = libPath.append(jarName);
+						libFiles.add(path.toFile());
+
+					} else if ("Other".equals(value)) {
+						for (Object e : currentNode.getElementParameter()) {
+							ElementParameterType p = (ElementParameterType) e;
+							if ("OTHER_DRIVER_JAR".equals(p.getName())) {
+								for (Object pv : p.getElementValue()) {
+									ElementValueType evt = (ElementValueType) pv;
+									String evtValue = evt.getValue();
+									IPath path = libPath.append(evtValue);
+									libFiles.add(path.toFile());
+								}
 							}
 						}
 					}
@@ -378,8 +417,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 						}
 					}
 				}
-				if ("cConfig".equals(componentName)
-						|| "cJMS".equals(componentName)) {
+				if ("cConfig".equals(componentName)) {
 					for (Object e : currentNode.getElementParameter()) {
 						ElementParameterType p = (ElementParameterType) e;
 						if ("DRIVER_JAR".equals(p.getName())) {
@@ -388,6 +426,37 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 								String evtValue = evt.getValue();
 								sb.append(evtValue);
 								sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+							}
+						}
+					}
+				}
+
+				// http://jira.talendforge.org/browse/TESB-3812
+				// Update OSGI Export of cJMS
+				if ("cJMS".equals(componentName)) {
+					String value = computeTextElementValue("MQ_TYPE",
+							currentNode.getElementParameter());
+					if ("WebSphere MQ".equals(value)) {
+						sb.append("com.ibm.mq.jar");
+						sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+						sb.append("com.ibm.mq.jmqi.jar");
+						sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+						sb.append("com.ibm.mqjms.jar");
+						sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+						sb.append("connector.jar");
+						sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+						sb.append("dhbcore.jar");
+						sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+					} else if ("Other".equals(value)) {
+						for (Object e : currentNode.getElementParameter()) {
+							ElementParameterType p = (ElementParameterType) e;
+							if ("OTHER_DRIVER_JAR".equals(p.getName())) {
+								for (Object pv : p.getElementValue()) {
+									ElementValueType evt = (ElementValueType) pv;
+									String evtValue = evt.getValue();
+									sb.append(evtValue);
+									sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+								}
 							}
 						}
 					}
@@ -454,6 +523,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 		return null;
 	}
 
+	/**
+	 * Compute check field parameter value with a given parameter name
+	 * 
+	 * @param paramName
+	 * @param elementParameterTypes
+	 * @return
+	 */
 	protected boolean computeCheckElementValue(String paramName,
 			EList<?> elementParameterTypes) {
 		ElementParameterType cpType = findElementParameterByName(paramName,
@@ -463,6 +539,23 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 		}
 		String isNone = cpType.getValue();
 		return "true".equals(isNone);
+	}
+
+	/**
+	 * Compute Text field parameter value with a given parameter name
+	 * 
+	 * @param paramName
+	 * @param elementParameterTypes
+	 * @return
+	 */
+	protected String computeTextElementValue(String paramName,
+			EList<?> elementParameterTypes) {
+		ElementParameterType cpType = findElementParameterByName(paramName,
+				elementParameterTypes);
+		if (cpType == null) {
+			return "";
+		}
+		return cpType.getValue();
 	}
 
 	/**
@@ -706,6 +799,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 						externalCXFImport = ",org.apache.camel.component.cxf,org.apache.cxf.feature,"
 								+ "org.talend.esb.servicelocator.cxf;version=\"[2.0.0,6.0.0)\","
 								+ "org.talend.esb.sam.agent.feature;version=\"[2.0.0,6.0.0)\"";
+						continue;
+					}
+
+					// http://jira.talendforge.org/browse/TESB-3812
+					if ("cJMS".equals(next.getComponentName())) {
+						String value = computeTextElementValue("MQ_TYPE",
+								next.getElementParameter());
+						if ("ActiveMQ".equals(value)) {
+							externalAMQImport = ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
+
+						}
 						continue;
 					}
 
