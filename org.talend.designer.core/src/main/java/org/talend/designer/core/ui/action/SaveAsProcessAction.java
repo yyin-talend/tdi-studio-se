@@ -30,7 +30,6 @@ import org.talend.designer.core.ui.wizards.SaveAsProcessWizard;
 import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC xtan class global comment. <br/>
@@ -59,7 +58,6 @@ public class SaveAsProcessAction extends Action {
 
                 IWorkbenchPage page = getActivePage();
 
-                newJobEditorInput.setView((IRepositoryView) page.findView(IRepositoryView.VIEW_ID));
                 IRepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(newJobEditorInput.getItem()
                         .getProperty().getId(), false);
                 newJobEditorInput.setRepositoryNode(repositoryNode);
@@ -71,8 +69,8 @@ public class SaveAsProcessAction extends Action {
                 page.openEditor(newJobEditorInput, MultiPageTalendEditor.ID, true);
 
             } catch (Exception e) {
-                MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error", "Job could not be saved" + " : "
-                        + e.getMessage());
+                MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error",
+                        "Job could not be saved" + " : " + e.getMessage());
                 ExceptionHandler.process(e);
             }
         }

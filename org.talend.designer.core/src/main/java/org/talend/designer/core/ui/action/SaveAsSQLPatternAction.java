@@ -37,7 +37,6 @@ import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC xtan class global comment. <br/>
@@ -75,7 +74,6 @@ public class SaveAsSQLPatternAction extends Action {
 
                 IWorkbenchPage page = getActivePage();
 
-                repositoryEditorInput.setView((IRepositoryView) page.findView(IRepositoryView.VIEW_ID));
                 IRepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(repositoryEditorInput.getItem()
                         .getProperty().getId(), false);
                 repositoryEditorInput.setRepositoryNode(repositoryNode);

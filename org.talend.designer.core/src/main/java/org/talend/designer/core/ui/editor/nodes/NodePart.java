@@ -83,7 +83,6 @@ import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * Graphical part of the node of Gef. <br/>
@@ -549,12 +548,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                                 IEditorPart editorPart = page.findEditor(fileEditorInput);
 
                                 if (editorPart == null) {
-                                    IViewPart viewPart = page.findView(IRepositoryView.VIEW_ID);
-                                    if (viewPart != null) {
-                                        fileEditorInput.setView((IRepositoryView) viewPart);
-                                        fileEditorInput.setRepositoryNode(null);
-                                        page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
-                                    }
+                                    page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
                                 } else {
                                     page.activate(editorPart);
                                 }

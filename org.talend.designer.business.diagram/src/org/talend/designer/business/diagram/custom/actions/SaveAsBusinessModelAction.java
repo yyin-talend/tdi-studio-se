@@ -33,7 +33,6 @@ import org.talend.designer.business.model.business.diagram.part.BusinessDiagramE
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC xtan class global comment. <br/>
@@ -72,8 +71,6 @@ public class SaveAsBusinessModelAction extends Action {
                 IFile file = businessModelWizard.getTempFile();
                 // Set readonly to false since created job will always be editable.
                 RepositoryEditorInput newBusinessModelEditorInput = new RepositoryEditorInput(file, businessProcessItem);
-
-                newBusinessModelEditorInput.setView((IRepositoryView) page.findView(IRepositoryView.VIEW_ID));
 
                 newBusinessModelEditorInput.setRepositoryNode(repositoryNode);
 

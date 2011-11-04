@@ -103,7 +103,6 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
                 IEditorPart editorPart = page.findEditor(fileEditorInput);
 
                 if (editorPart == null) {
-                    fileEditorInput.setView(getViewPart());
                     fileEditorInput.setRepositoryNode(node);
                     editorPart = page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
                     /* MultiPageTalendEditor openEditor = (MultiPageTalendEditor) */

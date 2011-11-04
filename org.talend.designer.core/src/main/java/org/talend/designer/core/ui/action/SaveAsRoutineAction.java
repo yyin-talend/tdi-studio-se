@@ -40,7 +40,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.routines.RoutineEditorInput;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC xtan class global comment. <br/>
@@ -86,7 +85,6 @@ public class SaveAsRoutineAction extends Action {
 
                 IWorkbenchPage page = getActivePage();
 
-                routineEditorInput.setView((IRepositoryView) page.findView(IRepositoryView.VIEW_ID));
                 IRepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(routineEditorInput.getItem()
                         .getProperty().getId(), false);
                 routineEditorInput.setRepositoryNode(repositoryNode);
