@@ -1712,7 +1712,11 @@ public class LoginComposite extends Composite {
         String archivaServiceURL;
         String repository;
         ConnectionBean currentBean = getConnection();
-        String repositoryId = currentBean.getRepositoryId();
+        String repositoryId = null;
+        // at 1st time open the studio there are no bean at all,so need avoid NPE
+        if (currentBean != null) {
+            repositoryId = currentBean.getRepositoryId();
+        }
         // if workspace different,no need to spent time check patches
         try {
             if (repositoryId != null && repositoryId.equals("remote") && isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) {
