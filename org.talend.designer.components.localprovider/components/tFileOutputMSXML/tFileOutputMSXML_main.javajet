@@ -122,7 +122,7 @@ class GenerateToolByDom4j{
 				String prefix = node.name.substring(0,idx);
 				String localName = node.name.substring(idx + 1);
 %>
-			<%=currEleName%>_<%=cid%>.setQName(org.dom4j.DocumentHelper.createQName("<%=localName%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>",<%=currEleName%>_<%=cid%>.getNamespace().getURI())));
+			<%=currEleName%>_<%=cid%>.setQName(org.dom4j.DocumentHelper.createQName("<%=localName%>",<%=currEleName%>_<%=cid%>.getNamespaceForPrefix("<%=prefix%>")));
 <%
 			}
 			int index = 0;
