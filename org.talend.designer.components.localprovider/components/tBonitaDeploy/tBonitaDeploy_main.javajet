@@ -24,6 +24,7 @@ imports="
 	String jassFile = ElementParameterParser.getValue(node, "__JASS_STANDARD_FILE__");
 	boolean useLoggingFile = ("true").equals(ElementParameterParser.getValue(node, "__USE_LOGGING_FILE__"));
 	String loggingFile = ElementParameterParser.getValue(node, "__LOGGING_FILE__");
+	String loginModule = ElementParameterParser.getValue(node, "__LOGIN_MODULE__");
 %>
 	System.setProperty("org.ow2.bonita.environment", <%=bonitaEnvironmentFile%>);
 	System.setProperty("java.security.auth.login.config", <%=jassFile%> );
@@ -37,7 +38,7 @@ imports="
 	String processDefinitionUUID_<%=cid%> = null;
 	try {
 		
-		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext("Bonita", new org.ow2.novabpm.util.SimpleCallbackHandler(<%=userName%>, <%=password%>));
+		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext(<%=loginModule%>, new org.ow2.novabpm.util.SimpleCallbackHandler(<%=userName%>, <%=password%>));
 		loginContext_<%=cid%>.login();
 		process_<%=cid%> = managementAPI_<%=cid%>.deploy(org.ow2.bonita.util.BusinessArchiveFactory.getBusinessArchive(new java.io.File(<%=businessArchive%>).toURI().toURL()));
 		processDefinitionUUID_<%=cid%> = process_<%=cid%>.getUUID().getValue();
