@@ -388,6 +388,10 @@
             class="org.talend.repository.StatusPreferenceInitService"
             serviceId="IStatusPreferenceInitService">
       </Service>
+      <Service
+            class="org.talend.repository.MigrationDIMetadataItemService"
+            serviceId="IMigrateDIMetadataItemService">
+      </Service>
    </extension>
    
    <!--extension
