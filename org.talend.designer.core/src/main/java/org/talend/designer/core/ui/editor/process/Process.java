@@ -319,7 +319,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     /**
      * create parameters for tabbed page 'Job Settings'.
      */
-    private void createJobSettingsParameters() {
+    protected void createJobSettingsParameters() {
         JobSettingsManager.createJobSettingsParemeters(this);
     }
 
