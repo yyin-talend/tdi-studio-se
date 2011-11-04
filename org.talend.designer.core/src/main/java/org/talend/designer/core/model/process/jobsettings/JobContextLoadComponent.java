@@ -33,6 +33,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.MultipleComponentConnection;
 import org.talend.designer.core.model.components.MultipleComponentManager;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants.ContextLoadInfo;
@@ -228,7 +229,16 @@ public class JobContextLoadComponent implements IComponent {
                 multipleComponentManager.addParam(source, FILE_INPUT_DELIMITED + ".FIELDSEPARATOR"); //$NON-NLS-1$ 
 
             } else {
-                String source = self + JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName());
+                String source = self + JobSettingsConstants.getExtraParameterName(EParameterName.URL.getName());
+                multipleComponentManager.addParam(source, DB_INPUT + ".URL");
+
+                source = self + JobSettingsConstants.getExtraParameterName(EParameterName.DRIVER_JAR.getName());
+                multipleComponentManager.addParam(source, DB_INPUT + ".DRIVER_JAR");
+
+                source = self + JobSettingsConstants.getExtraParameterName(EParameterName.DRIVER_CLASS.getName());
+                multipleComponentManager.addParam(source, DB_INPUT + ".DRIVER_CLASS");
+
+                source = self + JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName());
                 multipleComponentManager.addParam(source, DB_INPUT + ".HOST"); //$NON-NLS-1$ 
                 multipleComponentManager.addParam(source, DB_INPUT + ".SERVER"); //$NON-NLS-1$
                 multipleComponentManager.addParam(source, DB_INPUT + ".DSN"); //$NON-NLS-1$ 
@@ -331,7 +341,25 @@ public class JobContextLoadComponent implements IComponent {
 
     private void addDatabaseParameter(List<IElementParameter> elemParamList, INode node) {
         //
+
         IElementParameter newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DRIVER_JAR.getName()));
+        newParam.setFieldType(EParameterFieldType.TABLE);
+        newParam.setListItemsDisplayName(new String[] { EmfComponent.TEXT_BUILTIN, EmfComponent.TEXT_REPOSITORY });
+        newParam.setListItemsDisplayCodeName(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DRIVER_CLASS.getName()));
+        newParam.setFieldType(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.URL.getName()));
+        newParam.setFieldType(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName()));
         newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
