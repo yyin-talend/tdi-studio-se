@@ -65,7 +65,7 @@ public class UploadRevisionJob extends Job {
                             "application/multipart-formdata", fe.getDescription(), "true");
                 } else {
                     webserviceStatus = new WebserviceStatus();
-                    webserviceStatus.setMessageException(Messages.getString("MyExtensionsComposite.Form.checkUserAndPassword"));
+                    webserviceStatus.setMessageException(Messages.getString("Exchange.logon.error"));
                 }
                 return webserviceStatus;
             }

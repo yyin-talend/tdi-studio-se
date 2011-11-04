@@ -32,20 +32,6 @@ import org.w3c.dom.Element;
  */
 public class ExchangeContentProvider implements IIntroXHTMLContentProvider {
 
-    private final String LEFT_NAME_PART = "LEFT_NAME_PART";
-
-    private final String COMPONENT_DESCRIPTION = "COMPONENT_DESCRIPTION";
-
-    private final String COMPONENT_IMANGE = "COMPONENT_IMANGE";
-
-    private final String RATE_IMANGE = "RATE_IMANGE";
-
-    private final String INSTALL_COMPONENT = "INSTALL_COMPONENT";
-
-    private final String EXTENSION_REVIEWS = "EXTENSION_REVIEWS";
-
-    private final String WRITE_REVIEWS = "WRITE_REVIEWS";
-
     protected DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
     private ComponentExtension componentExtension;
@@ -65,7 +51,7 @@ public class ExchangeContentProvider implements IIntroXHTMLContentProvider {
     public void createContent(String id, Element parent) {
         if (componentExtension != null) {
             Document dom = parent.getOwnerDocument();
-            if (LEFT_NAME_PART.equals(id)) {
+            if (ContentConstants.LEFT_NAME_PART.equals(id)) {
                 Element span = dom.createElement("span");
                 span.setAttribute("class", "style_1 style_2 style_3");
                 span.appendChild(dom.createTextNode(componentExtension.getLabel()));
@@ -80,14 +66,14 @@ public class ExchangeContentProvider implements IIntroXHTMLContentProvider {
                 span = dom.createElement("span");
                 span.appendChild(dom.createTextNode(formatter.format(componentExtension.getPublicationDate())));
                 parent.appendChild(span);
-            } else if (COMPONENT_DESCRIPTION.equals(id)) {
+            } else if (ContentConstants.COMPONENT_DESCRIPTION.equals(id)) {
                 parent.appendChild(dom.createTextNode(componentExtension.getDescription()));
-            } else if (RATE_IMANGE.equals(id)) {
+            } else if (ContentConstants.RATE_IMANGE.equals(id)) {
                 String rateImage = getRateImage(componentExtension.getRate());
                 Element imgElem = dom.createElement("img");
                 imgElem.setAttribute("src", rateImage);
                 parent.appendChild(imgElem);
-            } else if (INSTALL_COMPONENT.equals(id)) {
+            } else if (ContentConstants.INSTALL_COMPONENT.equals(id)) {
                 Element hyperlink = dom.createElement("a");
                 String url = "http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&"
                         + "class=org.talend.designer.components.exchange.ui.actions.DownloadComponenentsAction&"
@@ -99,7 +85,7 @@ public class ExchangeContentProvider implements IIntroXHTMLContentProvider {
                 hyperlink.appendChild(imgElem);
 
                 parent.appendChild(hyperlink);
-            } else if (EXTENSION_REVIEWS.equals(id)) {
+            } else if (ContentConstants.EXTENSION_REVIEWS.equals(id)) {
                 EList<AvailableExtensionViewDetail> reviews = componentExtension.getReviews();
                 for (AvailableExtensionViewDetail detail : reviews) {
                     String desc = " " + detail.getTitle() + "\n\t" + detail.getComment();
@@ -110,7 +96,7 @@ public class ExchangeContentProvider implements IIntroXHTMLContentProvider {
                     parent.appendChild(dom.createTextNode(desc));
                     parent.appendChild(dom.createElement("br"));
                 }
-            } else if (WRITE_REVIEWS.equals(id)) {
+            } else if (ContentConstants.WRITE_REVIEWS.equals(id)) {
                 Element hyperlink = dom.createElement("a");
                 String url = "http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&"
                         + "class=org.talend.designer.components.exchange.ui.htmlcontent.ExchangeUrlAction&"

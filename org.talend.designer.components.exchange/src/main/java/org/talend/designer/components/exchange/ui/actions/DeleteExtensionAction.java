@@ -23,7 +23,8 @@ import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.jobs.DeleteExtensionJob;
 import org.talend.designer.components.exchange.model.ComponentExtension;
-import org.talend.designer.components.exchange.ui.views.ExchangeView;
+import org.talend.designer.components.exchange.ui.htmlcontent.ContentConstants;
+import org.talend.designer.components.exchange.ui.views.ExchangeManager;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.WebserviceStatus;
 
@@ -31,8 +32,6 @@ import org.talend.designer.components.exchange.util.WebserviceStatus;
  * DOC hcyi class global comment. Detailled comment
  */
 public class DeleteExtensionAction extends Action {
-
-    private ExchangeView fView = ExchangeUtils.getExchangeView();
 
     private ComponentExtension extension;
 
@@ -75,14 +74,19 @@ public class DeleteExtensionAction extends Action {
         if (event.getResult().isOK()) {
             WebserviceStatus wbs = delJob.getWs();
             if (wbs.isResult()) {
-                MessageDialog.openInformation(fView.getSite().getShell(),
+                MessageDialog.openInformation(null,
                         Messages.getString("DeleteExtensionJob.DeleteExtensionJob.Title"), wbs.getMessageException()); //$NON-NLS-1$
+                ExchangeManager.getInstance().setSelectedExtension(null);
+                RefreshComponenentsAction action = new RefreshComponenentsAction();
+                action.run(RefreshComponenentsAction.REFRESH_MY_EXTENSIONS);
+                ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_LIST_MY_EXTENSIONS, new String[] {});
             } else {
                 String mainMsg = Messages.getString("DeleteExtensionJob.DeleteFailure") + " "
                         + Messages.getString("DeleteExtensionJob.DeleteFailureTip");
-                new ErrorDialogWidthDetailArea(fView.getSite().getShell(), ExchangePlugin.PLUGIN_ID, mainMsg,
-                        wbs.getMessageException());
+                new ErrorDialogWidthDetailArea(null, ExchangePlugin.PLUGIN_ID, mainMsg, wbs.getMessageException());
+                ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_LIST_MY_EXTENSIONS, new String[] {});
             }
         }
+        ExchangeManager.getInstance().setSelectedExtension(null);
     }
 }

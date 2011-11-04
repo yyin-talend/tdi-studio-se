@@ -15,14 +15,12 @@ package org.talend.designer.components.exchange.ui.actions;
 import java.util.Properties;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.ui.htmlcontent.AvailableCompositeProvider;
-import org.talend.designer.components.exchange.ui.views.ExchangeView;
+import org.talend.designer.components.exchange.ui.htmlcontent.ContentConstants;
+import org.talend.designer.components.exchange.ui.views.ExchangeManager;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -35,16 +33,15 @@ public class OpenExtensionViewDetailAction extends Action implements IIntroActio
      * @see org.eclipse.ui.intro.config.IIntroAction#run(org.eclipse.ui.intro.IIntroSite, java.util.Properties)
      */
     public void run(IIntroSite site, Properties params) {
-        String number = (String) params.get(AvailableCompositeProvider.NUMBER);
-        ComponentExtension select = AvailableCompositeProvider.componentMap.get(number);
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        if (page != null) {
-            IViewPart view = page.findView(ExchangeView.ID);
-            if (view != null) {
-                ExchangeView exchangeView = (ExchangeView) view;
-                exchangeView.openDetailPage(select);
-            }
-
+        if (params != null) {
+            String number = (String) params.get(AvailableCompositeProvider.NUMBER);
+            ComponentExtension select = AvailableCompositeProvider.componentMap.get(number);
+            ExchangeManager.getInstance().setSelectedExtension(select);
+            ExchangeManager.getInstance().generateXHTMLPage(
+                    ContentConstants.UL_EXTENSION_DETAILS,
+                    new String[] { ContentConstants.LEFT_NAME_PART, ContentConstants.COMPONENT_DESCRIPTION,
+                            ContentConstants.RATE_IMANGE, ContentConstants.INSTALL_COMPONENT, ContentConstants.EXTENSION_REVIEWS,
+                            ContentConstants.WRITE_REVIEWS });
         }
     }
 

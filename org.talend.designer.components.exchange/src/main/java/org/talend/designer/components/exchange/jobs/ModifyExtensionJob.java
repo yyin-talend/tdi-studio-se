@@ -70,7 +70,7 @@ public class ModifyExtensionJob extends Job {
                     }
                 } else {
                     webserviceStatus = new WebserviceStatus();
-                    webserviceStatus.setMessageException(Messages.getString("MyExtensionsComposite.Form.checkUserAndPassword"));
+                    webserviceStatus.setMessageException(Messages.getString("Exchange.logon.error"));
                 }
                 return webserviceStatus;
             }

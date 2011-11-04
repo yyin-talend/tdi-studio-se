@@ -34,12 +34,6 @@ import org.w3c.dom.Element;
  */
 public class MyExchangeContentProvider implements IIntroXHTMLContentProvider {
 
-    private final String LAST_AVAILABLE_VERSION = "LAST_AVAILABLE_VERSION";
-
-    private final String EXTENSION_LABEL = "EXTENSION_LABEL";
-
-    private final String LIST_MY_EXTENSION = "LIST_MY_EXTENSION";
-
     public static Map<String, ComponentExtension> componentMap = new HashMap<String, ComponentExtension>();
 
     private ComponentExtension componentExtension;
@@ -64,20 +58,20 @@ public class MyExchangeContentProvider implements IIntroXHTMLContentProvider {
 
     public void createContent(String id, Element parent) {
         Document dom = parent.getOwnerDocument();
-        if (LAST_AVAILABLE_VERSION.equals(id)) {
+        if (ContentConstants.LAST_AVAILABLE_VERSION.equals(id)) {
             if (componentExtension != null) {
                 Element inputText = dom.createElement("input");
-                inputText.setAttribute("id", "lastVersionAvailable");
+                inputText.setAttribute("id", "lastVersionAvailable_update");
                 inputText.setAttribute("name", "lastVersionAvailable");
                 inputText.setAttribute("type", "text");
                 inputText.setAttribute("style", "width:300px;margin-left:5px");
                 inputText.setAttribute("value", componentExtension.getLastVersionAvailable());
                 parent.appendChild(inputText);
             }
-        } else if (EXTENSION_LABEL.equals(id)) {
+        } else if (ContentConstants.EXTENSION_LABEL.equals(id)) {
             if (componentExtension != null) {
                 Element inputText = dom.createElement("input");
-                inputText.setAttribute("id", "extension_label");
+                inputText.setAttribute("id", "extension_label_modify");
                 inputText.setAttribute("name", "extension_label");
                 inputText.setAttribute("type", "text");
                 inputText.setAttribute("style", "width:300px;margin-left:5px;background:#AAAAAA;");
@@ -85,7 +79,7 @@ public class MyExchangeContentProvider implements IIntroXHTMLContentProvider {
                 inputText.setAttribute("readonly", "true");
                 parent.appendChild(inputText);
             }
-        } else if (LIST_MY_EXTENSION.equals(id)) {
+        } else if (ContentConstants.LIST_MY_EXTENSION.equals(id)) {
             Element tr = dom.createElement("tr");
 
             Element td = dom.createElement("td");

@@ -12,70 +12,31 @@
 // ============================================================================
 package org.talend.designer.components.exchange.ui.views;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.part.ViewPart;
-import org.talend.commons.ui.runtime.image.ECoreImage;
-import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.model.process.EComponentCategory;
-import org.talend.core.properties.tab.HorizontalTabFactory;
-import org.talend.core.properties.tab.IDynamicProperty;
-import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
-import org.talend.designer.components.exchange.ExchangePlugin;
-import org.talend.designer.components.exchange.model.Category;
-import org.talend.designer.components.exchange.model.ComponentExtension;
-import org.talend.designer.components.exchange.model.VersionRevision;
-import org.talend.designer.components.exchange.ui.AvailableExtensionsComposite;
-import org.talend.designer.components.exchange.ui.DownloadedExtensionsComposite;
-import org.talend.designer.components.exchange.ui.MyExtensionsComposite;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.EditorPart;
+import org.talend.designer.components.exchange.ui.actions.RefreshComponenentsAction;
+import org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionLocationListener;
 
 /**
  * DOC hcyi class global comment. Detailled comment
  */
-public class ExchangeView extends ViewPart {
+public class ExchangeView extends EditorPart {
 
-    public static final String ID = ExchangePlugin.PLUGIN_ID + ".ui.views.ExchangeView"; //$NON-NLS-1$
+    public static final String ID = "org.talend.designer.components.exchange.ui.views.ExchangeView";
 
-    private static Logger log = Logger.getLogger(ExchangeView.class);
+    private Browser browser;
 
-    private HorizontalTabFactory tabFactory = null;
-
-    private TalendPropertyTabDescriptor currentSelectedTab;
-
-    private boolean selectedPrimary = true;
-
-    private IDynamicProperty dc = null;
-
-    private AvailableExtensionsComposite availableExtensionsComposite;
-
-    private DownloadedExtensionsComposite downloadedExtensionsComposite;
-
-    private MyExtensionsComposite myExtensionsComposite;
-
-    private List<ComponentExtension> fAvailableExtensions = new ArrayList<ComponentExtension>();
-
-    private List<ComponentExtension> fContributedExtensions = new ArrayList<ComponentExtension>();
-
-    private List<ComponentExtension> fInstalledExtensions = new ArrayList<ComponentExtension>();
-
-    private List<VersionRevision> fVersionRevisions = new ArrayList<VersionRevision>();
-
-    private List<Category> fCategorys = new ArrayList<Category>();
-
-    private Image imageView;
+    private ExchangeManager manager;
 
     public ExchangeView() {
-        tabFactory = new HorizontalTabFactory();
+        manager = ExchangeManager.getInstance();
     }
 
     /*
@@ -85,129 +46,12 @@ public class ExchangeView extends ViewPart {
      */
     @Override
     public void createPartControl(Composite parent) {
-        tabFactory.initComposite(parent, false);
-        tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            public void selectionChanged(SelectionChangedEvent event) {
-                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                TalendPropertyTabDescriptor descriptor = (TalendPropertyTabDescriptor) selection.getFirstElement();
-
-                if (descriptor == null) {
-                    return;
-                }
-
-                if (currentSelectedTab != null) {
-                    if ((currentSelectedTab.getCategory() != descriptor.getCategory())) {
-                        for (Control curControl : tabFactory.getTabComposite().getChildren()) {
-                            curControl.dispose();
-                        }
-                    }
-                }
-
-                if (currentSelectedTab == null || currentSelectedTab.getCategory() != descriptor.getCategory() || selectedPrimary) {
-                    currentSelectedTab = descriptor;
-                    createDynamicTabComposite(tabFactory.getTabComposite(), null, descriptor.getCategory());
-                    selectedPrimary = false;
-                }
-            }
-        });
-        setElement();
-    }
-
-    private IDynamicProperty createDynamicTabComposite(Composite parent, Object data, EComponentCategory category) {
-        final int style = SWT.NO_FOCUS;
-        if (EComponentCategory.AVAILABLEEXTENSIONS.equals(category)) {
-            availableExtensionsComposite = new AvailableExtensionsComposite(parent, style, tabFactory.getWidgetFactory(),
-                    fAvailableExtensions);
-            dc = availableExtensionsComposite;
-        } else if (EComponentCategory.DOWNLOADEDEXTENSIONS.equals(category)) {
-            downloadedExtensionsComposite = new DownloadedExtensionsComposite(parent, style, tabFactory.getWidgetFactory(),
-                    fInstalledExtensions);
-            dc = downloadedExtensionsComposite;
-        } else if (EComponentCategory.MYEXTENSIONS.equals(category)) {
-            myExtensionsComposite = new MyExtensionsComposite(parent, style, tabFactory.getWidgetFactory(),
-                    fContributedExtensions, fVersionRevisions, fCategorys);
-            dc = myExtensionsComposite;
-        }
-        if (dc != null) {
-            dc.refresh();
-        }
-        currentSelectedTab.setPropertyComposite(dc);
-        return dc;
-    }
-
-    private void setElement() {
-        EComponentCategory[] categories = getCategories();
-        final List<TalendPropertyTabDescriptor> descriptors = new ArrayList<TalendPropertyTabDescriptor>();
-        for (EComponentCategory category : categories) {
-            TalendPropertyTabDescriptor d = new TalendPropertyTabDescriptor(category);
-            descriptors.add(d);
-        }
-
-        tabFactory.setInput(descriptors);
-        if (imageView == null) {
-            imageView = ImageProvider.getImage(ECoreImage.EXCHNAGETAB);
-        }
-        tabFactory.setTitle("", imageView);
-        tabFactory.setSelection(new IStructuredSelection() {
-
-            public Object getFirstElement() {
-                return null;
-            }
-
-            public Iterator iterator() {
-                return null;
-            }
-
-            public int size() {
-                return 0;
-            }
-
-            public Object[] toArray() {
-                return null;
-            }
-
-            public List toList() {
-                List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
-
-                if (descriptors.size() > 0) {
-                    if (currentSelectedTab != null) {
-                        for (TalendPropertyTabDescriptor ds : descriptors) {
-                            if (ds.getCategory() == currentSelectedTab.getCategory()) {
-                                d.add(ds);
-                                return d;
-                            }
-                        }
-                    }
-                    d.add(descriptors.get(0));
-                }
-                return d;
-            }
-
-            public boolean isEmpty() {
-                return false;
-            }
-
-        });
-
-    }
-
-    private EComponentCategory[] getCategories() {
-        List<EComponentCategory> category = new ArrayList<EComponentCategory>();
-        category.add(EComponentCategory.AVAILABLEEXTENSIONS);
-        category.add(EComponentCategory.DOWNLOADEDEXTENSIONS);
-        category.add(EComponentCategory.MYEXTENSIONS);
-        return category.toArray(new EComponentCategory[0]);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.part.WorkbenchPart#dispose()
-     */
-    @Override
-    public void dispose() {
-        super.dispose();
+        browser = new Browser(parent, SWT.NONE);
+        manager.setBrowser(browser);
+        browser.addLocationListener(new MyExtensionLocationListener());
+        browser.setLayoutData(new GridData(GridData.FILL_BOTH));
+        RefreshComponenentsAction action = new RefreshComponenentsAction();
+        action.run(RefreshComponenentsAction.REFRESH_ALL);
     }
 
     /*
@@ -219,143 +63,41 @@ public class ExchangeView extends ViewPart {
     public void setFocus() {
     }
 
-    public ComponentExtension getSelectedExtension() {
-        if (currentSelectedTab != null) {
-            if (currentSelectedTab.getCategory().equals(EComponentCategory.AVAILABLEEXTENSIONS)) {
-                return availableExtensionsComposite.getSelectedExtension();
-            } else if (currentSelectedTab.getCategory().equals(EComponentCategory.DOWNLOADEDEXTENSIONS)) {
-                return downloadedExtensionsComposite.getSelectedExtension();
-            } else if (currentSelectedTab.getCategory().equals(EComponentCategory.MYEXTENSIONS)) {
-                return myExtensionsComposite.getSelectedExtension();
-            }
-        }
-        return null;
+    @Override
+    public void dispose() {
+        super.dispose();
+        ExchangeManager.resteInstance();
+    }
+
+    @Override
+    public void doSave(IProgressMonitor monitor) {
+        // TODO Auto-generated method stub
 
     }
 
-    public void addDownloadedExtension(ComponentExtension extension) {
-        availableExtensionsComposite.addDownloadedExtension(extension);
-    }
-
-    public void removeDownloadedExtension(ComponentExtension extension) {
-        availableExtensionsComposite.removeDownloadedExtension(extension);
-    }
-
-    public void updateAvailableExtensions(List<ComponentExtension> extensions) {
-        fAvailableExtensions.clear();
-        if (extensions != null && !extensions.isEmpty()) {
-            fAvailableExtensions = extensions;
-            availableExtensionsComposite.updateAvailableExtensions(fAvailableExtensions);
-        }
-    }
-
-    public void updateInstalledExtensions(List<ComponentExtension> extensions) {
-        fInstalledExtensions.clear();
-        if (extensions != null && !extensions.isEmpty()) {
-            fInstalledExtensions = extensions;
-        }
-    }
-
-    public void updateContributedExtensions(List<ComponentExtension> extensions) {
-        fContributedExtensions.clear();
-        if (extensions != null && !extensions.isEmpty()) {
-            fContributedExtensions = extensions;
-        }
-    }
-
-    public void updateVersionRevisionsAndCategorys(List<VersionRevision> versionRevisions, List<Category> categorys) {
-        fVersionRevisions.clear();
-        if (versionRevisions != null && !versionRevisions.isEmpty()) {
-            fVersionRevisions = versionRevisions;
-        }
-        fCategorys.clear();
-        if (categorys != null && !categorys.isEmpty()) {
-            fCategorys = categorys;
-        }
-    }
-
-    public void refresh() {
+    @Override
+    public void doSaveAs() {
+        // TODO Auto-generated method stub
 
     }
 
-    /**
-     * Getter for myExtensionsComposite.
-     * 
-     * @return the myExtensionsComposite
-     */
-    public MyExtensionsComposite getMyExtensionsComposite() {
-        return this.myExtensionsComposite;
+    @Override
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+        setSite(site);
+        setInput(input);
+        setPartName("Exchange");
     }
 
-    public DownloadedExtensionsComposite getDownloadedExtensionsComposite() {
-        return this.downloadedExtensionsComposite;
+    @Override
+    public boolean isDirty() {
+        // TODO Auto-generated method stub
+        return false;
     }
 
-    public void returnAvailableExtensionsCompositeToFirstPage() {
-        if (availableExtensionsComposite != null) {
-            availableExtensionsComposite.returnToFirstPage();
-        }
-    }
-
-    public void editAvailableExtensionReviews() {
-        if (availableExtensionsComposite != null) {
-            availableExtensionsComposite.editReviews();
-        }
-    }
-
-    public void openDetailPage(ComponentExtension extension) {
-        if (availableExtensionsComposite != null) {
-            availableExtensionsComposite.openDetailPage(extension);
-        }
-    }
-
-    public void editDownloadedExtensionsReviews() {
-        if (downloadedExtensionsComposite != null) {
-            downloadedExtensionsComposite.review();
-        }
-    }
-
-    public void filterAvailableExtensions(String filter) {
-        if (availableExtensionsComposite != null) {
-            availableExtensionsComposite.updateItems(filter);
-        }
-    }
-
-    public void setSelectedExtension(ComponentExtension setComponentExtension) {
-        if (currentSelectedTab != null) {
-            if (currentSelectedTab.getCategory().equals(EComponentCategory.AVAILABLEEXTENSIONS)) {
-                availableExtensionsComposite.setSelectedExtension(setComponentExtension);
-            } else if (currentSelectedTab.getCategory().equals(EComponentCategory.DOWNLOADEDEXTENSIONS)) {
-                downloadedExtensionsComposite.setSelectedExtension(setComponentExtension);
-            } else if (currentSelectedTab.getCategory().equals(EComponentCategory.MYEXTENSIONS)) {
-                myExtensionsComposite.setSelectedExtension(setComponentExtension);
-            }
-        }
-    }
-
-    public void returnMyExtensionCompositeToFirstPage() {
-        if (myExtensionsComposite != null) {
-            myExtensionsComposite.returnMyExtensionsComposite();
-        }
-    }
-
-    public void myExtensionModifyOrUploadVersion(int operateStatus, ComponentExtension componentExtension) {
-        if (myExtensionsComposite != null) {
-            myExtensionsComposite.myExtensionModifyOrUploadVersion(operateStatus, componentExtension);
-        }
-    }
-
-    public void myExtensionAddNew() {
-        if (myExtensionsComposite != null) {
-            myExtensionsComposite.myExtensionAddNew();
-        }
-    }
-
-    public List<VersionRevision> getVersionRevisions() {
-        if (fVersionRevisions == null) {
-            return new ArrayList<VersionRevision>();
-        }
-        return this.fVersionRevisions;
+    @Override
+    public boolean isSaveAsAllowed() {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

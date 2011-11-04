@@ -33,12 +33,6 @@ import org.w3c.dom.Text;
  */
 public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
 
-    private final String INSERT_DATA = "INSERT_DATA";
-
-    private final String TOOLBAR_DATA = "TOOLBAR_DATA";
-
-    private final String FILTER = "filter";
-
     public static final String NUMBER = "NUMBER";
 
     private List<ComponentExtension> fAvailableExtensions = new ArrayList<ComponentExtension>();
@@ -97,119 +91,112 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
      * @see org.eclipse.ui.intro.config.IIntroXHTMLContentProvider#createContent(java.lang.String, org.w3c.dom.Element)
      */
     public void createContent(String id, Element parent) {
-        if (fAvailableExtensions != null) {
-            Document dom = parent.getOwnerDocument();
-            if (INSERT_DATA.equals(id)) {
-                Element tr = dom.createElement("tr");
 
-                Element td = dom.createElement("td");
-                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#EBEBDB");
-                Element span = dom.createElement("span");
-                span.setAttribute("class", "style_2 style_3");
-                span.appendChild(dom.createTextNode("Extension Name"));
-                td.appendChild(span);
-                tr.appendChild(td);
+        Document dom = parent.getOwnerDocument();
+        if (ContentConstants.INSERT_DATA.equals(id)) {
+            Element tr = dom.createElement("tr");
 
-                td = dom.createElement("td");
-                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB");
-                span = dom.createElement("span");
-                span.setAttribute("class", "style_2 style_3");
-                span.appendChild(dom.createTextNode("Version"));
-                td.appendChild(span);
-                tr.appendChild(td);
+            Element td = dom.createElement("td");
+            String style = "border-top:1px solid #9BB9F5;border-left:1px solid #9BB9F5;background:#EBEBDB";
+            if (fAvailableExtensions == null || fAvailableExtensions.isEmpty()) {
+                style = style + ";border-bottom:1px solid #9BB9F5";
+            }
+            td.setAttribute("style", style);
+            Element span = dom.createElement("span");
+            span.setAttribute("class", "style_2 style_3");
+            span.appendChild(dom.createTextNode("Extension Name"));
+            td.appendChild(span);
+            tr.appendChild(td);
 
-                td = dom.createElement("td");
-                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB");
-                span = dom.createElement("span");
-                span.setAttribute("class", "style_2 style_3");
-                span.appendChild(dom.createTextNode("Rating"));
-                td.appendChild(span);
-                tr.appendChild(td);
+            td = dom.createElement("td");
+            style = "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB";
+            if (fAvailableExtensions == null || fAvailableExtensions.isEmpty()) {
+                style = style + ";border-bottom:1px solid #9BB9F5";
+            }
+            td.setAttribute("style", style);
+            span = dom.createElement("span");
+            span.setAttribute("class", "style_2 style_3");
+            span.appendChild(dom.createTextNode("Version"));
+            td.appendChild(span);
+            tr.appendChild(td);
 
-                td = dom.createElement("td");
-                td.setAttribute("style", "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB");
-                span = dom.createElement("span");
-                span.setAttribute("class", "style_2 style_3");
-                span.appendChild(dom.createTextNode("Auther"));
-                td.appendChild(span);
-                tr.appendChild(td);
+            td = dom.createElement("td");
+            style = "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB";
+            if (fAvailableExtensions == null || fAvailableExtensions.isEmpty()) {
+                style = style + ";border-bottom:1px solid #9BB9F5";
+            }
+            td.setAttribute("style", style);
+            span = dom.createElement("span");
+            span.setAttribute("class", "style_2 style_3");
+            span.appendChild(dom.createTextNode("Rating"));
+            td.appendChild(span);
+            tr.appendChild(td);
 
-                td = dom.createElement("td");
-                td.setAttribute("style",
-                        "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;background:#EBEBDB");
-                span = dom.createElement("span");
-                span.setAttribute("class", "style_2 style_3");
-                span.appendChild(dom.createTextNode("View"));
-                td.appendChild(span);
-                tr.appendChild(td);
+            td = dom.createElement("td");
+            style = "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;background:#EBEBDB";
+            if (fAvailableExtensions == null || fAvailableExtensions.isEmpty()) {
+                style = style + ";border-bottom:1px solid #9BB9F5";
+            }
+            td.setAttribute("style", style);
+            span = dom.createElement("span");
+            span.setAttribute("class", "style_2 style_3");
+            span.appendChild(dom.createTextNode("Auther"));
+            td.appendChild(span);
+            tr.appendChild(td);
 
-                parent.appendChild(tr);
+            td = dom.createElement("td");
+            style = "border-top:1px solid #9BB9F5;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;background:#EBEBDB";
+            if (fAvailableExtensions == null || fAvailableExtensions.isEmpty()) {
+                style = style + ";border-bottom:1px solid #9BB9F5";
+            }
+            td.setAttribute("style", style);
+            span = dom.createElement("span");
+            span.setAttribute("class", "style_2 style_3");
+            span.appendChild(dom.createTextNode("View"));
+            td.appendChild(span);
+            tr.appendChild(td);
 
-                componentMap.clear();
+            parent.appendChild(tr);
+
+            componentMap.clear();
+            if (fAvailableExtensions != null) {
                 for (int i = 0; i < fAvailableExtensions.size(); i++) {
                     ComponentExtension extension = fAvailableExtensions.get(i);
                     Element trExtension = dom.createElement("tr");
 
                     Element tdExtension = dom.createElement("td");
+                    style = "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5";
                     if (i == fAvailableExtensions.size() - 1) {
-                        if (i % 2 == 1) {
-                            tdExtension
-                                    .setAttribute("style",
-                                            "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
-                        } else {
-                            tdExtension.setAttribute("style",
-                                    "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5");
-                        }
-                    } else {
-                        if (i % 2 == 1) {
-                            tdExtension.setAttribute("style",
-                                    "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5;background:#F7F7F7");
-                        } else {
-                            tdExtension.setAttribute("style", "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5");
-                        }
+                        style = "border-top:1px solid #cccccc;border-left:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5";
                     }
+                    if (i % 2 == 0) {
+                        style = style + ";background:#F7F7F7";
+                    }
+                    tdExtension.setAttribute("style", style);
                     tdExtension.appendChild(dom.createTextNode(extension.getLabel()));
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");
+                    style = "border-top:1px solid #cccccc;border-left:1px solid #cccccc";
                     if (i == fAvailableExtensions.size() - 1) {
-                        if (i % 2 == 1) {
-                            tdExtension
-                                    .setAttribute("style",
-                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
-                        } else {
-                            tdExtension.setAttribute("style",
-                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5");
-                        }
-                    } else {
-                        if (i % 2 == 1) {
-                            tdExtension.setAttribute("style",
-                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;background:#F7F7F7");
-                        } else {
-                            tdExtension.setAttribute("style", "border-top:1px solid #cccccc;border-left:1px solid #cccccc");
-                        }
+                        style = "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5";
                     }
+                    if (i % 2 == 0) {
+                        style = style + ";background:#F7F7F7";
+                    }
+                    tdExtension.setAttribute("style", style);
                     tdExtension.appendChild(dom.createTextNode(extension.getVersionExtension()));
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");
+                    style = "border-top:1px solid #cccccc;border-left:1px solid #cccccc";
                     if (i == fAvailableExtensions.size() - 1) {
-                        if (i % 2 == 1) {
-                            tdExtension
-                                    .setAttribute("style",
-                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
-                        } else {
-                            tdExtension.setAttribute("style",
-                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5");
-                        }
-                    } else {
-                        if (i % 2 == 1) {
-                            tdExtension.setAttribute("style",
-                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;background:#F7F7F7");
-                        } else {
-                            tdExtension.setAttribute("style", "border-top:1px solid #cccccc;border-left:1px solid #cccccc");
-                        }
+                        style = "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5";
                     }
+                    if (i % 2 == 0) {
+                        style = style + ";background:#F7F7F7";
+                    }
+                    tdExtension.setAttribute("style", style);
                     String rateImage = getRateImage(extension.getRate());
                     Element imgElem = dom.createElement("img");
                     imgElem.setAttribute("src", rateImage);
@@ -217,48 +204,26 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");
+                    style = "border-top:1px solid #cccccc;border-left:1px solid #cccccc";
                     if (i == fAvailableExtensions.size() - 1) {
-                        if (i % 2 == 1) {
-                            tdExtension
-                                    .setAttribute("style",
-                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
-                        } else {
-                            tdExtension.setAttribute("style",
-                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5");
-                        }
-                    } else {
-                        if (i % 2 == 1) {
-                            tdExtension.setAttribute("style",
-                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;background:#F7F7F7");
-                        } else {
-                            tdExtension.setAttribute("style", "border-top:1px solid #cccccc;border-left:1px solid #cccccc");
-                        }
+                        style = "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-bottom:1px solid #9BB9F5";
                     }
+                    if (i % 2 == 0) {
+                        style = style + ";background:#F7F7F7";
+                    }
+                    tdExtension.setAttribute("style", style);
                     tdExtension.appendChild(dom.createTextNode(extension.getAuthor()));
                     trExtension.appendChild(tdExtension);
 
                     tdExtension = dom.createElement("td");
+                    style = "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5";
                     if (i == fAvailableExtensions.size() - 1) {
-                        if (i % 2 == 1) {
-                            tdExtension
-                                    .setAttribute(
-                                            "style",
-                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5;background:#F7F7F7");
-                        } else {
-                            tdExtension
-                                    .setAttribute("style",
-                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5");
-                        }
-                    } else {
-                        if (i % 2 == 1) {
-                            tdExtension
-                                    .setAttribute("style",
-                                            "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;background:#F7F7F7");
-                        } else {
-                            tdExtension.setAttribute("style",
-                                    "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5");
-                        }
+                        style = "border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #9BB9F5;border-bottom:1px solid #9BB9F5";
                     }
+                    if (i % 2 == 0) {
+                        style = style + ";background:#F7F7F7";
+                    }
+                    tdExtension.setAttribute("style", style);
                     Element hyperlink = dom.createElement("a");
                     hyperlink.setAttribute(NUMBER, "" + i);
                     String url = "http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&"

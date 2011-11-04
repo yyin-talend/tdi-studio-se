@@ -14,109 +14,127 @@ package org.talend.designer.components.exchange.ui.actions;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IViewActionDelegate;
-import org.eclipse.ui.IViewPart;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.components.exchange.jobs.RefreshJob;
 import org.talend.designer.components.exchange.jobs.ShowContributedExtensionsJob;
 import org.talend.designer.components.exchange.jobs.ShowInstalledExtensionsJob;
 import org.talend.designer.components.exchange.model.ComponentExtension;
-import org.talend.designer.components.exchange.ui.views.ExchangeView;
+import org.talend.designer.components.exchange.ui.htmlcontent.ContentConstants;
+import org.talend.designer.components.exchange.ui.views.ExchangeManager;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.ExchangeWebService;
 
 /**
  * DOC hcyi class global comment. Detailled comment
  */
-public class RefreshComponenentsAction implements IViewActionDelegate {
+public class RefreshComponenentsAction extends Action {
 
-    public static final String ID = "org.talend.designer.components.exchange.ui.actions.RefreshComponenentsAction"; //$NON-NLS-1$
+    public static final String REFRESH_ALL = "refresh_all";
 
-    private ExchangeView fView;
+    public static final String REFRESH_AVAILABLES = "refresh_availables";
 
-    public void init(IViewPart view) {
-        fView = (ExchangeView) view;
-    }
+    public static final String REFRESH_INSTALLED = "refresh_installed";
 
-    public void run(final IAction action) {
-        // avoid starting multiple action at the same time
-        action.setEnabled(false);
-        try {
-            final RefreshJob job = new RefreshJob();
-            job.addJobChangeListener(new JobChangeAdapter() {
+    public static final String REFRESH_MY_EXTENSIONS = "refresh_my_extensions";
 
-                @Override
-                public void done(final IJobChangeEvent event) {
+    public void run(String refreshType) {
+        if (refreshType == null || "".equals(REFRESH_ALL)) {
+            refreshType = REFRESH_ALL;
+        }
 
-                    Display.getDefault().syncExec(new Runnable() {
+        if (REFRESH_ALL.equals(refreshType) || REFRESH_AVAILABLES.equals(refreshType)) {
+            try {
+                final RefreshJob job = new RefreshJob();
+                job.addJobChangeListener(new JobChangeAdapter() {
 
-                        public void run() {
-                            updateUI(action, job, event);
-                        }
-                    });
-                }
-            });
-            ExchangeUtils.scheduleUserJob(job);
+                    @Override
+                    public void done(final IJobChangeEvent event) {
 
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
+                        Display.getDefault().syncExec(new Runnable() {
 
+                            public void run() {
+                                updateUI(job, event);
+                                ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_LIST_AVAILABLE_EXTENSIONS,
+                                        new String[] { ContentConstants.INSERT_DATA });
+                            }
+                        });
+                    }
+                });
+                ExchangeUtils.scheduleUserJob(job);
+
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+
+            }
         }
 
         // Show Installed Extensions
-        try {
-            final ShowInstalledExtensionsJob showInstalledJob = new ShowInstalledExtensionsJob();
-            showInstalledJob.addJobChangeListener(new JobChangeAdapter() {
+        if (REFRESH_ALL.equals(refreshType) || REFRESH_INSTALLED.equals(refreshType)) {
+            try {
+                final ShowInstalledExtensionsJob showInstalledJob = new ShowInstalledExtensionsJob();
+                showInstalledJob.addJobChangeListener(new JobChangeAdapter() {
 
-                @Override
-                public void done(final IJobChangeEvent event) {
+                    @Override
+                    public void done(final IJobChangeEvent event) {
 
-                    Display.getDefault().syncExec(new Runnable() {
+                        Display.getDefault().syncExec(new Runnable() {
 
-                        public void run() {
-                            updateInstalledUI(action, showInstalledJob, event);
-                        }
-                    });
-                }
-            });
-            ExchangeUtils.scheduleUserJob(showInstalledJob);
+                            public void run() {
+                                updateInstalledUI(showInstalledJob, event);
+                                ExchangeManager.getInstance().generateXHTMLPage(null,
+                                        new String[] { ContentConstants.DOWNLOADEXTENSION_DATA });
+                            }
+                        });
+                    }
+                });
+                ExchangeUtils.scheduleUserJob(showInstalledJob);
 
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
 
+            }
         }
 
         // Show Contributed Extensions
-        try {
-            final ShowContributedExtensionsJob showContributedJob = new ShowContributedExtensionsJob();
-            showContributedJob.addJobChangeListener(new JobChangeAdapter() {
+        if (REFRESH_ALL.equals(refreshType) || REFRESH_MY_EXTENSIONS.equals(refreshType)) {
+            try {
+                final ShowContributedExtensionsJob showContributedJob = new ShowContributedExtensionsJob();
+                showContributedJob.addJobChangeListener(new JobChangeAdapter() {
 
-                @Override
-                public void done(final IJobChangeEvent event) {
+                    @Override
+                    public void done(final IJobChangeEvent event) {
 
-                    Display.getDefault().syncExec(new Runnable() {
+                        Display.getDefault().syncExec(new Runnable() {
 
-                        public void run() {
-                            updateContributedUI(action, showContributedJob, event);
-                        }
-                    });
-                }
-            });
-            ExchangeUtils.scheduleUserJob(showContributedJob);
+                            public void run() {
+                                updateContributedUI(showContributedJob, event);
+                                ExchangeManager.getInstance().generateXHTMLPage(null,
+                                        new String[] { ContentConstants.LIST_MY_EXTENSION });
+                            }
+                        });
+                    }
+                });
+                ExchangeUtils.scheduleUserJob(showContributedJob);
 
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
 
+            }
         }
 
         //
         getVersionRevisionsAndCategorys();
-
+        // refreshHTML();
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
@@ -126,12 +144,30 @@ public class RefreshComponenentsAction implements IViewActionDelegate {
         Display.getDefault().syncExec(new Runnable() {
 
             public void run() {
-                fView.updateVersionRevisionsAndCategorys(
+                ExchangeManager.getInstance().updateVersionRevisionsAndCategorys(
                         ExchangeWebService.searchVersionRevisionJSONArray(ExchangeUtils.TYPEEXTENSION),
                         ExchangeWebService.searchCategoryExtensionJSONArray(ExchangeUtils.TYPEEXTENSION));
-                fView.refresh();
             }
         });
+    }
+
+    private void refreshHTML() {
+        Job job = new Job("generatehtml") {
+
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                Display.getDefault().syncExec(new Runnable() {
+
+                    public void run() {
+                        ExchangeManager.getInstance().generateXHTMLPage();
+                    }
+                });
+                return Status.OK_STATUS;
+            }
+
+        };
+        ExchangeUtils.scheduleUserJob(job);
+
     }
 
     /**
@@ -141,15 +177,13 @@ public class RefreshComponenentsAction implements IViewActionDelegate {
      * @param job
      * @param event
      */
-    private void updateUI(final IAction action, final RefreshJob job, final IJobChangeEvent event) {
+    private void updateUI(final RefreshJob job, final IJobChangeEvent event) {
         // activate action again after job finished
-        action.setEnabled(true);
 
         if (event.getResult().isOK()) {
             // update exchange view
             List<ComponentExtension> extensions = job.getAvailableExtensions();
-            fView.updateAvailableExtensions(extensions);
-            fView.refresh();
+            ExchangeManager.getInstance().updateAvailableExtensions(extensions);
         }
     }
 
@@ -160,16 +194,11 @@ public class RefreshComponenentsAction implements IViewActionDelegate {
      * @param job
      * @param event
      */
-    private void updateInstalledUI(final IAction action, final ShowInstalledExtensionsJob showInstalledJob,
-            final IJobChangeEvent event) {
-        // activate action again after job finished
-        action.setEnabled(true);
-
+    private void updateInstalledUI(final ShowInstalledExtensionsJob showInstalledJob, final IJobChangeEvent event) {
         if (event.getResult().isOK()) {
             // update exchange view
             List<ComponentExtension> extensions = showInstalledJob.getfInstalledExtensions();
-            fView.updateInstalledExtensions(extensions);
-            fView.refresh();
+            ExchangeManager.getInstance().updateInstalledExtensions(extensions);
         }
     }
 
@@ -179,16 +208,11 @@ public class RefreshComponenentsAction implements IViewActionDelegate {
      * @param showInstalledJob
      * @param event
      */
-    private void updateContributedUI(final IAction action, final ShowContributedExtensionsJob showContributedJob,
-            final IJobChangeEvent event) {
-        // activate action again after job finished
-        action.setEnabled(true);
-
+    private void updateContributedUI(final ShowContributedExtensionsJob showContributedJob, final IJobChangeEvent event) {
         if (event.getResult().isOK()) {
             // update exchange view
             List<ComponentExtension> extensions = showContributedJob.getfContributedExtensions();
-            fView.updateContributedExtensions(extensions);
-            fView.refresh();
+            ExchangeManager.getInstance().updateContributedExtensions(extensions);
         }
     }
 }

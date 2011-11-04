@@ -1,0 +1,594 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<style type="text/css">
+body,td,th {
+	font-size: 12px;
+	color: #404040;
+	line-height:23px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+body {
+	background-color: #FFFFFF;
+	margin: 0px;
+}
+textarea{overflow-y:auto;width:600px;height:100px;margin-left:5px}
+ul{ margin:0px;padding:0px;list-style-type:none;}  
+a:link.xh{color: #404040;text-decoration: none;}a:hover.xh{text-decoration:underline;}a:visited.xh{text-decoration: none;color: #404040;}
+.hover{background:#E7EEFD;} 
+.leave{background:none;}   
+img{border:0px;}
+.style_1{font-size:16px;}
+.style_2{color:#000000;}
+.style_3{font-weight:bold;}
+div{margin:0;padding:0}
+#container{width:100%;height:100%; background:#FFFFFF;}
+#container .menu{width:300;float: left;}
+#container .main1{margin-left: 1px;float:left;background:#FFFFFF;}
+#menu li{display:block;cursor:pointer;text-align:left;padding:0px 0px;}  
+.ulhide{display: none;list-style:none; }  
+.ulblock{display: block;}  
+
+.left_1{width:100px;margin-top:10px; float:left;padding-left:0px; vertical-align:top; margin-right:10px;}
+.compDesc{width:60%; height:200px; margin-top:10px;margin-bottom:30px; padding-left:20px;overflow:auto;}
+.compImg{width:20%;height:200px; margin-top:10px;margin-bottom:30px; padding-left:0px;}
+.reviews{width:60%;height:350px ;margin-bottom:10px;padding-left:10px;word-break:break-all;WORD-WRAP: break-word;}
+.userreview{font-size:13px;color:#000000;font-weight:bold;padding-left:10px;}
+.left_11 {width:100px;margin-top:10px; float:left;padding-left:0px; vertical-align:top; margin-right:10px;}
+
+</style>
+</head>
+<body>
+<script type="text/javascript">
+
+
+function filterReWriteUrl(){	
+	var prefix = "http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;id=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;text="
+	var jsonObj = document.getElementById("avialable_filter_text").value;
+	var url = prefix +jsonObj;
+	document.getElementById('commit_filter').href = url;
+}
+
+function createNewExtensionWriteUrl(){	
+	
+	  String.prototype.replaceAll = function(s1, s2) {   
+	       return this.replace(new RegExp(s1, "gm"), s2); //g全局  
+	  }    
+	String.prototype.replaceAll2Excep = function(s1, s2) {     
+	        var temp = this;     
+	        while (temp.indexOf(s1) != -1) {     
+	            temp = temp.replace(s1, s2);     
+	        }     
+	      return temp;     
+	   }  
+	
+	var prefix = "http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;type=UPLOAD_MY_EXTENSION"
+
+	var label="label:" +"'"+document.getElementById("extension_label").value+"'";
+	var lastVersionAvailable = "lastVersionAvailable:"+"'"+document.getElementById("lastVersionAvailable").value+"'";
+	var description ="description:"+"'"+document.getElementById("extension_description").value+"'";
+	
+	var checkedType = "";
+	var filtervalue="";
+	var compatibilities = document.getElementsByName("compatibility");
+	if(compatibilities[0].checked==true){
+		checkedType ="all"
+		filtervalue =null;
+	}else if(compatibilities[1].checked==true){
+		checkedType ="older"
+		filtervalue =document.getElementById(checkedType).value;
+	}else if(compatibilities[2].checked==true){
+		checkedType ="except"
+		filtervalue =document.getElementById(checkedType).value;
+	}else if(compatibilities[3].checked==true){
+		checkedType ="newer"
+		filtervalue =document.getElementById(checkedType).value;
+	}else if(compatibilities[4].checked==true){
+		checkedType ="only"
+		filtervalue =document.getElementById(checkedType).value;
+	}
+	
+	var listVersionCompatibles ="listVersionCompatibles:"+"'"+checkedType+"'";
+	var filter ="filter:"+"'"+filtervalue+"'";
+	var filename ="filename:"+"'"+document.getElementById("filename").value+"'";
+
+	var jsonObj ="{"+label +","+lastVersionAvailable+","+description+","+listVersionCompatibles+","+filter+","+filename+"}"
+	jsonObj = jsonObj.replaceAll2Excep("\\","/");
+	var url = prefix +"&amp;extensionValues="+jsonObj;
+	document.getElementById('commit').href = url;
+}
+
+function  updateReWriteUrl(){	  
+	String.prototype.replaceAll2Excep = function(s1, s2) {     
+	        var temp = this;     
+	        while (temp.indexOf(s1) != -1) {     
+	            temp = temp.replace(s1, s2);     
+	        }     
+	      return temp;     
+	   }   
+	
+var prefix = "http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;type=UPDATE_MY_EXTENSION"
+
+var lastVersionAvailable = "lastVersionAvailable:"+"'"+document.getElementById("lastVersionAvailable_update").value+"'";
+
+var checkedType = "";
+var filtervalue="";
+var compatibilities = document.getElementsByName("compatibility_update");
+if(compatibilities[0].checked==true){
+	checkedType ="all"
+	filtervalue =null;
+}else if(compatibilities[1].checked==true){
+	checkedType ="older"
+	filtervalue =document.getElementById(checkedType+"_update").value;
+}else if(compatibilities[2].checked==true){
+	checkedType ="except"
+	filtervalue =document.getElementById(checkedType+"_update").value;
+}else if(compatibilities[3].checked==true){
+	checkedType ="newer"
+	filtervalue =document.getElementById(checkedType+"_update").value;
+}else if(compatibilities[4].checked==true){
+	checkedType ="only"
+	filtervalue =document.getElementById(checkedType+"_update").value;
+}
+
+var listVersionCompatibles ="listVersionCompatibles:"+"'"+checkedType+"'";
+var filter ="filter:"+"'"+filtervalue+"'";
+var filename ="filename:"+"'"+document.getElementById("filename_update").value+"'";
+
+var jsonObj ="{"+lastVersionAvailable+","+listVersionCompatibles+","+filter+","+filename+"}"
+jsonObj = jsonObj.replaceAll2Excep("\\","/");
+var url = prefix +"&amp;extensionValues="+jsonObj;
+document.getElementById('commit_update').href = url;
+
+}
+
+function modifyReWriteUrl(){	
+	var prefix ="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;type=MODIFY_MY_EXTENSION"
+
+	var leabel="label:" +"'"+document.getElementById("extension_label_modify").value+"'"
+	var description ="description:"+"'"+document.getElementById("extension_description_modify").value+"'"
+	
+	var checkedType = "";
+	var filtervalue="";
+	var compatibilities = document.getElementsByName("compatibility_modify");
+	if(compatibilities[0].checked==true){
+		checkedType ="all"
+		filtervalue =null;
+	}else if(compatibilities[1].checked==true){
+		checkedType ="older"
+		filtervalue =document.getElementById(checkedType+"_modify").value;
+	}else if(compatibilities[2].checked==true){
+		checkedType ="except"
+		filtervalue =document.getElementById(checkedType+"_modify").value;
+	}else if(compatibilities[3].checked==true){
+		checkedType ="newer"
+		filtervalue =document.getElementById(checkedType+"_modify").value;
+	}else if(compatibilities[4].checked==true){
+		checkedType ="only"
+		filtervalue =document.getElementById(checkedType+"_modify").value;
+	}
+	
+	var listVersionCompatibles ="listVersionCompatibles:"+"'"+checkedType+"'";
+	var filter ="filter:"+"'"+filtervalue+"'";
+	var jsonObj ="{"+leabel +","+description+","+listVersionCompatibles+","+filter+"}"
+	
+	var url = prefix +"&amp;extensionValues="+jsonObj;
+	document.getElementById('commit_modify').href = url;
+
+}
+
+//can't use for cycle in the javascript,each time call the length fuction ,get error in document parser
+function setTab(tabIndex,pageId){  
+    var tli=document.getElementById("menu").getElementsByTagName("li");  
+    var mli=document.getElementById("main1").getElementsByTagName("ul");    
+    if(tabIndex==0){
+    	 tli[0].className="hover"
+    	 tli[1].className="leave"
+    	 tli[2].className="leave"
+    }else if(tabIndex==1){
+    	 tli[0].className="leave"
+    	 tli[1].className="hover"
+    	 tli[2].className="leave"
+    }else if(tabIndex==2){
+    	 tli[0].className="leave"
+    	 tli[1].className="leave"
+    	 tli[2].className="hover"
+    }
+    if(pageId==mli[0].id){
+    	mli[0].className="ulblock"
+    	mli[1].className="ulhide"
+    	mli[2].className="ulhide"
+    	mli[3].className="ulhide"
+    	mli[4].className="ulhide"
+    	mli[5].className="ulhide"
+    	mli[6].className="ulhide"
+    }else if(pageId==mli[1].id){
+    	mli[0].className="ulhide"
+        mli[1].className="ulblock"
+        mli[2].className="ulhide"
+        mli[3].className="ulhide"
+        mli[4].className="ulhide"
+        mli[5].className="ulhide"
+        mli[6].className="ulhide"
+    }else if(pageId==mli[2].id){
+    	mli[0].className="ulhide"
+        mli[1].className="ulhide"
+        mli[2].className="ulblock"
+        mli[3].className="ulhide"
+        mli[4].className="ulhide"
+        mli[5].className="ulhide"
+        mli[6].className="ulhide"
+    }else if(pageId==mli[3].id){
+    	mli[0].className="ulhide"
+        mli[1].className="ulhide"
+        mli[2].className="ulhide"
+        mli[3].className="ulblock"
+        mli[4].className="ulhide"
+        mli[5].className="ulhide"
+        mli[6].className="ulhide"
+    }else if(pageId==mli[4].id){
+    	mli[0].className="ulhide"
+        mli[1].className="ulhide"
+        mli[2].className="ulhide"
+        mli[3].className="ulhide"
+        mli[4].className="ulblock"
+        mli[5].className="ulhide"
+        mli[6].className="ulhide"
+    }else if(pageId==mli[5].id){
+    	mli[0].className="ulhide"
+        mli[1].className="ulhide"
+        mli[2].className="ulhide"
+        mli[3].className="ulhide"
+        mli[4].className="ulhide"
+        mli[5].className="ulblock"
+        mli[6].className="ulhide"
+    }else if(pageId==mli[6].id){
+    	mli[0].className="ulhide"
+        mli[1].className="ulhide"
+        mli[2].className="ulhide"
+        mli[3].className="ulhide"
+        mli[4].className="ulhide"
+        mli[5].className="ulhide"
+        mli[6].className="ulblock"
+    } 
+    
+} 
+
+
+</script>
+
+<div id="container">
+	<div id="menu" class="menu">
+		 <ul id="ul_menu">  
+             <li id="tab1" class="hover" onclick="setTab(0,'list_available_extensions')">Available Extensions</li>  
+             <li id="tab2" onclick="setTab(1,'downloaded_extensions')">Downloaded Extensions</li>  
+             <li id="tab3" onclick="setTab(2,'list_my_extensions')">My Extensions</li>                       
+           </ul>   
+	</div>
+	<div id="main1" class="main1">
+		<!-- available extension list  -->
+		 <ul id="list_available_extensions" class="ulblock">  
+		 	 <li >
+		 	
+			  	<div id="filter_div" style="float: right">
+			  	 <input id="avialable_filter_text" name="avialable_filter_text" type="text"  /><a id="commit_filter" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;id=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;text="><img src="imgs/refresh.gif" onmouseover="filterReWriteUrl()"/> </a>
+			  	</div>
+			  	
+				<table  width="95%" align="center"  cellpadding="0" cellspacing="0" >
+					<contentProvider id="INSERT_DATA" class="org.talend.designer.components.exchange.ui.htmlcontent.AvailableCompositeProvider" pluginId="org.talend.designer.components.exchange">			</contentProvider>
+				</table>
+		  	</li>
+		 </ul>
+		 <!-- extension details  -->
+		 <ul id="extension_details" class="ulhide">
+			 	<li>
+				   <table width="95%"  align="center" border="1" cellpadding="0" cellspacing="0" >
+				      <tr align="left" valign="top"><!--header over-->
+				        <td colspan="2" >
+				        	<span class="left_11">
+				        	<img src="imgs/return.jpg" onclick="setTab(0,'list_available_extensions')"/>
+				        	</span></td>
+				      </tr>
+				      <tr align="left" valign="top">
+				        <td  valign="top">
+				          <div class="left_1" id="div_name_part">
+				            <contentProvider id="LEFT_NAME_PART" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">			</contentProvider>
+				          </div>		  
+				         </td>
+		          		<td  valign="top">
+				          <table>
+				            <tr>
+				              <td>
+				                <div class="compDesc" id="component_description_part">
+				                  <contentProvider id="COMPONENT_DESCRIPTION" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">						</contentProvider>
+			                    </div>						</td>
+						        <td>
+						          <div class="compImg" id="component_Image_part">
+							          <table border="0"  align="center">
+							            <tr>
+							              <td>
+							                <img src="imgs/component_missing.gif" align="middle"/>									</td>
+								          </tr>
+							            <tr>
+							              <td>
+							                <contentProvider id="RATE_IMANGE" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">										</contentProvider>									</td>
+								          </tr>
+							            <tr>
+							              <td>
+							                <contentProvider id="INSTALL_COMPONENT" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">										</contentProvider>									</td>
+								          </tr>
+						              </table>
+						          </div>						</td>
+					          </tr>
+				            <tr>
+				              <td class="userreview">User Reviews </td>
+						        <td>
+							        <contentProvider id="WRITE_REVIEWS" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">							</contentProvider>						</td>
+					          </tr>
+				            <tr>
+				              <td colspan="2" >
+				                <div class="reviews" id="component_reviews_part">
+				                  <contentProvider id="EXTENSION_REVIEWS" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">					</contentProvider>
+			                  </div>					</td>
+					          </tr>
+			            </table>
+		          </td>
+		        </tr>
+		      </table>
+		      </li>
+		 </ul>
+		 <!--downloaded extensions page  -->
+		 <ul id="downloaded_extensions" class="ulhide">
+		 	<li>
+		 	<div id="filter_div" style="float: right">
+		 	<table width="95%"  align="center"  cellpadding="0" cellspacing="0" >
+			<contentProvider id="DOWNLOADEXTENSION_DATA" class="org.talend.designer.components.exchange.ui.htmlcontent.DownloadExtensionProvider" pluginId="org.talend.designer.components.exchange">			</contentProvider>
+			</table>
+			</div>
+		 	</li>
+		 </ul>
+		 
+		 <!-- my extension list -->
+		 <ul id="list_my_extensions" class="ulhide">
+			 <li>
+			 <div id="filter_div" style="float: right"></div>
+					<table width="95%"  align="center"  cellpadding="0" cellspacing="0" id="table">
+					<tr style="border-right-style:none;border-left-style:none;border-top-style:none">
+					<td colspan="4" align="right" >
+					<img src="imgs/addNewExtension.jpg" onclick="setTab(2,'creat_new_extension')"/>
+					</td>
+					</tr>
+						<contentProvider id="LIST_MY_EXTENSION" class="org.talend.designer.components.exchange.ui.htmlcontent.MyExchangeContentProvider" pluginId="org.talend.designer.components.exchange"/>			
+					</table>
+			 </li>  
+		</ul>
+		<!-- create new extension 	-->
+		<ul id="creat_new_extension" class="ulhide">
+			<li>
+			<div id="filter_div" style="float: right"></div>
+				<table width="95%" align="center" border="0" cellpadding="0" cellspacing="0" >
+			
+					<tr align="left" valign="top">
+					
+						<td >
+							<div class="left_1" >
+									<img src="imgs/return.jpg" style="padding-right:20px" onclick="setTab(2,'list_my_extensions')"/>
+							</div>
+					    </td>
+					    
+					</tr>
+					<tr>
+						<td>
+							<div style="margin-top:10px;"> 
+						<table width="95%" align="left" border="0" cellpadding="0" cellspacing="0" id="inside">
+							<tr valign="top">
+							
+								<td  align="right" >
+									Extension Title 
+							    </td>
+								<td  >
+								<div  class="right_row">
+									<input id="extension_label" name="extension_label" type="text"  style="width:300px;margin-left:5px" />
+									<span style="margin-left:10px;">  
+									Initial Version 
+									</span>
+									<input id="lastVersionAvailable" name="lastVersionAvailable" type="text"  style="width:100px;margin-left:5px" />
+									</div>
+									
+								</td>
+							
+							</tr>
+							<tr valign="top">
+								<td   align="right">
+									Compatibility 
+								</td>
+								<td>
+								<div  class="right_row">	
+									<input type="radio" name="compatibility"  checked="checked" />All versions
+								</div>
+								<div class="right_row">	
+					            	<input type="radio" name="compatibility" />Version <input type="text" id="older" style="width:150px;" />
+					            	and older     
+									  <input type="radio" name="compatibility"  />All versions except:<input type="text" id="except" style="width:150px;"/>
+								</div>
+								<div  class="right_row">
+									<input type="radio" name="compatibility"  />Version <input type="text" id="newer" style="width:150px;" />and newer
+									<input type="radio" name="compatibility"  />Only these versions:<input type="text" id="only" style="width:150px;"/>
+								</div>
+								
+								
+								</td>
+							</tr>
+							<tr  valign="top">
+								<td   align="right">
+									Description 
+								</td>
+								<td>
+									<div  class="right_row">
+										<textarea id="extension_description" name="extension_description" > </textarea>
+									</div>
+								</td>
+							</tr>
+							<tr valign="top">
+								<td align="right">
+								File
+								</td>
+								<td>
+									<div  class="right_row">
+										<input id="filename" type="file" name="filename" style="width:300px;" />
+									</div>
+								</td>
+							</tr>
+							<tr valign="top">
+								<td>
+								
+								</td>
+								<td  align="right">
+									
+								 		<a id="commit" class="xh" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;type=UPLOAD_MY_EXTENSION">
+											<img src="imgs/upload_extension.jpg" onmouseover="createNewExtensionWriteUrl()"/>
+								 		</a>
+									
+										</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</li>
+		</ul>
+	
+		<!-- update extension -->
+		<ul id="upload_extension_version" class="ulhide">
+			<li>
+				<div id="filter_div" style="float: right"></div>
+				<table width="95%" align="center" border="0" cellpadding="0" cellspacing="0" id="table">
+					<tr align="left" valign="top">
+						<td >
+							<div class="left_1" >
+									<img src="imgs/return.jpg" style="padding-right:20px" onclick="setTab(2,'list_my_extensions')"/>
+							</div>
+					    </td>
+					</tr>
+					<tr>
+						<td>
+						<div style="margin-top:10px;"> 
+							<table width="100%" align="left" border="0" cellpadding="0" cellspacing="0" id="inside">
+								<tr valign="top">
+								
+									<td  align="right" >
+										Initial Version					    </td>
+									<td  >
+									<div id="last_version_row" class="right_row">
+										 <contentProvider id="LAST_AVAILABLE_VERSION" class="org.talend.designer.components.exchange.ui.htmlcontent.MyExchangeContentProvider" pluginId="org.talend.designer.components.exchange"/>						
+									</div>						</td>					
+								</tr>
+								<tr valign="top">
+									<td   align="right">
+										Compatibility						</td>
+									<td>
+									<div  class="right_row">	
+										<input type="radio" name="compatibility_update"  checked="checked" />All versions						</div>
+									<div class="right_row">	
+						            	<input type="radio" name="compatibility_update" />Version <input type="text" id="older_update" style="width:150px;" />
+						            	and older     
+										  <input type="radio" name="compatibility_update"  />All versions except:<input type="text" id="except_update" style="width:150px;"/>
+									</div>
+									<div  class="right_row">
+										<input type="radio" name="compatibility_update"  />Version <input type="text" id="newer_update" style="width:150px;" />and newer
+										<input type="radio" name="compatibility_update"  />Only these versions:<input type="text" id="only_update" style="width:150px;"/>
+									</div>						</td>
+								</tr>
+								<tr valign="top">
+									<td align="right">
+									File						</td>
+									<td>
+										<div  class="right_row">
+											<input id="filename_update" type="file" name="filename" style="width:400px;" />
+										</div>						</td>
+								</tr>
+								<tr valign="top">
+									<td>						</td>
+									<td  align="right">
+										
+									 		<a id="commit_update" class="xh" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;type=UPDATE_MY_EXTENSION">
+												<img src="imgs/update_extension.gif" onmouseover="updateReWriteUrl()"/>						 		</a>						</td>
+								</tr>
+							</table>
+						  </div>
+						</td>
+					</tr>
+				</table>
+			</li>
+		</ul>
+		
+		<!-- modify myextension -->
+		<ul id="modify_my_extension_page" class="ulhide">
+			<li>
+				<div id="filter_div" style="float: right"></div>
+				<table width="95%" align="center" border="0" cellpadding="0" cellspacing="0" id="table">
+					<tr align="left" valign="top">
+						<td >
+							<div class="left_1" >
+									<img src="imgs/return.jpg" style="padding-right:20px" onclick="setTab(2,'list_my_extensions')"/>
+							</div>
+					    </td>
+					</tr>
+					<tr>
+						<td>
+						<div style="margin-top:10px;"> 
+							<table width="100%" align="left" border="0" cellpadding="0" cellspacing="0" id="inside">
+								<tr valign="top">
+									<td  align="right" >
+										Extension Title					    </td>
+									<td  >
+									<div  id="extension_label_row" class="right_row">
+										 <contentProvider id="EXTENSION_LABEL" class="org.talend.designer.components.exchange.ui.htmlcontent.MyExchangeContentProvider" pluginId="org.talend.designer.components.exchange"/>
+									</div>						</td>
+								</tr>
+								<tr valign="top">
+									<td   align="right">
+										Compatibility						</td>
+									<td>
+									<div  class="right_row">	
+										<input type="radio" name="compatibility_modify"  checked="checked" />All versions						</div>
+									<div class="right_row">	
+						            	<input type="radio" name="compatibility_modify" />Version <input type="text" id="older_modify" style="width:150px;" />
+						            	and older     
+										  <input type="radio" name="compatibility_modify"  />All versions except:<input type="text" id="except_modify" style="width:150px;"/>
+									</div>
+									<div  class="right_row">
+										<input type="radio" name="compatibility_modify"  />Version <input type="text" id="newer_modify" style="width:150px;" />and newer
+										<input type="radio" name="compatibility_modify"  />Only these versions:<input type="text" id="only_modify" style="width:150px;"/>
+									</div>						</td>
+								</tr>
+								<tr  valign="top">
+									<td   align="right">
+										Description						</td>
+									<td>
+										<div  class="right_row">
+											<textarea id="extension_description_modify" name="extension_description" > </textarea>
+										</div>						</td>
+								</tr>
+								<tr valign="top">
+									<td>						</td>
+									<td  align="right">
+										
+									 		<a id="commit_modify" class="xh" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;type=MODIFY_MY_EXTENSION">
+												<img src="imgs/modify_extension.gif" onmouseover="modifyReWriteUrl()"/>						 		</a>						</td>
+								</tr>
+							</table>
+						  </div>
+						</td>
+					</tr>
+				</table>
+			</li>
+		</ul>
+		
+	</div>
+	
+	</div>
+</body>
+</html>

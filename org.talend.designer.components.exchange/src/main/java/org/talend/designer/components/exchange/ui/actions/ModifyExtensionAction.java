@@ -22,21 +22,19 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.jobs.ModifyExtensionJob;
-import org.talend.designer.components.exchange.ui.views.ExchangeView;
+import org.talend.designer.components.exchange.ui.htmlcontent.ContentConstants;
+import org.talend.designer.components.exchange.ui.views.ExchangeManager;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.WebserviceStatus;
-import org.talend.designer.core.model.components.manager.ComponentManager;
 
 /**
  * DOC hcyi class global comment. Detailled comment
  */
 public class ModifyExtensionAction extends Action {
 
-    private ExchangeView fView = ExchangeUtils.getExchangeView();
-
     public void run() {
         try {
-            final ModifyExtensionJob job = new ModifyExtensionJob(fView.getSelectedExtension());
+            final ModifyExtensionJob job = new ModifyExtensionJob(ExchangeManager.getInstance().getSelectedExtension());
             job.addJobChangeListener(new JobChangeAdapter() {
 
                 @Override
@@ -66,13 +64,15 @@ public class ModifyExtensionAction extends Action {
         if (event.getResult().isOK()) {
             WebserviceStatus wbs = modifyJob.getWs();
             if (wbs.isResult()) {
-                MessageDialog.openInformation(fView.getSite().getShell(),
-                        Messages.getString("ModifyExtensionJob.Title"), wbs.getMessageException()); //$NON-NLS-1$
+                MessageDialog.openInformation(null, Messages.getString("ModifyExtensionJob.Title"), wbs.getMessageException()); //$NON-NLS-1$
+                ExchangeManager.getInstance().setSelectedExtension(null);
+                RefreshComponenentsAction action = new RefreshComponenentsAction();
+                action.run(RefreshComponenentsAction.REFRESH_MY_EXTENSIONS);
+                ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_LIST_MY_EXTENSIONS, new String[] {});
             } else {
                 String mainMsg = Messages.getString("ModifyExtensionJob.ModifyFailure") + " "
                         + Messages.getString("ModifyExtensionJob.ModifyFailureTip");
-                new ErrorDialogWidthDetailArea(fView.getSite().getShell(), ExchangePlugin.PLUGIN_ID, mainMsg,
-                        wbs.getMessageException());
+                new ErrorDialogWidthDetailArea(null, ExchangePlugin.PLUGIN_ID, mainMsg, wbs.getMessageException());
             }
         }
     }

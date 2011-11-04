@@ -15,15 +15,12 @@ package org.talend.designer.components.exchange.ui.actions;
 import java.util.Properties;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.ui.htmlcontent.AvailableCompositeProvider;
 import org.talend.designer.components.exchange.ui.htmlcontent.DownloadExtensionProvider;
-import org.talend.designer.components.exchange.ui.views.ExchangeView;
+import org.talend.designer.components.exchange.ui.views.ExchangeManager;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -36,21 +33,13 @@ public class InstallAction extends Action implements IIntroAction {
      * @see org.eclipse.ui.intro.config.IIntroAction#run(org.eclipse.ui.intro.IIntroSite, java.util.Properties)
      */
     public void run(IIntroSite site, Properties params) {
-        String number = (String) params.get(AvailableCompositeProvider.NUMBER);
-        ComponentExtension select = DownloadExtensionProvider.componentMap.get(number);
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        if (page != null) {
-            IViewPart view = page.findView(ExchangeView.ID);
-            if (view != null) {
-                ExchangeView exchangeView = (ExchangeView) view;
-                exchangeView.getDownloadedExtensionsComposite().setSelectedExtension(select);
-                DownloadComponenentsAction downloadAction = new DownloadComponenentsAction();
-                if (downloadAction != null) {
-                    downloadAction.run();
-                }
-                exchangeView.editDownloadedExtensionsReviews();
-            }
+        if (params != null) {
+            String number = (String) params.get(AvailableCompositeProvider.NUMBER);
+            ComponentExtension select = DownloadExtensionProvider.componentMap.get(number);
+            ExchangeManager.getInstance().setSelectedExtension(select);
+            DownloadComponenentsAction downloadAction = new DownloadComponenentsAction();
+            downloadAction.run();
+            ExchangeManager.getInstance().setSelectedExtension(null);
         }
     }
-
 }

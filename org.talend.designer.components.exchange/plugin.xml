@@ -2,35 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.views">
-      <view
-            category="org.talend.core.root"
-            class="org.talend.designer.components.exchange.ui.views.ExchangeView"
-            icon="icons/exchange_view.gif"
-            id="org.talend.designer.components.exchange.ui.views.ExchangeView"
-            name="Exchange"
-            restorable="true">
-      </view>
-   </extension>
-    <extension
-         point="org.eclipse.ui.viewActions">
-<!-- Contributions to Exchange View Toolbar -->
-      <viewContribution
-            targetID="org.talend.designer.components.exchange.ui.views.ExchangeView"
-            id="org.talend.designer.components.exchange.view.action">
-         <action
-               class="org.talend.designer.components.exchange.ui.actions.RefreshComponenentsAction"
-               icon="icons/refresh.gif"
-               id="org.talend.designer.components.exchange.ui.actions.RefreshComponenentsAction"
-               label="Refresh Componenents"
-               state="false"
-               style="push"
-               toolbarPath="group1"
-               tooltip="Refresh Componenents">
-         </action>
-      </viewContribution>
-   </extension>
-   <extension
          point="org.talend.core.components_provider">
       <ComponentsProvider
             class="org.talend.designer.components.exchange.ExchangeComponentsProvider"
@@ -44,6 +15,16 @@
             class="org.talend.designer.components.exchange.ui.dialog.ExchangeService"
             serviceId="IExchangeService">
       </Service>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.talend.designer.components.exchange.ui.views.ExchangeView"
+            default="false"
+            icon="icons/exchange_view.gif"
+            id="org.talend.designer.components.exchange.ui.views.ExchangeView"
+            name="Exchange">
+      </editor>
    </extension>
 
 </plugin>

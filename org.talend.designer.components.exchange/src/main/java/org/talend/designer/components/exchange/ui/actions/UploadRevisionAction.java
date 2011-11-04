@@ -23,7 +23,8 @@ import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.jobs.UploadRevisionJob;
 import org.talend.designer.components.exchange.model.ComponentExtension;
-import org.talend.designer.components.exchange.ui.views.ExchangeView;
+import org.talend.designer.components.exchange.ui.htmlcontent.ContentConstants;
+import org.talend.designer.components.exchange.ui.views.ExchangeManager;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.WebserviceStatus;
 
@@ -31,8 +32,6 @@ import org.talend.designer.components.exchange.util.WebserviceStatus;
  * DOC hcyi class global comment. Detailled comment
  */
 public class UploadRevisionAction extends Action {
-
-    private ExchangeView fView = ExchangeUtils.getExchangeView();
 
     private ComponentExtension extension;
 
@@ -75,13 +74,16 @@ public class UploadRevisionAction extends Action {
         if (event.getResult().isOK()) {
             WebserviceStatus wbs = uploadJob.getWs();
             if (wbs.isResult()) {
-                MessageDialog.openInformation(fView.getSite().getShell(),
+                MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
                         Messages.getString("UploadRevisionJob.Title"), wbs.getMessageException()); //$NON-NLS-1$
-                fView.returnMyExtensionCompositeToFirstPage();
+                ExchangeManager.getInstance().setSelectedExtension(null);
+                RefreshComponenentsAction action = new RefreshComponenentsAction();
+                action.run(RefreshComponenentsAction.REFRESH_MY_EXTENSIONS);
+                ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_LIST_MY_EXTENSIONS, new String[] {});
             } else {
                 String mainMsg = Messages.getString("UploadRevisionAction.InstalledFailure") + " "
                         + Messages.getString("UploadRevisionAction.InstalledFailureTip");
-                new ErrorDialogWidthDetailArea(fView.getSite().getShell(), ExchangePlugin.PLUGIN_ID, mainMsg,
+                new ErrorDialogWidthDetailArea(Display.getCurrent().getActiveShell(), ExchangePlugin.PLUGIN_ID, mainMsg,
                         wbs.getMessageException());
             }
         }

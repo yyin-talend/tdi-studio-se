@@ -32,7 +32,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -56,7 +55,8 @@ import org.talend.designer.components.exchange.jobs.ComponentDownloader;
 import org.talend.designer.components.exchange.jobs.ComponentInstaller;
 import org.talend.designer.components.exchange.jobs.DownloadListener;
 import org.talend.designer.components.exchange.model.ComponentExtension;
-import org.talend.designer.components.exchange.ui.views.ExchangeView;
+import org.talend.designer.components.exchange.ui.htmlcontent.ContentConstants;
+import org.talend.designer.components.exchange.ui.views.ExchangeManager;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.ExchangeWebService;
 import org.talend.designer.components.exchange.util.WebserviceStatus;
@@ -71,15 +71,13 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class DownloadComponenentsAction extends Action implements IIntroAction {
 
-    private ExchangeView fView = ExchangeUtils.getExchangeView();
-
     private int fExtensionDownloaded;
 
     private List<ComponentExtension> fDownloadedComponents;
 
     public void run() {
         try {
-            Job job = new DownloadJob(fView.getSelectedExtension());
+            Job job = new DownloadJob(ExchangeManager.getInstance().getSelectedExtension());
             fExtensionDownloaded = 0;
             fDownloadedComponents = new ArrayList<ComponentExtension>();
             job.addJobChangeListener(new JobChangeAdapter() {
@@ -113,7 +111,6 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
             ExchangeUtils.reloadComponents(); // refresh palette
             // update needed modules.
             CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
-            fView.refresh(); // refresh table
             // see feature 0005050: confirmation popup once the component is installed
             confirmInstallation();
             // Start Code Generation Init
@@ -128,6 +125,8 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
                     ComponentUtilities.setSkipUpdatePalette(false);
                 }
             });
+            ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_DOWNLOADED_EXTENSIONS,
+                    new String[] { ContentConstants.DOWNLOADEXTENSION_DATA });
         }
     }
 
@@ -144,7 +143,6 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
             }
         };
         String componentName = null;
-        Shell shell = this.fView.getSite().getShell();
         StringBuilder message = new StringBuilder();
         for (ComponentExtension component : fDownloadedComponents) {
             File componentFolder = ExchangeUtils.getComponentFolder("downloaded");
@@ -154,7 +152,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
             String location = componentFolder.getAbsolutePath();
             File folder = ExchangeComponentsProvider.searchComponentFolder(new File(location));
             File[] files = folder.listFiles(propertiesFilter);
-            if (files == null) {
+            if (files == null || files.length == 0) {
                 continue;
             }
             // load property file
@@ -188,7 +186,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
         }
         MessageDialog
                 .openInformation(
-                        shell,
+                        null,
                         Messages.getString("DownloadComponenentsAction.installExchange"), Messages.getString("ExchangeWebService.downloadingExtensionSuccessful")); //$NON-NLS-1$
         ComponentManager.saveResource();
 
@@ -227,7 +225,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
      * @param extension
      */
     void extensionDownloadCompleted(ComponentExtension extension) {
-        fView.addDownloadedExtension(extension);
+        ExchangeManager.getInstance().saveDownloadedExtensionsToFile(extension);
         fExtensionDownloaded++;
         fDownloadedComponents.add(extension);
     }
@@ -306,7 +304,6 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
                                     Display.getDefault().asyncExec(new Runnable() {
 
                                         public void run() {
-                                            fView.refresh();
                                         }
                                     });
                                 }

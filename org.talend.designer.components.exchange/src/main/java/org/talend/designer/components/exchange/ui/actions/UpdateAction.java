@@ -17,8 +17,6 @@ import java.util.Properties;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
@@ -27,7 +25,7 @@ import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.ui.dialog.DownloadCheckUpdatesDialog;
 import org.talend.designer.components.exchange.ui.htmlcontent.AvailableCompositeProvider;
 import org.talend.designer.components.exchange.ui.htmlcontent.DownloadExtensionProvider;
-import org.talend.designer.components.exchange.ui.views.ExchangeView;
+import org.talend.designer.components.exchange.ui.views.ExchangeManager;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -42,24 +40,17 @@ public class UpdateAction extends Action implements IIntroAction {
     public void run(IIntroSite site, Properties params) {
         String number = (String) params.get(AvailableCompositeProvider.NUMBER);
         ComponentExtension select = DownloadExtensionProvider.componentMap.get(number);
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        if (page != null) {
-            IViewPart view = page.findView(ExchangeView.ID);
-            if (view != null) {
-                ExchangeView exchangeView = (ExchangeView) view;
-                exchangeView.getDownloadedExtensionsComposite().setSelectedExtension(select);
-                IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-                boolean checkUpdates = prefStore.getBoolean(ITalendCorePrefConstants.EXCHANGE_DOWNLOADED_CHECK_UPDATES);
-                if (!checkUpdates) {
-                    DownloadComponenentsAction downloadAction = new DownloadComponenentsAction();
-                    if (downloadAction != null) {
-                        downloadAction.run();
-                    }
-                } else {
-                    DownloadCheckUpdatesDialog update = new DownloadCheckUpdatesDialog(Display.getCurrent().getActiveShell());
-                    update.open();
-                }
+        ExchangeManager.getInstance().setSelectedExtension(select);
+        IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+        boolean checkUpdates = prefStore.getBoolean(ITalendCorePrefConstants.EXCHANGE_DOWNLOADED_CHECK_UPDATES);
+        if (!checkUpdates) {
+            DownloadComponenentsAction downloadAction = new DownloadComponenentsAction();
+            if (downloadAction != null) {
+                downloadAction.run();
             }
+        } else {
+            DownloadCheckUpdatesDialog update = new DownloadCheckUpdatesDialog(Display.getCurrent().getActiveShell());
+            update.open();
         }
     }
 

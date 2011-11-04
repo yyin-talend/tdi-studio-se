@@ -14,12 +14,10 @@ package org.talend.designer.components.exchange.ui.actions;
 
 import java.util.Properties;
 
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
-import org.talend.designer.components.exchange.ui.views.ExchangeView;
+import org.talend.designer.components.exchange.ui.htmlcontent.ContentConstants;
+import org.talend.designer.components.exchange.ui.views.ExchangeManager;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -30,16 +28,10 @@ public class FilterExtensionAction implements IIntroAction {
 
     public void run(IIntroSite site, Properties params) {
         if (params != null) {
-            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-            if (page != null) {
-                IViewPart view = page.findView(ExchangeView.ID);
-                if (view != null) {
-                    ExchangeView exchangeView = (ExchangeView) view;
-                    String text = params.getProperty(TEXT);
-                    exchangeView.filterAvailableExtensions(text);
-                }
-
-            }
+            String text = params.getProperty(TEXT);
+            ExchangeManager.getInstance().setAvialableFilter(text == null ? "" : text);
+            ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_LIST_AVAILABLE_EXTENSIONS,
+                    new String[] { ContentConstants.INSERT_DATA });
         }
     }
 

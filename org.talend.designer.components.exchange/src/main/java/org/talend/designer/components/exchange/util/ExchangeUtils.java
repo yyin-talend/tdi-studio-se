@@ -41,14 +41,8 @@ import org.codehaus.jackson.map.JavaTypeMapper;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.revisions.Revision;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.osgi.framework.Version;
 import org.talend.commons.emf.EmfHelper;
@@ -65,7 +59,6 @@ import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.model.ExchangePackage;
 import org.talend.designer.components.exchange.model.RevisionInfo;
 import org.talend.designer.components.exchange.model.VersionRevision;
-import org.talend.designer.components.exchange.ui.views.ExchangeView;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
@@ -276,26 +269,12 @@ public class ExchangeUtils {
         return false;
     }
 
-    public static ExchangeView getExchangeView() {
-        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        if (activeWorkbenchWindow != null) {
-            IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
-            if (activePage != null) {
-                IViewPart findView = activePage.findView(ExchangeView.ID);
-                if (findView instanceof ExchangeView) {
-                    return (ExchangeView) findView;
-                }
-            }
-        }
-        return null;
-    }
-
-    public static IAction findViewAction(String id) {
-        IAction action = null;
-        ExchangeView view = ExchangeUtils.getExchangeView();
-        action = ((ActionContributionItem) view.getViewSite().getActionBars().getToolBarManager().find(id)).getAction();
-        return action;
-    }
+    // public static IAction findViewAction(String id) {
+    // IAction action = null;
+    // ExchangeView view = ExchangeUtils.getExchangeView();
+    // action = ((ActionContributionItem) view.getViewSite().getActionBars().getToolBarManager().find(id)).getAction();
+    // return action;
+    // }
 
     /**
      * Save the emf model of downloaded components to file.
