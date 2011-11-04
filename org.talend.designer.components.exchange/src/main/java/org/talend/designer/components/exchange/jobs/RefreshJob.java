@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.components.exchange.jobs;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -23,6 +24,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
@@ -49,8 +51,15 @@ public class RefreshJob extends Job {
         Future<List<ComponentExtension>> task = executor.submit(new Callable<List<ComponentExtension>>() {
 
             public List<ComponentExtension> call() throws Exception {
-                return ComponentSearcher.getAvailableComponentExtensions("tos", "4.2.1", ExchangeUtils.getCurrentLanguage(),
-                        ExchangeUtils.CATEGORY);
+                List<ComponentExtension> extensions = new ArrayList<ComponentExtension>();
+                extensions = ComponentSearcher.getAvailableComponentExtensions(ExchangeUtils.TYPEEXTENSION,
+                        ExchangePlugin.getStudioVersion(), ExchangeUtils.getCurrentLanguage(), "");
+                if (extensions != null && !extensions.isEmpty()) {
+                    return extensions;
+                } else {
+                    return ComponentSearcher.getAvailableComponentExtensions(ExchangeUtils.TYPEEXTENSION, "4.2.0",
+                            ExchangeUtils.getCurrentLanguage(), "");
+                }
             }
 
         });

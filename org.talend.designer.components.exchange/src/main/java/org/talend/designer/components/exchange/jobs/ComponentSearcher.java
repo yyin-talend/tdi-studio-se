@@ -100,7 +100,7 @@ public class ComponentSearcher {
                                 //
                                 if (sizeDetail > 0 && sumRate > 0) {
                                     DecimalFormat df = new DecimalFormat("###.00");
-                                    String averageRate = df.format(Double.parseDouble(df.format(sumRate)) / sizeDetail);
+                                    String averageRate = df.format((double) sumRate / sizeDetail);
                                     if (averageRate != null && !"".equals(averageRate)) {
                                         extension.setRate(averageRate);
                                     } else {

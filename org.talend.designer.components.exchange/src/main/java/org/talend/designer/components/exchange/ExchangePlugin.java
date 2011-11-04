@@ -1,6 +1,7 @@
 package org.talend.designer.components.exchange;
 
 import java.io.File;
+import java.util.StringTokenizer;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -17,6 +18,8 @@ public class ExchangePlugin extends AbstractUIPlugin {
 
     // The shared instance
     private static ExchangePlugin plugin;
+
+    private static final String LEVEL_SEPARATOR = "."; //$NON-NLS-1$
 
     /**
      * The constructor
@@ -63,6 +66,22 @@ public class ExchangePlugin extends AbstractUIPlugin {
      */
     public static ExchangePlugin getDefault() {
         return plugin;
+    }
+
+    public static String getStudioVersion() {
+        String studioVersion = (String) ExchangePlugin.getDefault().getBundle().getHeaders()
+                .get(org.osgi.framework.Constants.BUNDLE_VERSION);
+        StringBuffer sb = new StringBuffer();
+        StringTokenizer stringTokenizer = new StringTokenizer(studioVersion, LEVEL_SEPARATOR);
+        try {
+            sb.append(stringTokenizer.nextToken());
+            sb.append(LEVEL_SEPARATOR);
+            sb.append(stringTokenizer.nextToken());
+            sb.append(LEVEL_SEPARATOR);
+            sb.append(stringTokenizer.nextToken());
+        } catch (NumberFormatException e) {
+        }
+        return sb.toString();
     }
 
     public static ImageDescriptor getImageDescriptor(String path) {
