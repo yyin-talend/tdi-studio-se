@@ -972,8 +972,9 @@ class NestXMLTool_<%=cid%>{
 	
 	public void replaceDefaultNameSpace(org.dom4j.Element nestRoot){
 		if (nestRoot!=null) {
+			boolean isDefaultNamespaceInParent = "".equals(nestRoot.getQName().getNamespace().getPrefix()) && !"".equals(nestRoot.getQName().getNamespace().getURI());
 			for (org.dom4j.Element tmp: (java.util.List<org.dom4j.Element>) nestRoot.elements()) {
-        		if (("").equals(tmp.getQName().getNamespace().getURI()) && ("").equals(tmp.getQName().getNamespace().getPrefix())){
+        		if (isDefaultNamespaceInParent && (tmp.getQName().getNamespace() == org.dom4j.Namespace.NO_NAMESPACE)){
         			tmp.setQName(org.dom4j.DocumentHelper.createQName(tmp.getName(), nestRoot.getQName().getNamespace()));
 	        	}
     	    	replaceDefaultNameSpace(tmp);
