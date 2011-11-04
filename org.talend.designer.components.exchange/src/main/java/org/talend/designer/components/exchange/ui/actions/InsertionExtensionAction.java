@@ -15,7 +15,6 @@ package org.talend.designer.components.exchange.ui.actions;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
@@ -74,7 +73,6 @@ public class InsertionExtensionAction extends Action {
         if (event.getResult().isOK()) {
             WebserviceStatus wbs = insertJob.getWs();
             if (wbs.isResult()) {
-                MessageDialog.openInformation(null, Messages.getString("InstalledExtensionJob.Title"), wbs.getMessageException()); //$NON-NLS-1$
                 ExchangeManager.getInstance().setSelectedExtension(null);
                 RefreshComponenentsAction action = new RefreshComponenentsAction();
                 action.run(RefreshComponenentsAction.REFRESH_MY_EXTENSIONS);
