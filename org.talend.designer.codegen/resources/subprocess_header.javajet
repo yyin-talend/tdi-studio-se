@@ -73,32 +73,34 @@
 						
 							//only for the lookup branch of the tJoin
 							boolean isLookOftJoin = false;
+							boolean isLookOftRecordMatching = true;
 							if(conn.getLineStyle().equals(EConnectionType.FLOW_REF)){
-    							IProcess process = conn.getTarget().getProcess();
-    							for (INode tjoinNode : process.getNodesOfType("tJoin")) {
-    								if(conn.getTarget().getUniqueName().equals(tjoinNode.getUniqueName())){
-    									List<Map<String, String>> joinKeys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(conn.getTarget(), "__JOIN_KEY__");
-    									for(Map<String, String> joinKeyLine : joinKeys){       
-                                			String lookupKey = joinKeyLine.get("LOOKUP_COLUMN");
-                                			hashableColumnsNames.add(lookupKey);
-    									}
-    									isLookOftJoin = true;
+								IProcess process = conn.getTarget().getProcess();
+								for (INode tjoinNode : process.getNodesOfType("tJoin")) {
+									if(conn.getTarget().getUniqueName().equals(tjoinNode.getUniqueName())){
+										List<Map<String, String>> joinKeys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(conn.getTarget(), "__JOIN_KEY__");
+										for(Map<String, String> joinKeyLine : joinKeys){       
+											String lookupKey = joinKeyLine.get("LOOKUP_COLUMN");
+											hashableColumnsNames.add(lookupKey);
+										}
+										isLookOftJoin = true;
 										isLookup = true;
-    								}
-    							}
-    							
-    							// for tRecordMatching    			
-    						    if(conn.getTarget().getUniqueName().startsWith("tRecordMatching")){
-    							  List<Map<String, String>> joinKeys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(conn.getTarget(), "__BLOCKING_DEFINITION__");
-    							  for(Map<String, String> joinKeyLine : joinKeys){ 
-                                    String lookupKey = joinKeyLine.get("LOOKUP_COLUMN");
-                                	hashableColumnsNames.add(lookupKey);
-                                	isLookup = true;
-    							  }
-    						    }
+									}
+								}
+								
+								// for tRecordMatching    			
+								if(conn.getTarget().getUniqueName().startsWith("tRecordMatching")){
+									List<Map<String, String>> joinKeys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(conn.getTarget(), "__BLOCKING_DEFINITION__");
+									for(Map<String, String> joinKeyLine : joinKeys){ 
+										String lookupKey = joinKeyLine.get("LOOKUP_COLUMN");
+										hashableColumnsNames.add(lookupKey);
+									}
+									isLookup = true;
+									isLookOftRecordMatching = true;
+								}
 							}
 													
-							if (!isLookOftJoin && metadata!=null) { 
+							if (!isLookOftJoin && !isLookOftRecordMatching && metadata!=null) { 
 								for (IMetadataColumn column: metadata.getListColumns()) {
 									if (column.isKey()) {
 										hashableColumnsNames.add(column.getLabel());
