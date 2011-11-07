@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -410,6 +411,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         // build group tree
         lastTreeNode = mainNode;
         lastXmlPath = mainPath;
+        List<TreeNode> groupElements = new ArrayList<TreeNode>();
         boolean isFirst = true;
         for (int i = 0; i < group.size(); i++) {
             XMLFileNode node = (XMLFileNode) group.get(i);
@@ -443,6 +445,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                 }
                 lastTreeNode = temp;
                 lastXmlPath = newPath;
+                groupElements.add(temp);
             }
 
             temp.setType(type);
@@ -453,6 +456,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         lastTreeNode = mainNode;
         lastXmlPath = mainPath;
         isFirst = true;
+        TreeNode loopElement = null;
         for (int i = 0; i < loop.size(); i++) {
             XMLFileNode node = (XMLFileNode) loop.get(i);
             String newPath = node.getXMLPath();
@@ -481,6 +485,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                 }
                 if (isFirst) {
                     temp.setLoop(true);
+                    loopElement = temp;
                     isFirst = false;
                 }
                 lastTreeNode = temp;
@@ -490,8 +495,25 @@ public class ImportTreeFromRepository extends SelectionAction {
 
         }
 
+        if (loopElement != null && !groupElements.isEmpty()) {
+            fillGroup(loopElement, groupElements);
+        }
+
         if (rootNode != null) {
             parentNode.getChildren().add(rootNode);
+        }
+
+    }
+
+    private void fillGroup(TreeNode loopElement, List<TreeNode> groupElements) {
+        final EObject parent = loopElement.eContainer();
+        if (parent != null) {
+            if (groupElements.contains(parent)) {
+                ((TreeNode) parent).setGroup(true);
+            }
+            if (parent.eContainer() != null && !(parent.eContainer().eContainer() instanceof AbstractInOutTree)) {
+                fillGroup((TreeNode) parent, groupElements);
+            }
         }
 
     }
