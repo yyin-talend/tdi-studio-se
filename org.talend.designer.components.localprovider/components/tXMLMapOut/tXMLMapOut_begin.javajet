@@ -962,16 +962,28 @@ class NestXMLTool_<%=cid%>{
 		}
 	}
 	
-	public void replaceDefaultNameSpace(org.dom4j.Element nestRoot){
-		if (nestRoot!=null) {
-			boolean isDefaultNamespaceInParent = "".equals(nestRoot.getQName().getNamespace().getPrefix()) && !"".equals(nestRoot.getQName().getNamespace().getURI());
-			for (org.dom4j.Element tmp: (java.util.List<org.dom4j.Element>) nestRoot.elements()) {
-        		if (isDefaultNamespaceInParent && (tmp.getQName().getNamespace() == org.dom4j.Namespace.NO_NAMESPACE)){
-        			tmp.setQName(org.dom4j.DocumentHelper.createQName(tmp.getName(), nestRoot.getQName().getNamespace()));
-	        	}
-    	    	replaceDefaultNameSpace(tmp);
-       		}
-       	}
+	public void replaceDefaultNameSpace(org.dom4j.Element nestRoot,org.dom4j.Element declaredDefaultNamespaceElement) {
+		if (nestRoot != null) {
+			List<org.dom4j.Namespace> declaredNamespaces = nestRoot.declaredNamespaces();
+			for(org.dom4j.Namespace namespace : declaredNamespaces) {
+				if("".equals(namespace.getPrefix())
+						&& !"".equals(namespace.getURI())) {//current element declare a default namespace 
+					declaredDefaultNamespaceElement = nestRoot;
+					break;
+				}
+			}
+			
+			for (org.dom4j.Element tmp : (java.util.List<org.dom4j.Element>) nestRoot
+					.elements()) {
+				if (declaredDefaultNamespaceElement != null && (tmp.getQName().getNamespace() == org.dom4j.Namespace.NO_NAMESPACE)) {
+					tmp.setQName(org.dom4j.DocumentHelper
+							.createQName(tmp.getName(),
+									declaredDefaultNamespaceElement.getQName()
+											.getNamespace()));
+				}
+				replaceDefaultNameSpace(tmp,declaredDefaultNamespaceElement);
+			}
+		}
 	}
 	
 	public void removeEmptyElement(org.dom4j.Element root){
@@ -1042,7 +1054,7 @@ class GenerateDocumentHelper_<%=tableName%> {
 		if(doc == null || doc.getDocument() == null) {
 			return;
 		}
-		nestXMLTool.replaceDefaultNameSpace(doc.getDocument().getRootElement());
+		nestXMLTool.replaceDefaultNameSpace(doc.getDocument().getRootElement(),null);
 <%
 		//remove empty element
 		if(!allowEmptyElement) {
