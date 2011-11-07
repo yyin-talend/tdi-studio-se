@@ -391,7 +391,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     protected SashForm createExportTree(Composite parent) {
-        //Using a protected method to provide the tree. LiXiaopeng 2011-9-21
+        // Using a protected method to provide the tree. LiXiaopeng 2011-9-21
         treeViewer = getExportTree();
         SashForm sashForm = treeViewer.createContents(parent);
         treeViewer.addCheckStateListener(checkStateListener);
@@ -603,6 +603,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         applyToChildrenButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         applyToChildrenButton.setText(Messages.getString("JobScriptsExportWizardPage.ApplyToChildren")); //$NON-NLS-1$
+
         // genCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         // genCodeButton.setText(Messages.getString("JobScriptsExportWizardPage.generatePerlFiles")); //$NON-NLS-1$
         // genCodeButton.setSelection(true);
@@ -618,6 +619,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         setParametersValueButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
+                if (manager == null) {
+                    manager = createJobScriptsManager();
+                }
                 List<ContextParameterType> contextEditableResultValuesList = manager.getContextEditableResultValuesList();
                 List<ContextParameterType> contextValueList = new ArrayList<ContextParameterType>();
                 if (contextEditableResultValuesList == null) {
