@@ -72,9 +72,12 @@
 <%			}
 			for(INode node: jmsNodes){
 				//Component Name
-				String name = ElementParameterParser.getValue(node, "__NAME__").trim();
-    				name += "+";
-    				name += ElementParameterParser.getValue(node, "__SUBFIX__").trim();
+				String name = node.getUniqueName().replace("_", "");
+				name = "\"" + name + "\"";
+				    // ElementParameterParser.getValue(node, "__NAME__").trim();
+    				//Remove unnecessary subfix
+    				//name += "+";
+    				//name += ElementParameterParser.getValue(node, "__SUBFIX__").trim();
 			
 				//ActiveMQ
 				String mqType = ElementParameterParser.getValue(node, "__MQ_TYPE__");
