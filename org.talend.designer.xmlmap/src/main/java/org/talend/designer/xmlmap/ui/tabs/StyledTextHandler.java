@@ -169,6 +169,7 @@ public class StyledTextHandler {
             }
 
             public void mouseDown(MouseEvent e) {
+                mapperManager.fireCurrentDirectEditApply();
                 highlightLineOfCursorPosition(styledText.getSelection());
             }
 
