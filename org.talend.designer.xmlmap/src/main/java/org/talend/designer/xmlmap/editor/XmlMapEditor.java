@@ -37,6 +37,7 @@ import org.talend.designer.xmlmap.editor.actions.DeleteTreeNodeAction;
 import org.talend.designer.xmlmap.editor.actions.FixValueAction;
 import org.talend.designer.xmlmap.editor.actions.ImportTreeFromRepository;
 import org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml;
+import org.talend.designer.xmlmap.editor.actions.RenameTreeNodeAction;
 import org.talend.designer.xmlmap.editor.actions.SetAggregateAction;
 import org.talend.designer.xmlmap.editor.actions.SetGroupAction;
 import org.talend.designer.xmlmap.editor.actions.SetLoopAction;
@@ -139,6 +140,11 @@ public class XmlMapEditor extends GraphicalEditor {
         SetAggregateAction aggreagteAction = new SetAggregateAction(this);
         getActionRegistry().registerAction(aggreagteAction);
         getSelectionActions().add(aggreagteAction.getId());
+
+        RenameTreeNodeAction renameTreeNodeAction = new RenameTreeNodeAction(this);
+        renameTreeNodeAction.setMapperManager(mapperManager);
+        getActionRegistry().registerAction(renameTreeNodeAction);
+        getSelectionActions().add(renameTreeNodeAction.getId());
     }
 
     /**
@@ -333,6 +339,13 @@ public class XmlMapEditor extends GraphicalEditor {
                             menu.add(aggreateAction);
                         }
 
+                        RenameTreeNodeAction renameTreeNodeAction = (RenameTreeNodeAction) getActionRegistry().getAction(
+                                RenameTreeNodeAction.ID);
+                        renameTreeNodeAction.update(object);
+                        if (renameTreeNodeAction.isEnabled()) {
+                            menu.add(renameTreeNodeAction);
+                        }
+
                     }
 
                 } else if (object instanceof TreeNodeEditPart) {
@@ -395,6 +408,13 @@ public class XmlMapEditor extends GraphicalEditor {
                         importFromRepository.update(object);
                         if (importFromRepository.isEnabled()) {
                             menu.add(importFromRepository);
+                        }
+
+                        RenameTreeNodeAction renameTreeNodeAction = (RenameTreeNodeAction) getActionRegistry().getAction(
+                                RenameTreeNodeAction.ID);
+                        renameTreeNodeAction.update(object);
+                        if (renameTreeNodeAction.isEnabled()) {
+                            menu.add(renameTreeNodeAction);
                         }
                     }
                 }
