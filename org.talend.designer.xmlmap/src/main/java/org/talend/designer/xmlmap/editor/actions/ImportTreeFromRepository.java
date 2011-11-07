@@ -114,25 +114,29 @@ public class ImportTreeFromRepository extends SelectionAction {
             RepositoryNode repositoryNode = reviewDialog.getResult();
 
             Item item = repositoryNode.getObject().getProperty().getItem();
-            if (item instanceof XmlFileConnectionItem) {
-                XmlFileConnectionItem xmlitem = (XmlFileConnectionItem) item;
-                XmlFileConnection connection = (XmlFileConnection) xmlitem.getConnection();
-                prepareEmfTreeFromXml(connection);
-                nodeMap.clear();
-            } else if (item instanceof MDMConnectionItem) {
-                String selectedSchema = (String) repositoryNode.getProperties(EProperties.LABEL);
-                MDMConnection connection = (MDMConnection) ((MDMConnectionItem) item).getConnection();
-                prepareEmfTreeFromMdm(connection, selectedSchema);
-            }
-
-            if (parentNode.getChildren().isEmpty()) {
-                TreeNode rootNode = createModel();
-                rootNode.setName("root");
-                rootNode.setNodeType(NodeType.ELEMENT);
-                rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
-                parentNode.getChildren().add(rootNode);
-                showError();
+            try {
+                if (item instanceof XmlFileConnectionItem) {
+                    XmlFileConnectionItem xmlitem = (XmlFileConnectionItem) item;
+                    XmlFileConnection connection = (XmlFileConnection) xmlitem.getConnection();
+                    prepareEmfTreeFromXml(connection);
+                    nodeMap.clear();
+                } else if (item instanceof MDMConnectionItem) {
+                    String selectedSchema = (String) repositoryNode.getProperties(EProperties.LABEL);
+                    MDMConnection connection = (MDMConnection) ((MDMConnectionItem) item).getConnection();
+                    prepareEmfTreeFromMdm(connection, selectedSchema);
+                }
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            } finally {
+                if (parentNode.getChildren().isEmpty()) {
+                    TreeNode rootNode = createModel();
+                    rootNode.setName("root");
+                    rootNode.setNodeType(NodeType.ELEMENT);
+                    rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                    rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
+                    parentNode.getChildren().add(rootNode);
+                    showError();
+                }
             }
 
             AbstractInOutTree tree = null;
@@ -359,12 +363,12 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     private void prepareModelFromOutput(List<XMLFileNode> root, List<XMLFileNode> loop, List<XMLFileNode> group) {
         TreeNode rootNode = null;
-        TreeNode current = parentNode;
+        TreeNode lastTreeNode = parentNode;
 
         TreeNode temp = null;
         TreeNode mainNode = null;
         String mainPath = null;
-        String currentPath = null;
+        String lastXmlPath = null;
 
         // build root
         for (int i = 0; i < root.size(); i++) {
@@ -376,21 +380,18 @@ public class ImportTreeFromRepository extends SelectionAction {
                 temp.setName(newPath);
                 temp.setDefaultValue(node.getDefaultValue());
                 temp.setNodeType(NodeType.ATTRIBUT);
-                temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
-                current.getChildren().add(temp);
+                temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
+                lastTreeNode.getChildren().add(temp);
             } else if (node.getAttribute().equals("ns")) {
                 temp = createModel();
                 temp.setName(newPath);
                 temp.setDefaultValue(node.getDefaultValue());
                 temp.setNodeType(NodeType.NAME_SPACE);
-                temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
+                temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
 
-                current.getChildren().add(temp);
+                lastTreeNode.getChildren().add(temp);
             } else {
-                temp = this.addElement(current, currentPath, node);
-                temp.setNodeType(NodeType.ELEMENT);
-                temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
-
+                temp = this.addElement(lastTreeNode, lastXmlPath, node);
                 if (rootNode == null) {
                     rootNode = temp;
                 }
@@ -399,16 +400,16 @@ public class ImportTreeFromRepository extends SelectionAction {
                     mainNode = temp;
                     mainPath = newPath;
                 }
-                current = temp;
-                currentPath = newPath;
+                lastTreeNode = temp;
+                lastXmlPath = newPath;
             }
             temp.setType(type);
 
         }
 
         // build group tree
-        current = mainNode;
-        currentPath = mainPath;
+        lastTreeNode = mainNode;
+        lastXmlPath = mainPath;
         boolean isFirst = true;
         for (int i = 0; i < group.size(); i++) {
             XMLFileNode node = (XMLFileNode) group.get(i);
@@ -420,19 +421,17 @@ public class ImportTreeFromRepository extends SelectionAction {
                 temp.setName(newPath);
                 temp.setDefaultValue(node.getDefaultValue());
                 temp.setNodeType(NodeType.ATTRIBUT);
-                temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
-                current.getChildren().add(temp);
+                temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
+                lastTreeNode.getChildren().add(temp);
             } else if (node.getAttribute().equals("ns")) {
                 temp = createModel();
                 temp.setName(newPath);
                 temp.setDefaultValue(node.getDefaultValue());
                 temp.setNodeType(NodeType.NAME_SPACE);
-                temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
-                current.getChildren().add(temp);
+                temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
+                lastTreeNode.getChildren().add(temp);
             } else {
-                temp = this.addElement(current, currentPath, node);
-                temp.setNodeType(NodeType.ELEMENT);
-                temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
+                temp = this.addElement(lastTreeNode, lastXmlPath, node);
                 if (node.getAttribute().equals("main")) {
                     temp.setMain(true);
                     mainNode = temp;
@@ -442,8 +441,8 @@ public class ImportTreeFromRepository extends SelectionAction {
                     temp.setGroup(true);
                     isFirst = false;
                 }
-                current = temp;
-                currentPath = newPath;
+                lastTreeNode = temp;
+                lastXmlPath = newPath;
             }
 
             temp.setType(type);
@@ -451,8 +450,8 @@ public class ImportTreeFromRepository extends SelectionAction {
         }
 
         // build loop tree
-        current = mainNode;
-        currentPath = mainPath;
+        lastTreeNode = mainNode;
+        lastXmlPath = mainPath;
         isFirst = true;
         for (int i = 0; i < loop.size(); i++) {
             XMLFileNode node = (XMLFileNode) loop.get(i);
@@ -464,19 +463,17 @@ public class ImportTreeFromRepository extends SelectionAction {
                 temp.setName(newPath);
                 temp.setDefaultValue(node.getDefaultValue());
                 temp.setNodeType(NodeType.ATTRIBUT);
-                temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
-                current.getChildren().add(temp);
+                temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
+                lastTreeNode.getChildren().add(temp);
             } else if (node.getAttribute().equals("ns")) {
                 temp = createModel();
                 temp.setName(newPath);
                 temp.setDefaultValue(node.getDefaultValue());
                 temp.setNodeType(NodeType.NAME_SPACE);
-                temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
-                current.getChildren().add(temp);
+                temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
+                lastTreeNode.getChildren().add(temp);
             } else {
-                temp = this.addElement(current, currentPath, node);
-                temp.setNodeType(NodeType.ELEMENT);
-                temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), temp.getName(), temp.getNodeType()));
+                temp = this.addElement(lastTreeNode, lastXmlPath, node);
                 if (node.getAttribute().equals("main")) {
                     temp.setMain(true);
                     mainNode = temp;
@@ -486,43 +483,43 @@ public class ImportTreeFromRepository extends SelectionAction {
                     temp.setLoop(true);
                     isFirst = false;
                 }
-                current = temp;
-                currentPath = newPath;
+                lastTreeNode = temp;
+                lastXmlPath = newPath;
             }
             temp.setType(type);
 
         }
-        if (rootNode == null) {
-            rootNode = createModel();
-            rootNode.setName("root");
-            rootNode.setNodeType(NodeType.ELEMENT);
-            rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-            rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
+
+        if (rootNode != null) {
+            parentNode.getChildren().add(rootNode);
         }
-        parentNode.getChildren().add(rootNode);
 
     }
 
-    protected TreeNode addElement(TreeNode current, String currentPath, XMLFileNode node) {
-        String newPath = node.getXMLPath();
-        String defaultValue = node.getDefaultValue();
+    protected TreeNode addElement(TreeNode lastTreeNode, String lastXmlPath, XMLFileNode xmlFilenode) {
+        String newPath = xmlFilenode.getXMLPath();
+        String defaultValue = xmlFilenode.getDefaultValue();
         String name = newPath.substring(newPath.lastIndexOf("/") + 1); //$NON-NLS-1$
         String parentPath = newPath.substring(0, newPath.lastIndexOf("/")); //$NON-NLS-1$
         TreeNode temp = createModel();
         temp.setName(name);
         temp.setDefaultValue(defaultValue);
-        if (current == parentNode) { // root node of a document
+        temp.setNodeType(NodeType.ELEMENT);
+        if (lastTreeNode == parentNode) { // root node of a document
+            temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
             return temp;
         }
 
-        if (currentPath.equals(parentPath)) {
-            EList<TreeNode> children = current.getChildren();
+        // in the same branch as lastTreeNode
+        if (lastXmlPath.equals(parentPath)) {
+            temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
+            EList<TreeNode> children = lastTreeNode.getChildren();
             int childrenSize = children.size();
             /*
              * keep the same order as in repository
              */
             int index = childrenSize;
-            int order = node.getOrder();
+            int order = xmlFilenode.getOrder();
             for (int i = 0; i < childrenSize; i++) {
                 TreeNode treeNode = children.get(i);
                 XMLFileNode xmlFileNode = nodeMap.get(treeNode);
@@ -538,9 +535,11 @@ public class ImportTreeFromRepository extends SelectionAction {
             } else {
                 children.add(index, temp);
             }
-            nodeMap.put(temp, node);
-        } else {
-            String[] nods = currentPath.split("/"); //$NON-NLS-1$
+            nodeMap.put(temp, xmlFilenode);
+        }
+        // in different branches as lastTreeNode
+        else {
+            String[] nods = lastXmlPath.split("/"); //$NON-NLS-1$
             String[] newNods = parentPath.split("/"); //$NON-NLS-1$
             int parentLevel = 0;
             int checkLength = nods.length < newNods.length ? nods.length : newNods.length;
@@ -549,7 +548,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                     parentLevel = i;
                 }
             }
-            TreeNode parent = current;
+            TreeNode parent = lastTreeNode;
             for (int i = 0; i < nods.length - (parentLevel + 1); i++) {
                 TreeNode tmpParent = (TreeNode) parent.eContainer();
                 if (tmpParent == null) {
@@ -559,12 +558,12 @@ public class ImportTreeFromRepository extends SelectionAction {
             }
 
             if (parent != null) {
-
+                temp.setXpath(XmlMapUtil.getXPath(parent.getXpath(), temp.getName(), temp.getNodeType()));
                 EList<TreeNode> children = parent.getChildren();
                 int childrenSize = children.size();
 
                 int index = childrenSize - 1;
-                int order = node.getOrder();
+                int order = xmlFilenode.getOrder();
                 for (int i = 0; i < childrenSize; i++) {
                     TreeNode treeNode = children.get(i);
                     XMLFileNode xmlFileNode = nodeMap.get(treeNode);
@@ -581,7 +580,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                 } else {
                     children.add(index, temp);
                 }
-                nodeMap.put(temp, node);
+                nodeMap.put(temp, xmlFilenode);
             }
         }
 
