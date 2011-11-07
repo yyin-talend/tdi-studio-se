@@ -37,6 +37,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.INodeEditPart;
@@ -522,21 +525,26 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     IProcess2 oldProcess = getProcess();
 
                     ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
-                    ProcessType processType = n.convertDesignerEditorInput(
-                            ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
-                            oldProcess.getProperty());
+                    URI uri = URI.createFileURI(((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation()
+                            .toOSString());
+                    Resource resource = new ResourceSetImpl().getResource(uri, true);
+                    ProcessType processTypeTemp = (ProcessType) resource.getContents().get(0);
+                    if (processTypeTemp.getAuthor() != null) {
+                        ProcessType processType = n.convertDesignerEditorInput(
+                                ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                                oldProcess.getProperty());
 
-                    Item item = oldProcess.getProperty().getItem();
+                        Item item = oldProcess.getProperty().getItem();
 
-                    if (item instanceof ProcessItem) {
+                        if (item instanceof ProcessItem) {
 
-                        ((Process) oldProcess).updateProcess(processType);
-                    } else if (item instanceof JobletProcessItem) {
-                        ((Process) oldProcess).updateProcess(processType);
+                            ((Process) oldProcess).updateProcess(processType);
+                        } else if (item instanceof JobletProcessItem) {
+                            ((Process) oldProcess).updateProcess(processType);
+                        }
+                        oldProcess.getUpdateManager().updateAll();
+                        designerEditor.setDirty(isDirty);
                     }
-                    oldProcess.getUpdateManager().updateAll();
-                    designerEditor.setDirty(isDirty);
-
                 } catch (PersistenceException e) {
                     ExceptionHandler.process(e);
                 }
