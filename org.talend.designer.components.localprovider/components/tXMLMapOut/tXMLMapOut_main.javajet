@@ -616,7 +616,6 @@ for (VarTable varsTable : varsTables) {
 						}//block 12580
 						
 	                    for (OutputTreeNode outputTableEntry : outputTableEntries) {
-							hasAggregateColumn = false;
 	                        String outputColumnName = outputTableEntry.getName();
 	                       	
 	                       	String assignationVar = nameToAssignationVar.get(outputColumnName);
