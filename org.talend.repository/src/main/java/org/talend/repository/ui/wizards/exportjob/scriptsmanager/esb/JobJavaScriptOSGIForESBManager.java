@@ -284,28 +284,30 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 				if ("cJMS".equals(componentName)) {
 					String value = computeTextElementValue("MQ_TYPE",
 							currentNode.getElementParameter());
-					if ("WebSphere MQ".equals(value)) {
-						String jarName = "com.ibm.mq.jar";
-						IPath path = libPath.append(jarName);
-						libFiles.add(path.toFile());
-
-						jarName = "com.ibm.mq.jmqi.jar";
-						path = libPath.append(jarName);
-						libFiles.add(path.toFile());
-
-						jarName = "com.ibm.mqjms.jar";
-						path = libPath.append(jarName);
-						libFiles.add(path.toFile());
-
-						jarName = "connector.jar";
-						path = libPath.append(jarName);
-						libFiles.add(path.toFile());
-
-						jarName = "dhbcore.jar";
-						path = libPath.append(jarName);
-						libFiles.add(path.toFile());
-
-					} else if ("Other".equals(value)) {
+					// http://jira.talendforge.org/browse/TESB-3828
+					// if ("WebSphere MQ".equals(value)) {
+					// String jarName = "com.ibm.mq.jar";
+					// IPath path = libPath.append(jarName);
+					// libFiles.add(path.toFile());
+					//
+					// jarName = "com.ibm.mq.jmqi.jar";
+					// path = libPath.append(jarName);
+					// libFiles.add(path.toFile());
+					//
+					// jarName = "com.ibm.mqjms.jar";
+					// path = libPath.append(jarName);
+					// libFiles.add(path.toFile());
+					//
+					// jarName = "connector.jar";
+					// path = libPath.append(jarName);
+					// libFiles.add(path.toFile());
+					//
+					// jarName = "dhbcore.jar";
+					// path = libPath.append(jarName);
+					// libFiles.add(path.toFile());
+					//
+					// } else
+					if ("WebSphere MQ".equals(value) || "Other".equals(value)) {
 						for (Object e : currentNode.getElementParameter()) {
 							ElementParameterType p = (ElementParameterType) e;
 							if ("OTHER_DRIVER_JAR".equals(p.getName())) {
@@ -436,18 +438,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 				if ("cJMS".equals(componentName)) {
 					String value = computeTextElementValue("MQ_TYPE",
 							currentNode.getElementParameter());
-					if ("WebSphere MQ".equals(value)) {
-						sb.append("com.ibm.mq.jar");
-						sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-						sb.append("com.ibm.mq.jmqi.jar");
-						sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-						sb.append("com.ibm.mqjms.jar");
-						sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-						sb.append("connector.jar");
-						sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-						sb.append("dhbcore.jar");
-						sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-					} else if ("Other".equals(value)) {
+					// http://jira.talendforge.org/browse/TESB-3828
+					// if ("WebSphere MQ".equals(value)) {
+
+					// sb.append("com.ibm.mq.jar");
+					// sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+					// sb.append("com.ibm.mq.jmqi.jar");
+					// sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+					// sb.append("com.ibm.mqjms.jar");
+					// sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+					// sb.append("connector.jar");
+					// sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+					// sb.append("dhbcore.jar");
+					// sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+					// } else
+					if ("WebSphere MQ".equals(value) || "Other".equals(value)) {
 						for (Object e : currentNode.getElementParameter()) {
 							ElementParameterType p = (ElementParameterType) e;
 							if ("OTHER_DRIVER_JAR".equals(p.getName())) {
