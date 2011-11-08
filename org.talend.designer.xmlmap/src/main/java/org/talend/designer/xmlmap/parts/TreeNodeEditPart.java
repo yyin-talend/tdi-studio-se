@@ -332,7 +332,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 if (getFigure() instanceof TreeNodeFigure) {
                     TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
                     if (outputFigure.getElement() != null) {
-                        outputFigure.getElement().updateExpression();
+                        outputFigure.getElement().updateExpression(((XmlMapGraphicViewer) getViewer()).getMapperManager());
                     }
 
                 }
@@ -468,12 +468,10 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             this.collection = collection;
         }
 
-        @Override
         public boolean accept(IFigure figure) {
             return collection.contains(figure);
         }
 
-        @Override
         public boolean prune(IFigure figure) {
             // TODO Auto-generated method stub
             return false;

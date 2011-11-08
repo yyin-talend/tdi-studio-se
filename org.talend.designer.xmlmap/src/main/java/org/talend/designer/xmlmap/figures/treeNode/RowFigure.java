@@ -21,8 +21,10 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
+import org.talend.designer.xmlmap.ui.MapperUI;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
+import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -122,9 +124,20 @@ public class RowFigure extends Figure {
         return this.branchContent;
     }
 
-    public void updateExpression() {
+    public void updateExpression(MapperManager mapper) {
         if (expression != null) {
-            expression.setText(treeNode.getExpression());
+            // TDI-18185
+            if (XmlMapUtil.DOCUMENT.equals(treeNode.getType()) && mapper != null) {
+                MapperUI mapperUI = mapper.getMapperUI();
+                if (mapperUI != null) {
+                    mapperUI.getTabFolderEditors().getStyledTextHandler().setTextWithoutNotifyListeners("");
+                    mapperUI.getTabFolderEditors().getStyledTextHandler().getStyledText().setEnabled(false);
+                    mapperUI.getTabFolderEditors().getStyledTextHandler().getStyledText().setEditable(false);
+                    expression.setText("");
+                }
+            } else {
+                expression.setText(treeNode.getExpression());
+            }
         }
     }
 
