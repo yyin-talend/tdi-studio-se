@@ -816,9 +816,8 @@ else if(("Null").equals(mode)){
 
 		needRoot_<%=cid %> = true;
 		strCompCache_<%=cid %>=strTemp_<%=cid %>;
-		
+		preNewTabIndex_<%=cid%> = -1;
 <%	if(inputKeysColumns.size() !=0){%>
-			preNewTabIndex_<%=cid%> = -1;
 		}
 <%	}%>	
 	}	
@@ -946,7 +945,7 @@ else if(("Null").equals(mode)){
 	if(groupTable.size()>0){
 %>
 	//output the previous groups as there's a new group
-    if (newTabIndex_<%=cid%> >= 0) {
+    if (newTabIndex_<%=cid%> >= 0 && preNewTabIndex_<%=cid%>!=-1) {
         //out_<%=cid%>.newLine();//Track code
 <%
 		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
