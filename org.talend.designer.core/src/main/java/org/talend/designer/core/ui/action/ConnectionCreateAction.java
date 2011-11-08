@@ -176,7 +176,8 @@ public class ConnectionCreateAction extends SelectionAction {
                     }
                 }
                 if ((curNodeConnector.getMaxLinkOutput() == -1 || node.getMetadataList().size() < curNodeConnector
-                        .getMaxLinkOutput()) && curNodeConnector.isBuiltIn()) {
+                        .getMaxLinkOutput())
+                        && curNodeConnector.isBuiltIn()) {
                     menuList.add(getNewOutputMenuName());
                 }
             } else {
@@ -190,8 +191,8 @@ public class ConnectionCreateAction extends SelectionAction {
                 }
                 if (!addDefaultName) {
                     setText(menuName);
+                    menuList.add(menuName);
                 }
-                menuList.add(menuName);
             }
 
             // if (!node.getConnectorFromType(connecType).isBuiltIn()) {
@@ -240,7 +241,8 @@ public class ConnectionCreateAction extends SelectionAction {
      */
     private boolean addDefaultName() {
         String removeQuotes = getDefaultTableName();
-        if (removeQuotes != null) {
+        removeQuotes = removeQuotes.replaceAll(" ", "");
+        if (removeQuotes != null && !"".equals(removeQuotes)) {
             menuList.add(removeQuotes);
             // setText(removeQuotes);
             return true;
@@ -293,6 +295,7 @@ public class ConnectionCreateAction extends SelectionAction {
                         }
                     }
                 }
+                name2 = name2.replaceAll(" ", "");
                 if (!"".equals(name2)) { //$NON-NLS-1$
                     removeQuotes.append(name2);
                     removeQuotes.append(" (");
@@ -425,6 +428,11 @@ public class ConnectionCreateAction extends SelectionAction {
         if (id.getReturnCode() == InputDialog.CANCEL) {
             return ""; //$NON-NLS-1$
         }
+        IElementParameter elementParam = node.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
+        if (elementParam != null) {
+            String paraValue = TalendTextUtils.addQuotes(id.getValue());
+            elementParam.setValue(paraValue);
+        }
         return id.getValue();
     }
 
@@ -436,6 +444,7 @@ public class ConnectionCreateAction extends SelectionAction {
      * @return
      */
     private String askForConnectionNameAndSchema(String nodeLabel, String oldName) {
+        final Node node = (Node) nodePart.getModel();
         String outName = ""; //$NON-NLS-1$
         ConnectionTableAndSchemaNameDialog id = new ConnectionTableAndSchemaNameDialog(getWorkbenchPart().getSite().getShell(),
                 nodeLabel + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
@@ -445,8 +454,24 @@ public class ConnectionCreateAction extends SelectionAction {
             return ""; //$NON-NLS-1$
         }
         if (id.getSchemaName().length() != 0 && id.getTableName().length() != 0) {
+            IElementParameter elementParam = node.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
+            IElementParameter schemaParam = node.getElementParameter("ELT_SCHEMA_NAME");//$NON-NLS-1$
+            if (schemaParam != null) {
+                String schemaValue = TalendTextUtils.addQuotes(id.getSchemaName());
+                schemaParam.setValue(schemaValue);
+            }
+            if (elementParam != null) {
+                String tableValue = TalendTextUtils.addQuotes(id.getTableName());
+                elementParam.setValue(tableValue);
+            }
+
             outName = id.getSchemaName() + "." + id.getTableName(); //$NON-NLS-1$
         } else if (id.getSchemaName().length() == 0 && id.getTableName().length() != 0) {
+            IElementParameter elementParam = node.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
+            if (elementParam != null) {
+                String tableValue = TalendTextUtils.addQuotes(id.getTableName());
+                elementParam.setValue(tableValue);
+            }
             outName = id.getTableName();
         }
 
