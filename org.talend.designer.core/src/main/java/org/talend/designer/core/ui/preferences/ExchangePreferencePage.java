@@ -76,14 +76,14 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
 
         userAccountLink = new Link(eGroup, SWT.NONE);
         GridData dataLink = new GridData(GridData.FILL, GridData.CENTER, true, false);
-        dataLink.widthHint = convertVerticalDLUsToPixels(150);
+        dataLink.widthHint = convertVerticalDLUsToPixels(120);
         userAccountLink.setLayoutData(dataLink);
         userAccountLink.setText(userAccount != null ? "<a> " + userAccount + " </a>" : "<a> " + "< None >" + " </a>");
 
         logonButton = new Button(eGroup, SWT.PUSH);
         logonButton.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, false, false));
-        logonButton.setText(userAccount != null ? Messages.getString("ExchangePreferencePage.logoutExchangeTitle") : Messages
-                .getString("ExchangePreferencePage.logonExchangeTitle"));
+        logonButton.setText(userAccount != null ? Messages.getString("ExchangePreferencePage.signOutExchangeTitle") : Messages
+                .getString("ExchangePreferencePage.signInExchangeTitle"));
 
         if (PluginChecker.isSVNProviderPluginLoaded()) {
             BooleanFieldEditor checkTisLogonExchangeDialog = new BooleanFieldEditor(
@@ -115,11 +115,11 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
                             userAccountLink.setText(userAccount != null ? "<a> " + userAccount + " </a>" : "<a> " + "< None >"
                                     + " </a>");
                             logonButton.setText(userAccount != null ? Messages
-                                    .getString("ExchangePreferencePage.logoutExchangeTitle") : Messages
-                                    .getString("ExchangePreferencePage.logonExchangeTitle"));
+                                    .getString("ExchangePreferencePage.signOutExchangeTitle") : Messages
+                                    .getString("ExchangePreferencePage.signInExchangeTitle"));
                         }
                     } else {
-                        logonButton.setText(Messages.getString("ExchangePreferencePage.logonExchangeTitle"));
+                        logonButton.setText(Messages.getString("ExchangePreferencePage.signInExchangeTitle"));
                         userAccountLink.setText("<a> " + "< None >" + " </a>");
                         userAccount = null;
                         if (project.getAuthor() != null) {
