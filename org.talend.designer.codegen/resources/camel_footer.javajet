@@ -124,7 +124,7 @@
 			
 %>
 			   camelContext.addComponent(<%=name%>,
-					org.apache.activemq.camel.component.ActiveMQComponent.jmsComponent(connectionFactory));
+					org.apache.camel.component.jms.JmsComponent.jmsComponent(connectionFactory));
 <%
 			}
 %>
