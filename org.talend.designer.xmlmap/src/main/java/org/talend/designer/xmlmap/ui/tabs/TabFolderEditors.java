@@ -45,6 +45,7 @@ import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
 import org.talend.designer.xmlmap.ui.tabs.table.InputXmlTreeSchemaTableView;
 import org.talend.designer.xmlmap.ui.tabs.table.OutputXmlTreeSchemaTableView;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -143,6 +144,13 @@ public class TabFolderEditors extends CTabFolder {
         tabFolderEditors.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event event) {
+                // TDI-18185
+                if (XmlMapUtil.DOCUMENT.equals(styledTextHandler.getSelectedNode().getType())) {
+                    styledTextHandler.setTextWithoutNotifyListeners("");
+                    styledTextHandler.getStyledText().setEnabled(false);
+                    styledTextHandler.getStyledText().setEditable(false);
+                    styledTextHandler.getStyledText().setText("");
+                }
                 lastSelectedTab = tabFolderEditors.getSelectionIndex();
 
             }

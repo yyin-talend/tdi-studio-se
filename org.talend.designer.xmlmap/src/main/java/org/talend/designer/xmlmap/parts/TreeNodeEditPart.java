@@ -332,7 +332,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 if (getFigure() instanceof TreeNodeFigure) {
                     TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
                     if (outputFigure.getElement() != null) {
-                        outputFigure.getElement().updateExpression(((XmlMapGraphicViewer) getViewer()).getMapperManager());
+                        outputFigure.getElement().updateExpression();
                     }
 
                 }
