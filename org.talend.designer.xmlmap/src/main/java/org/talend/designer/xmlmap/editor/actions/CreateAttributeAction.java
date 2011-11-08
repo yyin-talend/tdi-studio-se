@@ -67,6 +67,9 @@ public class CreateAttributeAction extends SelectionAction {
             for (int i = 0; i < children.size(); i++) {
                 final TreeNode child = children.get(i);
                 if (child.getNodeType() == NodeType.NAME_SPACE || child.getNodeType() == NodeType.ATTRIBUT) {
+                    if (i == children.size() - 1) {
+                        index = children.size();
+                    }
                     continue;
                 } else {
                     index = i;

@@ -103,6 +103,9 @@ public class CreateNameSpaceAction extends SelectionAction {
         for (int i = 0; i < children.size(); i++) {
             final TreeNode treeNode = children.get(i);
             if (treeNode.getNodeType() == NodeType.NAME_SPACE) {
+                if (i == children.size() - 1) {
+                    index = children.size();
+                }
                 continue;
             } else {
                 index = i;

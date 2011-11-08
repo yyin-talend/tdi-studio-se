@@ -25,9 +25,10 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.talend.designer.xmlmap.figures.SashSeparator;
+import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
-import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 
@@ -68,24 +69,10 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
 
         List toTransfer = new ArrayList();
         for (Object o : selection) {
-            // all selected parts in the same zone should be in the same tree , or clean toTransfer list can't drag
+            // all selected parts should be in the same zone , or clean toTransfer list can't drag
             if (lastSelection instanceof OutputTreeNodeEditPart) {
-                type = TransferdType.OUTPUT;
-                // can't drag if there is a tree selection in the same zone
-                if (o instanceof OutputXmlTreeEditPart) {
-                    toTransfer.clear();
-                    break;
-                }
-                if (o instanceof OutputTreeNodeEditPart) {
-                    OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) o;
-                    if (nodePart.getModelChildren().isEmpty()) {
-                        toTransfer.add(o);
-                    } else {
-                        toTransfer.clear();
-                        break;
-                    }
-                }
-
+                toTransfer.clear();
+                break;
             } else if (lastSelection instanceof TreeNodeEditPart) {
                 type = TransferdType.INPUT;
                 if (o instanceof InputXmlTreeEditPart) {
@@ -94,7 +81,7 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
                 }
                 if (o instanceof TreeNodeEditPart) {
                     TreeNodeEditPart nodePart = (TreeNodeEditPart) o;
-                    if (nodePart.getModelChildren().isEmpty()) {
+                    if (isDragable((TreeNode) nodePart.getModel())) {
                         toTransfer.add(o);
                     } else {
                         toTransfer.clear();
@@ -119,6 +106,20 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
         }
 
         return object;
+    }
+
+    // only leaf nodes or element without sub elements can be drag
+    private boolean isDragable(TreeNode treeNode) {
+        if (treeNode.getChildren().isEmpty()) {
+            return true;
+        } else {
+            for (TreeNode child : treeNode.getChildren()) {
+                if (!NodeType.ATTRIBUT.equals(child.getNodeType()) && !NodeType.NAME_SPACE.equals(child.getNodeType())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void dragSetData(DragSourceEvent event) {

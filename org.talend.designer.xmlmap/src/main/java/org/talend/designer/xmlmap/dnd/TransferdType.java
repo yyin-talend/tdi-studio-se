@@ -17,6 +17,5 @@ package org.talend.designer.xmlmap.dnd;
  */
 public enum TransferdType {
     INPUT,
-    OUTPUT,
     VAR;
 }

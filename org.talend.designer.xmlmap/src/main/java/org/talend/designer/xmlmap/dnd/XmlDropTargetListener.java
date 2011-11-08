@@ -37,7 +37,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
-import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 import org.talend.designer.xmlmap.util.SeparatorType;
@@ -178,10 +177,6 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
         }
 
         if (getTargetEditPart() instanceof OutputTreeNodeEditPart) {
-            if (transferedObj.getType() == TransferdType.OUTPUT) {
-                event.detail = DND.DROP_NONE;
-                return;
-            }
 
             OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getTargetEditPart();
             OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
@@ -202,7 +197,7 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
             }
 
         } else if (getTargetEditPart() instanceof TreeNodeEditPart) {
-            if (transferedObj.getType() == TransferdType.OUTPUT || transferedObj.getType() == TransferdType.VAR) {
+            if (transferedObj.getType() == TransferdType.VAR) {
                 event.detail = DND.DROP_NONE;
                 return;
             }
@@ -265,7 +260,7 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
                 return;
             }
         } else if (getTargetEditPart() instanceof VarNodeEditPart) {
-            if (transferedObj.getType() == TransferdType.OUTPUT || transferedObj.getType() == TransferdType.VAR) {
+            if (transferedObj.getType() == TransferdType.VAR) {
                 event.detail = DND.DROP_NONE;
             }
         } else if (getTargetEditPart() instanceof InputXmlTreeEditPart) {
@@ -292,10 +287,6 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
                 }
             }
 
-        } else if (getTargetEditPart() instanceof OutputXmlTreeEditPart) {
-            if (transferedObj.getType() == TransferdType.OUTPUT) {
-                event.detail = DND.DROP_NONE;
-            }
         }
     }
 

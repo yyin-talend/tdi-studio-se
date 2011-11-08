@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.commands;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -74,33 +75,60 @@ public class CreateNodeAndConnectionCommand extends Command {
         }
         if (newObjects instanceof TransferedObject) {
             TransferedObject tranceferedObj = (TransferedObject) newObjects;
-            NodeType nodeType = NodeType.ELEMENT;
+            // this node type is only used when drag leaf element or attribute or varnode to create output node
+            NodeType selectedNodeType = NodeType.ELEMENT;
             if (!update && targetEditPart instanceof OutputTreeNodeEditPart) {
                 OutputTreeNode targetOutputNode = (OutputTreeNode) ((OutputTreeNodeEditPart) targetEditPart).getModel();
                 Shell shell = targetEditPart.getViewer().getControl().getShell();
-                DragAndDrogDialog selectDialog = new DragAndDrogDialog(shell, !targetOutputNode.getChildren().isEmpty());
-                int open = selectDialog.open();
-                if (open == Window.OK) {
-                    if (DragAndDrogDialog.CREATE_AS_SUBELEMENT.equals(selectDialog.getSelectValue())) {
-                        nodeType = NodeType.ELEMENT;
-                    } else if (DragAndDrogDialog.CREATE_AS_ATTRIBUTE.equals(selectDialog.getSelectValue())) {
-                        nodeType = NodeType.ATTRIBUT;
-                    } else if (DragAndDrogDialog.CREATE_AS_SUBELEMENT.equals(selectDialog.getSelectValue())) {
-                        nodeType = NodeType.NAME_SPACE;
-                    } else if (DragAndDrogDialog.CREATE_AS_TEXT.equals(selectDialog.getSelectValue())) {
-                        update = true;
+
+                // if allNamespace , create output as namespace , if allsubTree , create output subtree , no need prompt
+                boolean needPrompt = false;
+                boolean hasSubTree = false;
+                for (Object o : tranceferedObj.getToTransfer()) {
+                    if (o instanceof VarNodeEditPart) {
+                        needPrompt = true;
+                    } else if (o instanceof TreeNodeEditPart) {
+                        TreeNode treeNode = (TreeNode) ((TreeNodeEditPart) o).getModel();
+                        if (NodeType.ATTRIBUT.equals(treeNode.getNodeType())) {
+                            needPrompt = true;
+                        }
+                        if (NodeType.ELEMENT.equals(treeNode.getNodeType())) {
+                            if (treeNode.getChildren().isEmpty()) {
+                                needPrompt = true;
+                            } else {
+                                hasSubTree = true;
+                            }
+                        }
+
                     }
-                } else {
-                    return;
+                }
+
+                if (needPrompt) {
+                    DragAndDrogDialog selectDialog = new DragAndDrogDialog(shell, !targetOutputNode.getChildren().isEmpty());
+                    int open = selectDialog.open();
+                    if (open == Window.OK) {
+                        if (DragAndDrogDialog.CREATE_AS_SUBELEMENT.equals(selectDialog.getSelectValue())) {
+                            selectedNodeType = NodeType.ELEMENT;
+                        } else if (DragAndDrogDialog.CREATE_AS_ATTRIBUTE.equals(selectDialog.getSelectValue())) {
+                            selectedNodeType = NodeType.ATTRIBUT;
+                        } else if (DragAndDrogDialog.CREATE_AS_SUBELEMENT.equals(selectDialog.getSelectValue())) {
+                            selectedNodeType = NodeType.NAME_SPACE;
+                        } else if (DragAndDrogDialog.CREATE_AS_TEXT.equals(selectDialog.getSelectValue())) {
+                            update = true;
+                        }
+                    } else {
+                        return;
+                    }
                 }
 
                 if (!update) {
-                    if (!targetOutputNode.getIncomingConnections().isEmpty() && nodeType != NodeType.ATTRIBUT) {
+                    if (!targetOutputNode.getIncomingConnections().isEmpty()
+                            && ((selectedNodeType != NodeType.ATTRIBUT && selectedNodeType != NodeType.NAME_SPACE) || hasSubTree)) {
                         boolean canContinue = MessageDialog
                                 .openConfirm(null, "Warning",
                                         "Do you want to disconnect the existing linker and then add an sub element for the selected element ?");
                         if (canContinue) {
-                            XmlMapUtil.detachNodeConnections(targetOutputNode, xmlMapData, true);
+                            XmlMapUtil.detachNodeConnections(targetOutputNode, xmlMapData, false);
                         } else {
                             return;
                         }
@@ -123,13 +151,57 @@ public class CreateNodeAndConnectionCommand extends Command {
                         OutputTreeNode targetNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
                         targetNode.setName(sourceNode.getName());
                         targetNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                        targetNode.setXpath(XmlMapUtil.getXPath(targetOutputNode.getXpath(), targetNode.getName(), nodeType));
-                        targetNode.setNodeType(nodeType);
                         if (sourceNode instanceof TreeNode) {
+                            NodeType nodeType = selectedNodeType;
+                            if (NodeType.NAME_SPACE.equals(((TreeNode) sourceNode).getNodeType())) {
+                                // namespace and only be droped as namespace
+                                nodeType = NodeType.NAME_SPACE;
+                                targetNode.setDefaultValue(((TreeNode) sourceNode).getDefaultValue());
+                            } else if (!((TreeNode) sourceNode).getChildren().isEmpty()) {
+                                nodeType = ((TreeNode) sourceNode).getNodeType();
+                            }
+
+                            targetNode.setXpath(XmlMapUtil.getXPath(targetOutputNode.getXpath(), targetNode.getName(), nodeType));
+                            targetNode.setNodeType(nodeType);
                             targetNode.setExpression(XmlMapUtil.convertToExpression(((TreeNode) sourceNode).getXpath()));
+
+                            EList<TreeNode> sourceChildren = ((TreeNode) sourceNode).getChildren();
+                            if (!sourceChildren.isEmpty()) {
+                                // children must be attribute or namespace
+                                for (TreeNode child : sourceChildren) {
+                                    OutputTreeNode childTarget = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                                    childTarget.setName(child.getName());
+                                    childTarget.setType(child.getType());
+                                    childTarget.setNodeType(child.getNodeType());
+                                    childTarget.setXpath(XmlMapUtil.getXPath(targetNode.getXpath(), childTarget.getName(),
+                                            childTarget.getNodeType()));
+                                    targetNode.getChildren().add(childTarget);
+
+                                    if (NodeType.NAME_SPACE.equals(child.getNodeType())) {
+                                        childTarget.setDefaultValue(child.getDefaultValue());
+                                        // default value is already set as from source , no need the expression to get
+                                        // default value
+                                        childTarget.setExpression("");
+                                    } else {
+                                        childTarget.setExpression(XmlMapUtil.convertToExpression(((TreeNode) child).getXpath()));
+                                        Connection conn = XmlmapFactory.eINSTANCE.createConnection();
+                                        conn.setSource(child);
+                                        conn.setTarget(childTarget);
+                                        // attach source and target
+                                        childTarget.getIncomingConnections().add(conn);
+                                        child.getOutgoingConnections().add(conn);
+                                        if (xmlMapData != null) {
+                                            xmlMapData.getConnections().add(conn);
+                                        }
+                                    }
+                                }
+                            }
+
                         } else if (sourceNode instanceof VarNode) {
                             String variable = sourceNode.getName();
-                            targetNode.setNodeType(nodeType);
+                            targetNode.setXpath(XmlMapUtil.getXPath(targetOutputNode.getXpath(), targetNode.getName(),
+                                    selectedNodeType));
+                            targetNode.setNodeType(selectedNodeType);
                             if (sourceNode.eContainer() instanceof VarTable) {
                                 VarTable container = (VarTable) sourceNode.eContainer();
                                 variable = container.getName() + TalendTextUtils.JAVA_END_STRING + variable;

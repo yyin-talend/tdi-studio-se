@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -126,6 +127,53 @@ public class XmlMapGraphicViewer extends GraphicalViewerImpl {
 
     public FiguresManager getFiguresManager() {
         return this.listener;
+    }
+
+    @Override
+    public void appendSelection(EditPart editpart) {
+        if (editpart instanceof TreeNodeEditPart) {
+            if (isParentSelected((TreeNodeEditPart) editpart)) {
+                return;
+            }
+            List selectedChildren = new ArrayList();
+            getSelectedChild(selectedChildren, (TreeNodeEditPart) editpart);
+            if (!selectedChildren.isEmpty()) {
+                return;
+            }
+        }
+        super.appendSelection(editpart);
+    }
+
+    /**
+     * 
+     * DOC check if parent node is already selected
+     * 
+     * @return
+     */
+    private boolean isParentSelected(TreeNodeEditPart editpart) {
+        EditPart parent = editpart.getParent();
+        boolean selected = getSelectedEditParts().contains(parent);
+        if (selected) {
+            return true;
+        }
+        if (!(parent instanceof AbstractInOutTreeEditPart)) {
+            return selected || isParentSelected((TreeNodeEditPart) parent);
+        }
+        return false;
+    }
+
+    private void getSelectedChild(List selectedChild, TreeNodeEditPart editPart) {
+        if (!editPart.getChildren().isEmpty()) {
+            for (Object child : editPart.getChildren()) {
+                if (child instanceof TreeNodeEditPart) {
+                    TreeNodeEditPart childPart = (TreeNodeEditPart) child;
+                    if (getSelectedEditParts().contains(childPart)) {
+                        selectedChild.add(childPart);
+                    }
+                    getSelectedChild(selectedChild, childPart);
+                }
+            }
+        }
     }
 
 }
