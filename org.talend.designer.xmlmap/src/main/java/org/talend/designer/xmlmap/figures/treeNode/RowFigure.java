@@ -140,5 +140,11 @@ public class RowFigure extends Figure {
             }
         }
     }
+	
+	// Temporary Fix Compilation Error on trunk
+	// FIXME : Remove this method
+	public void updateExpression() {
+        // do nothing
+    }
 
 }
