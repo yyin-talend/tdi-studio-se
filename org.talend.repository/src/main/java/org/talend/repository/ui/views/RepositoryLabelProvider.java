@@ -36,7 +36,9 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
+import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
@@ -174,7 +176,20 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         if (object instanceof RepositoryViewObject && ((RepositoryViewObject) object).getCustomImage() != null) {
             img = ((RepositoryViewObject) object).getCustomImage();
         } else {
-            img = CoreImageProvider.getImage(itemType);
+            // MOD sizhaoliu 2011-10-14
+            // TDQ-3356 enable different icons of extension points under a same repository node
+            Item item = object.getProperty().getItem();
+            boolean isExtensionPoint = false;
+            for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
+                isExtensionPoint = handler.isRepObjType(itemType);
+                if (isExtensionPoint == true) {
+                    img = ImageProvider.getImage(handler.getIcon(item));
+                    break;
+                }
+            }
+            if (isExtensionPoint == false || img == null) {
+                img = CoreImageProvider.getImage(itemType);
+            }
         }
 
         ERepositoryStatus repositoryStatus = object.getRepositoryStatus();
