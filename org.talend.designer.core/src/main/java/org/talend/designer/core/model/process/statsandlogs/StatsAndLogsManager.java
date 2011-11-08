@@ -402,8 +402,13 @@ public class StatsAndLogsManager {
                                         TalendTextUtils.addQuotes(sharedConnName));
                             } else {
                                 String url = getUrl(process);
-                                connectionNode.getElementParameter(EParameterName.SHARED_CONNECTION_NAME.getName()).setValue(
-                                        url + "+" + TalendTextUtils.addQuotes("_" + sharedConnName)); //$NON-NLS-1$ //$NON-NLS-2$
+                                if (url == null || url.equals("")) { // fix bug of stats/logs found for sybase
+                                    connectionNode.getElementParameter(EParameterName.SHARED_CONNECTION_NAME.getName()).setValue(
+                                            TalendTextUtils.addQuotes(sharedConnName));
+                                } else {
+                                    connectionNode.getElementParameter(EParameterName.SHARED_CONNECTION_NAME.getName()).setValue(
+                                            url + "+" + TalendTextUtils.addQuotes("_" + sharedConnName)); //$NON-NLS-1$ //$NON-NLS-2$
+                                }
                             }
                         }
                         setConnectionParameter(connectionNode, process, connectionUID, dataNode, nodeList);
