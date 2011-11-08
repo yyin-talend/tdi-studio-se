@@ -68,8 +68,13 @@ public final class RepositoryObjectHelper {
 
     public static String getRepositoryLabel(Item item, IMetadataTable table) {
         String repositoryLabel = getRepositoryLabel(item);
-        if (repositoryLabel != null) {
-            return repositoryLabel + LINE + table.getLabel();
+        if (repositoryLabel != null && table != null) {
+            if (table.getLabel() != null) {
+                repositoryLabel += LINE + table.getLabel();
+            } else if (table.getTableName() != null) {
+                repositoryLabel += LINE + table.getTableName();
+            }
+            return repositoryLabel;
         }
         return null;
 

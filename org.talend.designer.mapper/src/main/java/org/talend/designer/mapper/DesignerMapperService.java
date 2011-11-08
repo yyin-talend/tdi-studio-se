@@ -25,6 +25,7 @@ import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.node.IExternalMapTable;
 import org.talend.core.service.IDesignerMapperService;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
@@ -238,6 +239,13 @@ public class DesignerMapperService implements IDesignerMapperService {
         }
 
         return schemaIds;
+    }
+
+    public String getRepositorySchemaId(IExternalMapTable table) {
+        if (table != null && table instanceof ExternalMapperTable) {
+            return ((ExternalMapperTable) table).getId();
+        }
+        return null;
     }
 
     public void updateMapperTableEntries(IExternalNode externalNode, String schemaId, IMetadataTable metadataTable) {
