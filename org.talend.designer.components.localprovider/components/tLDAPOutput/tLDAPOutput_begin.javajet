@@ -97,3 +97,48 @@ int nb_line_<%=cid %> = 0;
 <%	if(("DELETE").equals(insertMode)){ %>
 		talend.ssl.ldap.LdapAction ldap_<%=cid %> = new talend.ssl.ldap.LdapAction();
 <%	}%>
+	//check is base64 begin	
+	class CheckBase64_<%=cid%>{
+		public void checkByteArray(boolean isBase64,String columnName,javax.naming.directory.Attributes entry,byte[] bytearray) throws com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException{
+			if(isBase64){
+				entry.put(columnName,com.sun.org.apache.xml.internal.security.utils.Base64.decode(bytearray));
+			}
+			else{
+				entry.put(columnName,bytearray);
+			}
+		}
+		
+		public void checkString(boolean isBase64,String columnName,javax.naming.directory.Attributes entry,String inputValue) throws com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException{
+			if(isBase64){
+				entry.put(columnName,com.sun.org.apache.xml.internal.security.utils.Base64.decode(inputValue));
+			}
+			else{
+				entry.put(columnName,inputValue);
+			}
+		}
+		
+		public void addToAttribute(boolean isBase64,javax.naming.directory.Attribute attr,String inputValue) throws com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException{
+			if(isBase64){
+  				attr.add(com.sun.org.apache.xml.internal.security.utils.Base64.decode(inputValue));
+			}else{
+				attr.add(inputValue);
+			}
+		}
+		
+		public void checkByteArrayUpdate(boolean isBase64,String columnName,List<javax.naming.directory.Attribute> forUpate,byte[] bytearray) throws com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException{
+			if(isBase64){
+				forUpate.add(new javax.naming.directory.BasicAttribute(columnName, com.sun.org.apache.xml.internal.security.utils.Base64.decode(bytearray)));
+			}else{
+				forUpate.add(new javax.naming.directory.BasicAttribute(columnName, bytearray));
+			}
+		}
+		public void checkStringUpdate(boolean isBase64,String columnName,List<javax.naming.directory.Attribute> forUpate,String inputValue) throws com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException{
+			if(isBase64){
+				forUpate.add(new javax.naming.directory.BasicAttribute(columnName, com.sun.org.apache.xml.internal.security.utils.Base64.decode(inputValue)));
+			}else{
+				forUpate.add(new javax.naming.directory.BasicAttribute(columnName, inputValue));
+			}
+		}
+		
+	}
+	//check is base64 end
