@@ -800,8 +800,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 					if ("cJMS".equals(next.getComponentName())) {
 						String value = computeTextElementValue("MQ_TYPE",
 								next.getElementParameter());
+						externalAMQImport = ",org.apache.camel.component.jms";
 						if ("ActiveMQ".equals(value)) {
-							externalAMQImport = ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
+							externalAMQImport += ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
 
 						}
 						continue;
