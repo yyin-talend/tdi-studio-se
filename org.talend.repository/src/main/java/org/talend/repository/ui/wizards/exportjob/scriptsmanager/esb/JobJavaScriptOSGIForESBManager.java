@@ -808,7 +808,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 						
 						//http://jira.talendforge.org/browse/TESB-3843
 						if ("WebSphere MQ".equals(value)) {
-							externalAMQImport += ",javax.transcation";
+							externalAMQImport += ",javax.transaction";
 
 						}
 						
