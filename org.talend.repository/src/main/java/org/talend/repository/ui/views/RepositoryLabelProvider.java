@@ -183,10 +183,12 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             boolean isExtensionPoint = false;
             for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
                 isExtensionPoint = handler.isRepObjType(itemType);
-				IImage icon = handler.getIcon(item);
-				if (isExtensionPoint == true && icon != null) {
-					img = ImageProvider.getImage(icon);
-                    break;
+                if (isExtensionPoint == true) {
+                    IImage icon = handler.getIcon(item);
+                    if (icon != null) {
+                        img = ImageProvider.getImage(icon);
+                        break;
+                    }
                 }
             }
             if (isExtensionPoint == false || img == null) {
