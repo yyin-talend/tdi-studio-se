@@ -63,11 +63,6 @@ public class RenameTreeNodeAction extends SelectionAction {
                     if (xPathLength <= 2) {
                         enable = false;
                     }
-                    if (selectedNode.eContainer() instanceof TreeNode
-                            && XmlMapUtil.DOCUMENT.equals(((TreeNode) selectedNode.eContainer()).getType())) {
-                        enable = false;
-                    }
-
                 } else {
                     enable = false;
                 }
