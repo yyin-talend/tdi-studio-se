@@ -479,19 +479,22 @@ public class ComboController extends AbstractElementPropertySectionController {
         }
         // for feature 8147
         try {
-            ITDQPatternService service = null;
-            try {
-                service = (ITDQPatternService) GlobalServiceRegister.getDefault().getService(ITDQPatternService.class);
-            } catch (RuntimeException e) {
-                // nothing to do
-            }
-            if (service != null && elem instanceof Node && isPatternList) {
+            // if it is pattern,then it can get ITDQPatternService's instance
+            if (isPatternList) {
+                ITDQPatternService service = null;
+                try {
+                    service = (ITDQPatternService) GlobalServiceRegister.getDefault().getService(ITDQPatternService.class);
+                } catch (RuntimeException e) {
+                    // nothing to do
+                }
+                if (service != null && elem instanceof Node) {
 
-                Node node = (Node) elem;
+                    Node node = (Node) elem;
 
-                IElementParameter typeParam = node.getElementParameter("TYPE");
+                    IElementParameter typeParam = node.getElementParameter("TYPE");
 
-                service.overridePatternList(typeParam, param);
+                    service.overridePatternList(typeParam, param);
+                }
             }
 
         } catch (Exception e) {
