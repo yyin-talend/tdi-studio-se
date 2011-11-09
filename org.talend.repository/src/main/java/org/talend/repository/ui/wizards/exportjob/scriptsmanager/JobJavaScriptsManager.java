@@ -48,6 +48,7 @@ import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.xml.XmlUtil;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ILibraryManagerService;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.process.IContext;
@@ -63,6 +64,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
@@ -391,8 +393,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
             // project file
-            checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName,
-                    FileLocator.toFileURL(projectFilePath.toFile().toURL()));
+            checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName, FileLocator
+                    .toFileURL(projectFilePath.toFile().toURL()));
 
             List<URL> emfFileUrls = new ArrayList<URL>();
             emfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
@@ -1167,11 +1169,43 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
 
         try {
-            IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-            IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-            IJavaProject project = JavaCore.create(prj);
-            IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
-            File file = libPath.toFile();
+            // IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+            // IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
+            // IJavaProject project = JavaCore.create(prj);
+            // IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
+            // File file = libPath.toFile();
+            // File[] files = file.listFiles(new FilenameFilter() {
+            //
+            // public boolean accept(File dir, String name) {
+            //                    return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".properties") //$NON-NLS-1$ //$NON-NLS-2$
+            //                            || name.toLowerCase().endsWith(".zip") ? true : false; //$NON-NLS-1$
+            // }
+            // });
+            //
+            // for (int i = 0; i < files.length; i++) {
+            // File tempFile = files[i];
+            // try {
+            // if (libs.contains(tempFile.getName())) {
+            // list.add(tempFile.toURL());
+            // }
+            // } catch (MalformedURLException e) {
+            // ExceptionHandler.process(e);
+            // }
+            // }
+
+            org.talend.core.model.general.Project projecdddt = ProjectManager.getInstance().getCurrentProject();
+            IProject fsProject = null;
+            try {
+                fsProject = ResourceModelUtils.getProject(projecdddt);
+            } catch (PersistenceException e2) {
+                ExceptionHandler.process(e2);
+            }
+            IPath temPath = fsProject.getLocation().append(File.separator + "temp");
+            ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
+            if (repositoryBundleService != null) {
+                repositoryBundleService.retrieve(libs, temPath.toString());
+            }
+            File file = temPath.toFile();
             File[] files = file.listFiles(new FilenameFilter() {
 
                 public boolean accept(File dir, String name) {
