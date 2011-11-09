@@ -474,6 +474,8 @@ public class CLASS {
 		public String getLocalName() {
 			return localname;
 		}
+
+		List<XMLNode> currentGroupDeclaredNamespaces = null;
 		
 		public NamespaceHelper(XMLNode rootNode){
 			collectionNS(rootNode,null);
@@ -482,7 +484,26 @@ public class CLASS {
 		//init method for one group node in UI.
 		public void setGroupNode(XMLNode currentGroup) {
 			currentGroupNode = currentGroup;
+			currentGroupDeclaredNamespaces = currentGroup.namespaces;
 			currentFinalGroupXpath = buildXPathWithPrefix(currentGroup);
+		}
+		
+		public String buildCurrentGroupDeclaredNamespacesMapping(String name) {
+			StringBuilder sb = new StringBuilder();
+			
+			if(currentGroupDeclaredNamespaces.size() > 0) {
+				sb.append(name + " = new java.util.HashMap<String,String>();");
+			}
+			
+			for(XMLNode namespace : currentGroupDeclaredNamespaces) {
+				if(namespace.name != null && !"".equals(namespace.name)){
+					sb.append(name+".put(\""+namespace.name+"\",\""+namespace.defaultValue+"\");"); 
+				}else{//default namespace
+					sb.append(name+".put(\"\",\""+namespace.defaultValue+"\");"); 
+				}
+			}
+			
+			return sb.toString();
 		}
 		
 		public void buildInfoForNamespace(XMLNode node, String[] arrNames ,List<String> prefixs, List<String> uris){

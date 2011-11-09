@@ -530,7 +530,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		xpath_<%=sourceName%>_<%=cid%>.setNamespaceURIs(prefixToUriForNamespace_<%=sourceName %>_<%=cid%>);
 		root_<%=sourceName %>_<%=cid %> = 
 			(org.dom4j.Element)xpath_<%=sourceName%>_<%=cid%>.selectSingleNode(doc_<%=cid %>);
-		if(root_<%=sourceName %>_<%=cid %>==null) {
+		if(!DocumentHelper.isMatchAtRoot(root_<%=sourceName %>_<%=cid %>,prefixToUriForNamespace_<%=sourceName %>_<%=cid%>)) {
 			System.err.println("warn:::the pre input source content is empty!");
 			<%generateToolByDom4j.generateCode(root,"root","doc");%>
 			root_<%=sourceName %>_<%=cid %> = (org.dom4j.Element)xpath_<%=sourceName%>_<%=cid%>.selectSingleNode(doc_<%=cid %>);
@@ -594,8 +594,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //					if(tempElem.getNamespacePrefix() !=null && !tempElem.getNamespacePrefix().equals("")){
 //						tmpPath = tempElem.getNamespacePrefix() + ":" + tmpPath;
 //					}
-					
-					if(("<%=currentFinalGroupXpath %>").equals(DocumentHelper.getPath(tempElem,uriToPrefixForDefaultNamespace_<%=sourceName %>_<%=cid%>))){
+					java.util.Map<String,String> currentDeclaredNamespacesMapping = null;
+					<%=namespaceHelper.buildCurrentGroupDeclaredNamespacesMapping("currentDeclaredNamespacesMapping")%>
+					if(DocumentHelper.compareNodes("<%=currentFinalGroupXpath %>",tempElem,uriToPrefixForDefaultNamespace_<%=sourceName %>_<%=cid%>,currentDeclaredNamespacesMapping,<%if(sourceName.equals(firstConnName)) {%>false<%} else {%>true<%}%>)){
 						if(<%generateExprCmpByDom4j.generateCode(groupNode, "tempElem"); %>){
 							subTreeRootParent_<%=cid %> =  tempElem;
 							break;
