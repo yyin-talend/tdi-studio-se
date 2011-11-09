@@ -218,13 +218,8 @@ if(!usingStatsLogs){%>
 //to fixed: bug18928,in bug 8422 if a statement is created,it will be used for many times,but it's not thread-safty.Now give one statement for each thread.
 if(usingStatsLogs){ %>
 		java.sql.PreparedStatement pstmt_<%=cid %> = null;    
-		String keyPsmt_<%=cid %> = conn_<%=cid%> + "[psmt]" + "[" + <%=table%> + "]" + Thread.currentThread();     
-		if(GlobalResource.resourceMap.get(keyPsmt_<%=cid %>)== null){
-			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
-			GlobalResource.resourceMap.put(keyPsmt_<%=cid %>, pstmt_<%=cid %>);
-		}else{
-			pstmt_<%=cid %> = (java.sql.PreparedStatement)GlobalResource.resourceMap.get(keyPsmt_<%=cid %>);				
-		}
+		String keyPsmt_<%=cid %> = conn_<%=cid%> + "[psmt]" + "[" + <%=table%> + "]";
+                        pstmt_<%=cid %> = SharedDBPreparedStatement.getSharedPreparedStatement(conn_<%=cid%>,insert_<%=cid%>,keyPsmt_<%=cid%>);
 <%}%>
         <%
     } else if (("UPDATE").equals(dataAction)) {
