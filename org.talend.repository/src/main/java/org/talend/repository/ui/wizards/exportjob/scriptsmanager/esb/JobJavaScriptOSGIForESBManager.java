@@ -800,11 +800,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 					if ("cJMS".equals(next.getComponentName())) {
 						String value = computeTextElementValue("MQ_TYPE",
 								next.getElementParameter());
-						externalAMQImport = ",org.apache.camel.component.jms";
+						externalAMQImport = ",org.apache.camel.component.jms,javax.jms";
 						if ("ActiveMQ".equals(value)) {
-							externalAMQImport += ",javax.jms,org.apache.activemq,org.apache.activemq.camel.component";
+							externalAMQImport += ",org.apache.activemq,org.apache.activemq.camel.component";
 
 						}
+						
+						//http://jira.talendforge.org/browse/TESB-3843
+						if ("WebSphere MQ".equals(value)) {
+							externalAMQImport += ",javax.transcation";
+
+						}
+						
+						if ("Other".equals(value)) {
+							externalAMQImport += ",org.apache.activemq,org.apache.activemq.camel.component";
+						}
+						
 						continue;
 					}
 
