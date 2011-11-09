@@ -24,6 +24,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.ImageUtils;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
@@ -182,8 +183,9 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             boolean isExtensionPoint = false;
             for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
                 isExtensionPoint = handler.isRepObjType(itemType);
-                if (isExtensionPoint == true) {
-                    img = ImageProvider.getImage(handler.getIcon(item));
+				IImage icon = handler.getIcon(item);
+				if (isExtensionPoint == true && icon != null) {
+					img = ImageProvider.getImage(icon);
                     break;
                 }
             }
