@@ -40,7 +40,6 @@ import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
-import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -86,9 +85,6 @@ public class StyledTextHandler {
         styledText.addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
-                if (XmlMapUtil.DOCUMENT.equals(selectedNode.getType())) {
-                    styledText.setText("");
-                }
                 refreshProposalSize();
             }
 

@@ -145,7 +145,8 @@ public class TabFolderEditors extends CTabFolder {
 
             public void handleEvent(Event event) {
                 // TDI-18185
-                if (XmlMapUtil.DOCUMENT.equals(styledTextHandler.getSelectedNode().getType())) {
+                if (styledTextHandler.getSelectedNode() != null
+                        && XmlMapUtil.DOCUMENT.equals(styledTextHandler.getSelectedNode().getType())) {
                     styledTextHandler.setTextWithoutNotifyListeners("");
                     styledTextHandler.getStyledText().setEnabled(false);
                     styledTextHandler.getStyledText().setEditable(false);
