@@ -588,8 +588,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 									next.getElementParameter());
 						}
 						if (!hasSAM) {
-							hasSAM = computeCheckElementValue("ENABLE_SAM",
-									next.getElementParameter());
+							String format = computeTextElementValue("DATAFORMAT", next.getElementParameter());
+							if("MESSAGE".equals(format)){
+								hasSAM = false;
+							}else{
+								hasSAM = computeCheckElementValue("ENABLE_SAM",
+										next.getElementParameter());
+							}
 						}
 					}
 
