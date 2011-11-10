@@ -127,7 +127,7 @@ public class DbMapComponentDocumentation implements IComponentDocumentation {
 
     private void generateMessages(Element element) {
         // mapperComponent.xsl
-        element.addAttribute("i18n.mapper.table.for", Messages.getString("HTMLDocGenerator.mapper.table.for")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.mapper.table.for", Messages.getString("HTMLDocGenerator.mapper.table.for") + " "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         element.addAttribute("i18n.mapper.table.properties", Messages.getString("HTMLDocGenerator.mapper.table.properties")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.job.properties", Messages.getString("HTMLDocGenerator.properties")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.job.values", Messages.getString("HTMLDocGenerator.values")); //$NON-NLS-1$ //$NON-NLS-2$

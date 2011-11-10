@@ -152,7 +152,7 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
         element.addAttribute("i18n.job.component.parameters", Messages.getString("HTMLDocGenerator.component_parameters")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.job.properties", Messages.getString("HTMLDocGenerator.properties")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.job.values", Messages.getString("HTMLDocGenerator.values")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.rowgenerator.info.for", Messages.getString("HTMLDocGenerator.row_generator_info")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.rowgenerator.info.for", Messages.getString("HTMLDocGenerator.row_generator_info") + " "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         element.addAttribute("i18n.job.column", Messages.getString("HTMLDocGenerator.column")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.job.key", Messages.getString("HTMLDocGenerator.key")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.job.type", Messages.getString("HTMLDocGenerator.type")); //$NON-NLS-1$ //$NON-NLS-2$
