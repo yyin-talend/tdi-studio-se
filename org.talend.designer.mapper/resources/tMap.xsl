@@ -150,6 +150,17 @@
 											select="@isInnerJoin" />
 									</td>
 								</tr>
+								<tr>
+									<td class="FONTSTYLE"
+										align="left">
+										<xsl:value-of select="/externalNode/@i18n.tmap.expressionfilter" />
+									</td>
+									<td class="FONTSTYLE"
+										align="left">
+										<xsl:value-of
+											select="@expressionFilter" />
+									</td>
+								</tr>
 							</table>
 							<br />
 							<b class="FONTSTYLE">

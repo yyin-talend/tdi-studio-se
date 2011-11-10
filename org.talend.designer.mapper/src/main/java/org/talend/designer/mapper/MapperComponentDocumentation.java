@@ -156,7 +156,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
         element.addAttribute("i18n.job.component.parameters", Messages.getString("HTMLDocGenerator.component_parameters")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.job.properties", Messages.getString("HTMLDocGenerator.properties")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.job.values", Messages.getString("HTMLDocGenerator.values")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.mapper.table.for", Messages.getString("HTMLDocGenerator.mapper.table.for")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.mapper.table.for", Messages.getString("HTMLDocGenerator.mapper.table.for") + " "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         element.addAttribute("i18n.mapper.table.properties", Messages.getString("HTMLDocGenerator.mapper.table.properties")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.job.name", Messages.getString("HTMLDocGenerator.name")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.tmap.matching.mode", Messages.getString("HTMLDocGenerator.tmap.matching.mode")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -164,6 +164,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
         element.addAttribute("i18n.tmap.isreject", Messages.getString("HTMLDocGenerator.tmap.isreject")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.tmap.isrejectinnnerjoin", Messages.getString("HTMLDocGenerator.tmap.isrejectinner")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.tmap.isinnerjoin", Messages.getString("HTMLDocGenerator.tmap.isinnerjoin")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.tmap.expressionfilter", Messages.getString("HTMLDocGenerator.tmap.expressionfilter")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute(
                 "i18n.mapper.table.metadata.entries", Messages.getString("HTMLDocGenerator.mapper.metadatatable.entries")); //$NON-NLS-1$ //$NON-NLS-2$
         element.addAttribute("i18n.job.type", Messages.getString("HTMLDocGenerator.type")); //$NON-NLS-1$ //$NON-NLS-2$
