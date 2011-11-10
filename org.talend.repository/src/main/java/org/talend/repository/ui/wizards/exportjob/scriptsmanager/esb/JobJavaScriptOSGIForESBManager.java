@@ -588,10 +588,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 									next.getElementParameter());
 						}
 						if (!hasSAM) {
+							//http://jira.talendforge.org/browse/TESB-3850
 							String format = computeTextElementValue("DATAFORMAT", next.getElementParameter());
-							if("MESSAGE".equals(format)){
-								hasSAM = false;
-							}else{
+							if(!"MESSAGE".equals(format)){
 								hasSAM = computeCheckElementValue("ENABLE_SAM",
 										next.getElementParameter());
 							}
