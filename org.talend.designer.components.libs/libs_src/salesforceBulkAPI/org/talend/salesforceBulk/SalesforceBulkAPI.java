@@ -6,6 +6,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,12 +21,12 @@ import com.csvreader.CsvReader;
 import com.sforce.async.AsyncApiException;
 import com.sforce.async.BatchInfo;
 import com.sforce.async.BatchStateEnum;
+import com.sforce.async.BulkConnection;
 import com.sforce.async.CSVReader;
 import com.sforce.async.ContentType;
 import com.sforce.async.JobInfo;
 import com.sforce.async.JobStateEnum;
 import com.sforce.async.OperationEnum;
-import com.sforce.async.RestConnection;
 import com.sforce.soap.partner.PartnerConnection;
 import com.sforce.ws.ConnectionException;
 import com.sforce.ws.ConnectorConfig;
@@ -78,19 +81,19 @@ public class SalesforceBulkAPI {
         maxRowsPerBatch = (maxRows > sforceMaxRows) ? sforceMaxRows : maxRows;
     }
 
-    private RestConnection connection;
+    private BulkConnection connection;
 
-    public RestConnection getConnection() {
+    public BulkConnection getConnection() {
         return connection;
     }
 
-    public void login(RestConnection connection) {
+    public void login(BulkConnection connection) {
         this.connection = connection;
     }
 
     public void login(String endpoint, String username, String password, String apiVersion) throws ConnectionException,
             AsyncApiException {
-        this.connection = getRestConnection(endpoint, username, password, apiVersion);
+        this.connection = getBulkConnection(endpoint, username, password, apiVersion);
     }
 
     private JobInfo job;
@@ -138,8 +141,33 @@ public class SalesforceBulkAPI {
     }
 
     private void setProxyToConnection(ConnectorConfig conn) {
+        Proxy socketProxy = null;
+        if (!useProxy) {
+            proxyHost = System.getProperty("http.proxyHost");
+            if (proxyHost != null && System.getProperty("http.proxyPort") != null) {
+                proxyPort = Integer.parseInt(System.getProperty("http.proxyPort"));
+                proxyUsername = System.getProperty("http.proxyUser");
+                proxyPassword = System.getProperty("http.proxyPassword");
+                useProxy = true;
+            } else {
+                proxyHost = System.getProperty("socksProxyHost");
+                if (proxyHost != null && System.getProperty("socksProxyPort") != null) {
+                    proxyPort = Integer.parseInt(System.getProperty("socksProxyPort"));
+                    proxyUsername = System.getProperty("java.net.socks.username");
+                    proxyPassword = System.getProperty("java.net.socks.password");
+                    useProxy = true;
+
+                    SocketAddress addr = new InetSocketAddress(proxyHost, proxyPort);
+                    socketProxy = new Proxy(Proxy.Type.SOCKS, addr);
+                }
+            }
+        }
         if (useProxy) {
-            conn.setProxy(proxyHost, proxyPort);
+            if (socketProxy != null) {
+                conn.setProxy(socketProxy);
+            } else {
+                conn.setProxy(proxyHost, proxyPort);
+            }
             if (proxyUsername != null && !"".equals(proxyUsername)) {
                 conn.setProxyUsername(proxyUsername);
             }
@@ -149,7 +177,7 @@ public class SalesforceBulkAPI {
         }
     }
 
-    private RestConnection getRestConnection(String endpoint, String username, String password, String apiVersion)
+    private BulkConnection getBulkConnection(String endpoint, String username, String password, String apiVersion)
             throws ConnectionException, AsyncApiException {
         ConnectorConfig partnerConfig = new ConnectorConfig();
         partnerConfig.setUsername(username);
@@ -162,7 +190,7 @@ public class SalesforceBulkAPI {
         // When PartnerConnection is instantiated, a login is implicitly
         // executed and, if successful,
         // a valid session is stored in the ConnectorConfig instance.
-        // Use this key to initialize a RestConnection:
+        // Use this key to initialize a BulkConnection:
         ConnectorConfig config = new ConnectorConfig();
         config.setSessionId(partnerConfig.getSessionId());
         // The endpoint for the Bulk API service is the same as for the normal
@@ -175,7 +203,7 @@ public class SalesforceBulkAPI {
         config.setCompression(true);
         // Set this to true to see HTTP requests and responses on stdout
         config.setTraceMessage(false);
-        RestConnection connection = new RestConnection(config);
+        BulkConnection connection = new BulkConnection(config);
         return connection;
     }
 

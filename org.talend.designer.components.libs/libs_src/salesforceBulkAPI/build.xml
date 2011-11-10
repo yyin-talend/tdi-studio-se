@@ -14,7 +14,7 @@
 	<!-- modification 2: compile classpath -->
 	<path id="compile.classpath">
 		<pathelement location="${component.plugin.home}/tSalesforceBulkExec/partnerBulk.jar" />
-		<pathelement location="${component.plugin.home}/tSalesforceBulkExec/wsc-19.jar" />
+		<pathelement location="${component.plugin.home}/tSalesforceBulkExec/wsc.jar" />
 		<pathelement location="${component.plugin.home}/tFileInputDelimited/javacsv.jar" />
 	</path>
 
