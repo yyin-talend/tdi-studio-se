@@ -8,11 +8,9 @@ imports="
     org.talend.core.model.metadata.IMetadataColumn 
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.types.JavaTypesManager
-    org.talend.core.model.metadata.types.JavaType
     java.util.List
     java.util.Map
-    java.util.ArrayList
-    org.talend.commons.utils.StringUtils
+
 "
 %>
 
@@ -32,10 +30,8 @@ List<Map<String, String>> columnOptions =
 List<IMetadataTable> metadatas = node.getMetadataList();
 if (metadatas != null && metadatas.size() > 0) {
     List<IConnection> inputConnections;
-    List<IConnection> outputConnections;
     String main = null;
     inputConnections = (List<IConnection>) node.getIncomingConnections();
-    outputConnections = (List<IConnection>) node.getOutgoingConnections();
     for (IConnection connection : inputConnections) {
         if (connection == null) {
             continue;
@@ -77,36 +73,34 @@ if (metadatas != null && metadatas.size() > 0) {
     }
     
     //output
-    int outColumn_num=0;
-    for (IConnection connection : outputConnections){
-        String outConName = connection.getName();
         for(Map<String,String> columnOption: columnOptions){
             if (("true").equals(columnOption.get("REPLACE"))){
-            	IMetadataColumn column = connection.getTarget().getMetadataList().get(0).getListColumns().get(outColumn_num);
-        		String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-                String columnname = column.getLabel();
-                if("java.util.Date".equals(typeToGenerate)){
+            	for (IMetadataColumn column : metadata.getListColumns()) { 
+	            	if(column.getLabel().equals(columnOption.get("SCHEMA_COLUMN"))) {
+	        			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+	                	String columnname = column.getLabel();
+	               		if("java.util.Date".equals(typeToGenerate)){
 %>
                 	<%=main%>.<%=columnname%> = new java.util.Date(inputFlow_<%=cid%>_<%=columnname%>);
 <%
-				}else if("BigDecimal".equals(typeToGenerate)){
+						}else if("BigDecimal".equals(typeToGenerate)){
 %>
                 	<%=main%>.<%=columnname%> = new <%=typeToGenerate%>(inputFlow_<%=cid%>_<%=columnname%>);
 <%
-				}else if("Character".equals(typeToGenerate)){
+						}else if("Character".equals(typeToGenerate)){
 %>
                 	<%=main%>.<%=columnname%> = new <%=typeToGenerate%>(inputFlow_<%=cid%>_<%=columnname%>.toCharArray()[0]);
 <%
-				}else{
+						}else{
 %>
                 	<%=main%>.<%=columnname%> = <%=typeToGenerate%>.valueOf(inputFlow_<%=cid%>_<%=columnname%>);
 <%
-				}
+						}
+						break;
+					} // if
+				} // for
             }
-            outColumn_num ++;
        }
-       
-    }
     
     
 %>
