@@ -31,8 +31,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        	String commandSeparator = ElementParameterParser.getValue(node,"__COMMANDSEPARATOR__");
         List<Map<String, String>> commands =(List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__COMMANDS__");
 %>
-		/* Create a session */
-		ch.ethz.ssh2.Session sess_<%=cid%> = conn_<%=cid%>.openSession();
+		/* open a session */
+ 		sess_<%=cid%> = conn_<%=cid%>.openSession();
 <%
         if (pty) {
 %>
