@@ -1348,6 +1348,13 @@
               id="org.talend.repository.model.migration.MigratetFileOutputDelimitedAndtFileInputDelimitedMigrationTask"
               name="MigratetFileOutputDelimitedAndtFileInputDelimitedMigrationTask">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.MigrationTaskForIssue18419"
+              description="if you chose a different name than TALENDDEMOSJAVA for your demo project,the &quot;beforeRunJobs&quot; job cannot work as the path is hardcoded in the properties"
+              id="org.talend.repository.model.migration.MigrationTaskForIssue18419"
+              name="Modify tFileUnarchive ZIPFILE field value">
+        </projecttask>
    </extension>
    
    <extension
