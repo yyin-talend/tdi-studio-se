@@ -45,10 +45,14 @@ String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 if(!scriptPath.endsWith("/\"")){
 	scriptPath = scriptPath+	"+\"/\"";
 }
+//windows line separator as default
+String lineSeparator = "\\r\\n";
 if(loadFile.indexOf("/") !=0 && ("Windows").equals(execution)){
 	loadFile = loadFile.replaceAll("/", "\\\\\\\\");
+}else {
+	//Unix line separator
+	lineSeparator = "\\n";
 }
-
 String dbmsId = "teradata_id";
 
 List<IMetadataColumn> columnList = null;
@@ -66,36 +70,36 @@ java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=scriptPath%>+<%=tabl
 <%//build script---------------------------------------------------------%>
 
 StringBuilder script_<%=cid%> = new StringBuilder();
-fw_<%=cid %>.write("SESSIONS 8;\r\n");
-fw_<%=cid %>.write("SET RECORD VARTEXT \""+<%=separator%>+"\";\r\n");
-fw_<%=cid %>.write("LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";\r\n");
+fw_<%=cid %>.write("SESSIONS 8;"+ "<%=lineSeparator%>");
+fw_<%=cid %>.write("SET RECORD VARTEXT \""+<%=separator%>+"\";"+ "<%=lineSeparator%>");
+fw_<%=cid %>.write("LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";"+ "<%=lineSeparator%>");
 <%
 if(("CLEAR").equals(tableAction)){
 %>
-fw_<%=cid %>.write("DELETE FROM "+ <%=dbname%> + "." + <%=table%> + " ALL;\r\n");
+fw_<%=cid %>.write("DELETE FROM "+ <%=dbname%> + "." + <%=table%> + " ALL;"+ "<%=lineSeparator%>");
 <%
 }
 %>
-fw_<%=cid %>.write("DEFINE \r\n");
+fw_<%=cid %>.write("DEFINE "+ "<%=lineSeparator%>");
 <%//Layout---------------------------------------------------------------%>
 <%
 if(columnList!=null){
 	int counter = 1;
 	for(IMetadataColumn column:columnList){	
 		if( columnList.size() != counter){	%>
-		fw_<%=cid %>.write("<%=column.getOriginalDbColumnName()%>"+" (VARCHAR(<%=column.getLength() == null ? 0 : column.getLength()%>)),\r\n");
+		fw_<%=cid %>.write("<%=column.getOriginalDbColumnName()%>"+" (VARCHAR(<%=column.getLength() == null ? 0 : column.getLength()%>)),"+ "<%=lineSeparator%>");
 	<%
 		} else {
 	%>
-			fw_<%=cid %>.write("<%=column.getOriginalDbColumnName()%>"+" (VARCHAR(<%=column.getLength() == null ? 0 : column.getLength()%>))\r\n");
+			fw_<%=cid %>.write("<%=column.getOriginalDbColumnName()%>"+" (VARCHAR(<%=column.getLength() == null ? 0 : column.getLength()%>))"+ "<%=lineSeparator%>");
 	<% 	}
 		counter++;
 	}
 }
 %>
-fw_<%=cid %>.write("FILE="+<%=loadFile%>+";\r\n");
-fw_<%=cid %>.write("BEGIN LOADING "+ <%=dbname%> + "." + <%=table%>+" "+<%=errorFiles%>+" CHECKPOINT <%=checkPoint%>;\r\n");
-fw_<%=cid %>.write("ERRLIMIT <%=errLimit%>;\r\n");
+fw_<%=cid %>.write("FILE="+<%=loadFile%>+";"+ "<%=lineSeparator%>");
+fw_<%=cid %>.write("BEGIN LOADING "+ <%=dbname%> + "." + <%=table%>+" "+<%=errorFiles%>+" CHECKPOINT <%=checkPoint%>;"+ "<%=lineSeparator%>");
+fw_<%=cid %>.write("ERRLIMIT <%=errLimit%>;"+ "<%=lineSeparator%>");
 <%//SQL statements-------------------------------------------------------%>
 <%
 StringBuilder insertColSQL = new StringBuilder();
@@ -116,10 +120,10 @@ if(columnList!=null){
 	}
 }
 %>
-fw_<%=cid %>.write("INSERT INTO "+ <%=dbname%> + "." + <%=table%>+" (<%=insertColSQL.toString()%>) VALUES (<%=insertValueSQL.toString()%>);\r\n");
+fw_<%=cid %>.write("INSERT INTO "+ <%=dbname%> + "." + <%=table%>+" (<%=insertColSQL.toString()%>) VALUES (<%=insertValueSQL.toString()%>);"+ "<%=lineSeparator%>");
 <%//Import file----------------------------------------------------------%>
-fw_<%=cid %>.write("END LOADING;\r\n");
-fw_<%=cid %>.write("LOGOFF;\r\n");
+fw_<%=cid %>.write("END LOADING;"+ "<%=lineSeparator%>");
+fw_<%=cid %>.write("LOGOFF;"+ "<%=lineSeparator%>");
 
 <%//write script to file-------------------------------------------------%>
 fw_<%=cid %>.close();
@@ -131,7 +135,11 @@ String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%
 <%}} else {%>	
 String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>fastload < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1");
 <%}%>
+<%if(("Windows").equals(execution)){%>
 final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
+<%}else{%>
+final Process process_<%=cid %> = Runtime.getRuntime().exec(new String[]{"sh","-c",sb_<%=cid%>});
+<%}%>
 Thread normal_<%=cid %> = new Thread() {
     public void run() {
     	try {
