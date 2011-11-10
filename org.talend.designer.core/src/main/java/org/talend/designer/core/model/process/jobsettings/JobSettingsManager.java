@@ -34,12 +34,14 @@ import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
@@ -52,6 +54,7 @@ import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants.C
 import org.talend.designer.core.model.process.statsandlogs.OracleComponentHelper;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
+import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
@@ -1032,12 +1035,21 @@ public class JobSettingsManager {
 
             String dbType = getDatabaseTypeFromParameter(process);
             if (dbType != null) {
+                // TDI-18161:the SQL script's syntax is not right because of the implicit context of General JDBC.
+                if (dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
+                    dbType = findRealDbTypeForJDBC(process, dbType);
+                }
+
                 EDatabaseTypeName dbTypeName = EDatabaseTypeName.getTypeFromDbType(dbType);
                 if (EDatabaseTypeName.ORACLE_OCI.equals(dbTypeName) || EDatabaseTypeName.ORACLEFORSID.equals(dbTypeName)
                         || EDatabaseTypeName.ORACLESN.equals(dbTypeName)) {
                     for (IMetadataColumn column : table.getListColumns()) {
                         column.setOriginalDbColumnName(column.getOriginalDbColumnName().toUpperCase());
                     }
+                }
+                if (realTableName.startsWith(TalendTextUtils.QUOTATION_MARK)
+                        && realTableName.endsWith(TalendTextUtils.QUOTATION_MARK) && realTableName.length() > 2) {
+                    realTableName = realTableName.substring(1, realTableName.length() - 1);
                 }
                 String query = TalendTextUtils.addSQLQuotes(QueryUtil
                         .generateNewQuery(null, table, dbType, schema, realTableName));
@@ -1168,5 +1180,40 @@ public class JobSettingsManager {
             }
         }
         return null;
+    }
+
+    private static String findRealDbTypeForJDBC(IProcess process, String originalDbType) {
+        String realDbTypeForJDBC = null;
+        String driverJarValue = process
+                .getElementParameter(JobSettingsConstants.getExtraParameterName(EParameterName.DRIVER_JAR.getName())).getValue()
+                .toString();
+        String driverClassValue = process
+                .getElementParameter(JobSettingsConstants.getExtraParameterName(EParameterName.DRIVER_CLASS.getName()))
+                .getValue().toString();
+
+        driverClassValue = TalendTextUtils.removeQuotes(driverClassValue);
+        if (driverClassValue != null && !"".equals(driverClassValue)) {
+            boolean isContextModeDriverClass = ContextParameterUtils.containContextVariables(driverClassValue);
+            if (isContextModeDriverClass) {
+                driverClassValue = JavaProcessUtil.getContextOriginalValue(process, driverClassValue);
+            }
+        }
+
+        if (driverJarValue != null && driverJarValue.startsWith("[") && driverJarValue.endsWith("]")) { //$NON-NLS-N$ //$NON-NLS-N$
+            driverJarValue = driverJarValue.substring(1, driverJarValue.length() - 1);
+            if (driverJarValue != null && driverJarValue.startsWith("{") && driverJarValue.endsWith("}")) { //$NON-NLS-N$ //$NON-NLS-N$
+                driverJarValue = driverJarValue.substring(1, driverJarValue.length() - 1);
+            }
+        }
+        if (driverJarValue != null && !"".equals(driverJarValue)) {
+            boolean isContextMode = ContextParameterUtils.containContextVariables(driverJarValue);
+            if (isContextMode) {
+                driverJarValue = JavaProcessUtil.getContextOriginalValue(process, driverJarValue);
+            }
+            realDbTypeForJDBC = ExtractMetaDataUtils.getDbTypeByClassNameAndDriverJar(driverClassValue, driverJarValue);
+        } else {
+            realDbTypeForJDBC = ExtractMetaDataUtils.getDbTypeByClassName(driverClassValue);
+        }
+        return realDbTypeForJDBC;
     }
 }
