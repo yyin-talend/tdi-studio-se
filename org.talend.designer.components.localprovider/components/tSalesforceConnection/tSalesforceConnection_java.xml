@@ -166,7 +166,7 @@
 			<IMPORT NAME="salesforceBulkAPI"
 				MODULE="salesforceBulkAPI.jar" REQUIRED="true" />
 			<IMPORT NAME="partner" MODULE="partnerBulk.jar" REQUIRED="true" />
-			<IMPORT NAME="wsc" MODULE="wsc-19.jar"
+			<IMPORT NAME="wsc" MODULE="wsc.jar"
 				REQUIRED="true" />
 				
 		</IMPORTS>
