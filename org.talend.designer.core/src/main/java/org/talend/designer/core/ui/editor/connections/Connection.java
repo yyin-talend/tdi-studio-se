@@ -223,7 +223,8 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setCategory(EComponentCategory.BASIC);
             param.setName(EParameterName.ROUTETYPE.getName());
             param.setDisplayName(EParameterName.ROUTETYPE.getDisplayName());
-            String[] strList = { "constant", "el", "groovy", "header", "javascript", "josql", "jxpath", "mvel", "ognl", "php", "property", "python", "ruby", "simple",
+            String[] strList = { "constant", "el", "groovy", "header", "javaScript", "jxpath", "mvel", "ognl", "php",
+                    "property", "python", "ruby", "simple",
                     "spel", "sql", "xpath", "xquery" };
             param.setListItemsValue(strList); //$NON-NLS-1$
             param.setListItemsDisplayName(strList);
