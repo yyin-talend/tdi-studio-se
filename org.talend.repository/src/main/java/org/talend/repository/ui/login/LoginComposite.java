@@ -386,7 +386,7 @@ public class LoginComposite extends Composite {
                     formBody.pack();
                 } else {
                     GridData layoutData = (GridData) passwordComposite.getLayoutData();
-                    layoutData.heightHint = 20;
+                    layoutData.heightHint = 24;
                     passwordComposite.setLayoutData(layoutData);
                     passwordComposite.setVisible(true);
                     passwordComposite.layout();
@@ -618,8 +618,8 @@ public class LoginComposite extends Composite {
     private void createSeparator(Composite parent) {
         separatorComposite = toolkit.createComposite(parent);
         separatorComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        separatorComposite.setBackground(parent.getBackground());// separatorComposite.setBackground(GREY_COLOR);
-        separatorComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        separatorComposite.setBackground(GREY_COLOR);
+        separatorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout layout = new GridLayout();
         layout.marginTop = 0; // HORIZONTAL_TWO_SPACE;
         layout.marginHeight = 0;
@@ -1104,7 +1104,7 @@ public class LoginComposite extends Composite {
         formData.right = new FormAttachment(0, LEFTSPACE);
         emailLabel.setLayoutData(formData);
 
-        user = toolkit.createText(group, null);
+        user = toolkit.createText(group, null, SWT.BORDER);
         user.setEditable(false);
         user.setEnabled(false);
         formData = new FormData();
@@ -1127,7 +1127,7 @@ public class LoginComposite extends Composite {
         formData.top = new FormAttachment(passwordComposite, 3, SWT.TOP);
         formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE - 5);//
         formData.right = new FormAttachment(0, LEFTSPACE - 5);// - 5
-        formData.bottom = new FormAttachment(100, 0);
+        formData.bottom = new FormAttachment(100, -1);
         passwordLabel.setLayoutData(formData);
 
         passwordText = toolkit.createText(passwordComposite, null, SWT.PASSWORD | SWT.BORDER);
@@ -1137,6 +1137,7 @@ public class LoginComposite extends Composite {
         formData.top = new FormAttachment(passwordComposite, 1, SWT.TOP);
         formData.left = new FormAttachment(passwordLabel, HORIZONTAL_SPACE);
         formData.right = new FormAttachment(100, -45);
+        formData.bottom = new FormAttachment(100, -1);
         passwordText.setLayoutData(formData);
 
     }
@@ -1258,7 +1259,8 @@ public class LoginComposite extends Composite {
         }
 
         if (getConnection() != null) {
-            final boolean localConn = getConnection().getRepositoryId().equals(RepositoryConstants.REPOSITORY_LOCAL_ID);
+            final boolean localConn = getConnection().getRepositoryId() == null
+                    || getConnection().getRepositoryId().equals(RepositoryConstants.REPOSITORY_LOCAL_ID);
             boolean visible = PluginChecker.isSVNProviderPluginLoaded() && !localConn;
             if (passwordLabel != null) {
                 passwordLabel.setVisible(visible);
@@ -1276,10 +1278,6 @@ public class LoginComposite extends Composite {
             manageViewer.setInput(getManageElements());
             setManageViewer();
             if (!isWorkSpaceSame()) {
-                if (PluginChecker.isSVNProviderPluginLoaded()) {
-                    iconLabel.setVisible(true);
-                    onIconLabel.setVisible(true);
-                }
                 iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                 onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                 colorComposite.setBackground(RED_COLOR);
@@ -1290,10 +1288,6 @@ public class LoginComposite extends Composite {
                 Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
             } else if (inuse) {
-                if (PluginChecker.isSVNProviderPluginLoaded()) {
-                    iconLabel.setVisible(true);
-                    onIconLabel.setVisible(true);
-                }
                 iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                 onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                 colorComposite.setBackground(RED_COLOR);
@@ -1304,11 +1298,6 @@ public class LoginComposite extends Composite {
                 Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
             } else if (projectViewer == null || projectViewer.getCombo().getItemCount() > 0) {
-
-                if (PluginChecker.isSVNProviderPluginLoaded()) {
-                    iconLabel.setVisible(true);
-                    onIconLabel.setVisible(true);
-                }
                 iconLabel.setImage(LOGIN_CORRECT_IMAGE);
                 onIconLabel.setImage(LOGIN_CORRECT_IMAGE);
                 colorComposite.setBackground(YELLOW_GREEN_COLOR);
@@ -1323,10 +1312,6 @@ public class LoginComposite extends Composite {
                     fillProjectsBtn.setEnabled(true);
                 }
             } else {
-                if (PluginChecker.isSVNProviderPluginLoaded()) {
-                    iconLabel.setVisible(true);
-                    onIconLabel.setVisible(true);
-                }
                 iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                 onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                 colorComposite.setBackground(RED_COLOR);
@@ -1338,10 +1323,6 @@ public class LoginComposite extends Composite {
                 statusLabel.setFont(font);
             }
         } else {
-            if (PluginChecker.isSVNProviderPluginLoaded()) {
-                iconLabel.setVisible(true);
-                onIconLabel.setVisible(true);
-            }
             iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
             onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
             colorComposite.setBackground(RED_COLOR);
@@ -1352,6 +1333,7 @@ public class LoginComposite extends Composite {
             Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
             statusLabel.setFont(font);
         }
+        // this.tosWelcomeComposite.redraw();
         updateVisible();
     }
 
@@ -1525,8 +1507,8 @@ public class LoginComposite extends Composite {
                             return;
                         }
                         beforeConnBean = connection;
-                        user.setText(connection.getUser());
-                        passwordText.setText(connection.getPassword());
+                        user.setText(connection.getUser() == null ? "" : connection.getUser());
+                        passwordText.setText(connection.getPassword() == null ? "" : connection.getPassword());
                         updateServerFields();
                         // updateButtons();
                         updateVisible();
@@ -1623,11 +1605,30 @@ public class LoginComposite extends Composite {
                         LoginComposite.this.storedConnections = connectionsDialog.getConnections();
                         perReader.saveConnections(LoginComposite.this.storedConnections);
                         fillContents();
-                        displayPasswordComposite();
+                        // updateVisible();
+                        // validateUpdate();
+                        final ConnectionBean connection = getConnection();
+                        if (connection == null) {
+                            return;
+                        }
+                        beforeConnBean = connection;
+                        user.setText(connection.getUser() == null ? "" : connection.getUser());
+                        passwordText.setText(connection.getPassword() == null ? "" : connection.getPassword());
+
+                        updateServerFields();
+                        // updateButtons();
                         updateVisible();
+
+                        // Validate data
+                        if (validateFields()) {
+                            populateProjectList();
+                            validateProject();
+                        }
+                        setStatusArea();
                         validateUpdate();
+                        displayPasswordComposite();
                     }
-                    setStatusArea();
+                    // setStatusArea();
                 } catch (PersistenceException e1) {
                     ExceptionHandler.process(e1);
                 } catch (JSONException e2) {
@@ -1728,8 +1729,6 @@ public class LoginComposite extends Composite {
                 if (archivaServiceURL != null) {
                     boolean needUpdate = needUpdate(archivaServiceURL, repository);
                     if (afterUpdate) {
-                        iconLabel.setVisible(true);
-                        onIconLabel.setVisible(true);
                         iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                         onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                         colorComposite.setBackground(RED_COLOR);
@@ -1745,8 +1744,6 @@ public class LoginComposite extends Composite {
                         updateBtn.setEnabled(false);
 
                     } else if (needUpdate && isWorkSpaceSame()) {
-                        iconLabel.setVisible(true);
-                        onIconLabel.setVisible(true);
                         iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                         onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                         colorComposite.setBackground(RED_COLOR);
