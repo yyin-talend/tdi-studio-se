@@ -327,12 +327,7 @@ if(columnList != null && columnList.size() > 0) {
                 		java.sql.PreparedStatement pstmt_<%=cid %> = null;         
                         // [%connection%][psmt][tableName]
                         String keyPsmt_<%=cid %> = conn_<%=cid%> + "[psmt]" + "[" + <%=table%> + "]";
-                		if(GlobalResource.resourceMap.get(keyPsmt_<%=cid %>)== null){
-                			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
-                			GlobalResource.resourceMap.put(keyPsmt_<%=cid %>, pstmt_<%=cid %>);
-                		}else{
-                			pstmt_<%=cid %> = (java.sql.PreparedStatement)GlobalResource.resourceMap.get(keyPsmt_<%=cid %>);				
-                		}
+                        pstmt_<%=cid %> = SharedDBPreparedStatement.getSharedPreparedStatement(conn_<%=cid%>,insert_<%=cid%>,keyPsmt_<%=cid%>);
                 <%}%>
 	        	        
 <%

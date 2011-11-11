@@ -352,13 +352,8 @@ if(columnList != null && columnList.size()>0) {
                 if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){ %>
                 		java.sql.PreparedStatement pstmt_<%=cid %> = null;         
                         // [%connection%][psmt][tableName]
-                        String keyPsmt_<%=cid %> = conn_<%=cid%> + "[psmt]" + "[" + <%=table%> + "]" + Thread.currentThread();
-                		if(GlobalResource.resourceMap.get(keyPsmt_<%=cid %>)== null){
-                			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
-                			GlobalResource.resourceMap.put(keyPsmt_<%=cid %>, pstmt_<%=cid %>);
-                		}else{
-                			pstmt_<%=cid %> = (java.sql.PreparedStatement)GlobalResource.resourceMap.get(keyPsmt_<%=cid %>);				
-                		}
+                        String keyPsmt_<%=cid %> = conn_<%=cid%> + "[psmt]" + "[" + <%=table%> + "]";
+                        pstmt_<%=cid %> = SharedDBPreparedStatement.getSharedPreparedStatement(conn_<%=cid%>,insert_<%=cid%>,keyPsmt_<%=cid%>);
                 <%}%>
 	    
 	    <%
