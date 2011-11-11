@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -269,6 +270,10 @@ public class LoginComposite extends Composite {
 
     private static final String ARCHIVA_REPOSITORY_KEY = "repository"; //$NON-NLS-N$
 
+    private static final String ARCHIVA_USER = "username"; //$NON-NLS-N$
+
+    private static final String ARCHIVA_USER_PWD = "password"; //$NON-NLS-N$
+
     private boolean afterUpdate = false;
 
     private TOSLoginComposite tosLoginComposite;
@@ -278,6 +283,8 @@ public class LoginComposite extends Composite {
     private Composite parent;
 
     private String oldPath;
+
+    private static Logger log = Logger.getLogger(LoginComposite.class);
 
     /**
      * Constructs a new LoginComposite.
@@ -346,11 +353,14 @@ public class LoginComposite extends Composite {
         }
         try {
             setStatusArea();
+            log.info("validate updatesite..."); //$NON-NLS-N$
             validateUpdate();
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
+            log.error(e);
         } catch (JSONException e) {
             ExceptionHandler.process(e);
+            log.error(e);
         }
         displayPasswordComposite();
         if (!PluginChecker.isSVNProviderPluginLoaded()) {
@@ -1712,6 +1722,8 @@ public class LoginComposite extends Composite {
         // need get archiva url and repository by tac
         String archivaServiceURL;
         String repository;
+        String username;
+        String password;
         ConnectionBean currentBean = getConnection();
         String repositoryId = null;
         // at 1st time open the studio there are no bean at all,so need avoid NPE
@@ -1725,9 +1737,10 @@ public class LoginComposite extends Composite {
 
                 archivaServiceURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY) + ARCHIVA_SERVICES_SEGMENT;
                 repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
-
+                username = archivaProperties.getString(ARCHIVA_USER);
+                password = archivaProperties.getString(ARCHIVA_USER_PWD);
                 if (archivaServiceURL != null) {
-                    boolean needUpdate = needUpdate(archivaServiceURL, repository);
+                    boolean needUpdate = needUpdate(username, password, archivaServiceURL, repository);
                     if (afterUpdate) {
                         iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                         onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
@@ -1795,7 +1808,7 @@ public class LoginComposite extends Composite {
     }
 
     // method need update is used to control the status of updateBtn
-    private boolean needUpdate(String archivaURL, String... repository) {
+    private boolean needUpdate(String username, String password, String archivaURL, String... repository) {
 
         ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
         if (tisService != null) {
@@ -1803,7 +1816,7 @@ public class LoginComposite extends Composite {
                 if (patchesToInstall != null) {
                     patchesToInstall.clear();
                 }
-                patchesToInstall = tisService.getPatchesToBeInstall(archivaURL, repository);
+                patchesToInstall = tisService.getPatchesToBeInstall(username, password, archivaURL, repository);
             } catch (BackingStoreException e) {
                 ExceptionHandler.process(e);
             }
