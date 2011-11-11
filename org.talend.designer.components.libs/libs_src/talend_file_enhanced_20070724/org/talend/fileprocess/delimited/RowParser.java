@@ -24,6 +24,7 @@ package org.talend.fileprocess.delimited;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.Scanner;
 
 /**
  * DOC ibmuser class global comment. Detailled comment <br/>
@@ -48,6 +49,8 @@ public class RowParser extends DelimitedDataReader {
     private int rowLength = -1;
 
     private char[] buffer;
+    
+    private Scanner scanner = null;
 
     /**
      * DOC ibmuser RowParser constructor comment.
@@ -68,6 +71,8 @@ public class RowParser extends DelimitedDataReader {
         if (rowSeparator.equals("\n") || rowSeparator.equals("\r\n")) {
             // simpleMode = true;
             mode = 0;
+            scanner = new Scanner(inputStream);
+            scanner.useDelimiter(rowSeparator);
         } else {
             streamBuffer = new StreamBuffer();
 
@@ -120,8 +125,10 @@ public class RowParser extends DelimitedDataReader {
             }
 
             try {
-                if (initialized) {
-                    inputStream.close();
+                if (initialized && mode == 0) {
+                    scanner.close();
+                } else if(initialized) {
+                	inputStream.close();
                 }
             } catch (Exception e) {
                 // just eat the exception
@@ -143,20 +150,22 @@ public class RowParser extends DelimitedDataReader {
         if (mode == 0) {
             if (skipEmptyRecord) {
                 do {
-                    rowRecord = inputStream.readLine();
-                    if (rowRecord == null) {
+                	rowRecord = null;
+                    if (!scanner.hasNext()) {
                         return false;
                     }
+                    rowRecord = scanner.next();
                     if (!rowRecord.equals("")) {
                         currentRecord++;
                         return true;
                     }
                 } while (true);
             } else {
-                rowRecord = inputStream.readLine();
-                if (rowRecord == null) {
+            	rowRecord = null;
+                if (!scanner.hasNext()) {
                     return false;
                 } else {
+                	rowRecord = scanner.next();
                     currentRecord++;
                     return true;
                 }
