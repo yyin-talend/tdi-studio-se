@@ -46,7 +46,9 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ConnectionBean;
+import org.talend.core.model.general.IExchangeService;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.ExchangeUser;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -304,13 +306,23 @@ public class LoginDialog extends TrayDialog {
         boolean checkTisVersion = prefStore.getBoolean(ITalendCorePrefConstants.EXCHANGE_CHECK_TIS_VERSION);
         if (!checkTisVersion) {
             int count = prefStore.getInt(TalendForgeDialog.LOGINCOUNT);
-            if (project.getAuthor() != null) {
-                String connectionEmail = project.getAuthor().getLogin();
-                if (prefStore.getString(connectionEmail) == null || prefStore.getString(connectionEmail).equals("")) {
-                    if (count < 10) {
-                        TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
-                        tfDialog.open();
+            ExchangeUser exchangeUser = project.getExchangeUser();
+            boolean isExchangeLogon = exchangeUser.getLogin() != null && !exchangeUser.getLogin().equals("");
+            boolean isUserPassRight = true;
+            if (isExchangeLogon) {
+                if (PluginChecker.isExchangeSystemLoaded()) {
+                    IExchangeService service = (IExchangeService) GlobalServiceRegister.getDefault().getService(
+                            IExchangeService.class);
+                    if (service.checkUserAndPass(exchangeUser.getUsername(), exchangeUser.getPassword()) != null) {
+                        isUserPassRight = false;
                     }
+                }
+            }
+
+            if (!isExchangeLogon || !isUserPassRight) {
+                if (count < 10) {
+                    TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
+                    tfDialog.open();
                 }
             }
         }

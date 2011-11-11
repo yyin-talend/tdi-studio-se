@@ -36,6 +36,8 @@ public class ContentConstants {
 
     public static final String DELETE_ACTION = "DELETE_ACTION";
 
+    public static final String WRITE_REVIEWS = "WRITE_REVIEWS";
+
     /**
      * keys used for dynamic content
      */
@@ -82,9 +84,6 @@ public class ContentConstants {
 
     // id in extension details page
     public static final String EXTENSION_REVIEWS = "EXTENSION_REVIEWS";
-
-    // id in extension details page
-    public static final String WRITE_REVIEWS = "WRITE_REVIEWS";
 
     public static final String LAST_AVAILABLE_VERSION = "LAST_AVAILABLE_VERSION";
 

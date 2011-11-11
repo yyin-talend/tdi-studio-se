@@ -12,13 +12,11 @@
 // ============================================================================
 package org.talend.designer.components.exchange.ui.actions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -47,12 +45,21 @@ public class RefreshComponenentsAction extends Action {
 
     public static final String REFRESH_MY_EXTENSIONS = "refresh_my_extensions";
 
-    public void run(String refreshType) {
-        if (refreshType == null || "".equals(REFRESH_ALL)) {
-            refreshType = REFRESH_ALL;
+    public void run(String[] refreshType) {
+        run(refreshType, null);
+    }
+
+    public void run(String[] refreshTypes, final String pageToDispaly) {
+        List typesToRefresh = null;
+
+        if (refreshTypes == null || refreshTypes.length == 0) {
+            typesToRefresh = new ArrayList();
+            typesToRefresh.add(REFRESH_ALL);
+        } else {
+            typesToRefresh = Arrays.asList(refreshTypes);
         }
 
-        if (REFRESH_ALL.equals(refreshType) || REFRESH_AVAILABLES.equals(refreshType)) {
+        if (typesToRefresh.contains(REFRESH_ALL) || typesToRefresh.contains(REFRESH_AVAILABLES)) {
             try {
                 final RefreshJob job = new RefreshJob();
                 job.addJobChangeListener(new JobChangeAdapter() {
@@ -64,7 +71,9 @@ public class RefreshComponenentsAction extends Action {
 
                             public void run() {
                                 updateUI(job, event);
-                                ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_LIST_AVAILABLE_EXTENSIONS,
+                                String toDisplay = pageToDispaly == null ? ContentConstants.UL_LIST_AVAILABLE_EXTENSIONS
+                                        : pageToDispaly;
+                                ExchangeManager.getInstance().generateXHTMLPage(toDisplay,
                                         new String[] { ContentConstants.INSERT_DATA });
                             }
                         });
@@ -79,7 +88,7 @@ public class RefreshComponenentsAction extends Action {
         }
 
         // Show Installed Extensions
-        if (REFRESH_ALL.equals(refreshType) || REFRESH_INSTALLED.equals(refreshType)) {
+        if (typesToRefresh.contains(REFRESH_ALL) || typesToRefresh.contains(REFRESH_INSTALLED)) {
             try {
                 final ShowInstalledExtensionsJob showInstalledJob = new ShowInstalledExtensionsJob();
                 showInstalledJob.addJobChangeListener(new JobChangeAdapter() {
@@ -91,7 +100,7 @@ public class RefreshComponenentsAction extends Action {
 
                             public void run() {
                                 updateInstalledUI(showInstalledJob, event);
-                                ExchangeManager.getInstance().generateXHTMLPage(null,
+                                ExchangeManager.getInstance().generateXHTMLPage(pageToDispaly,
                                         new String[] { ContentConstants.DOWNLOADEXTENSION_DATA });
                             }
                         });
@@ -106,7 +115,7 @@ public class RefreshComponenentsAction extends Action {
         }
 
         // Show Contributed Extensions
-        if (REFRESH_ALL.equals(refreshType) || REFRESH_MY_EXTENSIONS.equals(refreshType)) {
+        if (typesToRefresh.contains(REFRESH_ALL) || typesToRefresh.contains(REFRESH_MY_EXTENSIONS)) {
             try {
                 final ShowContributedExtensionsJob showContributedJob = new ShowContributedExtensionsJob();
                 showContributedJob.addJobChangeListener(new JobChangeAdapter() {
@@ -118,7 +127,7 @@ public class RefreshComponenentsAction extends Action {
 
                             public void run() {
                                 updateContributedUI(showContributedJob, event);
-                                ExchangeManager.getInstance().generateXHTMLPage(null,
+                                ExchangeManager.getInstance().generateXHTMLPage(pageToDispaly,
                                         new String[] { ContentConstants.LIST_MY_EXTENSION });
                             }
                         });
@@ -135,6 +144,7 @@ public class RefreshComponenentsAction extends Action {
         //
         getVersionRevisionsAndCategorys();
         // refreshHTML();
+
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
@@ -151,25 +161,6 @@ public class RefreshComponenentsAction extends Action {
         });
     }
 
-    private void refreshHTML() {
-        Job job = new Job("generatehtml") {
-
-            @Override
-            protected IStatus run(IProgressMonitor monitor) {
-                Display.getDefault().syncExec(new Runnable() {
-
-                    public void run() {
-                        ExchangeManager.getInstance().generateXHTMLPage();
-                    }
-                });
-                return Status.OK_STATUS;
-            }
-
-        };
-        ExchangeUtils.scheduleUserJob(job);
-
-    }
-
     /**
      * Update ui after job finished.
      * 
@@ -184,6 +175,7 @@ public class RefreshComponenentsAction extends Action {
             // update exchange view
             List<ComponentExtension> extensions = job.getAvailableExtensions();
             ExchangeManager.getInstance().updateAvailableExtensions(extensions);
+
         }
     }
 

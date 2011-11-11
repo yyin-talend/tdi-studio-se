@@ -125,8 +125,8 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
                     ComponentUtilities.setSkipUpdatePalette(false);
                 }
             });
-            ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_DOWNLOADED_EXTENSIONS,
-                    new String[] { ContentConstants.DOWNLOADEXTENSION_DATA });
+            RefreshComponenentsAction action = new RefreshComponenentsAction();
+            action.run(new String[] { RefreshComponenentsAction.REFRESH_INSTALLED }, ContentConstants.UL_DOWNLOADED_EXTENSIONS);
         }
     }
 

@@ -168,7 +168,7 @@ public class ExchangeManager {
                                     ((Element) menu).setAttribute("class", "leave");
                                 }
                             }
-                        } else if (ContentConstants.LIST_MY_EXTENSION.equals(ulToShow)
+                        } else if (ContentConstants.UL_LIST_MY_EXTENSIONS.equals(ulToShow)
                                 || ContentConstants.UL_CREAT_NEW_EXTENSION.equals(ulToShow)
                                 || ContentConstants.UL_UPLOAD_EXTENSION_VERSION.equals(ulToShow)
                                 || ContentConstants.UL_MODIFY_MY_EXTENSION_PAGE.equals(ulToShow)) {

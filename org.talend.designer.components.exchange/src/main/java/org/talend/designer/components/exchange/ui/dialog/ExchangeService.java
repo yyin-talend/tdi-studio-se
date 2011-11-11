@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.components.exchange.ui.dialog;
 
+import java.io.IOException;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
@@ -20,9 +22,15 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.general.IExchangeService;
+import org.talend.core.model.general.Project;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.ui.views.ExchangeEditorInput;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
+import org.talend.designer.components.exchange.util.ExchangeWebService;
+import org.talend.repository.ProjectManager;
+
+import us.monoid.json.JSONException;
+import us.monoid.json.JSONObject;
 
 /**
  * 
@@ -44,7 +52,9 @@ public class ExchangeService implements IExchangeService {
     public void openExchangeEditor() {
         IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (activePage != null) {
-            if (!ExchangeUtils.checkUserAndPassword()) {
+            Project proj = ProjectManager.getInstance().getCurrentProject();
+            if (proj.getExchangeUser() == null
+                    || checkUserAndPass(proj.getExchangeUser().getUsername(), proj.getExchangeUser().getPassword()) != null) {
                 MessageDialog.openError(null, "Exchange", Messages.getString("Exchange.logon.error"));
                 return;
             }
@@ -62,6 +72,32 @@ public class ExchangeService implements IExchangeService {
             }
         }
 
+    }
+
+    public String checkUserAndPass(String username, String password) {
+        String errorMessage = "Wrong user or password";
+        if (username == null || "".equals(username) || password == null || "".equals(password)) {
+            return errorMessage;
+        }
+        JSONObject tokenMessage = new JSONObject();
+        try {
+            tokenMessage.put("username", username);
+            tokenMessage.put("passwordHash", ExchangeUtils.getPasswordHash(password));
+            JSONObject token = new us.monoid.json.JSONObject();
+            token.put("contributedExtension", tokenMessage);
+
+            String u = ExchangeWebService.exchangeWSServer + "contributedExtension.php?data=" + token;
+            JSONObject answer = ExchangeWebService.readJsonFromUrl(u);
+            if (answer != null && answer.get("result") != null && answer.get("result").equals("ERROR USERNAME/PASSWORD")) {
+                return errorMessage;
+            }
+        } catch (JSONException e) {
+            // if there is no result , user and pass are right and can list the extensions
+            return null;
+        } catch (IOException e) {
+            return errorMessage;
+        }
+        return null;
     }
 
 }

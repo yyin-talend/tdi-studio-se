@@ -75,13 +75,11 @@ public class DeleteExtensionAction extends Action {
             if (wbs.isResult()) {
                 ExchangeManager.getInstance().setSelectedExtension(null);
                 RefreshComponenentsAction action = new RefreshComponenentsAction();
-                action.run(RefreshComponenentsAction.REFRESH_MY_EXTENSIONS);
-                ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_LIST_MY_EXTENSIONS, new String[] {});
+                action.run(new String[] { RefreshComponenentsAction.REFRESH_ALL }, ContentConstants.UL_LIST_MY_EXTENSIONS);
             } else {
                 String mainMsg = Messages.getString("DeleteExtensionJob.DeleteFailure") + " "
                         + Messages.getString("DeleteExtensionJob.DeleteFailureTip");
                 new ErrorDialogWidthDetailArea(null, ExchangePlugin.PLUGIN_ID, mainMsg, wbs.getMessageException());
-                ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_LIST_MY_EXTENSIONS, new String[] {});
             }
         }
         ExchangeManager.getInstance().setSelectedExtension(null);

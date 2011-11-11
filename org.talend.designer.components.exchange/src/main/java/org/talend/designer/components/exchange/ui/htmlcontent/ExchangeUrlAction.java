@@ -24,6 +24,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
 import org.talend.designer.components.exchange.ui.ReviewComponentDialog;
+import org.talend.designer.components.exchange.ui.actions.RefreshComponenentsAction;
 import org.talend.designer.components.exchange.ui.views.ExchangeManager;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.talend.designer.components.exchange.util.ExchangeWebService;
@@ -67,9 +68,9 @@ public class ExchangeUrlAction implements IIntroAction {
                                             .getSelectedExtension().getIdExtension(), ExchangeUtils.TYPEEXTENSION,
                                             ExchangeUtils.getUserName(), ExchangeUtils.getPasswordHash(), title, review, rate);
                                     if (ws.isResult()) {
-                                        MessageDialog.openInformation(
-                                                fShell,
-                                                Messages.getString("AvailableExtensionsComposite.ViewDetail.WriteReview"), ws.getMessageException()); //$NON-NLS-1$
+                                        RefreshComponenentsAction action = new RefreshComponenentsAction();
+                                        action.run(new String[] { RefreshComponenentsAction.REFRESH_AVAILABLES },
+                                                ContentConstants.UL_LIST_AVAILABLE_EXTENSIONS);
                                     } else {
                                         String mainMsg = Messages
                                                 .getString("AvailableExtensionsComposite.ViewDetail.InsertionReviewFailure")

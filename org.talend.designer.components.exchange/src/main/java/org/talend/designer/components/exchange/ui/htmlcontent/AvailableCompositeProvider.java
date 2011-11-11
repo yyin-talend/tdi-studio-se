@@ -140,7 +140,7 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
             td.setAttribute("style", style);
             span = dom.createElement("span");
             span.setAttribute("class", "style_2 style_3");
-            span.appendChild(dom.createTextNode("Auther"));
+            span.appendChild(dom.createTextNode("Author"));
             td.appendChild(span);
             tr.appendChild(td);
 

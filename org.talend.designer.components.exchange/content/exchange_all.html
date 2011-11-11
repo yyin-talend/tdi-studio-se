@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -12,11 +11,11 @@ body,td,th {
 body {
 	background-color: #FFFFFF;
 	margin: 0px;
+	height: 100%
 }
-textarea{overflow-y:auto;width:600px;height:100px;margin-left:5px}
 ul{ margin:0px;padding:0px;list-style-type:none;}  
 a:link.xh{color: #404040;text-decoration: none;}a:hover.xh{text-decoration:underline;}a:visited.xh{text-decoration: none;color: #404040;}
-.hover{background:#E7EEFD;} 
+.hover{background:#FFFFFF;} 
 .leave{background:none;}   
 img{border:0px;}
 .style_1{font-size:16px;}
@@ -24,15 +23,15 @@ img{border:0px;}
 .style_3{font-weight:bold;}
 div{margin:0;padding:0}
 #container{width:100%;height:100%; background:#FFFFFF;}
-#container .menu{width:300;float: left;}
-#container .main1{margin-left: 1px;float:left;background:#FFFFFF;}
+#container .menu{width:200;height:100%; float: left;background:#EBEBDB}
+#container .main1{margin-left: 10px;float:left;background:#FFFFFF;}
 #menu li{display:block;cursor:pointer;text-align:left;padding:0px 0px;}  
 .ulhide{display: none;list-style:none; }  
 .ulblock{display: block;}  
 
 .left_1{width:100px;margin-top:10px; float:left;padding-left:0px; vertical-align:top; margin-right:10px;}
-.compDesc{width:60%; height:200px; margin-top:10px;margin-bottom:30px; padding-left:20px;overflow:auto;}
-.compImg{width:20%;height:200px; margin-top:10px;margin-bottom:30px; padding-left:0px;}
+.compDesc{width:300; height:200px; margin-top:10px;margin-bottom:30px; padding-left:20px;overflow:auto;}
+.compImg{width:20%;height:200px; margin-top:10px;margin-bottom:30px; padding-left:10px;}
 .reviews{width:60%;height:350px ;margin-bottom:10px;padding-left:10px;word-break:break-all;WORD-WRAP: break-word;}
 .userreview{font-size:13px;color:#000000;font-weight:bold;padding-left:10px;}
 .left_11 {width:100px;margin-top:10px; float:left;padding-left:0px; vertical-align:top; margin-right:10px;}
@@ -270,12 +269,12 @@ function setTab(tabIndex,pageId){
 		<!-- available extension list  -->
 		 <ul id="list_available_extensions" class="ulblock">  
 		 	 <li >
-		 	
-			  	<div id="filter_div" style="float: right">
-			  	 <input id="avialable_filter_text" name="avialable_filter_text" type="text"  /><a id="commit_filter" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;id=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;text="><img src="imgs/refresh.gif" onmouseover="filterReWriteUrl()"/> </a>
-			  	</div>
-			  	
 				<table  width="95%" align="center"  cellpadding="0" cellspacing="0" >
+					<tr align="right">
+					  <td colspan="5">
+					   	 <input id="avialable_filter_text" name="avialable_filter_text" type="text"  /><a id="commit_filter" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;id=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;text="><img src="imgs/refresh.gif" onmouseover="filterReWriteUrl()"/> </a>
+					  </td>
+					</tr>
 					<contentProvider id="INSERT_DATA" class="org.talend.designer.components.exchange.ui.htmlcontent.AvailableCompositeProvider" pluginId="org.talend.designer.components.exchange">			</contentProvider>
 				</table>
 		  	</li>
@@ -341,18 +340,15 @@ function setTab(tabIndex,pageId){
 		 <!--downloaded extensions page  -->
 		 <ul id="downloaded_extensions" class="ulhide">
 		 	<li>
-		 	<div id="filter_div" style="float: right">
 		 	<table width="95%"  align="center"  cellpadding="0" cellspacing="0" >
 			<contentProvider id="DOWNLOADEXTENSION_DATA" class="org.talend.designer.components.exchange.ui.htmlcontent.DownloadExtensionProvider" pluginId="org.talend.designer.components.exchange">			</contentProvider>
 			</table>
-			</div>
 		 	</li>
 		 </ul>
 		 
 		 <!-- my extension list -->
 		 <ul id="list_my_extensions" class="ulhide">
 			 <li>
-			 <div id="filter_div" style="float: right"></div>
 					<table width="95%"  align="center"  cellpadding="0" cellspacing="0" id="table">
 					<tr style="border-right-style:none;border-left-style:none;border-top-style:none">
 					<td colspan="4" align="right" >
@@ -366,7 +362,6 @@ function setTab(tabIndex,pageId){
 		<!-- create new extension 	-->
 		<ul id="creat_new_extension" class="ulhide">
 			<li>
-			<div id="filter_div" style="float: right"></div>
 				<table width="95%" align="center" border="0" cellpadding="0" cellspacing="0" >
 			
 					<tr align="left" valign="top">
@@ -426,7 +421,7 @@ function setTab(tabIndex,pageId){
 								</td>
 								<td>
 									<div  class="right_row">
-										<textarea id="extension_description" name="extension_description" > </textarea>
+										<textarea style="overflow-y:auto;width:600;height:100px;margin-left:5px" id="extension_description" name="extension_description" > </textarea>
 									</div>
 								</td>
 							</tr>
@@ -463,7 +458,6 @@ function setTab(tabIndex,pageId){
 		<!-- update extension -->
 		<ul id="upload_extension_version" class="ulhide">
 			<li>
-				<div id="filter_div" style="float: right"></div>
 				<table width="95%" align="center" border="0" cellpadding="0" cellspacing="0" id="table">
 					<tr align="left" valign="top">
 						<td >
@@ -527,7 +521,6 @@ function setTab(tabIndex,pageId){
 		<!-- modify myextension -->
 		<ul id="modify_my_extension_page" class="ulhide">
 			<li>
-				<div id="filter_div" style="float: right"></div>
 				<table width="95%" align="center" border="0" cellpadding="0" cellspacing="0" id="table">
 					<tr align="left" valign="top">
 						<td >
@@ -569,7 +562,7 @@ function setTab(tabIndex,pageId){
 										Description						</td>
 									<td>
 										<div  class="right_row">
-											<textarea id="extension_description_modify" name="extension_description" > </textarea>
+											<textarea style="overflow-y:auto;width:600;height:100px;margin-left:5px" id="extension_description_modify" name="extension_description" > </textarea>
 										</div>						</td>
 								</tr>
 								<tr valign="top">

@@ -65,8 +65,8 @@ public class ModifyExtensionAction extends Action {
             if (wbs.isResult()) {
                 ExchangeManager.getInstance().setSelectedExtension(null);
                 RefreshComponenentsAction action = new RefreshComponenentsAction();
-                action.run(RefreshComponenentsAction.REFRESH_MY_EXTENSIONS);
-                ExchangeManager.getInstance().generateXHTMLPage(ContentConstants.UL_LIST_MY_EXTENSIONS, new String[] {});
+                action.run(new String[] { RefreshComponenentsAction.REFRESH_MY_EXTENSIONS,
+                        RefreshComponenentsAction.REFRESH_AVAILABLES }, ContentConstants.UL_LIST_MY_EXTENSIONS);
             } else {
                 String mainMsg = Messages.getString("ModifyExtensionJob.ModifyFailure") + " "
                         + Messages.getString("ModifyExtensionJob.ModifyFailureTip");

@@ -337,6 +337,15 @@ public class ExchangeUtils {
         return passwordTemp;
     }
 
+    public static String getPasswordHash(String passwordTemp) {
+        try {
+            return SHA1Util.hex_sha1(passwordTemp);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return passwordTemp;
+    }
+
     public static String getUserName() {
         Project proj = ProjectManager.getInstance().getCurrentProject();
         return proj.getExchangeUser().getUsername();

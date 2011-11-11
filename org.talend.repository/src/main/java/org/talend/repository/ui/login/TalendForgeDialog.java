@@ -53,6 +53,9 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
+import org.talend.core.model.general.IExchangeService;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.CoreRuntimePlugin;
@@ -967,6 +970,7 @@ public class TalendForgeDialog extends TrayDialog {
                 String email = emailTextForConnect.getText().trim();
                 String password = passwordTextForconnect.getText().trim();
                 try {
+                    // this one will only check if user is registed ,but not check the password
                     String userInfos = RegisterManagement.getInstance().checkUser(email, isProxyEnable, proxyHost, proxyPort,
                             proxyUser, proxyPassword);
                     if (userInfos != null && !"".equals(userInfos)) {
@@ -988,17 +992,29 @@ public class TalendForgeDialog extends TrayDialog {
                             // password = split[3].substring(1, split[3].length() - 1);
                             // }
                         }
-
-                        IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-                        String connectionEmail = project.getAuthor().getLogin();
-                        prefStore.setValue(connectionEmail, email + ":" + pseudonym + ":" + password);
-                        MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
-                                Messages.getString("TalendForgeDialog.ConnectSuccessMessage"));
-                        okPressed();
+                        // check the password
+                        boolean isUserPassRight = true;
+                        if (PluginChecker.isExchangeSystemLoaded()) {
+                            IExchangeService service = (IExchangeService) GlobalServiceRegister.getDefault().getService(
+                                    IExchangeService.class);
+                            String checkUserAndPass = service.checkUserAndPass(pseudonym, password);
+                            if (checkUserAndPass != null) {
+                                isUserPassRight = false;
+                                MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
+                                        checkUserAndPass);
+                            }
+                        }
+                        if (isUserPassRight) {
+                            IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+                            String connectionEmail = project.getAuthor().getLogin();
+                            prefStore.setValue(connectionEmail, email + ":" + pseudonym + ":" + password);
+                            MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
+                                    Messages.getString("TalendForgeDialog.ConnectSuccessMessage"));
+                            okPressed();
+                        }
                     } else {
                         MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
                                 Messages.getString("TalendForgeDialog.ConnectFailureMessage"));
-                        okPressed();
 
                     }
                 } catch (BusinessException e1) {
