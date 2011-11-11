@@ -41,7 +41,7 @@ public class OpenExtensionViewDetailAction extends Action implements IIntroActio
                     ContentConstants.UL_EXTENSION_DETAILS,
                     new String[] { ContentConstants.LEFT_NAME_PART, ContentConstants.COMPONENT_DESCRIPTION,
                             ContentConstants.RATE_IMANGE, ContentConstants.INSTALL_COMPONENT, ContentConstants.EXTENSION_REVIEWS,
-                            ContentConstants.WRITE_REVIEWS });
+                            ContentConstants.WRITE_REVIEWS, ContentConstants.GET_EXTENSION_IMAGE });
         }
     }
 

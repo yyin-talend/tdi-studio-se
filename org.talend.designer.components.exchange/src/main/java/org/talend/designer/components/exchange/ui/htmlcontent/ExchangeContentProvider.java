@@ -24,6 +24,7 @@ import org.eclipse.ui.intro.config.IIntroContentProviderSite;
 import org.eclipse.ui.intro.config.IIntroXHTMLContentProvider;
 import org.talend.designer.components.exchange.model.AvailableExtensionViewDetail;
 import org.talend.designer.components.exchange.model.ComponentExtension;
+import org.talend.designer.components.exchange.util.ExchangeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -104,6 +105,15 @@ public class ExchangeContentProvider implements IIntroXHTMLContentProvider {
                 hyperlink.setAttribute("href", url);
                 hyperlink.appendChild(dom.createTextNode("write a review"));
                 parent.appendChild(hyperlink);
+            } else if (ContentConstants.GET_EXTENSION_IMAGE.equals(id)) {
+                String idExtension = componentExtension.getIdExtension();
+                String typeExtension = ExchangeUtils.TYPEEXTENSION != null ? ExchangeUtils.TYPEEXTENSION : "tos";
+                String imageUrl = "http://www.talendforge.org/exchange/" + typeExtension + "/upload_" + typeExtension
+                        + "/extension-" + idExtension + "/thumbnail.jpg";
+                Element imgElem = dom.createElement("img");
+                imgElem.setAttribute("src", imageUrl);
+                imgElem.setAttribute("align", "middle");
+                parent.appendChild(imgElem);
             }
         }
     }

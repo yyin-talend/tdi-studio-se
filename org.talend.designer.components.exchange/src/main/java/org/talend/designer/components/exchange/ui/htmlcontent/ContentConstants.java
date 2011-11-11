@@ -92,6 +92,9 @@ public class ContentConstants {
 
     public static final String LIST_MY_EXTENSION = "LIST_MY_EXTENSION";
 
+    // get image of the extension detail
+    public static final String GET_EXTENSION_IMAGE = "GET_EXTENSION_IMAGE";
+
     /**
      * <div> or
      * <ul>
