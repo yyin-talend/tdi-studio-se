@@ -992,26 +992,26 @@ public class TalendForgeDialog extends TrayDialog {
                             // password = split[3].substring(1, split[3].length() - 1);
                             // }
                         }
-                        // check the password
-                        boolean isUserPassRight = true;
-                        if (PluginChecker.isExchangeSystemLoaded()) {
-                            IExchangeService service = (IExchangeService) GlobalServiceRegister.getDefault().getService(
-                                    IExchangeService.class);
-                            String checkUserAndPass = service.checkUserAndPass(pseudonym, password);
-                            if (checkUserAndPass != null) {
-                                isUserPassRight = false;
-                                MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
-                                        checkUserAndPass);
-                            }
-                        }
-                        if (isUserPassRight) {
-                            IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-                            String connectionEmail = project.getAuthor().getLogin();
-                            prefStore.setValue(connectionEmail, email + ":" + pseudonym + ":" + password);
+                    }
+                    // check the password
+                    boolean isUserPassRight = true;
+                    if (PluginChecker.isExchangeSystemLoaded()) {
+                        IExchangeService service = (IExchangeService) GlobalServiceRegister.getDefault().getService(
+                                IExchangeService.class);
+                        String checkUserAndPass = service.checkUserAndPass(email, password);
+                        if (checkUserAndPass != null) {
+                            isUserPassRight = false;
                             MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
-                                    Messages.getString("TalendForgeDialog.ConnectSuccessMessage"));
-                            okPressed();
+                                    checkUserAndPass);
                         }
+                    }
+                    if (isUserPassRight) {
+                        IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+                        String connectionEmail = project.getAuthor().getLogin();
+                        prefStore.setValue(connectionEmail, email + ":" + email + ":" + password);
+                        MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
+                                Messages.getString("TalendForgeDialog.ConnectSuccessMessage"));
+                        okPressed();
                     } else {
                         MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
                                 Messages.getString("TalendForgeDialog.ConnectFailureMessage"));
