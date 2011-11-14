@@ -67,6 +67,7 @@ function createNewExtensionWriteUrl(){
 	var label="label:" +"'"+document.getElementById("extension_label").value+"'";
 	var lastVersionAvailable = "lastVersionAvailable:"+"'"+document.getElementById("lastVersionAvailable").value+"'";
 	var description ="description:"+"'"+document.getElementById("extension_description").value+"'";
+	description = description.replaceAll2Excep("\r\n","\\n\\r");
 	
 	var checkedType = "";
 	var filtervalue="";
@@ -147,7 +148,7 @@ function modifyReWriteUrl(){
 
 	var leabel="label:" +"'"+document.getElementById("extension_label_modify").value+"'"
 	var description ="description:"+"'"+document.getElementById("extension_description_modify").value+"'"
-	
+	description = description.replaceAll2Excep("\r\n","\\n\\r");
 	var checkedType = "";
 	var filtervalue="";
 	var compatibilities = document.getElementsByName("compatibility_modify");
@@ -421,7 +422,7 @@ function setTab(tabIndex,pageId){
 								</td>
 								<td>
 									<div  class="right_row">
-										<textarea style="overflow-y:auto;width:600;height:100px;margin-left:5px" id="extension_description" name="extension_description" > </textarea>
+										<textarea style="overflow-y:auto;width:600;height:100px;margin-left:5px;wrap:virtual" id="extension_description" name="extension_description" > </textarea>
 									</div>
 								</td>
 							</tr>
@@ -562,7 +563,7 @@ function setTab(tabIndex,pageId){
 										Description						</td>
 									<td>
 										<div  class="right_row">
-											<textarea style="overflow-y:auto;width:600;height:100px;margin-left:5px" id="extension_description_modify" name="extension_description" > </textarea>
+											<textarea style="overflow-y:auto;width:600;height:100px;margin-left:5px;wrap:virtual" id="extension_description_modify" name="extension_description" > </textarea>
 										</div>						</td>
 								</tr>
 								<tr valign="top">

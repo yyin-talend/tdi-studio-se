@@ -68,7 +68,22 @@ public class ExchangeContentProvider implements IIntroXHTMLContentProvider {
                 span.appendChild(dom.createTextNode(formatter.format(componentExtension.getPublicationDate())));
                 parent.appendChild(span);
             } else if (ContentConstants.COMPONENT_DESCRIPTION.equals(id)) {
-                parent.appendChild(dom.createTextNode(componentExtension.getDescription()));
+                String description = componentExtension.getDescription();
+                if (description != null) {
+                    String[] split = description.split("[\\n\\r/n/r]");
+                    for (int i = 0; i < split.length; i++) {
+                        String text = split[i];
+                        if (!text.trim().equals("")) {
+                            parent.appendChild(dom.createTextNode(text));
+                        }
+                        if (i < split.length - 1) {
+                            String text1 = split[i + 1];
+                            if (!text1.trim().equals("")) {
+                                parent.appendChild(dom.createElement("br"));
+                            }
+                        }
+                    }
+                }
             } else if (ContentConstants.RATE_IMANGE.equals(id)) {
                 String rateImage = getRateImage(componentExtension.getRate());
                 Element imgElem = dom.createElement("img");
