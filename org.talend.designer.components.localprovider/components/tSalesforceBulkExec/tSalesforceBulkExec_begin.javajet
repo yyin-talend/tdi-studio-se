@@ -62,7 +62,7 @@ imports="
 	if(globalMap.get("conn_<%=connection %>")==null){
 		throw new RuntimeException("Get null connection from <%=connection %>");
 	}
-	sforceBulk_<%=cid%>.login((com.sforce.async.RestConnection)globalMap.get("conn_<%=connection %>"));
+	sforceBulk_<%=cid%>.login((com.sforce.async.BulkConnection)globalMap.get("conn_<%=connection %>"));
 	<%}else{%>
 	sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>);
 	<%}%>
