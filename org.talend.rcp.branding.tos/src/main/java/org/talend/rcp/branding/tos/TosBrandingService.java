@@ -34,7 +34,7 @@ public class TosBrandingService extends AbstractTalendBrandingService {
     protected IBrandingConfiguration brandingConfigure;
 
     public String getShortProductName() {
-        return Messages.getString("productshortname"); //$NON-NLS-1$
+        return getProductName();
     }
 
     public String getCorporationName() {
