@@ -797,6 +797,26 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	}
 <%
 					}else if(("Dom4j").equals(mode)){
+						//TDI-18498
+						boolean isWrongConfig = false;
+						
+						for(IMetadataColumn column:columns) {
+							if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
+								if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
+									if("id_Document".equals(column.getTalendType()) && "false".equals(nodeCheck)) {
+										isWrongConfig = true;
+									}
+								}
+							}
+						}
+						
+						if(isWrongConfig) {
+%>
+	if(true) {
+		throw new RuntimeException("Error Config: \"Get Nodes\" should be checked when type is \"Document\"");
+	}
+<%
+						}
 %>
 	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,<%=loopQuery%>));
     xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
