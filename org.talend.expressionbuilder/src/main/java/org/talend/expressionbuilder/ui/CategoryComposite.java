@@ -43,6 +43,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Text;
 import org.talend.commons.expressionbuilder.Variable;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
@@ -191,12 +192,20 @@ public class CategoryComposite extends Composite {
         Label docLabel = new Label(docComposite, SWT.NONE);
         docLabel.setText(Messages.getString("CategoryComposite.Help")); //$NON-NLS-1$
 
-        final Browser docDisplayer = new Browser(docComposite, SWT.BORDER);
-        docDisplayer.setText(Messages.getString("CategoryComposite.SelectCategoryAndFunction")); //$NON-NLS-1$
-        docDisplayer.setLayoutData(new GridData(GridData.FILL_BOTH));
-        sashForm.setWeights(new int[] { 2, 1 });
-
-        new UIRelationShipLinker(categoryViewer, functionViewer, docDisplayer);
+        if ("yes".equalsIgnoreCase(System.getProperty("USE_BROWSER"))) {
+            final Browser docDisplayer = new Browser(docComposite, SWT.BORDER);
+            docDisplayer.setText(Messages.getString("CategoryComposite.SelectCategoryAndFunction")); //$NON-NLS-1$
+            docDisplayer.setLayoutData(new GridData(GridData.FILL_BOTH));
+            sashForm.setWeights(new int[] { 2, 1 });
+            new UIRelationShipLinker(categoryViewer, functionViewer, docDisplayer);
+        } else {
+            final Text descriptionText = new Text(docComposite, SWT.BORDER | SWT.WRAP);
+            descriptionText.setText(Messages.getString("CategoryComposite.SelectCategoryAndFunction")); //$NON-NLS-1$
+            GridData gd = new GridData(GridData.FILL_BOTH);
+            descriptionText.setLayoutData(gd);
+            sashForm.setWeights(new int[] { 2, 1 });
+            new UIRelationShipLinker(categoryViewer, functionViewer, descriptionText);
+        }
         initializeData(categoryViewer);
     }
 
@@ -225,7 +234,7 @@ public class CategoryComposite extends Composite {
      */
     class UIRelationShipLinker {
 
-        UIRelationShipLinker(ListViewer categoryViewer, final ListViewer functionViewer, final Browser docDisplayer) {
+        UIRelationShipLinker(ListViewer categoryViewer, final ListViewer functionViewer, final Object docDisplayer) {
             categoryViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
                 public void selectionChanged(SelectionChangedEvent event) {
@@ -237,7 +246,11 @@ public class CategoryComposite extends Composite {
                         }
                         functionViewer.setInput(category.getFunctions());
                         if (category.getFunctions().isEmpty()) {
-                            docDisplayer.setText(""); //$NON-NLS-1$
+                            if (docDisplayer instanceof Text) {
+                                ((Text) docDisplayer).setText("");
+                            } else if (docDisplayer instanceof Browser) {
+                                ((Browser) docDisplayer).setText("");
+                            }
                             return;
                         }
                         functionViewer.setSelection(new StructuredSelection(category.getFunctions().get(0)));
@@ -252,9 +265,18 @@ public class CategoryComposite extends Composite {
                 public void selectionChanged(SelectionChangedEvent event) {
                     Function function = (Function) ((IStructuredSelection) event.getSelection()).getFirstElement();
                     if (function != null && function.getDescription() != null) {
-                        docDisplayer.setText(function.getDescription());
+                        if (docDisplayer instanceof Text) {
+                            ((Text) docDisplayer).setText(function.getDescription());
+                        } else if (docDisplayer instanceof Browser) {
+                            ((Browser) docDisplayer).setText(function.getDescription());
+                        }
+
                     } else {
-                        docDisplayer.setText(""); //$NON-NLS-1$
+                        if (docDisplayer instanceof Text) {
+                            ((Text) docDisplayer).setText("");
+                        } else if (docDisplayer instanceof Browser) {
+                            ((Browser) docDisplayer).setText("");
+                        }
                     }
                 }
 
@@ -268,7 +290,11 @@ public class CategoryComposite extends Composite {
                         Function function = (Function) ((IStructuredSelection) event.getSelection()).getFirstElement();
                         selectedFunction = function;
                         if (function != null && function.getDescription() != null) {
-                            docDisplayer.setText(function.getDescription());
+                            if (docDisplayer instanceof Text) {
+                                ((Text) docDisplayer).setText(function.getDescription());
+                            } else if (docDisplayer instanceof Browser) {
+                                ((Browser) docDisplayer).setText(function.getDescription());
+                            }
                             VirtualMetadataColumn column = new VirtualMetadataColumn();
                             column.setTalendType(function.getTalendType().getName());
                             column.setFunction(function);
@@ -277,7 +303,11 @@ public class CategoryComposite extends Composite {
                             expressionComposite.setExpression(FunctionManagerExt.getOneColData(column, false), true);
 
                         } else {
-                            docDisplayer.setText(""); //$NON-NLS-1$
+                            if (docDisplayer instanceof Text) {
+                                ((Text) docDisplayer).setText("");
+                            } else if (docDisplayer instanceof Browser) {
+                                ((Browser) docDisplayer).setText("");
+                            }
                         }
 
                     } catch (Exception e) {
