@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.designer.xmlmap.i18n.Messages;
 
 /**
  * DOC wchen class global comment. Detailled comment
@@ -78,7 +79,7 @@ public class PropertySetDialog extends Dialog {
 
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText("Property Settings");
+        newShell.setText(Messages.getString("PropertySetDialog.Title"));
     }
 
     protected void okPressed() {

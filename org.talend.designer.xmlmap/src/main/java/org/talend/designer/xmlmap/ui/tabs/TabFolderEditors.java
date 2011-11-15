@@ -43,6 +43,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
+import org.talend.designer.xmlmap.i18n.Messages;
 import org.talend.designer.xmlmap.ui.tabs.table.InputXmlTreeSchemaTableView;
 import org.talend.designer.xmlmap.ui.tabs.table.OutputXmlTreeSchemaTableView;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -102,7 +103,7 @@ public class TabFolderEditors extends CTabFolder {
         // item.setControl(metaDatasDescriptorView3);
 
         CTabItem item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText("Schema editor"); //$NON-NLS-1$
+        item.setText(Messages.getString("TabFolderEditors.SchemaEditor.Title")); //$NON-NLS-1$
 
         SashForm inOutMetaEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
         inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
@@ -121,7 +122,7 @@ public class TabFolderEditors extends CTabFolder {
         addListenersToOutputButtons();
 
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText("Tree schema editor"); //$NON-NLS-1$
+        item.setText(Messages.getString("TabFolderEditors.TreeSchemaEditor.Title")); //$NON-NLS-1$
 
         SashForm xmlTreeEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
         xmlTreeEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
@@ -135,7 +136,7 @@ public class TabFolderEditors extends CTabFolder {
         outputTreeSchemaEditor.initGraphicComponents();
 
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText("Expression editor"); //$NON-NLS-1$
+        item.setText(Messages.getString("TabFolderEditors.ExpressionEditor.Title")); //$NON-NLS-1$
 
         StyledText styledText = createStyledText(item);
 

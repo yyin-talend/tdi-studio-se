@@ -51,6 +51,7 @@ import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.xmlmap.XmlMapComponent;
 import org.talend.designer.xmlmap.editor.XmlMapEditor;
+import org.talend.designer.xmlmap.i18n.Messages;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
@@ -117,7 +118,7 @@ public class MapperUI {
             public void shellClosed(ShellEvent e) {
                 if (editor != null && editor.isDirty() && !closeWithoutPrompt) {
                     boolean closeWindow = MessageDialog.openConfirm(mapperShell, "Close without save",
-                            "Are you sure to close window without save modifications ?");
+                            Messages.getString("MapperUI.CloseWindow.Message"));
                     if (!closeWindow) {
                         e.doit = false;
                     } else {

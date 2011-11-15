@@ -13,7 +13,6 @@
 package org.talend.designer.components.exchange.jobs;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -99,13 +98,8 @@ public class ComponentSearcher {
                                 }
                                 //
                                 if (sizeDetail > 0 && sumRate > 0) {
-                                    DecimalFormat df = new DecimalFormat("###.00");
-                                    String averageRate = df.format((double) sumRate / sizeDetail);
-                                    if (averageRate != null && !"".equals(averageRate)) {
-                                        extension.setRate(averageRate);
-                                    } else {
-                                        extension.setRate("0");
-                                    }
+                                    int im = sumRate / sizeDetail;
+                                    extension.setRate(im + "");
                                 }
                             }
                             extension.getReviews().addAll((Collection<? extends AvailableExtensionViewDetail>) reviews);

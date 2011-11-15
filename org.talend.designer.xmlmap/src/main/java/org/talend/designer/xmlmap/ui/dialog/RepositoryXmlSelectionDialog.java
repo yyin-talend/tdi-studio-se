@@ -26,6 +26,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.designer.xmlmap.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
@@ -80,7 +81,7 @@ public class RepositoryXmlSelectionDialog extends RepositoryReviewDialog {
                     updateErrorMessage(null);
                 } else {
                     highlightOKButton = false;
-                    updateErrorMessage("Mdm is a multi-schema connection ,please select the schema to import");
+                    updateErrorMessage(Messages.getString("RepositoryXmlSelectionDialog.UpdateErrorMessage"));
                 }
             }
         }
