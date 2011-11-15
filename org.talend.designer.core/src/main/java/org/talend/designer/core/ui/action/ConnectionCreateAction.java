@@ -241,7 +241,10 @@ public class ConnectionCreateAction extends SelectionAction {
      */
     private boolean addDefaultName() {
         String removeQuotes = getDefaultTableName();
-        removeQuotes = removeQuotes.replaceAll(" ", "");
+        String temp = removeQuotes.replaceAll(" ", "");
+        if ("".equals(temp)) {
+            removeQuotes = temp;
+        }
         if (removeQuotes != null && !"".equals(removeQuotes)) {
             menuList.add(removeQuotes);
             // setText(removeQuotes);
@@ -295,7 +298,10 @@ public class ConnectionCreateAction extends SelectionAction {
                         }
                     }
                 }
-                name2 = name2.replaceAll(" ", "");
+                String temp = name2.replaceAll(" ", "");
+                if ("".equals(temp)) {
+                    name2 = temp;
+                }
                 if (!"".equals(name2)) { //$NON-NLS-1$
                     removeQuotes.append(name2);
                     removeQuotes.append(" (");
