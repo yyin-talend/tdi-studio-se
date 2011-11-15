@@ -128,34 +128,37 @@ public class MoveDownTreeNodeButton extends AbstractTreeNodeButton {
         }
 
         // if same segment ,they have the same parent and parent must be an element
-        final Element parent = (Element) ((FOXTreeNode) selection.getFirstElement()).getParent();
-        if (parent == null) {
-            getButton().setEnabled(false);
-            return;
-        }
-        final List<? extends FOXTreeNode> attrChildren = parent.getAttributeChildren();
-        final List<? extends FOXTreeNode> nameSpaceChildren = parent.getNameSpaceChildren();
-        final List<FOXTreeNode> elementChildren = parent.getElementChildren();
-        final Iterator iterator = selection.iterator();
-        while (iterator.hasNext()) {
-            final Object next = iterator.next();
-            if (next instanceof Attribute) {
-                if (attrChildren.contains(next) && attrChildren.indexOf(next) == attrChildren.size() - 1) {
-                    getButton().setEnabled(false);
-                    return;
-                }
-            } else if (next instanceof NameSpaceNode) {
-                if (nameSpaceChildren.contains(next) && nameSpaceChildren.indexOf(next) == nameSpaceChildren.size() - 1) {
-                    getButton().setEnabled(false);
-                    return;
-                }
-            } else if (next instanceof Element) {
-                if (elementChildren.contains(next) && elementChildren.indexOf(next) == elementChildren.size() - 1) {
-                    getButton().setEnabled(false);
-                    return;
-                }
+        FOXTreeNode foxNode = (FOXTreeNode) selection.getFirstElement();
+        if (foxNode.getParent() instanceof Element) {
+            final Element parent = (Element) foxNode.getParent();
+            if (parent == null) {
+                getButton().setEnabled(false);
+                return;
             }
+            final List<? extends FOXTreeNode> attrChildren = parent.getAttributeChildren();
+            final List<? extends FOXTreeNode> nameSpaceChildren = parent.getNameSpaceChildren();
+            final List<FOXTreeNode> elementChildren = parent.getElementChildren();
+            final Iterator iterator = selection.iterator();
+            while (iterator.hasNext()) {
+                final Object next = iterator.next();
+                if (next instanceof Attribute) {
+                    if (attrChildren.contains(next) && attrChildren.indexOf(next) == attrChildren.size() - 1) {
+                        getButton().setEnabled(false);
+                        return;
+                    }
+                } else if (next instanceof NameSpaceNode) {
+                    if (nameSpaceChildren.contains(next) && nameSpaceChildren.indexOf(next) == nameSpaceChildren.size() - 1) {
+                        getButton().setEnabled(false);
+                        return;
+                    }
+                } else if (next instanceof Element) {
+                    if (elementChildren.contains(next) && elementChildren.indexOf(next) == elementChildren.size() - 1) {
+                        getButton().setEnabled(false);
+                        return;
+                    }
+                }
 
+            }
         }
 
     }
