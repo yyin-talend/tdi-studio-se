@@ -44,7 +44,7 @@ imports="
 		selectQueryColumnsName = (String) globalMap.get("<%=previousComponentName%>"+"QUERY_COLUMNS_NAME"+"<%=uniqueNameConnection%>");
 <%
 	}
-	
+	String dbschema = ElementParameterParser.getValue(node,"__ELT_SCHEMA_NAME__");
 	String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
@@ -269,7 +269,10 @@ imports="
 			}
 			counterOuter ++;
 		}
-
+		if((dbschema != null) && (!"".equals(dbschema)) && (!"\"\"".equals(dbschema.replaceAll(" ", "").trim()))) {
+			dbtable = "\"+"+dbschema+"+\"" + "." +dbtable;
+			differenttable = dbschema + "." +differenttable;
+		}
 		if(("INSERT").equals(dataAction)){
 %>
 <%

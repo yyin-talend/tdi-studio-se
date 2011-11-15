@@ -28,7 +28,7 @@ imports="
 	String dbtable = null;
 	String uniqueNameConnection = null;
 	INode previousNode = null;
-
+	String dbschema = ElementParameterParser.getValue(node,"__ELT_SCHEMA_NAME__");
 	String differenttable = ElementParameterParser.getValue(node, "__DIFFERENT_TABLE_NAME__");
 	boolean useDifferentTable = "true".equals(ElementParameterParser.getValue(node, "__USE_DIFFERENT_TABLE__"));
 	
@@ -243,11 +243,16 @@ for(Column colStmt:stmtStructure){
 		}
 		counterOuter ++;
 }
+	if((dbschema != null) && (!"".equals(dbschema)) && (!"\"\"".equals(dbschema.replaceAll(" ", "").trim()))) {
 %>
 
+	String tableName_<%=cid%> = <%=dbschema%> + "." + <%=useDifferentTable? differenttable:"\""+dbtable +"\""%>;
+<%
+	}else {
+%>
 	String tableName_<%=cid%> = <%=useDifferentTable? differenttable:"\""+dbtable +"\""%>;
 <%
-
+	}
 	if(("INSERT").equals(dataAction)){
 	%>	
 	
