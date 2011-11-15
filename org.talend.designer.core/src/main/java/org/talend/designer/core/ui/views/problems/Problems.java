@@ -325,7 +325,9 @@ public class Problems {
             public void run() {
                 IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .findView(IRepositoryView.VIEW_ID);
-                viewPart.refresh();
+                if (viewPart != null) {
+                    viewPart.refresh();
+                }
             }
         });
     }
