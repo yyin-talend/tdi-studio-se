@@ -588,9 +588,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 									next.getElementParameter());
 						}
 						if (!hasSAM) {
-							//http://jira.talendforge.org/browse/TESB-3850
-							String format = computeTextElementValue("DATAFORMAT", next.getElementParameter());
-							if(!"MESSAGE".equals(format)){
+							// http://jira.talendforge.org/browse/TESB-3850
+							String format = computeTextElementValue(
+									"DATAFORMAT", next.getElementParameter());
+							if (!"MESSAGE".equals(format)) {
 								hasSAM = computeCheckElementValue("ENABLE_SAM",
 										next.getElementParameter());
 							}
@@ -809,17 +810,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 							externalAMQImport += ",org.apache.activemq";
 
 						}
-						
-						//http://jira.talendforge.org/browse/TESB-3843
+
+						// http://jira.talendforge.org/browse/TESB-3843
 						if ("WebSphere MQ".equals(value)) {
 							externalAMQImport += ",javax.transaction";
 
 						}
-						
-						if ("Other".equals(value)) {
-							externalAMQImport += ",org.apache.activemq";
-						}
-						
+
+						// if ("Other".equals(value)) {
+						// externalAMQImport += ",org.apache.activemq";
+						// }
+
 						continue;
 					}
 
