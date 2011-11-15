@@ -141,4 +141,5 @@ int nb_line_<%=cid %> = 0;
 		}
 		
 	}
+	CheckBase64_<%=cid%> base64_<%=cid%> = null;
 	//check is base64 end
