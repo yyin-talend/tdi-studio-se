@@ -73,7 +73,6 @@ imports="
 					javax.naming.directory.Attributes entry_<%=cid%> = new javax.naming.directory.BasicAttributes(true);
 					whetherReject_<%=cid%> = false;
 					String dn_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=dnColumnName%>).trim();
-					base64_<%=cid%> = new CheckBase64_<%=cid%>();
 <%
 					for(IMetadataColumn column:columnList){
 						javaType= JavaTypesManager.getJavaTypeFromId(column.getTalendType());

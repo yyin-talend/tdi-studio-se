@@ -141,5 +141,5 @@ int nb_line_<%=cid %> = 0;
 		}
 		
 	}
-	CheckBase64_<%=cid%> base64_<%=cid%> = null;
+	CheckBase64_<%=cid%> base64_<%=cid%> = new CheckBase64_<%=cid%>();
 	//check is base64 end
