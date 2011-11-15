@@ -40,6 +40,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -303,7 +304,13 @@ public class LoginComposite extends Composite {
         this.stackLayout = stackLayout;
 
         perReader = ConnectionUserPerReader.getInstance();
-
+        try {
+            Browser browser= new Browser(parent, SWT.BORDER);
+           System.setProperty("USE_BROWSER", "yes");
+           browser.dispose();
+        } catch (Throwable t) {
+            System.setProperty("USE_BROWSER", "no");
+        }
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 0;
