@@ -53,7 +53,11 @@ public class MoveDownTreeNodeButton extends AbstractTreeNodeButton {
     @Override
     protected void handleSelectionEvent(TreeSelection selection) {
         if (!selection.isEmpty()) {
-            final Element parentNode = (Element) ((FOXTreeNode) selection.getFirstElement()).getParent();
+            FOXTreeNode foxNode = (FOXTreeNode) selection.getFirstElement();
+            if (!(foxNode.getParent() instanceof Element)) {
+                return;
+            }
+            final Element parentNode = (Element) foxNode.getParent();
             final List<? extends FOXTreeNode> attrChildren = parentNode.getAttributeChildren();
             final List<? extends FOXTreeNode> nameSpaceChildren = parentNode.getNameSpaceChildren();
             final List<FOXTreeNode> elementChildren = parentNode.getElementChildren();
