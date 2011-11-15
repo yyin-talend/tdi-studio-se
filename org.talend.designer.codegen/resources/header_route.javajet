@@ -274,7 +274,7 @@ for(INode node:(List< ? extends INode>)process.getGraphicalNodes())
 		sb.append("+\"?" + serviceType + "=\"");
 		
 		if("wsdlURL".equals(serviceType)){
-			sb.append("+\"file:///\"+");
+			sb.append("+");
 			String filePath = ElementParameterParser.getValue(node, "__WSDL_FILE__");
 			filePath.replaceAll("\\\\","/");
 			sb.append(filePath);
