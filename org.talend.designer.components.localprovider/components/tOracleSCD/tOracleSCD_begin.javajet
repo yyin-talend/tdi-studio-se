@@ -286,7 +286,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             <%
         } else {
             %>
-            insertionStatement_<%=cid%>.setTimestamp(<%=paramIndex + 1%>, new java.sql.Timestamp(new java.text.SimpleDateFormat("yyyy-MM-dd").parse(<%=scdConfiger.getDimensionType2Configer().getEndDateValue()%> + "-01-01").getTime()));
+            insertionStatement_<%=cid%>.setTimestamp(<%=paramIndex + 1%>, new java.sql.Timestamp(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(<%=scdConfiger.getDimensionType2Configer().getEndDateValue()%> + "-01-01 12:00:00").getTime()));
             <%
         }
     }
