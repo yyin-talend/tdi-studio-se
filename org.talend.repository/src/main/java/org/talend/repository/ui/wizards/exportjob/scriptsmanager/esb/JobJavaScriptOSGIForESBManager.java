@@ -806,7 +806,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 								next.getElementParameter());
 						externalAMQImport = ",org.apache.camel.component.jms,javax.jms";
 						if ("ActiveMQ".equals(value)) {
-							externalAMQImport += ",org.apache.activemq,org.apache.activemq.camel.component";
+							externalAMQImport += ",org.apache.activemq";
 
 						}
 						
@@ -817,7 +817,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 						}
 						
 						if ("Other".equals(value)) {
-							externalAMQImport += ",org.apache.activemq,org.apache.activemq.camel.component";
+							externalAMQImport += ",org.apache.activemq";
 						}
 						
 						continue;
