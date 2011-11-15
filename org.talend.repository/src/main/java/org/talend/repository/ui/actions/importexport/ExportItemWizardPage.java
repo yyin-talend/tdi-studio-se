@@ -208,7 +208,7 @@ class ExportItemWizardPage extends WizardPage {
                     }
 
                     for (IRepositoryViewObject nodeToSelect : objects) {
-                        if (currentNode.getId().equals(((RepositoryNode) nodeToSelect.getRepositoryNode()).getId())) {
+                        if (currentNode.getObject().getId().equals(nodeToSelect.getId())) {
                             newSelection.add((RepositoryNode) nodeToSelect.getRepositoryNode());
                         }
                     }
