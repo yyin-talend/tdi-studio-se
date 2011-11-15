@@ -467,6 +467,8 @@ public class MapperManager implements ISelectionChangedListener {
                                 TreeNode treeNode = selectedOutputTree.getNodes().get(event.index);
                                 if (treeNode != null) {
                                     treeNode.setName((String) event.newValue);
+                                    XmlMapUtil.updateXPathAndExpression(copyOfMapData, treeNode, treeNode.getName(),
+                                            XmlMapUtil.getXPathLength(treeNode.getXpath()), true);
                                 }
                             }
                         } else if (AbstractMetadataTableEditorView.ID_COLUMN_TYPE.equals(event.column.getId())) {

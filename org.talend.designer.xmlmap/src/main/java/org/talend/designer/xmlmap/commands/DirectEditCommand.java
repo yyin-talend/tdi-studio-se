@@ -128,7 +128,7 @@ public class DirectEditCommand extends Command {
                     } else {
                         if (!connections.isEmpty()) {
                             if (model instanceof OutputTreeNode || model instanceof VarNode) {
-                                XmlMapUtil.detachConnectionsSouce(model, mapperData);
+                                XmlMapUtil.detachConnectionsSouce(model, mapperData, false);
                                 model.getIncomingConnections().clear();
                             } else if (model instanceof TreeNode) {
                                 XmlMapUtil.detachLookupSource((TreeNode) model, mapperData);

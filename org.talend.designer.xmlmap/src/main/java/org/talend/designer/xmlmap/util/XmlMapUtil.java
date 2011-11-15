@@ -587,4 +587,11 @@ public class XmlMapUtil {
         return false;
     }
 
+    public static boolean isSubElementOfDocument(TreeNode treeNode) {
+        if (treeNode == null) {
+            return false;
+        }
+        return getXPathLength(treeNode.getXpath()) > 2;
+    }
+
 }

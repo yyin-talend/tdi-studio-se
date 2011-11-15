@@ -72,7 +72,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
     public XmlMapComponent() {
         mapperHelper = new MapDataHelper();
     }
-    
+
     @Override
     public boolean isGeneratedAsVirtualComponent() {
         return XMLMapperHelper.isGeneratedAsVirtualComponent(this);
@@ -135,6 +135,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         for (OutputXmlTree outputTree : externalEmfData.getOutputTrees()) {
             if (outputTree.getName() != null && outputTree.getName().equals(oldName)) {
                 outputTree.setName(newName);
+                XmlMapUtil.updateXPathAndExpression(externalEmfData, outputTree.getNodes(), outputTree.getName(), 1);
             }
         }
     }

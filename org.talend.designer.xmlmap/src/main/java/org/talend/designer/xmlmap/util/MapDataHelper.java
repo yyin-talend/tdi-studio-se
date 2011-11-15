@@ -79,7 +79,7 @@ public class MapDataHelper {
                 inputTree = XmlmapFactory.eINSTANCE.createInputXmlTree();
                 inputTree.setName(name);
                 inputTree.setLookup(EConnectionType.FLOW_MAIN != inData.getLineStyle());
-                mapData.getInputTrees().add(inputTree);
+                mapData.getInputTrees().add(inputTree.isLookup() ? mapData.getInputTrees().size() : 0, inputTree);
             } else {
                 inputTree.setLookup(EConnectionType.FLOW_MAIN != inData.getLineStyle());
             }
