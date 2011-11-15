@@ -1706,14 +1706,9 @@ public class LoginComposite extends Composite {
                     }
                     setStatusArea();
                     validateUpdate();
-                } catch (PersistenceException e1) {
+                } catch (Exception e1) {
                     ExceptionHandler.process(e1);
-                } catch (JSONException e2) {
-                    ExceptionHandler.process(e2);
-                } catch (LoginException e3) {
-                    ExceptionHandler.process(e3);
                 }
-
             }
         });
     }
