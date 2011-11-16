@@ -1929,6 +1929,19 @@ public class LoginComposite extends Composite {
     }
 
     private void updateVisible() {
+        List<ILoginConnectionService> loginConnectionServices = LoginConnectionManager.getRemoteConnectionService();
+        String errorMsg = null;
+        if (loginConnectionServices.size() > 0 && getConnection() != null && getConnection().isComplete()) {
+            for (ILoginConnectionService loginConncetion : loginConnectionServices) {
+                errorMsg = loginConncetion.checkConnectionValidation(getConnection().getName(), getConnection().getDescription(),
+                        getConnection().getUser(), getConnection().getPassword(), getConnection().getWorkSpace(), getConnection()
+                                .getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
+                if (errorMsg != null) {
+                    break;
+                }
+            }
+        }
+
         if (getConnection() == null) {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
@@ -1940,6 +1953,26 @@ public class LoginComposite extends Composite {
             if (branchesViewer != null) {
                 branchesViewer.getControl().setEnabled(false);
             }
+        } else if (errorMsg != null) {
+            iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+            onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
+            colorComposite.setBackground(RED_COLOR);
+            onIconLabel.setBackground(colorComposite.getBackground());
+            manageViewer.getControl().setEnabled(false);
+            manageProjectsButton.setEnabled(false);
+            projectViewer.getControl().setEnabled(false);
+            openProjectBtn.setEnabled(false);
+            if (fillProjectsBtn != null) {
+                fillProjectsBtn.setEnabled(true);
+            }
+            if (branchesViewer != null) {
+                branchesViewer.getControl().setEnabled(false);
+            }
+            statusLabel.setText(errorMsg);
+            statusLabel.setBackground(RED_COLOR);
+            statusLabel.setForeground(WHITE_COLOR);
+            Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
+            statusLabel.setFont(font);
         } else if (getConnection() != null && projectViewer != null && projectViewer.getInput() == null) {
             manageViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
