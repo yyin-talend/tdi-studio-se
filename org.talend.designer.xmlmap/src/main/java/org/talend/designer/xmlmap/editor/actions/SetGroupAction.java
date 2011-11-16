@@ -35,8 +35,13 @@ public class SetGroupAction extends SelectionAction {
         if (getSelectedObjects().get(0) instanceof OutputTreeNodeEditPart) {
             OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
             OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
+
+            if (model.eContainer() instanceof TreeNode && XmlMapUtil.DOCUMENT.equals(((TreeNode) model.eContainer()).getType())) {
+                return false;
+            }
+
             if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())
-                    || !(model.eContainer() instanceof TreeNode) || model.getName().equals("root")) { //$NON-NLS-N$
+                    || !(model.eContainer() instanceof TreeNode)) { //$NON-NLS-N$
                 return false;
             }
             OutputTreeNode findDownLoopNode = findDownLoopNode(model);
