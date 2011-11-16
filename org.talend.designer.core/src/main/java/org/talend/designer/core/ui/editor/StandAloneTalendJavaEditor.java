@@ -260,7 +260,15 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     @Override
     public boolean isDirty() {
+        if (!isEditable()) {
+            return false;
+        }
         return propertyIsDirty || super.isDirty();
+    }
+
+    @Override
+    public boolean isEditorInputReadOnly() {
+        return !isEditable();
     }
 
     @Override
