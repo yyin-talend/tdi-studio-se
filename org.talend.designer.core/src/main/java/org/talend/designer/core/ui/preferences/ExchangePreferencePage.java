@@ -88,13 +88,13 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
         if (PluginChecker.isSVNProviderPluginLoaded()) {
             BooleanFieldEditor checkTisLogonExchangeDialog = new BooleanFieldEditor(
                     ITalendCorePrefConstants.EXCHANGE_CHECK_TIS_VERSION,
-                    Messages.getString("ExchangePreferencePage.checkTisLogonExchangeDialog"), getFieldEditorParent()); //$NON-NLS-1$
+                    Messages.getString("ExchangePreferencePage.checkTisLogonExchangeTitle"), getFieldEditorParent()); //$NON-NLS-1$
             addField(checkTisLogonExchangeDialog);
         }
 
         BooleanFieldEditor downloadedCheckUpdates = new BooleanFieldEditor(
                 ITalendCorePrefConstants.EXCHANGE_DOWNLOADED_CHECK_UPDATES,
-                Messages.getString("ExchangePreferencePage.exchangeCheckUpdates"), getFieldEditorParent()); //$NON-NLS-1$
+                Messages.getString("ExchangePreferencePage.exchangeCheckUpdatesTitle"), getFieldEditorParent()); //$NON-NLS-1$
         addField(downloadedCheckUpdates);
 
         addListeners();
