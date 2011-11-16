@@ -166,13 +166,26 @@ org.talend.designer.components.hashfile.common.MapHashFile mf_<%=cid %>=org.tale
 if(!isLinked){//111
 	//////////////////////////////////////////////////////////////
 	//it doesn't link to another tHashOutput, it is a new HashFile.
+	
+	boolean isAppend = "true".equals(ElementParameterParser.getValue(node, "__APPEND__"));
+	
 	if(incommingDataConn != null){//222
 		String connectionName = incommingDataConn.getName();
 %>    
 		org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName %>Struct> tHashFile_<%=cid %> = null;
-		if((tHashFile_<%=cid %> = mf_<%=cid %>.getResourceMap().get("tHashFile_<%=jobName+"_"+cid %>"))==null){
-			tHashFile_<%=cid %> = new org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName%>Struct>(org.talend.designer.components.hashfile.common.MATCHING_MODE.<%=matchingMode %>);                
-        }
+<%
+		if(isAppend) {
+%>
+			if((tHashFile_<%=cid %> = mf_<%=cid %>.getResourceMap().get("tHashFile_<%=jobName+"_"+cid %>"))==null){
+				tHashFile_<%=cid %> = new org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName%>Struct>(org.talend.designer.components.hashfile.common.MATCHING_MODE.<%=matchingMode %>);                
+	        }
+<%
+		} else {
+%>
+			tHashFile_<%=cid %> = new org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName%>Struct>(org.talend.designer.components.hashfile.common.MATCHING_MODE.<%=matchingMode %>);
+<%
+		}
+%>			
         //use this ResourceMap instead of globalMap,so that globalMap will not be too large
         mf_<%=cid %>.getResourceMap().put("tHashFile_<%=jobName+"_"+cid %>", tHashFile_<%=cid %>);
 <%	
