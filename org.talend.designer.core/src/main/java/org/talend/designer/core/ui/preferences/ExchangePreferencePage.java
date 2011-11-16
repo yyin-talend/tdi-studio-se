@@ -145,7 +145,7 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
             if (string != null) {
                 String[] split = string.split(":");
                 if (split.length == 3) {
-                    userAccount = split[0];
+                    userAccount = split[1];
                 }
             }
         }

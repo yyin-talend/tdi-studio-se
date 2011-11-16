@@ -304,7 +304,9 @@ public class LoginDialog extends TrayDialog {
         // } else {// tis
         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
         boolean checkTisVersion = prefStore.getBoolean(ITalendCorePrefConstants.EXCHANGE_CHECK_TIS_VERSION);
-        if (!checkTisVersion) {
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        if (!checkTisVersion && brandingService.isPoweredbyTalend()) {
             int count = prefStore.getInt(TalendForgeDialog.LOGINCOUNT);
             ExchangeUser exchangeUser = project.getExchangeUser();
             boolean isExchangeLogon = exchangeUser.getLogin() != null && !exchangeUser.getLogin().equals("");
