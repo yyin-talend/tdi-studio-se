@@ -53,6 +53,7 @@
 					org.apache.camel.osgi.CamelContextFactory factory = new org.apache.camel.osgi.CamelContextFactory();
 					factory.setBundleContext(bundleContext);
 					camelContext = factory.createContext();
+					bundleContext.registerService(org.apache.camel.CamelContext.class.getName(), camelContext, null);
 				} else {
 					camelContext = new org.apache.camel.impl.DefaultCamelContext();
 				}
