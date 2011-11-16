@@ -440,8 +440,8 @@ public class ConnectionFormComposite extends Composite {
     ModifyListener standardTextListener = new ModifyListener() {
 
         public void modifyText(ModifyEvent e) {
-            validateFields();
             fillBean();
+            validateFields();
         }
     };
 
