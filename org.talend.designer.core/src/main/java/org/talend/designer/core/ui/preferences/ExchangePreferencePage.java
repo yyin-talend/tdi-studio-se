@@ -70,7 +70,7 @@ public class ExchangePreferencePage extends FieldEditorPreferencePage implements
         eGroup.setLayout(new GridLayout(3, false));
 
         Label userLabelTitle = new Label(eGroup, SWT.NONE);
-        userLabelTitle.setText(Messages.getString("ExchangePreferencePage.userLabelTitle")); //$NON-NLS-1$
+        userLabelTitle.setText(Messages.getString("ExchangePreferencePage.currentUserTitle")); //$NON-NLS-1$
         GridData data = new GridData(GridData.FILL, GridData.CENTER, true, false);
         userLabelTitle.setLayoutData(data);
 
