@@ -60,6 +60,7 @@ import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.xml.XmlUtil;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.metadata.builder.database.PluginConstant;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.resources.ResourcesPlugin;
@@ -347,14 +348,14 @@ public class ImportProjectsUtilities {
      * @return a list of <code>DemoProjectBean</code>
      */
     public static List<DemoProjectBean> getAllDemoProjects() {
-
         SAXReader reader = new SAXReader();
         Document doc = null;
         List<DemoProjectBean> demoProjectList = new ArrayList<DemoProjectBean>();
         DemoProjectBean demoProject = null;
-        for (int t = 0; t < getXMLFilePath().size(); t++) {
+        List<File> xmlFilePath = getXMLFilePath();
+        for (int t = 0; t < xmlFilePath.size(); t++) {
             try {
-                doc = reader.read(getXMLFilePath().get(t));
+                doc = reader.read(xmlFilePath.get(t));
             } catch (DocumentException e) {
                 ExceptionHandler.process(e);
                 return null;
@@ -396,14 +397,20 @@ public class ImportProjectsUtilities {
     private static List<File> getXMLFilePath() {
         List<File> xmlListFile = new ArrayList<File>();
         String[] pluginIDs = new String[] { ResourcesPlugin.PLUGIN_ID, "org.talend.resources.perl", //$NON-NLS-1$
-                "org.talend.datacleansing.core.ui" }; //$NON-NLS-1$
+                ResourcesPlugin.TDQ_PLUGIN_ID }; //$NON-NLS-1$
+
         for (int i = 0; i < pluginIDs.length; i++) {
             Bundle bundle = Platform.getBundle(pluginIDs[i]);
             if (bundle != null) {
                 URL url = null;
 
+                String fullPath = XML_FILE_PATH;
+                if (ResourcesPlugin.TDQ_PLUGIN_ID.equals(pluginIDs[i])) {
+                    fullPath = PluginConstant.EMPTY_STRING;
+                }
+
                 try {
-                    url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(XML_FILE_PATH), null));
+                    url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(fullPath), null));
                 } catch (IOException e) {
                     ExceptionHandler.process(e);
                 }
