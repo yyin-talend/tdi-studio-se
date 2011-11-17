@@ -236,7 +236,6 @@ public class TalendForgeDialog extends TrayDialog {
         data.top = new FormAttachment(imageLabel, 1, SWT.TOP);
         data.left = new FormAttachment(imageLabel, 7, SWT.RIGHT);
         data.right = new FormAttachment(0, 450);
-        // data.bottom = new FormAttachment(labelTitle, 30, SWT.BOTTOM);
         labelMessageOne.setText(Messages.getString("TalendForgeDialog.labelMessageOne"));
         labelMessageOne.setFont(font);
         labelMessageOne.setLayoutData(data);
@@ -254,13 +253,6 @@ public class TalendForgeDialog extends TrayDialog {
         data.top = new FormAttachment(imageLabelTow, 1, SWT.TOP);
         data.left = new FormAttachment(imageLabelTow, 7, SWT.RIGHT);
         data.right = new FormAttachment(labelMessageOne, 0, SWT.RIGHT);
-        // if (Platform.getOS().equals(Platform.OS_WIN32)) {
-        // data.bottom = new FormAttachment(labelMessageOne, 30, SWT.BOTTOM);
-        // } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-        // data.bottom = new FormAttachment(labelMessageOne, 35, SWT.BOTTOM);
-        // } else {
-        // data.bottom = new FormAttachment(labelMessageOne, 35, SWT.BOTTOM);
-        // }
         labelMessageTwo.setText(Messages.getString("TalendForgeDialog.labelMessageTwo"));
         labelMessageTwo.setFont(font);
         labelMessageTwo.setLayoutData(data);
@@ -302,7 +294,6 @@ public class TalendForgeDialog extends TrayDialog {
         data = new FormData();
         data.top = new FormAttachment(0, 10);
         data.left = new FormAttachment(0, 10);
-        // data.right = new FormAttachment(0, 130);
         data.bottom = new FormAttachment(0, 30);
         createLabel.setText(Messages.getString("TalendForgeDialog.createLabel"));
         createLabel.setLayoutData(data);
@@ -611,6 +602,7 @@ public class TalendForgeDialog extends TrayDialog {
         connectAccount.setLayout(new FormLayout());
 
         Label loginLabel = new Label(connectAccount, SWT.NONE);
+        loginLabel.setFont(font);
         gc = new GC(loginLabel);
         labelSize = gc.stringExtent(Messages.getString("TalendForgeDialog.loginLabel"));
         gc.dispose();
@@ -622,20 +614,12 @@ public class TalendForgeDialog extends TrayDialog {
         loginLabel.setText(Messages.getString("TalendForgeDialog.loginLabel"));
         loginLabel.setLayoutData(data);
         loginLabel.setBackground(connectAccount.getBackground());
-        loginLabel.setFont(font);
         loginLabel.forceFocus();
 
         linkToCreate = new Hyperlink(connectAccount, SWT.NONE);
         data = new FormData();
         data.top = new FormAttachment(loginLabel, 0, SWT.TOP);
         data.left = new FormAttachment(loginLabel, 5, SWT.RIGHT);
-        // if (Platform.getOS().equals(Platform.OS_WIN32)) {
-        // data.right = new FormAttachment(loginLabel, 130, SWT.RIGHT);
-        // } else if (Platform.getOS().equals(Platform.OS_LINUX)) {
-        // data.right = new FormAttachment(loginLabel, 160, SWT.RIGHT);
-        // } else {
-        // data.right = new FormAttachment(loginLabel, 160, SWT.RIGHT);
-        // }
         data.bottom = new FormAttachment(loginLabel, 0, SWT.BOTTOM);
         linkToCreate.setText(Messages.getString("TalendForgeDialog.linkToCreate"));
         linkToCreate.setLayoutData(data);
@@ -644,8 +628,13 @@ public class TalendForgeDialog extends TrayDialog {
         linkToCreate.setFont(font);
 
         Label emailLabelInConnect = new Label(connectAccount, SWT.RIGHT);
+        emailLabelInConnect.setFont(font);
         gc = new GC(emailLabelInConnect);
         labelSize = gc.stringExtent(Messages.getString("TalendForgeDialog.userNameLabel"));
+        int newSize = gc.stringExtent(Messages.getString("TalendForgeDialog.passwordLabel")).x;
+        if (newSize > labelSize.x) {
+            labelSize.x = newSize;
+        }
         gc.dispose();
         data = new FormData();
         data.top = new FormAttachment(loginLabel, 20, SWT.BOTTOM);
@@ -655,7 +644,6 @@ public class TalendForgeDialog extends TrayDialog {
         emailLabelInConnect.setText(Messages.getString("TalendForgeDialog.userNameLabel"));
         emailLabelInConnect.setLayoutData(data);
         emailLabelInConnect.setBackground(connectAccount.getBackground());
-        emailLabelInConnect.setFont(font);
 
         usernameTextForConnect = new Text(connectAccount, SWT.BORDER);
         data = new FormData();
@@ -681,9 +669,6 @@ public class TalendForgeDialog extends TrayDialog {
         red.dispose();
 
         Label passwordLabelInConnect = new Label(connectAccount, SWT.RIGHT);
-        gc = new GC(passwordLabelInConnect);
-        labelSize = gc.stringExtent(Messages.getString("TalendForgeDialog.passwordLabel"));
-        gc.dispose();
         data = new FormData();
         data.top = new FormAttachment(emailLabelInConnect, 5, SWT.BOTTOM);
         data.left = new FormAttachment(emailLabelInConnect, -labelSize.x, SWT.RIGHT);
