@@ -86,7 +86,9 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         Shell parentShell = display.getActiveShell();
         mapperMain = new MapperMain(this);
 
-        CursorHelper.changeCursor(parentShell, SWT.CURSOR_WAIT);
+        if (parentShell != null) {
+            CursorHelper.changeCursor(parentShell, SWT.CURSOR_WAIT);
+        }
 
         Shell shell = null;
         try {
