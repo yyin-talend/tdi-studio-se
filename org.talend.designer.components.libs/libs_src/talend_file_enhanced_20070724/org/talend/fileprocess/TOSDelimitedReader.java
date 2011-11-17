@@ -74,7 +74,7 @@ public class TOSDelimitedReader {
     public TOSDelimitedReader(java.io.InputStream is, String encoding, String fieldDelimiter, String recordDelimiter,
             boolean needSkipEmptyRecord) throws IOException {
 
-        InputStreamReader inputStreamReader = new InputStreamReader(is, encoding);
+    	UnicodeReader inputStreamReader = new UnicodeReader(is, encoding);
 
         init(inputStreamReader, fieldDelimiter, recordDelimiter, needSkipEmptyRecord);
     }
@@ -85,7 +85,7 @@ public class TOSDelimitedReader {
             throw new IllegalArgumentException("Parameter can't be null.");
         }
 
-        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(fileName), encoding);
+        UnicodeReader inputStreamReader = new UnicodeReader(new FileInputStream(fileName), encoding);
 
         init(inputStreamReader, fieldDelimiter, recordDelimiter, needSkipEmptyRecord);
 
