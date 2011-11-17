@@ -70,7 +70,7 @@ public class ExchangeContentProvider implements IIntroXHTMLContentProvider {
             } else if (ContentConstants.COMPONENT_DESCRIPTION.equals(id)) {
                 String description = componentExtension.getDescription();
                 if (description != null) {
-                    String[] split = description.split("[\\n\\r/n/r]");
+                    String[] split = description.split("/n/r|\\n\\r");
                     for (int i = 0; i < split.length; i++) {
                         String text = split[i];
                         if (!text.trim().equals("")) {
@@ -145,22 +145,22 @@ public class ExchangeContentProvider implements IIntroXHTMLContentProvider {
             num = Integer.parseInt(df.format(rates));
             switch (num) {
             case 0:
-                return "imgs/star.jpg";
+                return "imgs/star.png";
             case 1:
-                return "imgs/star1.jpg";
+                return "imgs/star1.png";
             case 2:
-                return "imgs/star2.jpg";
+                return "imgs/star2.png";
             case 3:
-                return "imgs/star3.jpg";
+                return "imgs/star3.png";
             case 4:
-                return "imgs/star4.jpg";
+                return "imgs/star4.png";
             case 5:
-                return "imgs/star5.jpg";
+                return "imgs/star5.png";
 
             default:
-                return "imgs/star.jpg";
+                return "imgs/star.png";
             }
         }
-        return "imgs/star.jpg";
+        return "imgs/star.png";
     }
 }

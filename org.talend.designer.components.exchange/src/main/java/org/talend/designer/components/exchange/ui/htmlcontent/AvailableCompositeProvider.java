@@ -252,23 +252,23 @@ public class AvailableCompositeProvider implements IIntroXHTMLContentProvider {
             num = Integer.parseInt(df.format(rates));
             switch (num) {
             case 0:
-                return "imgs/star.jpg";
+                return "imgs/star.png";
             case 1:
-                return "imgs/star1.jpg";
+                return "imgs/star1.png";
             case 2:
-                return "imgs/star2.jpg";
+                return "imgs/star2.png";
             case 3:
-                return "imgs/star3.jpg";
+                return "imgs/star3.png";
             case 4:
-                return "imgs/star4.jpg";
+                return "imgs/star4.png";
             case 5:
-                return "imgs/star5.jpg";
+                return "imgs/star5.png";
 
             default:
-                return "imgs/star.jpg";
+                return "imgs/star.png";
             }
         }
-        return "imgs/star.jpg";
+        return "imgs/star.png";
     }
 
 }

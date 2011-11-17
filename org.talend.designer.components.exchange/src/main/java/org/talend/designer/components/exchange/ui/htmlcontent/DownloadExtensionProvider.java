@@ -140,7 +140,7 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
             td.setAttribute("style", style);
             span = dom.createElement("span");
             span.setAttribute("class", "style_2 style_3");
-            span.appendChild(dom.createTextNode("Download Data"));
+            span.appendChild(dom.createTextNode("Download Date"));
             td.appendChild(span);
             tr.appendChild(td);
 
