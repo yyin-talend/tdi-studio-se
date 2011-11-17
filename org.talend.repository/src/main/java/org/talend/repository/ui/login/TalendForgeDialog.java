@@ -476,6 +476,7 @@ public class TalendForgeDialog extends TrayDialog {
         password2ValidateLabel.setLayoutData(data);
 
         Label countryLabel = new Label(createAccount, SWT.RIGHT);
+        countryLabel.setFont(font);
         gc = new GC(countryLabel);
         labelSize = gc.stringExtent(Messages.getString("TalendForgeDialog.countryLabel"));
         gc.dispose();
@@ -487,7 +488,6 @@ public class TalendForgeDialog extends TrayDialog {
         countryLabel.setText(Messages.getString("TalendForgeDialog.countryLabel"));
         countryLabel.setLayoutData(data);
         countryLabel.setBackground(createAccount.getBackground());
-        countryLabel.setFont(font);
 
         countryCombo = new Combo(createAccount, SWT.BORDER | SWT.READ_ONLY);
         data = new FormData();
