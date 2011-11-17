@@ -417,7 +417,11 @@ class NameSpaceTool_<%=cid%> {
                     }
             	}
             }
-        	int[] indexs = new int[fullPath.split("/").length - 1];
+            int size = fullPath.split("/").length - 1;
+            if(size<0) {
+            	return fullPath;
+            }
+        	int[] indexs = new int[size];
             java.util.Arrays.fill(indexs, -1);
             int length = 0;
             for (int i = 0; i < defualtNSPath.size(); i++) {
