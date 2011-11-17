@@ -1,8 +1,13 @@
-function OnResizeDocument () {
-	tabs = document.getElementsByClassName("tableStyle");
-    for (var i = tabs.length - 1; i >= 0; i--){
-      tabs[i].style.width=(document.width - 210)+"px";
-    };
+function onResizeDocument () {
+	var tabs = document.getElementsByClassName("tableStyle");
+	var newWidth = (document.width - 210)+"px";
+	tabs[0].style.width = newWidth;
+	tabs[1].style.width = newWidth;
+	tabs[2].style.width = newWidth;
+	tabs[3].style.width = newWidth;
+	tabs[4].style.width = newWidth;
+	tabs[5].style.width = newWidth;
+	tabs[6].style.width = newWidth;
 }
 
 function onchangeFileUpload(){

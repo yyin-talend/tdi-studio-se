@@ -31,13 +31,6 @@ a:visited.xh {
 }
 .hover {
 	background: rgb(167,207,223); /* Old browsers */
-	background: -moz-linear-gradient(top, rgba(167,207,223,1) 0%, rgba(35,83,138,1) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(167,207,223,1)), color-stop(100%,rgba(35,83,138,1))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, rgba(167,207,223,1) 0%,rgba(35,83,138,1) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, rgba(167,207,223,1) 0%,rgba(35,83,138,1) 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, rgba(167,207,223,1) 0%,rgba(35,83,138,1) 100%); /* IE10+ */
-	background: linear-gradient(top, rgba(167,207,223,1) 0%,rgba(35,83,138,1) 100%); /* W3C */
-	filter: progid :DXImageTransform.Microsoft.gradient( startColorstr='#a7cfdf', endColorstr='#23538a',GradientType=0 ); /* IE6-9 */
 	color: white
 }
 .leave {
@@ -71,7 +64,7 @@ div {
 	height: 100%;
 }
 #container .menu {
-	width: 198;
+	width: 200px;
 	height: 100%;
 	float: left;
 	border: 1px solid #9BB9F5;
@@ -88,8 +81,8 @@ div {
 	padding: 0px 0px;
 }
 .ulhide {
-	/*display: none;
-	overflow: auto;*/
+	display: none;
+	overflow: auto;
 }
 .ulblock {
 	display: block;
@@ -165,13 +158,13 @@ div {
 	border-radius: 3px;
 	cursor: pointer;
 	text-align: center;
-	width: 120px;
+	width: 140px;
 }
 div.toolbarButton:hover {
 	border: 1px solid #9BB9F5;
 }
 table.tableStyle {
-	width: 1000px;
+	width: 600px;
 }
 .formStyle {
 	position: relative;
