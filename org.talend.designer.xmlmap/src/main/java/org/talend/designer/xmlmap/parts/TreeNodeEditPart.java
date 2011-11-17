@@ -40,6 +40,7 @@ import org.talend.designer.xmlmap.figures.anchors.ConnectionColumnAnchor;
 import org.talend.designer.xmlmap.figures.anchors.FilterColumnAnchor;
 import org.talend.designer.xmlmap.figures.anchors.LookupColumnAnchor;
 import org.talend.designer.xmlmap.figures.cells.IWidgetCell;
+import org.talend.designer.xmlmap.figures.treeNode.RootTreeNodeFigure;
 import org.talend.designer.xmlmap.figures.treeNode.RowFigure;
 import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
@@ -77,8 +78,12 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         }
 
         final RowFigure testRow = new RowFigure(this, !isRoot);
-        TreeNodeFigure treeNodeFigure = new TreeNodeFigure(testRow);
-        treeNodeFigure.setRoot(isRoot);
+        TreeNodeFigure treeNodeFigure = null;
+        if (isRoot) {
+            treeNodeFigure = new RootTreeNodeFigure(testRow);
+        } else {
+            treeNodeFigure = new TreeNodeFigure(testRow);
+        }
 
         return treeNodeFigure;
     }

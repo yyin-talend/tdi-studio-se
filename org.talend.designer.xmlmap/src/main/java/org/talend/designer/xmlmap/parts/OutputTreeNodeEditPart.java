@@ -18,6 +18,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.EditPart;
 import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
+import org.talend.designer.xmlmap.figures.treeNode.RootTreeNodeFigure;
 import org.talend.designer.xmlmap.figures.treeNode.RowFigure;
 import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
@@ -40,8 +41,12 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
         }
 
         final RowFigure testRow = new RowFigure(this, !isRoot);
-        TreeNodeFigure treeNodeFigure = new TreeNodeFigure(testRow);
-        treeNodeFigure.setRoot(isRoot);
+        TreeNodeFigure treeNodeFigure = null;
+        if (isRoot) {
+            treeNodeFigure = new RootTreeNodeFigure(testRow);
+        } else {
+            treeNodeFigure = new TreeNodeFigure(testRow);
+        }
 
         return treeNodeFigure;
     }

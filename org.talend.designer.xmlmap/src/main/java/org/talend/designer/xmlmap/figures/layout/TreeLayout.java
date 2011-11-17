@@ -15,10 +15,12 @@ package org.talend.designer.xmlmap.figures.layout;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.talend.designer.xmlmap.figures.treeNode.TableTree;
 import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
 import org.talend.designer.xmlmap.figures.treesettings.InputTreeSettingContainer;
 import org.talend.designer.xmlmap.figures.treesettings.OutputTreeSettingContainer;
@@ -47,11 +49,6 @@ public class TreeLayout extends ToolbarLayout {
         Dimension prefSizes[] = new Dimension[numChildren];
         Dimension minSizes[] = new Dimension[numChildren];
 
-        // Calculate the width and height hints. If it's a vertical
-        // ToolBarLayout,
-        // then ignore the height hint (set it to -1); otherwise, ignore the
-        // width hint. These hints will be passed to the children of the parent
-        // figure when getting their preferred size.
         int wHint = -1;
         int hHint = -1;
         if (isHorizontal()) {
@@ -59,15 +56,6 @@ public class TreeLayout extends ToolbarLayout {
         } else {
             wHint = parent.getClientArea(Rectangle.SINGLETON).width;
         }
-
-        /*
-         * Calculate sum of preferred heights of all children(totalHeight). Calculate sum of minimum heights of all
-         * children(minHeight). Cache Preferred Sizes and Minimum Sizes of all children.
-         * 
-         * totalHeight is the sum of the preferred heights of all children totalMinHeight is the sum of the minimum
-         * heights of all children prefMinSumHeight is the sum of the difference between all children's preferred
-         * heights and minimum heights. (This is used as a ratio to calculate how much each child will shrink).
-         */
         IFigure child;
         int totalHeight = 0;
         int totalMinHeight = 0;
@@ -124,23 +112,19 @@ public class TreeLayout extends ToolbarLayout {
             width = Math.max(minWidth, Math.min(clientArea.width, width));
             newBounds.width = width;
 
-            int adjust = clientArea.width - width;
-            switch (minorAlignment) {
-            case ALIGN_TOPLEFT:
-                adjust = 0;
-                break;
-            case ALIGN_CENTER:
-                adjust /= 2;
-                break;
-            case ALIGN_BOTTOMRIGHT:
-                break;
-            }
-            newBounds.x += adjust;
             child.setBounds(transposer.t(newBounds));
 
             amntShrinkHeight -= amntShrinkCurrentHeight;
             prefMinSumHeight -= (prefHeight - minHeight);
             y += newBounds.height + spacing;
+
+            if (child instanceof ScrollPane) {
+                IFigure contents = ((ScrollPane) child).getViewport().getContents();
+                if (contents instanceof TableTree) {
+                    ((TableTree) contents).setDefautTableWidth(newBounds.width);
+                }
+            }
+
         }
     }
 

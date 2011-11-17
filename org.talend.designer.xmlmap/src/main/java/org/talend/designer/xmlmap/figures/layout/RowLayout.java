@@ -13,14 +13,12 @@
 package org.talend.designer.xmlmap.figures.layout;
 
 import java.util.HashMap;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.eclipse.draw2d.AbstractHintLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LayoutManager;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.figures.treeNode.RowFigure;
@@ -55,7 +53,7 @@ public class RowLayout extends AbstractHintLayout {
      * @see org.eclipse.draw2d.XYLayout#layout(org.eclipse.draw2d.IFigure)
      */
     public void layout(IFigure parent) {
-        int initExpressionWidth = (treeNodePart.getViewer().getControl().getSize().x / 3 - 80 - 10) / 2;
+        int initExpressionWidth = 0;
 
         final Rectangle clientArea = parent.getClientArea();
 
@@ -66,6 +64,7 @@ public class RowLayout extends AbstractHintLayout {
 
         final ExpressionFigure expressionFigure = rowFigure.getExpressionFigure();
         if (expressionFigure != null) {
+            initExpressionWidth = rowFigure.getTreeNodeFigure().getRoot().getExpressionColumnWidth();
             Rectangle newBounds = new Rectangle(x, y, initExpressionWidth, FIXED_ROW_HEIGHT);
             expressionFigure.setBounds(newBounds);
             setConstraint(expressionFigure, newBounds);
@@ -88,40 +87,14 @@ public class RowLayout extends AbstractHintLayout {
      */
     @Override
     protected Dimension calculatePreferredSize(IFigure f, int wHint, int hHint) {
-        Insets insets = f.getInsets();
-        if (wHint >= 0)
-            wHint = Math.max(0, wHint - insets.getWidth());
-
-        boolean flush = cachedPreferredHint.width != wHint;
-        if (flush) {
-            f.invalidate();
-            cachedPreferredHint.width = wHint;
+        Dimension treeBranchSize = rowFigure.getTreeBranch().getPreferredSize();
+        int width = treeBranchSize.width;
+        ExpressionFigure expressionFigure = rowFigure.getExpressionFigure();
+        if (expressionFigure != null) {
+            int expressionColumnWidth = rowFigure.getTreeNodeFigure().getRoot().getExpressionColumnWidth();
+            width += expressionColumnWidth;
         }
-
-        f.validate();
-        Dimension d = new Dimension();
-        ListIterator children = f.getChildren().listIterator();
-        while (children.hasNext()) {
-            IFigure child = (IFigure) children.next();
-            Rectangle r = (Rectangle) constraints.get(child);
-            if (r == null)
-                continue;
-
-            if (r.width == -1 || r.height == -1) {
-                Dimension preferredSize = child.getPreferredSize(r.width, r.height);
-                r = r.getCopy();
-                if (r.width == -1)
-                    r.width = preferredSize.width;
-                if (r.height == -1)
-                    r.height = preferredSize.height;
-            }
-
-            d.height = Math.max(d.height, r.height);
-            d.width = d.width + r.width;
-
-        }
-        return new Dimension(d.width + insets.getWidth(), d.height + insets.getHeight()).union(getBorderPreferredSize(f));
-
+        return new Dimension(width, FIXED_ROW_HEIGHT);
     }
 
     public void remove(IFigure figure) {

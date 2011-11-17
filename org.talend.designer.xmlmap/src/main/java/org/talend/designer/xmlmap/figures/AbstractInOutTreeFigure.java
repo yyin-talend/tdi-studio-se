@@ -20,11 +20,10 @@ import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ScrollPane;
-import org.eclipse.draw2d.ToolbarLayout;
-import org.eclipse.draw2d.geometry.Dimension;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.TreeLayout;
+import org.talend.designer.xmlmap.figures.treeNode.TableTree;
 import org.talend.designer.xmlmap.figures.treesettings.AbstractTreeSettingContainer;
 import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
 import org.talend.designer.xmlmap.figures.treetools.TreeToolBarContainer;
@@ -39,6 +38,8 @@ import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
  * DOC talend class global comment. Detailled comment
  */
 public abstract class AbstractInOutTreeFigure extends GenericFigure {
+
+    private TableTree tableTree;
 
     protected Figure header;
 
@@ -106,34 +107,12 @@ public abstract class AbstractInOutTreeFigure extends GenericFigure {
 
         createTreeSettings(this);
 
+        tableTree = new TableTree(xmlTreePart);
+
         ScrollPane scroll = new ScrollPane();
         scroll.setVerticalScrollBarVisibility(ScrollPane.NEVER);
-
-        Figure container = new Figure();
-        container.setLayoutManager(new ToolbarLayout());
-        scroll.getViewport().setContents(container);
+        scroll.getViewport().setContents(tableTree);
         scroll.getViewport().setContentsTracksWidth(true);
-        ToolbarLayout layout = new ToolbarLayout() {
-
-            @Override
-            protected Dimension calculateMinimumSize(IFigure container, int wHint, int hHint) {
-                return super.calculateMinimumSize(container, wHint, hHint);
-            }
-
-            @Override
-            protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {
-                return super.calculatePreferredSize(container, wHint, hHint);
-            }
-        };
-        columnContainer = new Figure();
-        columnContainer.setLayoutManager(layout);
-
-        container.setOpaque(true);
-        container.setBackgroundColor(ColorConstants.white);
-
-        ColumnTitleFigure tableColumnstitle = new ColumnTitleFigure(xmlTreePart);
-        container.add(tableColumnstitle);
-        container.add(columnContainer);
 
         this.add(scroll);
     }
@@ -143,6 +122,10 @@ public abstract class AbstractInOutTreeFigure extends GenericFigure {
     protected abstract void createTreeSettings(Figure parent);
 
     public IFigure getColumnContainer() {
-        return this.columnContainer;
+        return tableTree.getTableItemContainer();
+    }
+
+    public TableTree getTableTree() {
+        return this.tableTree;
     }
 }

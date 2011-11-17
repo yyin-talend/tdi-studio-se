@@ -14,14 +14,12 @@ package org.talend.designer.xmlmap.figures.layout;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.eclipse.draw2d.AbstractHintLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LayoutManager;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.designer.xmlmap.figures.SashSeparator;
@@ -162,32 +160,8 @@ public class XmlMapDataLayout extends AbstractHintLayout {
     }
 
     protected Dimension calculatePreferredSize(IFigure f, int wHint, int hHint) {
-        Rectangle rect = new Rectangle();
-        ListIterator children = f.getChildren().listIterator();
-        while (children.hasNext()) {
-            IFigure child = (IFigure) children.next();
-            Rectangle r = (Rectangle) constraints.get(child);
-            if (r == null)
-                continue;
 
-            if (r.width == -1 || r.height == -1) {
-                Dimension preferredSize = child.getPreferredSize(r.width, r.height);
-                r = r.getCopy();
-                if (r.width == -1)
-                    r.width = preferredSize.width;
-                if (r.height == -1)
-                    r.height = preferredSize.height;
-            }
-            rect.union(r);
-        }
-        Dimension d = rect.getSize();
-        Insets insets = f.getInsets();
-
-        org.eclipse.swt.graphics.Point avilableSize = editPart.getViewer().getControl().getSize();
-        d.width = avilableSize.x;
-        // should be d.width + insets.getWidth(), -1 only used to sovle a problem:when resize the shell the layout is
-        // never called
-        return new Dimension(d.width, d.height + insets.getHeight()).union(getBorderPreferredSize(f));
+        return new Dimension(editPart.getViewer().getControl().getSize());
     }
 
     /**

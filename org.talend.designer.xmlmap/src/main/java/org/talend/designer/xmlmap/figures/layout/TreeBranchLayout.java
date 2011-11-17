@@ -80,11 +80,18 @@ public class TreeBranchLayout extends AbstractLayout {
 
     @Override
     protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {
-        container.validate();
-        final Rectangle bounds = treeBranch.getTitle().getBounds();
-        Dimension dimension = new Dimension(bounds.width, bounds.height);
-        dimension.width = dimension.width + xOffset;
-        return dimension;
+        Dimension prefSize = new Dimension();
+        xOffset = 15;
+        Dimension titleSize = treeBranch.getTitle().getPreferredSize().getCopy();
+        if (treeBranch.isEnableExpand()) {
+            final int tDeeps = treeBranch.getDepth();
+            int titleOffset = (tDeeps - 1) * 2 * treeBranch.getGaps();
+            xOffset = xOffset + titleOffset;
+        }
+        prefSize.expand(titleSize);
+        prefSize.width += xOffset;
+        return prefSize;
+
     }
 
     public void calculateDepth() {
