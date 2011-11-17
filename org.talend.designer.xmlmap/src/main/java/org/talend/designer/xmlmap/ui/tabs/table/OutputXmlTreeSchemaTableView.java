@@ -30,7 +30,7 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
 /**
  * DOC talend class global comment. Detailled comment
  */
-public class OutputXmlTreeSchemaTableView extends XmlTreeSchemaTableView {
+public class OutputXmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
 
     public OutputXmlTreeSchemaTableView(ExtendedTableModel<TreeSchemaTableEntry> extendedTableModel, Composite parent) {
         super(extendedTableModel, parent, false, false);

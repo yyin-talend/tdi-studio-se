@@ -32,7 +32,7 @@ public class XmlCellModifier extends DefaultCellModifier {
 
     @Override
     public Object getValue(Object bean, String idColumn) {
-        if (!XmlTreeSchemaTableView.ID_COLUMN_XPATH.equals(idColumn)) {
+        if (!AbstractXmlTreeSchemaTableView.ID_COLUMN_XPATH.equals(idColumn)) {
             return super.getValue(bean, idColumn);
         } else {
             TableViewerCreatorColumn column = tableViewerCreator.getColumn(idColumn);

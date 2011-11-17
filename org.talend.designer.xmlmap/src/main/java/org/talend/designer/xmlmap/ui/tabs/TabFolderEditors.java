@@ -44,8 +44,7 @@ import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
 import org.talend.designer.xmlmap.i18n.Messages;
-import org.talend.designer.xmlmap.ui.tabs.table.InputXmlTreeSchemaTableView;
-import org.talend.designer.xmlmap.ui.tabs.table.OutputXmlTreeSchemaTableView;
+import org.talend.designer.xmlmap.ui.tabs.table.XmlTreeSchemaTableView;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -64,9 +63,9 @@ public class TabFolderEditors extends CTabFolder {
 
     private MetadataTableEditorView outputMetaEditor;
 
-    private InputXmlTreeSchemaTableView inputTreeSchemaEditor;
+    private XmlTreeSchemaTableView inputTreeSchemaEditor;
 
-    private OutputXmlTreeSchemaTableView outputTreeSchemaEditor;
+    private XmlTreeSchemaTableView outputTreeSchemaEditor;
 
     public static final int INDEX_TAB_METADATA_EDITOR = 0;
 
@@ -127,11 +126,11 @@ public class TabFolderEditors extends CTabFolder {
         SashForm xmlTreeEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
         xmlTreeEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
         item.setControl(xmlTreeEditorContainer);
-        inputTreeSchemaEditor = new InputXmlTreeSchemaTableView(mapperManage.getSelectedInputTreeSchemaModel(null),
+        inputTreeSchemaEditor = new XmlTreeSchemaTableView(mapperManage.getSelectedInputTreeSchemaModel(null),
                 xmlTreeEditorContainer);
         inputTreeSchemaEditor.initGraphicComponents();
 
-        outputTreeSchemaEditor = new OutputXmlTreeSchemaTableView(mapperManage.getSelectedOutputTreeSchemaModel(null),
+        outputTreeSchemaEditor = new XmlTreeSchemaTableView(mapperManage.getSelectedOutputTreeSchemaModel(null),
                 xmlTreeEditorContainer);
         outputTreeSchemaEditor.initGraphicComponents();
 
@@ -284,11 +283,11 @@ public class TabFolderEditors extends CTabFolder {
         return this.outputMetaEditor;
     }
 
-    public InputXmlTreeSchemaTableView getInputTreeSchemaEditor() {
+    public XmlTreeSchemaTableView getInputTreeSchemaEditor() {
         return inputTreeSchemaEditor;
     }
 
-    public OutputXmlTreeSchemaTableView getOutputTreeSchemaEditor() {
+    public XmlTreeSchemaTableView getOutputTreeSchemaEditor() {
         return outputTreeSchemaEditor;
     }
 
