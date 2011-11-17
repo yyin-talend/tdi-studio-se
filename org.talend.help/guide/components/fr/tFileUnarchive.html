@@ -1,0 +1,78 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileUnarchive</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapitre&nbsp;9.&nbsp;Composants File"><link rel="prev" href="tFileTouch.html" title="tFileTouch"><link rel="next" href="tGPGDecrypt.html" title="tGPGDecrypt"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFileUnarchive"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileUnarchive"></a>tFileUnarchive</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileUnarchive.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tFileUnarchive"><div class="titlepage"><div><div><h3 class="title"><a name="d0e195745"></a>Propri&eacute;t&eacute;s du tFileUnarchive</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>File/Management</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tFileUnarchive</strong></span> d&eacute;zippe un fichier archive
+                                en fonction des param&egrave;tres d&eacute;finis et le place dans le r&eacute;pertoire
+                                souhait&eacute;.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant d&eacute;zippe un
+                                fichier archive de n&#8217;importe quel format (zip, rar, etc.) pour un
+                                &eacute;ventuel traitement.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Archive file</em></span></p>
+                        </td><td valign="top"><p>Chemin d&#8217;acc&egrave;s au fichier archive.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Extraction Directory</em></span></p>
+                        </td><td valign="top"><p>R&eacute;pertoire dans lequel le fichier d&eacute;zipp&eacute; sera
+                                plac&eacute;.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><p><span class="emphasis"><em>Use archive name as root directory
+                                </em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour cr&eacute;er un dossier du m&ecirc;me
+                                nom que l&#8217;archive, s&#8217;il n&#8217;existe pas, dans le r&eacute;pertoire sp&eacute;cifi&eacute; et
+                                extraire le(s) fichier(s) d&eacute;zipp&eacute;(s) dans ce dossier.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><p><span class="emphasis"><em>Check the integrity before
+                                    unzip</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour effectuer une v&eacute;rification
+                                d&#8217;int&eacute;grit&eacute; avant de d&eacute;zipper l&#8217;archive. </p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><p><span class="emphasis"><em>Extract file paths</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour reproduire la structure du
+                                chemin d&#8217;acc&egrave;s au fichier zipp&eacute; dans l&#8217;archive.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><p><span class="emphasis"><em>Need a password</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case et saisissez le mot de passe
+                                correct si la d&eacute;compression de l&#8217;archive est prot&eacute;g&eacute;e par un mot de
+                                passe. Notez que l&#8217;archive crypt&eacute;e doit &ecirc;tre cr&eacute;&eacute;e par le composant
+                                    <span class="bold"><strong>tFileArchive</strong></span>, sinon des
+                                messages d&#8217;erreur appara&icirc;tront ou rien ne sera extrait, m&ecirc;me si
+                                aucun message d&#8217;erreur n&#8217;est apparu.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant peut &ecirc;tre
+                                utilis&eacute; en standalone mais il peut aussi &ecirc;tre utilis&eacute; en composant
+                                de d&eacute;part dans un Job via un lien <span class="bold"><strong>Iterate</strong></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Global
+                                Variables</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Current File</strong></span>&nbsp;:
+                                retourne le nom du fichier archive d&eacute;compress&eacute;. Disponible comme
+                                variable <span class="bold"><strong>Flow</strong></span>.</p><p>Retourne
+                                une cha&icirc;ne de caract&egrave;res.</p><p> </p><p><span class="bold"><strong>Current File Path</strong></span>&nbsp;: retourne le chemin
+                                d&#8217;acc&egrave;s au fichier archive d&eacute;compress&eacute;. Disponible comme variable
+                                    <span class="bold"><strong>Flow</strong></span>.</p><p>Retourne une
+                                cha&icirc;ne de caract&egrave;res.</p><p> </p><p>Pour plus
+                                d&#8217;informations concernant les variables, consultez le<span class="bold"><strong>Guide utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Liens de sortie (d&#8217;un composant &agrave; un
+                                autre)&nbsp;:</p><p><span class="bold"><strong>Row</strong></span>&nbsp;:
+                                Iterate.</p><p><span class="bold"><strong>Trigger</strong></span>&nbsp;:
+                                OnSubjobOk, OnSubjobError, Run if, OnComponentOk,
+                                OnComponentError.</p><p> </p><p>Liens d&#8217;entr&eacute;e (d&#8217;un
+                                composant &agrave; un autre)&nbsp;:</p><p><span class="bold"><strong>Row</strong></span>&nbsp;: Iterate.</p><p><span class="bold"><strong>Trigger</strong></span>&nbsp;: Run if, OnSubjobOk, OnSubjobError,
+                                OnComponentOk, OnComponentError, Synchronize,
+                                Parallelize.</p><p> </p><p>Pour plus d&#8217;informations
+                                concernant les liens, consultez&nbsp;le<span class="bold"><strong>Guide
+                                    utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e195991"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un exemple d&#8217;utilisation du composant <span class="bold"><strong>tFileUnarchive</strong></span>, consultez <a class="xref" href="tFileCompare.html" title="tFileCompare">la section intitul&eacute;e &laquo;&nbsp;tFileCompare&nbsp;&raquo;</a>.</p></div></div></body></html>

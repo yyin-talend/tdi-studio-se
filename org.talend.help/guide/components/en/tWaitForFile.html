@@ -1,0 +1,165 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tWaitForFile</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch13.html" title="Chapter&nbsp;13.&nbsp;Orchestration components"><link rel="prev" href="tUnite.html" title="tUnite"><link rel="next" href="tWaitForSocket.html" title="tWaitForSocket"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tWaitForFile"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tWaitForFile"></a>tWaitForFile</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tWaitForFile_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tWaitForFile properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e215208"></a>tWaitForFile properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>Orchestration</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tWaitForFile</strong></span> component iterates on a given folder
+                                for file insertion or deletion then triggers a subjob to be executed
+                                when the condition is met.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component allows a
+                                subjob to be triggered given a condition linked to file presence or
+                                removal.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Time (in seconds)</em></span>
+                                <span class="emphasis"><em>between iterations</em></span></p>
+                        </td><td valign="top"><p>Set the time interval in seconds between each
+                                check for the file.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Max. number of iterations (infinite loop
+                                    if empty)</em></span></p>
+                        </td><td valign="top"><p>Number of checks for file before the jobs times
+                                out.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Directory to scan</em></span></p>
+                        </td><td valign="top"><p>Name of the folder to be checked for insert or
+                                removal</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>File mask</em></span></p>
+                        </td><td valign="top"><p>Mask of the file to be searched for insertion or
+                                removal.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Include subdirectories</em></span></p>
+                        </td><td valign="top"><p>Select this check box to include the
+                                sub-folders.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Case sensitive</em></span></p>
+                        </td><td valign="top"><p>Select this check box to activate case
+                                sensitivity.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Include present file</em></span></p>
+                        </td><td valign="top"><p>Select this check box to include the file in
+                                use.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Trigger action when</em></span></p>
+                        </td><td valign="top"><p>Select the condition to be met for the action to
+                                be carried out:</p><p>
+                                <span class="bold"><strong>A file is created </strong></span><span class="bold"><strong>A file is deleted A file is updated A file is
+                                    created or updated or deleted</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Then</em></span></p>
+                        </td><td valign="top"><p>Select the action to be carried out: either stop
+                                the iterations when the condition is met <span class="bold"><strong>(exit
+                                    loop)</strong></span> or continue the loop until the end of the max
+                                iteration number <span class="bold"><strong>(continue
+                                loop)</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema
+                                    </em></span><span class="emphasis"><em>and</em></span><span class="emphasis"><em> Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>A schema is a row description, i.e., it defines
+                                the number of fields that will be processed and passed on to the
+                                next component. The schema is either built-in or remote in the
+                                Repository. .</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: The schema will be created and stored locally for
+                                this component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: The schema already exists and is stored in the
+                                Repository, hence can be reused in various projects and Job designs.
+                                Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                Settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Wait for file to be
+                                released</em></span></p>
+                        </td><td valign="top"><p>Select this check box so that the subjob only
+                                triggers after the file insertion/update/removal operation is
+                                complete. In case the operation is incomplete, the subjob will not
+                                trigger.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component plays the
+                                role of the start (or trigger) component of the subjob which gets
+                                executed under the condition described. Therefore this component
+                                requires a subjob to be connected to via an Iterate link.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Global
+                                Variables</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Current
+                                iteration</strong></span>: Indicates the number of the current iteration.
+                                This is available as a <span class="bold"><strong>Flow</strong></span>
+                                variable.</p><p> Returns an integer.</p><p> </p><p>
+                                <span class="bold"><strong>Present File</strong></span>: Indicates the name of
+                                the current file in the iteration which activated the trigger. This
+                                is available as a <span class="bold"><strong>Flow</strong></span>
+                                variable.</p><p> Returns a string.</p><p> </p><p>
+                                <span class="bold"><strong>Deleted File</strong></span>: Indicates the path
+                                and name of the deleted file, which activated the trigger. This is
+                                available as a <span class="bold"><strong>Flow</strong></span>
+                                variable</p><p> Returns a string.</p><p> </p><p>
+                                <span class="bold"><strong>Created File Name</strong></span>: Indicates the
+                                name and path to a newly created file which activated the trigger.
+                                This is available as a <span class="bold"><strong>Flow</strong></span>
+                                variable.</p><p> Returns a string.</p><p> </p><p>
+                                <span class="bold"><strong>Updated File</strong></span>: Indicates the name
+                                and path to a file which has been updated, thereby activating the
+                                trigger. This is available as a <span class="bold"><strong>Flow</strong></span> variable.</p><p> Returns a
+                                string.</p><p> </p><p>
+                                <span class="bold"><strong>File Name</strong></span>: Indicates the name of a
+                                file which has been created, deleted or updated, thereby activating
+                                the trigger. This is available as a <span class="bold"><strong>Flow</strong></span> variable.</p><p> Returns a
+                                string.</p><p> </p><p>
+                                <span class="bold"><strong>Not Updated File Name</strong></span>: Indicates
+                                the names of files which have not been updated, thereby activating
+                                the trigger. This is available as a <span class="bold"><strong>Flow</strong></span> variable.</p><p> Returns a string.
+                                </p><p> </p><p> For further information about variables, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Outgoing links (from one component to
+                                another):</p><p>
+                                <span class="bold"><strong>Row</strong></span>: Main; Iterate.</p><p>
+                                <span class="bold"><strong>Trigger</strong></span>: On Subjob Ok; Run if; On
+                                Component Ok; On Component Error</p><p> </p><p> Incoming
+                                links (from one component to another):</p><p>
+                                <span class="bold"><strong>Row</strong></span>:Iterate.</p><p>
+                                <span class="bold"><strong>Trigger</strong></span>: On Subjob Ok; Run if; On
+                                Component Ok; On Component Error; Synchronize;
+                                Parallelize.</p><p> </p><p> For further information regarding connections, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Waiting for a file to be removed"><div class="titlepage"><div><div><h3 class="title"><a name="d0e215637"></a>Scenario: Waiting for a file to be removed</h3></div></div></div><p>This scenario describes a Job scanning a directory and waiting for a file to be
+            removed from this directory, in order for a subjob to be executed. When the condition of
+            file removal is met, then the subjob simply displays a message box showing the file
+            being removed. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="305"><tr><td><img src="../images/Use_Case_tWaitForFile1.png" width="305"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>This use case only requires two components from the <span class="bold"><strong>Palette</strong></span>: <span class="bold"><strong>tWaitForFile</strong></span> and
+                        <span class="bold"><strong>tMsgbox</strong></span></p></li><li class="listitem"><p>Click and place these components on the design workspace and connect them
+                    using an <span class="bold"><strong>Iterate</strong></span> link to implement the
+                    loop.</p></li><li class="listitem"><p>Then select the <span class="bold"><strong>tWaitForFile</strong></span> component, and
+                    on the <span class="bold"><strong>Basic Settings</strong></span> view of the <span class="bold"><strong>Component</strong></span> tab, set the condition and loop properties: </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="398"><tr><td><img src="../images/Use_Case_tWaitForFile2.png" width="398"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Time (in seconds) between iteration
+                    </strong></span>field, set the time in seconds you want to wait before the next
+                    iteration starts. In this example, the directory will be scanned every
+                        <span class="emphasis"><em>5</em></span>&nbsp;seconds.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Max. number of iterations (infinite loop if
+                        empty) </strong></span>field, fill out the number of iterations max you want to
+                    have before the whole Job is forced to end. In this example, the directory will
+                    be scanned a maximum of 5 times.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Directory to scan </strong></span>field, type in the
+                    path to the folder to scan.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Trigger action when </strong></span>field, select the
+                    condition to be met, for the subjob to be triggered. In this use case, the
+                    condition is a file is deleted (or moved) from the directory. </p></li><li class="listitem"><p> In the <span class="bold"><strong>Then</strong></span> field, select the action to be
+                    carried out when the condition is met before the number of iteration defined is
+                    reached. In this use case, as soon as the condition is met, the loop should be
+                    ended.</p></li><li class="listitem"><p>Then set the subjob to be executed when the condition set is met. In this use
+                    case, the subjob simply displays a message box. </p></li><li class="listitem"><p>Select the <span class="bold"><strong>tMsgBox</strong></span> component, and on the
+                        <span class="bold"><strong>Basic Setting</strong></span> view of the <span class="bold"><strong>Component</strong></span> tab, set the message to be
+                    displayed.</p></li><li class="listitem"><p>Fill out the <span class="bold"><strong>Title</strong></span> and <span class="bold"><strong>Message</strong></span> fields. </p></li><li class="listitem"><p>Select the type of <span class="bold"><strong>Buttons</strong></span> and the <span class="bold"><strong>Icon</strong></span></p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Message</strong></span> field, you can write any type
+                    of message you want to display and use global variables available in the
+                    auto-completion list via <span class="bold"><strong>Ctrl+Space</strong></span>
+                    combination. </p></li><li class="listitem"><p>The  message is:
+                    </p><pre class="programlisting">"Deleted file: "+((String)globalMap.get("tWaitForFile_1_DELETED_FILE"))+"
+on iteration Nr:"+((Integer)globalMap.get("tWaitForFile_1_CURRENT_ITERATION"))</pre><p>
+                </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="486"><tr><td><img src="../images/Use_Case_tWaitForFile4.png" width="486"></td></tr></table></div><p>Then execute the Job via the <span class="bold"><strong>F6</strong></span> key. While the loop
+            is executing, remove a file from the location defined. The message pops up and shows the
+            defined message.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="345"><tr><td><img src="../images/Use_Case_tWaitForFile5.png" width="345"></td></tr></table></div></div></div></body></html>

@@ -1,0 +1,217 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMDMSP</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch16.html" title="Chapter&nbsp;16.&nbsp;Talend MDM components"><link rel="prev" href="tMDMRouteRecord.html" title="tMDMRouteRecord"><link rel="next" href="tMDMTriggerInput.html" title="tMDMTriggerInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tMDMSP"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMDMSP"></a>tMDMSP</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMDMSP_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tMDMSP Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e235266"></a>tMDMSP Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Component
+                                                  family</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>Talend MDM</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="bold"><strong>tMDMSP</strong></span>
+                                                  calls the MDM hub stored procedure.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="bold"><strong>tMDMSP</strong></span>
+                                                  offers a convenient way to centralize multiple or
+                                                  complex queries in a MDM hub and call them
+                                                  easily.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit Schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>In SP principle, the schema is an input
+                                                  parameter.</p>
+                                                  <p> A schema is a row description, i.e., it
+                                                  defines the number of fields to be processed and
+                                                  passed on to the next component. The schema is
+                                                  either built-in or remotely stored in the
+                                                  Repository. </p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Built-in</strong></span>:
+                                                  The schema is created and stored locally for this
+                                                  component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Repository</strong></span>:
+                                                  The schema already exists and is stored in the
+                                                  Repository, hence can be reused. Related topic:
+                                                  see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>&nbsp;</td><td><span class="emphasis"><em>Use an existing
+                                                  connection</em></span></td><td valign="top">Select this check box if you
+                                                  want to use a configured <span class="bold"><strong>tMDMConnection</strong></span> component.</td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>URL</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Type in the URL of the MDM server.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Username</em></span> and
+                                                  <span class="emphasis"><em>Password</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Type in the user authentication data for the
+                                                  MDM server.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Version</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Type in the name of the master data
+                                                  management Version you want to connect to, for
+                                                  which you have the user rights required.</p>
+                                                  <p> Leave this field empty if you want to
+                                                  display the default perspective.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Data Container</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Type in the name of the data container that
+                                                  stores the procedure you want to call.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>SP Name</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Type in the exact name of the Stored
+                                                  Procedure</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Parameters (in
+                                                  order)</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Click the Plus button and select the various
+                                                  <span class="bold"><strong>Input Columns</strong></span>
+                                                  that will be required by the procedures.</p>
+                                                  <p> </p>
+                                                  <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The SP schema can hold more columns than
+                                                  there are paramaters used in the procedure.</p></td></tr></table></div>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Connections</strong></span></p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p>Outgoing links (from one component to
+                                                  another):</p>
+                                                  <p>
+                                                  <span class="bold"><strong>Row</strong></span>: Main</p>
+                                                  <p>
+                                                  <span class="bold"><strong>Trigger</strong></span>: Run if;
+                                                  On Component Ok; On Component Error, On Subjob Ok,
+                                                  On Subjob Error.</p>
+                                                  <p> </p>
+                                                  <p> Incoming links (from one component to
+                                                  another):</p>
+                                                  <p>
+                                                  <span class="bold"><strong>Row</strong></span>: Main,
+                                                  Iterate;</p>
+                                                  <p>
+                                                  <span class="bold"><strong>Trigger</strong></span>: Run if,
+                                                  On Component Ok, On Component Error, On Subjob Ok,
+                                                  On Subjob Error </p>
+                                                  <p> </p>
+                                                  <p> For further information regarding
+                                                  connections, see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component is used as intermediary
+                                                  component. It can be used as start component but
+                                                  only no input parameters are thus needed for the
+                                                  procedure to be called. </p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>N/A</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Scenario: Executing a stored procedure in the MDM hub"><div class="titlepage"><div><div><h3 class="title"><a name="Raa51224"></a>Scenario: Executing a stored procedure in the MDM hub</h3></div></div></div><p>The following job is intended for calculating the total price of each kind of
+                        products recorded on your MDM Web UI. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="429"><tr><td><img src="../images/Use_Case_tMDMSP1.png" width="429"></td></tr></table></div><p>This Job will generate parameters used to execute a stored procedure in the
+                        MDM hub, then extract the desired data from the returned XML-format result
+                        and present the extracted data in the studio.</p><p>The products of which the prices are to be treated are listed on your MDM Web
+                        UI.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="524"><tr><td><img src="../images/Use_Case_tMDMSP2.png" width="524"></td></tr></table></div><p>The stored procedure to be executed can be found in <span class="bold"><strong>Stored Procedure</strong></span> node of the MDM server&#8217;s tree view and
+                        reads as follows:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="524"><tr><td><img src="../images/Use_case_tMDMSP6.png" width="524"></td></tr></table></div><p>For more information on a stored procedure in the MDM server, see <span class="bluebold">Talend Master Data Management</span>
+                        Administrator Guide.</p><p>To realize this Job, proceed as follows:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drag and drop the following components used in this example:
+                                                <span class="bold"><strong>tFixedFlowInput</strong></span>,
+                                                <span class="bold"><strong>tMDMSP</strong></span>, <span class="bold"><strong>tExtractXMLField</strong></span>, <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Connect the components using the <span class="bold"><strong>Row
+                                                Main </strong></span>link.</p></li><li class="listitem"><p>The <span class="bold"><strong>tFixedFlowInput</strong></span> is used
+                                        to generate the price range of your interest for this
+                                        calculation. In this example, define 10 as the minimum and
+                                        17 as the maximum in order to cover all of the
+                                        products.</p></li><li class="listitem"><p>Double-click on <span class="bold"><strong>tFixedFlowInput</strong></span> to open its <span class="bold"><strong>Component</strong></span> view.</p></li><li class="listitem"><p>On the <span class="bold"><strong>Component</strong></span> view, click
+                                        the <span class="bold"><strong>[...]</strong></span> button next to
+                                                <span class="bold"><strong>Edit schema</strong></span> to open
+                                        the schema editor of this component.</p></li><li class="listitem"><p>In the schema editor, add the two parameters
+                                                <span class="emphasis"><em>min</em></span> and
+                                                <span class="emphasis"><em>max</em></span> that are used to define the
+                                        price range.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="464"><tr><td><img src="../images/Use_case_tMDMSP3.png" width="464"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate this
+                                        editing.</p></li><li class="listitem"><p>On the <span class="bold"><strong>Values</strong></span> table in the
+                                                <span class="bold"><strong>Mode</strong></span> area of the
+                                                <span class="bold"><strong>Component</strong></span> view, the
+                                        two parameters <span class="emphasis"><em>min</em></span> and
+                                                <span class="emphasis"><em>max</em></span> that you have defined in
+                                        the schema editor of this component display.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Value</strong></span> column of the
+                                                <span class="bold"><strong>Values</strong></span> table, enter
+                                        10 for the <span class="emphasis"><em>min</em></span> parameter and 17 for the
+                                                <span class="emphasis"><em>max</em></span> parameter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="458"><tr><td><img src="../images/Use_case_tMDMSP4.png" width="458"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-click on <span class="bold"><strong>tMDMSP</strong></span> to
+                                        open its <span class="bold"><strong>Component</strong></span>
+                                        view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="509"><tr><td><img src="../images/Use_case_tMDMSP5.png" width="509"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>URL</strong></span> field of the
+                                                <span class="bold"><strong>Component</strong></span> view,
+                                        type in the MDM server address, in this example,
+                                                  <span class="emphasis"><em>http://localhost:8080/talend/TalendPort</em></span>.</p></li><li class="listitem"><p>In <span class="bold"><strong>Username</strong></span> and <span class="bold"><strong>Password</strong></span>, enter the
+                                        authentication information, in this example,
+                                                <span class="emphasis"><em>admin</em></span> and
+                                                <span class="emphasis"><em>talend</em></span>.</p></li><li class="listitem"><p>In <span class="bold"><strong>Data Container</strong></span> and
+                                                <span class="bold"><strong>Procedure Name</strong></span>,
+                                        enter the exact names of the data container
+                                                <span class="emphasis"><em>Product</em></span> and of the stored
+                                        procedure <span class="emphasis"><em>PriceAddition</em></span>.</p></li><li class="listitem"><p>Under the <span class="bold"><strong>Parameters (in
+                                                order)</strong></span> table, click the plus button two
+                                        times to add two rows in this table.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Parameters (in order)</strong></span>
+                                        table, click each of both rows you have added and from the
+                                        drop-down list, select the <span class="emphasis"><em>min</em></span>
+                                        parameter for one and the <span class="emphasis"><em>max</em></span> parameter
+                                        for the other.</p></li><li class="listitem"><p>Double-click on <span class="bold"><strong>tExtractXMLField</strong></span> to open its <span class="bold"><strong>Component</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="483"><tr><td><img src="../images/Use_case_tMDMSP7.png" width="483"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>On the <span class="bold"><strong>Component</strong></span> view, click
+                                        the <span class="bold"><strong>[...]</strong></span> button next to
+                                                <span class="bold"><strong>Edit schema</strong></span> to open
+                                        the schema editor of this component.</p></li><li class="listitem"><p>In the schema editor, add two columns to define the structure
+                                        of the outcoming data. These two columns are
+                                                <span class="emphasis"><em>name</em></span> and
+                                                <span class="emphasis"><em>sum</em></span>. They represent
+                                        respectively the name and the total price of each kind of
+                                        product recorded in the MDM Web UI.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="418"><tr><td><img src="../images/Use_case_tMDMSP8.png" width="418"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate the
+                                        configuration and the two columns display in the <span class="bold"><strong>Mapping</strong></span> table of the
+                                                <span class="bold"><strong>Component</strong></span>
+                                        view.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Loop XPath query</strong></span>
+                                        field, type in the node of the XML tree, which the loop is
+                                        based on. In this example, the node is
+                                                <span class="emphasis"><em>/result</em></span> as you can read in the
+                                        procedure code: <code class="code">return
+                                                &lt;result&gt;&lt;Name&gt;{$d}&lt;/Name&gt;&lt;Sum&gt;{sum($product/Price)}&lt;/Sum&gt;&lt;/result&gt;</code>. </p></li><li class="listitem"><p>In <span class="bold"><strong>XPath query</strong></span> of the
+                                                <span class="bold"><strong>Mapping</strong></span> table,
+                                        enter the exact node name on which the loop is applied. They
+                                        are <span class="emphasis"><em>/result/Name</em></span> used to extract the
+                                        product names and <span class="emphasis"><em>/result/Sum</em></span> used to
+                                        extract the total prices.</p></li><li class="listitem"><p>Eventually, double-click <span class="bold"><strong>tLogRow</strong></span> to open its <span class="bold"><strong>Component</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="483"><tr><td><img src="../images/Use_case_tMDMSP9.png" width="483"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Synchronize the schema with the preceding component.</p></li><li class="listitem"><p>And select the <span class="bold"><strong>Print values in cells of
+                                                a table</strong></span> check box for reading
+                                        convenience.</p></li><li class="listitem"><p>Then press <span class="bold"><strong>F6</strong></span> to execute the
+                                        Job.</p></li><li class="listitem"><p>See the outcoming data in the console of the <span class="bold"><strong>Run</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="407"><tr><td><img src="../images/Use_case_tMDMSP10.png" width="407"></td></tr></table></div><p>The output lists the four kinds of products recorded in the MDM Web UI and the
+                        total price for each of them.</p></div></div></body></html>

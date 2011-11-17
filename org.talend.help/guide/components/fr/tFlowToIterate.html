@@ -1,0 +1,134 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFlowToIterate</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch13.html" title="Chapitre&nbsp;13.&nbsp;Composants Orchestration"><link rel="prev" href="orchestration_tFileList.html" title="tFileList"><link rel="next" href="tForeach.html" title="tForeach"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFlowToIterate"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFlowToIterate"></a>tFlowToIterate</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFlowToIterate_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tFlowToIterate"><div class="titlepage"><div><div><h3 class="title"><a name="Raa10470"></a>Propri&eacute;t&eacute;s du tFlowToIterate</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille du composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Orchestration</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tFlowToIterate</strong></span>
+                                transforme un flux de donn&eacute;es en une liste. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tFlowToIterate</strong></span> permet de
+                                transformer un flux traitable en donn&eacute;es non traitables. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use the default (key, value) in global
+                                    variables</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Lorsque cette case est coch&eacute;e, le syst&egrave;me utilise la valeur par
+                                d&eacute;faut de la variable globale utilis&eacute;e dans le Job. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Customize</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>key&nbsp;</strong></span>: Entrez le nom de la
+                                nouvelle variable globale. Appuyez sur <span class="bold"><strong>Ctrl+Espace</strong></span> pour acc&eacute;der &agrave; l&#8217;ensemble des variables
+                                disponibles, qu&#8217;elles soient globales ou d&eacute;finies par l&#8217;utilisateur.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>value&nbsp;</strong></span>: Cliquez dans la cellule
+                                pour acc&eacute;der &agrave; la liste des colonnes rattach&eacute;es &agrave; la variable
+                                globale d&eacute;finie. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tFlowToIterate </strong></span>n&#8217;est pas un
+                                composant de d&eacute;but, et il requiert un composant de sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Global Variables</strong></span>
+                            </p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Number of Lines</strong></span>&nbsp;: indique le
+                                nombre de lignes trait&eacute;es. Disponible comme variable <span class="bold"><strong>After</strong></span>.</p>
+                            <p>Retourne un entier.</p>
+                            <p> </p>
+                            <p>Pour plus d&#8217;informations concernant les variables, consultez le
+                                    <span class="bold"><strong>Guide Utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Connections</strong></span>
+                            </p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>Liens de sortie (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+                            <p><span class="bold"><strong>Row</strong></span>&nbsp;: Iterate.</p>
+                            <p><span class="bold"><strong>Trigger</strong></span>&nbsp;: Run if, OnComponentOk,
+                                OnComponentError.</p>
+                            <p> </p>
+                            <p>Liens d&#8217;entr&eacute;e (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+                            <p><span class="bold"><strong>Row</strong></span>&nbsp;: Main.</p>
+                            <p> </p>
+                            <p>Pour plus d&#8217;informations concernant les liens, consultez&nbsp;le
+                                    <span class="bold"><strong>Guide utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Transformer un flux de donn&eacute;es en liste"><div class="titlepage"><div><div><h3 class="title"><a name="d0e223117"></a>Sc&eacute;nario&nbsp;: Transformer un flux de donn&eacute;es en liste</h3></div></div></div><p>Le sc&eacute;nario suivant d&eacute;crit un Job permettant de lire une liste de fichiers &agrave; partir
+            d&#8217;un fichier d&#8217;entr&eacute;e donn&eacute;. Il effectue &eacute;galement une it&eacute;ration sur chacun des
+            fichiers, s&eacute;lectionne les donn&eacute;es d&#8217;entr&eacute;e et affiche le r&eacute;sultat en sortie dans la
+            console de log <span class="bold"><strong>Run</strong></span>. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez-d&eacute;posez les
+                    composants suivants dans l&#8217;espace de mod&eacute;lisation&nbsp;: deux <span class="bold"><strong>tFileInputDelimited</strong></span>, un <span class="bold"><strong>tFlowToIterate</strong></span> et un <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Cliquez-droit sur chacun des composants pour les relier entre eux. Connectez
+                    le premier <span class="bold"><strong>tFileInputDelimited</strong></span> au <span class="bold"><strong>tFlowToIterate</strong></span> &agrave; l&#8217;aide d&#8217;un lien de type <span class="bold"><strong>Row Main</strong></span>, puis le <span class="bold"><strong>tFlowToIterate</strong></span> au deuxi&egrave;me <span class="bold"><strong>tFileInputDelimited</strong></span> &agrave; l&#8217;aide d&#8217;un lien de type <span class="bold"><strong>Iterate</strong></span>, enfin le second <span class="bold"><strong>tFileInputDelimited</strong></span> au <span class="bold"><strong>tLogRow</strong></span>
+                    &agrave; l&#8217;aide d&#8217;un lien de type <span class="bold"><strong>Row Main</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="487"><tr><td><img src="../images/Use_Case_tFlowToIterate1.png" width="487"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;espace graphique, s&eacute;lectionnez le premier <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li><li class="listitem"><p>Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                    composant <span class="bold"><strong>tFileInputDelimited</strong></span>. </p></li><li class="listitem"><p>Dans la vue <span class="bold"><strong>Basic settings</strong></span>, cliquez sur le
+                    bouton <span class="bold"><strong>[...]</strong></span> situ&eacute; &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>File Name</strong></span> pour d&eacute;terminer le chemin d&#8217;acc&egrave;s au
+                    fichier d&#8217;entr&eacute;e. </p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le champ <span class="bold"><strong>File Name</strong></span> est obligatoire.</p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="480"><tr><td><img src="../images/Use_Case_tFlowToIterate2.png" width="480"></td></tr></table></div><p>Le fichier d&#8217;entr&eacute;e utilis&eacute; dans ce sc&eacute;nario s&#8217;appelle <span class="emphasis"><em>Customers.</em></span>
+            Il s&#8217;agit d&#8217;un fichier texte contenant trois autres fichiers texte simples&nbsp;:
+                <span class="emphasis"><em>Name</em></span>, <span class="emphasis"><em>E-mail </em></span>et
+                <span class="emphasis"><em>Address</em></span>. Le fichier <span class="emphasis"><em>Name</em></span> est constitu&eacute;
+            d&#8217;une colonne contenant le nom des clients et le fichier <span class="emphasis"><em>E-mail</em></span>
+            d&#8217;une colonne contenant l&#8217;adresse email de ces clients. Le troisi&egrave;me fichier texte,
+                <span class="emphasis"><em>Address</em></span>, est compos&eacute; d&#8217;une colonne comprenant l&#8217;adresse postale
+            des clients. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Renseignez les autres champs en fonction de votre fichier. Pour plus
+                    d&#8217;informations sur le <span class="bold"><strong>tFileInputDelimited</strong></span>,
+                    consultez <a class="xref" href="tMDMInput.html#Raa86313" title="Propri&eacute;t&eacute;s du tMDMInput">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tMDMInput&nbsp;&raquo;</a>. Dans ce sc&eacute;nario, l&#8217;en-t&ecirc;te, le pied de
+                    page et le nombre limite de lignes &agrave; traiter ne sont pas d&eacute;finis. Donc, laissez
+                    les champs <span class="bold"><strong>Header</strong></span> (en-t&ecirc;te) et <span class="bold"><strong>Footer</strong></span> (pied de page) et <span class="bold"><strong>Limit</strong></span> par d&eacute;faut.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Edit schema </strong></span>pour
+                    d&eacute;crire la structure des donn&eacute;es du fichier d&#8217;entr&eacute;e. Dans ce sc&eacute;nario, le
+                    sch&eacute;ma comporte une seule colonne appel&eacute;e <span class="emphasis"><em>FileName.</em></span></p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="463"><tr><td><img src="../images/Use_Case_tFlowToIterate7.png" width="463"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;espace graphique, s&eacute;lectionnez le <span class="bold"><strong>tFlowToIterate</strong></span>.</p></li><li class="listitem"><p>Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                    composant <span class="bold"><strong>tFlowToIterate</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="368"><tr><td><img src="../images/Use_Case_tFlowToIterate3.png" width="368"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cochez la case <span class="bold"><strong>Use the default (key, value) in global
+                        variables</strong></span> si besoin. Cette option permet d&#8217;utiliser la valeur par
+                    d&eacute;faut de la variable globale. </p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter une
+                    ligne de param&egrave;tres puis d&eacute;finissez vos variables. </p></li><li class="listitem"><p>Cliquez dans la cellule de la colonne <span class="bold"><strong>key</strong></span>
+                    pour modifier le nom de la variable selon vos d&eacute;sirs. </p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Vous pouvez appuyer sur <span class="bold"><strong>Ctrl+Espace </strong></span>&agrave; partir de
+                la cellule de la colonne <span class="bold"><strong>key </strong></span>pour acc&eacute;der &agrave; la
+                liste des variables globales et des variables utilisateur. </p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;espace graphique, s&eacute;lectionnez le second composant <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li><li class="listitem"><p>Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) de ce
+                    second <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="523"><tr><td><img src="../images/Use_Case_tFlowToIterate4.png" width="523"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>File Name</strong></span>, renseignez le nom du
+                    fichier en utilisant la variable appropri&eacute;e. Vous devez saisir
+                        <span class="emphasis"><em>+globalMap.get(&#8220;file&#8221;)</em></span>.</p></li><li class="listitem"><p>Remplissez les autres champs selon vos besoins. Pour plus d&#8217;informations,
+                    consultez <a class="xref" href="tMDMInput.html#Raa86313" title="Propri&eacute;t&eacute;s du tMDMInput">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tMDMInput&nbsp;&raquo;</a>.</p></li><li class="listitem"><p>Dans l&#8217;espace graphique, s&eacute;lectionnez le dernier composant, le <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                        <span class="bold"><strong>tLogRow</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="423"><tr><td><img src="../images/Use_Case_tFlowToIterate6.png" width="423"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;finissez les param&egrave;tres selon vos besoins. Pour plus d&#8217;informations,
+                    consultez <a class="xref" href="tLogRow.html#Raa83212" title="Propri&eacute;t&eacute;s du tLogRow">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tLogRow&nbsp;&raquo;</a>.</p></li><li class="listitem"><p>Enregistrez votre Job puis appuyez sur <span class="bold"><strong>F6</strong></span>
+                    pour l&#8217;ex&eacute;cuter. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="414"><tr><td><img src="../images/Use_Case_tFlowToIterate5.png" width="414"></td></tr></table></div><p>La console affiche, pour chaque ligne, le nom du client, son e-mail et son adresse,
+            pr&eacute;c&eacute;d&eacute;s du nom de la colonne du sch&eacute;ma. </p></div></div></body></html>

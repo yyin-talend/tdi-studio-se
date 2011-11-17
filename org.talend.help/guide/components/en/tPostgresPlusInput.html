@@ -1,0 +1,126 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPostgresPlusInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="tPostgresPlusConnection.html" title="tPostgresPlusConnection"><link rel="next" href="tPostgresPlusOutput.html" title="tPostgresPlusOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tPostgresPlusInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPostgresPlusInput"></a>tPostgresPlusInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tPostgresPlusInput_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tPostgresPlusInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e124973"></a>tPostgresPlusInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>Databases/ PostgresPlus</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tPostgresPlusInput</strong></span> reads a database and extracts
+                                fields based on a query. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tPostgresPlusInput</strong></span> executes a DB query with a
+                                strictly defined order which must correspond to the schema
+                                definition. Then it passes on the field list to the next component
+                                via a Main row link.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top"><p>Either <span class="bold"><strong>Built-in</strong></span>
+                                or <span class="bold"><strong>Repository</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: No
+                                property data stored centrally.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>:
+                                Select the repository file in which the properties are stored. The
+                                fields that follow are completed automatically using the data
+                                retrieved.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="18"><tr><td><img src="../images/Save_Icon.png" width="18"></td></tr></table></div>
+                        </td><td valign="top"><p>Click this icon to open a database connection
+                                wizard and store the database connection parameters you set in the
+                                component <span class="bold"><strong>Basic settings
+                                </strong></span>view.</p><p> For more information about setting up and storing database connection parameters, see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use an existing
+                                connection</em></span></p>
+                        </td><td valign="top"><p>Select this check box when using a configured
+                                    <span class="bold"><strong>tPostgresplusConnection</strong></span>
+                                component.</p><p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> When a Job contains the parent Job and the child Job,
+                                        <span class="bold"><strong>Component list</strong></span> presents
+                                    only the connection components in the same Job level, so if you
+                                    need to use an existing connection from the other level, make
+                                    sure that the available connection components are sharing the
+                                    intended connection.</p><p> For more information on how to share a DB connec&shy;tion across
+                                    Job levels, see <span class="bold"><strong>Use or register a shared
+                                        DB connection</strong></span> in any database connection
+                                    compo&shy;nent corresponding to the database you are using.</p><p> Otherwise, you can as well deactivate the connection
+                                    components and use <span class="bold"><strong>Dynamic
+                                        settings</strong></span> of the compo&shy;nent to specify the
+                                    intended connection manually. In this case, make sure the
+                                    connection name is unique and distinctive all over through the
+                                    two Job levels. For more information about <span class="bold"><strong>Dynamic settings</strong></span>, see your studio user
+                                    guide.</p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top"><p>Database server IP address.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top"><p>Listening port number of DB server.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Database</em></span></p>
+                        </td><td valign="top"><p>Name of the database.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span></p>
+                        </td><td valign="top"><p>Exact name of the schema.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Username</em></span> and
+                                    <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top"><p>DB user authentication data.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>A schema is a row description, i.e., it defines
+                                the number of fields to be processed and passed on to the next
+                                component. The schema is either built-in or stored remotely in the
+                                Repository. </p><p> </p>
+                            
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: The schema is created and stored locally for this
+                                component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: The schema already exists and is stored in the
+                                Repository, hence can be reused. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Table name</em></span></p>
+                        </td><td valign="top"><p>Name of the table to be read. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Query type </em></span>and
+                                    <span class="emphasis"><em>Query</em></span></p>
+                        </td><td valign="top"><p>Enter your DB query paying particularly attention
+                                to properly sequence the fields in order to match the schema
+                                definition.</p>
+                            
+                        </td></tr><tr><td valign="top"><p><a name="Xaa2883195"></a><span class="bold"><strong>Advanced
+                                    settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use cursor</em></span></p>
+                        </td><td valign="top"><p>When selected, helps to decide the row set to work
+                                with at a time and thus optimize performance.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Trim all the String/Char
+                                    columns</em></span></p>
+                        </td><td valign="top"><p>Select this check box to remove leading and
+                                trailing whitespace from all the String/Char columns.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Trim column</em></span></p>
+                        </td><td valign="top"><p>Remove leading and trailing whitespace from
+                                defined columns.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher
+                                    Statistics</em></span></p>
+                        </td><td valign="top"><p>Select this check box to collect log data at the
+                                component level.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component covers all
+                                possible SQL queries for Postgresql databases.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e125369"></a>Related scenarios</h3></div></div></div><p>For related scenarios, see: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+                    <a class="xref" href="tDBInput.html#Raa95556" title="Scenario 1: Displaying selected data from DB table">the section called &#8220;Scenario 1: Displaying selected data from DB table&#8221;</a>.</p></li><li class="listitem"><p>
+                    <a class="xref" href="tDBInput.html#Raa80338" title="Scenario 2: Using StoreSQLQuery variable">the section called &#8220;Scenario 2: Using StoreSQLQuery variable&#8221;</a>.</p></li></ul></div></div></div></body></html>

@@ -1,0 +1,179 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSendMail</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch10.html" title="Chapter&nbsp;10.&nbsp;Internet components"><link rel="prev" href="tSCPTruncate.html" title="tSCPTruncate"><link rel="next" href="tSetKeystore.html" title="tSetKeystore"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tSendMail"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSendMail"></a>tSendMail</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tSendMail.png" width="27"></td></tr></table></div><div class="section" title="tSendMail Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e201155"></a>tSendMail Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Internet</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tSendMail</strong></span> sends emails and
+                                attachments to defined recipients.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tSendMail</strong></span> purpose is to notify
+                                recipients about a particular state of a Job or possible
+                                errors.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>To</em></span></p>
+                        </td><td valign="top">
+                            <p>Main recipient email address.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>From</em></span></p>
+                        </td><td valign="top">
+                            <p>Sending server email address.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Show sender&#8217;s name</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box if you want the sender name to show in the
+                                messages.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Cc</em></span></p>
+                        </td><td valign="top">
+                            <p>Email addresses of secondary recipients of the email message
+                                directed to another.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Bcc</em></span></p>
+                        </td><td valign="top">
+                            <p>Email addresses of secondary recipients of the email message.
+                                Recipients listed in the <span class="bold"><strong>Bcc</strong></span> field
+                                receive a copy of the message but are not shown on any other
+                                recipient's copy. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Subject</em></span></p>
+                        </td><td valign="top">
+                            <p>Heading of the mail.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Message</em></span></p>
+                        </td><td valign="top">
+                            <p>Body message of the email. Press <span class="bold"><strong>Ctrl+Space</strong></span> to display the list of available
+                                variables.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die if the attachment file doesn&#8217;t
+                                exist</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. Clear this check box if you
+                                want the message to be sent even if there are no attachments.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Attachments               / File and Content Transfer
+                                    Encoding</em></span></p>
+                        </td><td valign="top">
+                            <p>Click the plus button to add as many lines as needed where you can
+                                put filemask or path to the file to be sent along with the mail, if
+                                any. Two options are available for content transfer encoding, i.e.
+                                Default and Base64.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Other Headers</em></span></p>
+                        </td><td valign="top">
+                            <p>Click the plus button to add as many lines as needed where you can
+                                type the<span class="bold"><strong> Key</strong></span> and the corresponding
+                                    <span class="bold"><strong>Value</strong></span> of any header information
+                                that does not belong to the standard header.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>SMTP Host and Port</em></span></p>
+                        </td><td valign="top">
+                            <p>IP address of SMTP server used to send emails.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>SSL Support</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to authenticate the server at the client
+                                side via an SSL protocol.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>STARTTLS Support</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to authenticate the server at the client
+                                side via a STARTTLS protocol.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Importance</em></span></p>
+                        </td><td valign="top">
+                            <p>Select in the list the priority level of your messages.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Need authentication / Username and
+                                Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box and enter a username and a password in the
+                                corresponding fields if this is necessary to access the
+                                service.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. Clear the check box to skip
+                                the row on error and complete the process for error-free
+                                rows.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>MIME subtype from the &#8216;text&#8217; MIME type</em></span></p>
+                        </td><td valign="top">
+                            <p>Select in the list the structural form for the text of the
+                                message. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Encoding type</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the encoding from the list or select <span class="bold"><strong>Custom</strong></span> and define it manually.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is typically used as one sub-job but can also be
+                                used as output or end object. It can be connected to other
+                                components with either <span class="bold"><strong>Row</strong></span> or
+                                    <span class="bold"><strong>Iterate</strong></span> links.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Email on error"><div class="titlepage"><div><div><h3 class="title"><a name="d0e201575"></a>Scenario: Email on error</h3></div></div></div><p>This scenario creates a three-component Job which sends an email to defined recipients
+            when an error occurs.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="230"><tr><td><img src="../images/Use_Case_tSendMail.png" width="230"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from your <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tFileInputDelimited</strong></span>, <span class="bold"><strong>tFileOutputXML</strong></span>, <span class="bold"><strong>tSendMail</strong></span>.</p></li><li class="listitem"><p>Define <span class="bold"><strong>tFileInputdelimited</strong></span> properties.
+                    Related topic: <a class="xref" href="tFileInputDelimited.html" title="tFileInputDelimited">the section called &#8220;tFileInputDelimited&#8221;</a>.</p></li><li class="listitem"><p>Right-click on the <span class="bold"><strong>tFileInputDelimited</strong></span>
+                    component and select <span class="emphasis"><em>Row &gt; Main</em></span>. Then drag it onto the
+                        <span class="bold"><strong>tFileOutputXML</strong></span> component and release when
+                    the plug symbol shows up.</p></li><li class="listitem"><p>Define <span class="bold"><strong>tFileOutputXML</strong></span> properties. </p></li><li class="listitem"><p>Drag a <span class="bold"><strong>Run on Error</strong></span> link from <span class="bold"><strong>tFileDelimited</strong></span> to <span class="bold"><strong>tSendMail</strong></span> component.</p></li><li class="listitem"><p>Define the <span class="bold"><strong>tSendMail</strong></span> component
+                    properties:</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tSendMail1.png" width="100%"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Enter the recipient and sender email addresses, as well as the email
+                    subject.</p></li><li class="listitem"><p>Enter a message containing the error code produced using the corresponding
+                    global variable. Access the list of variables by pressing <span class="bold"><strong>Ctrl+Space</strong></span>.</p></li><li class="listitem"><p>Add attachments and extra header information if any. Type in the SMTP
+                    information.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="474"><tr><td><img src="../images/Use_Case_tSendMail2.png" width="474"></td></tr></table></div><p>In this scenario, the file containing data to be transferred to XML output cannot be
+            found. <span class="bold"><strong>tSendmail</strong></span> runs on this error and sends a
+            notification email to the defined recipient.</p></div></div></body></html>

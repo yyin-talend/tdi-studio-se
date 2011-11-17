@@ -1,0 +1,88 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tBufferInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch12.html" title="Chapitre&nbsp;12.&nbsp;Composants Misc"><link rel="prev" href="tAddLocationFromIP.html" title="tAddLocationFromIP"><link rel="next" href="tBufferOutput.html" title="tBufferOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tBufferInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tBufferInput"></a>tBufferInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tBufferInput_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tBufferInput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e219400"></a>Propri&eacute;t&eacute;s du tBufferInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"><col></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Misc</p>
+                        </td><td valign="top">&nbsp;</td><td class="auto-generated">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant permet de r&eacute;cup&eacute;rer les donn&eacute;es mises en tampon pour
+                                pouvoir les r&eacute;utiliser dans un deuxi&egrave;me sous-job.</p>
+                        </td><td class="auto-generated">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tBufferInput</strong></span>
+                                r&eacute;cup&egrave;re les donn&eacute;es mises en m&eacute;moire tampon, via un composant
+                                    <span class="bold"><strong>tBufferOutput</strong></span> par exemple, pour
+                                les traiter dans un deuxi&egrave;me temps.</p>
+                        </td><td class="auto-generated">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository.</p>
+                            <p> Lors de l&#8217;utilisation du <span class="bold"><strong>tBufferInput</strong></span>, c&#8217;est l&#8217;ordre des colonnes qui est
+                                pris en compte, ainsi l&#8217;ordre des colonnes est plus important que
+                                leur libell&eacute;.</p>
+                        </td><td class="auto-generated">&nbsp;</td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma est cr&eacute;&eacute; et
+                                conserv&eacute; pour ce composant uniquement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td><td class="auto-generated">&nbsp;</td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+                                r&eacute;utilisable dans divers projets et Jobs. Voir &eacute;galement&nbsp;le
+                                    <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td><td class="auto-generated">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est le composant de d&eacute;but d&#8217;un Job secondaire qui se
+                                d&eacute;clenche automatiquement &agrave; la fin du Job principal.</p>
+                        </td><td class="auto-generated">&nbsp;</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: R&eacute;cup&eacute;rer les donn&eacute;es mises en tampon"><div class="titlepage"><div><div><h3 class="title"><a name="d0e219543"></a>Sc&eacute;nario&nbsp;: R&eacute;cup&eacute;rer les donn&eacute;es mises en tampon</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job qui r&eacute;cup&egrave;re les donn&eacute;es mises en m&eacute;moire tampon lors de
+            l&#8217;ex&eacute;cution d&#8217;un premier sous-job et les affiche dans la console standard.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="291"><tr><td><img src="../images/Use_Case_tBufferInput1.png" width="291"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez et d&eacute;posez les composants suivants&nbsp;: <span class="bold"><strong>tFileInputDelimited</strong></span> et <span class="bold"><strong>tBufferOutput</strong></span>.</p></li><li class="listitem"><p>S&eacute;lectionnez le composant <span class="bold"><strong>tFileInputDelimited</strong></span>
+                    et dans l&#8217;onglet <span class="bold"><strong>Basic Settings</strong></span> de la vue
+                        <span class="bold"><strong>Component</strong></span>, param&eacute;trez les propri&eacute;t&eacute;s
+                    d&#8217;acc&egrave;s au fichier d&#8217;entr&eacute;e.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="376"><tr><td><img src="../images/Use_Case_tBufferOutput2.png" width="376"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>File Name</strong></span>, param&eacute;trez le chemin
+                    d&#8217;acc&egrave;s au fichier d&eacute;limit&eacute; contenant les donn&eacute;es &agrave; mettre en tampon.</p></li><li class="listitem"><p>Dans les champs <span class="bold"><strong>Row</strong></span> et <span class="bold"><strong>Field separators</strong></span>, renseignez respectivement les s&eacute;parateurs de
+                    lignes et de champs.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Header</strong></span>, renseignez les
+                    informations sur un &eacute;ventuel en-t&ecirc;te.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; cot&eacute; du champ
+                        <span class="bold"><strong>Schema type</strong></span> pour d&eacute;crire la structure du
+                    fichier&nbsp;</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="457"><tr><td><img src="../images/Use_Case_tBufferOutput3.png" width="457"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;crivez le <span class="bold"><strong>Sch&eacute;ma</strong></span> des donn&eacute;es &agrave; passer au
+                    composant <span class="bold"><strong>tBufferOutput</strong></span>.</p></li><li class="listitem"><p>S&eacute;lectionnez le composant <span class="bold"><strong>tBufferOutput</strong></span> et
+                    param&eacute;trez ses propri&eacute;t&eacute;s dans l&#8217;onglet <span class="bold"><strong>Basic
+                        Settings</strong></span> de la vue <span class="bold"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="469"><tr><td><img src="../images/Use_Case_tBufferOutput4.png" width="469"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>G&eacute;n&eacute;ralement le sch&eacute;ma du composant d&#8217;entr&eacute;e alimente automatiquement le
+                    sch&eacute;ma du composant <span class="bold"><strong>tBufferOutput</strong></span>. Mais vous
+                    pouvez aussi configurer une partie du sch&eacute;ma &agrave; mettre en tampon si vous le
+                    souhaitez.</p></li><li class="listitem"><p>D&eacute;posez les composants <span class="bold"><strong>tBufferInput</strong></span> et
+                        <span class="bold"><strong>tLogRow</strong></span> en dessous du sous-job que vous
+                    venez de cr&eacute;er.</p></li><li class="listitem"><p>Reliez le composant <span class="bold"><strong>tFileInputDelimited</strong></span> au
+                        <span class="bold"><strong>tBufferInput</strong></span> via un lien de type <span class="bold"><strong>Trigger</strong></span> &gt; <span class="bold"><strong>OnSubjobOk</strong></span> et reliez le composant <span class="bold"><strong>tBufferInput</strong></span> au <span class="bold"><strong>tLogRow</strong></span> via un
+                    lien de type <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tBufferInput</strong></span>
+                    pour param&eacute;trer ses propri&eacute;t&eacute;s dans la vue <span class="bold"><strong>Component</strong></span>.</p></li><li class="listitem"><p>Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>, cliquez sur le
+                    bouton [...] &agrave; cot&eacute; du champ <span class="bold"><strong>Schema</strong></span> pour
+                    d&eacute;crire la structure du fichier. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="274"><tr><td><img src="../images/Use_Case_tBufferInput2.png" width="274"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Utilisez la m&ecirc;me description de fichier que celle d&eacute;finie pour le composant
+                        <span class="bold"><strong>tFileInputDelimited</strong></span> et cliquez sur
+                        <span class="bold"><strong>OK</strong></span>.</p></li><li class="listitem"><p>Le sch&eacute;ma du composant <span class="bold"><strong>tBufferInput</strong></span> alimente
+                    automatiquement le sch&eacute;ma du composant <span class="bold"><strong>tLogRow</strong></span>.
+                    Sinon double-cliquez sur le <span class="bold"><strong>tLogRow</strong></span> pour
+                    afficher ses propri&eacute;t&eacute;s dans la vue <span class="bold"><strong>Component</strong></span>
+                    et cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span>.</p></li><li class="listitem"><p>Enregistrez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="378"><tr><td><img src="../images/Use_Case_tBufferInput3.png" width="378"></td></tr></table></div><p>La console affiche les donn&eacute;es qui ont &eacute;t&eacute; r&eacute;cup&eacute;r&eacute;s de la m&eacute;moire tampon. </p></div></div></body></html>

@@ -1,0 +1,71 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tDTDValidator</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch18.html" title="Chapitre&nbsp;18.&nbsp;Composants XML"><link rel="prev" href="tAdvancedFileOutputXML.html" title="tAdvancedFileOutputXML"><link rel="next" href="tEDIFACTtoXML.html" title="tEDIFACTtoXML"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tDTDValidator"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tDTDValidator"></a>tDTDValidator</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tDTDValidator.png" width="27"></td></tr></table></div><a name="Xaa2824618"></a><div class="section" title="Propri&eacute;t&eacute;s du tDTDValidator"><div class="titlepage"><div><div><h3 class="title"><a name="d0e250621"></a>Propri&eacute;t&eacute;s du tDTDValidator</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>XML</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tDTDValidator</strong></span> valide un fichier XML
+                                entrant en fonction d&#8217;une DTD et envoie les informations de
+                                validation &agrave; la sortie d&eacute;finie.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant permet de
+                                v&eacute;rifier les donn&eacute;es et la qualit&eacute; de la structure du fichier trait&eacute;
+                            </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository. Le sch&eacute;ma de ce composant est en lecture seule. Il
+                                contient les informations standard de validation de fichier.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>DTD file</em></span></p>
+                        </td><td valign="top"><p>Chemin d&#8217;acc&egrave;s au fichier DTD de r&eacute;f&eacute;rence.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>XML file</em></span></p>
+                        </td><td valign="top"><p>Chemin d&#8217;acc&egrave;s au fichier XML &agrave; valider.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>If XML is valid, display
+                                    </em></span><span class="emphasis"><em>If XML is not valid detected,
+                                    display</em></span></p>
+                        </td><td valign="top"><p>Saisissez un message &agrave; afficher dans la console
+                                    <span class="bold"><strong>Run</strong></span> bas&eacute; sur le r&eacute;sultat de la
+                                comparaison.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Print to console</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour afficher le message de
+                                validation.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant peut &ecirc;tre
+                                utilis&eacute; en standalone mais il est g&eacute;n&eacute;ralement connect&eacute; &agrave; un
+                                composant de sortie pour rassembler les informations de
+                                validation.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Valider un fichier XML"><div class="titlepage"><div><div><h3 class="title"><a name="Raa71042"></a>Sc&eacute;nario&nbsp;: Valider un fichier XML</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job permettant de valider plusieurs fichiers d&#8217;un r&eacute;pertoire et
+            de transmettre les informations de validation des fichiers non valides dans un fichier
+            d&eacute;limit&eacute;.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="521"><tr><td><img src="../images/Use_Case_tDTDValidator1.png" width="521"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez et d&eacute;posez les composants suivants de la <span class="bold"><strong>Palette&nbsp;</strong></span>: <span class="bold"><strong>tFileList</strong></span>, <span class="bold"><strong>tDTDValidator</strong></span>, <span class="bold"><strong>tMap</strong></span>,
+                        <span class="bold"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="listitem"><p>Connectez le <span class="bold"><strong>tFileList</strong></span> et le <span class="bold"><strong>tDTDValidator</strong></span> avec un lien <span class="bold"><strong>Iterate</strong></span> et les composants restants avec des liens <span class="bold"><strong>Row Main</strong></span>.</p></li><li class="listitem"><p>Param&eacute;trez les propri&eacute;t&eacute;s du composant <span class="bold"><strong>tFileList</strong></span> afin qu&#8217;il r&eacute;cup&egrave;re les fichiers XML du
+                    r&eacute;pertoire.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="396"><tr><td><img src="../images/Use_Case_tDTDValidator2.png" width="396"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Filemask</strong></span>, saisissez le masque
+                        <span class="emphasis"><em>*.xml</em></span> entre guillemets doubles.</p></li><li class="listitem"><p>Param&eacute;trez le chemin d&#8217;acc&egrave;s des fichiers XML &agrave; v&eacute;rifier.</p></li><li class="listitem"><p>D&eacute;cochez la case <span class="bold"><strong>Case Sensitive</strong></span>.</p></li><li class="listitem"><p>Dans la vue <span class="bold"><strong>Component</strong></span> du composant <span class="bold"><strong>tDTDValidate</strong></span>, le sch&eacute;ma est en lecture seule
+                    puisqu&#8217;il contient des informations de validation standard.</p></li><li class="listitem"><p>Param&eacute;trez les propri&eacute;t&eacute;s du fichier DTD &agrave; utiliser comme r&eacute;f&eacute;rence, dans le
+                    champ <span class="bold"><strong>DTD file</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="488"><tr><td><img src="../images/Use_Case_tDTDValidator3.png" width="488"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Xml file</strong></span>, appuyez sur <span class="bold"><strong>Ctrl+Espace</strong></span> pour acc&eacute;der &agrave; la liste des variables
+                    globales et s&eacute;lectionnez la variable permettant de r&eacute;cup&eacute;rer le chemin d&#8217;acc&egrave;s
+                    des fichiers&nbsp;:
+                    <code class="code">((String)globalMap.get("tFileList_1_CURRENT_FILE"))</code></p></li><li class="listitem"><p>Dans les divers messages &agrave; afficher dans la console <span class="bold"><strong>Run</strong></span>, utilisez JobName pour afficher le libell&eacute; du Job. Rappelez
+                    aussi le nom du fichier gr&acirc;ce &agrave; la variable&nbsp;:
+                        <code class="code">((String)globalMap.get("tFileList_1_CURRENT_FILE"))</code>.</p></li><li class="listitem"><p>Cochez la case <span class="bold"><strong>Print to Console</strong></span>.</p></li><li class="listitem"><p>Dans le composant <span class="bold"><strong>tMap</strong></span>, glissez-d&eacute;posez les
+                    informations de validation du sch&eacute;ma standard que vous souhaitez passer au
+                    fichier de sortie.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="472"><tr><td><img src="../images/Use_Case_tDTDValidator4.png" width="472"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Une fois que le sch&eacute;ma de sortie est d&eacute;fini, ajoutez un filtre de condition
+                    pour ne s&eacute;lectionner que les informations lorsque le fichier XML n&#8217;est pas
+                    valide.</p></li><li class="listitem"><p>Saisissez d&#8217;abord la valeur souhait&eacute;e pour cette variable, l&#8217;op&eacute;rateur en
+                    fonction du type de donn&eacute;es filtr&eacute;es puis la variable devant correspondre &agrave;
+                    cette condition, ici&nbsp;: <code class="code">0 == $row1[validate]</code></p></li><li class="listitem"><p>Puis (si cela n&#8217;est pas d&eacute;j&agrave; effectu&eacute;) connectez le <span class="bold"><strong>tMap</strong></span> au <span class="bold"><strong>tFileOutputDelimited</strong></span>
+                    via un lien main row. Nommez-le <span class="emphasis"><em>errorsOnly</em></span>.</p></li><li class="listitem"><p>Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> du composant
+                        <span class="bold"><strong>tFileOutputDelimited</strong></span>, param&eacute;trez le chemin
+                    d&#8217;acc&egrave;s de destination du fichier d&eacute;limit&eacute;, les s&eacute;parateurs de champs et
+                    l&#8217;encodage.</p></li><li class="listitem"><p>Enregistrez le Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="322"><tr><td><img src="../images/Use_Case_tDTDValidator5.png" width="322"></td></tr></table></div><p>Dans la console de la vue <span class="bold"><strong>Run</strong></span>, les messages d&eacute;finis
+            apparaissent pour chaque fichier invalide. Au m&ecirc;me moment, le fichier de sortie est
+            aliment&eacute; avec les informations de validation.</p></div></div></body></html>

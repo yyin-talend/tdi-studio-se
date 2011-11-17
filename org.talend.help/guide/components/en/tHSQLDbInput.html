@@ -1,0 +1,152 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHSQLDbInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="tHiveRow.html" title="tHiveRow"><link rel="next" href="tHSQLDbOutput.html" title="tHSQLDbOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tHSQLDbInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHSQLDbInput"></a>tHSQLDbInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tHSQLDbInput_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tHSQLDbInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e75836"></a>tHSQLDbInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>Databases/HSQLDb</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tHSQLDbInput</strong></span> reads a database and extracts fields
+                                based on a query. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tHSQLDbInput</strong></span> executes a DB query with a strictly
+                                defined order which must correspond to the schema definition. Then
+                                it passes on the field list to the next component via a Main row
+                                link.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top"><p>Either <span class="bold"><strong>Built-in</strong></span>
+                                or Repository.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: No
+                                property data stored centrally.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>:
+                                Select the repository file in which the properties are stored. The
+                                fields that follow are completed automatically using the data
+                                retrieved.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="18"><tr><td><img src="../images/Save_Icon.png" width="18"></td></tr></table></div>
+                        </td><td valign="top"><p>Click this icon to open a database connection
+                                wizard and store the database connection parameters you set in the
+                                component <span class="bold"><strong>Basic settings
+                                </strong></span>view.</p><p> For more information about setting up
+                                and storing database connection parameters, see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Running Mode</em></span></p>
+                        </td><td valign="top"><p>Select on the list the Server Mode corresponding
+                                to your DB setup among the four propositions :</p><p>
+                                <span class="bold"><strong>HSQLDb Server</strong></span>, <span class="bold"><strong>HSQLDb WebServer</strong></span>, <span class="bold"><strong>HSQLDb In Process Persistent</strong></span>, <span class="bold"><strong>HSQLDb In Memory</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use TLS/SSL sockets</em></span></p>
+                        </td><td valign="top"><p>select this check box to enable the secured mode
+                                if required.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top"><p>Database server IP address</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top"><p>Listening port number of DB server.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Database Alias</em></span></p>
+                        </td><td valign="top"><p>Alias name of the database</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Username</em></span> and
+                                    <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top"><p>DB user authentication data.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>DB path</em></span></p>
+                        </td><td valign="top"><p>Specify the directory to the database you want to
+                                connect to. This field is available only to the <span class="bold"><strong>HSQLDb In Process Persistent</strong></span> running
+                                mode.</p><p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> By default, if the database you specify in this field does
+                                    not exist, it will be created automat&shy;ically. If you want to
+                                    change this default set&shy;ting, modify the connection parameter
+                                    set in the <span class="bold"><strong>Additional JDBC
+                                        parameter</strong></span> field in the <span class="bold"><strong>Advanced settings</strong></span> view</p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Db name</em></span></p>
+                        </td><td valign="top"><p>Enter the database name that you want to connect
+                                to. This field is available only to the <span class="bold"><strong>HSQLDb
+                                    In Process Persistent</strong></span> running mode and the <span class="bold"><strong>HSQLDb In Memory</strong></span> running mode.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                    schema</em></span></p>
+                        </td><td valign="top"><p>A schema is a row description, i.e., it defines
+                                the number of fields to be processed and passed on to the next
+                                component. The schema is either <span class="bold"><strong>Built-in</strong></span> or stored remotely in the <span class="bold"><strong>Repository</strong></span>. </p><p> </p>
+                            
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: The
+                                schema is created and stored locally for this component only.
+                                Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: The
+                                schema already exists and is stored in the Repository, hence can be
+                                reused. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Query type</em></span> and
+                                    <span class="emphasis"><em>Query</em></span></p>
+                        </td><td valign="top"><p>Enter your DB query paying particularly attention
+                                to properly sequence the fields in order to match the schema
+                                definition. </p>
+                            
+                        </td></tr><tr><td valign="top"><p><a name="Xaa3636591"></a><span class="bold"><strong>Advanced
+                                    settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Additional JDBC
+                                parameters</em></span></p>
+                        </td><td valign="top"><p>Specify additional connection properties for the
+                                DB connection you are creating. When the running mode is <span class="bold"><strong>HSQLDb In Process Persistent </strong></span>, this
+                                additional property is set as <code class="code">ifexists=true</code> by default,
+                                meaning that the database will be automatically created when
+                                needed.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Trim all the String/Char
+                                    columns</em></span></p>
+                        </td><td valign="top"><p>Select this check box to remove leading and
+                                trailing whitespace from all the String/Char columns.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Trim column</em></span></p>
+                        </td><td valign="top"><p>Remove leading and trailing whitespace from
+                                defined columns.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher
+                                    Statistics</em></span></p>
+                        </td><td valign="top"><p>Select this check box to collect log data at the
+                                component level.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component covers all
+                                possible SQL queries for HSQLDb databases.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Global
+                                Variables</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Number of Lines</strong></span>:
+                                Indicates the number of lines processed. This is available as an
+                                    <span class="bold"><strong>After</strong></span> variable.</p><p>
+                                Returns an integer. </p><p> </p><p> Query: Indicates the
+                                query to be processed. This is available as a <span class="bold"><strong>Flow</strong></span> variable.</p><p> Returns a string
+                                </p><p> For further information about variables, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Outgoing links (from one component to
+                                another):</p><p>
+                                <span class="bold"><strong>Row</strong></span>: Main; Iterate</p><p>
+                                <span class="bold"><strong>Trigger</strong></span>: Run if; On Component Ok;
+                                On Component Error; On Subjob Ok; On Subjob
+                                Error.</p><p> </p><p> Incoming links (from one component
+                                to another):</p><p>
+                                <span class="bold"><strong>Row</strong></span>: Iterate; </p><p>
+                                <span class="bold"><strong>Trigger</strong></span>: Run if; On Component Ok;
+                                On Component Error; On Subjob Ok; On Subjob
+                                Error.</p><p> </p><p> For further information regarding
+                                connections, see <span class="bluebold">Talend Open Studio</span>
+                                User Guide.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e76347"></a>Related scenarios</h3></div></div></div><p>For related topics, see the <span class="bold"><strong>tDBInput</strong></span> scenarios: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+                    <a class="xref" href="tDBInput.html#Raa95556" title="Scenario 1: Displaying selected data from DB table">the section called &#8220;Scenario 1: Displaying selected data from DB table&#8221;</a>. </p></li><li class="listitem"><p>
+                    <a class="xref" href="tDBInput.html#Raa80338" title="Scenario 2: Using StoreSQLQuery variable">the section called &#8220;Scenario 2: Using StoreSQLQuery variable&#8221;</a></p></li></ul></div></div></div></body></html>

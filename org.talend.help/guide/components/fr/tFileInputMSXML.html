@@ -1,0 +1,192 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputMSXML</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapitre&nbsp;9.&nbsp;Composants File"><link rel="prev" href="tFileInputMSPositional.html" title="tFileInputMSPositional"><link rel="next" href="tFileInputPositional.html" title="tFileInputPositional"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFileInputMSXML"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputMSXML"></a>tFileInputMSXML</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileInputMSXML_icon32.png" width="27"></td></tr></table></div><a name="Xaa3477420"></a><div class="section" title="Propri&eacute;t&eacute;s du tFileInputMSXML"><div class="titlepage"><div><div><h3 class="title"><a name="d0e186193"></a>Propri&eacute;t&eacute;s du tFileInputMSXML</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille du composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>XML ou File/Input</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tFileInputMSXML</strong></span>
+                                permet de lire des sch&eacute;mas multiples &agrave; partir d&#8217;un fichier XML
+                                structur&eacute; et de les restituer en sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tFileInputMSXML</strong></span> ouvre le
+                                fichier multi&nbsp;structure complexe, en lit la structure (sch&eacute;mas) puis
+                                utilise des liens de type <span class="bold"><strong>Row</strong></span> pour
+                                envoyer les champs, tels qu&#8217;ils ont &eacute;t&eacute; d&eacute;finis dans les diff&eacute;rents
+                                sch&eacute;mas, vers les composants suivants dans le Job. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>File Name</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Chemin d&#8217;acc&egrave;s et nom du fichier, et/ou variable &agrave; traiter.</p>
+                            <p> </p>
+                            <p>Pour plus d&#8217;informations concernant l&#8217;utilisation et la d&eacute;finition
+                                de variables, consultez le<span class="bold"><strong>Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Root XPath query</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Racine de l&#8217;arborescence XML sur laquelle se base la
+                                requ&ecirc;te.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Enable XPath in column &#8220;Schema XPath loop&#8221; But lose the
+                                    order</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case si vous souhaitez d&eacute;finir un chemin XPath dans
+                                le champ <span class="bold"><strong>Schema XPath loop</strong></span> du
+                                tableau <span class="bold"><strong>Outputs</strong></span>.</p>
+                            <div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Cette option n&#8217;est disponible qu&#8217;avec le mode de
+                                        g&eacute;n&eacute;ration </em></span>
+                                    <span class="bold"><strong>dom4j</strong></span>
+                                    <span class="emphasis"><em>. V&eacute;rifiez donc que ce mode a bien &eacute;t&eacute; s&eacute;lectionn&eacute;
+                                        dans la liste </em></span>
+                                    <span class="bold"><strong>Generation mode</strong></span>
+                                    <span class="emphasis"><em> dans l&#8217;onglet </em></span>
+                                    <span class="bold"><strong>Advanced settings</strong></span>
+                                    <span class="emphasis"><em> de votre composant. Si vous utilisez cette option,
+                                        les donn&eacute;es ne seront pas retourn&eacute;es dans
+                                        l&#8217;ordre.</em></span>
+                                </p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Outputs</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Schema&nbsp;</strong></span>: d&eacute;finissez autant de
+                                sch&eacute;mas que n&eacute;cessaire.</p>
+                            <p>
+                                <span class="bold"><strong>Schema XPath loop&nbsp;</strong></span>: n&#339;ud ou chemin
+                                XPath de l&#8217;arborescence XML sur lequel la boucle est bas&eacute;e.</p>
+                            <div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Si vous souhaitez utiliser un chemin XPath dans le
+                                        champ </em></span>
+                                    <span class="bold"><strong>Schema XPath loop</strong></span>
+                                    <span class="emphasis"><em>, vous devez pr&eacute;alablement cocher la case </em></span>
+                                    <span class="bold"><strong>Enable XPath in column &#8220;Schema XPath loop&#8221;
+                                        but lose the order</strong></span>
+                                    <span class="emphasis"><em>. </em></span>
+                                </p></td></tr></table></div>
+                            <p><span class="bold"><strong>XPath Queries</strong></span>&nbsp;: renseignez les
+                                champs &agrave; extraire de la structure XML d&#8217;entr&eacute;e.</p>
+                            <p><span class="bold"><strong>Create empty row&nbsp;</strong></span>: cochez les
+                                cases des sch&eacute;mas pour lesquels vous voulez cr&eacute;er des lignes
+                                vides.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Die on error</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job en cas d&#8217;erreur.
+                                D&eacute;cochez cette case pour terminer le traitement avec les lignes sans
+                                erreurs, et ignorer les lignes en erreur. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Trim all column</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour supprimer les espaces en d&eacute;but et en fin de
+                                champ dans toutes les colonnes.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Validate date</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour v&eacute;rifier strictement le format de la date
+                                par rapport au sch&eacute;ma d&#8217;entr&eacute;e.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Ignore DTD
+                            file</span></td><td valign="top">Cochez cette case afin d'ignorer le fichier DTD indiqu&eacute;
+                            dans le fichier XML trait&eacute;.</td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Generation mode</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez le mode de g&eacute;n&eacute;ration dans la liste.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Encoding</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+                                    <span class="bold"><strong>Custom</strong></span> et d&eacute;finissez-le
+                                manuellement. Ce champ est obligatoire pour la manipulation des
+                                donn&eacute;es de base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+                                Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque
+                                composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Lecture d&#8217;un fichier XML multi&nbsp;structur&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e186553"></a>Sc&eacute;nario&nbsp;: Lecture d&#8217;un fichier XML multi&nbsp;structur&eacute;</h3></div></div></div><p>Le pr&eacute;sent sc&eacute;nario sert &agrave; cr&eacute;er un Job en Java permettant de lire un fichier XML
+            multi-sch&eacute;ma et d&#8217;en afficher la structure sur la console de la vue <span class="bold"><strong>Run</strong></span>.</p><p>Le fichier XML trait&eacute; dans ce sc&eacute;nario se pr&eacute;sente comme suit&nbsp;:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="281"><tr><td><img src="../images/Use_Case_tFileInputMSXML.png" width="281"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez et d&eacute;posez le composant <span class="bold"><strong>tFileInputMSXML</strong></span> et deux composants <span class="bold"><strong>tLogRow
+                    </strong></span>dans l&#8217;&eacute;diteur graphique.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFileInputMSXML </strong></span>pour
+                    afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de la vue
+                        <span class="bold"><strong>Component</strong></span> et param&eacute;trer ses
+                    propri&eacute;t&eacute;s&nbsp;:</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="500"><tr><td><img src="../images/Use_Case_tFileInputMSXML1.png" width="500"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>File Name</strong></span>, s&eacute;lectionnez le
+                    fichier XML que vous souhaitez traiter.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Root XPath query</strong></span>, indiquez la
+                    racine de l&#8217;arborescence XML sur laquelle sera bas&eacute;e la requ&ecirc;te.</p></li><li class="listitem"><p>Cochez la case <span class="bold"><strong>Enable XPath in column &#8220;Schema XPath
+                        loop&#8221; But lose the order</strong></span> si vous souhaitez d&eacute;finir un chemin
+                    XPath dans le champ <span class="bold"><strong>Schema XPath loop</strong></span> du
+                    tableau <span class="bold"><strong>Outputs</strong></span>. Dans ce sc&eacute;nario, vous
+                    n&#8217;utilisez pas cette option.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter des
+                    lignes au tableau <span class="bold"><strong>Outputs</strong></span> dans lesquelles vous
+                    pouvez d&eacute;finir les sch&eacute;mas de sortie.</p></li><li class="listitem"><p>Dans le tableau <span class="bold"><strong>Outputs</strong></span>, cliquez dans chaque
+                    cellule <span class="bold"><strong>Schema</strong></span> et cliquez sur le bouton
+                        <span class="bold"><strong>[...]</strong></span> pour saisir le nom du sch&eacute;ma dans la
+                    bo&icirc;te de dialogue qui s&#8217;ouvre.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="336"><tr><td><img src="../images/Use_Case_tFileInputMSXML2.png" width="336"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Saisissez le nom du sch&eacute;ma de sortie et cliquez sur <span class="bold"><strong>OK</strong></span>.</p><p>L&#8217;&eacute;diteur de sch&eacute;ma du <span class="bold"><strong>tFileInputMSXML</strong></span>
+                    appara&icirc;t.</p></li><li class="listitem"><p>D&eacute;finissez le sch&eacute;ma d&eacute;j&agrave; d&eacute;fini dans le tableau <span class="bold"><strong>Outputs</strong></span>.</p></li><li class="listitem"><p>Effectuez cette proc&eacute;dure pour chaque sch&eacute;ma de sortie que vous cr&eacute;ez. Dans ce
+                    sc&eacute;nario, l&#8217;objectif est de d&eacute;finir deux sch&eacute;mas de sortie&nbsp;:
+                        <span class="emphasis"><em>record</em></span> et <span class="emphasis"><em>book</em></span>.</p></li><li class="listitem"><p>Dans l&#8217;&eacute;diteur graphique, cliquez-droit sur le <span class="bold"><strong>tFileInputMSXML</strong></span> et connectez-le aux <span class="bold"><strong>tLogRow1</strong></span> et <span class="bold"><strong>tLogRow2</strong></span> &agrave; l&#8217;aide
+                    des liens <span class="bold"><strong>record</strong></span> et <span class="bold"><strong>book</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="323"><tr><td><img src="../images/Use_Case_tFileInputMSXML3.png" width="323"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la vue <span class="bold"><strong>Basic settings</strong></span> et dans la cellule
+                        <span class="bold"><strong>Schema XPath loop</strong></span>, indiquez le noeud de
+                    l&#8217;arborescence XML sur laquelle sera bas&eacute;e la requ&ecirc;te.</p></li><li class="listitem"><p>Dans la cellule <span class="bold"><strong>XPath Queries</strong></span>, indiquez les
+                    champs &agrave; extraire du fichier XML d&#8217;entr&eacute;e.</p></li><li class="listitem"><p>Cochez les cases <span class="bold"><strong>Create empty row</strong></span> &agrave; c&ocirc;t&eacute; des
+                    noms des sch&eacute;mas dans lesquels vous souhaitez cr&eacute;er des lignes vides.</p></li><li class="listitem"><p>Enregistrez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    lancer son ex&eacute;cution. Les sch&eacute;mas sp&eacute;cifi&eacute;s sont extraits du fichier XML
+                    multi-sch&eacute;ma et sont affich&eacute;s dans la console.</p></li></ul></div><p>Le fichier XML multi-sch&eacute;ma est lu ligne par ligne et les champs extraits sont
+            affich&eacute;s dans la console de la vue <span class="bold"><strong>Run</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="421"><tr><td><img src="../images/Use_Case_tFileInputMSXML4.png" width="421"></td></tr></table></div></div></div></body></html>

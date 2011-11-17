@@ -1,0 +1,78 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tRSSInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch10.html" title="Chapitre&nbsp;10.&nbsp;Composants Internet"><link rel="prev" href="tREST.html" title="tREST"><link rel="next" href="tRSSOutput.html" title="tRSSOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tRSSInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tRSSInput"></a>tRSSInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tRSSInput.png" width="27"></td></tr></table></div><a name="Xaa2504265"></a><div class="section" title="Propri&eacute;t&eacute;s du tRSSInput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e207936"></a>Propri&eacute;t&eacute;s du tRSSInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille du
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Internet </p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tRSSInput</strong></span> lit des flux RSS en utilisant
+                                des URLs.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tRSSInput</strong></span> permet de suivre les billets post&eacute;s sur
+                                certains sites en particulier afin d&#8217;en rassembler et organiser les
+                                informations rapidement et facilement pour votre utilisation.
+                            </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema type</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                    <span class="bold"><strong>Repository</strong></span>.</p><p> Dans
+                                le contexte d&#8217;utilisation du <span class="bold"><strong>tRSSInput</strong></span>, le sch&eacute;ma est compos&eacute; de quatre
+                                colonnes&nbsp;: <span class="bold"><strong>TITLE</strong></span>, <span class="bold"><strong>DESCRIPTION</strong></span>, <span class="bold"><strong>PUBDATE</strong></span> et <span class="bold"><strong>Link</strong></span>.
+                                Les param&egrave;tres de titre sont en lecture seule, contrairement &agrave; leur
+                                type et leur longueur. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>RSS URL</em></span></p>
+                        </td><td valign="top"><p>Saisissez l&#8217;URL du flux RSS &agrave; lire. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Read articles from</em></span></p>
+                        </td><td valign="top"><p>Lorsque cette case est coch&eacute;e, le composant
+                                    <span class="bold"><strong>tRSSInput</strong></span> lit les articles du
+                                flux RSS &agrave; partir de la date renseign&eacute;e en cliquant sur le bouton
+                                    <span class="bold"><strong>[...]</strong></span> situ&eacute; &agrave; c&ocirc;t&eacute; du champ
+                                    <span class="bold"><strong>date time</strong></span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Max number of articles</em></span></p>
+                        </td><td valign="top"><p>Lorsque cette case est coch&eacute;e, le composant
+                                    <span class="bold"><strong>tRSSInput</strong></span> lit autant d&#8217;articles
+                                que le nombre sp&eacute;cifi&eacute; dans le champ <span class="bold"><strong>max
+                                    amount</strong></span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top"><p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job
+                                en cas d&#8217;erreur. D&eacute;cochez cette case pour terminer le traitement
+                                avec les lignes sans erreurs, et les lignes contenant les erreurs
+                                seront ignor&eacute;es. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant est
+                                g&eacute;n&eacute;ralement utilis&eacute; en tant que composant de d&eacute;but. Il requiert un
+                                composant de sortie.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: R&eacute;cup&eacute;rer les billets fr&eacute;quemment mis &agrave; jour sur un blog"><div class="titlepage"><div><div><h3 class="title"><a name="d0e208112"></a>Sc&eacute;nario&nbsp;: R&eacute;cup&eacute;rer les billets fr&eacute;quemment mis &agrave; jour sur un blog</h3></div></div></div><p>Ce sc&eacute;nario Java &agrave; deux composants a pour but de r&eacute;cup&eacute;rer les billets qui sont
+            souvent mis &agrave; jour sur un blog, &agrave; partir d&#8217;un flux RSS local <span class="bold"><strong>Talend</strong></span>, en
+            utilisant le composant <span class="bold"><strong>tRSSInput</strong></span>. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez-d&eacute;posez les
+                    composants suivants dans l&#8217;&eacute;diteur graphique&nbsp;: le <span class="bold"><strong>tRSSInput</strong></span> et le <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Cliquez-droit sur le premier pour le connecter au second &agrave; l&#8217;aide d&#8217;un lien de
+                    type <span class="bold"><strong>Row Main</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="344"><tr><td><img src="../images/Use_Case_tRSSInput.png" width="344"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le <span class="bold"><strong>tRSSInput</strong></span>.</p></li><li class="listitem"><p>Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                        <span class="bold"><strong>tRSSInput</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="476"><tr><td><img src="../images/Use_Case_tRSSInput2.png" width="476"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Configurez le champ <span class="bold"><strong>Schema Type</strong></span> en mode
+                        <span class="bold"><strong>Built-In</strong></span> puis cliquez sur le bouton
+                        <span class="bold"><strong>[...]</strong></span> situ&eacute; &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit Schema </strong></span>pour changer le type et la longueur des
+                    param&egrave;tres du sch&eacute;ma si n&eacute;cessaire. </p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                    dialogue. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="408"><tr><td><img src="../images/Use_Case_tRSSInput1.png" width="408"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Le sch&eacute;ma du <span class="bold"><strong>tRSSInput</strong></span> est compos&eacute; de quatre
+                colonnes, <span class="emphasis"><em>TITLE</em></span>, <span class="emphasis"><em>Description</em></span>,
+                    <span class="emphasis"><em>PUBDATE</em></span>, et <span class="emphasis"><em>LINK</em></span>. Il est en lecture
+                seule, except&eacute; pour les param&egrave;tres de type et de longueur. </p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;onglet <span class="bold"><strong>Basic settings </strong></span>du composant
+                        <span class="bold"><strong>tRSSInput</strong></span>, saisissez l&#8217;URL d&#8217;acc&egrave;s au flux
+                    RSS. Dans ce sc&eacute;nario, le <span class="bold"><strong>tRSSInput</strong></span> est associ&eacute;
+                    au flux RSS <span class="bold"><strong>Talend</strong></span>&nbsp;: <span class="webblue">http://feeds.feedburner.com/Talend</span>.</p></li><li class="listitem"><p>Cochez/d&eacute;cochez les autres cases selon vos besoins. Dans ce sc&eacute;nario, on veut
+                    afficher les informations de deux articles dat&eacute;s du 20 juillet 2008.</p></li><li class="listitem"><p>Dans l&#8217;espace graphique, s&eacute;lectionnez le <span class="bold"><strong>tLogRow</strong></span> puis cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour en d&eacute;finir la configuration de base. Pour plus
+                    d&#8217;informations sur les propri&eacute;t&eacute;s du composant <span class="bold"><strong>tLogRow</strong></span>, consultez <a class="xref" href="tLogRow.html#Raa83212" title="Propri&eacute;t&eacute;s du tLogRow">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tLogRow&nbsp;&raquo;</a>.</p></li><li class="listitem"><p>Enregistrez le Job puis appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="503"><tr><td><img src="../images/Use_Case_tRSSInput3.png" width="503"></td></tr></table></div><p>Le composant <span class="bold"><strong>tRSSInput</strong></span> a acc&eacute;d&eacute; au flux RSS du site
+            de <span class="bold"><strong>Talend</strong></span> &agrave; votre place et en a organis&eacute; les informations pour
+            vous. </p><p>Deux billets sont affich&eacute;s sur la console. Chacun d&#8217;eux a ses propres titre,
+            description, date de publication et URL du flux RSS correspondante. Les blogs pr&eacute;sentent
+            le dernier billet en premier et vous pouvez faire d&eacute;filer vers le bas pour lire les
+            billets les plus anciens. </p></div></div></body></html>

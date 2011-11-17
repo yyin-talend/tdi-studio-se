@@ -1,0 +1,237 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tRunJob</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch15.html" title="Chapter&nbsp;15.&nbsp;System components"><link rel="prev" href="ch15.html" title="Chapter&nbsp;15.&nbsp;System components"><link rel="next" href="tSetEnv.html" title="tSetEnv"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tRunJob"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tRunJob"></a>tRunJob</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tRunJob.png" width="27"></td></tr></table></div><div class="section" title="tRunJob Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e228104"></a>tRunJob Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>System</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tRunJob</strong></span> executes the Job called
+                                in the component&#8217;s properties, in the frame of the context
+                                defined.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tRunJob</strong></span> helps mastering complex
+                                Job systems which need to execute one Job after another.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                            <p> Click <span class="bold"><strong>Edit Schema </strong></span>to make
+                                changes to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: You create and store
+                                the schema locally for this component only. Related topic: see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: You have already
+                                created the schema and stored it in the Repository. You can reuse it
+                                in various projects and job flowcharts. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span></p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use dynamic job</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to allow multiple Jobs to be called and
+                                processed. When this option is enabled, only the latest version of
+                                the Jobs can be called and processed. An independent process will be
+                                used to run the subjob. The <span class="bold"><strong>Context</strong></span>
+                                and the <span class="bold"><strong>Use an independent process to run
+                                    subjob</strong></span> options disappear.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Context job</em></span></p>
+                        </td><td valign="top">
+                            <p>This field is visible only when the <span class="bold"><strong>Use
+                                    dynamic job</strong></span> option is selected. Enter the name of the
+                                Job that you want to call from the list of Jobs selected.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>CopyChild Job Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Click to fetch the child Job schema.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Job</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the Job to be called in and processed. Make sure you
+                                already executed once the Job called, beforehand, in order to ensure
+                                a smooth run through <span class="bold"><strong>tRunJob</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Version</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the child Job version that you want to use.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Context</em></span></p>
+                        </td><td valign="top">
+                            <p>If you defined contexts and variables for the Job to be run by the
+                                    <span class="bold"><strong>tRunJob</strong></span>, select the applicable
+                                context entry on the list.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use an independent process to run
+                                subjob</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to use an independent process to run the
+                                subjob. This helps in solving issues related to memory
+                                limits.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on child error</em></span></p>
+                        </td><td valign="top">
+                            <p>Clear this check box to execute the parent Job even though there
+                                is an error when executing the child Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Transmit whole context</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to get all the context variables from the
+                                parent Job. Deselect it to get all the context variables from the
+                                child Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Context Param</em></span></p>
+                        </td><td valign="top">
+                            <p>You can change the selected context parameters. Click the plus
+                                button to add the parameters as defined in the Context of the child
+                                Job. For more information on context parameters, see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Print Parameters</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to display the internal and external
+                                parameters in the <span class="bold"><strong>Console</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the processing metadata at the Job
+                                level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can be used as a standalone Job or can help
+                                clarifying complex Job by avoiding having too many sub-jobs all
+                                together in one Job.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Global Variables</strong></span></p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Child return code</strong></span>: Indicates the
+                                Java return code of the child Job. This is available as an <span class="bold"><strong>After</strong></span> variable.</p>
+                            <p> Returns an integer: </p>
+                            <p> - if no errors &gt; the code value is 0. </p>
+                            <p> - if errors &gt; an exception message shows.</p>
+                            <p> </p>
+                            <p>
+                                <span class="bold"><strong>Child exception stack trace</strong></span>:
+                                Returns a Java stack trace from a child Job. This is available as an
+                                    <span class="bold"><strong>After</strong></span> variable. </p>
+                            <p> Returns a string.</p>
+                            <p> </p>
+                            <p> For further information about variables, see <span class="bluebold">Talend Open Studio</span> User Guide. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>Outgoing links (from one component to another):</p>
+                            <p>
+                                <span class="bold"><strong>Row</strong></span>: Main.</p>
+                            <p>
+                                <span class="bold"><strong>Trigger</strong></span>: On Subjob Ok; On Subjob
+                                Error; Run if; On Component Ok; On Component Error</p>
+                            <p> </p>
+                            <p> Incoming links (from one component to another):</p>
+                            <p>
+                                <span class="bold"><strong>Row</strong></span>: Main; Reject; Iterate.</p>
+                            <p>
+                                <span class="bold"><strong>Trigger</strong></span>: On Subjob Ok; On Subjob
+                                Error; Run if; On Component Ok; On Component Error; Synchronize;
+                                Parallelize.</p>
+                            <p> </p>
+                            <p> For further information regarding connections, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Executing a child Job"><div class="titlepage"><div><div><h3 class="title"><a name="d0e228596"></a>Scenario: Executing a child Job</h3></div></div></div><p>This scenario describes a single-component Job calling in and executing another Job.
+            The Job to be executed reads a basic delimited file and simply displays its content on
+            the <span class="bold"><strong>Run</strong></span> log console. The particularity of this Job lies
+            in the fact that this latter Job is executed from a separate Job and uses a context
+            variable to prompt for the input file to be processed.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="214"><tr><td><img src="../images/Use_Case_tRunJob1.png" width="214"></td></tr></table></div><p>Create the first Job reading the delimited file.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop a <span class="bold"><strong>tFileInputDelimited</strong></span> and a <span class="bold"><strong>tLogRow</strong></span> from the <span class="bold"><strong>Palette</strong></span> to the design workspace.</p></li><li class="listitem"><p>Connect the two components together using a <span class="bold"><strong>Row
+                        Main</strong></span> link.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFileInputDelimited</strong></span> to open its
+                        <span class="bold"><strong>Basic settings</strong></span> view and define its
+                    properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="467"><tr><td><img src="../images/Use_Case_tRunJob3.png" width="467"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set the <span class="bold"><strong>Property type</strong></span> to <span class="bold"><strong>Built-In</strong></span> for this Job.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>File Name</strong></span> field and then press
+                        <span class="bold"><strong>F5</strong></span> to open the <span class="bold"><strong>[New
+                        Context Parameter] </strong></span>dialog box and configure the context
+                    variable.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="370"><tr><td><img src="../images/Use_Case_tRunJob4.png" width="370"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Name</strong></span> field, enter a name for this new
+                    context variable, <span class="emphasis"><em>File</em></span> in this example.</p></li></ul></div><p>In this example, there is no need to either select the <span class="bold"><strong>Prompt
+                for value </strong></span>check box or to set a prompt message, as the default parameter
+            value can be used.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>Finish</strong></span> to validate the modification and
+                    press <span class="bold"><strong>Enter</strong></span> on your keyboard to make sure the
+                    new context variable is stored the <span class="bold"><strong>File Name</strong></span>
+                    field.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Basic settings</strong></span> view, type in the field
+                    and row separators used in the input file.</p></li><li class="listitem"><p>If needed, set <span class="bold"><strong>Header</strong></span>, <span class="bold"><strong>Footer</strong></span>, and <span class="bold"><strong>Limit</strong></span>. In this
+                    example, no header or footer are used and no limit for the number of processed
+                    rows is set.</p></li><li class="listitem"><p>Set <span class="bold"><strong>Schema type</strong></span> to <span class="bold"><strong>Built-in</strong></span> for this example. Click the three-dot button next to
+                    the field name to open the schema dialog box where you can configure the schema
+                    manually.</p></li><li class="listitem"><p>In the dialog box, click the plus button to add two columns and name them
+                    following the first and second column names of your input file,
+                        <span class="emphasis"><em>username</em></span> and <span class="emphasis"><em>age</em></span> in this example. </p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If you store your schema in the <span class="bold"><strong>Repository</strong></span> tree
+                view, you only need to select the relevant metadata entry corresponding to your
+                input file structure.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-click <span class="bold"><strong>tLogRow </strong></span>to display its <span class="bold"><strong>Basic settings</strong></span> view and define its properties.</p></li><li class="listitem"><p>Click <span class="bold"><strong>Sync columns</strong></span> to retrieve the schema of
+                    the input component and then set other options according to your needs. </p></li><li class="listitem"><p> Save your Job and press <span class="bold"><strong>F6</strong></span> to make sure that
+                    it executes without error. </p></li></ul></div><p>Create the second Job that will be the parent Job.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop a <span class="bold"><strong>tFileList</strong></span> and a <span class="bold"><strong>tRunJob</strong></span> from the <span class="bold"><strong>Palette</strong></span> to the
+                    design workspace.</p></li><li class="listitem"><p>Connect the two components together using an <span class="bold"><strong>Iterate</strong></span> link.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFileList </strong></span>to open its <span class="bold"><strong>Basic settings</strong></span> view and define its properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="501"><tr><td><img src="../images/Use_Case_tRunJob5.png" width="501"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Directory</strong></span> field, set the path to the
+                    directory that holds the files to be processed, or click the three-dot button
+                    next to the field to browse to the directory. In this example, the directory is
+                    called <span class="emphasis"><em>tRunJob</em></span> and it holds three delimited files. </p></li><li class="listitem"><p>In the <span class="bold"><strong>FileList Type</strong></span> list, select <span class="bold"><strong>Files</strong></span>. </p></li><li class="listitem"><p>Select the <span class="bold"><strong>Use Glob Expressions as Filemask</strong></span>
+                    check box to be able to use regular expressions in your file masks. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Files</strong></span> area, click the plus button to
+                    add a line where you can set the filter to apply. In this example, we want only
+                    to retrieve delimited files <span class="emphasis"><em>&#8220;*.csv&#8221;</em></span>. </p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tRunJob </strong></span>to display its <span class="bold"><strong>Basic settings</strong></span> view and define its properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="476"><tr><td><img src="../images/Use_Case_tRunJob7.png" width="476"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to the <span class="bold"><strong>Job</strong></span>
+                    field to open the <span class="bold"><strong>[Find a Job] </strong></span>dialog box. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="251"><tr><td><img src="../images/Use_Case_tRunJob2.png" width="251"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the child Job you want to execute and click <span class="bold"><strong>OK</strong></span> to close the dialog box. The name of the selected Job
+                    displays in the <span class="bold"><strong>Job</strong></span> field in the <span class="bold"><strong>Basic settings</strong></span> view of <span class="bold"><strong>tRunJob</strong></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>Copy Child Job Schema </strong></span>to retrieve the
+                    schema from the child Job. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Context Param</strong></span> area, click the plus
+                    button to add a line and define the context parameter.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>Values</strong></span> cell and then press
+                        <span class="bold"><strong>Ctrl+Espace</strong></span> on your keyboard to access the
+                    list of context variables. </p></li><li class="listitem"><p>In the list, select <span class="emphasis"><em>tFileList-1.CURRENT_FILEPATH</em></span>. The
+                    corresponding context variable displays in the <span class="bold"><strong>Values</strong></span> cell:
+                        <code class="code">((String)globalMap.get(&#8220;</code><span class="emphasis"><em>tFileList-1.CURRENT_FILEPATH</em></span><code class="code"><span>&#8221;))</span></code>. </p><p> For more information on context variables, see <span class="bluebold">Talend Open Studio</span>
+                    <span class="bold"><strong>User Guide</strong></span>. </p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+                    it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="407"><tr><td><img src="../images/Use_Case_tRunJob6.png" width="407"></td></tr></table></div><p>The called-in Job reads the data contained in the input file, as defined by the input
+            schema, and the result of this Job is displayed directly in the <span class="bold"><strong>Run</strong></span> console.</p><p>Related topic: <a class="xref" href="tLoop.html" title="tLoop">the section called &#8220;tLoop&#8221;</a>, and <a class="xref" href="tBufferOutput.html#Raa80778" title="Scenario&nbsp;1: Buffering data (Java)">the section called &#8220;Scenario&nbsp;1: Buffering data (Java)&#8221;</a> of the
+                <span class="bold"><strong>tBufferOutput</strong></span> component.</p></div></div></body></html>

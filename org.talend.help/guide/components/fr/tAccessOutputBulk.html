@@ -1,0 +1,151 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAccessOutputBulk</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tAccessOutput.html" title="tAccessOutput"><link rel="next" href="tAccessOutputBulkExec.html" title="tAccessOutputBulkExec"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tAccessOutputBulk"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAccessOutputBulk"></a>tAccessOutputBulk</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tAccessOutputBulk_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tAccessOutputBulk"><div class="titlepage"><div><div><h3 class="title"><a name="d0e54622"></a>Propri&eacute;t&eacute;s du tAccessOutputBulk</h3></div></div></div><p>Les composants <span class="bold"><strong>tAccessOutputBulk</strong></span> et <span class="bold"><strong>tAccessBulkExec</strong></span> sont g&eacute;n&eacute;ralement utilis&eacute;s ensemble pour
+			&eacute;crire des donn&eacute;es dans un fichier d&eacute;limit&eacute; puis effectuer diff&eacute;rentes actions sur le
+			fichier dans une base de donn&eacute;es Access, processus en deux &eacute;tapes. Ces deux &eacute;tapes sont
+			regroup&eacute;es dans le composant<span class="bold"><strong> tAccessOutputBulkExec</strong></span>,
+			d&eacute;taill&eacute; dans une section s&eacute;par&eacute;e. L&#8217;int&eacute;r&ecirc;t d&#8217;utiliser un processus en deux &eacute;tapes
+			r&eacute;side dans le fait que cela permet de proc&eacute;der &agrave; des transformations avant le
+			chargement des donn&eacute;es dans la base de donn&eacute;es.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Access</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tAccessOutputBulk</strong></span>
+								&eacute;crit un fichier d&eacute;limit&eacute;.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Pr&eacute;pare le fichier &agrave; utiliser comme param&egrave;tre dans la requ&ecirc;te
+								INSERT servant &agrave; alimenter une base de donn&eacute;es Access.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut &ecirc;tre Built-in ou Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+								fichier de propri&eacute;t&eacute;s du composant. Les champs suivants sont alors
+								pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom du fichier &agrave; traiter. </p>
+							<p>Voir &eacute;galement&nbsp;: <span class="bold"><strong>Guide
+									Utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Create directory if not exists</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cette case est coch&eacute;e par d&eacute;faut. Cette option permet de cr&eacute;er le
+								dossier contenant le fichier de sortie s&#8217;il n&#8217;existe pas
+								d&eacute;j&agrave;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Append</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette option pour ajouter des nouvelles lignes &agrave; la fin du
+								fichier.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (<span class="bold"><strong>Built-in</strong></span>)
+								soit distant (Repository).</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; ponctuellement pour ce composant seulement. Voir
+								&eacute;galement&nbsp;: <span class="bold"><strong>Guide utilisateur</strong></span> de
+									<span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilisable dans divers projets et Job designs. Voir &eacute;galement&nbsp;:
+									<span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Include header</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour inclure l&#8217;en-t&ecirc;te des colonnes dans le
+								fichier.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+									<span class="bold"><strong>Custom</strong></span> et d&eacute;finissez-le
+								manuellement. Ce champ est obligatoire pour la manipulation des
+								donn&eacute;es de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="italic">tStatCatcher Statistics</span></p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; avec le composant <span class="bold"><strong>tAccessBulkExec</strong></span>. Ensemble, ils offrent un
+								gain de performance important pour l&#8217;alimentation d&#8217;une base de
+								donn&eacute;es Access.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d0e54964"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute; au <span class="bold"><strong>tAccessOutputBulk</strong></span>,
+			consultez&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tMysqlOutputBulk.html#Raa15985" title="Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es transform&eacute;es dans une base MySQL">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es transform&eacute;es dans une base MySQL&nbsp;&raquo;</a> du composant <span class="bold"><strong>tMysqlOutputBulk</strong></span>.</p></li><li class="listitem"><p><a class="xref" href="tMysqlOutputBulkExec.html#Raa97924" title="Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es dans une base MySQL">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es dans une base
+				MySQL&nbsp;&raquo;</a> du <span class="bold"><strong>tMysqlOutputBulkExec</strong></span>.</p></li></ul></div></div></div></body></html>

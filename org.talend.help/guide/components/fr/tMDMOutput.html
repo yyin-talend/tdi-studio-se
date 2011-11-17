@@ -1,0 +1,247 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMDMOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch16.html" title="Chapitre&nbsp;16.&nbsp;Composants Talend MDM"><link rel="prev" href="tMDMInput.html" title="tMDMInput"><link rel="next" href="tMDMReceive.html" title="tMDMReceive"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tMDMOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMDMOutput"></a>tMDMOutput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/TalendMDMOutput_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tMDMOutput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e244146"></a>Propri&eacute;t&eacute;s du tMDMOutput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de composant</strong></span></p>
+            </td><td valign="top"><p>Talend
+                MDM</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+            </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tMDMOutput</strong></span> &eacute;crit des donn&eacute;es ma&icirc;tre dans un hub MDM (r&eacute;f&eacute;rentiel
+                XML).</p>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+            </td><td colspan="2" valign="top"><p>Ce composant &eacute;crit des donn&eacute;es ma&icirc;tre
+                sur le serveur MDM.</p>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic settings</strong></span></p>
+            </td><td valign="top"><p><span class="emphasis"><em>Property Type</em></span></p>
+            </td><td valign="top"><p>Peut &ecirc;tre Built-in ou Repository.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Propri&eacute;t&eacute;s
+                utilis&eacute;es ponctuellement.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>&nbsp;: S&eacute;lectionnez le
+                fichier de propri&eacute;t&eacute;s du composant. Les champs suivants sont alors pr&eacute;-remplis &agrave;
+                l&#8217;aide des donn&eacute;es collect&eacute;es.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                  schema</em></span></p>
+            </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit
+                local (built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p><p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour modifier le sch&eacute;ma. Notez que si
+                vous modifiez le sch&eacute;ma, il devient automatiquement built-in.</p><p>Cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma du
+                composant pr&eacute;c&eacute;dent.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce composant
+                seulement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de
+                  <span class="bluebold">Talend Open Studio</span>. </p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le
+                Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute; dans divers projets et Jobs. Voir
+                &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>XML Field</em></span></p>
+            </td><td valign="top"><p>S&eacute;lectionnez le nom de la colonne dans laquelle vous souhaitez
+                &eacute;crire les donn&eacute;es XML.</p>
+            </td></tr><tr><td>&nbsp;</td><td><span class="italic">Use an existing connection</span></td><td valign="top">Cochez cette case et s&eacute;lectionnez le composant <span class="bold"><strong>tMDMConnection</strong></span> ad&eacute;quat &agrave; partir de la liste <span class="bold"><strong>Component</strong></span> pour r&eacute;utiliser les param&egrave;tres d&#8217;une connexion que vous avez
+              d&eacute;j&agrave; d&eacute;finie.</td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>URL</em></span></p>
+            </td><td valign="top"><p>Saisissez l&#8217;URL d&#8217;acc&egrave;s au serveur MDM.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Username</em></span> et
+                <span class="emphasis"><em>Password</em></span></p>
+            </td><td valign="top"><p>Saisissez les informations d&#8217;authentification de l&#8217;utilisateur
+                du serveur MDM.</p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Cet utilisateur doit avoir le bon r&ocirc;le dans MDM, c&#8217;est-&agrave;-dire qu&#8217;il puisse se
+                  connecter via un Job ou tout autre appel de service Web. Pour plus d&#8217;informations,
+                  consultez&nbsp;le <span class="bold"><strong>Guide administrateur</strong></span> de <span class="bluebold">Talend Master Data Management</span>.</p></td></tr></table></div>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Version</em></span></p>
+            </td><td valign="top"><p>Saisissez le nom de la Version des donn&eacute;es ma&icirc;tre &agrave; laquelle
+                vous souhaitez vous connecter, en fonction de vos droits utilisateur.</p><p>Laissez ce champ vide pour afficher la Version par d&eacute;faut des donn&eacute;es ma&icirc;tre.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Data Model</em></span></p>
+            </td><td valign="top"><p>Saisissez le nom du mod&egrave;le de donn&eacute;es en comparaison duquel
+                les donn&eacute;es &agrave; &eacute;crire seront valid&eacute;es.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Data Container</em></span></p>
+            </td><td valign="top"><p>Saisissez le nom du conteneur de donn&eacute;es dans lequel vous
+                souhaitez &eacute;crire les donn&eacute;es ma&icirc;tre.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Return Keys</em></span></p>
+            </td><td valign="top"><p><span class="bold"><strong>Columns corresponding to IDs in
+                  order</strong></span>&nbsp;: dans l&#8217;ordre s&eacute;quentiel, d&eacute;finissez les colonnes de sortie qui
+                stockeront les valeurs des cl&eacute;s retourn&eacute;es (cl&eacute;s primaires) des &eacute;l&eacute;ments &agrave;
+                cr&eacute;er.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Is Update</em></span></p>
+            </td><td valign="top"><p>Cochez cette case pour mettre &agrave; jour les champs
+                modifi&eacute;s.</p><p>Si vous ne cochez pas cette case, la totalit&eacute; des champs sera remplac&eacute;e par les champs
+                modifi&eacute;s.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Fire Create/Update event</em></span></p>
+            </td><td valign="top"><p>Cochez cette case pour ajouter les actions effectu&eacute;es &agrave; un
+                rapport de modifications.</p><p><span class="bold"><strong>Source Name</strong></span>&nbsp;: Saisissez, entre guillemets, le nom de
+                l&#8217;application &agrave; partir de laquelle les modifications sont apport&eacute;es. </p><p><span class="bold"><strong>Enable verification by &#8220;before saving&#8221; transformer</strong></span>&nbsp;: Cochez
+                cette case pour v&eacute;rifier l&#8217;enregistrement qui vient d&#8217;&ecirc;tre ajout&eacute; avant qu&#8217;il ne
+                soit enregistr&eacute;.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Use partial update</em></span></p>
+            </td><td valign="top"><p>Cochez cette case si vous devez mettre &agrave; jour des &eacute;l&eacute;ments
+                multi-occurences (attributs) d&#8217;une entit&eacute; existante &agrave; partir du contenu d&#8217;un flux
+                XML d&#8217;entr&eacute;e. Une fois la case coch&eacute;e, vous devez configurer les param&egrave;tres
+                ci-dessous&nbsp;:</p><p>- <span class="bold"><strong>Pivot&nbsp;</strong></span>: saisissez le chemin XPath vers les sous-&eacute;l&eacute;ments
+                multi-occurences dans lesquels des donn&eacute;es doivent &ecirc;tre ajout&eacute;es ou remplac&eacute;es dans
+                l&#8217;entit&eacute; de votre choix. Par exemple, vous souhaitez ajouter un sous-&eacute;l&eacute;ment fils &agrave;
+                une entit&eacute; existante, comme suit&nbsp;:</p><p>
+                </p><pre class="programlisting">&lt;Person&gt;<span></span>
+  &lt;Id&gt;1&lt;/Id&gt; <span></span>
+  &lt;Addresses&gt;<span></span>
+    &lt;Address&gt;<span></span>
+      &lt;Type&gt;office&lt;/Type&gt;<span></span>
+        (...address elements are here....)<span></span>
+    &lt;/Address&gt;<span></span>
+    &lt;Address&gt;<span></span>
+      &lt;Type&gt;home&lt;/Type&gt;<span></span>
+        (...address elements are here....)<span></span>
+    &lt;/Address&gt;<span></span>
+  &lt;Addresses&gt;<span></span>
+&lt;/Person&gt;<span></span>
+</pre><p>le
+                chemin XPath saisi dans le champ <span class="bold"><strong>Pivot</strong></span> doit &ecirc;tre
+                comme suit&nbsp;: </p><pre class="programlisting">Person/Children/Child<span></span>
+</pre><p>et la
+                case <span class="bold"><strong>Overwrite</strong></span> devrait &ecirc;tre
+                d&eacute;s&eacute;lectionn&eacute;e.</p><p>Et, si vous devez remplacer un sous-&eacute;l&eacute;ment fils dans une entit&eacute; existante&nbsp;:</p><p>
+                </p><pre class="programlisting">&lt;Person&gt;<span></span>
+  &lt;Id&gt;1&lt;/Id&gt; <span></span>
+  &lt;Addresses&gt;<span></span>
+    &lt;Address&gt;<span></span>
+      &lt;Type&gt;office&lt;/Type&gt;<span></span>
+        (...address elements are here....)<span></span>
+    &lt;/Address&gt;<span></span>
+    &lt;Address&gt;<span></span>
+      &lt;Type&gt;home&lt;/Type&gt;<span></span>
+        (...address elements are here....)<span></span>
+    &lt;/Address&gt;<span></span>
+  &lt;Addresses&gt;<span></span>
+&lt;/Person&gt;<span></span>
+</pre><p>le
+                chemin XPath saisi dans le champ <span class="bold"><strong>Pivot</strong></span> doit &ecirc;tre
+                comme suit&nbsp;: </p><pre class="programlisting">Person/Addresses/Adress<span></span>
+</pre><p>la
+                case <span class="bold"><strong>Overwrite</strong></span> doit &ecirc;tre coch&eacute;e et la champ
+                  <span class="bold"><strong>Key</strong></span> configur&eacute; comme suit&nbsp;:
+                  <code class="code">Person/Addresses/Address/Type</code>.</p><p>Dans cet exemple, nous supposons que l&#8217;entit&eacute; MDM a seulement une adresse de type
+                  <span class="emphasis"><em>office</em></span>, ainsi cette adresse de type
+                  <span class="emphasis"><em>office</em></span> sera remplac&eacute;e et l&#8217;adresse de type
+                  <span class="emphasis"><em>home</em></span> sera ajout&eacute;e.</p><p>- <span class="bold"><strong>Overwrite</strong></span>&nbsp;: cochez cette case si vous devez remplacer ou
+                mettre &agrave; jour les sous-&eacute;l&eacute;ments originaux par les sous-&eacute;l&eacute;ments d&#8217;entr&eacute;e. Laissez
+                cette case d&eacute;coch&eacute;e si vous souhaitez ajouter un sous-&eacute;l&eacute;ment.</p><p>- <span class="bold"><strong>Key&nbsp;</strong></span>: saisissez le chemin XPath relatif au pivot qui
+                permettra de mettre en correspondance le sous-&eacute;l&eacute;ment du flux XML d&#8217;entr&eacute;e avec le
+                sous-&eacute;l&eacute;ment de l&#8217;entit&eacute;. Si une cl&eacute; n&#8217;est pas fournie, tous les sous-&eacute;l&eacute;ments de
+                l&#8217;entit&eacute; ayant un XPath qui correspond &agrave; celui du sous-&eacute;l&eacute;ment du flux XML d&#8217;entr&eacute;e
+                seront remplac&eacute;s.</p><p>-<span class="bold"><strong>Position&nbsp;</strong></span>: saisissez un chiffre pour indiquer la position
+                apr&egrave;s laquelle les nouveaux &eacute;l&eacute;ments (ceux qui ne correspondent pas &agrave; la cl&eacute;) seront
+                ajout&eacute;. Si vous ne renseignez pas ce champ, les nouveau &eacute;l&eacute;ments seront ajout&eacute;s &agrave; la
+                fin. </p>
+            </td></tr><tr><td valign="top"><p> </p>
+            </td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+            </td><td valign="top"><p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job en cas
+                d&#8217;erreur. D&eacute;cochez cette case pour terminer le traitement avec les lignes sans
+                erreurs, et ignorer les lignes en erreur. Vous pouvez r&eacute;cup&eacute;rer les lignes en
+                erreur, si vous le souhaitez. Pour cela, utilisez un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Rejects</strong></span>.</p>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced settings</strong></span></p>
+            </td><td valign="top"><p><span class="emphasis"><em>Extended Output</em></span></p>
+            </td><td valign="top"><p>Cochez cette case pour commiter les donn&eacute;es ma&icirc;tre par
+                lot.</p><p><span class="bold"><strong>Rows to commit</strong></span>&nbsp;: saisissez le nombre de lignes par
+                lot.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Configure Xml Tree</em></span></p>
+            </td><td valign="top"><p>Ouvrez l&#8217;interface d&#8217;aide &agrave; la cr&eacute;ation de la structure XML
+                des donn&eacute;es ma&icirc;tre &agrave; &eacute;crire.</p>
+            </td></tr><tr><td valign="top"><p> </p>
+            </td><td valign="top"><p><span class="emphasis"><em>Group by</em></span></p>
+            </td><td valign="top"><p>S&eacute;lectionnez la colonne &agrave; utiliser pour regrouper les donn&eacute;es
+                ma&icirc;tre.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Create empty element if needed</em></span></p>
+            </td><td valign="top"><p>Cette case est coch&eacute;e par d&eacute;faut. Si le contenu de la colonne <span class="bold"><strong>Related
+                  Column</strong></span> de l&#8217;interface permettant de cr&eacute;er la structure XML est nul, ou
+                si aucune colonne n&#8217;est associ&eacute;e au n&#339;ud XML, cette option cr&eacute;era une balise
+                ouvrante et une balise fermante aux endroits pr&eacute;vus.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Advanced separator (for number)</em></span></p>
+            </td><td valign="top"><p>Cochez cette case pour modifier les s&eacute;parateurs utilis&eacute;s par
+                d&eacute;faut dans les nombres&nbsp;:</p><p>- <span class="bold"><strong>Thousands separator</strong></span>&nbsp;: saisissez entre guillemets le
+                s&eacute;parateur &agrave; utiliser pour les milliers.</p><p>- <span class="bold"><strong>Decimal separator</strong></span>&nbsp;: saisissez entre guillemets le
+                s&eacute;parateur &agrave; utiliser pour les d&eacute;cimales.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Generation mode</em></span></p>
+            </td><td valign="top"><p>S&eacute;lectionnez le mode de g&eacute;n&eacute;ration que vous souhaitez utiliser
+                en fonction de votre m&eacute;moire disponible&nbsp;:</p><p>- <span class="bold"><strong>Fast but memory-consuming (Dom4J)</strong></span>, le plus rapide mais
+                consommant de la m&eacute;moire.</p><p>- <span class="bold"><strong>Slow with no memory consumed</strong></span>, le plus lent ne consommant
+                pas de m&eacute;moire.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Encoding</em></span></p>
+            </td><td valign="top"><p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+                  <span class="bold"><strong>Custom</strong></span> et d&eacute;finissez-le manuellement. Ce champ
+                est obligatoire pour la manipulation des donn&eacute;es de base de donn&eacute;es.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+            </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de log au niveau
+                du composant.</p>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+            </td><td colspan="2" valign="top"><p>Utilisez ce composant pour &eacute;crire un
+                fichier et s&eacute;parer les champs &agrave; l&#8217;aide d&#8217;un s&eacute;parateur sp&eacute;cifque.</p>
+            </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Ecrire des donn&eacute;es ma&icirc;tre dans un hub MDM"><div class="titlepage"><div><div><h3 class="title"><a name="Raa22155"></a>Sc&eacute;nario&nbsp;: Ecrire des donn&eacute;es ma&icirc;tre dans un hub MDM</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; deux composants qui g&eacute;n&egrave;re un enregistrement de donn&eacute;es,
+      transforme ces donn&eacute;es en XML et les charge dans l&#8217;entit&eacute; m&eacute;tier d&eacute;finie sur le serveur MDM
+      .</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="233"><tr><td><img src="../images/Use_Case_tMDMOutput1.png" width="233"></td></tr></table></div><p>Dans cet exemple, l&#8217;objectif est de charger une nouvelle agence dans l&#8217;entit&eacute; m&eacute;tier
+        <span class="emphasis"><em>Agency</em></span>. Cette nouvelle agence doit comprendre un identifiant, un nom et
+      une ville.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, glissez les composants
+            <span class="bold"><strong>tFixedFlowInput</strong></span> de la famille <span class="bold"><strong>Misc</strong></span>, et <span class="bold"><strong>tMDMOutput</strong></span> de la famille <span class="bold"><strong>Talend MDM</strong></span>
+          dans l&#8217;espace de mod&eacute;lisation.</p></li><li class="listitem"><p>Reliez-les via un lien de type <span class="bold"><strong>Row &gt; Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tFixedFlowInput</strong></span> pour
+          afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de la vue <span class="bold"><strong>Component</strong></span> et param&eacute;trer ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="516"><tr><td><img src="../images/Use_Case_tMDMOutput2.png" width="516"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Built-In</strong></span> et cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit schema</strong></span> pour
+          d&eacute;crire la structure des donn&eacute;es ma&icirc;tre que vous souhaitez &eacute;crire dans le serveur
+          MDM.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="464"><tr><td><img src="../images/Use_Case_tMDMOutput3.png" width="464"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Ajoutez trois colonnes de type <span class="bold"><strong>String</strong></span> en cliquant sur
+          le bouton <span class="bold"><strong>[+]</strong></span>. Nommez ces
+            colonnes&nbsp;<span class="emphasis"><em>Id</em></span>, <span class="emphasis"><em>Name</em></span>
+          et&nbsp;<span class="emphasis"><em>City</em></span>. </p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK </strong></span>pour valider vos modifications et
+          passer &agrave; l&#8217;&eacute;tape suivante.<span class="bold"><strong> </strong></span></p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Number of rows</strong></span>, saisissez le nombre de
+          lignes que vous souhaitez g&eacute;n&eacute;rer. </p></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>Mode</strong></span>, s&eacute;lectionnez le mode <span class="bold"><strong>Use Single Table</strong></span> pour ne g&eacute;n&eacute;rer qu&#8217;une seule table.</p></li><li class="listitem"><p>Dans le tableau <span class="bold"><strong>Values</strong></span>, saisissez entre guillemets,
+          dans chaque champ <span class="bold"><strong>Value</strong></span>, la valeur correspondant &agrave; chaque
+          colonne du sch&eacute;ma.</p></li><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation, double-cliquez sur le composant <span class="bold"><strong>tMDMOutput</strong></span> pour afficher l&#8217;onglet <span class="bold"><strong>Basic
+            settings</strong></span> de la vue <span class="bold"><strong>Component</strong></span> et param&eacute;trer
+          ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="521"><tr><td><img src="../images/Use_Case_tMDMOutput8.png" width="521"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="bold"><strong>Property Type</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Built-In</strong></span> et renseignez les champs manuellement. Si vous avez
+          stock&eacute; les informations de connexion au MDM dans les m&eacute;tadonn&eacute;es du Repository,
+          s&eacute;lectionnez <span class="bold"><strong>Repository</strong></span> dans la liste et les champs
+          suivants seront renseign&eacute;s automatiquement.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Built-In</strong></span> et cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit schema</strong></span> pour
+          d&eacute;crire la structure des donn&eacute;es ma&icirc;tre que vous souhaitez charger sur le serveur
+          MDM.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="516"><tr><td><img src="../images/Use_Case_tMDMOutput4.png" width="516"></td></tr></table></div><p>Le composant <span class="bold"><strong>tMDMOutput</strong></span> g&eacute;n&egrave;re un document XML, l&#8217;&eacute;crit
+      dans un champ de sortie et l&#8217;envoie au serveur MDM, afin que le sch&eacute;ma de sortie ait toujours
+      une colonne&nbsp;<span class="emphasis"><em>xml</em></span> en lecture seule.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour passer &agrave; l&#8217;&eacute;tape suivante.</p><p>La liste <span class="bold"><strong>XML Field</strong></span> dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> est automatiquement renseign&eacute;e avec la
+            colonne&nbsp;<span class="emphasis"><em>xml</em></span> de sortie que vous venez de cr&eacute;er.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>URL</strong></span>, saisissez entre guillemets l&#8217;URL
+          de connexion au serveur MDM.</p></li><li class="listitem"><p>Dans les champs <span class="bold"><strong>Username</strong></span> et <span class="bold"><strong>Password</strong></span>, saisissez l&#8217;identifiant et le mot de passe de connexion au serveur
+          MDM.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Version</strong></span>, saisissez entre guillemets le
+          nom de la Version des donn&eacute;es ma&icirc;tre &agrave; laquelle vous souhaitez acc&eacute;der. Laissez le champ
+          vide pour acc&eacute;der &agrave; la Version par d&eacute;faut.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Data Model</strong></span>, saisissez entre guillemets
+          le nom du mod&egrave;le de donn&eacute;es par rapport auquel vous souhaitez valider les donn&eacute;es ma&icirc;tre
+          que vous souhaitez &eacute;crire.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Data Container</strong></span>, saisissez entre
+          guillemets le nom du conteneur de donn&eacute;es dans lequel les donn&eacute;es ma&icirc;tre doivent &ecirc;tre
+          &eacute;crites.</p></li><li class="listitem"><p>Dans la vue <span class="bold"><strong>Component</strong></span>, cliquez sur l&#8217;onglet <span class="bold"><strong>Advanced settings</strong></span> pour param&eacute;trer les param&egrave;tres avanc&eacute;s du
+          composant.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="423"><tr><td><img src="../images/Use_Case_tMDMOutput10.png" width="423"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cochez la case <span class="bold"><strong>Extended Output</strong></span> si vous souhaitez
+          commiter les donn&eacute;es ma&icirc;tre par lot. Vous pouvez sp&eacute;cifier le nombre de lignes par lot
+          dans le champ <span class="bold"><strong>Rows to commit</strong></span>.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> du champ <span class="bold"><strong>Configure Xml Tree</strong></span> pour ouvrir l&#8217;&eacute;diteur du composant.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="502"><tr><td><img src="../images/Use_Case_tMDMOutput6.png" width="502"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la zone <span class="bold"><strong>Link target</strong></span> &agrave; droite, cliquez dans le
+          champ <span class="bold"><strong>Xml Tree </strong></span>et remplacez <span class="bold"><strong>rootTag</strong></span> par le nom de l&#8217;entit&eacute; m&eacute;tier dans laquelle vous souhaitez ins&eacute;rer
+          l&#8217;enregistrement de donn&eacute;es, <span class="emphasis"><em>Agency</em></span> dans cet exemple.</p></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>Linker source</strong></span>, s&eacute;lectionnez les trois
+          colonnes de votre sch&eacute;ma et glissez les sur le n&#339;ud <span class="bold"><strong>Agency</strong></span>.</p></li></ul></div><p>La bo&icirc;te de dialogue <span class="bold"><strong>[Selection]</strong></span> s&#8217;ouvre.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="210"><tr><td><img src="../images/Use_Case_tMDMOutput7.png" width="210"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez <span class="bold"><strong>Create as sub-element of target node</strong></span>
+          pour que vos trois colonnes correspondent &agrave; trois sous-&eacute;l&eacute;ments du noeud <span class="bold"><strong>Agency</strong></span> en XML. Cliquez sur <span class="bold"><strong>OK</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="477"><tr><td><img src="../images/Use_Case_tMDMOutput5.png" width="477"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la zone <span class="bold"><strong>Link target</strong></span> cliquez-droit sur l&#8217;&eacute;l&eacute;ment
+          que vous souhaitez d&eacute;finir comme &eacute;l&eacute;ment sur lequel effectuer une boucle, puis
+          s&eacute;lectionnez <span class="bold"><strong>Set as Loop Element</strong></span> dans le menu contextuel.
+          Dans cet exemple, <span class="bold"><strong>City</strong></span> est l&#8217;&eacute;l&eacute;ment d&#8217;it&eacute;ration. </p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider vos changements et fermer
+          l&#8217;&eacute;diteur.</p></li><li class="listitem"><p>Enregistrez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+          l&#8217;ex&eacute;cuter.</p></li></ul></div><p>Le nouvel enregistrement de donn&eacute;es est ins&eacute;r&eacute; dans l&#8217;entit&eacute;
+        m&eacute;tier&nbsp;<span class="emphasis"><em>Agency</em></span>, dans le conteneur de donn&eacute;es&nbsp;<span class="emphasis"><em>DStar</em></span>,
+      sur le serveur MDM. Cet enregistrement de donn&eacute;es contient, comme d&eacute;fini dans le sch&eacute;ma, l&#8217;ID
+      de l&#8217;agence, son nom et sa ville. La cl&eacute; primaire de l&#8217;enregistrement ins&eacute;r&eacute; est &eacute;galement
+      g&eacute;n&eacute;r&eacute;e et retrouv&eacute;e.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="531"><tr><td><img src="../images/Use_Case_tMDMOutput9.png" width="531"></td></tr></table></div></div></div></body></html>

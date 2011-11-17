@@ -1,0 +1,236 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tBarChart</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch02.html" title="Chapitre&nbsp;2.&nbsp;Composants Business Intelligence"><link rel="prev" href="ch02.html" title="Chapitre&nbsp;2.&nbsp;Composants Business Intelligence"><link rel="next" href="tDB2SCD.html" title="tDB2SCD"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tBarChart"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tBarChart"></a>tBarChart</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="34"><tr><td><img src="../images/tBarChart_icon32_white.png" width="34"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tBarChart"><div class="titlepage"><div><div><h3 class="title"><a name="d0e18617"></a>Propri&eacute;t&eacute;s du tBarChart</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille du composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Business Intelligence/Charts</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tBarChart</strong></span> lit des
+								donn&eacute;es &agrave; partir d&#8217;un flux d&#8217;entr&eacute;e et transforme les donn&eacute;es en
+								diagramme en barres dans un fichier image au format PNG.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tBarChart</strong></span> g&eacute;n&egrave;re un
+								diagramme en barres &agrave; partir des donn&eacute;es d&#8217;entr&eacute;e afin de faciliter
+								l&#8217;analyse technique.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (Built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>. </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le sch&eacute;ma du <span class="bold"><strong>tBarChart</strong></span>
+									contient trois colonnes en lecture seule nomm&eacute;es respectivement
+										<span class="bold"><strong>series</strong></span> (type String),
+										<span class="bold"><strong>category</strong></span> (type String), et
+										<span class="bold"><strong>value</strong></span> (type Integer), selon
+									un ordre pr&eacute;d&eacute;termin&eacute;. Les donn&eacute;es de toutes les autres colonnes
+									seront simplement pass&eacute;es au composant suivant, s&#8217;il y en a un,
+									mais elles ne seront pas pr&eacute;sentes dans le diagramme en
+									barres.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce
+								composant seulement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+									Utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans
+								le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le
+									<span class="bold"><strong>Guide Utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Sync columns</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Permet de synchroniser le sch&eacute;ma du fichier d&#8217;entr&eacute;e avec le
+								sch&eacute;ma du fichier de sortie. La fonction Sync ne s&#8217;affiche que
+								lorsqu&#8217;une connexion de type <span class="bold"><strong>Row</strong></span>
+								est connect&eacute;e au composant de sortie.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Generated image path</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom et chemin d&#8217;acc&egrave;s du fichier image de sortie. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Chart title</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le titre du diagramme en barres &agrave; g&eacute;n&eacute;rer.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Include legend</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case si vous souhaitez inclure une l&eacute;gende &agrave; votre
+								diagramme en barres, afin d&#8217;afficher toutes les s&eacute;ries
+									(<span class="emphasis"><em>series</em></span>) dans des couleurs
+								diff&eacute;rentes.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>3Dimensions</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case afin de cr&eacute;er une image en trois dimensions. Par
+								d&eacute;faut, cette case est coch&eacute;e et les barres repr&eacute;sentant les s&eacute;ries
+									(<span class="emphasis"><em>series</em></span>) de chaque cat&eacute;gorie
+									(<span class="emphasis"><em>category</em></span>) sont empil&eacute;es les unes sur les
+								autres. Si cette case est d&eacute;coch&eacute;e, une image en deux dimensions est
+								cr&eacute;&eacute;e, et les barres s&#8217;affichent les unes &agrave; c&ocirc;t&eacute; des autres le long
+								de l&#8217;axe <span class="emphasis"><em>category</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Image width</em></span> et <span class="emphasis"><em>Image
+									height</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez la largeur et la hauteur du fichier image, exprim&eacute;es en
+								pixels.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Category axis name</em></span> et <span class="emphasis"><em>Value axis
+									name</em></span></p>
+						</td><td valign="top">
+							<p>Saisissez le nom de l&#8217;axe <span class="emphasis"><em>category</em></span> et le nom
+								de l&#8217;axe <span class="emphasis"><em>value</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Foreground alpha</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez un entier entre <span class="emphasis"><em>0</em></span> et
+									<span class="emphasis"><em>100</em></span> afin de d&eacute;finir la transparence de
+								l&#8217;image. Plus ce nombre est petit, plus votre image sera
+								transparente.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Plot orientation</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Choisissez l&#8217;orientation qu&#8217;aura votre diagramme en barres:
+									<span class="bold"><strong>VERTICAL</strong></span> ou <span class="bold"><strong>HORIZONTAL</strong></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est un composant de sortie. Par cons&eacute;quent, il
+								requiert un composant d&#8217;entr&eacute;e ainsi qu&#8217;une connexion de type
+									<span class="bold"><strong>Row Main</strong></span>. </p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Cr&eacute;er un diagramme en barres &agrave; partir de donn&eacute;es d&#8217;entr&eacute;e"><div class="titlepage"><div><div><h3 class="title"><a name="d0e19013"></a>
+			<span>Sc&eacute;nario&nbsp;: Cr&eacute;er un diagramme en barres &agrave; partir de donn&eacute;es d&#8217;entr&eacute;e</span>
+		</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job simple qui lit les donn&eacute;es d&#8217;un fichier CSV et les
+			transforme en diagramme en barres. Le fichier d&#8217;entr&eacute;e est pr&eacute;sent&eacute; ci-dessous&nbsp;:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="491"><tr><td><img src="../images/Use_Case_tBarChart01.png" width="491"></td></tr></table></div><p>Le fichier d&#8217;entr&eacute;e ayant une structure diff&eacute;rente de celle requise pour l&#8217;utilisation d&#8217;un
+				<span class="bold"><strong>tBarChart</strong></span>, un <span class="bold"><strong>tMap</strong></span>
+			sera utilis&eacute; dans ce sc&eacute;nario, afin de mettre en correspondance les donn&eacute;es avec un
+			fichier CSV &agrave; trois colonnes, avant d&#8217;utiliser le <span class="bold"><strong>tBarChart</strong></span> pour g&eacute;n&eacute;rer un fichier repr&eacute;sentant le diagramme en
+			barres.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le <span class="bold"><strong>tMap</strong></span> est g&eacute;n&eacute;ralement utilis&eacute; afin d&#8217;adapter le sch&eacute;ma
+				d&#8217;entr&eacute;e conform&eacute;ment &agrave; la structure du sch&eacute;ma du composant <span class="bold"><strong>tBarChart</strong></span>. Pour plus d&#8217;informations concernant le composant<span class="bold"><strong> tMap</strong></span>, consultez&nbsp;le <span class="bold"><strong>Guide
+					utilisateur</strong></span>
+				<span class="bluebold">Talend Open Studio</span> ainsi que&nbsp;<a class="xref" href="tMap.html" title="tMap">la section intitul&eacute;e &laquo;&nbsp;tMap&nbsp;&raquo;</a>.</p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="350"><tr><td><img src="../images/Use_Case_tBarChart02.png" width="350"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, d&eacute;posez les
+					composants suivants dans l&#8217;espace de mod&eacute;lisation graphique&nbsp;: deux composants
+						<span class="bold"><strong>tFileInputDelimited</strong></span>, un <span class="bold"><strong>tMap</strong></span>, trois composants <span class="bold"><strong>tFileOutputDelimited</strong></span> et un <span class="bold"><strong>tBarChart</strong></span>. Renommez les composants comme vous le souhaitez pour
+					faciliter le travail de conception.</p></li><li class="listitem"><p>Double-cliquez sur le premier composant <span class="bold"><strong>tFileInputDelimited</strong></span> afin d&#8217;afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de sa vue <span class="bold"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="412"><tr><td><img src="../images/Use_Case_tBarChart03_tos.png" width="412"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Renseignez le chemin d&#8217;acc&egrave;s au fichier &agrave; traiter dans le champ <span class="bold"><strong>File name</strong></span>.</p></li><li class="listitem"><p>Sp&eacute;cifiez dans le champ <span class="bold"><strong>Header</strong></span> le nombre de
+					lignes d&#8217;en-t&ecirc;te. Dans ce sc&eacute;nario, il n&#8217;y a qu&#8217;une seule ligne.</p></li><li class="listitem"><p>Laissez les autres param&egrave;tres tels qu&#8217;ils sont.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Edit schema</strong></span> pour d&eacute;crire la
+					structure des donn&eacute;es du fichier d&#8217;entr&eacute;e. Dans ce sc&eacute;nario, le sch&eacute;ma d&#8217;entr&eacute;e
+					est compos&eacute; de quatre colonnes&nbsp;: <span class="emphasis"><em>City</em></span>,
+						<span class="emphasis"><em>Population</em></span>, <span class="emphasis"><em>Area</em></span>, et
+						<span class="emphasis"><em>Density</em></span>. Une fois les noms de colonnes et les types de
+					donn&eacute;es d&eacute;finis, cliquez sur OK pour fermer la bo&icirc;te de dialogue du
+					sch&eacute;ma.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="332"><tr><td><img src="../images/Use_Case_tBarChart04.png" width="332"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connectez le <span class="bold"><strong>tFileInputDelimited</strong></span> au <span class="bold"><strong>tMap</strong></span> &agrave; l&#8217;aide d&#8217;une connexion de type <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tMap</strong></span> pour ouvrir
+					l&#8217;&eacute;diteur <span class="bold"><strong>Map Editor</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="439"><tr><td><img src="../images/Use_Case_tBarChart05.png" width="439"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> en haut &agrave; droite de
+					l&#8217;&eacute;diteur afin d&#8217;ajouter trois tables de sortie&nbsp;:
+						<span class="emphasis"><em>Population</em></span>, <span class="emphasis"><em>Area</em></span> et
+						<span class="emphasis"><em>Density</em></span>. Les noms de ces tables deviendront le nom des
+					connexions reliant le <span class="bold"><strong>tMap</strong></span> aux composants de
+					sortie dans l&#8217;espace de mod&eacute;lisation graphique.</p></li><li class="listitem"><p>Utilisez l&#8217;&eacute;diteur <span class="bold"><strong>Schema editor</strong></span> pour ajouter
+					trois colonnes &agrave; chacune des tables de sortie&nbsp;: <span class="emphasis"><em>series</em></span>
+					(type String), <span class="emphasis"><em>category</em></span> (type String) et
+						<span class="emphasis"><em>value</em></span> (type Integer).</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Expression</strong></span> de chaque table de
+					sortie, saisissez les noms des <span class="emphasis"><em>series</em></span>, comme indiqu&eacute;
+					ci-dessus. Ces noms appara&icirc;tront dans la l&eacute;gende du diagramme en barres. </p></li><li class="listitem"><p>D&eacute;posez la colonne&nbsp;<span class="emphasis"><em>City</em></span> de la table d&#8217;entr&eacute;e dans la
+						colonne&nbsp;<span class="emphasis"><em>category</em></span> de chaque table de sortie. </p></li><li class="listitem"><p>D&eacute;posez la colonne&nbsp;<span class="emphasis"><em>Population</em></span> de la table d&#8217;entr&eacute;e dans
+					la colonne&nbsp;<span class="emphasis"><em>value</em></span> de la
+						table&nbsp;<span class="emphasis"><em>Population</em></span>. </p></li><li class="listitem"><p>D&eacute;posez la colonne&nbsp;<span class="emphasis"><em>Area</em></span> de la table d&#8217;entr&eacute;e dans la
+						colonne&nbsp;<span class="emphasis"><em>value</em></span> de la table&nbsp;<span class="emphasis"><em>Area</em></span>.
+				</p></li><li class="listitem"><p>D&eacute;posez la colonne&nbsp;<span class="emphasis"><em>Density</em></span> de la table d&#8217;entr&eacute;e dans la
+					colonne <span class="emphasis"><em>value</em></span> de la table&nbsp;<span class="emphasis"><em>Density</em></span>.
+				</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour sauvegarder les mappings
+					et fermer l&#8217;&eacute;diteur.</p></li><li class="listitem"><p>Cliquez-droit sur le composant <span class="bold"><strong>tMap</strong></span> et
+					s&eacute;lectionnez <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Population</strong></span> pour le connecter au premier composant <span class="bold"><strong>tFileOutputDelimited</strong></span>. </p></li><li class="listitem"><p>De la m&ecirc;me mani&egrave;re, connectez le <span class="bold"><strong>tMap</strong></span> aux
+					autres composants <span class="bold"><strong>tFileOutputDelimited</strong></span>, en
+					utilisant respectivement <span class="bold"><strong>Area</strong></span> et <span class="bold"><strong>Density</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le premier composant <span class="bold"><strong>tFileOutputDelimited</strong></span> pour afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de sa vue <span class="bold"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="418"><tr><td><img src="../images/Use_Case_tBarChart06_tos.png" width="418"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>File Name</strong></span>, d&eacute;finissez un
+					fichier CSV dans lequel les flux de donn&eacute;es mapp&eacute;s seront envoy&eacute;s. Dans cet
+					exemple, nommez le fichier de sortie &agrave;
+						cr&eacute;er&nbsp;<span class="emphasis"><em>LargeCities_mapped.csv</em></span>. Ce fichier sera utilis&eacute;
+					comme fichier d&#8217;entr&eacute;e pour le composant <span class="bold"><strong>tBarChart</strong></span>. Si le nom d&#8217;un fichier existant est sp&eacute;cifi&eacute;,
+					assurez-vous que la case <span class="bold"><strong>Append</strong></span> (&eacute;crire &agrave; la
+					suite) est d&eacute;coch&eacute;e.</p></li><li class="listitem"><p>Laissez les autres param&egrave;tres tels qu&#8217;ils sont.</p></li><li class="listitem"><p>Pour ce qui est des deux autres composants <span class="bold"><strong>tFileOutputDelimited</strong></span>, utilisez le m&ecirc;me chemin d&#8217;acc&egrave;s que celui
+					d&eacute;fini pour le premier composant <span class="bold"><strong>tFileOutputDelimited</strong></span> et cochez la case <span class="bold"><strong>Append</strong></span>.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>V&eacute;rifiez que la case <span class="bold"><strong>Append</strong></span> est coch&eacute;e afin que
+				tous les flux de donn&eacute;es mapp&eacute;s aillent dans le m&ecirc;me fichier, sans &eacute;craser les
+				donn&eacute;es existantes.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connectez le premier composant <span class="bold"><strong>tFileInputDelimited</strong></span> au second composant <span class="bold"><strong>tFileInputDelimited</strong></span> &agrave; l&#8217;aide d&#8217;une connexion de type <span class="bold"><strong>Trigger</strong></span> &gt; <span class="bold"><strong>OnSubjobOK</strong></span>.</p></li><li class="listitem"><p>Connectez le second composant <span class="bold"><strong>tFileInputDelimited</strong></span> au <span class="bold"><strong>tBarChart</strong></span> &agrave; l&#8217;aide d&#8217;une connexion de type <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>. </p></li><li class="listitem"><p>Double-cliquez sur le second composant <span class="bold"><strong>tFileInputDelimited</strong></span> afin d&#8217;afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de sa vue <span class="bold"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="418"><tr><td><img src="../images/Use_Case_tBarChart07_tos.png" width="418"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Renseignez le champ <span class="bold"><strong>File name </strong></span>avec le chemin
+					d&#8217;acc&egrave;s au fichier, ainsi que son nom, comme d&eacute;fini dans chaque composant
+						<span class="bold"><strong>tFileOutputDelimited</strong></span>. Dans cet exemple, le
+					fichier d&#8217;entr&eacute;e est&nbsp;<span class="emphasis"><em>LargeCities_mapped.csv</em></span>. </p></li><li class="listitem"><p>Laissez les autres param&egrave;tres tels qu&#8217;ils sont. </p><p>Le sch&eacute;ma d&#8217;entr&eacute;e doit correspondre &agrave; la structure requise par le composant
+						<span class="bold"><strong>tBarChart</strong></span>. La structure du sch&eacute;ma est donc
+					copi&eacute;e &agrave; partir du sch&eacute;ma <span class="bold"><strong>tBarChart</strong></span>. </p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tBarChart</strong></span>
+					pour afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de sa vue
+						<span class="bold"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="416"><tr><td><img src="../images/Use_Case_tBarChart08.png" width="416"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Generated image path</strong></span>,
+					renseignez le chemin d&#8217;acc&egrave;s du fichier image &agrave; g&eacute;n&eacute;rer. </p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Chart title</strong></span>, saisissez un titre
+					pour le diagramme en barres. </p></li><li class="listitem"><p>Renseignez un nom pour les axes&nbsp;<span class="emphasis"><em>category</em></span>
+						et&nbsp;<span class="emphasis"><em>series</em></span>. </p></li><li class="listitem"><p>Si n&eacute;cessaire, d&eacute;finissez la taille (la largeur dans le champ <span class="bold"><strong>Image Width</strong></span>, la hauteur dans le champ <span class="bold"><strong>Image height</strong></span>) et le degr&eacute; de transparence de l&#8217;image
+					(dans le champ <span class="bold"><strong>Foreground alpha</strong></span>). Dans ce
+					sc&eacute;nario, laissez les param&egrave;tres par d&eacute;faut.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Edit schema</strong></span> afin d&#8217;ouvrir la
+					bo&icirc;te de dialogue du sch&eacute;ma.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="444"><tr><td><img src="../images/Use_Case_tBarChart09.png" width="444"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Copiez toutes les colonnes du sch&eacute;ma de sortie dans le sch&eacute;ma d&#8217;entr&eacute;e en
+					cliquant sur la double-fl&egrave;che pointant vers la gauche. </p><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+					dialogue du sch&eacute;ma.</p></li><li class="listitem"><p>Sauvegardez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+					l&#8217;ex&eacute;cuter. </p><p>Un diagramme en barres est g&eacute;n&eacute;r&eacute; selon les crit&egrave;res d&eacute;finis. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="422"><tr><td><img src="../images/Use_Case_tBarChart10.png" width="422"></td></tr></table></div></div></div></body></html>

@@ -1,0 +1,426 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tCreateTable</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tAS400Row.html" title="tAS400Row"><link rel="next" href="tDB2BulkExec.html" title="tDB2BulkExec"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tCreateTable"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tCreateTable"></a>tCreateTable</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tCreateTable_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tCreateTable"><div class="titlepage"><div><div><h3 class="title"><a name="d0e59431"></a>Propri&eacute;t&eacute;s du tCreateTable</h3></div></div></div><p>Ce composant se trouve &agrave; la racine de la famille <span class="bold"><strong>Databases</strong></span> de la <span class="bold"><strong>Palette</strong></span> de <span class="bluebold">Talend Open Studio</span>. Le composant <span class="bold"><strong>tCreateTable</strong></span> couvre des besoins indirectement li&eacute;s &agrave; l&#8217;utilisation des
+			bases de donn&eacute;es de tout type.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tCreateTable</strong></span> cr&eacute;e, supprime ou
+								supprime et recr&eacute;e une table sp&eacute;cifique.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant permet de cr&eacute;er ou de supprimer n&#8217;importe quelle
+								table d&#8217;une base de donn&eacute;es</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut &ecirc;tre Built-in ou Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+								fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du composant. Les
+								champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+								collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database Type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez le type de SGBD dans la liste propos&eacute;e. </p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Les propri&eacute;t&eacute;s peuvent diff&eacute;rer l&eacute;g&egrave;rement en fonction du type
+									de base de donn&eacute;es s&eacute;lection&shy;n&eacute;. Les champs additionnels sont
+									d&eacute;finis dans ce tableau, &agrave; la suite des propri&eacute;t&eacute;s g&eacute;n&eacute;rales.
+								</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table Action</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;action &agrave; effectuer sur la base de donn&eacute;es&nbsp;:</p>
+							<p><span class="bold"><strong>Create table&nbsp;</strong></span>: lorsque vous savez
+								que la table n&#8217;existe pas d&eacute;j&agrave;.</p>
+							<p><span class="bold"><strong>Create table when not exists</strong></span>&nbsp;:
+								lorsque vous ne savez pas si la table existe d&eacute;j&agrave;.</p>
+							<p><span class="bold"><strong>Drop and create table&nbsp;</strong></span>: lorsque
+								vous savez que la table existe d&eacute;j&agrave; et que vous souhaitez la
+								remplacer.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Mysql</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Temporary Table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour enregistrer la table cr&eacute;&eacute;e de mani&egrave;re
+								temporaire.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>MSSQLServer, MySQL, Oracle, PostgresPlus,
+									Postgresql, Teradata</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case si vous utilisez un composant de connexion, par
+								exemple&nbsp;: <span class="bold"><strong>tMysqlConnection</strong></span> ou
+									<span class="bold"><strong>tOracleConnection</strong></span>, etc.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la
+									liste <span class="bold"><strong>Component List</strong></span> pr&eacute;sente
+									uniquement les composants de connexion du Job du m&ecirc;me niveau. Si
+									vous souhaitez utiliser une connexion existant dans un autre
+									niveau, v&eacute;rifiez que les composants de connexion disponibles
+									partagent la m&ecirc;me connexion.</p><p>Pour plus d&#8217;informations concernant le partage d&#8217;une connexion
+									&agrave; travers diff&eacute;rents niveaux de Jobs, consultez <span class="bold"><strong>Use or register a shared DB
+										connection</strong></span> dans tous les composants de base de
+									donn&eacute;es que vous utilisez.</p></td></tr></table></div>
+							<p>Sinon, vous pouvez &eacute;galement d&eacute;sactiver le composant de connexion
+								et utiliser les <span class="bold"><strong>Dynamic settings</strong></span> du
+								composant, afin de param&eacute;trer manuellement la connexion. Dans ce
+								cas, v&eacute;rifiez que le nom de la connexion est unique et distinct tout
+								au long des deux niveaux de Jobs. Pour plus d&#8217;informations
+								concernant les param&egrave;tres dynamiques (<span class="bold"><strong>Dynamic
+									settings</strong></span>), consultez le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de votre Studio. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Oracle</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Connection Type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Liste d&eacute;roulante des pilotes disponibles:</p>
+							<p><span class="bold"><strong>Oracle SID&nbsp;</strong></span>: S&eacute;lectionnez ce type
+								de connexion pour identifier exclusivement une base de donn&eacute;es
+								sp&eacute;cifique sur un syst&egrave;me.</p>
+							<p><span class="bold"><strong>Service Oracle &nbsp;</strong></span>: S&eacute;lectionnez ce
+								type de connexion pour utiliser l&#8217;alias TNS que vous fournissez
+								lorsque vous vous connectez &agrave; la base de donn&eacute;es distante. </p>
+							<p><span class="bold"><strong>Oracle OCI</strong></span>&nbsp;: S&eacute;lectionnez ce type
+								de connexion pour utiliser l&#8217;interface d&#8217;appel de la base de donn&eacute;es
+								Oracle (Oracle Call Interface) accompagn&eacute;e d&#8217;un ensemble de
+								logiciels API de langage C qui fournissent une interface &agrave; cette
+								base de donn&eacute;es Oracle.</p>
+							<p><span class="bold"><strong>WALLET&nbsp;</strong></span>: S&eacute;lectionnez ce type de
+								connexion pour stocker les informations d&#8217;identification dans un
+								portefeuille Oracle (Oracle wallet).</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Access</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Access File</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom du fichier &agrave; traiter.</p>
+							<p>Voir &eacute;galement le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Firebird</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Firebird File</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom du fichier &agrave; traiter.</p>
+							<p>Voir &eacute;galement le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Interbase</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Interbase File</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom du fichier &agrave; traiter.</p>
+							<p>Voir &eacute;galement le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>SQLite</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>SQLite File</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom du fichier &agrave; traiter.</p>
+							<p>Voir &eacute;galement le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Java Db</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Framework Type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez dans la liste un framework pour votre base de donn&eacute;es
+								Java. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>HSQLDb</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Running Mode</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez dans la liste le type de serveur correspondant aux
+								param&egrave;tres de votre base de donn&eacute;es. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>HSQLDb</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use TLS/SSL Sockets</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour autoriser, si besoin, le mode s&eacute;curis&eacute;.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>AS400/Oracle</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>DB Version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez dans la liste d&eacute;roulante la version correspondant &agrave;
+								la base de donn&eacute;e s&eacute;lectionn&eacute;e. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Teradata</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Create</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la table &agrave; partir de la liste d&eacute;roulante. La table &agrave;
+								cr&eacute;er peut &ecirc;tre&nbsp;:</p>
+							<p>-SET TABLE&nbsp;: table ne permettant pas de dupliquer les
+								lignes</p>
+							<p>-MULTI SET TABLE&nbsp;: table permettant de dupliquer les
+								lignes.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Tous les types de bases de donn&eacute;es, except&eacute;s
+									Access, JavaDb, SQLite et ODBC</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Adresse IP du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Tous les types de bases de donn&eacute;es, except&eacute;s
+									Access, Firebird, HSQLDb, SQLite et ODBC</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>JavaDb</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>DB Root Path</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Parcourez vos fichiers jusqu&#8217;&agrave; la racine de votre base de donn&eacute;es.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Tous les types de bases de donn&eacute;es, except&eacute;s
+									Access, AS400, Firebird, Interbase, JavaDb, SQLite et
+									ODBC</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>HSQLDb</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>DB Alias</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Informix</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>DB Server</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom du serveur de base de donn&eacute;es. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>ODBC</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>ODBC Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>UserName</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Informations d&#8217;authentification de l&#8217;utilisateur de base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom de la nouvelle table entre guillemets.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p>
+							<p> </p>
+							
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce
+								composant uniquement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans
+								le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute; dans divers projets et
+								Jobs. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log lors du
+								traitement du Job, aussi bien au niveau du Job qu&#8217;au niveau de
+								chaque composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>AS400/&nbsp;MSSQL Server</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Additional JDBC Parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Ajoutez des informations de connexion suppl&eacute;mentaires n&eacute;cessaires
+								&agrave; la connexion &agrave; la base de donn&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant offre la flexibilit&eacute; des requ&ecirc;tes de base de donn&eacute;es
+								et couvre toutes les possibilit&eacute;s des requ&ecirc;tes SQL. Plus de
+								sc&eacute;narios sont disponibles pour chaque composant d&#8217;entr&eacute;e de type
+								base de donn&eacute;es.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Cr&eacute;er une nouvelle table dans une base de donn&eacute;es MySQL"><div class="titlepage"><div><div><h3 class="title"><a name="d0e60309"></a>Sc&eacute;nario&nbsp;: Cr&eacute;er une nouvelle table dans une base de donn&eacute;es MySQL</h3></div></div></div><p>Le Job d&eacute;crit ci-dessous a &eacute;t&eacute; con&ccedil;u pour cr&eacute;er une nouvelle table dans une base de
+			donn&eacute;es, compos&eacute;e d&#8217;un sch&eacute;ma pris &agrave; partir du sch&eacute;ma d&#8217;un fichier d&eacute;limit&eacute; stock&eacute; dans
+			le <span class="bold"><strong>Repository</strong></span>. Ce Job est compos&eacute; d&#8217;un seul
+			composant.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="82"><tr><td><img src="../images/Use_Case_tCreateTable1.png" width="82"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez et d&eacute;posez un composant <span class="bold"><strong>tCreateTable</strong></span>
+					de la famille <span class="bold"><strong>Databases</strong></span> de la <span class="bold"><strong>Palette</strong></span>.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Database type</strong></span> de l&#8217;onglet
+						<span class="bold"><strong>Basic settings</strong></span> de la vue <span class="bold"><strong>Component</strong></span>, s&eacute;lectionnez
+					<span class="emphasis"><em>MySQL</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="522"><tr><td><img src="../images/Use_Case_tCreateTable2.png" width="522"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste d&eacute;roulante <span class="bold"><strong>Table Action</strong></span>,
+					s&eacute;lectionnez <span class="bold"><strong>Create table</strong></span>.</p></li><li class="listitem"><p>Ne cochez la case <span class="bold"><strong>Use Existing Connection</strong></span>
+					uniquement si vous utilisez un composant avec une connexion d&eacute;di&eacute;e (pour
+					plusd'informations, consultez <a class="xref" href="tMysqlConnection.html" title="tMysqlConnection">la section intitul&eacute;e &laquo;&nbsp;tMysqlConnection&nbsp;&raquo;</a>). Vous n&#8217;utiliserez pas
+					cette option pour cet exemple.</p></li><li class="listitem"><p>Dans la liste d&eacute;roulante <span class="bold"><strong>Property type</strong></span>,
+					s&eacute;lectionnez <span class="bold"><strong>Repository</strong></span>, ainsi tous les champs
+					de connexion &agrave; la base de donn&eacute;es sont renseign&eacute;s automatiquement. Si vous
+					n&#8217;avez pas configur&eacute; de connexion aux bases de donn&eacute;es dans le dossier <span class="bold"><strong>Metadata</strong></span> du r&eacute;pertoire <span class="bold"><strong>DB&nbsp;connection</strong></span>, renseignez manuellement ces informations de
+					connexion apr&egrave;s avoir s&eacute;lectionn&eacute; <span class="bold"><strong>Built-in</strong></span> dans
+					la liste d&eacute;roulante <span class="bold"><strong>Property type</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Table Name</strong></span>, saisissez le nom de
+					la nouvelle table &agrave; cr&eacute;er.</p></li><li class="listitem"><p>Si vous souhaitez r&eacute;cup&eacute;rer le sch&eacute;ma d&#8217;une m&eacute;tadonn&eacute;e (sans que celle-ci ne
+					soit une connexion &agrave; une base de donn&eacute;es), s&eacute;lectionnez Repository puis la
+					m&eacute;tadonn&eacute;e souhait&eacute;e.</p></li><li class="listitem"><p>Dans tous les cas (<span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span>), cliquez sur <span class="bold"><strong>Edit
+						Schema</strong></span> pour v&eacute;rifier le type de donn&eacute;es dans la colonne <span class="bold"><strong>DB Type</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="464"><tr><td><img src="../images/Use_Case_tCreateTable3.png" width="464"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Reset DB Types</strong></span> si la
+					colonne <span class="bold"><strong>DB type</strong></span> est vide ou affiche des marques
+					de diff&eacute;rence (couleur orange). Cela permet de donner &agrave; n&#8217;importe quel type de
+					donn&eacute;es, le type de donn&eacute;es ad&eacute;quat.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span>.</p></li><li class="listitem"><p>Enregistrez votre Job appuyez sur <span class="bold"><strong>F6</strong></span> pour
+					l&#8217;ex&eacute;cuter.</p></li></ul></div><p>La table cr&eacute;&eacute;e est vide mais elle contient toutes les colonnes d&eacute;finies dans le
+			Sch&eacute;ma.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="500"><tr><td><img src="../images/Use_Case_tCreateTable4.png" width="500"></td></tr></table></div></div></div></body></html>

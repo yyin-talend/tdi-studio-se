@@ -1,0 +1,350 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMysqlSCD</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch02.html" title="Chapter&nbsp;2.&nbsp;Business Intelligence components"><link rel="prev" href="tMSSqlSCD.html" title="tMSSqlSCD"><link rel="next" href="tMysqlSCDELT.html" title="tMysqlSCDELT"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tMysqlSCD"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMysqlSCD"></a>tMysqlSCD</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMysqlSCD_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tMysqlSCD Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e23716"></a>tMysqlSCD Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Databases/MySQL</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tMysqlSCD</strong></span> reflects and tracks
+                                changes in a dedicated MySQL SCD table.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tMysqlSCD</strong></span> addresses Slowly
+                                Changing Dimension needs, reading regularly a source of data and
+                                logging the changes into a dedicated SCD table </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top">
+                            <p>Either Built-in or Repository.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: No property data stored
+                                centrally.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: Select the Repository
+                                file where properties are stored. The following fields are
+                                pre-filled in using fetched data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use an existing connection</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box and click the relevant DB connection
+                                component on the <span class="bold"><strong>Component list</strong></span> to
+                                reuse the connection details you already defined.</p>
+                            <p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>When a Job contains the parent Job and the child Job,
+                                        <span class="bold"><strong>Component list</strong></span> presents
+                                    only the connection components in the same Job level, so if you
+                                    need to use an existing connection from the other level, make
+                                    sure that the available connection components are sharing the
+                                    intended connection.</p><p>For more information on how to share a DB connection across
+                                    Job levels, see <span class="bold"><strong>Use or register a shared
+                                        DB connection</strong></span> in any database connection
+                                    component corresponding to the database you are using, in <a class="xref" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components">Chapter&nbsp;6, <i>Database components</i></a>.</p><p>Otherwise, you can as well deactivate the connection
+                                    components and use <span class="bold"><strong>Dynamic
+                                        settings</strong></span> of the compo&shy;nent to specify the
+                                    intended connection manually. In this case, make sure the
+                                    connection name is unique and distinctive all over through the
+                                    two Job levels. For more information about <span class="bold"><strong>Dynamic settings</strong></span>, see your studio user
+                                    guide.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>DB Version</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the Mysql version you are using.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top">
+                            <p>Database server IP address.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top">
+                            <p>Listening port number of DB server.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Database</em></span></p>
+                        </td><td valign="top">
+                            <p>Name of the database.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> and
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>DB user authentication data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Table</em></span></p>
+                        </td><td valign="top">
+                            <p>Name of the table to be written. Note that only one table can be
+                                written at a time.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Action on table</em></span></p>
+                        </td><td valign="top">
+                            <p>On the table defined, you can perform one of the following
+                                operations:</p>
+                            <p>
+                                <span class="bold"><strong>None</strong></span>: No operation is carried
+                                out.</p>
+                            <p>
+                                <span class="bold"><strong>Create a table</strong></span>: The table does not
+                                exist and gets created.</p>
+                            <p>
+                                <span class="bold"><strong>Create a table if not exists</strong></span>: The
+                                table is created if it does not exist.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields to be processed and passed on to the next component. The
+                                schema is either built-in or remotely stored in the
+                                Repository.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: The schema is created
+                                and stored locally for this component only. Related topic: see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: The schema already
+                                exists and is stored in the Repository, hence can be reused. Related
+                                topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>SCD Editor</em></span></p>
+                        </td><td valign="top">
+                            <p>The SCD editor helps to build and configure the data flow for
+                                slowly changing dimension outputs.</p>
+                            <p> For more information, see <a class="xref" href="tMysqlSCD.html#Raa67018" title="SCD management methodologies">the section called &#8220;SCD management methodologies&#8221;</a>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use memory saving mode</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to maximize system performance.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is cleared by default, meaning to skip the row on
+                                error and to complete the process for error-free rows.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Additional JDBC Parameters</em></span></p>
+                        </td><td valign="top">
+                            <p>Specify additional connection properties for the DB connection you
+                                are creating. This option is not available if you have selected the
+                                    <span class="bold"><strong>Use an existing connection</strong></span>
+                                check box in the <span class="bold"><strong>Basic
+                                settings</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher
+                                Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to collect log data at the component
+                                level.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Debug mode</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to display each step during processing
+                                entries in a database.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is used as Output component. It requires an Input
+                                component and Row main link as input.</p>
+                        </td></tr></tbody></table></div><div class="section" title="SCD management methodologies"><div class="titlepage"><div><div><h4 class="title"><a name="Raa67018"></a>SCD management methodologies</h4></div></div></div><p>Slowly Changing Dimensions (SCDs) are dimensions that have data that slowly
+                changes. The SCD editor offers the simplest method of building the data flow for the
+                SCD outputs. In the SCD editor, you can map columns, select surrogate key columns,
+                and set column change attributes through combining SCD types.</p><p>The below figure illustrates an example of the SCD editor.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="524"><tr><td><img src="../images/SCD_Editor.png" width="524"></td></tr></table></div><div class="section" title="SCD keys"><div class="titlepage"><div><div><h5 class="title"><a name="Raa87498"></a>SCD keys</h5></div></div></div><p>You must choose one or more source keys columns from the incoming data to
+                    ensure its unicity.</p><p> You must set one surrogate key column in the dimension table and map it to an
+                    input column in the source table. The value of the surrogate key links a record
+                    in the source to a record in the dimension table. The editor uses this mapping
+                    to locate the record in the dimension table and to determine whether a record is
+                    new or changing. The surrogate key is typically the primary key in the source,
+                    but it can be an alternate key as long as it uniquely identifies a record and
+                    its value does not change.</p><p><span class="bold"><strong>Source keys</strong></span>: Drag one or more columns from
+                    the <span class="bold"><strong>Unused</strong></span> panel to the <span class="bold"><strong>Source keys</strong></span> panel to be used as the key(s) that ensure the
+                    unicity of the incoming data.</p><p><span class="bold"><strong>Surrogate keys</strong></span>: Set the column where the
+                    generated surrogate key will be stored. A surrogate key can be generated based
+                    on a method selected on the <span class="bold"><strong>Creation</strong></span>
+                    list.</p><p><span class="bold"><strong>Creation</strong></span>: Select any of the below methods to
+                    be used for the key generation:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong>Auto increment</strong></span>: auto-incremental
+                            key.</p></li><li class="listitem"><p><span class="bold"><strong>Input field</strong></span>: key is provided in an
+                            input field.</p><p> When selected, you can drag the appropriate field from the <span class="bold"><strong>Unused</strong></span> panel to the <span class="bold"><strong>complement</strong></span> field.</p></li><li class="listitem"><p><span class="bold"><strong>Routine</strong></span>: from the <span class="bold"><strong>complement</strong></span> field, you can press <span class="bold"><strong>Ctrl+ Space</strong></span> to display the autocompletion
+                            list and select the appropriate routine.</p></li><li class="listitem"><p><span class="bold"><strong>Table max +1</strong></span>: the maximum value from
+                            the SCD table is incremented to create a surrogate key.</p></li><li class="listitem"><p><span class="bold"><strong>DB Sequence:</strong></span> from the <span class="bold"><strong>complement</strong></span> field, you can enter the name of
+                            the existing database sequence that will automatically increment the
+                            column indicated in the <span class="bold"><strong>name</strong></span>
+                            field.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> This option is only available through the <span class="bold"><strong>SCD
+                            Editor</strong></span> of the <span class="bold"><strong>tOracleSCD</strong></span>
+                        component.</p></td></tr></table></div></div><div class="section" title="Combining SCD types"><div class="titlepage"><div><div><h5 class="title"><a name="d0e24296"></a>Combining SCD types</h5></div></div></div><p>The Slowly Changing Dimensions support four types of changes: <span class="bold"><strong>Type 0</strong></span> through <span class="bold"><strong>Type
+                        3</strong></span>. You can apply any of the SCD types to any column in a source
+                    table by a simple drag-and-drop operation.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong>Type 0</strong></span>: is not used frequently. Some
+                            dimension data may be overwritten and other may stay unchanged over
+                            time. This is most appropriate when no effort has been made to deal with
+                            the changing dimension issues.</p></li><li class="listitem"><p><span class="bold"><strong> Type 1</strong></span>: no history is kept in the
+                            database. New data overwrites old data. Use this type if tracking
+                            changes is not necessary. this is most appropriate when correcting
+                            certain typos, for example the spelling of a name.</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong> Type2</strong></span>: the whole history is stored
+                            in the database. This type tracks historical data by inserting a new
+                            record in the dimensional table with a separate key each time a change
+                            is made. This is most appropriate to track updates, for example.</p><p> </p><p> SCD <span class="bold"><strong>Type 2</strong></span> principle lies in the
+                            fact that a new record is added to the SCD table when changes are
+                            detected on the columns defined. Note that although several changes may
+                            be made to the same record on various columns defined as SCD <span class="bold"><strong>Type 2</strong></span>, only one additional line tracks these
+                            changes in the SCD table.</p><p> </p><p> The SCD schema in this type should include SCD-specific extra columns
+                            that hold standard log information such as:</p><p> -<span class="bold"><strong>start</strong></span>: adds a column to your SCD
+                            schema to hold the start date. You can select one of the input schema
+                            columns as a start date in the SCD table.</p><p> -<span class="bold"><strong>end</strong></span>: adds a column to your SCD
+                            schema to hold the end date value for a record. When the record is
+                            currently active, the end date is <span class="bold"><strong>NULL</strong></span>
+                            or you can select <span class="bold"><strong>Fixed Year Value</strong></span> and
+                            fill in a fictive year to avoid having a null value in the end date
+                            field.</p><p> -<span class="bold"><strong>version</strong></span>: adds a column to your SCD
+                            schema to hold the version number of the record.</p><p> -<span class="bold"><strong>active</strong></span>: adds a column to your SCD
+                            schema to hold the <span class="bold"><strong>true</strong></span> or <span class="bold"><strong>false</strong></span> status value. this column helps to
+                            easily spot the active record.</p></li><li class="listitem"><p><span class="bold"><strong> Type 3</strong></span>: only the information about a
+                            previous value of a dimension is written into the database. This type
+                            tracks changes using separate columns. This is most appropriate to track
+                            only the previous value of a changing column.</p></li></ul></div></div></div></div><div class="section" title="Scenario: Tracking changes using Slowly Changing Dimensions (type 0 through type 3)"><div class="titlepage"><div><div><h3 class="title"><a name="esabot-20111116-businessintelligence-tMySQLSCD_tracking_chgs_usingSCD"></a>Scenario: Tracking changes using Slowly Changing Dimensions (type 0 through type 3)</h3></div></div></div><p>This five-component Java scenario describes a Job that tracks changes in four of the
+            columns in a source delimited file, writes changes and the history of changes in an SCD
+            table, and displays error information on the <span class="bold"><strong>Run</strong></span>
+            console.</p><p>The source delimited file contains various personal details including
+                <span class="emphasis"><em>firstname</em></span>, <span class="emphasis"><em>lastname</em></span>,
+                <span class="emphasis"><em>address</em></span>, <span class="emphasis"><em>city</em></span>,
+                <span class="emphasis"><em>company</em></span>, <span class="emphasis"><em>age</em></span>, and
+                <span class="emphasis"><em>status</em></span>. An <span class="emphasis"><em>id</em></span> column helps ensuring the
+            unicity of the data. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="412"><tr><td><img src="../images/Use_Case_tMysqlSCD.png" width="412"></td></tr></table></div><p>We want any change in the marital status to overwrite the existing old status record.
+            This type of change is equivalent to an SCD <span class="bold"><strong>Type
+            1</strong></span>.</p><p>We want to insert a new record in the dimensional table with a separate key each time
+            a person changes his/her company. This type of change is equivalent to an SCD <span class="bold"><strong>Type 2</strong></span>.</p><p>We want to track only the previous city and previous address of a person. This type of
+            change is equivalent to an SCD <span class="bold"><strong>Type 3</strong></span>.</p><p>To realize this kind of scenario, it is better to divide it into three main steps:
+            defining the main flow of the Job, setting up the SCD editor, and finally creating the
+            relevant SCD table in the database.</p><p><span class="bold"><strong>Step 1: Defining the main flow of the job:</strong></span></p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace: a <span class="bold"><strong>tMysqlConnection</strong></span>, a <span class="bold"><strong>tFileInputDelimited</strong></span>, a <span class="bold"><strong>tMysqlSCD</strong></span>, a <span class="bold"><strong>tMysqlCommit</strong></span>, and
+                    two <span class="bold"><strong>tLogRow</strong></span> components.</p></li><li class="listitem"><p>Connect the <span class="bold"><strong>tFileInputDelimited</strong></span>, the first
+                        <span class="bold"><strong>tLogRow</strong></span>, and the <span class="bold"><strong>tMysqlSCD</strong></span> using the <span class="bold"><strong>Row Main</strong></span>
+                    link. This is the main flow of your Job.</p></li><li class="listitem"><p>Connect the <span class="bold"><strong>tMysqlConnection</strong></span> to the <span class="bold"><strong>tFileInputDelimited</strong></span> and <span class="bold"><strong>tMysqlSCD</strong></span> to <span class="bold"><strong>tMysqlCommit</strong></span> using
+                    the <span class="bold"><strong>OnComponntOk</strong></span> trigger.</p></li><li class="listitem"><p>Connect the <span class="bold"><strong>tMysqlSCD</strong></span> to the second <span class="bold"><strong>tLogRow</strong></span> using the <span class="bold"><strong>Row</strong></span>
+                    <span class="bold"><strong>Rejects</strong></span> link. Two columns,
+                        <span class="emphasis"><em>errorCode</em></span> and <span class="emphasis"><em>errorMessage</em></span>, are
+                    added to the schema. This connection collects error information.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="410"><tr><td><img src="../images/Use_Case_tMysqlSCD1.png" width="410"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, double-click <span class="bold"><strong>tMysqlConnection</strong></span> to display its <span class="bold"><strong>Basic
+                        settings</strong></span> view and set the database connection details manually.
+                    The <span class="bold"><strong>tMysqlConnection</strong></span> component should be used
+                    to avoid setting several times the same DB connection when multiple DB
+                    components are used.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If you have already stored the connection details locally in the <span class="bold"><strong>Repository</strong></span>, drop the needed metadata item to the design
+                workspace and the database connection detail will automatically display in the
+                relevant fields. For more information about Metadata, see <span class="bluebold">Talend Open Studio</span>
+                <span class="bold"><strong>User Guide</strong></span>.</p></td></tr></table></div><p>In this scenario, we want to connect to the SCD table where changes in the source
+            delimited file will be tracked down.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="459"><tr><td><img src="../images/Use_Case_tMysqlSCD2.png" width="459"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, double-click <span class="bold"><strong>tFileInputDelimited</strong></span> to display its <span class="bold"><strong>Basic
+                        settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="411"><tr><td><img src="../images/Use_Case_tMysqlSCD3.png" width="411"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Click the three-dot button next to the <span class="bold"><strong>File Name
+                    </strong></span>field to select the path to the source delimited file,
+                        <span class="emphasis"><em>dataset.csv</em></span> in this scenario, that contains the
+                    personal details. </p></li><li class="listitem"><p> Define the row and field separators used in the source file.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The <span class="bold"><strong>File Name</strong></span>, <span class="bold"><strong>Row
+                    separator</strong></span>, and <span class="bold"><strong>Field separators</strong></span> are
+                mandatory.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>If needed, set <span class="bold"><strong>Header</strong></span>, <span class="bold"><strong>Footer</strong></span>, and <span class="bold"><strong>Limit</strong></span>.</p><p> In this scenario, set <span class="bold"><strong>Header</strong></span> to
+                        <span class="emphasis"><em>1</em></span>. Footer and limit for the number of processed rows
+                    are not set.</p></li><li class="listitem"><p>Click <span class="bold"><strong>Edit schema </strong></span>to describe the data
+                    structure of the source delimited file.</p><p> In this scenario, the source schema is made of eight columns:
+                        <span class="emphasis"><em>id</em></span>, <span class="emphasis"><em>firstName</em></span>,
+                        <span class="emphasis"><em>lastName</em></span>, <span class="emphasis"><em>address</em></span>,
+                        <span class="emphasis"><em>city</em></span>, <span class="emphasis"><em>company</em></span>,
+                        <span class="emphasis"><em>age</em></span>, and <span class="emphasis"><em>status</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="371"><tr><td><img src="../images/Use_Case_tMysqlSCD4.png" width="371"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Define the basic settings for the first <span class="bold"><strong>tLogRow</strong></span> in order to view the content of the source file with
+                    varying attributes in cells of a table on the console before being processed
+                    through the SCD component.</p></li><li class="listitem"><p>In the design workspace, click the <span class="bold"><strong>tMysqlSCD</strong></span>
+                    and select the <span class="bold"><strong>Component</strong></span> tab to define its
+                    basic settings.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="461"><tr><td><img src="../images/Use_Case_tMysqlSCD5.png" width="461"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Basic settings</strong></span> view, select the
+                        <span class="bold"><strong>Use an existing connection</strong></span> check box to
+                    reuse the connection details defined on the <span class="bold"><strong>tMysqlConnection</strong></span> properties.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Table </strong></span>field, enter the table name to
+                    be used to track changes.</p></li><li class="listitem"><p>If needed, click <span class="bold"><strong>Sync columns</strong></span> to retrieve the
+                    output data structure from the <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li><li class="listitem"><p>In the design workspace, double-click <span class="bold"><strong>tMysqlCommit</strong></span> to define its basic settings.</p></li><li class="listitem"><p>Select the relevant connection on the <span class="bold"><strong>Component
+                        list</strong></span> if more than one connection exists.</p></li><li class="listitem"><p>Define the basic settings of the second <span class="bold"><strong>tLogRow</strong></span> in order to view reject information in cells of a
+                    table.</p></li></ul></div><p><span class="bold"><strong>Step 2: Setting up the SCD editor:</strong></span></p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-click the <span class="bold"><strong>tMysqlSCD</strong></span> component in the
+                    design workspace or click the three-dot<span class="bold"><strong> </strong></span>button
+                    next to the <span class="bold"><strong>SCD Editor</strong></span> in the component&#8217;s
+                        <span class="bold"><strong>Basic settings</strong></span> view to open the <span class="bold"><strong>SCD editor</strong></span> and build the data flow for the SCD
+                    outputs.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="338"><tr><td><img src="../images/Use_Case_tMysqlSCD6.png" width="338"></td></tr></table></div><p>All the columns from the preceding component are displayed in the <span class="bold"><strong>Unused</strong></span> panel of the <span class="bold"><strong>SCD
+                editor</strong></span>. All the other panels in the <span class="bold"><strong>SCD editor
+            </strong></span>are empty.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>From the <span class="bold"><strong>Unused</strong></span> list, drop the
+                        <span class="emphasis"><em>id</em></span> column to the <span class="bold"><strong>Source
+                        keys</strong></span> panel to use it as the key to ensure the unicity of the
+                    incoming data.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Surrogate keys</strong></span> panel, enter a name for
+                    the surrogate key in the <span class="bold"><strong>Name</strong></span> field,
+                        <span class="emphasis"><em>SK1</em></span> in this scenario.</p></li><li class="listitem"><p>From the <span class="bold"><strong>Creation</strong></span> list, select the method to
+                    be used for the surrogate key generation, <span class="bold"><strong>Auto-increment</strong></span> in this scenario.</p></li><li class="listitem"><p>From the <span class="bold"><strong>Unused</strong></span> list, drop the
+                        <span class="emphasis"><em>firstname</em></span> and <span class="emphasis"><em>lastname </em></span>columns to
+                    the <span class="bold"><strong>Type 0</strong></span> panel, changes in these two columns
+                    do not interest us.</p></li><li class="listitem"><p>Drop the <span class="emphasis"><em>status</em></span><span class="emphasis"><em> </em></span>column to the
+                        <span class="bold"><strong>Type 1</strong></span> panel. The new value will overwrite
+                    the old value.</p></li><li class="listitem"><p>Drop the <span class="emphasis"><em>company</em></span><span class="emphasis"><em> </em></span>column to the
+                        <span class="bold"><strong>Type 2</strong></span> panel. Each time a person changes
+                    his/her company, a new record will be inserted in the dimensional table with a
+                    separate key.</p><p> In the <span class="bold"><strong>Versioning</strong></span> area:</p><p> - Define the <span class="bold"><strong>start</strong></span> and <span class="bold"><strong>end</strong></span> columns of your SCD table that will hold the start and end
+                    date values. The end date is null for current records until a change is
+                    detected. Then the end date gets filled in and a new record is added with no end
+                    date.</p><p> In this scenario, we select <span class="bold"><strong>Fixed Year Value</strong></span>
+                    for the <span class="bold"><strong>end</strong></span> column and fill in a fictive year
+                    to avoid having a null value in the end date field.</p><p> - Select the <span class="bold"><strong>version</strong></span> check box to hold the
+                    version number of the record.</p><p> - Select the <span class="bold"><strong>active</strong></span> check box to spot the
+                    column that will hold the <span class="bold"><strong>True</strong></span> or <span class="bold"><strong>False</strong></span> status. <span class="bold"><strong>True</strong></span>
+                    for the current active record and <span class="bold"><strong>False</strong></span> for the
+                    modified record.</p></li><li class="listitem"><p>Drop the <span class="emphasis"><em>address</em></span> and <span class="emphasis"><em>city </em></span>columns to
+                    the <span class="bold"><strong>Type 3</strong></span> panel to track only the information
+                    about the previous value of the address and city.</p></li></ul></div><p>For more information about SCD types, see <a class="xref" href="tMysqlSCD.html#Raa67018" title="SCD management methodologies">the section called &#8220;SCD management methodologies&#8221;</a>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="525"><tr><td><img src="../images/Use_Case_tMysqlSCD11.png" width="525"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate your configuration and
+                    close the <span class="bold"><strong>SCD editor</strong></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>Edit schema</strong></span> to view the input and
+                    output data structures. </p><p> The SCD output schema should include the SCD-specific columns defined in the
+                        <span class="bold"><strong>SCD editor</strong></span> to hold standard log
+                    information.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="505"><tr><td><img src="../images/Use_Case_tMysqlSCD8.png" width="505"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If you adjust any of the input schema definitions, you need to check, and
+                reconfigure if necessary, the output flow definitions in the <span class="bold"><strong>SCD editor</strong></span> to ensure that the output data structure is properly
+                updated.</p></td></tr></table></div><p><span class="bold"><strong>Step 3: Creating the SCD table:</strong></span></p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Basic settings</strong></span> view of the <span class="bold"><strong>tMysqlSCD</strong></span> component, select <span class="bold"><strong>Create table if not exists</strong></span> from the <span class="bold"><strong>Action
+                        on table</strong></span> list to avoid creating and defining the SCD table
+                    manually.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute it. </p><p> The console shows the content of the input delimited file, and your SCD table
+                    is created in your database, containing the initial dataset. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="521"><tr><td><img src="../images/Use_Case_tMysqlSCD9.png" width="521"></td></tr></table></div><p><span class="emphasis"><em>Janet</em></span> gets divorced and moves to <span class="emphasis"><em>Adelanto</em></span> at
+                <span class="emphasis"><em>355 Golf Rd.</em></span> She works at
+            <span class="emphasis"><em>Greenwood.</em></span></p><p><span class="emphasis"><em>Adam</em></span> gets married and moves to <span class="emphasis"><em>Belmont</em></span> at
+                <span class="emphasis"><em>2505 Alisson ct. </em></span>He works at <span class="emphasis"><em>Scoop.</em></span></p><p><span class="emphasis"><em>Martin</em></span> gets a new job at <span class="emphasis"><em>Phillips and
+                Brothers</em></span>. </p><p>Update the delimited file with the above information and press <span class="bold"><strong>F6</strong></span> to run your Job.</p><p>The console shows the updated personal information and the rejected data, and the SCD
+            table shows the history of valid changes made to the input file along with the status
+            and version number. Because the name of Martin&#8217;s new company exceeds the length of the
+            column <span class="emphasis"><em>company</em></span> defined in the schema, this change is directed to
+            the reject flow instead of being logged in the SCD table.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="512"><tr><td><img src="../images/SCD_Result.png" width="512"></td></tr></table></div></div></div></body></html>

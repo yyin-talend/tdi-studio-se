@@ -1,0 +1,326 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tDB2Output</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="tDB2Input.html" title="tDB2Input"><link rel="next" href="tDB2Rollback.html" title="tDB2Rollback"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tDB2Output"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tDB2Output"></a>tDB2Output</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tDB2Output_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tDB2Output properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e61032"></a>tDB2Output properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Databases/DB2</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tDB2Output</strong></span> writes, updates, makes
+                                changes or suppresses entries in a database. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tDB2Output</strong></span> executes the action
+                                defined on the table and/or on the data contained in the table,
+                                based on the flow incoming from the preceding component in the Job.
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use an existing connection</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box and click the relevant <span class="bold"><strong>tDB2Connection </strong></span>component on the <span class="bold"><strong>Component list</strong></span> to reuse the connection
+                                details you already defined.</p>
+                            <p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> When a Job contains the parent Job and the child Job,
+                                        <span class="bold"><strong>Component list</strong></span> presents
+                                    only the connection components in the same Job level, so if you
+                                    need to use an existing connection from the other level, make
+                                    sure that the available connection components are sharing the
+                                    intended connection.</p><p> For more information on how to share a DB connec&shy;tion across
+                                    Job levels, see <span class="bold"><strong>Use or register a shared
+                                        DB connection</strong></span> in any database connection
+                                    compo&shy;nent corresponding to the database you are using.</p><p> Otherwise, you can as well deactivate the connection
+                                    components and use <span class="bold"><strong>Dynamic
+                                        settings</strong></span> of the compo&shy;nent to specify the
+                                    intended connection manually. In this case, make sure the
+                                    connection name is unique and distinctive all over through the
+                                    two Job levels. For more information about <span class="bold"><strong>Dynamic settings</strong></span>, see your studio user
+                                    guide.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top">
+                            <p>Either <span class="bold"><strong>Built-in</strong></span> or <span class="bold"><strong>Repository</strong></span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: No property data stored
+                                centrally.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: Select the repository
+                                file in which the properties are stored. The fields that follow are
+                                completed automatically using the data retrieved.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="18"><tr><td><img src="../images/Save_Icon.png" width="18"></td></tr></table></div>
+                        </td><td valign="top">
+                            <p>Click this icon to open a database connection wizard and store the
+                                database connection parameters you set in the component <span class="bold"><strong>Basic settings </strong></span>view.</p>
+                            <p> For more information about setting up and storing database
+                                connection parameters, see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top">
+                            <p>Database server IP address</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top">
+                            <p>Listening port number of DB server.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Database</em></span></p>
+                        </td><td valign="top">
+                            <p>Name of the database</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Table schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Name of the DB schema.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> and
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>DB user authentication data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Table</em></span></p>
+                        </td><td valign="top">
+                            <p>Name of the table to be written. Note that only one table can be
+                                written at a time</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Action on table</em></span></p>
+                        </td><td valign="top">
+                            <p>On the table defined, you can perform one of the following
+                                operations:</p>
+                            <p>
+                                <span class="bold"><strong>Default</strong></span>: No operation is carried
+                                out.</p>
+                            <p>
+                                <span class="bold"><strong>Drop and create a table</strong></span>: The table
+                                is removed and created again.</p>
+                            <p>
+                                <span class="bold"><strong>Create a table</strong></span>: The table does not
+                                exist and gets created.</p>
+                            <p>
+                                <span class="bold"><strong>Create a table if not exists</strong></span>: The
+                                table is created if it does not exist.</p>
+                            <p>
+                                <span class="bold"><strong>Drop a table if exists and create</strong></span>:
+                                The table is removed if it already exists and created again.</p>
+                            <p>
+                                <span class="bold"><strong>Clear a table</strong></span>: The table content is
+                                deleted.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Action on data</em></span></p>
+                        </td><td valign="top">
+                            <p>On the data of the table defined, you can perform:</p>
+                            <p>
+                                <span class="bold"><strong>Insert</strong></span>: Add new entries to the
+                                table. If duplicates are found, Job stops.</p>
+                            <p>
+                                <span class="bold"><strong>Update</strong></span>: Make changes to existing
+                                entries</p>
+                            <p>
+                                <span class="bold"><strong>Insert or update</strong></span>: Add entries or
+                                update existing ones.</p>
+                            <p>
+                                <span class="bold"><strong>Update or insert</strong></span>: Update existing
+                                entries or create it if non existing</p>
+                            <p>
+                                <span class="bold"><strong>Delete</strong></span>: Remove entries
+                                corresponding to the input flow.</p>
+                            <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                                    <span class="emphasis"><em>You must specify at least one column as a primary key
+                                        on which the </em></span><span class="bold"><strong>Update</strong></span><span class="emphasis"><em> and </em></span><span class="bold"><strong>Delete</strong></span><span class="emphasis"><em> operations are
+                                        based. You can do that by clicking </em></span><span class="bold"><strong>Edit Schema </strong></span><span class="emphasis"><em>and selecting
+                                        the check box(es) next to the column(s) you want to set as
+                                        primary key(s). For an advanced use, click the
+                                        </em></span><span class="bold"><strong>Advanced
+                                        settings</strong></span><span class="emphasis"><em> view where you can
+                                        simultaneously define primary keys for the update and delete
+                                        operations. To do that: Select the </em></span><span class="bold"><strong>Use field options</strong></span><span class="emphasis"><em> check box
+                                        and then in the </em></span><span class="bold"><strong>Key in
+                                        update</strong></span><span class="emphasis"><em> column, select the check boxes
+                                        next to the column name on which you want to base the update
+                                        operation. Do the same in the </em></span><span class="bold"><strong>Key in delete</strong></span><span class="emphasis"><em> column for
+                                        the deletion operation </em></span></p></td></tr></table></div>
+                            
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields to be processed and passed on to the next component. The
+                                schema is either <span class="bold"><strong>Built-in</strong></span> or stored
+                                remotely in the <span class="bold"><strong>Repository</strong></span>. </p>
+                            <p> </p>
+                            
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: The schema is created
+                                and stored locally for this component only. Related topic: see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: The schema already
+                                exists and is stored in the Repository, hence can be reused. Related
+                                topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. Clear the check box to skip
+                                the row on error and complete the process for error-free rows. If
+                                needed, you can retrieve the rows on error via a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Rejects</strong></span> link.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Commit every</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the number of rows to be completed before committing batches
+                                of rows together into the DB. This option ensures transaction
+                                quality (but not rollback) and, above all, better performance at
+                                execution.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Additional Columns</em></span></p>
+                        </td><td valign="top">
+                            <p>This option is not offered if you create (with or without drop)
+                                the DB table. This option allows you to call SQL functions to
+                                perform actions on columns, which are not insert, nor update or
+                                delete actions, or action that require particular preprocessing.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Name:</strong></span> Type in the name of the
+                                schema column to be altered or inserted as new column</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>SQL expression:</strong></span> Type in the SQL
+                                statement to be executed in order to alter or insert the relevant
+                                column data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Position:</strong></span> Select <span class="bold"><strong>Before</strong></span>, <span class="bold"><strong>Replace</strong></span> or <span class="bold"><strong>After</strong></span>
+                                following the action to be performed on the reference column.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Reference column:</strong></span> Type in a
+                                column of reference that the <span class="bold"><strong>tDBOutput</strong></span> can use to place or replace the new or
+                                altered column.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use field option</em></span>s</p>
+                        </td><td valign="top">
+                            <p>Select this check box to customize a request, especially when
+                                there is double action on data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Convert columns and table names to
+                                uppercase</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to uppercase the names of the columns and
+                                the name of the table. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Enable debug mode</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to display each step during processing
+                                entries in a database.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Support null in &#8220;SQL WHERE&#8221; statement </em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box if you want to deal with the Null values
+                                contained in a DB table. </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Make sure the Nullable check box is selected for the
+                                    corresponding columns in the schema. </p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use batch size</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to activate the batch mode for data
+                                processing. In the <span class="bold"><strong>Batch Size</strong></span> field
+                                that appears when this check box is selected, you can type in the
+                                number you need to define the batch size to be processed.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> This check box is available only when you have selected the
+                                        <span class="bold"><strong>Insert</strong></span>, the <span class="bold"><strong>Update</strong></span> or the <span class="bold"><strong>De&shy;lete</strong></span> option in the <span class="bold"><strong>Action on data</strong></span> field.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher
+                                Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to collect log data at the component
+                                level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component offers the flexibility benefit of the DB query and
+                                covers all of the SQL queries possible.</p>
+                            <p> This component must be used as an output component. It allows you
+                                to carry out actions on a table or on the data of a table in a DB2
+                                database. It also allows you to create a reject flow using a
+                                    <span class="bold"><strong>Row &gt; Rejects</strong></span> link to filter
+                                data in error. For an example of <span class="bold"><strong>tMySqlOutput</strong></span> in use, see <a class="xref" href="tMysqlOutput.html#Raa73790" title="Scenario&nbsp;3: Retrieve data in error with a Reject link">the section called &#8220;Scenario&nbsp;3: Retrieve data in error with a Reject
+                link&#8221;</a></p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e61828"></a>Related scenarios</h3></div></div></div><p>For <span class="bold"><strong>tDB2Output</strong></span> related topics, see </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong> tDBOutput</strong></span>
+                    <a class="xref" href="tDBOutput.html#Raa47355" title="Scenario: Displaying DB output">the section called &#8220;Scenario: Displaying DB output&#8221;</a>
+                </p></li><li class="listitem"><p>
+                    <span class="bold"><strong>tMySQLOutput</strong></span>
+                    <a class="xref" href="tMysqlOutput.html#Raa81493" title="Scenario 1: Adding a new column and altering data in a DB table">the section called &#8220;Scenario 1: Adding a new column and altering data
+                in a DB table&#8221;</a>.</p></li></ul></div></div></div></body></html>

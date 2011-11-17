@@ -1,0 +1,104 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHashOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch17.html" title="Chapitre&nbsp;17.&nbsp;Composants Technical"><link rel="prev" href="tHashInput.html" title="tHashInput"><link rel="next" href="ch18.html" title="Chapitre&nbsp;18.&nbsp;Composants XML"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tHashOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHashOutput"></a>tHashOutput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tHashInput_icon32.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tHashOutput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e249155"></a>Propri&eacute;t&eacute;s du tHashOutput</h3></div></div></div><p>Ce composant &eacute;crit des donn&eacute;es dans la m&eacute;moire cache. Il est &eacute;troitement li&eacute; au
+                <span class="bold"><strong>tHashInput</strong></span>. Ensemble, ces deux composants
+            permettent un acc&egrave;s tr&egrave;s rapide aux donn&eacute;es afin de faciliter les transactions
+            comprenant un grand nombre de donn&eacute;es.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Famille de composant</strong></span></p>
+                        </td><td valign="top">
+                            <p>Technical</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top">Le composant <span class="bold"><strong>tHashOutput</strong></span> &eacute;crit des donn&eacute;es dans la m&eacute;moire
+                            cache, afin de permettre un acc&egrave;s rapide aux donn&eacute;es.</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant charge des donn&eacute;es dans la m&eacute;moire cache afin de
+                                permettre un acc&egrave;s rapide aux donn&eacute;es et de faciliter les
+                                transactions comportant un large volume de donn&eacute;es.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une
+                                description de ligne, i.e., il d&eacute;finit le nombre de champs qui sont
+                                trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local
+                                    (<span class="bold"><strong>Built-in</strong></span>), soit distant
+                                (Repository). </p>
+                            <p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> afin de modifier le sch&eacute;ma.
+                                Si vous modifiez le sch&eacute;ma, il devient automatiquement
+                                built-in.</p>
+                            <p>Cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour
+                                r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent dans le Job. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>&nbsp;:
+                                Le sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>&nbsp;:
+                                Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il
+                                peut &ecirc;tre r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Link with a tHashOutput</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour connecter votre composant &agrave; un <span class="bold"><strong>tHashOutput</strong></span>. </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Si plusieurs composants <span class="bold"><strong>tHashOutput</strong></span> sont ainsi reli&eacute;s, les donn&eacute;es
+                                    charg&eacute;es dans le cache par tous ces composants peuvent &ecirc;tre lues
+                                    par un <span class="bold"><strong>tHashInput</strong></span> reli&eacute; &agrave; l'un
+                                    d'entre eux.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Component list</em></span></p>
+                        </td><td valign="top">
+                            <p>Liste d&eacute;roulante comprenant les composants <span class="bold"><strong>tHashOutput</strong></span>
+                                disponibles.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Data write model</em></span></p>
+                        </td><td valign="top">
+                            <p>Liste des modes d'&eacute;criture de donn&eacute;es disponibles. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Keys management</em></span></p>
+                        </td><td valign="top">
+                            <p>Liste des modes de gestion de cl&eacute;s disponibles. </p>
+                        </td></tr><tr><td>
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant &eacute;crit des donn&eacute;es dans la m&eacute;moire cache. Il est
+                                &eacute;troitement li&eacute; au composant <span class="bold"><strong>tHashInput</strong></span>. Ensemble, ces composants permettent un
+                                acc&egrave;s rapide aux donn&eacute;es et facilitent les transactions comportant
+                                un large volume de donn&eacute;es.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e249421"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez : </p><p>
+            </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tHashInput.html#technical-thashinput-scenario_speed" title="Sc&eacute;nario : Lire des donn&eacute;es directement dans la m&eacute;moire cache afin d'y acc&eacute;der rapidement">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario : Lire des donn&eacute;es directement dans la m&eacute;moire cache afin d'y acc&eacute;der
+            rapidement&nbsp;&raquo;</a> du composant <span class="bold"><strong>tHashInput</strong></span>.</p></li></ul></div><p>
+        </p></div></div></body></html>

@@ -1,0 +1,131 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMaxDBRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tMaxDBOutput.html" title="tMaxDBOutput"><link rel="next" href="tMSSqlBulkExec.html" title="tMSSqlBulkExec"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tMaxDBRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMaxDBRow"></a>tMaxDBRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMaxDBRow_icon32.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tMaxDBRow"><div class="titlepage"><div><div><h3 class="title"><a name="d0e99824"></a>Propri&eacute;t&eacute;s du tMaxDBRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+									composant</strong></span></p>
+						</td><td valign="top"><p>Databases/MaxDB</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+						</td><td colspan="2" valign="top"><p><span class="bold"><strong>tMaxDBRow</strong></span> est le composant sp&eacute;cifique &agrave; ce type de
+								base de donn&eacute;es. Il ex&eacute;cute des requ&ecirc;tes SQL d&eacute;clar&eacute;es sur la base
+								de donn&eacute;es sp&eacute;cifi&eacute;e. Le suffixe Row signifie que le composant met
+								en place un flux dans le Job bien que ce composant ne produise pas
+								de donn&eacute;es en sortie. </p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Selon la nature de la
+								requ&ecirc;te et de la base de donn&eacute;es, <span class="bold"><strong>tMaxDBRow</strong></span> agit sur la structure m&ecirc;me de la base de
+								donn&eacute;es ou sur les donn&eacute;es (mais sans les manipuler). Le SQLBuilder
+								peut vous aider &agrave; rapidement et ais&eacute;ment &eacute;crire vos requ&ecirc;tes.
+							</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+								settings</strong></span></p>
+						</td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+						</td><td valign="top"><p>Peut &ecirc;tre Built-in ou Repository</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>:
+								Propri&eacute;t&eacute;s utilis&eacute;es ponctuellement.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>&nbsp;:
+								S&eacute;lectionnez le fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du
+								composant. Les champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des
+								donn&eacute;es collect&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+						</td><td valign="top"><p>Adresse IP du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+						</td><td valign="top"><p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Database</em></span></p>
+						</td><td valign="top"><p>Nom de la base de donn&eacute;es. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Username</em></span> et
+									<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top"><p>Informations d&#8217;authentification de l&#8217;utilisateur
+								de base de donn&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+									Schema</em></span></p>
+						</td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+								d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+								suivant. Le sch&eacute;ma est soit local (Built-in) soit distant dans le
+									<span class="bold"><strong>Repository</strong></span>.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce composant
+								seulement. Voir &eacute;galement&nbsp;le<span class="bold"><strong> Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le
+									<span class="bold"><strong>Repository</strong></span>. Ainsi, il peut &ecirc;tre
+								r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Table name</em></span></p>
+						</td><td valign="top"><p>Saisissez le nom de la table.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Query type</em></span></p>
+						</td><td valign="top"><p>Peut &ecirc;tre Built-in ou Repository. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>:
+								Saisissez manuellement votre requ&ecirc;te ou construisez-la &agrave; l&#8217;aide de
+								SQLBuilder.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>&nbsp;:
+								S&eacute;lectionnez la requ&ecirc;te appropri&eacute;e dans le Repository. Le champ
+									<span class="bold"><strong>Query</strong></span> est renseign&eacute;
+								automatiquement.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Query</em></span></p>
+						</td><td valign="top"><p>Saisissez votre requ&ecirc;te en faisant
+								particuli&egrave;rement attention &agrave; l&#8217;ordre des champs afin qu&#8217;ils
+								correspondent &agrave; la d&eacute;finition du sch&eacute;ma.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+						</td><td valign="top"><p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job
+								en cas d&#8217;erreur. D&eacute;cochez cette case pour terminer le traitement
+								avec les lignes sans erreur, et ignorer les lignes en erreur. Vous
+								pouvez r&eacute;cup&eacute;rer les lignes en erreur, si vous le souhaitez. Pour
+								cela, utilisez un lien <span class="bold"><strong>Row</strong></span> &gt;
+									<span class="bold"><strong>Rejects</strong></span>.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+								settings</strong></span></p>
+						</td><td valign="top"><p><span class="emphasis"><em>Propagate QUERY&#8217;s
+								recordset</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour ins&eacute;rer les r&eacute;sultats de la
+								requ&ecirc;te dans une colonne du flux en cours. S&eacute;lectionnez cette
+								colonne dans la liste <span class="bold"><strong>use
+								column</strong></span>.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Use PreparedStatement</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour utiliser une instance
+								PreparedStatement afin de requ&ecirc;ter votre base de donn&eacute;es. Dans le
+								tableau <span class="bold"><strong>Set PreparedStatement
+									Parameter</strong></span>, d&eacute;finissez les valeurs des param&egrave;tres
+								repr&eacute;sent&eacute;s par des &#8220;?&#8221; dans l&#8217;instruction SQL d&eacute;finie dans le champ
+									<span class="bold"><strong>Query</strong></span> de l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>.</p><p><span class="bold"><strong>Parameter Index</strong></span>&nbsp;: Saisissez la position du param&egrave;tre dans
+								l&#8217;instruction SQL.</p><p><span class="bold"><strong>Parameter Type</strong></span>&nbsp;: Saisissez le type du param&egrave;tre.</p><p><span class="bold"><strong>Parameter Value</strong></span>&nbsp;: Saisissez la valeur du param&egrave;tre.</p><p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Cette option est tr&egrave;s utile si vous devez effectuer de nombreuses fois la m&ecirc;me
+									requ&ecirc;te. Elle permet un gain de performance.</p></td></tr></table></div>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Commit every</em></span></p>
+						</td><td valign="top"><p>Nombre de lignes &agrave; inclure dans le lot avant de
+								commencer l&#8217;&eacute;criture dans la base. Cette option garantit la qualit&eacute;
+								de la transaction (cependant pas de rollback) et surtout une
+								meilleure performance d&#8217;ex&eacute;cution.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher
+									Statistics</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+								log au niveau du composant.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Ce composant offre la
+								flexibilit&eacute; des requ&ecirc;tes sur les bases de donn&eacute;es et couvre toutes
+								les possibilit&eacute;s de requ&ecirc;tes SQL.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d0e100234"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;,
+			consultez&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tDBSQLRow.html#Raa17909" title="Sc&eacute;nario&nbsp;: R&eacute;initialiser l&#8217;auto-incr&eacute;mentation d&#8217;une base de donn&eacute;es">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: R&eacute;initialiser l&#8217;auto-incr&eacute;mentation
+				d&#8217;une base de donn&eacute;es&nbsp;&raquo;</a> du composant <span class="bold"><strong>tDBSQLRow</strong></span>.</p></li><li class="listitem"><p><a class="xref" href="tMysqlRow.html#Raa11099" title="Sc&eacute;nario&nbsp;1&nbsp;: Supprimer et re-g&eacute;n&eacute;rer un index de table MySQL">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;1&nbsp;: Supprimer et re-g&eacute;n&eacute;rer un index de
+				table MySQL&nbsp;&raquo;</a> du composant <span class="bold"><strong>tMySQLRow</strong></span>.</p></li></ul></div></div></div></body></html>

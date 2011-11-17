@@ -1,0 +1,94 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tWriteJsonField</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch14.html" title="Chapter&nbsp;14.&nbsp;Processing components"><link rel="prev" href="tSplitRow.html" title="tSplitRow"><link rel="next" href="tXMLMap.html" title="tXMLMap"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tWriteJsonField"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tWriteJsonField"></a>tWriteJsonField</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tWriteJSONField_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tWriteJsonField properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e226127"></a>tWriteJsonField properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Processing/Fields</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tWriteJsonField</strong></span> outputs json
+                                objects to the defined field of an output file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tWriteJsonField</strong></span> reads data from
+                                an input file, assembles it into json objects and outputs them to
+                                the defined field of an output file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Output Column</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the destination field in the output component where you
+                                want to write the json objects.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Configure JSON Tree</em></span></p>
+                        </td><td valign="top">
+                            <p>Opens the interface that supports the creation of the json data
+                                structure you want to write to a field. For more information about
+                                the interface, see <a class="xref" href="tAdvancedFileOutputXML.html#Raa35713" title="Defining the XML tree">the section called &#8220;Defining the XML tree&#8221;</a>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema type</em></span> and <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e. it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: You create the schema
+                                and store it locally for this component only. Related topic: see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                User Guide.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: You already created
+                                the schema and stored it in the Repository, hence can be reused in
+                                various projects and job flowcharts. Related topic: see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Sync columns</em></span></p>
+                        </td><td valign="top">
+                            <p>Click to synchronize the output file schema with the input file
+                                schema. The Sync function only displays once the Row connection is
+                                linked with the output component.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Group by</em></span></p>
+                        </td><td valign="top">
+                            <p>Define the aggregation set, the columns you want to use to regroup
+                                the data.</p>
+                        </td></tr><tr><td>
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can be used as intermediate step in a data
+                                flow.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related Scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e226357"></a>Related Scenario</h3></div></div></div><p>For a related scenario, see:</p><p>
+            </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong>tWriteXMLField</strong></span>: <a class="xref" href="tWriteXMLField.html#xml-twritexmlfield-scenario-xml_field" title="Scenario: Extracting the structure of an XML file and inserting it into the fields of a database table">the section called &#8220;Scenario: Extracting the structure of an XML file and inserting it into the fields of
+            a database table&#8221;</a></p></li></ul></div><p>
+        </p></div></div></body></html>

@@ -1,0 +1,151 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tJavaFlex</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch04.html" title="Chapitre&nbsp;4.&nbsp;Composants Custom Code"><link rel="prev" href="tJava.html" title="tJava"><link rel="next" href="tJavaRow.html" title="tJavaRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tJavaFlex"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tJavaFlex"></a>tJavaFlex</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tJavaFlex_icon32.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tJavaFlex"><div class="titlepage"><div><div><h3 class="title"><a name="d0e47527"></a>Propri&eacute;t&eacute;s du tJavaFlex</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Custom Code</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tJavaFlex</strong></span> permet de saisir du code personnalis&eacute; afin
+                                de l&#8217;int&eacute;grer dans le programme Talend. Avec le <span class="bold"><strong>tJavaFlex</strong></span>, vous pouvez saisir les trois
+                                diff&eacute;rentes parties du code Java (start, main et end) constituant un
+                                composant qui permet d&#8217;ex&eacute;cuter une op&eacute;ration souhait&eacute;e et non
+                                disponible dans les actuels composants <span class="bold"><strong>Talend</strong></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tJavaFlex</strong></span> permet d&#8217;&eacute;tendre les fonctionnalit&eacute;s du
+                                Job <span class="bold"><strong>Talend</strong></span> gr&acirc;ce au
+                                langage Java.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (Built-in) soit distant dans le
+                                    <span class="bold"><strong>Repository</strong></span>.</p><p>Cliquez
+                                sur <span class="bold"><strong>Edit schema</strong></span> pour modifier le
+                                sch&eacute;ma. Notez que si vous modifiez le sch&eacute;ma, il devient
+                                automatiquement built-in.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le
+                                sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;: <span class="bold"><strong>Guide Utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilis&eacute; dans divers projets et Jobs. Voir &eacute;galement&nbsp;:
+                                    <span class="bold"><strong>Guide Utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Data Auto Propagate</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour propager automatiquement
+                                les donn&eacute;es au composant suivant.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Start code</em></span></p>
+                        </td><td valign="top"><p>Saisissez le code Java qui va &ecirc;tre appel&eacute; lors de
+                                la phase d&#8217;initialisation.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Main code</em></span></p>
+                        </td><td valign="top"><p>Saisissez le code Java qui va &ecirc;tre appliqu&eacute; pour
+                                chaque ligne du flux.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>End code</em></span></p>
+                        </td><td valign="top"><p>Saisissez le code Java qui va &ecirc;tre appel&eacute; lors de
+                                la phase de cl&ocirc;ture.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Import</em></span></p>
+                        </td><td valign="top"><p>Saisissez le code Java permettant d&#8217;importer, si
+                                n&eacute;cessaire, la librairie externe utilis&eacute;e dans le champ <span class="bold"><strong>Main code</strong></span> de l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant peut &ecirc;tre
+                                utilis&eacute; en tant que composant de d&eacute;but, de milieu et de fin de Job,
+                                ainsi qu&#8217;en tant que sous-job &agrave; un seul composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Il est n&eacute;cessaire de
+                                conna&icirc;tre le langage Java.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;1&nbsp;: G&eacute;n&eacute;rer un flux de donn&eacute;es"><div class="titlepage"><div><div><h3 class="title"><a name="d0e47768"></a>Sc&eacute;nario&nbsp;1&nbsp;: G&eacute;n&eacute;rer un flux de donn&eacute;es</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; deux composants dont le but est de g&eacute;n&eacute;rer un flux de
+            trois lignes d&eacute;crivant les diff&eacute;rentes civilit&eacute;&nbsp;: mademoiselle (Miss), madame (Mrs) et
+            monsieur (Mr), et de les afficher dans la console.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="226"><tr><td><img src="../images/Use_Case_tJavaFlex1_1.png" width="226"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez-glissez un composant <span class="bold"><strong>tJavaFlex</strong></span> de la
+                    famille <span class="bold"><strong>Custom Code</strong></span> et un composant <span class="bold"><strong>tLogRow</strong></span> de la famille <span class="bold"><strong>Logs
+                        &amp; Errors</strong></span> dans le Job Designer.</p></li><li class="listitem"><p>Connectez-les via un lien <span class="bold"><strong>Row Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tJavaFlex</strong></span>
+                    pour param&eacute;trer ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="430"><tr><td><img src="../images/Use_Case_tJavaFlex1_2.png" width="430"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez le mode
+                        <span class="bold"><strong>Built-in</strong></span> et cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; cot&eacute; du champ <span class="bold"><strong>Edit
+                        schema</strong></span> pour d&eacute;crire manuellement la structure des donn&eacute;es &agrave;
+                    passer au composant suivant.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="273"><tr><td><img src="../images/Use_Case_tJavaFlex1_3.png" width="273"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton<span class="bold"><strong> [+]</strong></span> pour ajouter deux
+                    colonnes&nbsp;: <span class="emphasis"><em>key</em></span> de type <span class="bold"><strong>Integer</strong></span> et <span class="emphasis"><em>value</em></span> de type <span class="bold"><strong>String</strong></span>.</p></li><li class="listitem"><p>Cliquez <span class="bold"><strong>Ok</strong></span> pour valider les changements et
+                    fermer la bo&icirc;te de dialogue.</p></li><li class="listitem"><p>Dans les propri&eacute;t&eacute;s du <span class="bold"><strong>tJavaFlex</strong></span>, cochez la
+                    case <span class="bold"><strong>Data Auto Propagate</strong></span> pour propager
+                    automatiquement les donn&eacute;es au composant suivant.</p><p>Dans cet exemple, n&#8217;effectuez pas de transformation sur les donn&eacute;es
+                    r&eacute;cup&eacute;r&eacute;es.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Start code</strong></span>, saisissez le code
+                    qui sera ex&eacute;cut&eacute; lors de la phase d&#8217;initialisation.</p><p> Ici, le code indique l&#8217;initialisation du composant <span class="bold"><strong>tJavaFlex</strong></span> en affichant le message START et met en place la
+                    boucle et les variables utilis&eacute;es par la suite dans le code Java&nbsp;: </p><p>
+                    </p><pre class="programlisting">System.out.println("## START\n#");<span></span>
+String [] valueArray = {"Miss", "Mrs", "Mr"};<span></span>
+<span></span>
+for (int i=0;i&lt;valueArray.length;i++) {</pre></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="326"><tr><td><img src="../images/Use_Case_tJavaFlex1_4.png" width="326"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Main code</strong></span>, saisissez le code
+                    qui sera appliqu&eacute; pour chaque ligne de donn&eacute;es. Ici, l&#8217;objectif est de retourner
+                    chaque cl&eacute; (<span class="emphasis"><em>key</em></span>) avec sa valeur&nbsp;:</p><p>
+                    </p><pre class="programlisting">row1.key = i;<span></span>
+row1.value = valueArray[i];</pre></li></ul></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Dans le champ </em></span><span class="bold"><strong>Main
+                    code</strong></span><span class="emphasis"><em>, </em></span><span class="bold"><strong>row1</strong></span><span class="emphasis"><em> correspond au nom du lien qui sort du
+                    </em></span><span class="bold"><strong>tJavaFlex</strong></span><span class="emphasis"><em>. Si vous
+                    renommez ce lien, il faut penser &agrave; modifier le code de ce
+                champ.</em></span></p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="326"><tr><td><img src="../images/Use_Case_tJavaFlex1_5.png" width="326"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>End code</strong></span>, saisissez le code qui
+                    sera ex&eacute;cut&eacute; lors de la phase de cl&ocirc;ture. Ici, l&#8217;accolade ferme la boucle et le
+                    code indique la fin de l&#8217;ex&eacute;cution du <span class="bold"><strong>tJavaFlex</strong></span>
+                    en affichant le message END&nbsp;:</p><p>
+                    </p><pre class="programlisting">}<span></span>
+System.out.println("#\n## END");</pre></li><li class="listitem"><p>Assurez-vous que le sch&eacute;ma a bien &eacute;t&eacute; propag&eacute; au <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Enregistrez le Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="435"><tr><td><img src="../images/Use_Case_tJavaFlex1_6.png" width="435"></td></tr></table></div><p>La console affiche les trois civilit&eacute;s, ainsi que leur cl&eacute;s correspondantes. </p></div><div class="section" title="Sc&eacute;nario&nbsp;2&nbsp;: Traiter des lignes de donn&eacute;es avec le tJavaFlex"><div class="titlepage"><div><div><h3 class="title"><a name="d0e47954"></a>Sc&eacute;nario&nbsp;2&nbsp;: Traiter des lignes de donn&eacute;es avec le tJavaFlex</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; deux composants g&eacute;n&eacute;rant des donn&eacute;es de mani&egrave;re al&eacute;atoire,
+            r&eacute;cup&eacute;rant et traitant ces donn&eacute;es ligne par ligne avec du code Java via le <span class="bold"><strong>tJavaFlex</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="251"><tr><td><img src="../images/Use_Case_tJavaFlex2_1.png" width="251"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez-glissez un composant <span class="bold"><strong>tRowGenerator</strong></span> de
+                    la famille <span class="bold"><strong>Misc</strong></span> et un composant <span class="bold"><strong>tJavaFlex</strong></span> de la famille <span class="bold"><strong>Custom
+                        Code</strong></span> dans le Job Designer.</p></li><li class="listitem"><p>Connectez-les via un lien <span class="bold"><strong>Row Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tRowGenerator</strong></span>
+                    pour ouvrir son &eacute;diteur. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="478"><tr><td><img src="../images/Use_Case_tJavaFlex2_2.png" width="478"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;&eacute;diteur, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span>
+                    pour ajouter quatre colonnes&nbsp;: <span class="emphasis"><em>number</em></span>,
+                        <span class="emphasis"><em>txt</em></span>, <span class="emphasis"><em>date</em></span> et
+                        <span class="emphasis"><em>flag</em></span>.</p></li><li class="listitem"><p>D&eacute;finissez le sch&eacute;ma en param&eacute;trant ces quatres colonnes conform&eacute;ment &agrave; la
+                    capture d&#8217;&eacute;cran pr&eacute;c&eacute;dente.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Functions</strong></span>, s&eacute;lectionnez la
+                    fonction <span class="bold"><strong>[...]</strong></span> dans la liste de chaque
+                    colonne.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Parameters</strong></span>, saisissez
+                    10&nbsp;param&egrave;tres diff&eacute;rents pour chaque colonne. Ces 10&nbsp;param&egrave;tres correspondent
+                    aux donn&eacute;es qui seront retourn&eacute;es de mani&egrave;re al&eacute;atoire lors de l&#8217;ex&eacute;cution du
+                        <span class="bold"><strong>tRowGenerator</strong></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span>.</p></li><li class="listitem"><p> Double-cliquez sur le composant <span class="bold"><strong>tJavaFlex</strong></span>
+                    pour param&eacute;trer ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="464"><tr><td><img src="../images/Use_Case_tJavaFlex2_3.png" width="464"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> pour
+                    r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Start code</strong></span>, saisissez le code
+                    qui sera ex&eacute;cut&eacute; lors de la phase d&#8217;initialisation. Ici, le code indique
+                    l&#8217;initialisation du composant <span class="bold"><strong>tJavaFlex</strong></span> en
+                    affichant le message START et d&eacute;finit une variable qui sera utilis&eacute;e par la
+                    suite dans le code Java&nbsp;:</p><p>
+                    </p><pre class="programlisting">System.out.println("## START\n#");<span></span>
+int i = 0;</pre></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="386"><tr><td><img src="../images/Use_Case_tJavaFlex2_4.png" width="386"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Main code</strong></span>, saisissez le code
+                    qui sera appliqu&eacute; pour chaque ligne de donn&eacute;es. Ici, l&#8217;objectif est d&#8217;indiquer
+                    le num&eacute;ro de la ligne en partant de 0, puis afficher le num&eacute;ro et le texte
+                    al&eacute;atoire que vous mettez en majuscules et la date al&eacute;atoire d&eacute;finis dans le
+                        <span class="bold"><strong>tRowGenerator</strong></span>. Ensuite, cr&eacute;ez une condition
+                    affichant si le status est <span class="bold"><strong>true</strong></span> (vrai) ou
+                        <span class="bold"><strong>false</strong></span> (faux) et incr&eacute;mentez le num&eacute;ro de la
+                    ligne&nbsp;:</p><p>
+                    </p><pre class="programlisting">System.out.print(" row" + i + ":");<span></span>
+System.out.print("# number:" + row1.number);<span></span>
+System.out.print (" | txt:" + row1.txt.toUpperCase());<span></span>
+System.out.print(" | date:" + row1.date);<span></span>
+if(row1.flag) System.out.println(" | flag: true");<span></span>
+else  System.out.println(" | flag: false");<span></span>
+<span></span>
+i++;</pre></li></ul></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Dans le champ </em></span><span class="bold"><strong>Main
+                    code</strong></span><span class="emphasis"><em>, </em></span><span class="bold"><strong>row1</strong></span><span class="emphasis"><em> correspond au nom du lien qui sort du
+                    </em></span><span class="bold"><strong>tJavaFlex</strong></span><span class="emphasis"><em>. Si vous
+                    renommez ce lien, il faut penser &agrave; modifier le code de ce
+                champ.</em></span></p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="385"><tr><td><img src="../images/Use_Case_tJavaFlex2_5.png" width="385"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>End code</strong></span>, saisissez le code qui
+                    sera ex&eacute;cut&eacute; lors de la phase de cl&ocirc;ture. Ici, le code indique la fin de
+                    l&#8217;ex&eacute;cution du composant <span class="bold"><strong>tJavaFlex</strong></span> en affichant
+                    le message END&nbsp;:</p><p>
+                    <code class="code">System.out.println("#\n## END");</code></p></li><li class="listitem"><p>Enregistrez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="430"><tr><td><img src="../images/Use_Case_tJavaFlex2_6.png" width="430"></td></tr></table></div><p>La console affiche les donn&eacute;es g&eacute;n&eacute;r&eacute;es al&eacute;atoirement et modifi&eacute;es &agrave; l&#8217;aide du code
+            Java dans le <span class="bold"><strong>tJavaFlex</strong></span>.</p></div></div></body></html>

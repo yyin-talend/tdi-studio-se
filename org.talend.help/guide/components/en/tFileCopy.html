@@ -1,0 +1,118 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileCopy</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapter&nbsp;9.&nbsp;File components"><link rel="prev" href="tFileCompare.html" title="tFileCompare"><link rel="next" href="tFileDelete.html" title="tFileDelete"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFileCopy"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileCopy"></a>tFileCopy</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileCopy.png" width="27"></td></tr></table></div><div class="section" title="tFileCopy Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e170989"></a>tFileCopy Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Management</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Copies a source file into a target directory and can remove the
+                                source file if required.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Helps to streamline processes by automating recurrent and tedious
+                                tasks such as copy.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>File Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Path to the file to be copied or moved</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Destination</em></span></p>
+                        </td><td valign="top">
+                            <p>Path to the directory where the file is copied/moved to. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Remove source file</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to move the file to the destination.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Replace existing file</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Select this check box to overwrite any existing file with the
+                                newly copied file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can be used as standalone component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Global Variables</strong></span></p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Destination File Name</strong></span>: Retrieves
+                                the name of the destination file. This is available as an <span class="bold"><strong>After</strong></span> variable.</p>
+                            <p> Returns a string.</p>
+                            <p> </p>
+                            <p>
+                                <span class="bold"><strong>Destination File Path</strong></span>: Retrieves
+                                the path to the destination file. This is available as an <span class="bold"><strong>After</strong></span> variable.</p>
+                            <p> Returns a string. </p>
+                            <p> </p>
+                            <p>
+                                <span class="bold"><strong>Source Directory</strong></span>:.Retrieves the
+                                path to the source directory. This is available as an <span class="bold"><strong>After</strong></span> variable.</p>
+                            <p> Returns a string.</p>
+                            <p> </p>
+                            <p>
+                                <span class="bold"><strong>Destination Directory</strong></span>: Retrieves
+                                the path to the destination directory. This is available as an
+                                    <span class="bold"><strong>After</strong></span> variable.</p>
+                            <p> Returns a stirng.</p>
+                            <p> </p>
+                            <p> For further information about variables, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>Outgoing links (from one component to another):</p>
+                            <p>
+                                <span class="bold"><strong>Row</strong></span>: Main.</p>
+                            <p>
+                                <span class="bold"><strong>Trigger</strong></span>: On Subjob Ok; On Subjob
+                                Error; Run if; On Component Ok; On Component Error.</p>
+                            <p> </p>
+                            <p> Incoming links (from one component to another):</p>
+                            <p>
+                                <span class="bold"><strong>Row</strong></span>: Main; Reject; Iterate.</p>
+                            <p>
+                                <span class="bold"><strong>Trigger</strong></span>: Run if; On Subjob Ok; On
+                                Subjob Error; On component Ok; On Component Error; Synchronize;
+                                Parallelize. </p>
+                            <p> </p>
+                            <p> For further information regarding connections, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Restoring files from bin"><div class="titlepage"><div><div><h3 class="title"><a name="d0e171284"></a>Scenario: Restoring files from bin</h3></div></div></div><p>This scenario describes a Job that iterates on a list of files, copies each file from
+            the defined source directory to a target directory. It then removes the copied files
+            from the source directory.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="266"><tr><td><img src="../images/Use_case_tFileCopy1.png" width="266"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop a <span class="bold"><strong>tFileList</strong></span> and a <span class="bold"><strong>tFileCopy</strong></span> from the <span class="bold"><strong>Palette</strong></span> to
+                    the design workspace.</p></li><li class="listitem"><p>Link both components using an <span class="bold"><strong>Iterate</strong></span>
+                    link.</p></li><li class="listitem"><p>In the <span class="bold"><strong>tFileList </strong></span><span class="bold"><strong>Basic
+                        settings</strong></span>, set the directory for the iteration loop.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="376"><tr><td><img src="../images/Use_case_tFileCopy2.png" width="376"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set the <span class="bold"><strong>Filemask</strong></span> to
+                        <span class="emphasis"><em>&#8220;*.txt&#8221;</em></span> to catch all files with this extension. For
+                    this use case, the case is not sensitive.</p></li><li class="listitem"><p>Then select the <span class="bold"><strong>tFileCopy</strong></span> to set its
+                        <span class="bold"><strong>Basic settings</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="376"><tr><td><img src="../images/Use_case_tFileCopy3.png" width="376"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the File Name field, press Ctrl+Space bar to access the list of variables. </p></li><li class="listitem"><p>Select the global variable
+                        <span class="emphasis"><em>((String)globalMap.get("tFileList_1_CURRENT_FILEPATH"))</em></span>.
+                    All files from the source directory can be processed.</p></li><li class="listitem"><p>Select the<span class="bold"><strong> Remove Source file</strong></span> check box to
+                    get rid of the file that have been copied.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Replace existing file</strong></span> check box to
+                    overwrite any file possibly present in the destination directory. </p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span>.</p></li></ul></div><p>The files are copied onto the destination folder and are removed from the source
+            folder.</p></div></div></body></html>

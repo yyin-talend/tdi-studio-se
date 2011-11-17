@@ -1,0 +1,237 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMDMOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch16.html" title="Chapter&nbsp;16.&nbsp;Talend MDM components"><link rel="prev" href="tMDMInput.html" title="tMDMInput"><link rel="next" href="tMDMReceive.html" title="tMDMReceive"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tMDMOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMDMOutput"></a>tMDMOutput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/TalendMDMOutput_white.png" width="27"></td></tr></table></div><div class="section" title="tMDMOutput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e233116"></a>tMDMOutput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component family</strong></span></p>
+            </td><td valign="top"><p>Talend
+                MDM</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+            </td><td colspan="2" valign="top"><p><span class="bold"><strong>tMDMOutput</strong></span> writes master data in an MDM hub (XML repository).</p>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+            </td><td colspan="2" valign="top"><p>This component writes master data on
+                the MDM server.</p>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic settings</strong></span></p>
+            </td><td valign="top"><p><span class="emphasis"><em>Property Type</em></span></p>
+            </td><td valign="top"><p>Either Built-in or Repository.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="bold"><strong>Built-in:</strong></span> No property data
+                stored centrally</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="bold"><strong>Repository:</strong></span> Select the
+                repository file where the properties are stored. The fields which follow are filled
+                in automatically using the fetched data.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                  schema</em></span></p>
+            </td><td valign="top"><p>An input schema is a row description, i.e., it defines the
+                number of fields that will be processed and passed on to the next component. The
+                schema is either built-in or remote in the Repository.</p><p> Click <span class="bold"><strong>Edit Schema</strong></span> to modify the schema. Note that if you modify
+                the schema, it automatically becomes built-in.</p>
+              <p>Click <span class="bold"><strong>Sync columns</strong></span> to collect the schema from
+                the previous component.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: You create the
+                schema and store it locally for this component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                <span class="bold"><strong>User Guide</strong></span>.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: You have already
+                created the schema and stored it in the Repository. You can reuse it in various
+                projects and job designs. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                <span class="bold"><strong>User Guide</strong></span>.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>XML Field</em></span></p>
+            </td><td valign="top"><p>Lists the name of the xml output column that will hold the XML
+                data.</p>
+            </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Use an existing connection</em></span></td><td valign="top">Select this check box if you want to use a configured <span class="bold"><strong>tMDMConnection</strong></span> component.</td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>URL</em></span></p>
+            </td><td valign="top"><p>Type in the URL of the MDM server.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Username</em></span> and
+                  <span class="emphasis"><em>Password</em></span></p>
+            </td><td valign="top"><p>Type in the user authentication data for the MDM
+                server.</p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This user should have the right role in MDM, i.e. can connect through a Job or
+                  any other web service call. For further information, see <span class="bluebold">Talend Master Data Management</span> Administrator Guide.</p></td></tr></table></div>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Version</em></span></p>
+            </td><td valign="top"><p>Type in the name of the master data management Version you
+                want to connect to, for which you have the user rights required.</p><p> Leave
+                this field empty if you want to display the default perspective.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Data Model</em></span></p>
+            </td><td valign="top"><p>Type in the name of the data model against which the data to
+                be written is validated.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Data Container</em></span></p>
+            </td><td valign="top"><p>Type in the name of the data container where you want to write
+                the master data.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Return Keys</em></span></p>
+            </td><td valign="top"><p><span class="bold"><strong>Columns corresponding to IDs in
+                  order</strong></span>: in sequential order, set the output columns that will store the
+                return key values (primary keys) of the item(s) that will be created.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Is Update</em></span></p>
+            </td><td valign="top"><p>Select this check box to update the modified
+                fields.</p><p> If you leave this check box unchecked, all fields will be
+                replaced by the modified ones.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Fire Create/Update event</em></span></p>
+            </td><td valign="top"><p>Select this check box to add the actions carried out to a
+                modification report.</p><p>
+                <span class="bold"><strong>Source Name</strong></span>: Between quotes, enter the name of the
+                application to be used to carry out the modifications. </p><p>
+                <span class="bold"><strong>Enable verification by &#8220;before saving&#8221; process</strong></span>:
+                Select this check box to verify the commit that has been just added; prior to
+                saving.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Use partial update</em></span></p>
+            </td><td valign="top"><p>Select this check box if you need to update multi-occurrences
+                elements (attributes) of an existing item (entity) from the content of a source XML
+                stream. </p><p> Once selected, you need to set the parameters presented
+                below:</p><p> - <span class="bold"><strong>Pivot</strong></span>: type in the xpath to
+                the multi-occurrences sub-element where data need to be added or replaced in the
+                item of interest. </p><p> For example, if you need to add a child sub-element
+                to the below existing item:</p><p>
+                </p><pre class="programlisting">&lt;Person&gt;
+    &lt;Id&gt;1&lt;/Id&gt; &lt;!-- record key is 
+     mandatory --&gt;
+    &lt;Children&gt;
+        &lt;Child&gt;[1234]&lt;/Child&gt; 
+     &lt;!-- FK to a Person Entity --&gt;
+    &lt;/Children&gt;
+&lt;/Person&gt;
+</pre><p>then
+                the Xpath you enter in this <span class="bold"><strong>Pivot</strong></span> field must read
+                as the following: </p><pre class="programlisting">Person/Children/Child
+</pre><p>where the
+                  <span class="bold"><strong>Overwrite</strong></span> check box is set to false.</p><p>
+                And, if you need to replace a child sub-element in an existing item:</p><p>
+                </p><pre class="programlisting">&lt;Person&gt;
+  &lt;Id&gt;1&lt;/Id&gt; 
+  &lt;Addresses&gt;
+    &lt;Address&gt;
+      &lt;Type&gt;office&lt;/Type&gt;
+        (...address elements 
+         are here....)
+    &lt;/Address&gt;
+    &lt;Address&gt;
+      &lt;Type&gt;home&lt;/Type&gt;
+        (...address elements 
+         are here....)
+    &lt;/Address&gt;
+  &lt;Addresses&gt;
+&lt;/Person&gt;
+</pre><p>then
+                the Xpath you enter in this <span class="bold"><strong>Pivot</strong></span> field must read
+                as the following:
+                </p><pre class="programlisting">Person/Addresses/Adress<span></span>
+</pre><p>where the
+                  <span class="bold"><strong>Overwrites</strong></span> check box is set to true, and the
+                  <span class="bold"><strong>Key</strong></span> field is set to
+                  <code class="code">Person/Addresses/Address/Type</code> .</p><p> In such example,
+                assuming the item in MDM only has an <span class="emphasis"><em>office</em></span> address, the
+                  <span class="emphasis"><em>office</em></span> address will be replaced, and the
+                  <span class="emphasis"><em>home</em></span> address will be added.</p><p> - <span class="bold"><strong>Overwrite</strong></span>: select this check box if you need to replace or
+                update the original sub-elements with the input sub-elements. Leave unselected if
+                you want to add a sub-element.</p><p> - <span class="bold"><strong>Key</strong></span>:
+                type in the xpath relative to the pivot that will help matching a sub-element of the
+                source XML with a sub-element of the item. If a key is not supplied, all
+                sub-elements of an item with an XPath matching that of the sub-element of the source
+                XML will be replaced.</p>
+              <p>-<span class="bold"><strong>Position</strong></span>: type in a number to indicate the
+                position after which the new elements (those that do not match the
+                  <span class="emphasis"><em>key</em></span>) will be added. If you do not provide a value in this
+                field, the new element will be added at the end. </p><p> </p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+            </td><td valign="top"><p>Select this check box to skip the row in error and complete
+                the process for error-free rows. If needed, you can retrieve the rows in error via a
+                  <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Rejects</strong></span>
+                link.</p>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced settings</strong></span></p>
+            </td><td valign="top"><p><span class="emphasis"><em>Extended Output</em></span></p>
+            </td><td valign="top"><p>Select this check box to commit master data in batches. You
+                can specify the number of lines per batch in the <span class="bold"><strong>Rows to
+                  commit</strong></span> field.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Configure Xml Tree</em></span></p>
+            </td><td valign="top"><p>Opens the interface which helps create the XML structure of
+                the master data you want to write.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Group by</em></span></p>
+            </td><td valign="top"><p>Select the column to be used to regroup the master
+                data.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Create empty element if needed</em></span></p>
+            </td><td valign="top"><p>This check box is selected by default. If the content of the
+                interface&#8217;s <span class="bold"><strong>Related Column</strong></span> which enables creation
+                of the XML structure is null, or if no column is associated with the XML node, this
+                option creates an opening and closing tag at the required places. </p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Advanced separator (for number)</em></span></p>
+            </td><td valign="top"><p>Select this check box to modify the number of separators used
+                by default.</p><p>
+                <span class="bold"><strong>- Thousands separator: </strong></span>enter between inverted
+                commas the separator for thousands.</p><p>
+                <span class="bold"><strong>- Decimal separator:</strong></span> enter between inverted commas
+                the decimal separator.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Generation mode</em></span></p>
+            </td><td valign="top"><p>Select the generation mode you want to use, according to the
+                available memory.</p><p> -<span class="bold"><strong> Fast but memory consuming
+                  (Dom4J) </strong></span><span class="bold"><strong>- Slow with no memory consumed
+                </strong></span></p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Encoding</em></span></p>
+            </td><td valign="top"><p>Select the encoding type from the list or else select
+                  <span class="bold"><strong>Custom </strong></span>and define it manually. This is an
+                obligatory field for the manipulation of data on the server.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+            </td><td valign="top"><p>Select this check box to gather the processing metadata at the
+                Job level as well as at each component level.</p>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+            </td><td colspan="2" valign="top"><p>Use this component to write a data
+                record and separate the fields using a specific separator.</p>
+            </td></tr></tbody></table></div></div><div class="section" title="Scenario: Writing master data in an MDM hub"><div class="titlepage"><div><div><h3 class="title"><a name="Raa63787"></a>Scenario: Writing master data in an MDM hub</h3></div></div></div><p>This scenario describes a two-component Job that generates a data record, transforms it
+      into XML and loads it into the defined business entity in the MDM server.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="233"><tr><td><img src="../images/Use_Case_tMDMOutput1.png" width="233"></td></tr></table></div><p>In this example, we want to load a new agency in the <span class="emphasis"><em>Agency</em></span> business
+      entity. This new agency should have an id, a name and a city.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>From the <span class="bold"><strong>Palette</strong></span>, drop <span class="bold"><strong>tFixedFlowInput</strong></span> and <span class="bold"><strong>tMDMOutput</strong></span> onto the
+          design workspace.</p></li><li class="listitem"><p>Connect the components using a <span class="bold"><strong>Row Main</strong></span> link.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFixedFlowInput</strong></span> to view its <span class="bold"><strong>Basic settings</strong></span>, in the <span class="bold"><strong>Component</strong></span>
+          tab and set the component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="516"><tr><td><img src="../images/Use_Case_tMDMOutput2.png" width="516"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Schema</strong></span> list, select <span class="bold"><strong>Built-In</strong></span> and click the three-dot button next to <span class="bold"><strong>Edit
+            schema</strong></span> to open a dialog box in which you can define the structure of the
+          master data you want to write on the MDM server.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="464"><tr><td><img src="../images/Use_Case_tMDMOutput3.png" width="464"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button and add three columns of the type <span class="bold"><strong>String</strong></span>. Name the columns: <span class="emphasis"><em>Id</em></span>, <span class="emphasis"><em>Name</em></span>
+          and <span class="emphasis"><em>City</em></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate your changes and proceed to the
+          next step.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Number of rows</strong></span> field, enter the number of rows
+          you want to generate.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, select the <span class="bold"><strong>Use Single Table</strong></span> option to generate just one table.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Value</strong></span> fields, enter between inverted commas
+          the values which correspond to each of the schema columns.</p></li><li class="listitem"><p>In the design workspace, click <span class="bold"><strong>tMDMOutput</strong></span> to open its
+            <span class="bold"><strong>Basic settings</strong></span> view and set the component properties. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="521"><tr><td><img src="../images/Use_Case_tMDMOutput8.png" width="521"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Property Type</strong></span> list, select <span class="bold"><strong>Built-In</strong></span> and complete the fields manually. </p><p>If you have saved the MDM connection information under <span class="bold"><strong>Metadata</strong></span> in the repository, select <span class="bold"><strong>Repository
+          </strong></span>from the list and the fields which follow will be completed automatically. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Schema</strong></span> list, select <span class="bold"><strong>Built-In</strong></span> and, if required, click on the three dot button next to the
+            <span class="bold"><strong>Edit Schema</strong></span> field to see the structure of the master
+          data you want to load on the MDM server.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="516"><tr><td><img src="../images/Use_Case_tMDMOutput4.png" width="516"></td></tr></table></div><p>The <span class="bold"><strong>tMDMOutput</strong></span> component basically generates an XML
+      document, writes it in an output field, and then sends it to the MDM server, so the output
+      schema always has a read-only <span class="emphasis"><em>xml</em></span> column.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to proceed to the next step.</p><p>The <span class="bold"><strong>XML Field</strong></span> list in the <span class="bold"><strong>Basic
+            settings</strong></span> view is automatically filled in with the output
+            <span class="emphasis"><em>xml</em></span> column.</p></li><li class="listitem"><p>In the <span class="bold"><strong>URL</strong></span> field, enter the URL of the MDM
+          server.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Username</strong></span> and <span class="bold"><strong>Password</strong></span> fields, enter the authentication information required to connect to
+          the MDM server.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Version</strong></span> field, enter between inverted commas
+          the name of the master data Version you want to access, if more than one exists on the
+          server. Leave the field blank to access the default Version.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Data Model</strong></span> field, enter between inverted
+          commas the name of the data model against which you want to validate the master data you
+          want to write.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Data Container</strong></span>, enter between inverted commas
+          the name of the data container into which you want to write the master data. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Component</strong></span> view, click <span class="bold"><strong>Advanced settings</strong></span> to set the advanced parameters for the <span class="bold"><strong>tMDMOutput</strong></span> component.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="423"><tr><td><img src="../images/Use_Case_tMDMOutput10.png" width="423"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the <span class="bold"><strong>Extended Output</strong></span> check box if you want to
+          commit master data in batches. You can specify the number of lines per batch in the
+            <span class="bold"><strong>Rows to commit</strong></span> field.</p></li><li class="listitem"><p>Click the three-dot button next to <span class="bold"><strong>Configure Xml Tree</strong></span>
+          to open the <span class="bold"><strong>tMDMOutput</strong></span> editor. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="502"><tr><td><img src="../images/Use_Case_tMDMOutput6.png" width="502"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Link target</strong></span> area to the right, click in the
+            <span class="bold"><strong>Xml Tree</strong></span> field and then replace <span class="bold"><strong>rootTag</strong></span> with the name of the business entity in which you want to insert the
+          data record, <span class="emphasis"><em>Agency</em></span> in this example.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Linker source</strong></span> area, select your three schema
+          columns and drop them on the <span class="bold"><strong>Agency</strong></span> node.</p><p> The <span class="bold"><strong>[Selection]</strong></span> dialog box displays.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="210"><tr><td><img src="../images/Use_Case_tMDMOutput7.png" width="210"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the <span class="bold"><strong>Create as sub-element of target node</strong></span>
+          option so that the three columns are linked to the three XML sub-elements of the <span class="bold"><strong>Agency</strong></span> node and then click <span class="bold"><strong>OK</strong></span> to
+          close the dialog box.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="477"><tr><td><img src="../images/Use_Case_tMDMOutput5.png" width="477"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Right-click the element in the <span class="bold"><strong>Link Target</strong></span> area you
+          want to set as a loop element and select <span class="bold"><strong>Set as Loop
+            Element</strong></span> from the contextual menu. In this example, we want <span class="bold"><strong>City</strong></span> to be the iterating object. </p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate your changes and close the
+          dialog box.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to run it.</p></li></ul></div><p>The new data record is inserted in the <span class="emphasis"><em>Agency</em></span> business entity in the
+        <span class="emphasis"><em>DStar </em></span>data container on the MDM server. This data records holds, as you
+      defined in the schema, the agency id, the agency name and the agency city. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="521"><tr><td><img src="../images/Use_Case_tMDMOutput9.png" width="521"></td></tr></table></div></div></div></body></html>

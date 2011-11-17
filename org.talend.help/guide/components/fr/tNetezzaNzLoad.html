@@ -1,0 +1,669 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tNetezzaNzLoad</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tNetezzaInput.html" title="tNetezzaInput"><link rel="next" href="tNetezzaOutput.html" title="tNetezzaOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tNetezzaNzLoad"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tNetezzaNzLoad"></a>tNetezzaNzLoad</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tNetezzaNzLoad_icon32.png" width="27"></td></tr></table></div><p>Ce composant invoque l&#8217;utilitaire nzload de Netezza afin d&#8217;ins&eacute;rer des enregistrements
+		dans une base de donn&eacute;es Netezza. Ce composant peut &ecirc;tre utilis&eacute; soit en mode standalone, il
+		chargera alors les donn&eacute;es &agrave; partir d&#8217;un fichier de donn&eacute;es existant, soit connect&eacute; &agrave; un
+		flux d&#8217;entr&eacute;e, afin de charger des donn&eacute;es &agrave; partir du composant connect&eacute;.</p><div class="section" title="Propri&eacute;t&eacute;s du tNetezzaNzLoad"><div class="titlepage"><div><div><h3 class="title"><a name="d0e116445"></a>Propri&eacute;t&eacute;s du tNetezzaNzLoad</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Netezza</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tNetezzaNzLoad</strong></span>
+								ins&egrave;re des donn&eacute;es dans la table d&#8217;une base de donn&eacute;es Netezza via
+								l&#8217;utilitaire nzload de Netezza.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant permet de charger en masse des donn&eacute;es dans une table
+								Netezza soit &agrave; partir d&#8217;un fichier, soit &agrave; partir d&#8217;un flux
+								d&#8217;entr&eacute;e, soit &agrave; partir d&#8217;un tube nomm&eacute;.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut &ecirc;tre Built-in ou Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+								fichier de propri&eacute;t&eacute;s du composant. Les champs suivants sont alors
+								pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Adresse IP du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Informations d&#8217;authentification de l&#8217;utilisateur de base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la table dans laquelle les donn&eacute;es doivent &ecirc;tre
+								ins&eacute;r&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Vous pouvez effectuer l&#8217;une des op&eacute;rations suivantes sur les
+								donn&eacute;es de la table s&eacute;lectionn&eacute;e&nbsp;: </p>
+							<p><span class="bold"><strong>None</strong></span>&nbsp;: n&#8217;effectuer aucune
+								op&eacute;ration de table. </p>
+							<p><span class="bold"><strong>Drop and create the table</strong></span>&nbsp;:
+								supprimer la table puis en cr&eacute;er une nouvelle. </p>
+							<p><span class="bold"><strong>Create a table</strong></span>&nbsp;: cr&eacute;er une table
+								qui n&#8217;existe pas encore. </p>
+							<p><span class="bold"><strong>Create table if doesn&#8217;t exist</strong></span>&nbsp;:
+								cr&eacute;er la table si n&eacute;cessaire. </p>
+							<p><span class="bold"><strong>Clear a table</strong></span>&nbsp;: supprimer le
+								contenu de la table. </p>
+							<p><span class="bold"><strong>Truncate table&nbsp;</strong></span>: supprimer
+								rapidement le contenu de la table, mais sans possibilit&eacute; de
+								Rollback. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (Built-in) soit distant dans le
+								Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur </strong></span>de <span class="bluebold">Talend Open Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Data file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Chemin d&#8217;acc&egrave;s complet au fichier de donn&eacute;es &agrave; utiliser. Si ce
+								composant est utilis&eacute; seul (non connect&eacute; &agrave; un autre composant par un
+								flux d&#8217;entr&eacute;e), alors saisissez le nom d&#8217;un fichier existant &agrave;
+								charger dans la base de donn&eacute;es. S&#8217;il est connect&eacute; &agrave; un autre
+								composant par un flux d&#8217;entr&eacute;e, saisissez le nom du fichier &agrave;
+								g&eacute;n&eacute;rer et &agrave; &eacute;crire avec les donn&eacute;es d&#8217;entr&eacute;e, afin de l&#8217;utiliser
+								plus tard avec nzload pour charger dans la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use named-pipe</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case afin d&#8217;utiliser un tube nomm&eacute; &agrave; la place d&#8217;un
+								fichier de donn&eacute;es. Cette option ne peut &ecirc;tre utilis&eacute;e que lorsque
+								le composant est connect&eacute; &agrave; un autre composant par un flux d&#8217;entr&eacute;e.
+								Quand la case est coch&eacute;e, aucun fichier de donn&eacute;es n&#8217;est g&eacute;n&eacute;r&eacute;, et
+								les donn&eacute;es sont transf&eacute;r&eacute;es &agrave; l&#8217;utilitaire nzload via un tube
+								nomm&eacute;. Cette option am&eacute;liore grandement les performances sous Linux
+								et Windows. </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ce composant, en mode tube nomm&eacute;, utilise une interface JNI
+									pour cr&eacute;er un tube nomm&eacute; et &eacute;crire dedans, dans toute plateforme
+									Windows. Le chemin d&#8217;acc&egrave;s associ&eacute; au fichier DLL JNI doit &ecirc;tre
+									configur&eacute; dans le chemin d&#8217;acc&egrave;s &agrave; la biblioth&egrave;que Java. Le
+									composant est automatiquement fourni dans le Studio avec deux
+									DLL pour les syst&egrave;mes d&#8217;exploitation de 32 et 64 bits.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Named-pipe name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sp&eacute;cifiez un nom pour le tube nomm&eacute; &agrave; utiliser. V&eacute;rifiez que le
+								nom saisi est valide.</p>
+						</td></tr><tr><td valign="top">
+							<p><a name="Xaa3864739"></a>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use existing control file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour fournir un fichier de contr&ocirc;le &agrave; utiliser
+								avec l&#8217;utilitaire nzload au lieu de sp&eacute;cifier explicitement toutes
+								les options dans le composant. Lorsque cette case est coch&eacute;e,
+								l&#8217;option <span class="bold"><strong>Data file</strong></span> ainsi que les
+								autres options li&eacute;es au nzload ne s&#8217;appliquent plus. Veuillez vous
+								r&eacute;f&eacute;rer au manuel du nzload de Netezza pour plus d&#8217;informations
+								concernant la cr&eacute;ation d&#8217;un fichier de contr&ocirc;le.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Control file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le chemin d&#8217;acc&egrave;s au fichier de contr&ocirc;le &agrave; utiliser,
+								entre guillemets doubles, ou cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> afin de parcourir votre r&eacute;pertoire
+								jusqu&#8217;au fichier de contr&ocirc;le. Cette option est pass&eacute;e &agrave; l&#8217;utilitaire
+								nzload via l&#8217;argument<span class="emphasis"><em> -cf</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Field separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Caract&egrave;re, cha&icirc;ne de caract&egrave;res ou expression r&eacute;guli&egrave;re utilis&eacute;
+								pour s&eacute;parer les champs.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+									<span class="emphasis"><em>Argument delim de l&#8217;utilitaire nzload. Si vous
+										n&#8217;utilisez pas l&#8217;option </em></span>
+									<span class="bold"><strong>Wrap quotes around fields</strong></span>
+									<span class="emphasis"><em>, vous devez &ecirc;tre s&ucirc;r que le d&eacute;limiteur n&#8217;est pas
+										inclus dans les donn&eacute;es ins&eacute;r&eacute;es dans la base de donn&eacute;es. La
+										valeur par d&eacute;faut est</em></span>
+									<span class="emphasis"><em>\t</em></span>
+									<span class="emphasis"><em> ou</em></span>
+									<span class="emphasis"><em>TAB</em></span>
+									<span class="emphasis"><em>.. Pour am&eacute;liorer les performances, utilisez la valeur
+										par d&eacute;faut.</em></span>
+								</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Wrap quotes around fields</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cette option ne s&#8217;applique qu&#8217;aux colonnes de
+									type&nbsp;<span class="emphasis"><em>String</em></span>, <span class="emphasis"><em>Byte</em></span>,
+									<span class="emphasis"><em>Byte[]</em></span>, <span class="emphasis"><em>Char</em></span>, et
+									<span class="emphasis"><em>Object</em></span>. S&eacute;lectionnez soit&nbsp;:</p>
+							<p><span class="bold"><strong>None&nbsp;</strong></span>: n&#8217;entourez pas les valeurs
+								des colonnes de guillemets.</p>
+							<p><span class="bold"><strong>Single quote&nbsp;</strong></span>: entourez les
+								valeurs des colonnes de guillemets simples.</p>
+							<p><span class="bold"><strong>Double quote&nbsp;</strong></span>: entourez les
+								valeurs des colonnes de guillemets doubles.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Si vous utilisez l&#8217;option </em></span>
+									<span class="bold"><strong>Single quote</strong></span>
+									<span class="emphasis"><em> ou </em></span>
+									<span class="bold"><strong>Double quote</strong></span>
+									<span class="emphasis"><em>, il est n&eacute;cessaire d&#8217;utiliser </em></span>
+									<span class="emphasis"><em>\</em></span>
+									<span class="emphasis"><em> en tant que </em></span>
+									<span class="bold"><strong>Escape char</strong></span>.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Advanced options</em></span>
+							</p>
+						</td><td valign="top">
+							<p>D&eacute;finissez les arguments nzload dans le tableau correspondant.
+								Cliquez sur le bouton <span class="bold"><strong>[+] </strong></span>autant de
+								fois que n&eacute;cessaire afin d&#8217;ajouter les arguments au tableau.</p>
+							<p>Cliquez sur le champ <span class="bold"><strong>Parameter</strong></span> et
+								choisissez l&#8217;argument souhait&eacute; dans la liste, puis cliquez sur le
+								champ <span class="bold"><strong>Value</strong></span> correspondant et
+								saisissez une valeur entre guillemets.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Parameter</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-If</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom du fichier de log &agrave; g&eacute;n&eacute;rer. Les logs seront ajout&eacute;s &agrave; la
+								suite du fichier de log, s&#8217;il existe d&eacute;j&agrave;. Si le param&egrave;tre n&#8217;est pas
+								sp&eacute;cifi&eacute;, le nom par d&eacute;faut du fichier de log
+									est&nbsp;'<span class="emphasis"><em>&lt;table_name&gt;.&lt;db_name&gt;.nzlog</em></span>'.
+								Il est g&eacute;n&eacute;r&eacute; dans le r&eacute;pertoire de travail courant dans lequel le
+								Job est ex&eacute;cut&eacute;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-bf</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom du fichier de mauvais enregistrements &agrave; g&eacute;n&eacute;rer. Le fichier de
+								mauvais enregistrements contient tous les enregistrements ne pouvant
+								&ecirc;tre charg&eacute;s, &agrave; cause d&#8217;une erreur interne Netezza. Les
+								enregistrements seront ajout&eacute;s &agrave; la suite si le fichier de mauvais
+								enregistrements existe d&eacute;j&agrave;. Si le param&egrave;tre n&#8217;est pas sp&eacute;cifi&eacute;, le
+								nom par d&eacute;faut du fichier de mauvais enregistrements
+									est&nbsp;'<span class="emphasis"><em>&lt;table_name&gt;.&lt;db_name&gt;.nzbad</em></span>'.
+								Il est g&eacute;n&eacute;r&eacute; dans le r&eacute;pertoire de travail courant, dans lequel le
+								Job est ex&eacute;cut&eacute;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-ouputDir</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Chemin d&#8217;acc&egrave;s au r&eacute;pertoire dans lequel les fichiers de log et de
+								mauvais enregistrements sont g&eacute;n&eacute;r&eacute;s. Si le param&egrave;tre n&#8217;est pas
+								sp&eacute;cifi&eacute;, les fichiers seront g&eacute;n&eacute;r&eacute;s sous le r&eacute;pertoire courant
+								dans lequel le Job est ex&eacute;cut&eacute;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-logFileSize</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Taille maximale du fichier de log. La valeur est en MB. La valeur
+								par d&eacute;faut est de 2000 ou 2GB. Pour &eacute;conomiser de l&#8217;espace disque,
+								sp&eacute;cifiez un petite valeur si votre Job est souvent ex&eacute;cut&eacute;. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-compress</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez cette option si le fichier de donn&eacute;es est compress&eacute;e.
+								Les valeurs valides sont "<span class="bold"><strong>TRUE</strong></span>" et
+									"<span class="bold"><strong>FALSE</strong></span>". La valeur par d&eacute;faut
+								est "<span class="bold"><strong>FALSE</strong></span>".</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Cette option n&#8217;est valide que si ce composant est utilis&eacute; par
+									lui-m&ecirc;me et non connect&eacute; &agrave; un autre composant via un flux
+									d&#8217;entr&eacute;e.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-skipRows &lt;n&gt;</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nombre de lignes &agrave; ignorer au d&eacute;but du fichier de donn&eacute;es.
+								Param&eacute;trez la valeur &agrave; "1" si vous souhaitez ignorer la ligne
+								d&#8217;en-t&ecirc;te du fichier d&#8217;entr&eacute;e. La valeur par d&eacute;faut est "0".</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Cette option ne doit &ecirc;tre s&eacute;lectionn&eacute;e que si le composant est
+									utilis&eacute; par lui-m&ecirc;me et non connect&eacute; &agrave; un autre composant via un
+									flux d&#8217;entr&eacute;e.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-maxRows &lt;n&gt;</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nombre de lignes &agrave; charger &agrave; partir du fichier d&#8217;entr&eacute;e.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Cette option ne doit &ecirc;tre s&eacute;lectionn&eacute;e que si le composant est
+									utilis&eacute; par lui-m&ecirc;me et non connect&eacute; &agrave; un autre composant via un
+									flux d&#8217;entr&eacute;e.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-maxErrors</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nombre maximal d&#8217;enregistrements d&#8217;erreurs &agrave; autoriser avant de
+								terminer le processus de chargement. La valeur par d&eacute;faut est
+								"1".</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-ignoreZero</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Les z&eacute;ros contenus dans une source binaire g&eacute;n&egrave;reront des erreurs.
+								Param&eacute;trez cette option &agrave; "NO" pour g&eacute;n&eacute;rer des erreurs ou &agrave; "YES"
+								pour ignorer les bits ayant la valeur z&eacute;ro. La valeur par d&eacute;faut est
+								"NO".</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-requireQuotes</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cette option n&eacute;cessite que toutes les valeurs soient entour&eacute;es de
+								guillemets. La valeur par d&eacute;faut est "FALSE".</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Cette option ne fonctionne pas avec un flux d&#8217;entr&eacute;e pour le
+									moment. Utilisez cette option uniquement en mode standalone avec
+									un fichier existant.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-nullValue &lt;token&gt;</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sp&eacute;cifiez le jeton pour indiquer une valeur null dans le fichier
+								de donn&eacute;es. La valeur par d&eacute;faut est "NULL". Afin d&#8217;am&eacute;liorer
+								l&eacute;g&egrave;rement les performances, vous pouvez configurer cette valeur
+								comme un champ vide en sp&eacute;cifiant la valeur&nbsp;: "\'\'".</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-fillRecord</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Traite les derniers champs d&#8217;entr&eacute;e manquants comme des null. Vous
+								n&#8217;avez pas besoin de sp&eacute;cifier de valeur pour cette option dans le
+								champ du tableau. Cette option n&#8217;est pas activ&eacute;e par d&eacute;faut, les
+								champs d&#8217;entr&eacute;e devront donc correspondre exactement &agrave; toutes les
+								colonnes de la table par d&eacute;faut.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Les derniers champs d&#8217;entr&eacute;e doivent &ecirc;tre nullables dans la
+									base de donn&eacute;es.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-ctrlChar</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Accepte les caract&egrave;res de contr&ocirc;le dans les champs char/varchar
+								(vous devrez &eacute;chapper les caract&egrave;res NUL, CR et LF). Vous n&#8217;avez pas
+								besoin de sp&eacute;cifier de valeur pour cette option dans le champ de
+								valeur du tableau. Cette option est d&eacute;sactiv&eacute;e par d&eacute;faut.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-ctInString</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Accepte le caract&egrave;re CR non &eacute;chapp&eacute; dans des champs char/varchar
+								(LF devient une fin de ligne). Vous n&#8217;avez pas besoin de sp&eacute;cifier
+								de valeur pour cette option dans le champ de valeur du tableau.
+								Cette option est d&eacute;sactiv&eacute;e par d&eacute;faut.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-truncString</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Tronque toute valeur de cha&icirc;ne de caract&egrave;res qui d&eacute;passe sa valeur
+								d&eacute;clar&eacute;e de stockage char/varchar. Vous n&#8217;avez pas besoin de
+								sp&eacute;cifier de valeur pour cette option dans le champ de valeur du
+								tableau. Cette option est d&eacute;sactiv&eacute;e par d&eacute;faut.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-dateStyle</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sp&eacute;cifiez le format de la date des donn&eacute;es d&#8217;entr&eacute;e. Les valeurs
+								valides sont&nbsp;: "YMD", "Y2MD", "DMY", "DMY2", "MDY", "MDY2", "MONDY",
+								"MONDY2". La valeur par d&eacute;faut est "YMD". </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le format de date dans la colonne du sch&eacute;ma du composant doit
+									correspondre &agrave; la valeur sp&eacute;cifi&eacute;e ici. Par exemple, si vous
+									souhaitez charger une colonne DATE, sp&eacute;cifiez ainsi le format de
+									date dans le sch&eacute;ma du composant&nbsp;: "yyyy-MM-dd" et param&eacute;trez
+									l&#8217;option -dateStyle &agrave; "YMD".</p></td></tr></table></div>
+							<p>Pour une description plus pr&eacute;cise du chargement de champs de dates
+								et de temps, consultez&nbsp;<a class="xref" href="tNetezzaNzLoad.html#Raa91294" title="Charger des colonnes de type DATE, TIME et TIMESTAMP">la section intitul&eacute;e &laquo;&nbsp;Charger des colonnes de type DATE, TIME et TIMESTAMP&nbsp;&raquo;</a>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-dateDelim</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Caract&egrave;re d&eacute;limiteur entre les parties d&#8217;une date. La valeur par
+								d&eacute;faut est "-" pour tous les styles de date, sauf pour "MONDY[2]"
+								pour lequel elle est " " (espace vide).</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le format de date dans la colonne du sch&eacute;ma du composant doit
+									correspondre &agrave; la valeur sp&eacute;cifi&eacute;e ici.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-y2Base</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Premi&egrave;re ann&eacute;e exprimable via l&#8217;utilisation du style de date &agrave;
+								deux chiffres (Y2).</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-timeStyle</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sp&eacute;cifiez le format du temps dans les donn&eacute;es d&#8217;entr&eacute;e. Les
+								valeurs valides sont&nbsp;: "24HOUR" et "12HOUR". La valeur par d&eacute;faut
+								est "24HOUR". Pour am&eacute;liorer l&eacute;g&egrave;rement les performances, gardez la
+								valeur par d&eacute;faut.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le format de temps dans la colonne du sch&eacute;ma du composant doit
+									correspondre &agrave; la valeur sp&eacute;cifi&eacute;e ici. Par exemple, si vous
+									souhaitez charger une colonne de type TIME, configurez le format
+									de date dans le sch&eacute;ma du composant &agrave; "HH:mm:ss" et l&#8217;option
+									-timeStyle &agrave; "24HOUR".</p></td></tr></table></div>
+							<p>Pour une description plus pr&eacute;cise du chargement de champs de dates
+								et de temps, consultez&nbsp;<a class="xref" href="tNetezzaNzLoad.html#Raa91294" title="Charger des colonnes de type DATE, TIME et TIMESTAMP">la section intitul&eacute;e &laquo;&nbsp;Charger des colonnes de type DATE, TIME et TIMESTAMP&nbsp;&raquo;</a>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-timeDelim</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Caract&egrave;re d&eacute;limiteur entre les parties d&#8217;une donn&eacute;e de temps. La
+								valeur par d&eacute;faut est ":". </p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le format de temps dans la colonne du sch&eacute;ma du composant doit
+									correspondre &agrave; la valeur sp&eacute;cifi&eacute;e ici.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-timeRoundNanos</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Autorise mais arrondit les nombres diff&eacute;rents de z&eacute;ro plus petits
+								qu&#8217;une microseconde.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-boolStyle</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sp&eacute;cifiez le format dans lequel les donn&eacute;es de type Boolean sont
+								&eacute;crites dans les donn&eacute;es. Les valeurs valides sont&nbsp;: "1_0", "T_F",
+								"Y_N", "TRUE_FALSE", "YES". La valeur par d&eacute;faut est "1_0". Pour
+								am&eacute;liorer l&eacute;g&egrave;rement les performances, gardez la valeur par
+								d&eacute;faut.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-allowRelay</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Permet de continuer le chargement malgr&eacute; une ou plusieurs
+								r&eacute;initialisation(s) ou &eacute;chec(s) des SPU (Snippet Processing Unit).
+								Par d&eacute;faut, ce comportement n&#8217;est pas autoris&eacute;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>-allowRelay &lt;n&gt;</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sp&eacute;cifiez le nombre de continuations du chargement autoris&eacute;. La
+								valeur par d&eacute;faut est "1".</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Specify nzload path</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case afin de sp&eacute;cifier le chemin d&#8217;acc&egrave;s complet &agrave;
+								l&#8217;ex&eacute;cutable nzload. Vous devez cocher cette case si le chemin
+								d&#8217;acc&egrave;s n&#8217;est pas sp&eacute;cifi&eacute; dans la variable d&#8217;environnement
+								PATH.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Full path to nzload executable</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Chemin d&#8217;acc&egrave;s complet &agrave; l&#8217;ex&eacute;cutable nzload sur la machine en
+								cours d&#8217;utilisation. Il est recommand&eacute; de sp&eacute;cifier le chemin
+								d&#8217;acc&egrave;s dans la variable d&#8217;environnement PATH au lieu de
+								s&eacute;lectionner cette option.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est principalement utilis&eacute; lorsque des
+								transformations particuli&egrave;res ne sont pas requises sur les donn&eacute;es &agrave;
+								charger dans la base de donn&eacute;es.</p>
+							<p>Ce composant peut &ecirc;tre utilis&eacute; en standalone ou en tant que
+								composant de sortie.</p>
+						</td></tr></tbody></table></div><div class="section" title="Charger des colonnes de type DATE, TIME et TIMESTAMP"><div class="titlepage"><div><div><h4 class="title"><a name="Raa91294"></a>Charger des colonnes de type DATE, TIME et TIMESTAMP</h4></div></div></div><p> Lorsque ce composant est utilis&eacute; avec un flux d&#8217;entr&eacute;e, le format de date
+				sp&eacute;cifi&eacute; dans le sch&eacute;ma du composant doit correspondre &agrave; la valeur sp&eacute;cifi&eacute;e pour
+				les options -dateStyle, -dateDelim, -timeStyle, et -timeDelim. Veuillez vous r&eacute;f&eacute;rer
+				aux exemples suivants&nbsp;: </p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5"><col class="c6"></colgroup><thead><tr><th valign="top">
+								<p>Type de donn&eacute;es</p>
+							</th><th valign="top">
+								<p>Format de date dans le sch&eacute;ma</p>
+							</th><th valign="top">
+								<p>-dateStyle</p>
+							</th><th valign="top">
+								<p>-dateDelim</p>
+							</th><th valign="top">
+								<p>-timeStyle</p>
+							</th><th valign="top">
+								<p>-timeDelim</p>
+							</th></tr></thead><tbody><tr><td valign="top">
+								<p>DATE</p>
+							</td><td valign="top">
+								<p>"yyyy-MM-dd"</p>
+							</td><td valign="top">
+								<p>"YMD"</p>
+							</td><td valign="top">
+								<p>"-"</p>
+							</td><td valign="top">
+								<p>n/a</p>
+							</td><td valign="top">
+								<p>n/a</p>
+							</td></tr><tr><td valign="top">
+								<p>TIME</p>
+							</td><td valign="top">
+								<p>"HH:mm:ss"</p>
+							</td><td valign="top">
+								<p>n/a</p>
+							</td><td valign="top">
+								<p>n/a</p>
+							</td><td valign="top">
+								<p>"24HOUR"</p>
+							</td><td valign="top">
+								<p>":"</p>
+							</td></tr><tr><td valign="top">
+								<p>TIMESTAMP</p>
+							</td><td valign="top">
+								<p>"yyyy-MM-dd HH:mm:ss"</p>
+							</td><td valign="top">
+								<p>"YMD"</p>
+							</td><td valign="top">
+								<p>"-"</p>
+							</td><td valign="top">
+								<p>"24HOUR"</p>
+							</td><td valign="top">
+								<p>":"</p>
+							</td></tr></tbody></table></div></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e117805"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez&nbsp;<a class="xref" href="tMysqlOutputBulkExec.html#Raa97924" title="Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es dans une base MySQL">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es dans une base
+				MySQL&nbsp;&raquo;</a><span class="emphasis"><em>Sc&eacute;nario&nbsp;: Ins&eacute;rer
+				des donn&eacute;es dans une base MySQL</em></span> du composant <span class="bold"><strong>tMysqlOutputBulkExec</strong></span>.</p></div></div></body></html>

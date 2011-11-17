@@ -1,0 +1,225 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tOracleSP</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="databases-tOracleSCDELT.html" title="tOracleSCDELT"><link rel="next" href="tOracleTableList.html" title="tOracleTableList"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tOracleSP"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tOracleSP"></a>tOracleSP</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tOracleSP_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa2139979"></a><div class="section" title="tOracleSP Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e118766"></a>tOracleSP Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component family</strong></span></p>
+            </td><td valign="top"><p>Databases/Oracle</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+            </td><td colspan="2" valign="top"><p><span class="bold"><strong>tOracleSP</strong></span> calls the database stored procedure.</p>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+            </td><td colspan="2" valign="top"><p><span class="bold"><strong>tOracleSP</strong></span> offers a convenient way to centralize multiple or complex
+                queries in a database and call them easily.</p>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic settings</strong></span></p>
+            </td><td valign="top"><p><span class="emphasis"><em>Use an existing connection</em></span></p>
+            </td><td valign="top"><p>Select this check box to use an established connection from
+                  <span class="bold"><strong>tOracleConnection</strong></span>. Once you select it, the
+                  <span class="bold"><strong>Component list</strong></span> field appears allowing you to
+                choose the <span class="bold"><strong>tOracleConnection</strong></span> component to be used
+                from those already established on the studio workspace.</p><p> For more
+                    information on <span class="bold"><strong>tOracleConnection</strong></span>, see section <a class="xref" href="tOracleConnection.html" title="tOracleConnection">the section called &#8220;tOracleConnection&#8221;</a>.</p><p> </p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> When a Job contains the parent Job and the child Job, <span class="bold"><strong>Component list</strong></span> presents only the connection components in the same
+                  Job level, so if you need to use an existing connection from the other level, make
+                  sure that the available connection components are sharing the intended
+                  connection.</p><p> For more information on how to share a DB connec&shy;tion across Job levels, see
+                    <span class="bold"><strong>Use or register a shared DB connection</strong></span> in any
+                  database connection compo&shy;nent corresponding to the database you are using.</p><p> Otherwise, you can as well deactivate the connection components and use
+                    <span class="bold"><strong>Dynamic settings</strong></span> of the compo&shy;nent to specify
+                  the intended connection manually. In this case, make sure the connection name is
+                  unique and distinctive all over through the two Job levels. For more information
+                  about <span class="bold"><strong>Dynamic settings</strong></span>, see your studio user
+                  guide.</p></td></tr></table></div>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Connection type</em></span></p>
+            </td><td valign="top">
+              <p>Drop-down list of available drivers.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+            </td><td valign="top"><p>Either <span class="bold"><strong>Built-in</strong></span> or <span class="bold"><strong>Repository</strong></span>. </p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: No property data
+                stored centrally.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: Select the
+                repository file in which the properties are stored. The fields that follow are
+                completed automatically using the data retrieved.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>DB Version</em></span></p>
+            </td><td valign="top"><p>Select the Oracle version in use</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+            </td><td valign="top"><p>Database server IP address</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+            </td><td valign="top"><p>Listening port number of DB server.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Database</em></span></p>
+            </td><td valign="top"><p>Name of the database</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span></p>
+            </td><td valign="top"><p>Name of the schema.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Username</em></span> and
+                  <span class="emphasis"><em>Password</em></span></p>
+            </td><td valign="top"><p>DB user authentication data.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                  Schema</em></span></p>
+            </td><td valign="top"><p>A schema is a row description, i.e., it defines the number of
+                fields to be processed and passed on to the next component. The schema is either
+                  <span class="bold"><strong>Built-in</strong></span> or stored remotely in the <span class="bold"><strong>Repository</strong></span>. </p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: The schema is created and stored locally for this
+                component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                <span class="bold"><strong>User Guide</strong></span>.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: The schema already exists and is stored in the
+                Repository, hence can be reused. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                <span class="bold"><strong>User Guide</strong></span>.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>SP Name</em></span></p>
+            </td><td valign="top"><p>Type in the exact name of the Stored Procedure (or
+                Function)</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Is Function</em></span> /<span class="emphasis"><em> Return result
+                  in</em></span>
+              </p>
+            </td><td valign="top"><p>Select this check box, if the stored procedure is a function
+                and one value only is to be returned. </p><p> Select on the list the schema
+                column, the value to be returned is based on.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>Parameters</em></span></p>
+            </td><td valign="top"><p>Click the Plus button and select the various <span class="bold"><strong>Schema Columns</strong></span> that will be required by the procedures.
+                Note that the SP schema can hold more columns than there are paramaters used in the
+                procedure.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p>Select the <span class="bold"><strong>Type</strong></span> of
+                parameter:</p><p>
+                <span class="bold"><strong>IN</strong></span>: Input parameter</p><p>
+                <span class="bold"><strong>OUT</strong></span>: Output parameter/return value</p><p>
+                <span class="bold"><strong>IN OUT</strong></span>: Input parameter is to be returned as value,
+                likely after modification through the procedure (function).</p><p>
+                <span class="bold"><strong>RECORDSET</strong></span>: Input parameters is to be returned as a
+                set of values, rather than single value.</p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Check the <span class="bold"><strong>tPostgresqlCommit </strong></span>component if you
+                  want to analyze a set of records from a da&shy;tabase table or DB query and return
+                  single records.</p></td></tr></table></div>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p>The <span class="bold"><strong>Custom Type</strong></span> is used when
+                a <span class="bold"><strong>Schema Column</strong></span> you want to use is user-defined.
+                Two <span class="bold"><strong>Custom Type</strong></span> columns are available in the
+                  <span class="bold"><strong>Parameters</strong></span> table. In the first <span class="bold"><strong>Custom Type</strong></span> column:</p><p> - Select the check box in
+                the <span class="bold"><strong>Custom Type </strong></span>column when the corresponding
+                  <span class="bold"><strong>Schema Column</strong></span> you want to use is of user-defined
+                type. </p><p> - If all listed <span class="bold"><strong>Schema Columns</strong></span>
+                in the <span class="bold"><strong>Parameters</strong></span> table are of custom type, you can
+                select the check box before <span class="bold"><strong>Custom Type</strong></span> once for
+                them all.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p>Select a database type from the <span class="bold"><strong>DB
+                  Type</strong></span> list to map the source database type to the target database type: </p><p>
+                <span class="bold"><strong>- Auto-Mapping</strong></span>: Map the source database type to the
+                target database type automatically.(default)</p><p>
+                <span class="bold"><strong>- CLOB</strong></span>: Character large object</p><p>
+                <span class="bold"><strong>- BLOB</strong></span>: Binary large object</p><p>
+                <span class="bold"><strong>- DECIMAL</strong></span>: Decimal numeric object</p><p>
+                <span class="bold"><strong>- NUMERIC</strong></span>: Character 0 to 9</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p>In the second <span class="bold"><strong>Custom Type
+                </strong></span>column, you can precise what the custom type is. The type may
+                be:</p><p> - <span class="bold"><strong>STRUCT</strong></span>: used for one element.
+                </p><p> - <span class="bold"><strong>ARRAY</strong></span>: used for a collection of
+                elements.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td><p>&nbsp;</p>
+            </td><td valign="top"><p>In the <span class="bold"><strong>Custom name</strong></span> column,
+                specify the name of the custom type that you have given to this type.</p>
+              <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                  <span class="emphasis"><em>When an OUT parameter uses the custom type, make sure that its
+                    corresponding Schema Column has chosen the Object type in the schema
+                    table.</em></span></p></td></tr></table></div>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced settings</strong></span></p>
+            </td><td valign="top"><p><span class="emphasis"><em>Additional JDBC parameters</em></span></p>
+            </td><td valign="top"><p>Specify additional connection properties for the DB connection
+                you are creating. This option is not available if you have selected the <span class="bold"><strong>Use an existing connection</strong></span> check box in the <span class="bold"><strong>Basic settings</strong></span>.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>NLS Language</em></span></p>
+            </td><td valign="top"><p>In the list, select the language used for the data that are
+                not used in Unicode.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>NLS Territory</em></span></p>
+            </td><td valign="top"><p>Select the conventions used for date and time formats. The
+                default value is that of the operating system.</p>
+            </td></tr><tr><td><p>&nbsp;</p>
+            </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+            </td><td valign="top"><p>Select this check box to gather the job processing metadata at a Job level as well as at each
+                component level.</p>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+            </td><td colspan="2" valign="top"><p>This component is used as
+                intermediary component. It can be used as start component but only input parameters
+                are thus allowed.</p>
+            </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+            </td><td colspan="2" valign="top"><p>The Stored Procedures syntax should
+                match the Database syntax.</p><p> When the parameters set in this component
+                are of <span class="bold"><strong>Custom Type</strong></span>, the <span class="bold"><strong>tJava
+                </strong></span>family components should be placed before the component in order for
+                users to define values for the custom-type parameters, or after the component so as
+                to read and output the <span class="bold"><strong>Out</strong></span>-type custom
+                parameters.</p>
+            </td></tr></tbody></table></div></div><div class="section" title="Scenario: Checking number format using a stored procedure"><div class="titlepage"><div><div><h3 class="title"><a name="Raa83947"></a>Scenario: Checking number format using a stored procedure</h3></div></div></div><p>The following job aims at connecting to an Oracle Database containing Social Security
+      Numbers and their holders&#8217; name, calling a stored procedure that checks the SSN format of
+      against a standard ###-##-#### format. Then the verification output results, 1 for valid
+      format and 0 for wrong format get displayed onto the execution console. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="382"><tr><td><img src="../images/Use_Case_tOracleSP1.png" width="382"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Drag and drop the following components from the <span class="bold"><strong>Palette</strong></span>: <span class="bold"><strong>tOracleConnection</strong></span>, <span class="bold"><strong>tOracleInput</strong></span>, <span class="bold"><strong>tOracleSP</strong></span> and
+            <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p> Link the <span class="bold"><strong>tOracleConnection</strong></span> to the <span class="bold"><strong>tOracleInput</strong></span> using a <span class="bold"><strong>Then Run</strong></span>
+          connection as no data is handled here. </p></li><li class="listitem"><p> And connect the other components using a <span class="bold"><strong>Row Main</strong></span>
+          link as rows are to be passed on as parameter to the SP component and to the
+          console.</p></li><li class="listitem"><p> In the <span class="bold"><strong>tOracleConnection</strong></span>, define the details of
+          connection to the relevant Database. You will then be able to reuse this information in
+          all other DB-related components.</p></li><li class="listitem"><p> Then select the <span class="bold"><strong>tOracleInput</strong></span> and define its
+          properties. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="496"><tr><td><img src="../images/Use_Case_tOracleSP3.png" width="496"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Select the <span class="bold"><strong>Use an existing connection</strong></span> check box and
+          select the <span class="bold"><strong>tOracleConnection</strong></span> component in the list in
+          order to reuse the connection details that you already set.</p></li><li class="listitem"><p> Select <span class="bold"><strong>Repository</strong></span> as <span class="bold"><strong>Property
+            type</strong></span> as the Oracle schema is defined in the DB Oracle connection entry of the
+          Repository. If you haven&#8217;t recorded the Oracle DB details in the <span class="bold"><strong>Repository</strong></span>, then fill in the Schema name manually.</p></li><li class="listitem"><p> Then select <span class="bold"><strong>Repository</strong></span> as <span class="bold"><strong>Schema</strong></span>, and retrieve the relevant schema corresponding to your Oracle DB
+          table.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="329"><tr><td><img src="../images/Use_Case_tOracleSP2.png" width="329"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In this example, the SSN table has a four-column schema that includes
+            <span class="emphasis"><em>ID</em></span>, <span class="emphasis"><em>NAME</em></span>, <span class="emphasis"><em>CITY</em></span> and
+            <span class="emphasis"><em>SSNUMBER</em></span>.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Query</strong></span> field, type in the following Select
+          query or select it in the list, if you stored it in the Repository.</p><p>
+          <code class="code">select ID, NAME, CITY, SSNUMBER from SSN</code>
+        </p></li><li class="listitem"><p> Then select the <span class="bold"><strong>tOracleSP</strong></span> and define its <span class="bold"><strong>Basic settings</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="500"><tr><td><img src="../images/Use_Case_tOracleSP4.png" width="500"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Like for the <span class="bold"><strong>tOracleInput</strong></span> component, select
+            <span class="bold"><strong>Repository</strong></span> in the <span class="bold"><strong>Property
+            type</strong></span> field and select the <span class="bold"><strong>Use an existing
+            connection</strong></span> check box, then select the relevant entries in the respective
+          list.</p></li><li class="listitem"><p> The schema used for the <span class="bold"><strong>tOracleSP</strong></span> slightly differs
+          from the input schema. Indeed, an extra column (<span class="emphasis"><em>SSN_Valid</em></span>) is added
+          to the Input schema. This column will hold the format validity status
+            (<span class="emphasis"><em>1</em></span> or <span class="emphasis"><em>0</em></span>) produced by the procedure. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="382"><tr><td><img src="../images/Use_Case_tOracleSP5.png" width="382"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>SP Name</strong></span> field, type in the exact name of the
+          stored procedure (or function) as called in the Database. In this use case, the stored
+          procedure name is <span class="emphasis"><em>is_ssn</em></span>.</p></li><li class="listitem"><p> The basic function used in this particular example is as follows:</p><p>
+          </p><pre class="programlisting">CREATE OR REPLACE FUNCTION is_ssn(string_in VARCHAR2)
+RETURN PLS_INTEGER<span></span>
+IS<span></span>
+-- validating ###-##-#### format<span></span>
+BEGIN<span></span>
+  IF TRANSLATE(string_in, '0123456789A', 'AAAAAAAAAAB') =<span></span>
+     'AAA-AA-AAAA' THEN<span></span>
+    RETURN 1;<span></span>
+  END IF;<span></span>
+  RETURN 0;<span></span>
+END is_ssn;<span></span>
+/</pre></li><li class="listitem"><p> As a return value is expected in this use case, the procedure acts as a function, so
+          select the <span class="bold"><strong>Is function</strong></span> check box. </p></li><li class="listitem"><p> The only return value expected is based on the <span class="emphasis"><em>ssn_valid</em></span> column,
+          hence select the relevant list entry.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Parameters</strong></span> area, define the input and output
+          parameters used in the procedure. In this use case, only the <span class="emphasis"><em>SSNumber</em></span>
+          column from the schema is used in the procedure.</p></li><li class="listitem"><p> Click the plus sign to add a line to the table and select the relevant column
+            (<span class="emphasis"><em>SSNumber</em></span>) and type (<span class="emphasis"><em>IN</em></span>).</p></li><li class="listitem"><p> Then select the <span class="bold"><strong>tLogRow</strong></span> component and click Sync
+          Column to make sure the schema is passed on from the preceding <span class="bold"><strong>tOracleSP</strong></span> component.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="327"><tr><td><img src="../images/Use_Case_tOracleSP6.png" width="327"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Select the <span class="bold"><strong>Print values in cells of a table</strong></span> check
+          box to facilitate the output reading.</p></li><li class="listitem"><p> Then save your job and press <span class="bold"><strong>F6</strong></span> to run it. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="370"><tr><td><img src="../images/Use_Case_tOracleSP7.png" width="370"></td></tr></table></div><p>On the console, you can read the output results. All input schema columns are displayed
+      eventhough they are not used as parameters in the stored procedure.</p><p>The final column shows the expected return value, i.e. whether the SS Number checked is
+      valid or not.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Check the <span class="bold"><strong>tPostgresqlCommit</strong></span> component if you want to
+        analyze a set of records from a database table or DB query and return single records.</p></td></tr></table></div></div></div></body></html>

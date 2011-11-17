@@ -1,0 +1,183 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSalesforceGetDeleted</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch01.html" title="Chapitre&nbsp;1.&nbsp;Composants Business"><link rel="prev" href="tSalesforceConnection.html" title="tSalesforceConnection"><link rel="next" href="tSalesforceGetServerTimestamp.html" title="tSalesforceGetServerTimestamp"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tSalesforceGetDeleted"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSalesforceGetDeleted"></a>tSalesforceGetDeleted</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tSalesforceGetDeleted_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tSalesforceGetDeleted"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10564"></a>Propri&eacute;t&eacute;s du tSalesforceGetDeleted</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Business/Cloud</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tSalesforceGetDeleted</strong></span> r&eacute;cup&egrave;re les donn&eacute;es
+								supprim&eacute;es d&#8217;un objet Salesforce sur une p&eacute;riode donn&eacute;e.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant r&eacute;cup&egrave;re les donn&eacute;es supprim&eacute;es de l&#8217;objet Salesforce
+								sp&eacute;cifi&eacute; sur une p&eacute;riode sp&eacute;cifi&eacute;e. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour utiliser une connexion &eacute;tablie &agrave; partir du
+									<span class="bold"><strong>tSalesforceConnection</strong></span>. Une fois
+								coch&eacute;e, la liste <span class="bold"><strong>Component List
+								</strong></span>appara&icirc;t, et vous permet de s&eacute;lectionner le composant
+									<span class="bold"><strong>tSalesforceConnection</strong></span> devant
+								&ecirc;tre utilis&eacute;.</p>
+							<p>Pour plus d&#8217;informations, consultez le composant <span class="bold"><strong>tSalesforceConnection</strong></span>.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient le Job parent et le Job enfant, la
+									liste <span class="bold"><strong>Component list</strong></span> pr&eacute;sente
+									uniquement les composants de connexion du m&ecirc;me niveau de Job. Si
+									vous souhaitez utiliser une connexion existant dans un autre
+									niveau de Job, vous pouvez utiliser l&#8217;onglet <span class="bold"><strong>Dynamic settings</strong></span>, afin de partager la
+									connexion en question. Dans ce cas, v&eacute;rifiez que le nom de la
+									connexion est unique et distinct. Pour plus d&#8217;informations
+									concernant l&#8217;onglet <span class="bold"><strong>Dynamic
+										settings</strong></span>, consultez le <span class="bold"><strong>Guide Utilisateur</strong></span> de votre Studio.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Salesforce Webservice URL</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez l&#8217;URL du service Web permettant de se connecter &agrave; la
+								base de donn&eacute;es Salesforce.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Saisissez les informations d&#8217;authentification de l&#8217;utilisateur au
+								service Web.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Timeout (milliseconds)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le d&eacute;lai avant suspension de la requ&ecirc;te sur
+								Salesforce.com.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Module</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;objet ad&eacute;quat dans la liste.</p>
+							<p><span class="bold"><strong>Custom Object</strong></span>&nbsp;: cette option fait
+								appara&icirc;tre le champ <span class="bold"><strong>Costum Module
+									Name</strong></span> dans lequel vous pouvez saisir l&#8217;objet auquel
+								vous souhaitez vous connecter.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p>
+							<p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour
+								modifier le sch&eacute;ma. Notez que si vous modifiez le sch&eacute;ma, il devient
+								automatiquement built-in.</p>
+							<p>Cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour
+								r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Start Date</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez entre guillemet la date &agrave; laquelle vous voulez commencer
+								la recherche. Pour cela, utilisez le format de date suivant&nbsp;:
+								&#8220;yyy-MM-dd HH:mm:ss&#8221;.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Vous ne pouvez effectuer la recherche que sur les 30&nbsp;derniers
+									jours. </p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>End Date</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez entre guillemet la date &agrave; laquelle vous voulez terminer
+								la recherche. Pour cela, utilisez le format de date suivant&nbsp;:
+								&#8220;yyy-MM-dd HH:mm:ss&#8221;.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use Soap Compression</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour activer la compression SOAP.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>La compression des messages SOAP permet un gain de
+									performance.</p></td></tr></table></div>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="italic">Client ID</span></td><td valign="top">D&eacute;finissez l'ID de l'utilisateur r&eacute;el afin de
+							diff&eacute;rencier ceux qui utilisent le m&ecirc;me compte et le m&ecirc;me mot de passe
+							pour acc&eacute;der au site Web Salesforce.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est utilis&eacute; comme composant de sortie. Il n&eacute;cessite
+								un composant d&#8217;entr&eacute;e. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: R&eacute;cup&eacute;rer les donn&eacute;es supprim&eacute;es du serveur Salesforce"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10917"></a>Sc&eacute;nario&nbsp;: R&eacute;cup&eacute;rer les donn&eacute;es supprim&eacute;es du serveur Salesforce</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; deux composants permettant de r&eacute;cup&eacute;rer les donn&eacute;es
+			supprim&eacute;es du serveur Salesforce, dans les 5&nbsp;derniers jours. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="340"><tr><td><img src="../images/Use_Case_tSalesforceGetDeleted1.png" width="340"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez et d&eacute;posez les composants <span class="bold"><strong>tSalesforceGetDeleted</strong></span> et <span class="bold"><strong>tLogRow</strong></span> de la <span class="bold"><strong>Palette</strong></span> dans le
+					Job Designer.</p></li><li class="listitem"><p>Reliez-les via un lien de type <span class="bold"><strong>Row</strong></span> &gt;
+						<span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tSalesforceGetDeleted</strong></span> pour afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de la vue <span class="bold"><strong>Component</strong></span> et param&eacute;trer ses propri&eacute;t&eacute;s&nbsp;: </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504"><tr><td><img src="../images/Use_Case_tSalesforceGetDeleted2.png" width="504"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Salesforce WebService URL</strong></span>,
+					laissez l&#8217;URL du service Web Salesforce par d&eacute;faut ou saisissez l&#8217;URL &agrave; laquelle
+					vous souhaitez acc&eacute;der.</p></li><li class="listitem"><p>Dans les champs <span class="bold"><strong>Username</strong></span> et <span class="bold"><strong>Password</strong></span>, saisissez votre identifiant et votre mot de
+					passe de connexion au service Web.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Module</strong></span>, s&eacute;lectionnez l&#8217;objet
+					auquel vous souhaitez acc&eacute;der. Dans ce sc&eacute;nario, l&#8217;objectif est d&#8217;acc&eacute;der &agrave;
+					l&#8217;objet <span class="bold"><strong>Account</strong></span>.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Repository</strong></span> puis cliquez sur le bouton <span class="bold"><strong>[...] </strong></span>pour s&eacute;lectionner le sch&eacute;ma du repository que
+					vous souhaitez utiliser pour le composant. Si vous n&#8217;avez pas enregistr&eacute; le
+					sch&eacute;ma dans les m&eacute;tadonn&eacute;es du repository, s&eacute;lectionnez <span class="bold"><strong>Built-in</strong></span> dans la liste <span class="bold"><strong>Schema</strong></span>
+					et cliquez sur le bouton<span class="bold"><strong> [...]</strong></span> &agrave; cot&eacute; du champ
+						<span class="bold"><strong>Edit schema</strong></span> et param&eacute;trer le sch&eacute;ma
+					manuellement.</p></li><li class="listitem"><p>Dans les champs <span class="bold"><strong>Start Date</strong></span> et <span class="bold"><strong>End Date</strong></span>, saisissez la date de d&eacute;but et de fin de
+					recherche des donn&eacute;es supprim&eacute;es en utilisant le format de date suivant&nbsp;:
+						&#8220;<span class="emphasis"><em>yyyy-MM-dd HH:mm:ss</em></span>&#8221;. Vous ne pouvez effectuer la
+					recherche que sur les 30&nbsp;derniers jours. Dans ce sc&eacute;nario, l&#8217;objectif est de
+					chercher les donn&eacute;es supprim&eacute;es dans les cinq derniers jours.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tLogRow</strong></span> pour
+					afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de la vue
+						<span class="bold"><strong>Component</strong></span> et param&eacute;trer ses
+					propri&eacute;t&eacute;s&nbsp;:</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> pour
+					r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>Mode</strong></span>, s&eacute;lectionnez l&#8217;option
+						<span class="bold"><strong>Vertical</strong></span> pour faire appara&icirc;tre le r&eacute;sultat
+					dans sous forme de tableau dans la console. </p></li><li class="listitem"><p>Enregistrez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+					l&#8217;ex&eacute;cuter. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="434"><tr><td><img src="../images/Use_Case_tSalesforceGetDeleted3.png" width="434"></td></tr></table></div><p>La console affiche les donn&eacute;es supprim&eacute;es r&eacute;cup&eacute;r&eacute;es par le composant <span class="bold"><strong>tSalesforceGetDeleted</strong></span> sous forme de tableau. </p></div></div></body></html>

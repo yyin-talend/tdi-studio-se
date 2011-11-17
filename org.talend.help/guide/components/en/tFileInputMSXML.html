@@ -1,0 +1,168 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputMSXML</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapter&nbsp;9.&nbsp;File components"><link rel="prev" href="tFileInputMSPositional.html" title="tFileInputMSPositional"><link rel="next" href="tFileInputPositional.html" title="tFileInputPositional"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFileInputMSXML"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputMSXML"></a>tFileInputMSXML</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileInputMSXML_icon32.png" width="27"></td></tr></table></div><div class="section" title="tFileInputMSXML Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e177654"></a>tFileInputMSXML Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>XML or File/Input</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tFileInputMSXML</strong></span> reads and outputs
+								multiple schema within an XML structured file.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tFileInputMSXML</strong></span> opens a complex
+								multi-structured file, reads its data structures (schemas) and then
+								uses <span class="bold"><strong>Row</strong></span> links to send fields as
+								defined in the different schemas to the next Job components.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>File Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the file and/or the variable to be processed</p>
+							<p> </p>
+							<p> Related topic: see <span class="bluebold">Talend Open Studio</span>
+								<span class="bold"><strong>User Guide</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Root XPath query</em></span>
+							</p>
+						</td><td valign="top">
+							<p>The root of the XML tree, which the query is based on.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Enable XPath in column &#8220;Schema XPath loop&#8221; But lose the order</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box if you want to define a XPath path in the
+									<span class="bold"><strong>Schema XPath loop</strong></span> field of th
+									<span class="bold"><strong>Outputs</strong></span> array.</p>
+							<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+									<span class="emphasis"><em>This option is only available with the </em></span>
+									<span class="bold"><strong>dom4j</strong></span>
+									<span class="emphasis"><em> generation mode. Make sure this mode is selected in
+										the </em></span>
+									<span class="bold"><strong>Generation mode</strong></span>
+									<span class="emphasis"><em> list, in the </em></span>
+									<span class="bold"><strong>Advanced settings</strong></span>
+									<span class="emphasis"><em> tab of your component. If you use this option, the
+										data will not be returned in order.</em></span>
+								</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Outputs</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Schema</strong></span>: define as many schemas as
+								needed.</p>
+							<p>
+								<span class="bold"><strong>Schema XPath loop</strong></span>: node of the XML
+								tree or XPath path which the loop is based on.</p>
+							<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+									<span class="emphasis"><em>If you want to use a XPath path in the </em></span>
+									<span class="bold"><strong>Schema XPath loop </strong></span>
+									<span class="emphasis"><em>field, you must select the </em></span>
+									<span class="bold"><strong>Enable XPath in column &#8220;Schema XPath loop&#8221;
+										but lose the order </strong></span>
+									<span class="emphasis"><em>check box.</em></span>
+								</p></td></tr></table></div>
+							<p><span class="bold"><strong>XPath Queries</strong></span>: Enter the fields
+								to be extracted from the structured input.</p>
+							<p>
+								<span class="bold"><strong>Create empty row</strong></span>: select the check
+								boxes of the schemas where you want to create empty rows.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Die on error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to stop the execution of the Job when an
+								error occurs. Clear the check box to skip the row on error and
+								complete the process for error-free rows.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Trim all column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to remove leading and trailing whitespaces
+								from defined columns.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Validate date</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to check the date format strictly against
+								the input schema.</p>
+						</td></tr><tr><td>
+							
+						</td><td valign="top"><span class="italic">Ignore DTD
+							file</span></td><td valign="top">Select this check box to ignore the DTD file indicated in the XML file
+							being processed.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Generation mode</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the generation mode from the list.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the encoding type from the list or select <span class="bold"><strong>CUSTOM</strong></span> and define it manually. This field
+								is compulsory for DB data handling.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at a
+								Job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario: Reading a multi structure XML file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e178006"></a>Scenario: Reading a multi structure XML file</h3></div></div></div><p>The following scenario creates a Java Job which aims at reading a multi schema XML
+			file and displaying data structures on the <span class="bold"><strong>Run Job
+			</strong></span>console.</p><p>The XML file processed in this example looks like the following:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="281"><tr><td><img src="../images/Use_Case_tFileInputMSXML.png" width="281"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Drop a <span class="bold"><strong>tFileInputMSXML</strong></span> and two <span class="bold"><strong>tLogRow </strong></span>components from the <span class="bold"><strong>Palette </strong></span>onto the design workspace.</p></li><li class="listitem"><p> Double-click <span class="bold"><strong>tFileInputMSXML </strong></span>to open the
+					component <span class="bold"><strong>Basic settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="521"><tr><td><img src="../images/Use_Case_tFileInputMSXML1.png" width="521"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Browse to the XML file you want to process.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Root XPath query</strong></span> field, enter the
+					root of the XML tree, which the query will be based on.</p></li><li class="listitem"><p> Select the <span class="bold"><strong>Enable XPath in column &#8220;Schema XPath loop&#8221;
+						but lose the order</strong></span> check box if you want to define a XPath path
+					in the <span class="bold"><strong>Schema XPath loop</strong></span> field, in the
+						<span class="bold"><strong>Outputs</strong></span> array. In this scenario, we do not
+					use this option.</p></li><li class="listitem"><p> Click the plus button to add lines in the <span class="bold"><strong>Outputs</strong></span> table where you can define the output schema, two lines
+					in this scenario: <span class="emphasis"><em>record</em></span> and
+					<span class="emphasis"><em>book</em></span>.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Outputs</strong></span> table, click in the <span class="bold"><strong>Schema</strong></span> cell and then click a three-dot button to
+					display a dialog box where you can define the schema name.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="336"><tr><td><img src="../images/Use_Case_tFileInputMSXML2.png" width="336"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Enter a name for the output schema and click <span class="bold"><strong>OK</strong></span> to close the dialog box.</p><p> The <span class="bold"><strong>tFileInputMSXML</strong></span> schema editor
+					displays.</p></li><li class="listitem"><p> Define the schema you previously defined in the <span class="bold"><strong>Outputs</strong></span> table.</p></li><li class="listitem"><p> Do the same for all the output schemas you want to define.</p></li><li class="listitem"><p> In the design workspace, right-click <span class="bold"><strong>tFileInputMSXML</strong></span> and connect it to <span class="bold"><strong>tLogRow1</strong></span>, and <span class="bold"><strong>tLogRow2</strong></span> using
+					the <span class="bold"><strong>record</strong></span> and <span class="bold"><strong>book</strong></span> links respectively.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="323"><tr><td><img src="../images/Use_Case_tFileInputMSXML3.png" width="323"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>Basic settings</strong></span> view and in the
+						<span class="bold"><strong>Schema XPath loop</strong></span> cell, enter the node of
+					the XML tree, which the loop is based on.</p></li><li class="listitem"><p> In the <span class="bold"><strong>XPath Queries </strong></span>cell, enter the fields
+					to be extracted from the structured XML input.</p></li><li class="listitem"><p> Select the check boxes next to schemas&#8217; names where you want to create empty
+					rows.</p></li><li class="listitem"><p> Save your Job and press <span class="bold"><strong>F6</strong></span> to execute it.
+					The defined schemas are extracted from the multi schema XML structured file and
+					displayed on the console.</p></li></ul></div><p>The multi schema XML file is read row by row and the extracted fields are displayed on
+			the <span class="bold"><strong>Run Job</strong></span> console as defined.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="421"><tr><td><img src="../images/Use_Case_tFileInputMSXML4.png" width="421"></td></tr></table></div></div></div></body></html>

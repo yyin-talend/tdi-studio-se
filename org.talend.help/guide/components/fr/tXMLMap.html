@@ -1,0 +1,402 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tXMLMap</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch14.html" title="Chapitre&nbsp;14.&nbsp;Composants Processing"><link rel="prev" href="tWriteJsonField.html" title="tWriteJsonField"><link rel="next" href="ch15.html" title="Chapitre&nbsp;15.&nbsp;Composants System"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tXMLMap"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tXMLMap"></a>tXMLMap</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tXMLMap_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa4568330"></a><div class="section" title="Propri&eacute;t&eacute;s du tXMLMap"><div class="titlepage"><div><div><h3 class="title"><a name="d0e237251"></a>Propri&eacute;t&eacute;s du tXMLMap</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Processing/XML</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tXMLMap</strong></span> est un
+								composant avanc&eacute; personnalisable permettant de transformer et de
+								router des flux de donn&eacute;es XML (donn&eacute;es de type <span class="bold"><strong>document</strong></span>), particuli&egrave;rement pour traiter
+								de nombreuses sources de donn&eacute;es XML, avec ou sans jointure sur les
+								donn&eacute;es plates.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tXMLMap</strong></span> transforme et route
+								des donn&eacute;es &agrave; partir d&#8217;une ou plusieurs source(s) de donn&eacute;es vers
+								une ou plusieurs destination(s). </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Map editor</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Le Map Editor vous permet de d&eacute;finir les propri&eacute;t&eacute;s du routage et
+								des transformations du <span class="bold"><strong>tXMLMap</strong></span>.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Si vous ne souhaitez pas g&eacute;rer les erreurs d&#8217;ex&eacute;cutions, vous
+									pouvez cocher la case <span class="bold"><strong>Die on error
+									</strong></span>(coch&eacute;e par d&eacute;faut) dans la barre sup&eacute;rieure de la
+									zone de sortie. Cela arr&ecirc;tera la Job en cas d&#8217;erreur.</p></td></tr></table></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								Job ainsi qu&#8217;au niveau de chaque composant. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Plusieurs utilisations sont possibles, de la simple r&eacute;organisation
+								des champs de donn&eacute;es aux transformations les plus complexes, telles
+								que le multiplexage et le d&eacute;multiplexage de donn&eacute;es, la
+								concat&eacute;nation, l&#8217;inversion, le filtrage, etc.</p>
+							<p>Lorsque c'est n&eacute;cessaire, vous pouvez d&eacute;finir vos sorties pour les
+								flux XML, &agrave; l'aide de l'&eacute;l&eacute;ment "<span class="bold"><strong>group</strong></span>", de l'&eacute;l&eacute;ment "<span class="bold"><strong>aggregate</strong></span>", d'&eacute;l&eacute;ments vides et de toute autre
+								fonctionnalit&eacute;, comme <span class="bold"><strong>All in one</strong></span>.
+								Pour plus d'informations concernant ces fonctionnalit&eacute;s, consultez
+									le<span class="bold"><strong> Guide utilisateur</strong></span> de
+									<span class="bluebold">Talend Open Studio</span>.</p>
+							<p>Ce composant est utilis&eacute; comme composant interm&eacute;diaire et
+								correspond parfaitement au processus n&eacute;cessitant de nombreuses
+								sources de donn&eacute;es XML, comme les processus ESB de
+								requ&ecirc;te/r&eacute;ponse.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Les limites sont les suivantes&nbsp;:</p>
+							<p>- L&#8217;utilisation du composant <span class="bold"><strong>tXMLMap</strong></span> requiert des connaissances minimales en Java
+								et XML afin d&#8217;exploiter au mieux ses fonctionnalit&eacute;s.</p>
+							<p>- Ce composant est une &eacute;tape de jonction. Il ne peut donc &ecirc;tre ni
+								un composant d&#8217;entr&eacute;e, ni un composant de sortie.</p>
+							<p>- Un seul &eacute;l&eacute;ment de boucle est requis pour chaque flux de donn&eacute;es
+								XML.</p>
+						</td></tr></tbody></table></div><p>Les sections suivantes pr&eacute;sentent plusieurs sc&eacute;narios g&eacute;n&eacute;riques concernant
+			l'utilisation du composant tXMLMap. Si vous souhaitez consulter des exemples sp&eacute;cifiques
+			d'utilisation de ce composant avec les composants ESB afin de construire des services de
+			donn&eacute;es, consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="italic">Talend ESB Studio </span>(en anglais).</p><p>Si vous souhaitez plus d'informations concernant les principes du mapping de multiples
+			flux d'entr&eacute;e et de sortie, consultez le <span class="bold"><strong>Guide
+				utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p></div><div class="section" title="Sc&eacute;nario&nbsp;1&nbsp;: Mapper et transformer des donn&eacute;es de source XML"><div class="titlepage"><div><div><h3 class="title"><a name="Raa13182"></a>Sc&eacute;nario&nbsp;1&nbsp;: Mapper et transformer des donn&eacute;es de source XML</h3></div></div></div><p>Dans ce sc&eacute;nario, un Job &agrave; trois composants est ex&eacute;cut&eacute; pour mapper et transformer des
+			donn&eacute;es provenant d&#8217;une source XML,&nbsp;<span class="emphasis"><em>customer.xml</em></span>, et g&eacute;n&eacute;rer un
+			flux de sortie XML pouvant &ecirc;tre r&eacute;utilis&eacute; dans diff&eacute;rents buts, comme, par exemple, pour
+			une requ&ecirc;te ESB.</p><p>Ces trois composants sont&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong>tFileInputXML</strong></span>&nbsp;: ce composant est utilis&eacute; pour
+					fournir des donn&eacute;es d&#8217;entr&eacute;e au <span class="bold"><strong>tXMLMap</strong></span>.</p></li><li class="listitem"><p><span class="bold"><strong>tXMLMap&nbsp;</strong></span>: ce composant mappe et transforme
+					les flux de donn&eacute;es XML en un seul flux de donn&eacute;es XML.</p></li><li class="listitem"><p><span class="bold"><strong>tLogRow</strong></span>&nbsp;: ce composant est utilis&eacute; pour
+					afficher les donn&eacute;es de sortie.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapBasicJob.png" align="middle"></div><p>Afin de reproduire ce sc&eacute;nario, proc&eacute;dez comme dans les sections suivantes&nbsp;:</p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e237482"></a>D&eacute;poser et relier les composants</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>De la <span class="bold"><strong>Palette</strong></span>, d&eacute;posez un <span class="bold"><strong>tFileInputXML</strong></span>, un <span class="bold"><strong>tXMLMap</strong></span> et un <span class="bold"><strong>tLogRow</strong></span> dans
+						l&#8217;espace de mod&eacute;lisation graphique.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Un composant utilis&eacute; dans l&#8217;espace de mod&eacute;lisation peut &ecirc;tre renomm&eacute;
+							comme vous le souhaitez. Dans ce sc&eacute;nario, le composant d&#8217;entr&eacute;e est
+								nomm&eacute;&nbsp;<span class="emphasis"><em>Customers</em></span>. Pour plus d&#8217;informations
+							concernant le renommage d&#8217;un composant, consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p></td></tr></table></div></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tFileInputXML</strong></span> nomm&eacute;&nbsp;<span class="emphasis"><em>Customers</em></span> pour
+						ouvrir son menu contextuel.</p></li><li class="listitem"><p>Dans ce menu, s&eacute;lectionnez <span class="bold"><strong>Row</strong></span> &gt;
+							<span class="bold"><strong>Main</strong></span> afin de relier ce composant au
+							<span class="bold"><strong>tXMLMap</strong></span>.</p></li><li class="listitem"><p>R&eacute;p&eacute;tez l&#8217;op&eacute;ration afin de connectez ensuite le <span class="bold"><strong>tXMLMap</strong></span> au <span class="bold"><strong>tLogRow</strong></span> &agrave; l&#8217;aide
+						d&#8217;un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>*New output* (Main)</strong></span>. Une bo&icirc;te de dialogue s&#8217;ouvre et vous
+						demande de nommer ce lien de sortie. Dans ce sc&eacute;nario,
+							nommez-le&nbsp;<span class="emphasis"><em>Customer_States</em></span>.</p></li></ol></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap8.png" align="middle"></div><p>Vous pouvez ensuite continuer &agrave; configurer vos composants.</p></div><div class="section" title="Configurer le flux d'entr&eacute;e"><div class="titlepage"><div><div><h4 class="title"><a name="d0e237560"></a>Configurer le flux d'entr&eacute;e</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tFileInputXML</strong></span> nomm&eacute;&nbsp;<span class="emphasis"><em>Customers</em></span> afin
+						d&#8217;afficher sa vue <span class="bold"><strong>Basic settings</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap2.png" align="middle"></div></li><li class="listitem"><p>A c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit schema</strong></span>, cliquez sur
+						le bouton <span class="bold"><strong>[...]</strong></span> afin d&#8217;ouvrir l&#8217;&eacute;diteur du
+						sch&eacute;ma.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap3.png" align="middle"></div></li><li class="listitem"><p>Dans l&#8217;&eacute;diteur du sch&eacute;ma, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter une ligne.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Column</strong></span>, saisissez un
+						nouveau nom pour cette ligne. Dans ce sc&eacute;nario, le nom
+							est&nbsp;<span class="emphasis"><em>Customer</em></span>.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Type</strong></span>, s&eacute;lectionnez le
+						type de donn&eacute;es de cette ligne. Dans ce sc&eacute;nario, le type
+							est&nbsp;<span class="emphasis"><em>Document</em></span>. Le type de donn&eacute;es &#8220;document&#8221; est
+						essentiel pour utiliser au maximum les fonctionnalit&eacute;s du <span class="bold"><strong>tXMLMap</strong></span>. Pour plus d&#8217;informations concernant ce
+						type de donn&eacute;es, consultez le <span class="bold"><strong>Guide utilisateur
+						</strong></span>de <span class="bluebold">Talend Open Studio</span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider ce changement
+						et acceptez la propagation propos&eacute;e par la fen&ecirc;tre pop-up. Une ligne est
+						ajout&eacute;e automatiquement &agrave; la table <span class="bold"><strong>Mapping</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>File name / Stream</strong></span>,
+						parcourez votre syst&egrave;me jusqu&#8217;au fichier XML source fournissant les donn&eacute;es
+						client, ou bien saisissez son chemin d&#8217;acc&egrave;s.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Loop XPath query</strong></span>, saisissez
+							<code class="code">&#8220;/&#8221;</code> pour remplacer le param&egrave;tre par d&eacute;faut. Cela signifie
+						que les donn&eacute;es source sont interrog&eacute;es depuis la racine.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>XPath query</strong></span> de la table
+							<span class="bold"><strong>Mapping</strong></span>, saisissez le XPath. Dans ce
+						sc&eacute;nario, saisissez <code class="code">&#8220;.&#8221;</code>, ce qui signifie que toutes les donn&eacute;es
+						de la source seront interrog&eacute;es.</p></li><li class="listitem"><p>Cochez la case <span class="bold"><strong>Get Nodes</strong></span> dans la colonne
+						de la table <span class="bold"><strong>Mapping</strong></span>. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Afin de construire le flux de donn&eacute;es de type <span class="bold"><strong>Document</strong></span>, il est n&eacute;cessaire d'obtenir les
+								n&#339;uds de ce composant.</p></td></tr></table></div></li></ol></div></div><div class="section" title="Configurer le tXMLMap pour effectuer des transformations"><div class="titlepage"><div><div><h4 class="title"><a name="d0e237678"></a>Configurer le tXMLMap pour effectuer des transformations</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tXMLMap</strong></span>
+						pour ouvrir le <span class="bold"><strong>Map Editor</strong></span>. </p><p>Notez que la zone d&#8217;entr&eacute;e est d&eacute;j&agrave; remplie par les tables d&#8217;entr&eacute;e
+						d&eacute;finies et que la table sup&eacute;rieure est la table principale d&#8217;entr&eacute;e (flux
+							<span class="bold"><strong>Main</strong></span>).</p></li><li class="listitem"><p>Dans la table gauche, cliquez-droit sur <span class="bold"><strong>Customer</strong></span> pour ouvrir le menu contextuel. </p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap5.png" align="middle"></div></li><li class="listitem"><p>Dans ce menu contextuel, s&eacute;lectionnez <span class="bold"><strong>Import From File</strong></span>
+						et dans la fen&ecirc;tre pop-up, parcourez votre syst&egrave;me jusqu&#8217;au fichier source
+						correspondant, afin d&#8217;importer la structure XML utilis&eacute;e par les donn&eacute;es
+						re&ccedil;ues par le <span class="bold"><strong>tXMLMap</strong></span>. Dans ce sc&eacute;nario, le
+						fichier source est&nbsp;<span class="emphasis"><em>Customer.xml</em></span>, qui est &eacute;galement
+						connect&eacute;s au<span class="bold"><strong> tFileInputXML</strong></span>
+							(<span class="emphasis"><em>Customers</em></span>).</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Vous pouvez &eacute;galement importer une arborescence XML &agrave; partir d'un
+								fichier XSD. Lors de l'import d'une structure XML d'entr&eacute;e ou de
+								sortie depuis un fichier XSD, vous pouvez choisir un &eacute;l&eacute;ment pour en
+								faire la racine de votre structure XML. Pour plus d'informations
+								concernant l'import d'une arborescence XML &agrave; partir d'un fichier
+								XSD, consultez le <span class="bold"><strong>Guide utilisateur</strong></span>
+								de <span class="bluebold">Talend Open Studio</span>.</p></td></tr></table></div></li><li class="listitem"><p>Dans la table du c&ocirc;t&eacute; gauche, cliquez-droit sur le
+							n&#339;ud&nbsp;<span class="emphasis"><em>Customer</em></span> et s&eacute;lectionnez&nbsp;<span class="bold"><strong>As loop element</strong></span> pour le d&eacute;finir comme &eacute;l&eacute;ment de
+						boucle.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap7.png" align="middle"></div></li><li class="listitem"><p>Dans la partie inf&eacute;rieure du <span class="bold"><strong>Map Editor</strong></span>,
+						cliquez sur l&#8217;onglet <span class="bold"><strong>Schema editor</strong></span> afin
+						d&#8217;afficher la vue correspondante.</p></li><li class="listitem"><p>Du c&ocirc;t&eacute; droit de cette vue, cliquez sur le bouton<span class="bold"><strong>
+							[+]</strong></span> pour ajouter une ligne &agrave; la
+							table&nbsp;<span class="emphasis"><em>Customer</em></span> et renommez cette
+							ligne&nbsp;<span class="emphasis"><em>Customer_States</em></span>.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap11.png" align="middle"></div></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Type</strong></span> de la
+							ligne&nbsp;<span class="emphasis"><em>Customer_States</em></span>, s&eacute;lectionnez <span class="bold"><strong>Document</strong></span> comme type de donn&eacute;es. La racine XML
+						correspondante est ajout&eacute;e automatiquement &agrave; la table sup&eacute;rieure, du c&ocirc;t&eacute;
+						droit, qui repr&eacute;sente le flux de sortie.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap12.png" align="middle"></div></li><li class="listitem"><p>Du c&ocirc;t&eacute; droit de la table sup&eacute;rieure
+							nomm&eacute;e&nbsp;<span class="emphasis"><em>Customer_States</em></span>, importez la structure XML
+						des donn&eacute;es que vous devez utiliser du fichier source XML correspondant.
+						Dans ce sc&eacute;nario, le fichier
+						est&nbsp;<span class="emphasis"><em>Customer_State.xml</em></span>.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap9.png" align="middle"></div></li><li class="listitem"><p>Cliquez-droit sur le n&#339;ud&nbsp;<span class="emphasis"><em>customer</em></span> et s&eacute;lectionnez
+							<span class="bold"><strong>As loop element</strong></span> dans le menu
+						contextuel.</p><p>Vous pouvez ensuite commencer &agrave; mapper le flux d&#8217;entr&eacute;e vers le flux de
+						sortie.</p></li><li class="listitem"><p>Dans la table du c&ocirc;t&eacute; de l&#8217;entr&eacute;e (gauche) du <span class="bold"><strong>Map
+							Editor</strong></span>, cliquez sur le n&#339;ud&nbsp;<span class="emphasis"><em>id</em></span> et
+						glissez-le dans la colonne <span class="bold"><strong>Expression</strong></span> dans
+						la ligne correspondant &agrave; la ligne de sortie que vous devez mapper. Dans ce
+						sc&eacute;nario, le n&#339;ud est&nbsp;<span class="emphasis"><em>@id</em></span>.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapBasicMap.png" align="middle"></div></li><li class="listitem"><p>R&eacute;p&eacute;tez l&#8217;op&eacute;ration pour mapper&nbsp;<span class="emphasis"><em>CustomerName</em></span>
+							&agrave;&nbsp;<span class="emphasis"><em>CustomerName</em></span>,&nbsp;<span class="emphasis"><em>CustomerAddress</em></span>
+							&agrave;&nbsp;<span class="emphasis"><em>CustomerAddress</em></span> et&nbsp;<span class="emphasis"><em>idState</em></span>
+							&agrave;&nbsp;<span class="emphasis"><em>idState</em></span> du c&ocirc;t&eacute; gauche au c&ocirc;t&eacute; droit.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Dans un projet r&eacute;el, vous pouvez avoir besoin de laisser des
+								&eacute;l&eacute;ments vides dans votre arborescence XML de sortie. Dans ce cas,
+								vous pouvez utiliser le <span class="bold"><strong>tXMLMap</strong></span>
+								pour les g&eacute;rer. Pour plus d'informations concernant la gestion des
+								&eacute;l&eacute;ments vides via le <span class="bold"><strong>tXMLMap</strong></span>,
+								consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de
+									<span class="bluebold">Talend Open Studio</span>.</p></td></tr></table></div></li><li class="listitem"><p>Si n&eacute;cessaire pour g&eacute;n&eacute;rer plusieurs flux XML, cliquez sur la cl&eacute; anglaise
+						en haut &agrave; droite afin d'ouvrir le panneau de param&eacute;trage du mapping et
+						configurer la fonctionnalit&eacute; <span class="bold"><strong>All in one</strong></span>
+						comme <span class="bold"><strong>true</strong></span>. Dans cet exemple, cette option
+						est sur <span class="bold"><strong>true</strong></span>. Pour plus d'informations
+						concernant la fonctionnalit&eacute; <span class="bold"><strong>All in one</strong></span>,
+						consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-txmlmap_all_in_one.png" align="middle"></div></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider le mapping et
+						fermer le <span class="bold"><strong>Map Editor</strong></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Si vous fermez le <span class="bold"><strong>Map Editor</strong></span> sans
+							avoir d&eacute;fini les &eacute;l&eacute;ments de boucle n&eacute;cessaires, comme expliqu&eacute; plus t&ocirc;t
+							dans ce sc&eacute;nario, une ic&ocirc;ne d'erreur <span class="inlinemediaobject"><img src="../images/red_cross_warning.png" width="35"></span> appara&icirc;t dans le coin sup&eacute;rieur droit du composant
+								<span class="bold"><strong>tXMLMap</strong></span>, dans l'espace de
+							mod&eacute;lisation graphique.</p></td></tr></table></div></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e237911"></a>Ex&eacute;cuter le Job</h4></div></div></div><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter le Job.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapBasicExecution.png" align="middle"></div></div></div><div class="section" title="Sc&eacute;nario&nbsp;2&nbsp;: Cr&eacute;er un flux Lookup pour effectuer une jointure sur des donn&eacute;es compl&eacute;mentaires XML"><div class="titlepage"><div><div><h3 class="title"><a name="Raa55695"></a>Sc&eacute;nario&nbsp;2&nbsp;: Cr&eacute;er un flux Lookup pour effectuer une jointure sur des donn&eacute;es
+			compl&eacute;mentaires XML</h3></div></div></div><p>Bas&eacute; sur le sc&eacute;nario pr&eacute;c&eacute;dent, ce sc&eacute;nario explique comment utiliser un flux Lookup
+			(de r&eacute;f&eacute;rence) dans un flux XML afin d&#8217;effectuer une jointure sur les donn&eacute;es souhait&eacute;es
+			dans le flux XML donn&eacute;. Les donn&eacute;es XML de r&eacute;f&eacute;rence sont contenues dans le
+				fichier&nbsp;<span class="emphasis"><em>USstates.xml</em></span>.</p><p>Pour ce faire, un composant <span class="bold"><strong>tFileInputXML</strong></span> est ajout&eacute;
+			au Job pr&eacute;c&eacute;dent afin de charger et d&#8217;envoyer des donn&eacute;es compl&eacute;mentaires au <span class="bold"><strong>tXMLMap</strong></span>. Le Job doit ressembler &agrave; ceci&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap1.png" align="middle"></div><p>Pour reproduire ce sc&eacute;nario, proc&eacute;dez comme dans les sections suivantes.</p><div class="section" title="Configurer le flux de donn&eacute;es pour le flux de r&eacute;f&eacute;rence"><div class="titlepage"><div><div><h4 class="title"><a name="d0e237943"></a>Configurer le flux de donn&eacute;es pour le flux de r&eacute;f&eacute;rence</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>De la <span class="bold"><strong>Palette</strong></span>, d&eacute;posez un composant
+							<span class="bold"><strong>tFileInputXML</strong></span> dans l&#8217;espace de
+						mod&eacute;lisation graphique.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Un composant utilis&eacute; dans l&#8217;espace de mod&eacute;lisation peut &ecirc;tre renomm&eacute;
+							comme vous le souhaitez. Dans ce sc&eacute;nario, le composant ajout&eacute; est
+								nomm&eacute;&nbsp;<span class="emphasis"><em>USStates</em></span>. Pour plus d&#8217;informations
+							concernant le renommage d&#8217;un composant, consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p></td></tr></table></div></li><li class="listitem"><p>Cliquez-droit sur le composant <span class="bold"><strong>tFileInputXML</strong></span> nomm&eacute;&nbsp;<span class="emphasis"><em>USStates</em></span> pour
+						ouvrir son menu contextuel et s&eacute;lectionnez <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> afin de
+						relier ce composant au <span class="bold"><strong>tXMLMap</strong></span>. Puisque
+						cette connexion <span class="bold"><strong>Row</strong></span> est la seconde que vous
+						cr&eacute;ez, elle est de type <span class="bold"><strong>Lookup</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tFileInputXML</strong></span> nomm&eacute;&nbsp;<span class="emphasis"><em>USStates</em></span> pour
+						ouvrir sa vue <span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap4.png" align="middle"></div></li><li class="listitem"><p>A c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit schema</strong></span>, cliquez sur
+						le bouton<span class="bold"><strong> [...]</strong></span> pour ouvrir l&#8217;&eacute;diteur du
+						sch&eacute;ma.</p></li><li class="listitem"><p>Dans l&#8217;&eacute;diteur, cliquez sur le bouton <span class="bold"><strong>[+]
+						</strong></span>pour ajouter une ligne et renommez-la <span class="italic">USState</span>, par exemple.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Type</strong></span>, s&eacute;lectionnez
+							<span class="bold"><strong>Document</strong></span> dans la liste
+						d&eacute;roulante.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap13.png" align="middle"></div></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider les
+						modifications et accepter la propagation propos&eacute;e par la bo&icirc;te de dialogue
+						qui s&#8217;ouvre.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>File name/Stream</strong></span>, parcourez
+						votre syst&egrave;me ou saisissez le chemin d&#8217;acc&egrave;s au
+							fichier&nbsp;<span class="emphasis"><em>USStates.xml</em></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Les sch&eacute;mas d&#8217;entr&eacute;e peuvent &ecirc;tre stock&eacute;s dans le n&#339;ud <span class="bold"><strong>Metadata</strong></span> de la vue <span class="bold"><strong>Repository</strong></span> pour que vous puissiez les retrouver
+							facilement. Pour plus d&#8217;informations concernant la cr&eacute;ation de
+							m&eacute;tadonn&eacute;es dans le <span class="bold"><strong>Repository</strong></span>,
+							consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de
+								<span class="bluebold">Talend Open Studio</span>.</p></td></tr></table></div></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Loop XPath query</strong></span>, saisissez
+							<code class="code">"/"</code> afin de remplacer la valeur par d&eacute;faut. Cela signifie
+						que la boucle est bas&eacute;e sur la racine.</p></li><li class="listitem"><p>Dans la table <span class="bold"><strong>Mapping</strong></span>, o&ugrave; une ligne est
+						d&eacute;j&agrave; ajout&eacute;e automatiquement, saisissez <code class="code">"."</code> dans la colonne
+							<span class="bold"><strong>XPath query</strong></span>, afin de r&eacute;cup&eacute;rer les
+						Etats des Etats-Unis depuis le fichier source.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Get Nodes</strong></span>, cochez la
+						case. Cela va r&eacute;cup&eacute;rer la structure XML des donn&eacute;es de type <span class="bold"><strong>Document</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer la transformation"><div class="titlepage"><div><div><h4 class="title"><a name="d0e238104"></a>Configurer la transformation</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tXMLMap</strong></span>
+						pour ouvrir le <span class="bold"><strong>Map Editor</strong></span>. </p><p>Notez que la zone d&#8217;entr&eacute;e est d&eacute;j&agrave; remplie par les tables d&#8217;entr&eacute;e
+						d&eacute;finies et que la table sup&eacute;rieure est la table principale d&#8217;entr&eacute;e (flux
+							<span class="bold"><strong>Main</strong></span>).</p></li><li class="listitem"><p>Dans la table sup&eacute;rieure, cliquez-droit sur le
+							n&#339;ud&nbsp;<span class="emphasis"><em>idState</em></span> et d&eacute;posez-le, dans la table
+						inf&eacute;rieure, dans la colonne <span class="bold"><strong>Exp.key</strong></span>
+						correspondant &agrave; la ligne&nbsp;<span class="emphasis"><em>idState</em></span>. Cela cr&eacute;e une
+						jointure entre les deux tables sur les donn&eacute;es&nbsp;<span class="emphasis"><em>idState</em></span>,
+						parmi lesquelles le n&#339;ud&nbsp;<span class="emphasis"><em>idState</em></span> du flux principal
+						fournit la cl&eacute; de r&eacute;f&eacute;rence (<span class="bold"><strong>lookup
+						key</strong></span>).</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap6.png" align="middle"></div><p>Vous pouvez commencer &agrave; modifier le mapping du sc&eacute;nario pr&eacute;c&eacute;dent afin
+						d&#8217;effectuer une jointure sur les donn&eacute;es plates du flux d&#8217;entr&eacute;e. Le mapping
+						doit ressembler &agrave; ceci&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap10b.png" align="middle"></div></li><li class="listitem"><p>Dans la table <span class="bold"><strong>lookup </strong></span>de gauche dans
+						l&#8217;&eacute;diteur, cliquez sur la ligne&nbsp;<span class="emphasis"><em>LabelState</em></span> et
+						d&eacute;posez-la sur le n&#339;ud&nbsp;<span class="emphasis"><em>customer</em></span> de la sortie. Une bo&icirc;te
+						de dialogue s&#8217;ouvre.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap14.png" align="middle"></div></li><li class="listitem"><p>Dans cette bo&icirc;te de dialogue, s&eacute;lectionnez <span class="bold"><strong>Create as
+							sub-element of target node</strong></span> puis cliquez sur <span class="bold"><strong>OK</strong></span>. Cette op&eacute;ration ajoute un sous-&eacute;l&eacute;ment dans
+						l&#8217;arborescence XML de sortie et le mappe &eacute;galement
+							avec&nbsp;<span class="emphasis"><em>LabelState</em></span> dans l&#8217;entr&eacute;e.</p></li><li class="listitem"><p>Si n&eacute;cessaire pour g&eacute;n&eacute;rer plusieurs flux XML, cliquez sur la cl&eacute; anglaise
+						en haut &agrave; droite afin d'ouvrir le panneau de param&eacute;trage du mapping et
+						configurer la fonctionnalit&eacute; <span class="bold"><strong>All in one</strong></span>
+						comme <span class="bold"><strong>true</strong></span>. Dans cet exemple, cette option
+						est sur <span class="bold"><strong>true</strong></span>. Pour plus d'informations
+						concernant la fonctionnalit&eacute; <span class="bold"><strong>All in one</strong></span>,
+						consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-txmlmap_all_in_one.png" align="middle"></div></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider le mapping et
+						fermer le <span class="bold"><strong>Map Editor</strong></span>.</p></li><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter le
+						Job.</p><p>La vue <span class="bold"><strong>Run</strong></span> affiche les r&eacute;sultats de
+						l&#8217;ex&eacute;cution.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap15.png" align="middle"></div><p>Les libell&eacute;s&nbsp;<span class="emphasis"><em>US State</em></span> correspondants &agrave; l&#8217;ID de l&#8217;&eacute;tat
+						fourni comme cl&eacute; de r&eacute;f&eacute;rence par le flux principal sont s&eacute;lectionn&eacute;s et
+						&eacute;crits en sortie.</p></li></ol></div></div></div><div class="section" title="Sc&eacute;nario&nbsp;3&nbsp;: Mapper des donn&eacute;es &agrave; l&#8217;aide d&#8217;un filtre"><div class="titlepage"><div><div><h3 class="title"><a name="Raa13617"></a>Sc&eacute;nario&nbsp;3&nbsp;: Mapper des donn&eacute;es &agrave; l&#8217;aide d&#8217;un filtre</h3></div></div></div><p>Ce sc&eacute;nario se base sur <a class="xref" href="tXMLMap.html#Raa55695" title="Sc&eacute;nario&nbsp;2&nbsp;: Cr&eacute;er un flux Lookup pour effectuer une jointure sur des donn&eacute;es compl&eacute;mentaires XML">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Cr&eacute;er un flux Lookup pour effectuer une jointure sur des donn&eacute;es
+			compl&eacute;mentaires XML&nbsp;&raquo;</a> et explique comment appliquer une
+			(des) condition(s) de filtre pour s&eacute;lectionner les donn&eacute;es qui vous int&eacute;ressent, &agrave;
+			l&#8217;aide du <span class="bold"><strong>tXMLMap</strong></span>.</p><p>Par exemple, vous souhaitez s&eacute;lectionner les donn&eacute;e clients pour lesquelles l&#8217;ID de
+			l&#8217;&eacute;tat est&nbsp;<span class="emphasis"><em>9</em></span>.</p><p>Pour reproduire ce sc&eacute;nario, proc&eacute;dez comme suit&nbsp;: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Dans votre Studio, ouvrez le Job utilis&eacute; dans le sc&eacute;nario pr&eacute;c&eacute;dent afin de
+					l&#8217;afficher dans l&#8217;espace de mod&eacute;lisation graphique.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap1.png" align="middle"></div></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tXMLMap</strong></span> pour ouvrir son
+					&eacute;diteur. Dans cet &eacute;diteur, les flux d&#8217;entr&eacute;e et de sortie sont d&eacute;j&agrave; mapp&eacute;s
+					puisque le Job est r&eacute;pliqu&eacute; du sc&eacute;nario pr&eacute;c&eacute;dent.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap10b.png" align="middle"></div></li><li class="listitem"><p>Du c&ocirc;t&eacute; de la sortie (&agrave; droite), cliquez sur le bouton <span class="inlinemediaobject"><img src="../images/Expression_Filter.png" width="21"></span> pour ouvrir la zone de filtre.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapFilter1.png" align="middle"></div></li><li class="listitem"><p>Dans cette zone de filtre, d&eacute;posez le n&#339;ud&nbsp;<span class="emphasis"><em>idState</em></span> du
+					flux d&#8217;entr&eacute;e. Le chemin Xpath de l&#8217;<span class="emphasis"><em>idState</em></span> est ajout&eacute;
+					automatiquement dans cette zone de filtre.</p></li><li class="listitem"><p>Toujours dans cette zone, saisissez votre condition de filtre en Java. Dans ce
+					sc&eacute;nario, la condition est la suivante&nbsp;:
+						<code class="code">"9".equals([row1.Customer:/Customers/Customer/Address/idState])</code>
+				</p></li><li class="listitem"><p>Si n&eacute;cessaire pour g&eacute;n&eacute;rer plusieurs flux XML, cliquez sur la cl&eacute; anglaise en
+					haut &agrave; droite afin d'ouvrir le panneau de param&eacute;trage du mapping et configurer
+					la fonctionnalit&eacute; <span class="bold"><strong>All in one</strong></span> comme <span class="bold"><strong>true</strong></span>. Dans cet exemple, cette option est sur
+						<span class="bold"><strong>true</strong></span>. Pour plus d'informations concernant
+					la fonctionnalit&eacute; <span class="bold"><strong>All in one</strong></span>, consultez le
+						<span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-txmlmap_all_in_one.png" align="middle"></div></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider les modifications
+					et fermer l&#8217;&eacute;diteur.</p></li><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter ce Job.</p><p>Les r&eacute;sultats d&#8217;ex&eacute;cution s&#8217;affichent dans la vue <span class="bold"><strong>Run</strong></span>&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapFilter2.png" align="middle"></div><p>Les r&eacute;sultats montrent que le client&nbsp;<span class="emphasis"><em>Pivot Point College</em></span>
+					est s&eacute;lectionn&eacute;, puisque l&#8217;ID de son &eacute;tat est&nbsp;<span class="emphasis"><em>9</em></span>, ce qui
+					repr&eacute;sente la Floride dans ce sc&eacute;nario.</p></li></ol></div></div><div class="section" title="Sc&eacute;nario&nbsp;4&nbsp;: Capturer les donn&eacute;es rejet&eacute;es par le flux Lookup et le filtre"><div class="titlepage"><div><div><h3 class="title"><a name="Xaa4576224"></a>Sc&eacute;nario&nbsp;4&nbsp;: Capturer les donn&eacute;es rejet&eacute;es par le flux Lookup et le filtre</h3></div></div></div><p>Les donn&eacute;es rejet&eacute;es par le flux <span class="bold"><strong>Lookup</strong></span> et les
+			conditions de filtre d&eacute;finies dans le <span class="bold"><strong>tXMLMap</strong></span> peuvent
+			&ecirc;tre captur&eacute;es et &eacute;crites en sortie par le composant lui-m&ecirc;me.</p><p>Ce sc&eacute;nario se base sur <a class="xref" href="tXMLMap.html#Raa13617" title="Sc&eacute;nario&nbsp;3&nbsp;: Mapper des donn&eacute;es &agrave; l&#8217;aide d&#8217;un filtre">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;3&nbsp;: Mapper des donn&eacute;es &agrave; l&#8217;aide d&#8217;un filtre&nbsp;&raquo;</a>, et explique comment capturer les
+			donn&eacute;es rejet&eacute;es par le flux Lookup et les filtrer d&eacute;fini dans les sections
+			pr&eacute;c&eacute;dentes.</p><p>Dans ce sc&eacute;nario, un autre composant <span class="bold"><strong>tLogRow</strong></span> est
+			ajout&eacute; au Job du sc&eacute;nario pr&eacute;c&eacute;dent. Le Job ressemble &agrave; ceci&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapReject1.png" align="middle"></div><p>Pour reproduire ce sc&eacute;nario, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Dans le Studio, ouvrez le Job utilis&eacute; dans le sc&eacute;nario pr&eacute;c&eacute;dent dans l&#8217;espace
+					de mod&eacute;lisation graphique.</p></li><li class="listitem"><p>De la <span class="bold"><strong>Palette</strong></span>, d&eacute;posez le composant <span class="bold"><strong>tLogRow</strong></span> dans l&#8217;espace de mod&eacute;lisation
+					graphique.</p></li><li class="listitem"><p>Cliquez sur le <span class="bold"><strong>tXMLMap</strong></span> pour ouvrir son menu
+					contextuel. Dans ce menu, s&eacute;lectionnez <span class="bold"><strong>Row &gt; *New
+						Output* (Main)</strong></span> pour connecter ce composant au nouveau <span class="bold"><strong>tLogRow</strong></span>. Une bo&icirc;te de dialogue s&#8217;ouvre et vous
+					demande de nommer ce lien de sortie. Dans ce sc&eacute;nario, nommez le
+						lien&nbsp;<span class="emphasis"><em>Reject</em></span>.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapReject2.png" align="middle"></div></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider la
+					cr&eacute;ation.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tXMLMap</strong></span> pour
+					ouvrir son &eacute;diteur. Une table&nbsp;<span class="emphasis"><em>Reject</em></span> vide a &eacute;t&eacute; ajout&eacute;e &agrave;
+					la sortie pour repr&eacute;senter le flux de sortie contenant les donn&eacute;es rejet&eacute;es.
+					Vous devez compl&eacute;ter cette table afin que l&#8217;&eacute;diteur ressemble &agrave; ceci&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapReject3.png" align="middle"></div></li><li class="listitem"><p>S&eacute;lectionnez cette table vide&nbsp;<span class="emphasis"><em>Reject</em></span>.</p></li><li class="listitem"><p>Dans la partie inf&eacute;rieure de l&#8217;&eacute;diteur, cliquez sur l&#8217;onglet <span class="bold"><strong>Schema editor</strong></span> pour ouvrir la vue
+					correspondante.</p></li><li class="listitem"><p>Dans la partie droite de la vue <span class="bold"><strong>Schema
+					editor</strong></span>, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span>
+					pour ajouter &agrave; la table les lignes que vous souhaitez utiliser. Dans ce
+					sc&eacute;nario, cliquez quatre fois pour ajouter quatre lignes &agrave; la
+						table&nbsp;<span class="emphasis"><em>Reject</em></span>.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapReject4.png" align="middle"></div></li><li class="listitem"><p> Dans la table&nbsp;<span class="emphasis"><em>Reject</em></span> &agrave; droite de la vue <span class="bold"><strong>Schema editor</strong></span>, renommez les lignes ajout&eacute;es.
+					Renommez-les respectivement&nbsp;: <span class="emphasis"><em>ID</em></span>,
+						<span class="emphasis"><em>Customer</em></span>, <span class="emphasis"><em>idState</em></span>,
+						et<span class="emphasis"><em>&nbsp;LabelState</em></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Dans ce sc&eacute;nario, les donn&eacute;es du flux de sortie sont des donn&eacute;es plates.
+						Cependant, vous pouvez cr&eacute;er une arborescence XML &agrave; l&#8217;aide du type de
+						donn&eacute;es <span class="bold"><strong>document</strong></span>. Pour plus d&#8217;informations
+						concernant l&#8217;utilisation du type <span class="bold"><strong>document</strong></span>,
+						consultez <a class="xref" href="tXMLMap.html#Raa13182" title="Sc&eacute;nario&nbsp;1&nbsp;: Mapper et transformer des donn&eacute;es de source XML">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;1&nbsp;: Mapper et transformer des donn&eacute;es de source XML&nbsp;&raquo;</a>.</p></td></tr></table></div><p>La table&nbsp;<span class="emphasis"><em>Reject</em></span> est compl&eacute;t&eacute;e et vous avez d&eacute;fini le
+					sch&eacute;ma du flux de sortie utilis&eacute; pour capturer les donn&eacute;es rejet&eacute;es. Vous devez
+					ensuite configurer la (les) condition(s) pour capturer les donn&eacute;es rejet&eacute;es qui
+					vous int&eacute;ressent.</p></li><li class="listitem"><p>Dans la partie sup&eacute;rieure de la sortie dans le <span class="bold"><strong>Map
+						editor</strong></span>, s&eacute;lectionnez la table&nbsp;<span class="emphasis"><em>Reject</em></span>.</p></li><li class="listitem"><p>En haut de cette table, cliquez sur le bouton <span class="inlinemediaobject"><img src="../images/Map_setting.png" width="17"></span> pour ouvrir la zone de configuration.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapReject5.png" align="middle"></div></li><li class="listitem"><p>Dans la ligne <span class="bold"><strong>Catch Output Reject</strong></span> de la zone
+					de configuration, s&eacute;lectionnez <span class="bold"><strong>true</strong></span> dans la
+					liste d&eacute;roulante. Ainsi, le <span class="bold"><strong>tXMLMap</strong></span> &eacute;crit les
+					donn&eacute;es rejet&eacute;es par le filtre d&eacute;fini pour le flux de
+						sortie&nbsp;<span class="emphasis"><em>Customer</em></span> dans le sc&eacute;nario pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>R&eacute;p&eacute;tez l&#8217;op&eacute;ration pour s&eacute;lectionner <span class="bold"><strong>true</strong></span>
+					dans la ligne <span class="bold"><strong>Catch Lookup Inner Join
+					Reject</strong></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider vos modifications
+					et fermer l&#8217;&eacute;diteur.</p></li><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter le Job.</p></li></ol></div><p>Les donn&eacute;es captur&eacute;es rejet&eacute;es par le flux <span class="bold"><strong>Lookup</strong></span> et
+			le filtre s&#8217;affichent comme suit dans la vue <span class="bold"><strong>Run</strong></span>&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapReject6.png" align="middle"></div><p>Les &eacute;tats de ces clients n&#8217;ont pas l&#8217;ID&nbsp;<span class="emphasis"><em>9</em></span>. L&#8217;ID de l&#8217;&eacute;tat du
+				client&nbsp;<span class="emphasis"><em>BBQ Smith&#8217;s Tex Mex</em></span> est&nbsp;<span class="emphasis"><em>60</em></span>. Ce
+			nombre n&#8217;existe pas dans la colonne&nbsp;<span class="emphasis"><em>idState</em></span> du
+				fichier&nbsp;<span class="emphasis"><em>USState.txt</em></span> pour laquelle le Lookup d&eacute;fini a &eacute;t&eacute;
+			effectu&eacute;. Ainsi, les donn&eacute;es de ce client sont rejet&eacute;es par le flux Lookup et les autres
+			donn&eacute;es sont rejet&eacute;es par le filtre.</p><p>Les donn&eacute;es s&eacute;lectionn&eacute;es par le filtre d&eacute;fini dans le sc&eacute;nario pr&eacute;c&eacute;dent s&#8217;affiche
+			comme suit au format XML.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapReject7.png" align="middle"></div></div><div class="section" title="Sc&eacute;nario&nbsp;5&nbsp;: Mapper des donn&eacute;es &agrave; l&#8217;aide d&#8217;un &eacute;l&eacute;ment &#8220;group&#8221;"><div class="titlepage"><div><div><h3 class="title"><a name="Raa18177"></a>Sc&eacute;nario&nbsp;5&nbsp;: Mapper des donn&eacute;es &agrave; l&#8217;aide d&#8217;un &eacute;l&eacute;ment &#8220;group&#8221;</h3></div></div></div><p>Ce sc&eacute;nario se base sur le Job utilis&eacute; dans <a class="xref" href="tXMLMap.html#Raa55695" title="Sc&eacute;nario&nbsp;2&nbsp;: Cr&eacute;er un flux Lookup pour effectuer une jointure sur des donn&eacute;es compl&eacute;mentaires XML">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Cr&eacute;er un flux Lookup pour effectuer une jointure sur des donn&eacute;es
+			compl&eacute;mentaires XML&nbsp;&raquo;</a> et explique
+			comment d&eacute;finir un &eacute;l&eacute;ment en tant que <span class="bold"><strong>group element</strong></span>
+			dans le <span class="bold"><strong>Map editor</strong></span> du <span class="bold"><strong>tXMLMap</strong></span> afin de regrouper les donn&eacute;es de sortie.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap1.png" align="middle"></div><p>Pour reproduire ce sc&eacute;nario, vous pouvez r&eacute;utiliser le Job dans&nbsp;<a class="xref" href="tXMLMap.html#Raa55695" title="Sc&eacute;nario&nbsp;2&nbsp;: Cr&eacute;er un flux Lookup pour effectuer une jointure sur des donn&eacute;es compl&eacute;mentaires XML">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Cr&eacute;er un flux Lookup pour effectuer une jointure sur des donn&eacute;es
+			compl&eacute;mentaires XML&nbsp;&raquo;</a></p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans ce Job, double-cliquez sur le <span class="bold"><strong>tXMLMap</strong></span>
+					afin d'ouvrir le <span class="bold"><strong>Map Editor</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap10b.png" align="middle"></div><p>L'objectif de ce sc&eacute;nario est de regrouper les IDs des clients et les informations
+			relatives aux clients, selon l'Etat dans lequel ils r&eacute;sident. Pour ce faire, vous devez
+			ajuster la structure XML, en prenant en compte les facteurs suivants :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Les &eacute;l&eacute;ments relatifs &agrave; l'ID et au nom des clients doivent &ecirc;tre situ&eacute;s sous
+					l'&eacute;l&eacute;ment de boucle. Ils sont donc des sous-&eacute;l&eacute;ments de la boucle.</p></li><li class="listitem"><p>L'&eacute;l&eacute;ment de boucle et ses sous-&eacute;l&eacute;ments doivent d&eacute;pendre directement de
+					l'&eacute;l&eacute;ment de groupe.</p></li><li class="listitem"><p>L'&eacute;l&eacute;ment relatif &agrave; l'Etat utilis&eacute; comme condition de groupe doit d&eacute;pendre
+					directement de l'&eacute;l&eacute;ment de groupe.</p></li><li class="listitem"><p>L'&eacute;l&eacute;ment de groupe ne peut pas &ecirc;tre l'&eacute;l&eacute;ment racine.</p></li></ul></div><p>A partir de cette analyse, la structure des donn&eacute;es de sortie doit se pr&eacute;senter comme
+			suit :</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapGroup1.png" align="middle"></div><p>Dans la capture d'&eacute;cran, le n&#339;ud <span class="italic">customers</span> est la
+			racine, l'&eacute;l&eacute;ment <span class="italic">Customer</span> est le<span class="italic"> group element</span> et les donn&eacute;es de sortie sont regroup&eacute;es
+			selon l'&eacute;l&eacute;ment <span class="italic">LabelState</span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Pour d&eacute;finir un &eacute;l&eacute;ment de groupe, deux restrictions doivent &ecirc;tre respect&eacute;es :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Le n&#339;ud ne peut &ecirc;tre d&eacute;fini comme <span class="bold"><strong>group
+									element</strong></span> ;</p></li><li class="listitem"><p>la d&eacute;finition du <span class="bold"><strong>group element</strong></span>
+								doit se faire sur le n&#339;ud p&egrave;re de l'&eacute;l&eacute;ment de boucle.</p></li></ul></div><p>Une fois l'&eacute;l&eacute;ment de groupe d&eacute;fini, le premier &eacute;l&eacute;ment (en-dehors de celui de
+					boucle) est utilis&eacute; comme condition de groupe des donn&eacute;es de sortie.</p></td></tr></table></div><p>Pour effectuer l'ajustement selon cette analyse, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Dans l&#8217;arborescence XML de la sortie, cliquez-droit sur le n&#339;ud
+						racine&nbsp;<span class="emphasis"><em>customers</em></span> pour ouvrir le menu contextuel et
+					s&eacute;lectionnez <span class="bold"><strong>Delete</strong></span>. Tous les &eacute;l&eacute;ments sous la
+					racine <span class="italic">customers</span> sont supprim&eacute;s. Vous pouvez
+					reconstruire l'arborescence XML afin d'obtenir la meilleure structure pour
+					grouper vos donn&eacute;es.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapGroup2.png" align="middle"></div></li><li class="listitem"><p>Dans l'arborescence XML de la sortie, cliquez-droit sur le n&#339;ud racine
+						<span class="italic">customers</span> afin d'ouvrir le menu
+					contextuel et s&eacute;lectionnez <span class="bold"><strong>Create sub-element</strong></span>.
+					Une bo&icirc;te de dialogue s'ouvre.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapGroup3.png" align="middle"></div></li><li class="listitem"><p>Saisissez le nom du sous-&eacute;l&eacute;ment. Dans ce sc&eacute;nario, le nom
+						est&nbsp;<span class="emphasis"><em>Customer</em></span>.</p></li><li class="listitem"><p>R&eacute;p&eacute;tez les op&eacute;rations pr&eacute;c&eacute;dentes afin de cr&eacute;er deux sous-&eacute;l&eacute;ments
+					suppl&eacute;mentaires sous le n&#339;ud&nbsp;<span class="emphasis"><em>Customer</em></span>.
+						Nommez-les&nbsp;:&nbsp;<span class="emphasis"><em>LabelState</em></span>
+					et&nbsp;<span class="emphasis"><em>Name</em></span>.</p></li><li class="listitem"><p>R&eacute;p&eacute;tez ces op&eacute;rations encore une fois afin de cr&eacute;er deux sous-&eacute;l&eacute;ments sous
+					le n&#339;ud&nbsp;<span class="emphasis"><em>Name</em></span>. Nommez-les&nbsp;:&nbsp;<span class="emphasis"><em>id</em></span>
+						et&nbsp;<span class="emphasis"><em>CustomerName</em></span>.</p></li><li class="listitem"><p>Cliquez-droit sur le n&#339;ud&nbsp;<span class="emphasis"><em>Name</em></span> pour ouvrir le menu
+					contextuel et s&eacute;lectionnez <span class="bold"><strong>As loop element</strong></span> pour
+					d&eacute;finir cet &eacute;l&eacute;ment comme &eacute;l&eacute;ment de boucle.</p></li><li class="listitem"><p>Cliquez-droit sur le n&#339;ud&nbsp;<span class="emphasis"><em>Customer</em></span> pour ouvrir son menu
+					contextuel et s&eacute;lectionnez <span class="bold"><strong>As group element</strong></span>.
+					Cela signifie que les donn&eacute;es de sortie sont regroup&eacute;es dans
+						l&#8217;&eacute;l&eacute;ment&nbsp;<span class="emphasis"><em>LabelState</em></span>.</p></li><li class="listitem"><p>Dans le flux Lookup de donn&eacute;es, glissez-d&eacute;posez la
+						ligne&nbsp;<span class="emphasis"><em>LabelState</em></span> dans la ligne du
+						n&#339;ud&nbsp;<span class="emphasis"><em>LabelState</em></span> de la colonne <span class="bold"><strong>Expression</strong></span> dans la table de sortie. Les donn&eacute;es correspondantes
+					sont mapp&eacute;es.</p></li><li class="listitem"><p> R&eacute;p&eacute;tez l&#8217;op&eacute;ration pour mapper l&#8217;&eacute;l&eacute;ment&nbsp;<span class="emphasis"><em>id</em></span> et les
+						&eacute;l&eacute;ments&nbsp;<span class="emphasis"><em>CustomerName</em></span> des deux c&ocirc;t&eacute;s.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapGroup4.png" align="middle"></div></li><li class="listitem"><p>Si n&eacute;cessaire pour g&eacute;n&eacute;rer plusieurs flux XML, cliquez sur la cl&eacute; anglaise en
+					haut &agrave; droite afin d'ouvrir le panneau de param&eacute;trage du mapping et configurer
+					la fonctionnalit&eacute; <span class="bold"><strong>All in one</strong></span> comme <span class="bold"><strong>true</strong></span>. Dans cet exemple, cette option est sur
+						<span class="bold"><strong>true</strong></span>. Pour plus d'informations concernant
+					la fonctionnalit&eacute; <span class="bold"><strong>All in one</strong></span>, consultez le
+						<span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider les modifications
+					et fermer l&#8217;&eacute;diteur.</p><p>
+					</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Si vous fermez le <span class="bold"><strong>Map Editor</strong></span> sans
+							avoir d&eacute;fini les &eacute;l&eacute;ments de boucle n&eacute;cessaires, comme expliqu&eacute; plus t&ocirc;t
+							dans ce sc&eacute;nario, une ic&ocirc;ne d'erreur <span class="inlinemediaobject"><img src="../images/red_cross_warning.png" width="35"></span> appara&icirc;t dans le coin sup&eacute;rieur droit du composant
+								<span class="bold"><strong>tXMLMap</strong></span>, dans l'espace de
+							mod&eacute;lisation graphique.</p></td></tr></table></div><p>
+				</p></li><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter le Job.</p><p>Les r&eacute;sultats d&#8217;ex&eacute;cution s&#8217;affichent comme suit dans la vue <span class="bold"><strong>Run</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapGroup5.png" align="middle"></div></li></ol></div><p>Les &eacute;l&eacute;ments&nbsp;<span class="emphasis"><em>id</em></span> et&nbsp;<span class="emphasis"><em>CustomerName</em></span> contenus
+			dans la boucle sont regroup&eacute;s dans l&#8217;&eacute;l&eacute;ment&nbsp;<span class="emphasis"><em>LabelState</em></span>. La balise
+			du <span class="bold"><strong>group element</strong></span>&nbsp;<span class="emphasis"><em>Customer</em></span> marque
+			le d&eacute;but et la fin de chaque groupe.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le composant <span class="bold"><strong>tXMLMap</strong></span> propose les &eacute;l&eacute;ments
+						"<span class="bold"><strong>group</strong></span>" et "<span class="bold"><strong>aggregate</strong></span>" pour classer les donn&eacute;es dans une structure XML. Lors
+					de la gestion d'une ligne de donn&eacute;es (flux XML complet), la diff&eacute;rence de
+					comportement est la suivante :</p><p>
+					</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>L'&eacute;l&eacute;ment "<span class="bold"><strong>group</strong></span>" traite toujours
+								les donn&eacute;es dans un flux unique.</p></li><li class="listitem"><p>L'&eacute;l&eacute;ment "<span class="bold"><strong>aggregate</strong></span>" s&eacute;pare ce
+								flux en diff&eacute;rents flux XML complets.</p></li></ul></div><p>
+				</p></td></tr></table></div></div><div class="section" title="Classer les donn&eacute;es de sortie avec l'&eacute;l&eacute;ment &#34;aggregate&#34;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e238865"></a>Classer les donn&eacute;es de sortie avec l'&eacute;l&eacute;ment "aggregate"</h3></div></div></div><p>A partir du Job dans <a class="xref" href="tXMLMap.html#Raa18177" title="Sc&eacute;nario&nbsp;5&nbsp;: Mapper des donn&eacute;es &agrave; l&#8217;aide d&#8217;un &eacute;l&eacute;ment &#8220;group&#8221;">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;5&nbsp;: Mapper des donn&eacute;es &agrave; l&#8217;aide d&#8217;un &eacute;l&eacute;ment &#8220;group&#8221;&nbsp;&raquo;</a>, ce sc&eacute;nario explique comment d&eacute;finir
+			un &eacute;l&eacute;ment "<span class="bold"><strong>aggregate element</strong></span>" dans le <span class="bold"><strong>Map Editor</strong></span> du <span class="bold"><strong>tXMLMap</strong></span>, afin
+			de classer les donn&eacute;es de sortie dans des flux XML s&eacute;par&eacute;s.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMap1.png" align="middle"></div><p>Dans l'espace de mod&eacute;lisation graphique, double-cliquez sur le composant <span class="bold"><strong>tXMLMap</strong></span> afin d'ouvrir son <span class="bold"><strong>Map
+				editor</strong></span>. La sortie s'affiche comme suit :</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tXMLMapGroup4.png" align="middle"></div><p>L'objectif de ce sc&eacute;nario est d'agr&eacute;ger les informations client selon les Etats de
+			r&eacute;sidence, &agrave; l'aide de l'&eacute;l&eacute;ment <span class="bold"><strong>aggregate</strong></span>, puis
+			d'envoyer ces donn&eacute;es s&eacute;par&eacute;ment dans diff&eacute;rents flux XML vers le composant
+			suivant.</p><p>Pour ce faire, ajustez l'arborescence XML comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Cliquez-droit sur l'&eacute;l&eacute;ment <span class="bold"><strong>Customer</strong></span> afin
+						d'ouvrir son menu contextuel et s&eacute;lectionnez <span class="bold"><strong>Remove
+							group element</strong></span>.</p></li><li class="listitem"><p>Cliquez sur la cl&eacute; anglaise en haut &agrave; droite afin d'ouvrir le panneau de
+						param&eacute;trage du mapping et configurer la fonctionnalit&eacute; <span class="bold"><strong>All in one</strong></span> comme <span class="bold"><strong>false</strong></span>.</p></li><li class="listitem"><p>Cliquez-droit sur l'&eacute;l&eacute;ment <span class="bold"><strong>LabelState</strong></span>
+						afin d'ouvrir son menu contextuel puis s&eacute;lectionnez <span class="bold"><strong>As
+							aggregate element</strong></span>. Cet &eacute;l&eacute;ment ajoute des balises relatives
+						aux informations d'Etat de chaque client et les informations clients sont
+						class&eacute;es sous les informations d'Etats (State).</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Afin de rendre l'&eacute;l&eacute;ment "<span class="bold"><strong>aggregate</strong></span>" disponible, v&eacute;rifiez que la
+								fonctionnalit&eacute; <span class="bold"><strong>All in one</strong></span> est
+								configur&eacute;e sur <span class="bold"><strong>false</strong></span>. Pour plus
+								d'informations concernant cette fonctionnalit&eacute;, consultez le
+									<span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p></td></tr></table></div></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> afin de valider ces
+						modifications et fermer le <span class="bold"><strong>Map
+						editor</strong></span>.</p></li><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter ce
+						Job.</p></li></ol></div><p>
+		</p><p>La vue <span class="bold"><strong>Run</strong></span> s'ouvre automatiquement, dans laquelle
+			vous pouvez v&eacute;rifier les r&eacute;sultats d'ex&eacute;cution.</p><div class="mediaobject" align="center"><img src="../images/use_case-txmlmap_aggregate.png" align="middle"></div><p>Le <span class="bold"><strong>tXMLMap</strong></span> &eacute;crit trois flux XML s&eacute;par&eacute;s, chacun
+			d'entre eux contenant les informations d'un Etat et des clients vivant dans cet Etat.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le composant <span class="bold"><strong>tXMLMap</strong></span> propose les &eacute;l&eacute;ments
+						"<span class="bold"><strong>group</strong></span>" et "<span class="bold"><strong>aggregate</strong></span>" pour classer les donn&eacute;es dans une structure XML. Lors
+					de la gestion d'une ligne de donn&eacute;es (flux XML complet), la diff&eacute;rence de
+					comportement est la suivante :</p><p>
+					</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>L'&eacute;l&eacute;ment "<span class="bold"><strong>group</strong></span>" traite toujours
+								les donn&eacute;es dans un flux unique.</p></li><li class="listitem"><p>L'&eacute;l&eacute;ment "<span class="bold"><strong>aggregate</strong></span>" s&eacute;pare ce
+								flux en diff&eacute;rents flux XML complets.</p></li></ul></div><p>
+				</p></td></tr></table></div></div></div></body></html>

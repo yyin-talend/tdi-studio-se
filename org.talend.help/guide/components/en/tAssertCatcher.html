@@ -1,0 +1,128 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAssertCatcher</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch11.html" title="Chapter&nbsp;11.&nbsp;Logs &amp; Errors components"><link rel="prev" href="tAssert.html" title="tAssert"><link rel="next" href="tChronometerStart.html" title="tChronometerStart"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tAssertCatcher"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAssertCatcher"></a>tAssertCatcher</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tAssertCatcher_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tAssertCatcher Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e205554"></a>tAssertCatcher Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Logs &amp; Errors</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Based on its pre-defined schema, fetches the execution status
+                                information from repository, Job execution and <span class="bold"><strong>tAssert</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Generates a data flow consolidating the status information of a
+                                job execution and transfer the data into defined output
+                                files.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema type</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the fields to be
+                                processed and passed on to the next component. In this particular
+                                case, the schema is read-only, as this component gathers standard
+                                log information including:</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Moment</strong></span>: Processing time and
+                                date.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Pid</strong></span>: Process ID.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Project</strong></span>: Project which the job
+                                belongs to.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Job</strong></span>: Job name.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Language:</strong></span> Language used by the
+                                Job (Java)</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Origin</strong></span>: Status evaluation origin.
+                                The origin may be different <span class="bold"><strong>tAssert</strong></span>
+                                components.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Status</strong></span>: Evaluation fetched
+                                    from<span class="bold"><strong> tAssert</strong></span>. They may
+                                be</p>
+                            <p> - <span class="bold"><strong>Ok</strong></span>: if the assertive statement
+                                of <span class="bold"><strong>tAssert</strong></span> is evaluated as true at
+                                runtime.</p>
+                            <p> - <span class="bold"><strong>Failed</strong></span>: if the assertive
+                                statement of <span class="bold"><strong>tAssert</strong></span> is evaluated
+                                as false or an execution error occurs at runtime. The tested Job's
+                                result does not match the expectation or an execution error occured
+                                at runtime.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Substatus</strong></span>: Detailed explanation
+                                for failed execution. The explanation can be:</p>
+                            <p> - <span class="bold"><strong>Test logically failed</strong></span>: the
+                                investigated Job does not produce the expected result.</p>
+                            <p> - <span class="bold"><strong>Execution error</strong></span>: an execution
+                                error occured at runtime.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Description</strong></span>: Descriptive message
+                                you typed in in <span class="bold"><strong>Basic settings</strong></span> of
+                                    <span class="bold"><strong>tAssert</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Catch Java Exception</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box allows to capture Java exception errors, once
+                                checked.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Catch tAssert</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box allows to capture the evaluations of <span class="bold"><strong>tAssert</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is the start component of a secondary Job which
+                                fetches the execution status information from several sources. It
+                                generates a data flow to transfer the information to the component
+                                which proceeds. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component must be used with <span class="bold"><strong>tAssert</strong></span> together.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e205889"></a>Related scenarios</h3></div></div></div><p>For using case in relation with <span class="bold"><strong>tAssertCatcher</strong></span>, see
+                <span class="bold"><strong>tAssert</strong></span> scenario:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tAssert.html#Raa92732" title="Scenario: Setting up the assertive condition for a Job execution">the section called &#8220;Scenario: Setting up the assertive condition for a Job execution&#8221;</a></p></li></ul></div></div></div></body></html>

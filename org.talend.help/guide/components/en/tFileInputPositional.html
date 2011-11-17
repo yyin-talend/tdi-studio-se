@@ -1,0 +1,292 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputPositional</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapter&nbsp;9.&nbsp;File components"><link rel="prev" href="tFileInputMSXML.html" title="tFileInputMSXML"><link rel="next" href="tFileInputProperties.html" title="tFileInputProperties"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFileInputPositional"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputPositional"></a>tFileInputPositional</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileInputPositional.png" width="27"></td></tr></table></div><div class="section" title="tFileInputPositional properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e178171"></a>tFileInputPositional properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Input</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tFileInputPositional</strong></span> reads a
+                                given file row by row and extracts fields based on a pattern.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component opens a file and reads it row by row to split them
+                                up into fields then sends fields as defined in the schema to the
+                                next Job component, via a Row link.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top">
+                            <p>Either <span class="bold"><strong>Built-in</strong></span> or <span class="bold"><strong>Repository</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: No property data stored
+                                centrally.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: Select the repository
+                                file where the properties are stored. The fields that follow are
+                                completed automatically using the data retrieved.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>File Name/Stream</em></span></p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>File name</strong></span>: Name and path of the
+                                file to be processed. </p>
+                            <p>
+                                <span class="bold"><strong>Stream: </strong></span>The data flow to be
+                                processed. The data must be added to the flow in order for <span class="bold"><strong>tFileInputPositional </strong></span>to fetch these data
+                                via the corresponding representative variable.</p>
+                            <p> This variable could be already pre-defined in your Studio or
+                                provided by the context or the components you are using along with
+                                this component, for example, the <span class="emphasis"><em>INPUT_STREAM</em></span>
+                                variable of <span class="bold"><strong>tFileFetch</strong></span>; otherwise,
+                                you could define it manually and use it according to the design of
+                                your Job, for example, using <span class="bold"><strong>tJava</strong></span>
+                                or <span class="bold"><strong>tJavaFlex</strong></span>.</p>
+                            <p> In order to avoid the inconvenience of hand writing, you could
+                                select the variable of interest from the auto-completion list
+                                    (<span class="bold"><strong>Ctrl+Space</strong></span>) to fill the
+                                current field on condition that this variable has been properly
+                                defined.</p>
+                            <p> </p>
+                            <p> Related topic to the available variables: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide </strong></span>Related scenario to the
+                                input stream, see <a class="xref" href="tFileInputDelimited.html#Raa47862" title="Scenario 2: Reading data from a remote file in streaming mode">the section called &#8220;Scenario 2: Reading data from a remote file in streaming mode&#8221;</a>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Row separator</em></span></p>
+                        </td><td valign="top">
+                            <p>String (ex: &#8220;\n&#8221;on Unix) to distinguish rows.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use byte length as the cardinality</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to enable the support of double-byte
+                                character to this component. JDK 1.6 is required for this
+                                feature.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Customize</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to customize the data format of the
+                                positional file and define the table columns:</p>
+                            <p>
+                                <span class="bold"><strong>Column</strong></span>: Select the column you want
+                                to customize.</p>
+                            <p>
+                                <span class="bold"><strong>Size</strong></span>: Enter the column size.</p>
+                            <p>
+                                <span class="bold"><strong>Padding char</strong></span>: Type in between
+                                inverted commas the padding character used in order for it to be
+                                removed from the field. A space by default.</p>
+                            <p>
+                                <span class="bold"><strong>Alignment</strong></span>: Select the appropriate
+                                alignment parameter.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Pattern</em></span></p>
+                        </td><td valign="top">
+                            <p>Length values separated by commas, interpreted as a string between
+                                quotes. Make sure the values entered in this field are consistent
+                                with the schema defined.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Skip empty rows</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to skip empty rows.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Uncompress as zip file</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to uncompress the input file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to stop the execution of the Job when an
+                                error occurs. Clear the check box to skip the row on error and
+                                complete the process for error-free rows. If needed, you can collect
+                                the rows on error using a <span class="bold"><strong>Row</strong></span> &gt;
+                                    <span class="bold"><strong>Reject</strong></span> link.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Header</em></span></p>
+                        </td><td valign="top">
+                            <p>Number of rows to be skipped in the beginning of file</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Footer</em></span></p>
+                        </td><td valign="top">
+                            <p>Number of rows to be skipped at the end of the file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Limit</em></span></p>
+                        </td><td valign="top">
+                            <p>Maximum number of rows to be processed. If Limit = 0, no row is
+                                read or processed.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                            <p> </p>
+                            
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: The schema will be
+                                created and stored locally for this component only. Related topic:
+                                see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: The schema already
+                                exists and is stored in the Repository, hence can be reused in
+                                various projects and Job flowcharts. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Needed to process rows longer than 100 000
+                                    characters</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box if the rows to be processed in the input
+                                file are longer than 100 000 characters.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Advanced separator (for numbers)</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to modify the separators used for
+                                numbers:</p>
+                            <p>
+                                <span class="bold"><strong>Thousands separator</strong></span>: define
+                                separators for thousands.</p>
+                            <p>
+                                <span class="bold"><strong>Decimal separator</strong></span>: define
+                                separators for decimals.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Trim all column</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to remove leading and trailing whitespaces
+                                from defined columns.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Validate date</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to check the date format strictly against
+                                the input schema.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the encoding type from the list or select <span class="bold"><strong>Custom</strong></span> and define it manually. This field
+                                is compulsory for DB data handling.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Use this component to read a file and separate fields using a
+                                position separator value. You can also create a rejection flow using
+                                a <span class="bold"><strong>Row &gt; Reject</strong></span> link to filter
+                                the data which does not correspond to the type defined. For an
+                                example of how to use these two links, see <a class="xref" href="tExtractXMLField.html#Raa91776" title="Scenario 2: Extracting correct and erroneous data from an XML field in a delimited file">the section called &#8220;Scenario 2: Extracting correct and erroneous data from an XML field in a delimited
+            file&#8221;</a>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: From Positional to XML file"><div class="titlepage"><div><div><h3 class="title"><a name="Raa50077"></a>Scenario: From Positional to XML file</h3></div></div></div><p>The following scenario describes a two-component Job, which aims at reading data from
+            an input file that contains contract numbers, customer references, and insurance numbers
+            as shown below, and outputting the selected data (according to the data position) into
+            an XML
+            file.</p><pre class="programlisting">Contract       CustomerRef    InsuranceNr
+00001          8200           50330      
+00001          8201           50331      
+00002          8202           50332      
+00002          8203           50333      </pre><div class="section" title="Dropping and linking components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e178758"></a>Dropping and linking components</h4></div></div></div><div class="mediaobject"><img src="../images/Use_Case_tFileInputPos1.png"></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Drop a <span class="bold"><strong>tFileInputPositional</strong></span> component
+                        from the <span class="bold"><strong>Palette</strong></span> to the design workspace.
+                    </p></li><li class="listitem"><p>Drop a <span class="bold"><strong>tFileOutputXML</strong></span> component as well.
+                        This file is meant to receive the references in a structured way.</p></li><li class="listitem"><p>Right-click the <span class="bold"><strong>tFileInputPositional</strong></span>
+                        component and select <span class="bold"><strong>Row</strong></span><span class="emphasis"><em> &gt;
+                            </em></span><span class="bold"><strong>Main</strong></span>. Then drag it onto the
+                            <span class="bold"><strong>tFileOutputXML</strong></span> component and release
+                        when the plug symbol shows up.</p></li></ol></div></div><div class="section" title="Configuring data input"><div class="titlepage"><div><div><h4 class="title"><a name="d0e178796"></a>Configuring data input</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click the <span class="bold"><strong>tFileInputPositional</strong></span>
+                        component to show its <span class="bold"><strong>Basic settings</strong></span> view
+                        and define its properties.</p><div class="mediaobject"><img src="../images/use_case-tfileinputpositional1-tos.png"></div></li><li class="listitem"><p>Define the Job Property type if needed. For this scenario, we use the
+                        built-in Property type. </p><p>As opposed to the Repository, this means that the Property type is set for
+                        this station only.</p></li><li class="listitem"><p>Fill in a path to the input file in the <span class="bold"><strong>File
+                            Name</strong></span> field. This field is mandatory.</p></li><li class="listitem"><p>Define the <span class="bold"><strong>Row separator</strong></span> identifying the
+                        end of a row if needed, by default, a carriage return.</p></li><li class="listitem"><p>If required, select the <span class="bold"><strong>Use byte length as the
+                            cardinality </strong></span>check box to enable the support of double-byte
+                        character.</p></li><li class="listitem"><p>Define the <span class="bold"><strong>Pattern</strong></span> to delimit fields in a
+                        row. The pattern is a series of length values corresponding to the values of
+                        your input files. The values should be entered between quotes, and separated
+                        by a comma. Make sure the values you enter match the schema defined.</p></li><li class="listitem"><p>Fill in the <span class="bold"><strong>Header</strong></span>, <span class="bold"><strong>Footer</strong></span> and <span class="bold"><strong>Limit</strong></span> fields
+                        according to your input file structure and your need. In this scenario, we
+                        only need to skip the first row when reading the input file. To do this,
+                        fill the <span class="bold"><strong>Header</strong></span> field with <span class="italic">1</span> and leave the other fields as they are. </p></li><li class="listitem"><p>Next to <span class="bold"><strong>Schema</strong></span>, select <span class="bold"><strong>Repository </strong></span> if the input schema is stored in the
+                        Repository. In this use case, we use a <span class="bold"><strong>Built-In</strong></span> input schema to define the data to pass on to the
+                            <span class="bold"><strong>tFileOutputXML</strong></span> component. </p></li><li class="listitem"><p>You can load and/or edit the schema via the <span class="bold"><strong>Edit
+                            Schema</strong></span> function. For this schema, define three columns,
+                        respectively <span class="emphasis"><em>Contract</em></span>, <span class="emphasis"><em>CustomerRef</em></span>
+                        and <span class="emphasis"><em>InsuranceNr</em></span> matching the structure of the input
+                        file. Then, click <span class="bold"><strong>OK</strong></span> to close the <span class="bold"><strong>[Schema]</strong></span> dialog box and propagate the
+                        changes.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputPos2.png"></div></li></ol></div></div><div class="section" title="Configuring data output"><div class="titlepage"><div><div><h4 class="title"><a name="d0e178898"></a>Configuring data output</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="bold"><strong>tFileOutputXML</strong></span> to show its
+                            <span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case-tfileinputpositional3-tos.png"></div></li><li class="listitem"><p>Enter the XML output file path.</p></li><li class="listitem"><p>Define the row tag that will wrap each row of data, in this use case
+                            <span class="italic">ContractRef</span>.</p></li><li class="listitem"><p>Click the three-dot button next to <span class="bold"><strong>Edit
+                            schema</strong></span> to view the data structure, and click <span class="bold"><strong>Sync columns</strong></span> to retrieve the data structure from
+                        the input component if needed.</p></li><li class="listitem"><p>Switch to the <span class="bold"><strong>Advanced settings</strong></span> tab view
+                        to define other settings for the XML output.</p><div class="mediaobject"><img src="../images/use_case-tfileinputpos_xml_advsettings1.png"></div></li><li class="listitem"><p>Click the plus button to add a line in the <span class="bold"><strong>Root
+                            tags</strong></span> table, and enter a root tag (or more) to wrap the XML
+                        output structure, in this case <span class="italic">ContractsList</span>.</p></li><li class="listitem"><p>Define parameters in the <span class="bold"><strong>Output format</strong></span>
+                        table if needed. For example, select the <span class="bold"><strong>As
+                            attribute</strong></span> check box for a column if you want to use its name
+                        and value as an attribute for the parent XML element, clear the <span class="bold"><strong>Use schema column name</strong></span> check box for a column to
+                        reuse the column label from the input schema as the tag label. In this use
+                        case, we keep all the default output format settings as they are.</p></li><li class="listitem"><p>To group output rows according to the contract number, select the
+                            <span class="bold"><strong>Use dynamic grouping</strong></span> check box, add a
+                        line in the <span class="bold"><strong>Group by</strong></span> table, select
+                            <span class="bold"><strong>Contract</strong></span> from the <span class="bold"><strong>Column</strong></span> list field, and enter an attribute for it in the
+                            <span class="bold"><strong>Attribute label</strong></span> field. </p><div class="mediaobject"><img src="../images/use_case-tfileinputpos_xml_advsettings2.png"></div></li><li class="listitem"><p>Leave all the other parameters as they are.</p></li></ol></div></div><div class="section" title="Saving and executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e178986"></a>Saving and executing the Job</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Press <span class="bold"><strong>Ctrl+S</strong></span> to save your Job to ensure
+                        that all the configured parameters take effect.</p></li><li class="listitem"><p>Press <span class="bold"><strong>F6</strong></span> or click <span class="bold"><strong>Run</strong></span> on the <span class="bold"><strong>Run </strong></span>tab to
+                        execute the Job.</p><p>The file is read row by row based on the length values defined in the
+                            <span class="bold"><strong>Pattern</strong></span> field and output as an XML file
+                        as defined in the output settings. You can open it using any standard XML
+                        editor.</p><div class="mediaobject"><img src="../images/Use_Case_tFileInputPos4.png"></div></li></ol></div></div></div></div></body></html>

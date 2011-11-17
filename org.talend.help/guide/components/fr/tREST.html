@@ -1,0 +1,125 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tREST</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch10.html" title="Chapitre&nbsp;10.&nbsp;Composants Internet"><link rel="prev" href="tPOP.html" title="tPOP"><link rel="next" href="tRSSInput.html" title="tRSSInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tREST"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tREST"></a>tREST</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tREST_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa3642119"></a><div class="section" title="Propri&eacute;t&eacute;s du tREST"><div class="titlepage"><div><div><h3 class="title"><a name="d0e207511"></a>Propri&eacute;t&eacute;s du tREST</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille du
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Internet </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tREST </strong></span>envoie des requ&ecirc;tes HTTP &agrave; un
+                                fournisseur de services Web REpresentational State Transfer (REST)
+                                et obtient les r&eacute;ponses correspondantes.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tREST</strong></span> sert de client d&#8217;un service Web
+                                REST. Il envoie des requ&ecirc;tes HTTP &agrave; un fournisseur de services Web
+                                et obtient les r&eacute;ponses correspondantes.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant.</p><p> Le composant <span class="bold"><strong>tREST</strong></span> utilise toujours un sch&eacute;ma local (built-in) en
+                                lecture seule qui contient deux colonnes&nbsp;:</p><p> - <span class="bold"><strong>Body&nbsp;</strong></span>: stocke les r&eacute;sultats provenant du
+                                serveur</p><p> - <span class="bold"><strong>ERROR_CODE&nbsp;</strong></span>:
+                                stocke le code de statut HTTP lorsqu&#8217;une erreur survient pendant le
+                                processus d&#8217;invocation. Le sens sp&eacute;cifique des codes d&#8217;erreur est
+                                soumis aux d&eacute;finitions de votre fournisseur de services Web. Pour
+                                plus d&#8217;informations, consultez&nbsp;<a class="link" href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_top">en.wikipedia.org/wiki/List_of_HTTP_status_codes</a>. (en
+                                anglais).</p><p> Cliquez sur <span class="bold"><strong>Edit
+                                    Schema</strong></span> pour visualiser le sch&eacute;ma.</p>
+                            <div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Modifier le sch&eacute;ma peut engendrer une perte de la
+                                        structure du sch&eacute;ma et donc un &eacute;chec du
+                                        composant.</em></span></p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>URL</em></span></p>
+                        </td><td valign="top"><p>Renseignez l&#8217;adresse URL du serveur Web REST &agrave;
+                                invoquer.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>HTTP Method</em></span></p>
+                        </td><td valign="top"><p>A partir de cette liste, s&eacute;lectionnez une m&eacute;thode
+                                HTTP qui d&eacute;crit l&#8217;action souhait&eacute;e. Le sens sp&eacute;cifique des m&eacute;thodes
+                                HTTP est soumis aux d&eacute;finitions de votre fournisseur de services
+                                Web. Ci-dessous, les d&eacute;finitions des m&eacute;thodes HTTP g&eacute;n&eacute;ralement
+                                admises&nbsp;: </p><p>
+                                <span class="bold"><strong>- GET&nbsp;</strong></span>: r&eacute;cup&egrave;re les donn&eacute;es du
+                                c&ocirc;t&eacute; serveur en fonction des param&egrave;tres donn&eacute;s.</p><p>
+                                <span class="bold"><strong>- POST&nbsp;</strong></span>: cr&eacute;e et t&eacute;l&eacute;charge les
+                                donn&eacute;es en fonction des param&egrave;tres donn&eacute;s.</p><p>
+                                <span class="bold"><strong>- PUT&nbsp;</strong></span>: met &agrave; jour les donn&eacute;es en
+                                fonction des param&egrave;tres donn&eacute;s, ou cr&eacute;e les donn&eacute;es si elles sont
+                                inexistantes.</p><p>
+                                <span class="bold"><strong>- DELETE&nbsp;</strong></span>: supprime les donn&eacute;es en
+                                fonction des param&egrave;tres donn&eacute;s. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>HTTP Headers</em></span></p>
+                        </td><td valign="top"><p>Saisissez les paires nom/valeur (<span class="bold"><strong>name</strong></span>/<span class="bold"><strong>value</strong></span>) pour les en-t&ecirc;tes HTTP afin de d&eacute;finir les
+                                param&egrave;tres de l&#8217;op&eacute;ration HTTP demand&eacute;e.</p><p> Pour conna&icirc;tre
+                                les d&eacute;finitions sp&eacute;cifiques d&#8217;en-t&ecirc;tes HTTP, consultez votre
+                                fournisseur de services Web REST. Pour plus d&#8217;informations,
+                                    consultez&nbsp;<a class="link" href="http://en.wikipedia.org/wiki/List_of_HTTP_headers" target="_top">http://en.wikipedia.org/wiki/List_of_HTTP_headers</a>. (en
+                                anglais).</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>HTTP Body</em></span></p>
+                        </td><td valign="top"><p>Saisissez les donn&eacute;es utiles (payload) &agrave; charger
+                                du c&ocirc;t&eacute; serveur lorsque les actions POST ou PUT sont s&eacute;lectionn&eacute;es.
+                            </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du Job ainsi qu&#8217;au niveau de chaque composant..</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant est utilis&eacute;
+                                comme client d&#8217;un service Web REST afin de communiquer avec un
+                                fournisseur de services Web REST. Il requiert un composant de
+                                sortie.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>L&#8217;ex&eacute;cution de JRE 1.6
+                                est requise pour faire fonctionner ce composant.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Cr&eacute;er et r&eacute;cup&eacute;rer des donn&eacute;es en invoquant un service Web REST"><div class="titlepage"><div><div><h3 class="title"><a name="d0e207725"></a>Sc&eacute;nario&nbsp;: Cr&eacute;er et r&eacute;cup&eacute;rer des donn&eacute;es en invoquant un service Web REST</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job simple qui invoque un service Web REST afin de cr&eacute;er un
+            nouvel enregistrement client du c&ocirc;t&eacute; serveur et de r&eacute;cup&eacute;rer les informations du client.
+            Une fois ex&eacute;cut&eacute;, ce Job affiche les informations correspondantes dans la console de la
+            vue <span class="bold"><strong>Run</strong></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez-d&eacute;posez les
+                    composants suivants dans l&#8217;espace de mod&eacute;lisation graphique&nbsp;: deux composants
+                        <span class="bold"><strong>tREST</strong></span> et deux composants <span class="bold"><strong>tLogRow</strong></span>. Renommez les deux composants <span class="bold"><strong>tREST</strong></span> afin qu&#8217;ils d&eacute;crivent au mieux les actions &agrave;
+                    effectuer.</p></li><li class="listitem"><p>Connectez chaque composant <span class="bold"><strong>tREST</strong></span> &agrave; un
+                        <span class="bold"><strong>tLogRow</strong></span> &agrave; l&#8217;aide d&#8217;une connexion de type
+                        <span class="bold"><strong>Row</strong></span>&nbsp;&gt;&nbsp;<span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Connectez le premier composant <span class="bold"><strong>tREST</strong></span> au
+                    second <span class="bold"><strong>tREST</strong></span> &agrave; l&#8217;aide d&#8217;une connexion de type
+                        <span class="bold"><strong>Trigger</strong></span> &gt; <span class="bold"><strong>OnSubjobOK</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="384"><tr><td><img src="../images/Use_Case_tREST01.png" width="384"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-cliquez sur le premier composant <span class="bold"><strong>tREST</strong></span>
+                    afin d&#8217;afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de sa
+                    vue <span class="bold"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="479"><tr><td><img src="../images/Use_Case_tREST02.png" width="479"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Renseignez le champ <span class="bold"><strong>URL</strong></span> avec l&#8217;adresse URL du
+                    serveur Web que vous &ecirc;tes sur le point d&#8217;invoquer. Notez que l&#8217;adresse URL
+                    fournie dans ce sc&eacute;nario est destin&eacute;e essentiellement &agrave; la d&eacute;monstration, ce
+                    n&#8217;est pas une adresse valide.</p></li><li class="listitem"><p>A partir de la liste <span class="bold"><strong>HTTP Method</strong></span>,
+                    s&eacute;lectionnez <span class="bold"><strong>POST</strong></span> afin d&#8217;envoyer une requ&ecirc;te
+                    HTTP permettant de cr&eacute;er un nouvel enregistrement.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> afin d&#8217;ajouter une
+                    ligne au tableau <span class="bold"><strong>HTTP Headers</strong></span>, et saisissez la
+                    paire nom-valeur (<span class="bold"><strong>name</strong></span>-<span class="bold"><strong>value</strong></span>) ad&eacute;quate, soumise aux d&eacute;finitions de votre fournisseur de
+                    service, en indiquant le type de m&eacute;dia des donn&eacute;es utiles (payload) &agrave; envoyer du
+                    c&ocirc;t&eacute; serveur. Dans ce sc&eacute;nario, saisissez <span class="emphasis"><em>Content-Type</em></span> et
+                        <span class="emphasis"><em>application/xml</em></span>. Pour plus d&#8217;informations concernant
+                    les types de m&eacute;dia Internet, consultez&nbsp;<a class="link" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7" target="_top">http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7</a>. (en
+                    anglais).</p></li><li class="listitem"><p>Saisissez dans le champ <span class="bold"><strong>HTTP Body</strong></span> les donn&eacute;es
+                    utiles (payload) &agrave; charger du c&ocirc;t&eacute; serveur, &agrave;
+                        savoir&nbsp;<span class="emphasis"><em>&lt;Customer&gt;&lt;name&gt;Steven&lt;/name&gt;&lt;/Customer&gt;</em></span>
+                    dans ce sc&eacute;nario, pour cr&eacute;er un enregistrement d&#8217;un nouvel utilisateur
+                        appel&eacute;&nbsp;<span class="emphasis"><em>Steven</em></span>. </p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Si vous souhaitez inclure des guillemets double dans votre payload, assurez-vous
+                d&#8217;utiliser un caract&egrave;re d&#8217;&eacute;chappement, la barre oblique invers&eacute;e, avant chaque
+                guillemet. Dans ce sc&eacute;nario par exemple,
+                    saisissez&nbsp;<span class="emphasis"><em>&lt;Customer&gt;&lt;name&gt;\"Steven\"&lt;/name&gt;&lt;/Customer&gt;</em></span>
+                si vous souhaitez mettre le pr&eacute;nom&nbsp;<span class="emphasis"><em>Steven</em></span> entre guillemets
+                double.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-cliquez sur le second <span class="bold"><strong>tREST</strong></span> afin
+                    d&#8217;afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de sa vue
+                        <span class="bold"><strong>Component</strong></span>.</p></li><li class="listitem"><p>Renseignez le champ <span class="bold"><strong>URL</strong></span> avec la m&ecirc;me adresse
+                    URL que celle utilis&eacute;e dans le premier composant <span class="bold"><strong>tREST</strong></span>.</p></li><li class="listitem"><p>A partir de la liste <span class="bold"><strong>HTTP Method</strong></span>,
+                    s&eacute;lectionnez <span class="bold"><strong>GET</strong></span> afin d&#8217;envoyer une requ&ecirc;te
+                    HTTP permettant de r&eacute;cup&eacute;rer tous les enregistrements existants.</p></li><li class="listitem"><p>Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de la vue
+                        <span class="bold"><strong>Component</strong></span> de chaque <span class="bold"><strong>tLogRow</strong></span>, cochez la case <span class="bold"><strong>Print component
+                        unique name in front of each output row</strong></span> (Afficher le nom unique
+                    du composant en face de chaque ligne de sortie) pour identifier au mieux les
+                    deux flux de sortie.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="415"><tr><td><img src="../images/Use_Case_tREST03.png" width="415"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Sauvegardez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter. </p><p>La console indique que le premier composant <span class="bold"><strong>tREST</strong></span> envoie une requ&ecirc;te HTTP c&ocirc;t&eacute; serveur afin de cr&eacute;er un
+                    nouvel utilisateur appel&eacute;&nbsp;<span class="emphasis"><em>Steven</em></span> et que le second composant
+                        <span class="bold"><strong>tREST</strong></span> lit avec succ&egrave;s les donn&eacute;es c&ocirc;t&eacute;
+                    serveur comprenant les informations de l&#8217;utilisateur nouvellement cr&eacute;&eacute;.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="396"><tr><td><img src="../images/Use_Case_tREST04.png" width="396"></td></tr></table></div></div></div></body></html>

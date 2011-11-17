@@ -1,0 +1,233 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSalesforceOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch01.html" title="Chapter&nbsp;1.&nbsp;Business components"><link rel="prev" href="tSalesforceInput.html" title="tSalesforceInput"><link rel="next" href="tSalesforceOutputBulk.html" title="tSalesforceOutputBulk"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tSalesforceOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSalesforceOutput"></a>tSalesforceOutput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tSalesForceOutput.png" width="27"></td></tr></table></div><div class="section" title="tSalesforceOutput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12230"></a>tSalesforceOutput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Business/Cloud </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tSalesforceoutput</strong></span> writes in an
+                                object of a Salesforce database via the relevant webservice.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Allows to write data into a Salesforce DB.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top">
+                            <p>Either <span class="bold"><strong>Built-in</strong></span> or <span class="bold"><strong>Repository</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: No property data is
+                                stored centrally.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: Select the Repository
+                                file where Properties are stored. The fields that follow are
+                                pre-filled in using fetched data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use an existing connection</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to use an established connection from
+                                    <span class="bold"><strong>tSalesforceConnection</strong></span>. Once you
+                                select it, the <span class="bold"><strong>Component list</strong></span> field
+                                appear allowing you to choose the <span class="bold"><strong>tSalesforceConnection</strong></span> component to be used.</p>
+                            <p> For more information on <span class="bold"><strong>tSalesforceConnection</strong></span>, see section <a class="xref" href="tSalesforceConnection.html" title="tSalesforceConnection">the section called &#8220;tSalesforceConnection&#8221;</a>.</p>
+                            <p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>When a Job contains the parent Job and the child Job,
+                                        <span class="bold"><strong>Component list</strong></span> presents
+                                    only the connection components in the same Job level, so if you
+                                    need to use an existing connection from the other level, you can
+                                    use <span class="bold"><strong>Dynamic settings</strong></span> to share
+                                    the intended connection. In this case, make sure that the
+                                    connection name is unique and distinctive. For more information
+                                    about <span class="bold"><strong>Dynamic settings</strong></span>, see
+                                    your studio user guide.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Salesforce Webservice URL</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the webservice URL to connect to the Salesforce DB.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> and
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the Webservice user authentication data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Timeout (milliseconds)</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the intended number of query timeout in
+                                Salesforce.com.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Action </em></span></p>
+                        </td><td valign="top">
+                            <p>You can do any of the following operations on the data of the
+                                Salesforce object: </p>
+                            <p>
+                                <span class="bold"><strong>Insert</strong></span>: insert data.</p>
+                            <p>
+                                <span class="bold"><strong>Update</strong></span>: update data.</p>
+                            <p>
+                                <span class="bold"><strong>Delete</strong></span>: delete data.</p>
+                            <p>
+                                <span class="bold"><strong>Upsert</strong></span>: update and insert
+                                data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Module</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the relevant module in the list.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>if you select the <span class="bold"><strong>Use Custom
+                                        module</strong></span> option, you display the <span class="bold"><strong>Custom Module Name</strong></span> field where you
+                                    can enter the name of the module you want to connect to. </p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                            <p> Click <span class="bold"><strong>Edit Schema</strong></span> to make
+                                changes to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in.</p>
+                            <p> Click <span class="bold"><strong>Sync columns</strong></span> to retrieve
+                                the schema from the previous component connected in the Job.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Extended Output</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. It allows to transfer
+                                output data in batches. You can specify the number of lines per
+                                batch in the <span class="bold"><strong>Rows to commit</strong></span>
+                                field.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. Clear the check box to skip
+                                the row on error and complete the process for error-free rows. If
+                                needed, you can retrieve the rows on error via a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span> link.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Error logging file</em></span></p>
+                        </td><td valign="top">
+                            <p>If you want to create a file that holds all error logs, click the
+                                three-dot button next to this field and browse to the specified file
+                                to set its access path and its name.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use Socks Proxy</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box if you want to use a proxy server. Once
+                                selected, you need enter the connection parameters that are the
+                                host, the port, the username and the passerword of the Proxy you
+                                need to use.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use Soap Compression</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to activate the SOAP compression.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The compression of SOAP messages optimizes system
+                                    performance.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Retrieve inserted ID</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to allow Salesforce.com to return the
+                                salesforce ID produced for a new row that is to be inserted. The ID
+                                column is added to the processed data schema in
+                                Salesforce.com.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This option is available only when you have chosen <span class="bold"><strong>insert</strong></span> action yet not in batch mode,
+                                    i.e. not in the <span class="bold"><strong>Extended Output</strong></span>
+                                    option.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Client ID</em></span></p>
+                        </td><td valign="top">
+                            <p>Set the ID of the real user to differentiate between those who use
+                                the same account and password to access the salesforce
+                                website.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Used as an output component. An Input component is required.
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Deleting data from the Account object"><div class="titlepage"><div><div><h3 class="title"><a name="Raa47378"></a>Scenario: Deleting data from the Account object</h3></div></div></div><p>This scenario describes a two-component Job that removes an entry from the Account
+            object.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="319"><tr><td><img src="../images/Use_Case_tSalesforceOutput1.png" width="319"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop <span class="bold"><strong>tSalesforceInput</strong></span> and <span class="bold"><strong>tSalesforceOutput</strong></span> from the <span class="bold"><strong>Palette</strong></span> onto the design workspace.</p></li><li class="listitem"><p>Connect the two components together using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> link.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tSalesforceInput</strong></span> to display its
+                        <span class="bold"><strong>Basic settings</strong></span> view and define the
+                    component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="487"><tr><td><img src="../images/Use_Case_tSalesforceOutput2.png" width="487"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>From the <span class="bold"><strong>Property Type</strong></span> list, select <span class="bold"><strong>Repository</strong></span> if you have already stored the connection
+                    to the salesforce server in the <span class="bold"><strong>Metadata</strong></span> node
+                    of the <span class="bold"><strong>Repository</strong></span> tree view. The property
+                    fields that follow are automatically filled in. If you have not defined the
+                    server connection locally in the Repository, fill in the details manually after
+                    selecting <span class="bold"><strong>Built-in</strong></span> from the <span class="bold"><strong>Property Type</strong></span> list.</p><p> For more information about how to create the salesforce metadata, see
+                        <span class="bluebold">Talend Open Studio</span>
+                    <span class="bold"><strong>User Guide</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Salesforce WebService URL</strong></span> field, use
+                    the by-default URL of the Salesforce Web service or enter the URL you want to
+                    access or select the <span class="bold"><strong>Use an existing connection</strong></span>
+                    check box to use an established connection.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Username</strong></span> and <span class="bold"><strong>Password</strong></span> fields, enter your login and password for the Web
+                    service.</p></li><li class="listitem"><p>Type in your intended query timeout in the <span class="bold"><strong>Timeout
+                        (milliseconds)</strong></span> field. In this example, use the default
+                    number.</p></li><li class="listitem"><p>From the <span class="bold"><strong>Module</strong></span> list, select the object you
+                    want to access, <span class="bold"><strong>Account</strong></span> in this example.</p></li><li class="listitem"><p>From the <span class="bold"><strong>Schema</strong></span> list, select <span class="bold"><strong>Repository</strong></span> and then click the three-dot button to
+                    open a dialog box where you can select the repository schema you want to use for
+                    this component. If you have not defined your schema locally in the metadata,
+                    select <span class="bold"><strong>Built-in</strong></span> from the <span class="bold"><strong>Schema</strong></span> list and then click the three-dot button next to the
+                        <span class="bold"><strong>Edit schema</strong></span> field to open the dialog box
+                    where you can set the schema manually.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Query Condition</strong></span> field, enter the query
+                    you want to apply. In this example, we want to retrieve the clients whose names
+                    are <span class="emphasis"><em>sForce</em></span>. To do this, we use the query:
+                        <code class="code">&#8220;name=&#8217;sForce&#8217;&#8221;</code>.</p></li><li class="listitem"><p>For a more advanced query, select the Manual input of SOQL query and enter the
+                    query manually. </p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tSalesforceOutput</strong></span> to display its
+                        <span class="bold"><strong>Basic settings</strong></span> view and define the
+                    component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="465"><tr><td><img src="../images/Use_Case_tSalesforceOutput3.png" width="465"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Salesforce WebService URL</strong></span> field, use
+                    the by-default URL of the Salesforce Web service or enter the URL you want to
+                    access.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Username</strong></span> and <span class="bold"><strong>Password</strong></span> fields, enter your login and password for the Web
+                    service.</p></li><li class="listitem"><p>Type in your intended query timeout in the <span class="bold"><strong>Timeout
+                        (milliseconds)</strong></span> field. In this example, use the default
+                    number.</p></li><li class="listitem"><p>From the <span class="bold"><strong>Action</strong></span> list, select the operation
+                    you want to carry out. In this example we select <span class="bold"><strong>Delete</strong></span> to delete the <span class="emphasis"><em>sForce</em></span> account
+                    selected in the previous component. </p></li><li class="listitem"><p>From the <span class="bold"><strong>Module</strong></span> list, select the object you
+                    want to access, <span class="bold"><strong>Account</strong></span> in this example.</p></li><li class="listitem"><p>Click <span class="bold"><strong>Sync columns</strong></span> to retrieve the schema of
+                    the preceding component.</p></li><li class="listitem"><p>save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+                    it.</p></li></ul></div><p>Check the content of the <span class="bold"><strong>Account</strong></span> object and verify
+            that the <span class="emphasis"><em>sForce</em></span> account(s) is/are deleted from the server. </p></div></div></body></html>

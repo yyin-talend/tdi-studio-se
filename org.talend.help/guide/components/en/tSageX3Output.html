@@ -1,0 +1,188 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSageX3Output</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch01.html" title="Chapter&nbsp;1.&nbsp;Business components"><link rel="prev" href="tSageX3Input.html" title="tSageX3Input"><link rel="next" href="tSalesforceBulkExec.html" title="tSalesforceBulkExec"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tSageX3Output"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSageX3Output"></a>tSageX3Output</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tSageX3Output_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tSageX3Output Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e9000"></a>tSageX3Output Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Business/Sage X3 </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component connects to the Webservice provided by a given Sage
+                                X3 Web server and therefrom insert, update or delete data in the
+                                Sage X3 system (the X3 server).</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component writes data into a given Sage X3 system.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top">
+                            <p>Either <span class="bold"><strong>Built-in</strong></span> or <span class="bold"><strong>Repository</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: No property data stored
+                                centrally.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: Select the repository
+                                file where properties are stored. The fields that come after are
+                                pre-filled in using the fetched data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Edit Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                            <p> Click <span class="bold"><strong>Edit Schema</strong></span> to make
+                                changes to the schema.</p>
+                            <p> Click <span class="bold"><strong>Sync columns</strong></span> to retrieve
+                                the schema from the previous component connected in the Job.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If you make any changes, the schema will au&shy;tomatically become
+                                    built-in. </p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Endpoint address</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the address of the Webservice provided by the given Sage
+                                X3 Web server.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> and
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the Webservice user authentication data that you have
+                                defined for configuring the Sage X3 Web server.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Language</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the name of the X3 language code used to start a
+                                connection group.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Pool alias</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the name of the connection pool that distributes the
+                                received requests to available connections. This name was given from
+                                the Sage X3 configuration console.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Request config</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the configuration string if you want to retrieve the debug
+                                or trace information. For example, the string could be:</p>
+                            <p>
+                                </p><pre class="programlisting">RequestConfigDebug=&#8220;adxwss.trace.on=on&#8221;;<span></span>
+</pre><p>If
+                                you need use several strings, separate them with a
+                                    <code class="code">&amp;</code>, for example,</p>
+                            <p>
+                                <code class="code">RequestConfigDebug=&#8220;adxwss.trace.on=on&amp;adxwss.trace.size=16384&#8221;;</code></p>
+                            <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>A third party tool is needed to retrieve this kind
+                                        of information.</em></span></p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Publication name</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the publication name of the published object, list or
+                                sub-program you want your Studio to access.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Action</em></span></p>
+                        </td><td valign="top">
+                            <p>You can do any of the following operations on the data in a Sage
+                                X3 system:</p>
+                            <p>
+                                <span class="bold"><strong>Insert</strong></span>: insert data</p>
+                            <p>
+                                <span class="bold"><strong>Update</strong></span>: update data</p>
+                            <p>
+                                <span class="bold"><strong>Delete</strong></span>: delete data</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Mapping</em></span></p>
+                        </td><td valign="top">
+                            <p>Complete this table to map the variable elements of the object,
+                                the list or the sub-program your Studio access. Only the elements
+                                you need to conduct the data action of your interest on are selected
+                                and typed in for the purpose of mapping. The columns to be completed
+                                include:</p>
+                            <p>
+                                <span class="bold"><strong>Column</strong></span>: the columns defined in the
+                                schema editor for this component.</p>
+                            <p>
+                                <span class="bold"><strong>Key</strong></span>: the variable element used as
+                                key for data insertion, update or deletion. Select the corresponding
+                                check box if a variable element is the key. <span class="bold"><strong>Group ID</strong></span>: the identifier of each variable element
+                                group. For example, a variable element group could represent one of
+                                attributes of an object.<span class="bold"><strong>Field name</strong></span>:
+                                the field name of each selected variable element.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Usually used as an output component. An input component is
+                                required. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Using a Sage X3 Webservice to insert data into a given Sage X3 system"><div class="titlepage"><div><div><h3 class="title"><a name="d0e9377"></a>Scenario: Using a Sage X3 Webservice to insert data into a given Sage X3
+            system</h3></div></div></div><p>This scenario describes a two-component Job used to generate one row of data and
+            insert the data into a given Sage X3 system. You can find the data used in this scenario
+            in the example provided by Sage X3. The Sage X3 Webservice is used to access an
+            object.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="351"><tr><td><img src="../images/Use_Case_tSageX3Output1.png" width="351"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the <span class="bold"><strong>tFixedFlowInput</strong></span> and the <span class="bold"><strong>tSageX3Output </strong></span>components onto the workspace from
+                        <span class="bold"><strong>Palette</strong></span>. </p></li><li class="listitem"><p>Connect the <span class="bold"><strong>tFixedFlowInput</strong></span> component to the
+                        <span class="bold"><strong>tSageX3Output</strong></span> component using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>
+                    link.</p></li><li class="listitem"><p>Double click the <span class="bold"><strong>tFixedFlowInput</strong></span> component to
+                    set its <span class="bold"><strong>Basic Settings</strong></span> in the <span class="bold"><strong>Component</strong></span> view</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="477"><tr><td><img src="../images/Use_Case_tSageX3Output2.png" width="477"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to <span class="bold"><strong>Edit
+                        schema</strong></span> to open the schema editor.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="411"><tr><td><img src="../images/Use_Case_tSageX3Output3.png" width="411"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the schema editor and then under the schema table, click the plus button
+                    four times to add four rows.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK </strong></span>to validate this changes and then
+                    accept the propagation prompted by the pop-up dialog box. The four rows appear
+                    automatically in the <span class="bold"><strong>Values</strong></span> table of the
+                        <span class="bold"><strong>Component</strong></span> view.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Values</strong></span> table within the <span class="bold"><strong>Mode</strong></span> area, type in the values for each of the four
+                    rows in the <span class="bold"><strong>Value</strong></span> column. In this scenario, the
+                    values downward are:
+                    </p><pre class="programlisting">CONTS00059,
+Screen 24\" standard 16/10, Screen 24\" standard 28/10, 2</pre><p>.</p></li></ul></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>These values in the Value column must be put between quotation
+                    marks.</em></span></p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double click <span class="bold"><strong>tSageX3Output</strong></span> to set its
+                        <span class="bold"><strong>Basic Settings</strong></span> in the <span class="bold"><strong>Component</strong></span> view. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="477"><tr><td><img src="../images/Use_Case_tSageX3Output4.png" width="477"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Endpoint address</strong></span> field, type in the
+                    URL address of the Webservice provided by the Sage X3 Web server. In this
+                    example, it is
+                        <span class="emphasis"><em>http://10.42.20.168:28880/adxwsvc/services/CAdxWebServiceXmlCC</em></span></p></li><li class="listitem"><p>In the <span class="bold"><strong>User</strong></span> field, type in the user name of
+                    the given Sage X3. In this example, it is <span class="emphasis"><em>ERP</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Language</strong></span> field, type in the name of
+                    the X3 language code used to start a connection group. In this example, it is
+                        <span class="emphasis"><em>FRA</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Pool alias</strong></span> field, type in the name of
+                    connection pool to be used. In this example, this connection pool is called
+                        <span class="emphasis"><em>TALEND</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Publication name</strong></span> field, type in the
+                    publication name of the object to be called. In this scenario, the publication
+                    name is <span class="emphasis"><em>ITMDET</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Action</strong></span> field, select <span class="bold"><strong>insert</strong></span> from the drop-down list.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Field name</strong></span> column of the <span class="bold"><strong>Mapping</strong></span> table, type in the field names of the
+                    attributes the selected data action is exercised on.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Group ID</strong></span> column of the <span class="bold"><strong>Mapping</strong></span> table, type in values corresponding to group
+                    IDs of the selected attributes. These IDs are defined in the Sage X3 Web
+                    server</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="272"><tr><td><img src="../images/Use_Case_tSageX3Output5.png" width="272"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>In the <span class="bold"><strong>Mapping</strong></span> table, the <span class="bold"><strong>Column</strong></span> column has been filled automatically with the columns
+                retrieved from the schema of the preceding component.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Press <span class="bold"><strong>F6</strong></span> to run the Job.</p></li></ul></div><p>To verify the data that you inserted in this scenario, you can use the <span class="bold"><strong>tSageX3Input</strong></span> component to read the concerned data from the
+            Sage X3 server.</p><p>For further information about how to use the <span class="bold"><strong>tSageX3Input</strong></span> component to read data, see <a class="xref" href="tSageX3Input.html#Raa70404" title="Scenario: Using query key to extract data from a given Sage X3 system">the section called &#8220;Scenario: Using query key to extract data from a given Sage X3 system&#8221;</a>.</p></div></div></body></html>

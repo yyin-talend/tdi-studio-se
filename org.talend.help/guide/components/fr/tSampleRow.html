@@ -1,0 +1,76 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSampleRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch14.html" title="Chapitre&nbsp;14.&nbsp;Composants Processing"><link rel="prev" href="tReplace.html" title="tReplace"><link rel="next" href="tSortRow.html" title="tSortRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tSampleRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSampleRow"></a>tSampleRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tSampleRow_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa4566493"></a><div class="section" title="Propri&eacute;t&eacute;s du tSampleRow"><div class="titlepage"><div><div><h3 class="title"><a name="d0e235731"></a>Propri&eacute;t&eacute;s du tSampleRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille du
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Processing</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tSampleRow </strong></span>filtre les lignes en fonction
+                                de leur position. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>Le
+                                    tSampleRow </strong></span>permet de s&eacute;lectionner des lignes en
+                                fonction d&#8217;une liste de lignes simples et/ou de groupes de lignes.
+                            </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                    <span class="bold"><strong>Repository</strong></span>.</p><p>
+                                Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma. Notez que si vous modifiez le sch&eacute;ma, il devient
+                                automatiquement built-in.</p><p> Cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma du
+                                composant pr&eacute;c&eacute;dent.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le
+                                sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide Utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Open Studio</span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilis&eacute; dans divers projets et Jobs. Voir
+                                    &eacute;galement&nbsp;le<span class="bold"><strong>Guide Utilisateur</strong></span>
+                                de <span class="bluebold">Talend Open Studio</span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Range</em></span></p>
+                        </td><td valign="top"><p>Renseignez la position ou l&#8217;intervalle choisi, en
+                                utilisant la syntaxe appropri&eacute;e, pour r&eacute;cup&eacute;rer une liste de lignes
+                                simples et/ou de groupes de lignes. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant traite des
+                                flux de donn&eacute;es, il n&eacute;cessite donc des composants d&#8217;entr&eacute;e et
+                                sortie. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Filtrer des lignes et des groupes de lignes"><div class="titlepage"><div><div><h3 class="title"><a name="tSortRow-dup-2"></a>Sc&eacute;nario&nbsp;: Filtrer des lignes et des groupes de lignes</h3></div></div></div><p>Ce sc&eacute;nario Java d&eacute;crit un Job &agrave; trois composants. On utilise un composant <span class="bold"><strong>tRowGenerator </strong></span>pour cr&eacute;er des entr&eacute;es au hasard qui sont
+            directement envoy&eacute;es au <span class="bold"><strong>tSampleRow</strong></span>, o&ugrave; elles seront
+            filtr&eacute;es en fonction de leur position. Dans ce sc&eacute;nario, on suppose que le flux d&#8217;entr&eacute;e
+            contient les noms des vendeurs associ&eacute;s au nombre de produits qu&#8217;ils ont chacun vendus
+            ainsi que le nombre d&#8217;ann&eacute;es pass&eacute;es dans l&#8217;entreprise. Le r&eacute;sultat de l&#8217;op&eacute;ration de
+            filtrage appara&icirc;t dans la console <span class="bold"><strong>Run</strong></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez d&eacute;posez les
+                    composants suivants dans l&#8217;&eacute;diteur graphique&nbsp;: le <span class="bold"><strong>tRowGenerator</strong></span>, le <span class="bold"><strong>tSampleRow</strong></span> et
+                    le <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p> Connectez ces trois composants &agrave; l&#8217;aide de liens de type <span class="bold"><strong>Row </strong></span>&gt; <span class="bold"><strong>Main</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="359"><tr><td><img src="../images/Use_Case_tSampleRow.png" width="359"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le <span class="bold"><strong>tRowGenerator</strong></span>.</p></li><li class="listitem"><p> Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                        <span class="bold"><strong>tRowGenerator</strong></span>.</p></li><li class="listitem"><p> Dans la vue <span class="bold"><strong>Basic settings</strong></span>, d&eacute;finissez
+                    l&#8217;option <span class="bold"><strong>Schema</strong></span> en mode <span class="bold"><strong>Built-In</strong></span> puis cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit Schema
+                    </strong></span>pour d&eacute;finir les donn&eacute;es que vous voulez utiliser en entr&eacute;e. Dans ce
+                    sc&eacute;nario, le sch&eacute;ma est compos&eacute; de cinq colonnes. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="371"><tr><td><img src="../images/Use_Case_tSampleRow1.png" width="371"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>, cliquez sur
+                        <span class="bold"><strong>RowGenerator Editor</strong></span> pour d&eacute;finir les
+                    donn&eacute;es &agrave; g&eacute;n&eacute;rer. </p></li><li class="listitem"><p> Dans l&#8217;&eacute;diteur <span class="bold"><strong>RowGenerator Editor</strong></span>, pr&eacute;cisez
+                    le nombre de lignes &agrave; g&eacute;n&eacute;rer dans le champ <span class="bold"><strong>Number of Rows
+                        for RowGenerator</strong></span> puis cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer l&#8217;&eacute;diteur.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="525"><tr><td><img src="../images/Use_Case_tSampleRow2.png" width="525"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le <span class="bold"><strong>tSampleRow</strong></span>.</p></li><li class="listitem"><p> Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                        <span class="bold"><strong>tSampleRow</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="422"><tr><td><img src="../images/Use_Case_tSampleRow3.png" width="422"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>, d&eacute;finissez
+                    l&#8217;option <span class="bold"><strong>Schema</strong></span> en mode <span class="bold"><strong>Built-In</strong></span> puis cliquez sur <span class="bold"><strong>Sync
+                        columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma &agrave; partir du composant <span class="bold"><strong>tRowGenerator</strong></span>.</p></li><li class="listitem"><p> Dans la bo&icirc;te de texte <span class="bold"><strong>Range</strong></span>, d&eacute;finissez le
+                    filtre de s&eacute;lection des lignes en utilisant la syntaxe appropri&eacute;e comme indiqu&eacute;
+                    plus haut. Dans ce sc&eacute;nario, on veut s&eacute;lectionner la premi&egrave;re et la cinqui&egrave;me
+                    ligne, ainsi que le groupe de lignes entre&nbsp;9 et&nbsp;12. </p></li><li class="listitem"><p> Dans l&#8217;espace graphique, s&eacute;lectionnez le <span class="bold"><strong>tLogRow</strong></span> puis cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour en d&eacute;finir la configuration de base (<span class="bold"><strong>Basic settings</strong></span>). Pour plus d&#8217;informations sur les
+                    propri&eacute;t&eacute;s du <span class="bold"><strong>tLogRow</strong></span>, consultez <a class="xref" href="tLogRow.html" title="tLogRow">la section intitul&eacute;e &laquo;&nbsp;tLogRow&nbsp;&raquo;</a>.</p></li><li class="listitem"><p> Enregistrez votre Job puis appuyez sur <span class="bold"><strong>F6</strong></span>
+                    pour l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="390"><tr><td><img src="../images/Use_Case_tSampleRow4.png" width="390"></td></tr></table></div><p>Les r&eacute;sultats filtr&eacute;s apparaissent dans la console de log. Ils affichent la premi&egrave;re
+            et la cinqui&egrave;me ligne, ainsi que les lignes entre 9 et 12. </p></div></div></body></html>

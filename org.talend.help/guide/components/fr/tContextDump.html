@@ -1,0 +1,54 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tContextDump</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch12.html" title="Chapitre&nbsp;12.&nbsp;Composants Misc"><link rel="prev" href="tBufferOutput.html" title="tBufferOutput"><link rel="next" href="tContextLoad.html" title="tContextLoad"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tContextDump"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tContextDump"></a>tContextDump</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tContextDump_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tContextDump"><div class="titlepage"><div><div><h3 class="title"><a name="d0e220517"></a>Propri&eacute;t&eacute;s du tContextDump</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de composant</strong></span></p>
+                                                </td><td valign="top"><p>Misc</p>
+                                                </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p><span class="bold"><strong>tContextDump</strong></span> fait une copie des
+                                                  valeurs du contexte utilis&eacute; dans le Job.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tContextDump</strong></span> peut &ecirc;tre utilis&eacute; pour
+                                                  transformer les param&egrave;tres de contexte d&#8217;un flux
+                                                  et les r&eacute;utilisez via un composant <span class="bold"><strong>tContextLoad</strong></span>. Cette
+                                                  fonction est tr&egrave;s pratique pour r&eacute;utiliser un
+                                                  contexte que vous n&#8217;aurez d&eacute;fini qu&#8217;une seule
+                                                  fois, dans plusieurs Jobs via le <span class="bold"><strong>tContextLoad</strong></span>..</p>
+                                                </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic settings</strong></span></p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et
+                                                  <span class="emphasis"><em>Edit Schema</em></span></p>
+                                                </td><td valign="top"><p>Le sch&eacute;ma du composant
+                                                  <span class="bold"><strong>tContextDump</strong></span> est
+                                                  en lecture seule et est compos&eacute; de deux colonnes&nbsp;:
+                                                  <span class="bold"><strong>Key</strong></span> et <span class="bold"><strong>Value</strong></span>, qui correspondent au
+                                                  nom et &agrave; la valeur du param&egrave;tre &agrave;
+                                                  copier.</p><p>Un sch&eacute;ma est une description
+                                                  de lignes, i.e., il d&eacute;finit les champs qui sont
+                                                  trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma
+                                                  est soit local (built-in) soit distant dans le
+                                                  Repository.</p><p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour modifier
+                                                  le sch&eacute;ma. Notez que lorsque vous modifiez le
+                                                  sch&eacute;ma, les propri&eacute;t&eacute;s deviennent automatiquement
+                                                  built-in.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma est cr&eacute;&eacute; et
+                                                  conserv&eacute; ponctuellement pour ce composant
+                                                  seulement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe d&eacute;j&agrave; et
+                                                  est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+                                                  r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Print
+                                                  operations</em></span></p>
+                                                </td><td valign="top"><p>Cochez cette case pour
+                                                  afficher les param&egrave;tres de contexte dans la vue
+                                                  <span class="bold"><strong>Run</strong></span>.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p>Ce composant cr&eacute;e un flux de donn&eacute;es &agrave;
+                                                  partir des valeurs de contexte, ainsi il doit &ecirc;tre
+                                                  connect&eacute; &agrave; un composant de sortie.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tContextDump</strong></span> ne cr&eacute;e pas de variable
+                                                  de contexte non d&eacute;finie.</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e220687"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Aucun sc&eacute;nario n&#8217;est disponible pour ce composant.</p></div></div></body></html>

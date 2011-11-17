@@ -1,0 +1,127 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tExtractRegexFields</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch14.html" title="Chapitre&nbsp;14.&nbsp;Composants Processing"><link rel="prev" href="tExtractPositionalFields.html" title="tExtractPositionalFields"><link rel="next" href="processing_tExtractXMLField.html" title="tExtractXMLField"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tExtractRegexFields"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tExtractRegexFields"></a>tExtractRegexFields</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tExtractRegexFields_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa4556488"></a><div class="section" title="Propri&eacute;t&eacute;s du tExtractRegexFields"><div class="titlepage"><div><div><h3 class="title"><a name="d0e230898"></a>Propri&eacute;t&eacute;s du tExtractRegexFields</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille du
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Processing/Fields</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tExtractRegexFields </strong></span>g&eacute;n&egrave;re des colonnes
+                                multiples &agrave; partir d&#8217;une colonne donn&eacute;e en utilisant des
+                                correspondances regex. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>t</strong></span><span class="bold"><strong>ExtractRegexFields</strong></span>
+                                permet d&#8217;utiliser des expressions r&eacute;guli&egrave;res pour extraire les
+                                donn&eacute;es selon un mod&egrave;le. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Field to split</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez dans la liste le champ (ou colonne) &agrave;
+                                s&eacute;parer. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Regex</em></span></p>
+                        </td><td valign="top"><p>Renseignez l&#8217;expression r&eacute;guli&egrave;re en fonction du
+                                langage de programmation que vous utilisez. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema </em></span>et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                    <span class="bold"><strong>Repository</strong></span>.</p><p>
+                                Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma. Notez que si vous modifiez le sch&eacute;ma, il devient
+                                automatiquement built-in.</p><p> Cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma du
+                                composant pr&eacute;c&eacute;dent.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le
+                                sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide Utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Open Studio</span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilis&eacute; dans divers projets et Jobs. Voir &eacute;galement&nbsp;le
+                                    <span class="bold"><strong>Guide Utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.
+                            </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top"><p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job
+                                en cas d&#8217;erreur. D&eacute;cochez cette case pour terminer le traitement
+                                avec les lignes sans erreurs, et ignorer les lignes en erreur. Vous
+                                pouvez r&eacute;cup&eacute;rer les lignes en erreur, si vous le souhaitez. Pour
+                                cela, utilisez un lien <span class="bold"><strong>Row</strong></span> &gt;
+                                    <span class="bold"><strong>Reject</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Check each row structure against
+                                    schema</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour synchroniser chaque ligne
+                                avec le sch&eacute;ma d&#8217;entr&eacute;e. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du Job, ainsi qu&#8217;au niveau de chaque composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant traite des
+                                flux de donn&eacute;es, il n&eacute;cessite donc un composant d&#8217;entr&eacute;e et un
+                                composant de sortie. Il permet d'extraire des donn&eacute;es d'un champ
+                                d&eacute;limit&eacute; &agrave; l'aide d'un lien <span class="bold"><strong>Row</strong></span>
+                                &gt; <span class="bold"><strong>Main</strong></span>, et permet de cr&eacute;er un
+                                flux de rejet avec un lien <span class="bold"><strong>Row</strong></span> &gt;
+                                    <span class="bold"><strong>Reject</strong></span>, filtrant les donn&eacute;es
+                                dont le type ne correspond pas au type d&eacute;fini.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Extraire des noms, des domaines et domaines de premier niveau &agrave; partir d&#8217;adresses e-mail"><div class="titlepage"><div><div><h3 class="title"><a name="d0e231131"></a>Sc&eacute;nario&nbsp;: Extraire des noms, des domaines et domaines de premier niveau &agrave; partir
+            d&#8217;adresses e-mail</h3></div></div></div><p>Ce sc&eacute;nario Java d&eacute;crit un Job &agrave; trois composants dans lequel le <span class="bold"><strong>tExtractRegexFields</strong></span> est utilis&eacute; pour d&eacute;finir une expression r&eacute;guli&egrave;re
+            correspondant &agrave; l&#8217;une des colonnes des donn&eacute;es d&#8217;entr&eacute;e. Dans ce sc&eacute;nario, il s&#8217;agit de
+            la colonne <span class="emphasis"><em>email</em></span>. Le composant <span class="bold"><strong>tExtractRegexFields</strong></span> est &eacute;galement utilis&eacute; pour trouver les
+            correspondances avec ladite expression r&eacute;guli&egrave;re. Cette expression comprend des
+            identifieurs de champ permettant de s&eacute;parer le nom d&#8217;utilisateur, le nom de domaine
+            ainsi que le nom du domaine de premier niveau pour chaque adresse e-mail. Si l&#8217;adresse
+            e-mail est valide, ces trois parties sont extraites et affich&eacute;es sur la console dans
+            trois colonnes diff&eacute;rentes. Les donn&eacute;es des deux autres colonnes d&#8217;entr&eacute;e,
+                <span class="emphasis"><em>id</em></span> et <span class="emphasis"><em>age</em></span>, sont &eacute;galement extraites puis
+            redirig&eacute;es. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez-d&eacute;posez les
+                    composants suivants dans l&#8217;espace graphique&nbsp;: le <span class="bold"><strong>tFileInputDelimited</strong></span>, <span class="bold"><strong>le
+                        tExtractRegexFields</strong></span> et le <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p> Connectez les trois composants &agrave; l&#8217;aide de liens <span class="bold"><strong>Row
+                        Main</strong></span> comme ci-dessous.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="414"><tr><td><img src="../images/Use_Case_tExtractRegexField.png" width="414"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;espace graphique, cliquez sur le composant <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li><li class="listitem"><p> Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                        <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li><li class="listitem"><p> A partir de l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>,
+                    configurez le champ <span class="bold"><strong>Property Type</strong></span> en mode
+                        <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p> Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+                        <span class="bold"><strong>File Name </strong></span>pour d&eacute;finir le chemin d&#8217;acc&egrave;s au
+                    fichier d&#8217;entr&eacute;e. </p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Le champ <span class="bold"><strong>File Name</strong></span> est obligatoire.</p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="476"><tr><td><img src="../images/Use_Case_tExtractRegexField1.png" width="476"></td></tr></table></div><p>Dans ce sc&eacute;nario, le fichier d&#8217;entr&eacute;e utilis&eacute; est <span class="emphasis"><em>test4.</em></span> Il
+            s&#8217;agit d&#8217;un fichier texte comportant trois colonnes&nbsp;: <span class="emphasis"><em>id</em></span>,
+                <span class="emphasis"><em>email</em></span> et <span class="emphasis"><em>age</em></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Renseignez tous les autres champs comme demand&eacute;. Pour plus d&#8217;informations,
+                        consultez&nbsp;<a class="xref" href="tMDMInput.html#Raa86313" title="Propri&eacute;t&eacute;s du tMDMInput">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tMDMInput&nbsp;&raquo;</a>. Dans ce sc&eacute;nario, l&#8217;en-t&ecirc;te et le
+                    pied-de-page ne sont pas d&eacute;finis et aucune limite n&#8217;est renseign&eacute;e concernant le
+                    nombre de lignes trait&eacute;es.</p></li><li class="listitem"><p> Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> du champ
+                        <span class="bold"><strong>Edit schema </strong></span>pour d&eacute;finir la structure des
+                    donn&eacute;es du fichier d&#8217;entr&eacute;e. Dans ce sc&eacute;nario, le sch&eacute;ma est compos&eacute; de trois
+                    colonnes, <span class="emphasis"><em>id</em></span>, <span class="emphasis"><em>email</em></span> et
+                        <span class="emphasis"><em>age.</em></span></p></li><li class="listitem"><p> Dans l&#8217;espace graphique, s&eacute;lectionnez le composant <span class="bold"><strong>tExtractRegexFields</strong></span>.</p></li><li class="listitem"><p> Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                        <span class="bold"><strong>tExtractRegexFields</strong></span>.</p></li><li class="listitem"><p> A partir de la liste d&eacute;roulante <span class="bold"><strong>Field to
+                        split</strong></span>, s&eacute;lectionnez la colonne &agrave; s&eacute;parer, &agrave; savoir
+                        <span class="emphasis"><em>email</em></span> dans ce sc&eacute;nario.</p></li><li class="listitem"><p> Dans le panneau <span class="bold"><strong>Regex</strong></span>, renseignez
+                    l&#8217;expression r&eacute;guli&egrave;re &agrave; utiliser pour effectuer la correspondance. Dans ce
+                    sc&eacute;nario, il s&#8217;agit d&#8217;une expression r&eacute;guli&egrave;re Java. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="492"><tr><td><img src="../images/Use_Case_tExtractRegexField2.png" width="492"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez sur <span class="bold"><strong>Edit schema </strong></span>pour d&eacute;crire la
+                    structure des donn&eacute;es du composant de traitement. </p></li><li class="listitem"><p> Dans le panneau <span class="bold"><strong>Output</strong></span> de la bo&icirc;te de
+                    dialogue <span class="bold"><strong>[Schema of tExtractRegexFields]</strong></span>,
+                    cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter cinq
+                    colonnes au sch&eacute;ma de sortie. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="459"><tr><td><img src="../images/Use_Case_tExtractRegexField3.png" width="459"></td></tr></table></div><p>Dans ce sc&eacute;nario, on veut s&eacute;parer la colonne d&#8217;entr&eacute;e <span class="emphasis"><em>email</em></span> en
+            trois colonnes <span class="emphasis"><em>name, domain </em></span>et <span class="emphasis"><em>tld dans le flux de
+                sortie.</em></span> Les deux autres colonnes d&#8217;entr&eacute;e seront extraites telles
+            quelles. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                    dialogue <span class="bold"><strong>[Schema of
+                    tExtractRegexFields]</strong></span>.</p></li><li class="listitem"><p> Dans l&#8217;espace graphique, s&eacute;lectionnez le composant <span class="bold"><strong>tLogRow</strong></span> puis cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour en d&eacute;finir la configuration de base (<span class="bold"><strong>Basic settings</strong></span>). Pour plus d&#8217;informations,
+                    consultez&nbsp;<a class="xref" href="tLogRow.html" title="tLogRow">la section intitul&eacute;e &laquo;&nbsp;tLogRow&nbsp;&raquo;</a>.</p></li><li class="listitem"><p> Enregistrez votre Job puis appuyez sur <span class="bold"><strong>F6</strong></span>
+                    pour l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="434"><tr><td><img src="../images/Use_Case_tExtractRegexField6.png" width="434"></td></tr></table></div><p>Le composant <span class="bold"><strong>tExtractRegexFields</strong></span> effectue une
+            correspondance entre toutes les adresse e-mail donn&eacute;es et l&#8217;expression r&eacute;guli&egrave;re
+            d&eacute;finie, puis extrait le nom d&#8217;utilisateur, le domaine et le domaine de premier niveau,
+            qu&#8217;il affiche sur la console dans trois colonnes s&eacute;par&eacute;es. Les deux autres colonnes,
+                <span class="emphasis"><em>id</em></span> et <span class="emphasis"><em>age</em></span>, sont extraites telles quelles.
+        </p></div></div></body></html>

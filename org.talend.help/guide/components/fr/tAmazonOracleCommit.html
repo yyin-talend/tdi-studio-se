@@ -1,0 +1,66 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAmazonOracleCommit</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch03.html" title="Chapitre&nbsp;3.&nbsp;Composants Cloud"><link rel="prev" href="tAmazonOracleClose.html" title="tAmazonOracleClose"><link rel="next" href="tAmazonOracleConnection.html" title="tAmazonOracleConnection"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tAmazonOracleCommit"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAmazonOracleCommit"></a>tAmazonOracleCommit</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tAmazonOracleCommit_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tAmazonOracleCommit"><div class="titlepage"><div><div><h3 class="title"><a name="d0e43731"></a>Propri&eacute;t&eacute;s du tAmazonOracleCommit</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants <span class="bold"><strong>tAmazonOracleConnection</strong></span> et <span class="bold"><strong>tAmazonOracleRollback</strong></span>. Ils sont g&eacute;n&eacute;ralement utilis&eacute;s ensemble lors de
+            transactions.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Famille de composant</strong></span></p>
+                        </td><td valign="top">
+                            <p>Cloud/AmazonRDS/Oracle</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tAmazonOracleCommit</strong></span>
+                                valide les donn&eacute;es trait&eacute;es dans un Job &agrave; partir d&#8217;une base de
+                                donn&eacute;es connect&eacute;e.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>En utilisant une connexion unique, commitez en une seule fois une
+                                transaction globale au lieu de commiter chaque ligne ou chaque lot
+                                de lignes. Ce composant permet un gain de performance.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Component list</em></span></p>
+                        </td><td valign="top">
+                            <p>S&#8217;il y a plus d&#8217;une connexion dans le Job en cours, s&eacute;lectionnez
+                                le composant <span class="bold"><strong>tAmazonOracleConnection</strong></span> dans la liste.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Close Connection</em></span></p>
+                        </td><td valign="top">
+                            <p>Cette option est coch&eacute;e par d&eacute;faut. Elle permet de fermer la
+                                connexion &agrave; la base de donn&eacute;es une fois le commit effectu&eacute;. D&eacute;cochez
+                                cette case pour continuer &agrave; utiliser la connexion une fois que le
+                                composant a ex&eacute;cut&eacute; sa t&acirc;che.</p>
+                            <div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Si vous utilisez un lien de type </em></span>
+                                    <span class="bold"><strong>Row</strong></span>
+                                    <span class="emphasis"><em> &gt; </em></span>
+                                    <span class="bold"><strong>Main</strong></span>
+                                    <span class="emphasis"><em> pour relier le </em></span>
+                                    <span class="bold"><strong>tOracleCommit</strong></span>
+                                    <span class="emphasis"><em> &agrave; votre Job, vos donn&eacute;es seront commit&eacute;es ligne par
+                                        ligne. Dans ce cas, ne cochez pas la case </em></span>
+                                    <span class="bold"><strong>Close connection</strong></span>
+                                    <span class="emphasis"><em> car la connexion sera ferm&eacute;e avant la fin du commit
+                                        de votre premi&egrave;re ligne.</em></span></p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; avec des composants
+                                AmazonOracle et notamment <span class="bold"><strong>tAmazonOracleConnection</strong></span> et <span class="bold"><strong>tAmazonOracleRollback</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e43904"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants <span class="bold"><strong>tAmazonOracleConnection</strong></span> et <span class="bold"><strong>tAmazonOracleRollback</strong></span>. Ils sont g&eacute;n&eacute;ralement utilis&eacute;s avec un composant
+                <span class="bold"><strong>tAmazonOracleConnection</strong></span> car il permet d&#8217;ouvrir une
+            connexion pour la transaction en cours.</p><p>Pour un sc&eacute;nario associ&eacute; au composant <span class="bold"><strong>tAmazonOracleCommit</strong></span>, consultez <a class="xref" href="tMysqlConnection.html" title="tMysqlConnection">la section intitul&eacute;e &laquo;&nbsp;tMysqlConnection&nbsp;&raquo;</a>.</p></div></div></body></html>

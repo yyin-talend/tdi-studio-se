@@ -1,0 +1,116 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tCreateTemporaryFile</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapitre&nbsp;9.&nbsp;Composants File"><link rel="prev" href="tChangeFileEncoding.html" title="tChangeFileEncoding"><link rel="next" href="tFileArchive.html" title="tFileArchive"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tCreateTemporaryFile"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tCreateTemporaryFile"></a>tCreateTemporaryFile</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tCreateTemporaryFile_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa1735870"></a><div class="section" title="Propri&eacute;t&eacute;s du tCreateTemporaryFile"><div class="titlepage"><div><div><h3 class="title"><a name="d0e177861"></a>Propri&eacute;t&eacute;s du tCreateTemporaryFile</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille du
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>File/Management</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tCreateTemporaryFile </strong></span>permet de cr&eacute;er et
+                                d&#8217;organiser les fichiers temporaires. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tCreateTemporaryFile </strong></span>aide &agrave; la cr&eacute;ation d&#8217;un fichier
+                                temporaire et &agrave; sa redirection dans dossier d&eacute;fini. Ce composant
+                                permet &eacute;galement de conserver ou de supprimer ce fichier temporaire,
+                                selon le cas, apr&egrave;s l&#8217;ex&eacute;cution du Job. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Remove file when execution is
+                                    over</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour que le fichier temporaire
+                                soit supprim&eacute; apr&egrave;s l&#8217;ex&eacute;cution du Job. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Directory</em></span></p>
+                        </td><td valign="top"><p>Renseignez le chemin d&#8217;acc&egrave;s au dossier o&ugrave; sont
+                                stock&eacute;s les fichiers temporaires. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Template</em></span></p>
+                        </td><td valign="top"><p>Attribuez un nom au fichier temporaire en
+                                respectant le mod&egrave;le. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Suffix</em></span></p>
+                        </td><td valign="top"><p>Entrez une extension de fichier pour pr&eacute;ciser le
+                                format que vous voulez donner au fichier temporaire. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tCreateTemporaryFile</strong></span> vous donne la
+                                possibilit&eacute; de g&eacute;rer vos fichiers temporaires pour que la m&eacute;moire
+                                soit lib&eacute;r&eacute;e au profit d&#8217;autres projets, ce qui permet d&#8217;optimiser
+                                les performances syst&egrave;me. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Global
+                                Variables</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Filepath</strong></span>&nbsp;:
+                                retrouve le chemin d&#8217;acc&egrave;s &agrave; l&#8217;emplacement o&ugrave; a &eacute;t&eacute; cr&eacute;&eacute; le fichier.
+                                Disponible comme variable <span class="bold"><strong>After</strong></span>.</p><p> Retourne une cha&icirc;ne de
+                                caract&egrave;res.</p><p> </p><p> Pour plus d&#8217;informations
+                                concernant les variables, consultez&nbsp;le <span class="bold"><strong>Guide
+                                    Utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Liens de sortie (d&#8217;un composant &agrave; un
+                                autre)&nbsp;:</p><p>
+                                <span class="bold"><strong>Trigger</strong></span>&nbsp;: OnSubjobOk,
+                                OnSubjobError, Run if, OnComponentOk,
+                                OnComponentError.</p><p> </p><p> Liens d&#8217;entr&eacute;e (d&#8217;un
+                                composant &agrave; un autre)&nbsp;:</p><p>
+                                <span class="bold"><strong>Row</strong></span>&nbsp;: Iterate.</p><p>
+                                <span class="bold"><strong>Trigger</strong></span>&nbsp;: Run if, OnSubjobOk,
+                                OnSubjobError, OnComponentOk, OnComponentError, Synchronize,
+                                Parallelize.</p><p> </p><p> Pour plus d&#8217;informations
+                                concernant les liens, consultez le<span class="bold"><strong>Guide
+                                    Utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Cr&eacute;er un fichier temporaire et y &eacute;crire des donn&eacute;es"><div class="titlepage"><div><div><h3 class="title"><a name="d0e178054"></a>Sc&eacute;nario&nbsp;: Cr&eacute;er un fichier temporaire et y &eacute;crire des donn&eacute;es</h3></div></div></div><p>Le sc&eacute;nario suivant d&eacute;crit un Job simple permettant de cr&eacute;er un fichier temporaire
+            vide dans un dossier d&eacute;fini, puis d&#8217;y &eacute;crire des donn&eacute;es et enfin de le supprimer apr&egrave;s
+            l&#8217;ex&eacute;cution du Job. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez-d&eacute;posez les
+                    composants suivants dans l&#8217;&eacute;diteur graphique&nbsp;: le <span class="bold"><strong>tCreateTemporaryFile</strong></span>, le <span class="bold"><strong>tRowgenerator</strong></span>, le <span class="bold"><strong>tFileOutputDelimited</strong></span>, le <span class="bold"><strong>tFileInputDelimited </strong></span>et le <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p> Reliez le <span class="bold"><strong>tCreateTemporaryFile </strong></span>au <span class="bold"><strong>tRowGenerator</strong></span> &agrave; l&#8217;aide d&#8217;un lien de type <span class="bold"><strong>SubJobOk</strong></span>.</p></li><li class="listitem"><p> Reliez le <span class="bold"><strong>tRowGenerator </strong></span>au <span class="bold"><strong>tFileOutputDelimited</strong></span> &agrave; l&#8217;aide d&#8217;un lien de type
+                        <span class="bold"><strong>Row Main</strong></span>.</p></li><li class="listitem"><p> Reliez le <span class="bold"><strong>tRowGenerator </strong></span>au <span class="bold"><strong>tFileInputDelimited</strong></span> &agrave; l&#8217;aide d&#8217;un lien de type
+                        <span class="bold"><strong>SubJobOk</strong></span>.</p></li><li class="listitem"><p> Reliez le <span class="bold"><strong>tFileInputDelimited</strong></span> au <span class="bold"><strong>tLogRow </strong></span>&agrave; l&#8217;aide d&#8217;un lien de type <span class="bold"><strong>Row Main</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="332"><tr><td><img src="../images/Use_Case_tCreateTemporaryFile.png" width="332"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le composant <span class="bold"><strong>tCreateTemporaryFile</strong></span>.</p></li><li class="listitem"><p> Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                        <span class="bold"><strong>tCreateTemporaryFile</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="467"><tr><td><img src="../images/Use_Case_tCreateTemporaryFile1.png" width="467"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cochez la case <span class="bold"><strong>Remove file when execution is
+                        over</strong></span> pour supprimer, apr&egrave;s l&#8217;ex&eacute;cution du Job, le fichier
+                    temporaire cr&eacute;&eacute;. </p></li><li class="listitem"><p> Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+                        <span class="bold"><strong>Directory</strong></span> pour parcourir vos dossiers
+                    jusqu&#8217;&agrave; celui o&ugrave; seront stock&eacute;s les fichiers temporaires. Vous pouvez &eacute;galement
+                    entrer directement le chemin d&#8217;acc&egrave;s. </p></li><li class="listitem"><p> Dans le champ <span class="bold"><strong>Template</strong></span>, renseignez le nom du
+                    fichier temporaire en veillant &agrave; ce qu&#8217;il respecte le format du mod&egrave;le. </p></li><li class="listitem"><p> Dans le champ <span class="bold"><strong>Suffix</strong></span>, renseignez l&#8217;extension
+                    du fichier pour indiquer le format que vous voulez donner au fichier temporaire.
+                </p></li><li class="listitem"><p> Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le <span class="bold"><strong>tRowGenerator</strong></span> puis cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour en d&eacute;finir la configuration de base (<span class="bold"><strong>Basic settings</strong></span>). </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="390"><tr><td><img src="../images/Use_Case_tCreateTemporaryFile2.png" width="390"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans la liste d&eacute;roulante <span class="bold"><strong>Schema</strong></span>, choisissez
+                    le mode <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p> Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> du champ
+                        <span class="bold"><strong>Edit schema</strong></span> pour d&eacute;finir les donn&eacute;es &agrave;
+                    passer au composant <span class="bold"><strong>tFileOutputDelimited</strong></span>. Dans
+                    cet exemple, seules les donn&eacute;es de la colonne <span class="emphasis"><em>value</em></span> sont
+                    trait&eacute;es.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="337"><tr><td><img src="../images/Use_Case_tCreateTemporaryFile3.png" width="337"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                    dialogue.</p></li><li class="listitem"><p> Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> du champ
+                        <span class="bold"><strong>RowGenerator Editor</strong></span> pour ouvrir la bo&icirc;te de
+                    dialogue de l&#8217;&eacute;diteur. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="474"><tr><td><img src="../images/Use_Case_tCreateTemporaryFile4.png" width="474"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans le champ <span class="bold"><strong>Number of Rows for
+                        Rowgenerator</strong></span>, entrez le chiffre &#8220;5&#8221; pour g&eacute;n&eacute;rer cinq lignes puis
+                    cliquez sur <span class="bold"><strong>Ok</strong></span> pour fermer la bo&icirc;te de
+                    dialogue.</p></li><li class="listitem"><p> Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le <span class="bold"><strong>tFileOutputDelimited</strong></span> puis cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour en d&eacute;finir la configuration de base
+                        (<span class="bold"><strong>Basic settings</strong></span>).</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="485"><tr><td><img src="../images/Use_Case_tCreateTemporaryFile5.png" width="485"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans la liste d&eacute;roulante <span class="bold"><strong>Property Type</strong></span>,
+                    choisissez le mode <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p> Cliquez dans le champ <span class="bold"><strong>File Name</strong></span> puis appuyez
+                    simultan&eacute;ment sur <span class="bold"><strong>Ctrl+Espace</strong></span> pour acc&eacute;der &agrave; la
+                    liste d&#8217;auto-compl&eacute;tion. Pour envoyer les donn&eacute;es en sortie vers le fichier
+                    temporaire cr&eacute;&eacute;, s&eacute;lectionnez l&#8217;option
+                    </p><pre class="programlisting">tCreateTemporaryFile_1.FILEPATH
+</pre><p>dans la liste
+                    des variables. </p></li><li class="listitem"><p> Renseignez les s&eacute;parateurs de lignes et de champs dans leurs champs
+                    respectifs <span class="bold"><strong>Row Separator</strong></span> et <span class="bold"><strong>Field Separator</strong></span>. </p></li><li class="listitem"><p> Choisissez le mode <span class="bold"><strong>Built-In</strong></span> dans la liste
+                    d&eacute;roulante <span class="bold"><strong>Schema </strong></span>puis cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour synchroniser les colonnes d&#8217;entr&eacute;e
+                    et de sortie. Notez que la connexion <span class="bold"><strong>Row</strong></span> permet
+                    d&#8217;alimenter automatiquement le sch&eacute;ma de sortie. </p></li></ul></div><p>Pour plus d&#8217;informations sur les types de sch&eacute;mas, consultez le Guide Utilisateur de
+                <span class="bluebold">Talend Open Studio</span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le composant <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li><li class="listitem"><p> Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>)
+                        du<span class="bold"><strong> tFileInputDelimited</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="485"><tr><td><img src="../images/Use_Case_tCreateTemporaryFile6.png" width="485"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Choisissez le mode <span class="bold"><strong>Built-in</strong></span> dans la liste
+                    d&eacute;roulante <span class="bold"><strong>Property Type</strong></span>.</p></li><li class="listitem"><p> Cliquez dans le champ <span class="bold"><strong>File Name</strong></span> puis appuyez
+                    simultan&eacute;ment sur <span class="bold"><strong>Ctrl+Espace</strong></span> pour acc&eacute;der &agrave; la
+                    liste d&#8217;auto-compl&eacute;tion. Pour lire les donn&eacute;es du fichier temporaire cr&eacute;&eacute;,
+                    s&eacute;lectionnez <code class="code">tCreateTemporaryFile_1.FILEPATH </code>dans la liste des
+                    variables. </p></li><li class="listitem"><p> Renseignez les s&eacute;parateurs de lignes et de champs dans leurs champs
+                    respectifs <span class="bold"><strong>Row Separator</strong></span> et <span class="bold"><strong>Field Separator</strong></span>.</p></li><li class="listitem"><p> Dans la liste d&eacute;roulante <span class="bold"><strong>Schema</strong></span>, choisissez
+                    le mode <span class="bold"><strong>Built-In</strong></span> puis cliquez sur le bouton
+                        <span class="bold"><strong>[...]</strong></span> du champ <span class="bold"><strong>Edit
+                        schema</strong></span> pour d&eacute;finir les donn&eacute;es &agrave; passer au composant <span class="bold"><strong>tLogRow</strong></span>. Dans cet exemple, le sch&eacute;ma est compos&eacute; de
+                    la seule colonne <span class="emphasis"><em>value.</em></span></p></li><li class="listitem"><p> Enregistrez le Job puis appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="472"><tr><td><img src="../images/Use_Case_tCreateTemporaryFile7.png" width="472"></td></tr></table></div><p>Le fichier temporaire est cr&eacute;&eacute;, lors de l&#8217;ex&eacute;cution du Job, dans le dossier qui a &eacute;t&eacute;
+            d&eacute;fini et les cinq lignes g&eacute;n&eacute;r&eacute;es sont inscrites dans ce fichier. Le fichier temporaire
+            est supprim&eacute; apr&egrave;s l&#8217;ex&eacute;cution du Job. </p></div></div></body></html>

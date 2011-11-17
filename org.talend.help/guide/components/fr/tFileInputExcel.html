@@ -1,0 +1,279 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputExcel</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapitre&nbsp;9.&nbsp;Composants File"><link rel="prev" href="tFileInputEBCDIC.html" title="tFileInputEBCDIC"><link rel="next" href="tFileInputFullRow.html" title="tFileInputFullRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFileInputExcel"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputExcel"></a>tFileInputExcel</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileInputExcel_icon32.png" width="27"></td></tr></table></div><a name="Xaa2754060"></a><div class="section" title="Propri&eacute;t&eacute;s du tFileInputExcel"><div class="titlepage"><div><div><h3 class="title"><a name="Raa50487"></a>Propri&eacute;t&eacute;s du tFileInputExcel</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille du composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>File/Input</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tFileInputExcel</strong></span> lit
+                                un fichier Excel (.xls ou .xlsx) ou un flux de donn&eacute;es et en extrait
+                                les donn&eacute;es ligne par ligne.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant lit un fichier Excel ou un flux de donn&eacute;es ligne par
+                                ligne pour le scinder en champs et envoie les champs tel que d&eacute;finis
+                                dans le sch&eacute;ma au composant suivant du Job via une connexion
+                                    <span class="bold"><strong>Row</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Property type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Peut &ecirc;tre Built-in ou Repository</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+                                ponctuellement.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>&nbsp;: S&eacute;lectionnez le
+                                fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du composant. Les
+                                champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+                                collect&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="18"><tr><td><img src="../images/Save_Icon.png" width="18"></td></tr></table></div>
+                        </td><td valign="top">
+                            <p>Cliquez sur cette ic&ocirc;ne pour ouvrir l&#8217;assistant de connexion et
+                                enregistrer les param&egrave;tres de connexion au fichier Excel que vous
+                                avez d&eacute;finis dans la vue <span class="bold"><strong>Basic settings
+                                </strong></span>du composant. </p>
+                            <p>Pour plus d&#8217;informations sur comment d&eacute;finir et stocker des
+                                param&egrave;tres de connexion de fichier, consultez le Guide Utilisateur
+                                de <span class="bluebold">Talend Open Studio</span> .</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>File name/Stream</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>File name</strong></span>&nbsp;: Chemin d&#8217;acc&egrave;s et nom
+                                du fichier, et/ou variable &agrave; traiter.</p>
+                            <p><span class="bold"><strong>Stream</strong></span>&nbsp;: Flux de donn&eacute;es &agrave;
+                                traiter. Les donn&eacute;es doivent pr&eacute;alablement &ecirc;tre mises en flux afin
+                                d&#8217;&ecirc;tre r&eacute;cup&eacute;r&eacute;es par le <span class="bold"><strong>tFileInputExcel</strong></span> via la variable
+                                    <span class="emphasis"><em>INPUT_STREAM</em></span> disponible dans la liste
+                                d&#8217;auto-compl&eacute;tion (<span class="bold"><strong>Ctrl+Espace</strong></span>).</p>
+                            <p> </p>
+                            <p>Pour plus d&#8217;informations concernant l&#8217;utilisation et la d&eacute;finition
+                                de variables, consultez le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>All sheets</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour traiter toutes les feuilles du fichier
+                                Excel. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Sheet list</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour
+                                ajouter de nouvelles lignes &agrave; la liste de feuilles &agrave;
+                                traiter&nbsp;:</p>
+                            <p><span class="bold"><strong>Sheet (name or position)</strong></span>&nbsp;:
+                                renseignez le nom ou la position de la feuille &agrave; traiter. </p>
+                            <p><span class="bold"><strong>Use Regex</strong></span>&nbsp;: cochez cette case si
+                                vous utilisez une expression r&eacute;guli&egrave;re pour filtrer les feuilles
+                                selon un mod&egrave;le. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Header</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nombre de lignes &agrave; ignorer au d&eacute;but d&#8217;un fichier.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Footer</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nombre de lignes &agrave; ignorer &agrave; la fin d&#8217;un fichier.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Limit</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nombre maximum de lignes &agrave; traiter. Si Limit = 0, aucune ligne
+                                n&#8217;est lue ni trait&eacute;e.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Affect each sheet(header&amp;footer)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour appliquer les param&egrave;tres d&eacute;finis dans les
+                                champs <span class="bold"><strong>Header</strong></span> et <span class="bold"><strong>Footer</strong></span> &agrave; toutes les feuilles trait&eacute;es.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Die on error</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job en cas d&#8217;erreur.
+                                D&eacute;cochez cette case pour terminer le traitement avec les lignes sans
+                                erreurs, et ignorer les lignes en erreur. Vous pouvez r&eacute;cup&eacute;rer les
+                                lignes en erreur, si vous le souhaitez. Pour cela, utilisez un lien
+                                    <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>First column</em></span> et <span class="emphasis"><em>Last
+                                    column</em></span></p>
+                        </td><td valign="top">
+                            <p>Renseignez l&#8217;intervalle de colonnes que vous voulez traiter&nbsp;: la
+                                position de la premi&egrave;re colonne dans le champ <span class="bold"><strong>First column</strong></span><span class="emphasis"><em> </em></span>et celle de la
+                                derni&egrave;re colonne &agrave; traiter dans le champ <span class="bold"><strong>Last
+                                    column</strong></span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma sera cr&eacute;&eacute; et
+                                conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le <span class="bold"><strong>Repository</strong></span>. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Open Studio</span>. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><a name="Xaa4271662"></a>
+                                <span class="bold"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Advanced separator (for numbers)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette option pour modifier les s&eacute;parateurs utilis&eacute;s pour
+                                les nombres&nbsp;:</p>
+                            <p><span class="bold"><strong>Thousands separator</strong></span>&nbsp;: d&eacute;finissez
+                                le s&eacute;parateur utilis&eacute; pour les milliers.</p>
+                            <p><span class="bold"><strong>Decimal separator</strong></span>&nbsp;: d&eacute;finissez le
+                                s&eacute;parateur utilis&eacute; pour les d&eacute;cimaux. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Trim all columns</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour supprimer les espaces en d&eacute;but et en fin de
+                                champ dans toutes les colonnes. Lorsque cette case est d&eacute;coch&eacute;e, le
+                                tableau <span class="bold"><strong>Check column to trim</strong></span>
+                                s&#8217;affiche, vous permettant de s&eacute;lectionner la ou les colonne(s) dont
+                                vous souhaitez retirer les espaces de d&eacute;but ou de fin.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Encoding</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+                                    <span class="bold"><strong>Custom</strong></span> et d&eacute;finissez-le
+                                manuellement. Ce champ est obligatoire pour la manipulation des
+                                donn&eacute;es des bases de donn&eacute;es. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Read real values for numbers</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour lire les nombres en valeur r&eacute;elle. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Stop to read on empty rows</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour ignorer les lignes vides.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Don&#8217;t validate the cells</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour ne pas effectuer de validation des donn&eacute;es.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Ignore the warning</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour ignorer les avertissements g&eacute;n&eacute;r&eacute;s par des
+                                erreurs sur le fichier Excel. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="italic">tStatCatcher Statistics</span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Utilisez ce composant pour lire un fichier Excel (.xls ou .xlsx)
+                                et s&eacute;parer les champs en fonction d&#8217;un sch&eacute;ma d&eacute;fini. Ce composant
+                                permet de cr&eacute;er un flux de donn&eacute;es &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>, ainsi que de cr&eacute;er un flux de rejet avec un
+                                lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span> filtrant les donn&eacute;es dont le type ne
+                                correspond pas au type d&eacute;fini. Pour un exemple d&#8217;utilisation de ces
+                                deux liens, consultez <a class="xref" href="tFileInputXML.html#Raa68027" title="Sc&eacute;nario&nbsp;2&nbsp;: Extraire les donn&eacute;es XML erron&eacute;es dans un flux de rejet">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Extraire les donn&eacute;es XML erron&eacute;es dans un flux de rejet&nbsp;&raquo;</a> du composant
+                                    <span class="bold"><strong>tFileInputXML</strong></span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e183230"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Aucun sc&eacute;nario n&#8217;est disponible pour ce composant.</p></div></div></body></html>

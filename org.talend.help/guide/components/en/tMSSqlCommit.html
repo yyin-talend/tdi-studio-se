@@ -1,0 +1,66 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMSSqlCommit</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="tMSSqlClose.html" title="tMSSqlClose"><link rel="next" href="tMSSqlConnection.html" title="tMSSqlConnection"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tMSSqlCommit"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMSSqlCommit"></a>tMSSqlCommit</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMSSqlCommit_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tMSSqlCommit properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e96820"></a>tMSSqlCommit properties</h3></div></div></div><p>This component is closely related to <span class="bold"><strong>tMSSqlConnection</strong></span>
+            and <span class="bold"><strong>tMSSqlRollback</strong></span>. It usually does not make much sense
+            to use these components independently in a transaction.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Databases/MSSql</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tMSSqlCommit</strong></span> validates the data
+                                processed through the job into the connected DB.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Using a unique connection, this component commits in one go a
+                                global transaction instead of doing that on every row or every batch
+                                and thus provides gain in performance.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Component list</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the <span class="bold"><strong>tMSSqlConnection</strong></span>
+                                component in the list if more than one connection are planned for
+                                the current Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Close connection</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. It allows you to close the
+                                database connection once the commit is done. Clear this check box to
+                                continue to use the selected connection once the component has
+                                performed its task.</p>
+                            <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                                    <span class="emphasis"><em>If you want to use a </em></span><span class="bold"><strong>Row</strong></span><span class="emphasis"><em> &gt; </em></span><span class="bold"><strong>Main</strong></span><span class="emphasis"><em> connection to link
+                                        </em></span><span class="bold"><strong>tMSSqlCommit</strong></span><span class="emphasis"><em> to your Job, your data
+                                        will be commited row by row. In this case, do not select the
+                                        </em></span><span class="bold"><strong>Close
+                                        connection</strong></span><span class="emphasis"><em> check box or your connection
+                                        will be closed before the end of your first row
+                                        commit.</em></span></p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the job processing metadata at a
+                                job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is to be used along with Mssql components,
+                                especially with <span class="bold"><strong>tMSSqlConnection</strong></span>
+                                and <span class="bold"><strong>tMSSqlRollback</strong></span>
+                                components.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e96984"></a>Related scenarios</h3></div></div></div><p>This component is closely related to <span class="bold"><strong>tMSSqlConnection</strong></span>
+            and <span class="bold"><strong>tMSSqlRollback</strong></span>. It usually does not make much sense
+            to use one of these without using a <span class="bold"><strong>tMSSqlConnection</strong></span>
+            component to open a connection for the current transaction.</p><p>For a <span class="bold"><strong>tMSSqlCommit </strong></span>related scenario, see <a class="xref" href="tMysqlConnection.html#Raa91640" title="Scenario: Inserting data in mother/daughter tables">the section called &#8220;Scenario: Inserting data in mother/daughter tables&#8221;</a>. </p></div></div></body></html>

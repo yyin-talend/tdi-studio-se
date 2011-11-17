@@ -1,0 +1,95 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tGPGDecrypt</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapter&nbsp;9.&nbsp;File components"><link rel="prev" href="tFileUnarchive.html" title="tFileUnarchive"><link rel="next" href="tNamedPipeClose.html" title="tNamedPipeClose"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tGPGDecrypt"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tGPGDecrypt"></a>tGPGDecrypt</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tGPGDecrypt_icon32.png" width="27"></td></tr></table></div><div class="section" title="tGPGDecrypt Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e187000"></a>tGPGDecrypt Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Management</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Decrypts a GnuPG-encrypted file and saves the decrypted file in
+                                the specified target directory.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component calls the <code class="code">gpg</code>
+                                <code class="code">-d</code> command to decrypt a GnuPG-encrypted file and saves
+                                the decrypted file in the specified directory.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Input encrypted file</em></span></p>
+                        </td><td valign="top">
+                            <p>File path to the encrypted file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Output decrypted file</em></span></p>
+                        </td><td valign="top">
+                            <p>File path to the output decrypted file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>GPG binary path</em></span></p>
+                        </td><td valign="top">
+                            <p>File path to the GPG command.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Secret key</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter your secret key.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Passphrase</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the passphrase used in encrypting the specified input
+                                file.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>No TTY Terminal</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to speficy that no TTY terminal is used by
+                                adding the <code class="code">--no-tty</code> option to the decryption command.
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the processing metadata at the Job
+                                level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can be used as a standalone component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Decrypt a GnuPG-encrypted file and display its content"><div class="titlepage"><div><div><h3 class="title"><a name="d0e187192"></a>Scenario: Decrypt a GnuPG-encrypted file and display its content</h3></div></div></div><p>The following scenario describes a three-component Job that decrypts a GnuPG-encrypted
+            file and displays the content of the decrypted file on the <span class="bold"><strong>Run</strong></span> console.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="340"><tr><td><img src="../images/Use_Case_tGPGDecrypt1.png" width="340"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop a <span class="bold"><strong>tGPGDecrypt</strong></span> component, a <span class="bold"><strong>tFileInputDelimited</strong></span> component, and a <span class="bold"><strong>tLogRow</strong></span> component from the <span class="bold"><strong>Palette</strong></span> to the design workspace.</p></li><li class="listitem"><p>Connect the <span class="bold"><strong>tGPGDecrypt</strong></span> component to the
+                        <span class="bold"><strong>tFileInputDelimited</strong></span> component using a
+                        <span class="bold"><strong>Trigger</strong></span> &gt; <span class="bold"><strong>OnSubjobOk</strong></span> link, and connect the <span class="bold"><strong>tFileInputDelimited</strong></span> component to the <span class="bold"><strong>tLogRow</strong></span> component using a <span class="bold"><strong>Row</strong></span>
+                    &gt; <span class="bold"><strong>Main</strong></span> link.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tGPGDecrypt</strong></span> to open its
+                        <span class="bold"><strong>Component</strong></span> view and set its
+                    properties:</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="418"><tr><td><img src="../images/Use_Case_tGPGDecrypt2.png" width="418"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Input encrypted file</strong></span> field, browse to
+                    the file to be decrypted.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Output decrypted file </strong></span>field, enter the
+                    path to the decrypted file.</p></li></ul></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If the file path contains accented characters, you will get an error message when
+                running the Job. For more information on what to do when the accents are not
+                supported, see <span class="bluebold">Talend Open Studio</span><span class="emphasis"><em> </em></span><span class="bold"><strong>Installation Guide</strong></span><span class="emphasis"><em>.</em></span></p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>GPG binary path</strong></span> field, browse to the
+                    GPG command file.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Passphrase</strong></span> field, enter the passphrase
+                    used when encrypting the input file.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tFileInputDelimited</strong></span>
+                    component to open its <span class="bold"><strong>Component</strong></span> view and set
+                    its properties:</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="419"><tr><td><img src="../images/Use_Case_tGPGDecrypt3.png" width="419"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Use the <span class="bold"><strong>Built-In</strong></span> property type for this
+                    scenario.</p></li><li class="listitem"><p>In the <span class="bold"><strong>File name/Stream</strong></span> field, define the
+                    path to the decrypted file, which is the output path you have defined in the
+                        <span class="bold"><strong>tGPGDecrypt</strong></span> component.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Header</strong></span>, <span class="bold"><strong>Footer</strong></span> and <span class="bold"><strong>Limit</strong></span> fields, define
+                    respectively the number of rows to be skipped in the beginning of the file, at
+                    the end of the file and the number of rows to be processed.</p></li><li class="listitem"><p>Use a <span class="bold"><strong>Built-In</strong></span> schema. This means that it is
+                    available for this Job only. </p></li><li class="listitem"><p>Click <span class="bold"><strong>Edit schema</strong></span> and edit the schema for the
+                    component. Click twice the <span class="bold"><strong>[+]</strong></span> button to add
+                    two columns that you will call <span class="emphasis"><em>idState</em></span> and
+                        <span class="emphasis"><em>labelState</em></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate your changes and close
+                    the editor.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="359"><tr><td><img src="../images/Use_Case_tGPGDecrypt4.png" width="359"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-click the <span class="bold"><strong>tLogRow</strong></span> component and set
+                    its properties:</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="420"><tr><td><img src="../images/Use_Case_tGPGDecrypt5.png" width="420"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Use a <span class="bold"><strong>Built-In</strong></span> schema for this scenario. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, define the console display
+                    mode according to your preference. In this scenario, select <span class="bold"><strong>Table (print values in cells of a table)</strong></span>.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to run it. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="268"><tr><td><img src="../images/Use_Case_tGPGDecrypt6.png" width="268"></td></tr></table></div><p>The specified file is decrypted and the defined number of rows of the decrypted file
+            are printed on the <span class="bold"><strong>Run</strong></span> console.</p></div></div></body></html>

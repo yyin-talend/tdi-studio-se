@@ -1,0 +1,119 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tConvertType</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch14.html" title="Chapitre&nbsp;14.&nbsp;Composants Processing"><link rel="prev" href="tAggregateSortedRow.html" title="tAggregateSortedRow"><link rel="next" href="tDenormalize.html" title="tDenormalize"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tConvertType"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tConvertType"></a>tConvertType</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tConvertType_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa4552567"></a><div class="section" title="Propri&eacute;t&eacute;s du tConvertType"><div class="titlepage"><div><div><h3 class="title"><a name="d0e228115"></a>Propri&eacute;t&eacute;s du tConvertType</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Processing</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tConvertType</strong></span> permet d&#8217;effectuer des
+                                conversions sp&eacute;cifiques du type de donn&eacute;es Java vers un autre type
+                                de donn&eacute;es Talend au cours de l&#8217;ex&eacute;cution.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tConvertType</strong></span> permet de convertir
+                                automatiquement des donn&eacute;es de type Java vers un autre type utilis&eacute;
+                                par <span class="bold"><strong>Talend</strong></span>, ce qui
+                                permet d&#8217;&eacute;viter les erreurs de compilation.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository. </p><p> Cliquez sur <span class="bold"><strong>Edit
+                                    Schema</strong></span> pour modifier le sch&eacute;ma.</p><p> Notez
+                                que lorsque vous modifiez le sch&eacute;ma, il se met automatiquement en
+                                built-in.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le
+                                sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce composant seulement. Voir
+                                    &eacute;galement&nbsp;le<span class="bold"><strong> Guide Utilisateur</strong></span>
+                                de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le <span class="bold"><strong>Repository</strong></span>. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute; dans
+                                divers projets et Jobs designs. Voir &eacute;galement&nbsp;le<span class="bold"><strong>Guide Utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Auto Cast</em></span></p>
+                        </td><td valign="top"><p>Cette case est coch&eacute;e par d&eacute;faut. Elle permet de
+                                convertir automatiquement des donn&eacute;es de type Java.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Manual Cast</em></span></p>
+                        </td><td valign="top"><p>Ce mode n&#8217;est pas visible si la case<span class="bold"><strong> Auto Cast </strong></span>est coch&eacute;e. Elle permet de
+                                pr&eacute;ciser manuellement les colonnes o&ugrave; une conversion de type Java
+                                est n&eacute;cessaire.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Set empty values to Null before
+                                    converting</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour d&eacute;finir les valeurs des
+                                &eacute;l&eacute;ments de type String ou Object comme null pour les donn&eacute;es
+                                d'entr&eacute;e.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top"><p>Cette case est coch&eacute;e pour arr&ecirc;ter le Job lorsque
+                                survient une erreur.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant ne peut &ecirc;tre
+                                utilis&eacute; comme composant de d&eacute;but. Il requiert un flux d&#8217;entr&eacute;e pour
+                                fonctionner.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Convertir des types de donn&eacute;es Java"><div class="titlepage"><div><div><h3 class="title"><a name="d0e228334"></a>Sc&eacute;nario&nbsp;: Convertir des types de donn&eacute;es Java</h3></div></div></div><p>Le sc&eacute;nario Java suivant permet de cr&eacute;er un Job &agrave; quatre composants dans lequel le
+                <span class="bold"><strong>tConvertType</strong></span> est utilis&eacute; pour convertir des donn&eacute;es
+            de type Java stock&eacute;es dans trois colonnes diff&eacute;rentes et le <span class="bold"><strong>tMap</strong></span> est utilis&eacute; pour modifier le sch&eacute;ma&nbsp;: la premi&egrave;re colonne reste
+            intacte et les deux derni&egrave;res colonnes du sch&eacute;ma d&#8217;entr&eacute;e sont fusionn&eacute;es en une seule
+            colonne dans le sch&eacute;ma de sortie.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Dans ce sc&eacute;nario, le sch&eacute;ma du fichier d&eacute;limit&eacute; utilis&eacute; en entr&eacute;e est stock&eacute; dans
+                le Repository, vous pouvez donc renseigner les propri&eacute;t&eacute;s du composant <span class="bold"><strong>tFileInputDelimited</strong></span> d&#8217;un simple glisser-d&eacute;poser du
+                r&eacute;pertoire <span class="bold"><strong>Repository</strong></span> &gt; <span class="bold"><strong>Metadata</strong></span> &gt; <span class="bold"><strong>File delimited </strong></span>vers
+                l&#8217;espace de mod&eacute;lisation. Pour plus d&#8217;informations, consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez et d&eacute;posez les composants suivants dans l&#8217;espace de mod&eacute;lisation&nbsp;:
+                        <span class="bold"><strong>tConvertType</strong></span>, <span class="bold"><strong>tMap</strong></span> et <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p> Dans le Repository, d&eacute;veloppez les noeuds <span class="bold"><strong>Metadata &gt;
+                        File Delimited</strong></span> et glissez-d&eacute;posez la m&eacute;tadonn&eacute;e correspondante
+                    dans l&#8217;espace de mod&eacute;lisation. Pour ce sc&eacute;nario, <span class="emphasis"><em>JavaTypes</em></span>. </p><p> La bo&icirc;te de dialogue <span class="bold"><strong>[Components]</strong></span>
+                    appara&icirc;t.</p></li><li class="listitem"><p> Dans la bo&icirc;te de dialogue, s&eacute;lectionnez le <span class="bold"><strong>tFileInputDelimited</strong></span> dans la liste des composants et cliquez sur
+                        <span class="bold"><strong>Ok</strong></span>.</p><p> Un composant <span class="bold"><strong>tFileInputComponent</strong></span> appel&eacute;
+                        <span class="emphasis"><em>Java types</em></span> appara&icirc;t dans l&#8217;espace de
+                    mod&eacute;lisation.</p></li><li class="listitem"><p> Connectez les composants &agrave; l&#8217;aide de liens <span class="bold"><strong>Row
+                        Main</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="455"><tr><td><img src="../images/Use_Case_tConvertType.png" width="455"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;espace de mod&eacute;lisation, s&eacute;lectionnez le composant <span class="bold"><strong>tFileInputDelimited</strong></span> et cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour param&eacute;trer ses propri&eacute;t&eacute;s de
+                    base.</p></li><li class="listitem"><p> Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>, s&eacute;lectionnez
+                    l&#8217;option <span class="bold"><strong>Repository</strong></span> dans la liste <span class="bold"><strong>Property Type</strong></span> puisque les propri&eacute;t&eacute;s du fichier sont
+                    stock&eacute;es dans le <span class="bold"><strong>Repository</strong></span>. Les autres champs
+                    sont alors renseign&eacute;s automatiquement gr&acirc;ce aux donn&eacute;es r&eacute;cup&eacute;r&eacute;es.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="500"><tr><td><img src="../images/Use_Case_tConvertType1.png" width="500"></td></tr></table></div><p>Le fichier d&#8217;entr&eacute;e utilis&eacute; pour ce sc&eacute;nario est un fichier texte appel&eacute;
+                <span class="emphasis"><em>input</em></span> contenant des donn&eacute;es Java de type string (cha&icirc;ne de
+            caract&egrave;res), integer (entier) et float.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="176"><tr><td><img src="../images/Use_Case_tConvertType2.png" width="176"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans la vue <span class="bold"><strong>Basic settings</strong></span>, renseignez les
+                    autres champs, si n&eacute;cessaire. Pour plus d&#8217;informations, consultez <a class="xref" href="tMDMInput.html#Raa86313" title="Propri&eacute;t&eacute;s du tMDMInput">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tMDMInput&nbsp;&raquo;</a>. Dans ce sc&eacute;nario, il n&#8217;y a ni en-t&ecirc;te ni pied de page
+                    et il n&#8217;y a pas de nombre limite de lignes &agrave; traiter.</p></li><li class="listitem"><p> Cliquez sur <span class="bold"><strong>Edit schema</strong></span> pour d&eacute;crire la
+                    structure des donn&eacute;es du fichier d&#8217;entr&eacute;e. Dans ce sc&eacute;nario, le sch&eacute;ma est
+                    compos&eacute; de trois colonnes&nbsp;: <span class="emphasis"><em>StringtoInteger, IntegerField
+                    </em></span>et <span class="emphasis"><em>FloatToInteger</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="386"><tr><td><img src="../images/Use_Case_tConvertType3.png" width="386"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                    dialogue.</p></li><li class="listitem"><p> Dans l&#8217;espace de mod&eacute;lisation, s&eacute;lectionnez le <span class="bold"><strong>tConvertType</strong></span> et cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour param&eacute;trer ses propri&eacute;t&eacute;s de base.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="467"><tr><td><img src="../images/Use_Case_tConvertType4.png" width="467"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans la liste <span class="bold"><strong>Schema Type</strong></span>, s&eacute;lectionnez
+                    l&#8217;option <span class="bold"><strong>Built in</strong></span> et cliquez sur le bouton
+                        <span class="bold"><strong>Sync columns </strong></span>pour r&eacute;cup&eacute;rer automatiquement
+                    les colonnes du composant <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li><li class="listitem"><p> Si n&eacute;cessaire, cliquez sur <span class="bold"><strong>Edit schema</strong></span> pour
+                    d&eacute;crire manuellement la structure des donn&eacute;es de ce composant de
+                    traitement.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="511"><tr><td><img src="../images/Use_Case_tConvertType5.png" width="511"></td></tr></table></div><p>Dans ce sc&eacute;nario, l&#8217;objectif est de convertir les donn&eacute;es de type string (cha&icirc;ne de
+            caract&egrave;res) en integer (entier) et des donn&eacute;es de type float en
+                integer<span class="emphasis"><em>.</em></span></p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                    dialogue <span class="bold"><strong>[Schema of tConvertType]</strong></span>.</p></li><li class="listitem"><p> Dans l&#8217;espace de mod&eacute;lisation, double-cliquez sur le <span class="bold"><strong>tMap</strong></span> pour ouvrir l&#8217;&eacute;diteur du <span class="bold"><strong>tMap</strong></span>.</p><p> L&#8217;&eacute;diteur du <span class="bold"><strong>tMap</strong></span> s&#8217;ouvre et affiche les
+                    noms des colonnes du fichier d&#8217;entr&eacute;e.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="262"><tr><td><img src="../images/Use_Case_tConvertType7.png" width="262"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;onglet <span class="bold"><strong>Schema editor</strong></span> en bas de
+                    l&#8217;&eacute;diteur du <span class="bold"><strong>tMap</strong></span>, cliquez sur le bouton
+                        <span class="bold"><strong>[+]</strong></span> de la table de sortie pour ajouter deux
+                    lignes et nommez-les <span class="emphasis"><em>StringToInteger</em></span> et
+                        <span class="emphasis"><em>Sum</em></span>.</p></li><li class="listitem"><p> Dans l&#8217;&eacute;diteur du <span class="bold"><strong>tMap</strong></span>, glissez la ligne
+                        <span class="emphasis"><em>StringToInteger </em></span>de la table d&#8217;entr&eacute;e vers la ligne
+                        <span class="emphasis"><em>StringToInteger de la table de sortie</em></span>.</p></li><li class="listitem"><p> Dans l&#8217;&eacute;diteur du <span class="bold"><strong>tMap</strong></span>, glissez les lignes
+                        <span class="emphasis"><em>IntegerField</em></span> et <span class="emphasis"><em>FloatToInteger</em></span> de
+                    la table d&#8217;entr&eacute;e vers la ligne <span class="emphasis"><em>Sum</em></span> de la table de
+                    sortie.</p></li><li class="listitem"><p> Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer l&#8217;&eacute;diteur du
+                    tMap.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="521"><tr><td><img src="../images/Use_Case_tConvertType6.png" width="521"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;espace de mod&eacute;lisation, s&eacute;lectionnez le <span class="bold"><strong>tLogRow</strong></span> et cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour param&eacute;trer ses propri&eacute;t&eacute;s de base. Pour plus
+                    d&#8217;informations, consultez <a class="xref" href="tLogRow.html" title="tLogRow">la section intitul&eacute;e &laquo;&nbsp;tLogRow&nbsp;&raquo;</a>.</p></li><li class="listitem"><p> Enregistrez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="320"><tr><td><img src="../images/Use_Case_tConvertType8.png" width="320"></td></tr></table></div><p>Les donn&eacute;es de type string sont converties en integer et affich&eacute;es dans la colonne
+                <span class="emphasis"><em>StringToInteger </em></span>dans la console. Les donn&eacute;es de type float sont
+            converties en integer et ajout&eacute;es &agrave; la valeur <span class="emphasis"><em>IntegerField</em></span> et leur
+            somme est affich&eacute;e dans la colonne <span class="emphasis"><em>Sum </em></span>dans la console.</p></div></div></body></html>
