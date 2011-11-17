@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
@@ -29,6 +30,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -48,6 +51,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FileItem;
@@ -60,6 +64,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -71,6 +76,7 @@ import org.talend.designer.core.ui.editor.process.EDatabaseComponentName;
 import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
 import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
@@ -284,11 +290,11 @@ public class PropertyTypeController extends AbstractRepositoryController {
             RepositoryReviewDialog dialog = null;
             if (dbTypeParam != null) {
                 String[] listRepositoryItems = dbTypeParam.getListRepositoryItems();
-                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA, param
-                        .getRepositoryValue(), listRepositoryItems);
+                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA,
+                        param.getRepositoryValue(), listRepositoryItems);
             } else {
-                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA, param
-                        .getRepositoryValue());
+                dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(), ERepositoryObjectType.METADATA,
+                        param.getRepositoryValue());
             }
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 String id = dialog.getResult().getObject().getId();
@@ -345,16 +351,23 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     RepositoryNode selectNode = dialog.getResult();
                     ChangeValuesFromRepository changeValuesFromRepository = null;
                     if (selectNode.getObjectType() == ERepositoryObjectType.SERVICESOPERATION) {
-                        String serviceId = item.getProperty().getId();
-                        String portId = selectNode.getParent().getObject().getId();
-                        String operationId = selectNode.getObject().getId();
-                        changeValuesFromRepository = new ChangeValuesFromRepository(
-                                elem,
-                                repositoryConnection,
-                                param.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), serviceId + " - " + portId + " - " + operationId); //$NON-NLS-1$
-                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
-                            IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
-                            service.updateOperation((INode) elem, serviceId + " - " + portId + " - " + operationId, selectNode);
+                        if (isJobAlreadyAssignToServiceOperation()) {
+                            MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Message",
+                                    "job already used in other operation!");
+                        } else {
+                            String serviceId = item.getProperty().getId();
+                            String portId = selectNode.getParent().getObject().getId();
+                            String operationId = selectNode.getObject().getId();
+                            changeValuesFromRepository = new ChangeValuesFromRepository(
+                                    elem,
+                                    repositoryConnection,
+                                    param.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), serviceId + " - " + portId + " - " + operationId); //$NON-NLS-1$
+                            if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                                IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(
+                                        IESBService.class);
+                                service.updateOperation((INode) elem, serviceId + " - " + portId + " - " + operationId,
+                                        selectNode);
+                            }
                         }
                     } else {
                         changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection, fullParamName, id);
@@ -519,13 +532,14 @@ public class PropertyTypeController extends AbstractRepositoryController {
 
                             IElementParameter propertyParam = elem
                                     .getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-                            propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(
-                                    EmfComponent.REPOSITORY);
+                            propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName())
+                                    .setValue(EmfComponent.REPOSITORY);
 
                             // 2. commnd
-                            Command cmd = new ChangeValuesFromRepository((Element) node, connItem.getConnection(), propertyParam
-                                    .getName()
-                                    + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), connItem.getProperty().getId()); //$NON-NLS-1$
+                            Command cmd = new ChangeValuesFromRepository(
+                                    (Element) node,
+                                    connItem.getConnection(),
+                                    propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), connItem.getProperty().getId()); //$NON-NLS-1$
                             executeCommand(cmd);
                             // see bug in feature 5998.refresh repositoryList.
                             if (dynamicProperty instanceof MultipleThreadDynamicComposite) {
@@ -538,6 +552,22 @@ public class PropertyTypeController extends AbstractRepositoryController {
             }
         }
         return null;
+    }
+
+    private boolean isJobAlreadyAssignToServiceOperation() {
+        IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
+        boolean foundInOpen = false;
+        IProcess2 process = null;
+        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        process = (IProcess2) RepositoryPlugin.getDefault().getDesignerCoreService().getCurrentProcess();
+        String jobID = process.getProperty().getId();
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+            IESBService esbService = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+            if (esbService != null) {
+                return esbService.isJobAlreadyAssignToServiceOperation(jobID);
+            }
+        }
+        return false;
     }
 
     // see bug 0004305
@@ -602,8 +632,8 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 repositoryFileItemMap = ((MultipleThreadDynamicComposite) dynamicProperty).getRepositoryFileItemMap();
             }
 
-            repositoryParam = param.getParentParameter().getChildParameters().get(
-                    EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+            repositoryParam = param.getParentParameter().getChildParameters()
+                    .get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             String connectionSelected = (String) repositoryParam.getValue();
 
             /* bug 16969 */
@@ -807,8 +837,8 @@ public class PropertyTypeController extends AbstractRepositoryController {
                         final String name = "SOURCE_LIB"; //$NON-NLS-1$
                         IElementParameter libParam = node.getElementParameter(name);
                         if (libParam != null) {
-                            Command libSettingCmd = new PropertyChangeCommand(node, name, TalendTextUtils
-                                    .addQuotes(databaseConnection.getSID()));
+                            Command libSettingCmd = new PropertyChangeCommand(node, name,
+                                    TalendTextUtils.addQuotes(databaseConnection.getSID()));
                             cc.add(libSettingCmd);
                         }
 
