@@ -8,11 +8,7 @@
         <topic label="Tutorial (flash)" href="http://www.talend.com/tos/tutorials/menu.php" />
     </topic>
 
-    <topic label="Perl" href="guide/perl/perlfunc.html">
-        <anchor id="per_function"/>
-    </topic>
-
-    <topic label="Components">
+  <topic label="Components">
   <topic label="tAccessBulkExec">
     <topic label="Properties" href="guide/components/en/tAccessBulkExec_Prop.html"/>
     <topic label="Scenario" href="guide/components/en/tAccessBulkExec_Scenario.html"/>
