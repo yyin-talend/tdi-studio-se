@@ -100,6 +100,7 @@
 	            <ITEM NAME="GREATEROREQUAL"    VALUE="GREATER_THAN_OR_EQUAL"/>
 	            <ITEM NAME="LOWER"    VALUE="LOWER_THAN"/>
 	            <ITEM NAME="LOWEROREQUAL"    VALUE="LOWER_THAN_OR_EQUAL"/>
+	            <ITEM NAME="FULLTEXTSEARCH"    VALUE="FULLTEXTSEARCH"/>
 	          </ITEMS>
 	        </ITEM>
 	        
