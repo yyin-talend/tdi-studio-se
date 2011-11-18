@@ -809,6 +809,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
 									if("id_Document".equals(column.getTalendType()) && "false".equals(nodeCheck)) {
 										isWrongConfig = true;
+										break;
 									}
 								}
 							}
