@@ -327,7 +327,20 @@ public class TOSLoginComposite extends Composite {
         openButton = toolkit.createButton(tosActionComposite, null, SWT.PUSH);
         data = new FormData();
         data.top = new FormAttachment(projectLabel, 0, SWT.TOP);
-        data.left = new FormAttachment(100, -75);
+
+        gc = new GC(openButton);
+        Point labelSizeOpenButton = gc.stringExtent(Messages.getString("TOSLoginComposite.openButton"));
+        gc.dispose();
+
+        gc = new GC(openButton);
+        Point labelSizeDeleteButton = gc.stringExtent(Messages.getString("TOSLoginComposite.deleteButton"));
+        gc.dispose();
+
+        if (labelSizeOpenButton.x > labelSizeDeleteButton.x) {
+            data.left = new FormAttachment(100, -10 - labelSizeOpenButton.x - 10);
+        } else {
+            data.left = new FormAttachment(100, -10 - labelSizeDeleteButton.x - 10);
+        }
         data.right = new FormAttachment(100, -10);
         // if (Platform.getOS().equals(Platform.OS_WIN32)) {
         // data.bottom = new FormAttachment(projectLabel, 0, SWT.BOTTOM);
