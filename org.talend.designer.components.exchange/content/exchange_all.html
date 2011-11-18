@@ -19,17 +19,19 @@
 			var navName = navigator.appName;
 			var newWidth = null;
 			var tabs;
+			var intWidth = null;
+			var newWidth = null;
 			if(navName == 'Microsoft Internet Explorer'){
-				newWidth = (document.body.clientWidth - 213)+"px";
+				intWidth = (document.body.clientWidth - 213);
 			}else{
-				newWidth = (document.width - 213)+"px";
+				intWidth = (document.width - 213);
 			}
+			newWidth = intWidth+"px";
 			tabs = document.getElementsByTagName("table");
 			
 			tabs[0].style.width = newWidth;
 			tabs[1].style.width = newWidth;
-			tabs[2].style.width = newWidth;
-			//tabs[3].style.width = newWidth;
+			tabs[2].style.width = (intWidth - 20)+"px";
 			tabs[4].style.width = newWidth;
 			tabs[5].style.width = newWidth;
 			tabs[6].style.width = newWidth;
@@ -270,17 +272,17 @@
 								<a class="icon" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;id=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;text=" id="commit_filter"><img onmouseover="filterReWriteUrl()" src="imgs/refresh.gif"/> </a></td>
 							</tr>
 							<div id="INSERT_DATA" xmlns="">
-					<contentProvider id="INSERT_DATA" class="org.talend.designer.components.exchange.ui.htmlcontent.AvailableCompositeProvider" pluginId="org.talend.designer.components.exchange">			</contentProvider>
-					</div>
+								<contentProvider id="INSERT_DATA" class="org.talend.designer.components.exchange.ui.htmlcontent.AvailableCompositeProvider" pluginId="org.talend.designer.components.exchange">			</contentProvider>
+							</div>
 						</table>
 					</li>
 				</ul>
 				<!-- extension details  -->
 				<ul class="ulblock" id="extension_details">
 					<li>
-						<table align="center" cellpadding="0" cellspacing="0" class="tableStyle">
+						<table align="center" cellpadding="0" cellspacing="0" class="tableStyle" style="border: 1px solid #9BB9F5;" >
 							<tr align="left">
-								<td class="toolbar" colspan="5" style="border-bottom:1px solid #9BB9F5;"><a class="icon"><img onclick="setTab(0,'list_available_extensions')" src="imgs/backward_nav.gif"/></a></td>
+								<td class="toolbar" colspan="5" style="border:0px;border-bottom:1px solid #9BB9F5;"><a class="icon"><img onclick="setTab(0,'list_available_extensions')" src="imgs/backward_nav.gif"/></a></td>
 							</tr>
 							<tr align="center">
 								<td>
@@ -294,14 +296,14 @@
 								<td valign="top">
 									<table cellpadding="0" cellspacing="0">
 										<tr>
-											<td width="95%">
+											<td width="75%">
 												<div class="compDesc" id="component_description_part">
 													<div id="COMPONENT_DESCRIPTION" xmlns="">
 					                  					<contentProvider id="COMPONENT_DESCRIPTION" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">						</contentProvider>
 													</div>
 												</div>
 											</td>
-											<td width="100px">
+											<td width="25%">
 												<div class="compImg" id="component_Image_part">
 													<table align="center" border="0">
 														<tr>
@@ -516,7 +518,7 @@
 							<tr>
 								<td style="padding: 0px">
 								
-								<table>
+								<table style="border: 1px solid #9BB9F5; border-top: 0px">
 										<tr>
 											<td nowrap="nowrap"><span style="margin-left:10px;font-weight:bold;"> Modify Last Revision </span></td>
 											<td width="100%"></td>

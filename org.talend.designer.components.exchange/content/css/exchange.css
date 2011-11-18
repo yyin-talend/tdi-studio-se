@@ -176,7 +176,7 @@ table.tableStyle {
 }
 .formStyle {
 	position: relative;
-	height: 400px;
+	height: 100%;
 	border: 1px solid #9BB9F5;
 	border-top: 0px;
 }
