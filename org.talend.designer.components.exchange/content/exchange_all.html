@@ -15,17 +15,25 @@
 			return temp;
 		}
 		
-			function onResizeDocument () {
-				var tabs = document.getElementsByClassName("tableStyle");
-				var newWidth = (document.width - 213)+"px";
-				tabs[0].style.width = newWidth;
-				tabs[1].style.width = newWidth;
-				tabs[2].style.width = newWidth;
-				tabs[3].style.width = newWidth;
-				tabs[4].style.width = newWidth;
-				tabs[5].style.width = newWidth;
-				tabs[6].style.width = newWidth;
+		function onResizeDocument () {
+			var navName = navigator.appName;
+			var newWidth = null;
+			var tabs;
+			if(navName == 'Microsoft Internet Explorer'){
+				newWidth = (document.body.clientWidth - 213)+"px";
+			}else{
+				newWidth = (document.width - 213)+"px";
 			}
+			tabs = document.getElementsByTagName("table");
+			
+			tabs[0].style.width = newWidth;
+			tabs[1].style.width = newWidth;
+			tabs[2].style.width = newWidth;
+			tabs[3].style.width = newWidth;
+			tabs[4].style.width = newWidth;
+			tabs[5].style.width = newWidth;
+			tabs[6].style.width = newWidth;
+		}
 			
 			function onchangeFileUpload(fileId,fakefileId){
 				var v = document.getElementById(fileId).value;
@@ -257,7 +265,7 @@
 							<tr align="right">
 								<td colspan="5" class="toolbar">
 								<input id="avialable_filter_text" name="avialable_filter_text" type="text" />
-								<a href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;id=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;text=" id="commit_filter"><img onmouseover="filterReWriteUrl()" src="imgs/refresh.gif" class="icon"/> </a></td>
+								<a class="icon" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;id=org.talend.designer.components.exchange.ui.actions.FilterExtensionAction&amp;text=" id="commit_filter"><img onmouseover="filterReWriteUrl()" src="imgs/refresh.gif"/> </a></td>
 							</tr>
 							<div id="INSERT_DATA" xmlns="">
 					<contentProvider id="INSERT_DATA" class="org.talend.designer.components.exchange.ui.htmlcontent.AvailableCompositeProvider" pluginId="org.talend.designer.components.exchange">			</contentProvider>
@@ -270,7 +278,7 @@
 					<li>
 						<table align="center" cellpadding="0" cellspacing="0" class="tableStyle">
 							<tr align="left">
-								<td class="toolbar" colspan="5" style="border-bottom:1px solid #9BB9F5;"><img onclick="setTab(0,'list_available_extensions')" src="imgs/backward_nav.gif" class="icon"/></td>
+								<td class="toolbar" colspan="5" style="border-bottom:1px solid #9BB9F5;"><a class="icon"><img onclick="setTab(0,'list_available_extensions')" src="imgs/backward_nav.gif"/></a></td>
 							</tr>
 							<tr align="center">
 								<td>
@@ -336,6 +344,9 @@
 				<ul class="ulhide" id="downloaded_extensions">
 					<li>
 						<table align="center" cellpadding="0" cellspacing="0" class="tableStyle">
+							<tr align="left">
+								<td class="toolbar" colspan="5" style="border-bottom:0px solid #9BB9F5;"><a class="icon"><img onclick="setTab(2,'list_my_extensions')" src="imgs/backward_nav.gif"/></a></td>
+							</tr>
 						<div id="DOWNLOADEXTENSION_DATA" xmlns="">
 							<contentProvider id="DOWNLOADEXTENSION_DATA" class="org.talend.designer.components.exchange.ui.htmlcontent.DownloadExtensionProvider" pluginId="org.talend.designer.components.exchange">			</contentProvider>
 							</div>
@@ -348,9 +359,9 @@
 						<table align="center" cellpadding="0" cellspacing="0" id="table" class="tableStyle">
 							<tr align="right">
 								<td class="toolbar" colspan="5">
-								<div onclick="setTab(2,'creat_new_extension')" class="toolbarButton">
+								<a onclick="setTab(2,'creat_new_extension')" class="toolbarButton">
 									Add New Extension
-								</div></td>
+								</a></td>
 							</tr>
 							<div id="LIST_MY_EXTENSION" xmlns="">
 								<contentProvider id="LIST_MY_EXTENSION" class="org.talend.designer.components.exchange.ui.htmlcontent.MyExchangeContentProvider" pluginId="org.talend.designer.components.exchange"/>
@@ -363,7 +374,7 @@
 					<li>
 						<table align="center" cellpadding="0" cellspacing="0" id="table" class="tableStyle">
 							<tr align="left">
-								<td class="toolbar" colspan="5" style="border-bottom:1px solid #9BB9F5;"><img onclick="setTab(2,'list_my_extensions')" src="imgs/backward_nav.gif" class="icon"/></td>
+								<td class="toolbar" colspan="5" style="border-bottom:1px solid #9BB9F5;"><a class="icon"><img onclick="setTab(2,'list_my_extensions')" src="imgs/backward_nav.gif"/></a></td>
 							</tr>
 							<tr>
 								<td style="padding: 0px">
@@ -449,7 +460,7 @@
 					<li>
 						<table align="center" cellpadding="0" cellspacing="0" class="tableStyle">
 							<tr align="left">
-								<td class="toolbar" colspan="5" style="border-bottom:1px solid #9BB9F5;"><img onclick="setTab(2,'list_my_extensions')" src="imgs/backward_nav.gif" class="icon"/></td>
+								<td class="toolbar" colspan="5" style="border-bottom:1px solid #9BB9F5;"><a class="icon"><img onclick="setTab(2,'list_my_extensions')" src="imgs/backward_nav.gif"/></a></td>
 							</tr>
 							<tr>
 								<td style="padding: 0px">
@@ -523,7 +534,7 @@
 					<li>
 						<table align="center" border="0" cellpadding="0" cellspacing="0" id="table" class="tableStyle">
 							<tr align="left">
-								<td class="toolbar" colspan="5" style="border-bottom:1px solid #9BB9F5;"><img onclick="setTab(2,'list_my_extensions')" src="imgs/backward_nav.gif" class="icon"/></td>
+								<td class="toolbar" colspan="5" style="border-bottom:1px solid #9BB9F5;"><a class="icon"><img onclick="setTab(2,'list_my_extensions')" src="imgs/backward_nav.gif" /></a></td>
 							</tr>
 							<tr>
 								<td style="padding: 0px">
