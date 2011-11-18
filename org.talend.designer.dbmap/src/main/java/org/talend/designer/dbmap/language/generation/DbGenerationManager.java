@@ -63,7 +63,7 @@ public abstract class DbGenerationManager {
 
     private Set<String> aliasAlreadyDeclared = new HashSet<String>();
 
-    protected String queryColumnsName = "\"";
+    protected String queryColumnsName = "";
 
     /**
      * DOC amaumont GenerationManager constructor comment.
@@ -224,7 +224,7 @@ public abstract class DbGenerationManager {
      * @return
      */
     public String buildSqlSelect(DbMapComponent component, String outputTableName) {
-
+    	queryColumnsName = "\"";
         aliasAlreadyDeclared.clear();
 
         List<IConnection> outputConnections = (List<IConnection>) component.getOutgoingConnections();
