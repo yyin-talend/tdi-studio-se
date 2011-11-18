@@ -29,10 +29,12 @@
 			tabs[0].style.width = newWidth;
 			tabs[1].style.width = newWidth;
 			tabs[2].style.width = newWidth;
-			tabs[3].style.width = newWidth;
+			//tabs[3].style.width = newWidth;
 			tabs[4].style.width = newWidth;
 			tabs[5].style.width = newWidth;
 			tabs[6].style.width = newWidth;
+			tabs[9].style.width = newWidth;
+			tabs[12].style.width = newWidth;
 		}
 			
 			function onchangeFileUpload(fileId,fakefileId){
@@ -284,57 +286,66 @@
 								<td>
 								<div id="div_name_part">
 									<div id="LEFT_NAME_PART" xmlns="">
-				            <contentProvider id="LEFT_NAME_PART" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">			</contentProvider>
+				            			<contentProvider id="LEFT_NAME_PART" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">			</contentProvider>
 									</div>
 								</div></td>
 							</tr>
 							<tr align="left" valign="top">
 								<td valign="top">
-									<tr>
-										<td>
-										<div class="compDesc" id="component_description_part">
-											<div id="COMPONENT_DESCRIPTION" xmlns="">
-				                  <contentProvider id="COMPONENT_DESCRIPTION" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">						</contentProvider>
-											</div>
-										</div></td>
-										<td>
-										<div class="compImg" id="component_Image_part">
-											<table align="center" border="0">
-												<tr>
-													<td>
-													<div id="GET_EXTENSION_IMAGE" xmlns="">
-							                <contentProvider id="GET_EXTENSION_IMAGE" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">										</contentProvider>
-							                </div></td>
-												</tr>
-												<tr>
-													<td>
-													<div id="RATE_IMANGE" xmlns="">
-							                <contentProvider id="RATE_IMANGE" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">										</contentProvider>
-							                </div></td>
-												</tr>
-												<tr>
-													<td>
-													<div id="INSTALL_COMPONENT" xmlns="">
-							                <contentProvider id="INSTALL_COMPONENT" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">										</contentProvider>
-							                </div></td>
-												</tr>
-											</table>
-										</div></td>
-									</tr>
-									<tr>
-										<td class="userreview">User Reviews </td>
-										<td>
-										<div id="WRITE_REVIEWS" xmlns="">
-									        <contentProvider id="WRITE_REVIEWS" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">							</contentProvider>
-								        </div></td>
-									</tr>
-									<tr>
-										<td colspan="2">
-										<div class="reviews" id="component_reviews_part">
-										<div id="EXTENSION_REVIEWS" xmlns=""/>
-				                  <contentProvider id="EXTENSION_REVIEWS" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">					</contentProvider>
-										</div></td>
-									</tr>
+									<table cellpadding="0" cellspacing="0">
+										<tr>
+											<td width="95%">
+												<div class="compDesc" id="component_description_part">
+													<div id="COMPONENT_DESCRIPTION" xmlns="">
+					                  					<contentProvider id="COMPONENT_DESCRIPTION" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">						</contentProvider>
+													</div>
+												</div>
+											</td>
+											<td width="100px">
+												<div class="compImg" id="component_Image_part">
+													<table align="center" border="0">
+														<tr>
+															<td>
+																<div id="GET_EXTENSION_IMAGE" xmlns="">
+																	<contentProvider id="GET_EXTENSION_IMAGE" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">										</contentProvider>
+								            		    		</div>
+								            		    	</td>
+														</tr>
+														<tr>
+															<td>
+																<div id="RATE_IMANGE" xmlns="">
+																	<contentProvider id="RATE_IMANGE" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">										</contentProvider>
+								                				</div>
+								                			</td>
+														</tr>
+														<tr>
+															<td>
+																<div id="INSTALL_COMPONENT" xmlns="">
+																	<contentProvider id="INSTALL_COMPONENT" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">										</contentProvider>
+								                				</div>
+								                			</td>
+														</tr>
+													</table>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="userreview">User Reviews </td>
+											<td>
+												<div id="WRITE_REVIEWS" xmlns="">
+										        	<contentProvider id="WRITE_REVIEWS" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">							</contentProvider>
+									        	</div>
+									        </td>
+										</tr>
+										<tr>
+											<td colspan="2">
+												<div class="reviews" id="component_reviews_part">
+													<div id="EXTENSION_REVIEWS" xmlns=""/>
+					                  				<contentProvider id="EXTENSION_REVIEWS" class="org.talend.designer.components.exchange.ui.htmlcontent.ExchangeContentProvider" pluginId="org.talend.designer.components.exchange">					</contentProvider>
+												</div>
+											</td>
+										</tr>
+									</table>
 								</td>
 							</tr>
 						</table>
@@ -372,85 +383,67 @@
 				<!-- create new extension 	-->
 				<ul class="ulhide" id="creat_new_extension">
 					<li>
-						<table align="center" cellpadding="0" cellspacing="0" id="table" class="tableStyle">
+						<table align="center" cellpadding="0" cellspacing="0" id="tab_creat_new_extension" class="tableStyle">
 							<tr align="left">
 								<td class="toolbar" colspan="5" style="border-bottom:1px solid #9BB9F5;"><a class="icon"><img onclick="setTab(2,'list_my_extensions')" src="imgs/backward_nav.gif"/></a></td>
 							</tr>
 							<tr>
 								<td style="padding: 0px">
 								<div class="formStyle">
-									<div style="position: absolute; top:10; left:0">
-										<span style="margin-left:10px;"> Extension Title: </span>
-									</div>
-									<div style="position: absolute; top:13; left:120">
-										<input id="extension_label" name="extension_label" style="width:230px;margin-left:5px" type="text"/>
-									</div>
-									<div style="position: absolute; top:10; left:370; width: 100px">
-										<span style="margin-left:10px"> Initial Version: </span>
-									</div>
-									<div style="position: absolute; top:13; left:470">
-										<input id="lastVersionAvailable" name="lastVersionAvailable" style="width:100px;margin-left:5px" type="text"/>
-									</div>
-									<div style="position: absolute; top:57; left:0">
-										<span style="margin-left:10px;"> Compatibility: </span>
-									</div>
-									<div style="position: absolute; top:60; left:115; width:100px">
-										<input checked="checked" name="compatibility" type="radio"/>
-										All versions
-									</div>
-									<div style="position: absolute; top:85; left:115; width:200px">
-										<input name="compatibility" type="radio"/>
-										Version and older:
-									</div>
-									<div style="position: absolute; top:85; left:270; width:100px">
-										<input id="older" style="width:150px;" type="text"/>
-									</div>
-									<div style="position: absolute; top:110; left:115; width:200px">
-										<input name="compatibility" type="radio"/>
-										Versions and newer:
-									</div>
-									<div style="position: absolute; top:110; left:270; width:100px">
-										<input id="newer" style="width:150px;" type="text"/>
-									</div>
-									<div style="position: absolute; top:135; left:115; width:200px">
-										<input name="compatibility" type="radio"/>
-										All versions except:
-									</div>
-									<div style="position: absolute; top:135; left:270; width:100px">
-										<input id="except" style="width:150px;" type="text"/>
-									</div>
-									<div style="position: absolute; top:160; left:115; width:200px">
-										<input name="compatibility" type="radio"/>
-										Only these versions:
-									</div>
-									<div style="position: absolute; top:160; left:270; width:100px">
-										<input id="Only these versions:" style="width:150px;" type="text"/>
-									</div>
-									<div style="position: absolute; top:205; left:0; width:100px">
-										<span style="margin-left:10px;"> Description: </span>
-									</div>
-									<div style="position: absolute; top:210; left:120">
-										<textarea id="extension_description" name="extension_description" style="width:450px;height:100px;margin-left:5px" type="text"> </textarea>
-									</div>
-									<div style="position: absolute; top:340; left:0">
-										<span style="margin-left:10px;"> File: </span>
-									</div>
-									<div style="position: absolute; top:340; left:125">
-										<div class="fileinputs">
-											<input id="filename" name="filename" type="file" class="file myFileUpload"  onchange="onchangeFileUpload('filename','fake_filename')"  style="cursor: pointer" />
-											<div class="fakefile" style="cursor: pointer; width: 260px">
-												<input id="fake_filename" style="cursor: pointer; width: 230px" class="myFileUpload"/>
-												<img src="imgs/upload.png" style="cursor: pointer"/>
-											</div>
-										</div>
-									</div>
-									<div style="position: absolute; top:340; left:400">
-										<a class="xh" href="" id="commit">
-										<button onclick="window.location.href=document.getElementById('commit').href" onmouseover="createNewExtensionWriteUrl()" style="width: 176px">
-											Upload Extension
-										</button> </a>
-									</div>
-								</div></td>
+									<table>
+										<tr>
+											<td nowrap="nowrap"><span style="margin-left:10px;font-weight:bold;"> Add New Extension </span></td>
+											<td width="100%"></td>
+										</tr>
+										<tr>
+											<td nowrap="nowrap"><span style="margin-left:10px;"> Extension Title: </span></td>
+											<td width="100%"><input id="extension_label" name="extension_label" style="width:230px;margin-left:5px" type="text"/></td>
+										</tr>
+										<tr>
+											<td nowrap="nowrap"><span style="margin-left:10px"> Initial Version: </span></td>
+											<td><input id="lastVersionAvailable" name="lastVersionAvailable" style="width:100px;margin-left:5px" type="text"/></td>
+										</tr>
+										<tr>
+											<td nowrap="nowrap" valign="top"><span style="margin-left:10px;"> Compatibility: </span></td>
+											<td>
+												<table cellpadding="0" cellspacing="0">
+													<tr ><td><input checked="checked" name="compatibility" type="radio"/></td><td>All versions</td><td></td></tr>
+													<tr><td><input name="compatibility" type="radio"/></td><td nowrap="nowrap">Version and older:</td><td width="100%"><input id="older" style="width:100%;" type="text"/></td></tr>
+													<tr><td><input name="compatibility" type="radio"/></td><td nowrap="nowrap">Versions and newer:</td><td><input id="newer" style="width:100%;" type="text"/></td></tr>
+													<tr><td><input name="compatibility" type="radio"/></td><td nowrap="nowrap">All versions except:</td><td><input id="except" style="width:100%;" type="text"/></td></tr>
+													<tr><td><input name="compatibility" type="radio"/></td><td nowrap="nowrap">Only these versions:</td><td><input id="only" style="width:100%;" type="text"/></td></tr>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td nowrap="nowrap" valign="top"><span style="margin-left:10px;"> Description: </span></td>
+											<td><textarea id="extension_description" name="extension_description" style="width:100%;height:100px;margin-left:5px" type="text"> </textarea></td>
+										</tr>
+										<tr>
+											<td nowrap="nowrap"><span style="margin-left:10px;"> File: </span></td>
+											<td>
+												<div class="fileinputs" style="margin-left:3px;">
+													<input id="filename" name="filename" type="file" class="file myFileUpload"  onchange="onchangeFileUpload('filename','fake_filename')"  style="cursor: pointer" />
+													<div class="fakefile" style="cursor: pointer; width: 260px">
+														<input id="fake_filename" style="cursor: pointer; width: 230px" class="myFileUpload"/>
+														<img src="imgs/upload.png" style="cursor: pointer"/>
+													</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td ></td>
+											<td>
+												<a class="xh" href="" id="commit" style="margin-left:5px;">
+													<button onclick="window.location.href=document.getElementById('commit').href" onmouseover="createNewExtensionWriteUrl()" style="width: 176px">
+														Add Extension
+													</button>
+												</a>
+											</td>
+										</tr>
+									</table>
+								</div>
+								</td>
 							</tr>
 						</table>
 					</li>
@@ -458,72 +451,56 @@
 				<!-- update extension -->
 				<ul class="ulblock" id="upload_extension_version">
 					<li>
-						<table align="center" cellpadding="0" cellspacing="0" class="tableStyle">
+						<table align="center" cellpadding="0" cellspacing="0" class="tableStyle" id="tab_upload_extension_version">
 							<tr align="left">
 								<td class="toolbar" colspan="5" style="border-bottom:1px solid #9BB9F5;"><a class="icon"><img onclick="setTab(2,'list_my_extensions')" src="imgs/backward_nav.gif"/></a></td>
 							</tr>
 							<tr>
 								<td style="padding: 0px">
 								<div class="formStyle">
-									<div style="position: absolute; top:10; left:10; width: 100px">
-										<span style="margin-left:10px"> Initial Version: </span>
-									</div>
-									<div style="position: absolute; top:13; left:120">
-										<contentProvider id="LAST_AVAILABLE_VERSION" class="org.talend.designer.components.exchange.ui.htmlcontent.MyExchangeContentProvider" pluginId="org.talend.designer.components.exchange"/>						
-									</div>
-									<div style="position: absolute; top:57; left:0">
-										<span style="margin-left:10px;"> Compatibility: </span>
-									</div>
-									<div style="position: absolute; top:60; left:115; width:100px">
-										<input checked="checked" name="compatibility_update" type="radio"/>
-										All versions
-									</div>
-									<div style="position: absolute; top:85; left:115; width:200px">
-										<input checked="checked" name="compatibility_update" type="radio"/>
-										Version and older:
-									</div>
-									<div style="position: absolute; top:85; left:270; width:100px">
-										<input id="older_update" style="width:150px;" type="text"/>
-									</div>
-									<div style="position: absolute; top:110; left:115; width:200px">
-										<input name="compatibility_update" type="radio"/>
-										Versions and newer:
-									</div>
-									<div style="position: absolute; top:110; left:270; width:100px">
-										<input id="newer_update" style="width:150px;" type="text"/>
-									</div>
-									<div style="position: absolute; top:135; left:115; width:200px">
-										<input name="compatibility_update" type="radio"/>
-										All versions except:
-									</div>
-									<div style="position: absolute; top:135; left:270; width:100px">
-										<input id="except_update" style="width:150px;" type="text"/>
-									</div>
-									<div style="position: absolute; top:160; left:115; width:200px">
-										<input name="compatibility_update" type="radio"/>
-										Only these versions:
-									</div>
-									<div style="position: absolute; top:160; left:270; width:100px">
-										<input id="only_update" style="width:150px;" type="text"/>
-									</div>
-									<div style="position: absolute; top:200; left:0">
-										<span style="margin-left:10px;"> File: </span>
-									</div>
-									<div style="position: absolute; top:200; left:100">
-										<div class="fileinputs">
-											<input id="filename_update" name="filename" type="file" class="file myFileUpload"  onchange="onchangeFileUpload('filename_update','fake_filename_update')"  style="cursor: pointer" />
-											<div class="fakefile" style="cursor: pointer; width: 260px">
-												<input id="fake_filename_update" style="cursor: pointer; width: 230px" class="myFileUpload"/>
-												<img src="imgs/upload.png" style="cursor: pointer"/>
-											</div>
-										</div>
-									</div>
-									<div style="position: absolute; top:200; left:400">
-										<a class="xh" href="" id="commit_update">
-										<button onclick="window.location.href=document.getElementById('commit_update').href" onmouseover="updateReWriteUrl()" style="width: 176px">
-											Upload Extension
-										</button> </a>
-									</div>
+									<table>
+										<tr>
+											<td nowrap="nowrap"><span style="margin-left:10px;font-weight:bold;"> Upload New Version </span></td>
+											<td width="100%"></td>
+										</tr>
+										<tr>
+											<td nowrap="nowrap"><span style="margin-left:10px"> New Version: </span></td>
+											<td><contentProvider id="LAST_AVAILABLE_VERSION" class="org.talend.designer.components.exchange.ui.htmlcontent.MyExchangeContentProvider" pluginId="org.talend.designer.components.exchange"/></td>
+										</tr>
+										<tr>
+											<td nowrap="nowrap" valign="top"><span style="margin-left:10px;"> Compatibility: </span></td>
+											<td>
+												<table cellpadding="0" cellspacing="0">
+													<tr ><td><input checked="checked" name="compatibility_update" type="radio"/></td><td>All versions</td><td></td></tr>
+													<tr><td><input name="compatibility_update" type="radio"/></td><td nowrap="nowrap">Version and older:</td><td width="100%"><input id="older_update" style="width:100%;" type="text"/></td></tr>
+													<tr><td><input name="compatibility_update" type="radio"/></td><td nowrap="nowrap">Versions and newer:</td><td><input id="newer_update" style="width:100%;" type="text"/></td></tr>
+													<tr><td><input name="compatibility_update" type="radio"/></td><td nowrap="nowrap">All versions except:</td><td><input id="except_update" style="width:100%;" type="text"/></td></tr>
+													<tr><td><input name="compatibility_update" type="radio"/></td><td nowrap="nowrap">Only these versions:</td><td><input id="only_update" style="width:100%;" type="text"/></td></tr>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td nowrap="nowrap"><span style="margin-left:10px;"> File: </span></td>
+											<td>
+												<div class="fileinputs" style="margin-left:3px;">
+													<input id="filename_update" name="filename" type="file" class="file myFileUpload"  onchange="onchangeFileUpload('filename_update','fake_filename_update')"  style="cursor: pointer" />													<div class="fakefile" style="cursor: pointer; width: 260px">
+														<input id="fake_filename_update" style="cursor: pointer; width: 230px" class="myFileUpload"/>
+														<img src="imgs/upload.png" style="cursor: pointer"/>
+													</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td ></td>
+											<td>
+												<a class="xh" href="" id="commit_update" style="margin-left:5px;">
+													<button onclick="window.location.href=document.getElementById('commit_update').href" onmouseover="updateReWriteUrl()" style="width: 176px">
+														Upload Extension
+													</button>
+												</a>
+											</td>
+										</tr>
+									</table>
 								</div></td>
 							</tr>
 						</table>
@@ -532,68 +509,50 @@
 				<!-- modify myextension -->
 				<ul class="ulblock" id="modify_my_extension_page">
 					<li>
-						<table align="center" border="0" cellpadding="0" cellspacing="0" id="table" class="tableStyle">
+						<table align="center" border="0" cellpadding="0" cellspacing="0" id="tab_modify_my_extension_page"  class="tableStyle">
 							<tr align="left">
 								<td class="toolbar" colspan="5" style="border-bottom:1px solid #9BB9F5;"><a class="icon"><img onclick="setTab(2,'list_my_extensions')" src="imgs/backward_nav.gif" /></a></td>
 							</tr>
 							<tr>
 								<td style="padding: 0px">
-								<div class="formStyle">
-									<div style="position: absolute; top:10; left:0">
-										<span style="margin-left:10px;"> Extension Title: </span>
-									</div>
-									<div style="position: absolute; top:13; left:120">
-									 <contentProvider id="EXTENSION_LABEL" class="org.talend.designer.components.exchange.ui.htmlcontent.MyExchangeContentProvider" pluginId="org.talend.designer.components.exchange"/>
-									</div>
-									<div style="position: absolute; top:57; left:0">
-										<span style="margin-left:10px;"> Compatibility: </span>
-									</div>
-									<div style="position: absolute; top:60; left:115; width:100px">
-										<input checked="checked" name="compatibility_modify" type="radio"/>
-										All versions
-									</div>
-									<div style="position: absolute; top:85; left:115; width:200px">
-										<input name="compatibility_modify" type="radio"/>
-										Version and older:
-									</div>
-									<div style="position: absolute; top:85; left:270; width:100px">
-										<input id="older_modify" style="width:150px;" type="text"/>
-									</div>
-									<div style="position: absolute; top:110; left:115; width:200px">
-										<input name="compatibility_modify" type="radio"/>
-										Versions and newer:
-									</div>
-									<div style="position: absolute; top:110; left:270; width:100px">
-										<input id="newer_modify" style="width:150px;" type="text"/>
-									</div>
-									<div style="position: absolute; top:135; left:115; width:200px">
-										<input name="compatibility_modify" type="radio"/>
-										All versions except:
-									</div>
-									<div style="position: absolute; top:135; left:270; width:100px">
-										<input id="except_modify" style="width:150px;" type="text"/>
-									</div>
-									<div style="position: absolute; top:160; left:115; width:200px">
-										<input name="compatibility_modify" type="radio"/>
-										Only these versions:
-									</div>
-									<div style="position: absolute; top:160; left:270; width:100px">
-										<input id="only_modify:" style="width:150px;" type="text"/>
-									</div>
-									<div style="position: absolute; top:205; left:0; width:100px">
-										<span style="margin-left:10px;"> Description: </span>
-									</div>
-									<div style="position: absolute; top:210; left:120">
-										<textarea id="extension_description_modify" name="extension_description" style="width:400px;height:100px;margin-left:5px" type="text"> </textarea>
-									</div>
-									<div style="position: absolute; top:330; left:400">
-										<a class="xh" href="" id="commit_modify">
-										<button  onclick="window.location.href=document.getElementById('commit_modify').href"  onmouseover="modifyReWriteUrl()" style="width: 176px">
-											Modify Extension
-										</button>
-										 </a>
-									</div>
-								</div></td>
+								
+								<table>
+										<tr>
+											<td nowrap="nowrap"><span style="margin-left:10px;font-weight:bold;"> Modify Last Revision </span></td>
+											<td width="100%"></td>
+										</tr>
+										<tr>
+											<td nowrap="nowrap"><span style="margin-left:10px;"> Extension Title: </span></td>
+											<td width="100%"><contentProvider id="EXTENSION_LABEL" class="org.talend.designer.components.exchange.ui.htmlcontent.MyExchangeContentProvider" pluginId="org.talend.designer.components.exchange"/></td>
+										</tr>
+										<tr>
+											<td nowrap="nowrap" valign="top"><span style="margin-left:10px;"> Compatibility: </span></td>
+											<td>
+												<table cellpadding="0" cellspacing="0">
+													<tr ><td><input checked="checked" name="compatibility_modify" type="radio"/></td><td>All versions</td><td></td></tr>
+													<tr><td><input name="compatibility_modify" type="radio"/></td><td nowrap="nowrap">Version and older:</td><td width="100%"><input id="older_modify" style="width:100%;" type="text"/></td></tr>
+													<tr><td><input name="compatibility_modify" type="radio"/></td><td nowrap="nowrap">Versions and newer:</td><td><input id="newer_modify" style="width:100%;" type="text"/></td></tr>
+													<tr><td><input name="compatibility_modify" type="radio"/></td><td nowrap="nowrap">All versions except:</td><td><input id="except_modify" style="width:100%;" type="text"/></td></tr>
+													<tr><td><input name="compatibility_modify" type="radio"/></td><td nowrap="nowrap">Only these versions:</td><td><input id="only_modify" style="width:100%;" type="text"/></td></tr>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td nowrap="nowrap" valign="top"><span style="margin-left:10px;"> Description: </span></td>
+											<td><textarea id="extension_description_modify" name="extension_description" style="width:100%;height:100px;margin-left:5px" type="text"> </textarea></td>
+										</tr>
+										<tr>
+											<td></td>
+											<td>
+												<a class="xh" href="" id="commit_modify" style="margin-left:5px;">
+													<button onclick="window.location.href=document.getElementById('commit_modify').href" onmouseover="modifyReWriteUrl()" style="width: 176px">
+														Modify Last Revision
+													</button>
+												</a>
+											</td>
+										</tr>
+									</table>
+								</td>
 							</tr>
 						</table>
 					</li>
