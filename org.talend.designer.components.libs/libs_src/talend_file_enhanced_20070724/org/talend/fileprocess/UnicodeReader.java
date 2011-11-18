@@ -31,14 +31,14 @@ public class UnicodeReader extends Reader {
         } else if ((bom[0] == (byte) 0xFE) && (bom[1] == (byte) 0xFF)) {
             encoding = "UTF-16BE";
             unread = n - 2;
+        } else if ((bom[0] == (byte) 0xFF) && (bom[1] == (byte) 0xFE) && (bom[2] == (byte) 0x00) && (bom[3] == (byte) 0x00)) {
+            encoding = "UTF-32LE";
+            unread = n - 4;
         } else if ((bom[0] == (byte) 0xFF) && (bom[1] == (byte) 0xFE)) {
             encoding = "UTF-16LE";
             unread = n - 2;
         } else if ((bom[0] == (byte) 0x00) && (bom[1] == (byte) 0x00) && (bom[2] == (byte) 0xFE) && (bom[3] == (byte) 0xFF)) {
             encoding = "UTF-32BE";
-            unread = n - 4;
-        } else if ((bom[0] == (byte) 0xFF) && (bom[1] == (byte) 0xFE) && (bom[2] == (byte) 0x00) && (bom[3] == (byte) 0x00)) {
-            encoding = "UTF-32LE";
             unread = n - 4;
         } else {
             encoding = defaultEncoding;
