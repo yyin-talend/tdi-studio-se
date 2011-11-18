@@ -101,9 +101,12 @@ class Util_<%=cid%>{
                 String listHeadPath = key.substring(0, key.indexOf(ALL_LIST_SYMBOL));
                 String listFootPath = key.substring(key.indexOf(ALL_LIST_SYMBOL) + ALL_LIST_SYMBOL.length());
                 java.util.List listElement = (java.util.List) inputMap.get(key);
-                for (int i = 0; i < listElement.size(); i++) {
-                    tempStoreMap.put(listHeadPath + LEFT_SQUARE_BRACKET + i + RIGHT_SQUARE_BRACKET + listFootPath, listElement
-                            .get(i));
+                //if the list is null, ignore it but remove the original key
+                if(listElement!=null){
+                	for (int i = 0; i < listElement.size(); i++) {
+                    	tempStoreMap.put(listHeadPath + LEFT_SQUARE_BRACKET + i + RIGHT_SQUARE_BRACKET + listFootPath, listElement
+                        	    .get(i));
+                	}
                 }
                 tempRemovePath.add(key);
             }
