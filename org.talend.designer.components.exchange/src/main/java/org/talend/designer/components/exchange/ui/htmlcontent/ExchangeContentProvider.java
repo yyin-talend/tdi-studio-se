@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.designer.components.exchange.ui.htmlcontent;
 
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -109,7 +111,10 @@ public class ExchangeContentProvider implements IIntroXHTMLContentProvider {
                     Element imgElem = dom.createElement("img");
                     imgElem.setAttribute("src", image);
                     parent.appendChild(imgElem);
-                    parent.appendChild(dom.createTextNode(desc));
+                    Element b = dom.createElement("b");
+                    b.setTextContent(detail.getTitle());
+                    parent.appendChild(b);
+                    parent.appendChild(dom.createTextNode(" : "+detail.getComment()+ " ("+detail.getAuthor()+")"));
                     parent.appendChild(dom.createElement("br"));
                 }
             } else if (ContentConstants.WRITE_REVIEWS.equals(id)) {
@@ -125,10 +130,24 @@ public class ExchangeContentProvider implements IIntroXHTMLContentProvider {
                 String typeExtension = ExchangeUtils.TYPEEXTENSION != null ? ExchangeUtils.TYPEEXTENSION : "tos";
                 String imageUrl = "http://www.talendforge.org/exchange/" + typeExtension + "/upload_" + typeExtension
                         + "/extension-" + idExtension + "/thumbnail.jpg";
-                Element imgElem = dom.createElement("img");
-                imgElem.setAttribute("src", imageUrl);
-                imgElem.setAttribute("align", "middle");
-                parent.appendChild(imgElem);
+                
+                boolean touchFile =false;
+                try {
+                    // Get the image
+                    URL url = new URL(imageUrl);
+                    InputStream is = url.openStream();
+                    is.close();
+                    touchFile = true;
+                } catch (Exception e) {
+                    touchFile =false;
+                }
+                
+                if (touchFile) {
+                    Element imgElem = dom.createElement("img");
+                    imgElem.setAttribute("src", imageUrl);
+                    imgElem.setAttribute("align", "middle");
+                    parent.appendChild(imgElem);
+                }
             }
         }
     }
