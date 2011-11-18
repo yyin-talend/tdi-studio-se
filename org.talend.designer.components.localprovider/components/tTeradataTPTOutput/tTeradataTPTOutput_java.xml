@@ -9,7 +9,8 @@
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
     STARTABLE="false"
-	VISIBLE="false"
+    VISIBLE="false"
+    TECHNICAL="true"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
