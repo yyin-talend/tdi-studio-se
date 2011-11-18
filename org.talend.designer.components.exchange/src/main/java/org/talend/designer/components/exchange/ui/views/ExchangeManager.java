@@ -119,7 +119,7 @@ public class ExchangeManager {
         resolveDynamicContent(dom, contentProviderElements);
 
         // insert base meta-tag,
-        ModelUtil.insertBase(dom, ModelUtil.getParentFolderOSString(""));
+        // ModelUtil.insertBase(dom, ModelUtil.getParentFolderOSString(""));
 
         // resolve all relative resources relative to content file. Do it before
         // inserting shared style to enable comparing fully qualified styles.
@@ -380,5 +380,9 @@ public class ExchangeManager {
 
     public Browser getBrowser() {
         return browser;
+    }
+
+    public Document getDocument() {
+        return this.dom;
     }
 }

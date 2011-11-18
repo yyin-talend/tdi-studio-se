@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<base href=""/>
 		<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 		<script type="text/javascript">
+		
+		String.prototype.replaceAll = function(s1, s2) {
+			return this.replace(new RegExp(s1, "gm"), s2);
+		}
+		String.prototype.replaceAll2Excep = function(s1, s2) {
+			var temp = this;
+			while(temp.indexOf(s1) != -1) {
+				temp = temp.replace(s1, s2);
+			}
+			return temp;
+		}
+		
 			function onResizeDocument () {
 				var tabs = document.getElementsByClassName("tableStyle");
 				var newWidth = (document.width - 213)+"px";
@@ -16,9 +27,9 @@
 				tabs[6].style.width = newWidth;
 			}
 			
-			function onchangeFileUpload(){
-				var v = document.getElementsByClassName("myFileUpload")[0].value;
-				document.getElementsByClassName("myFileUpload")[1].value = v;
+			function onchangeFileUpload(fileId,fakefileId){
+				var v = document.getElementById(fileId).value;
+				document.getElementById(fakefileId).value=v;
 			}
 			
 			function filterReWriteUrl() {
@@ -30,22 +41,13 @@
 			
 			function createNewExtensionWriteUrl() {
 			
-				String.prototype.replaceAll = function(s1, s2) {
-					return this.replace(new RegExp(s1, "gm"), s2);
-				}
-				String.prototype.replaceAll2Excep = function(s1, s2) {
-					var temp = this;
-					while(temp.indexOf(s1) != -1) {
-						temp = temp.replace(s1, s2);
-					}
-					return temp;
-				}
+				
 				var prefix = "http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;type=UPLOAD_MY_EXTENSION"
 			
 				var label = "label:" + "'" + document.getElementById("extension_label").value + "'";
 				var lastVersionAvailable = "lastVersionAvailable:" + "'" + document.getElementById("lastVersionAvailable").value + "'";
 				var description = "description:" + "'" + document.getElementById("extension_description").value + "'";
-				description = description.replaceAll2Excep("\r\n", "\\n\\r");
+				description = description.replaceAll2Excep("\r\n", "/n/r");
 			
 				var checkedType = "";
 				var filtervalue = "";
@@ -78,13 +80,7 @@
 			}
 			
 			function updateReWriteUrl() {
-				String.prototype.replaceAll2Excep = function(s1, s2) {
-					var temp = this;
-					while(temp.indexOf(s1) != -1) {
-						temp = temp.replace(s1, s2);
-					}
-					return temp;
-				}
+				
 				var prefix = "http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;type=UPDATE_MY_EXTENSION"
 			
 				var lastVersionAvailable = "lastVersionAvailable:" + "'" + document.getElementById("lastVersionAvailable_update").value + "'";
@@ -122,13 +118,16 @@
 			
 			function modifyReWriteUrl() {
 				var prefix = "http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;type=MODIFY_MY_EXTENSION"
-			
 				var leabel = "label:" + "'" + document.getElementById("extension_label_modify").value + "'"
 				var description = "description:" + "'" + document.getElementById("extension_description_modify").value + "'"
-				description = description.replaceAll2Excep("\r\n", "\\n\\r");
+				
+				
+				description = description.replaceAll2Excep("\r\n", "/n/r");
 				var checkedType = "";
 				var filtervalue = "";
 				var compatibilities = document.getElementsByName("compatibility_modify");
+				
+				
 				if(compatibilities[0].checked == true) {
 					checkedType = "all"
 					filtervalue = null;
@@ -145,14 +144,15 @@
 					checkedType = "only"
 					filtervalue = document.getElementById(checkedType + "_modify").value;
 				}
-			
+				
 				var listVersionCompatibles = "listVersionCompatibles:" + "'" + checkedType + "'";
 				var filter = "filter:" + "'" + filtervalue + "'";
 				var jsonObj = "{" + leabel + "," + description + "," + listVersionCompatibles + "," + filter + "}"
 			
 				var url = prefix + "&amp;extensionValues=" + jsonObj;
+				
+				
 				document.getElementById('commit_modify').href = url;
-			
 			}
 			
 			//can't use for cycle in the javascript,each time call the length fuction ,get error in document parser
@@ -426,16 +426,16 @@
 									</div>
 									<div style="position: absolute; top:340; left:125">
 										<div class="fileinputs">
-											<input id="filename" name="filename" type="file" class="file myFileUpload" onchange="onchangeFileUpload()" style="cursor: pointer" />
+											<input id="filename" name="filename" type="file" class="file myFileUpload"  onchange="onchangeFileUpload('filename','fake_filename')"  style="cursor: pointer" />
 											<div class="fakefile" style="cursor: pointer; width: 260px">
-												<input style="cursor: pointer; width: 230px" class="myFileUpload"/>
+												<input id="fake_filename" style="cursor: pointer; width: 230px" class="myFileUpload"/>
 												<img src="imgs/upload.png" style="cursor: pointer"/>
 											</div>
 										</div>
 									</div>
 									<div style="position: absolute; top:340; left:400">
-										<a class="xh" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;type=UPLOAD_MY_EXTENSION" id="commit">
-										<button onmouseover="createNewExtensionWriteUrl()" style="width: 176px">
+										<a class="xh" href="" id="commit">
+										<button onclick="window.location.href=document.getElementById('commit').href" onmouseover="createNewExtensionWriteUrl()" style="width: 176px">
 											Upload Extension
 										</button> </a>
 									</div>
@@ -464,52 +464,52 @@
 										<span style="margin-left:10px;"> Compatibility: </span>
 									</div>
 									<div style="position: absolute; top:60; left:115; width:100px">
-										<input checked="checked" name="compatibility" type="radio"/>
+										<input checked="checked" name="compatibility_update" type="radio"/>
 										All versions
 									</div>
 									<div style="position: absolute; top:85; left:115; width:200px">
-										<input checked="checked" name="compatibility" type="radio"/>
+										<input checked="checked" name="compatibility_update" type="radio"/>
 										Version and older:
 									</div>
 									<div style="position: absolute; top:85; left:270; width:100px">
-										<input id="older" style="width:150px;" type="text"/>
+										<input id="older_update" style="width:150px;" type="text"/>
 									</div>
 									<div style="position: absolute; top:110; left:115; width:200px">
-										<input name="compatibility" type="radio"/>
+										<input name="compatibility_update" type="radio"/>
 										Versions and newer:
 									</div>
 									<div style="position: absolute; top:110; left:270; width:100px">
-										<input id="newer" style="width:150px;" type="text"/>
+										<input id="newer_update" style="width:150px;" type="text"/>
 									</div>
 									<div style="position: absolute; top:135; left:115; width:200px">
-										<input name="compatibility" type="radio"/>
+										<input name="compatibility_update" type="radio"/>
 										All versions except:
 									</div>
 									<div style="position: absolute; top:135; left:270; width:100px">
-										<input id="except" style="width:150px;" type="text"/>
+										<input id="except_update" style="width:150px;" type="text"/>
 									</div>
 									<div style="position: absolute; top:160; left:115; width:200px">
-										<input name="compatibility" type="radio"/>
+										<input name="compatibility_update" type="radio"/>
 										Only these versions:
 									</div>
 									<div style="position: absolute; top:160; left:270; width:100px">
-										<input id="Only these versions:" style="width:150px;" type="text"/>
+										<input id="only_update" style="width:150px;" type="text"/>
 									</div>
 									<div style="position: absolute; top:200; left:0">
 										<span style="margin-left:10px;"> File: </span>
 									</div>
 									<div style="position: absolute; top:200; left:100">
 										<div class="fileinputs">
-											<input id="filename" name="filename" type="file" class="file myFileUpload" onchange="onchangeFileUpload()" style="cursor: pointer" />
+											<input id="filename_update" name="filename" type="file" class="file myFileUpload"  onchange="onchangeFileUpload('filename_update','fake_filename_update')"  style="cursor: pointer" />
 											<div class="fakefile" style="cursor: pointer; width: 260px">
-												<input style="cursor: pointer; width: 230px" class="myFileUpload"/>
+												<input id="fake_filename_update" style="cursor: pointer; width: 230px" class="myFileUpload"/>
 												<img src="imgs/upload.png" style="cursor: pointer"/>
 											</div>
 										</div>
 									</div>
 									<div style="position: absolute; top:200; left:400">
-										<a class="xh" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;type=UPLOAD_MY_EXTENSION" id="commit">
-										<button onmouseover="createNewExtensionWriteUrl()" style="width: 176px">
+										<a class="xh" href="" id="commit_update">
+										<button onclick="window.location.href=document.getElementById('commit_update').href" onmouseover="updateReWriteUrl()" style="width: 176px">
 											Upload Extension
 										</button> </a>
 									</div>
@@ -538,48 +538,49 @@
 										<span style="margin-left:10px;"> Compatibility: </span>
 									</div>
 									<div style="position: absolute; top:60; left:115; width:100px">
-										<input checked="checked" name="compatibility" type="radio"/>
+										<input checked="checked" name="compatibility_modify" type="radio"/>
 										All versions
 									</div>
 									<div style="position: absolute; top:85; left:115; width:200px">
-										<input name="compatibility" type="radio"/>
+										<input name="compatibility_modify" type="radio"/>
 										Version and older:
 									</div>
 									<div style="position: absolute; top:85; left:270; width:100px">
-										<input id="older" style="width:150px;" type="text"/>
+										<input id="older_modify" style="width:150px;" type="text"/>
 									</div>
 									<div style="position: absolute; top:110; left:115; width:200px">
-										<input name="compatibility" type="radio"/>
+										<input name="compatibility_modify" type="radio"/>
 										Versions and newer:
 									</div>
 									<div style="position: absolute; top:110; left:270; width:100px">
-										<input id="newer" style="width:150px;" type="text"/>
+										<input id="newer_modify" style="width:150px;" type="text"/>
 									</div>
 									<div style="position: absolute; top:135; left:115; width:200px">
-										<input name="compatibility" type="radio"/>
+										<input name="compatibility_modify" type="radio"/>
 										All versions except:
 									</div>
 									<div style="position: absolute; top:135; left:270; width:100px">
-										<input id="except" style="width:150px;" type="text"/>
+										<input id="except_modify" style="width:150px;" type="text"/>
 									</div>
 									<div style="position: absolute; top:160; left:115; width:200px">
-										<input name="compatibility" type="radio"/>
+										<input name="compatibility_modify" type="radio"/>
 										Only these versions:
 									</div>
 									<div style="position: absolute; top:160; left:270; width:100px">
-										<input id="Only these versions:" style="width:150px;" type="text"/>
+										<input id="only_modify:" style="width:150px;" type="text"/>
 									</div>
 									<div style="position: absolute; top:205; left:0; width:100px">
 										<span style="margin-left:10px;"> Description: </span>
 									</div>
 									<div style="position: absolute; top:210; left:120">
-										<textarea id="extension_description" name="extension_description" style="width:400px;height:100px;margin-left:5px" type="text"> </textarea>
+										<textarea id="extension_description_modify" name="extension_description" style="width:400px;height:100px;margin-left:5px" type="text"> </textarea>
 									</div>
 									<div style="position: absolute; top:330; left:400">
-										<a class="xh" href="http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&amp;class=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;id=org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionAction&amp;type=MODIFY_MY_EXTENSION" id="commit_modify">
-										<button onmouseover="modifyReWriteUrl()" style="width: 176px">
+										<a class="xh" href="" id="commit_modify">
+										<button  onclick="window.location.href=document.getElementById('commit_modify').href"  onmouseover="modifyReWriteUrl()" style="width: 176px">
 											Modify Extension
-										</button> </a>
+										</button>
+										 </a>
 									</div>
 								</div></td>
 							</tr>

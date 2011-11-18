@@ -50,8 +50,10 @@ public class ExchangeView extends EditorPart {
         manager.setBrowser(browser);
         browser.addLocationListener(new MyExtensionLocationListener());
         browser.setLayoutData(new GridData(GridData.FILL_BOTH));
-        RefreshComponenentsAction action = new RefreshComponenentsAction();
-        action.run(new String[] { RefreshComponenentsAction.REFRESH_ALL });
+        if (manager.getDocument() != null) {
+            RefreshComponenentsAction action = new RefreshComponenentsAction();
+            action.run(new String[] { RefreshComponenentsAction.REFRESH_ALL });
+        }
     }
 
     /*
