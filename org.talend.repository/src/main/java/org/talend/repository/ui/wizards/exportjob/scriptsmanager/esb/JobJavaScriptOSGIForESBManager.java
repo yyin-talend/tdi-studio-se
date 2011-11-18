@@ -829,7 +829,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 			// end add
 			a.put(new Attributes.Name("Require-Bundle"),
 					"org.apache.camel.camel-core");
-            a.put(new Attributes.Name("Import-Package"), "javax.xml.bind,javax.xml.bind.annotation,javax.xml.namespace,javax.xml.ws;resolution:=optional," +  //$NON-NLS-1$
+            a.put(new Attributes.Name("Import-Package"), "javax.xml.bind,javax.xml.bind.annotation,javax.xml.namespace," + //$NON-NLS-1$
+            				"javax.xml.ws;resolution:=optional," +  //$NON-NLS-1$
+            				"javax.jws;resolution:=optional," +  //$NON-NLS-1$
+            				"javax.jws.soap;resolution:=optional," +  //$NON-NLS-1$
     						"org.apache.camel;version=\"[2.7,3)\",org.apache.camel.builder;" + //$NON-NLS-1$
 							"version=\"[2.7,3)\",org.apache.camel.impl;version=\"[2.7,3)\",org.apache.camel.management;version=\"[2.7,3)\","
 							+ //$NON-NLS-1$
