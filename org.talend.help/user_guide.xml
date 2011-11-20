@@ -8,7 +8,7 @@
     <topic label="Tutorials (flash)" href="http://www.talend.com/tos/tutorials/menu.php"/>
   </topic>  
   
-  <topic label="Components">
+  <topic label="Integration Components">
 	<topic label="tAccessBulkExec" href="guide/components/en/tAccessBulkExec.html"/>
     <topic label="tAccessCommit" href="guide/components/en/tAccessCommit.html"/>
     <topic label="tAccessConnection" href="guide/components/en/tAccessConnection.html"/>
@@ -551,5 +551,5 @@
     <topic label="tXMLRPCInput" href="guide/components/en/tXMLRPCInput.html"/>
     <topic label="tXSDValidator" href="guide/components/en/tXSDValidator.html"/>
     <topic label="tXSLT" href="guide/components/en/tXSLT.html"/> 
-  </topic> 
+  </topic>
 </toc>
