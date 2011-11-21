@@ -1863,10 +1863,12 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                 }
                             }
                             if (node != null) {
+
                                 String helpLink = (String) node.getPropertyValue(EParameterName.HELP.getName());
-                                String requiredHelpLink = "org.talend.help." + node.getComponent().getName();
+                                String requiredHelpLink = ((Process) node.getProcess()).getBaseHelpLink()
+                                        + node.getComponent().getName();
                                 if (helpLink == null || "".equals(helpLink) || !requiredHelpLink.equals(helpLink)) {
-                                    helpLink = "org.talend.help." + node.getComponent().getName();
+                                    helpLink = ((Process) node.getProcess()).getBaseHelpLink() + node.getComponent().getName();
                                 }
                                 PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
                             }

@@ -3753,4 +3753,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         return true;
     }
+
+    public String getBaseHelpLink() {
+        return "org.talend.help.";
+    }
 }

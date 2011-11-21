@@ -77,6 +77,7 @@ import org.talend.designer.core.ui.editor.TalendSelectionManager;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.CodeView;
@@ -124,9 +125,11 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             GraphicalViewer designerViewer = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor().getViewer();
             Control ctrl = designerViewer.getControl();
             String helpLink = (String) ((Node) getModel()).getPropertyValue(EParameterName.HELP.getName());
-            String requiredHelpLink = "org.talend.help." + ((Node) getModel()).getComponent().getName();
+            String requiredHelpLink = ((Process) ((Node) getModel()).getProcess()).getBaseHelpLink()
+                    + ((Node) getModel()).getComponent().getName();
             if (helpLink == null || "".equals(helpLink) || !requiredHelpLink.equals(helpLink)) {
-                helpLink = "org.talend.help." + ((Node) getModel()).getComponent().getName();
+                helpLink = ((Process) ((Node) getModel()).getProcess()).getBaseHelpLink()
+                        + ((Node) getModel()).getComponent().getName();
             }
             if (ctrl != null) {
                 PlatformUI.getWorkbench().getHelpSystem().setHelp(ctrl, helpLink);
