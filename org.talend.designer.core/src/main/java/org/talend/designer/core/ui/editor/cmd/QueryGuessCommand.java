@@ -216,11 +216,11 @@ public class QueryGuessCommand extends Command {
                         if (item != null && item instanceof DatabaseConnectionItem) {
 
                             if (isTeradata) {
-                                schema = (String) RepositoryToComponentProperty.getValue(
-                                        ((DatabaseConnectionItem) item).getConnection(), "SID", null); //$NON-NLS-1$
+                                schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
+                                        .getConnection(), "SID", null); //$NON-NLS-1$
                             } else {
-                                schema = (String) RepositoryToComponentProperty.getValue(
-                                        ((DatabaseConnectionItem) item).getConnection(), "SCHEMA", null); //$NON-NLS-1$
+                                schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
+                                        .getConnection(), "SCHEMA", null); //$NON-NLS-1$
                             }
                             schema = TalendTextUtils.removeQuotes(schema);
                         }
@@ -232,9 +232,9 @@ public class QueryGuessCommand extends Command {
 
         }
 
-        if (conn instanceof DatabaseConnection && conn.isContextMode()) {
-            schema = DatabaseConnectionParameterUtil.getTrueParamValue((DatabaseConnection) conn, schema);
-        }
+        // if (conn instanceof DatabaseConnection && conn.isContextMode()) {
+        // schema = DatabaseConnectionParameterUtil.getTrueParamValue((DatabaseConnection) conn, schema);
+        // }
 
         String newQuery = null;
         realTableName = QueryUtil.getTableName(node, newOutputMetadataTable, schema, dbType, realTableName);
