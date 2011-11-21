@@ -232,9 +232,9 @@ public class QueryGuessCommand extends Command {
 
         }
 
-        // if (conn instanceof DatabaseConnection && conn.isContextMode()) {
-        // schema = DatabaseConnectionParameterUtil.getTrueParamValue((DatabaseConnection) conn, schema);
-        // }
+        if (conn instanceof DatabaseConnection && conn.isContextMode()) {
+            schema = DatabaseConnectionParameterUtil.getTrueParamValue((DatabaseConnection) conn, schema);
+        }
 
         String newQuery = null;
         realTableName = QueryUtil.getTableName(node, newOutputMetadataTable, schema, dbType, realTableName);
