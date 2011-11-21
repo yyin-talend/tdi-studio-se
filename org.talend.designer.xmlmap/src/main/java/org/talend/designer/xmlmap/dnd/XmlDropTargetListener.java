@@ -28,6 +28,9 @@ import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.figures.SashSeparator;
 import org.talend.designer.xmlmap.figures.layout.XmlMapDataLayout;
+import org.talend.designer.xmlmap.figures.sash.ISash;
+import org.talend.designer.xmlmap.figures.table.ColumnSash;
+import org.talend.designer.xmlmap.figures.table.TableTree;
 import org.talend.designer.xmlmap.figures.treesettings.FilterTextArea;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
@@ -39,7 +42,6 @@ import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
-import org.talend.designer.xmlmap.util.SeparatorType;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -103,65 +105,87 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
 
     }
 
-    private void handleSashDrag(DropTargetEvent event, SashSeparator separator) {
-        if (separator.getType() == SeparatorType.ZONE_SEPARATOR) {
+    private void handleSashDrag(DropTargetEvent event, ISash s) {
+        if (s instanceof SashSeparator) {
+            SashSeparator separator = (SashSeparator) s;
             final Point dropLocation = getDropLocation();
-            final Rectangle leftBounds = separator.getLeftFigure().getBounds();
-            final Rectangle rightBounds = separator.getRightFigure().getBounds();
-            if (dropLocation.x < (leftBounds.x + separator.getZoneMinSize() + separator.getWidth())
-                    || dropLocation.x > (rightBounds.x + rightBounds.width - separator.getZoneMinSize() - separator.getWidth())) {
+            Rectangle leftBounds = separator.getLeftFigure().getBounds().getCopy();
+            Rectangle rightBounds = separator.getRightFigure().getBounds().getCopy();
+            if (dropLocation.x < (leftBounds.x + separator.getZoneMinSize() + separator.getSashWidth())
+                    || dropLocation.x > (rightBounds.x + rightBounds.width - separator.getZoneMinSize() - separator
+                            .getSashWidth())) {
                 event.detail = DND.DROP_NONE;
                 return;
             }
 
-        }
+            final LayoutManager layoutManager = separator.getParentFigure().getLayoutManager();
+            if (layoutManager instanceof XmlMapDataLayout) {
+                XmlMapDataLayout layout = (XmlMapDataLayout) layoutManager;
+                int X = getDropLocation().x;
+                final Rectangle separatorBounds = separator.getBounds().getCopy();
+                separatorBounds.x = X;
+                layout.setConstraint(separator, separatorBounds);
 
-        final LayoutManager layoutManager = separator.getParentFigure().getLayoutManager();
-        if (layoutManager instanceof XmlMapDataLayout) {
-            XmlMapDataLayout layout = (XmlMapDataLayout) layoutManager;
+                // left figure width
+                int wL = X - leftBounds.x;
+
+                // right figure width
+                int wR = rightBounds.getTopRight().x - X - separator.getSashWidth();
+                int xR = X + separator.getSashWidth();
+
+                if (wL < separator.getZoneMinSize()) {
+                    wL = separator.getZoneMinSize();
+                    wR = rightBounds.getTopRight().x - leftBounds.x - separator.getZoneMinSize() - separator.getSashWidth();
+                    xR = leftBounds.x + separator.getZoneMinSize() + separator.getSashWidth();
+                }
+                if (wR < separator.getZoneMinSize()) {
+                    wL = rightBounds.getTopRight().x - separator.getZoneMinSize() - separator.getSashWidth() - leftBounds.x;
+                    wR = separator.getZoneMinSize();
+                    xR = rightBounds.getTopRight().x - separator.getZoneMinSize();
+                }
+                leftBounds.width = wL;
+                layout.setConstraint(separator.getLeftFigure(), leftBounds.getCopy());
+                separator.getLeftFigure().invalidateTree();
+
+                rightBounds.x = xR;
+                rightBounds.width = wR;
+                layout.setConstraint(separator.getRightFigure(), rightBounds.getCopy());
+                separator.getRightFigure().invalidateTree();
+                separator.getParentFigure().revalidate();
+            }
+
+        } else if (s instanceof ColumnSash) {
+            ColumnSash columnSash = (ColumnSash) s;
+            TableTree table = columnSash.getTable();
+            Rectangle tableBounds = table.getBounds();
             int X = getDropLocation().x;
-            final Rectangle separatorBounds = separator.getBounds().getCopy();
-            separatorBounds.x = X;
-            layout.setConstraint(separator, separatorBounds);
-
-            Rectangle leftBounds = separator.getLeftFigure().getBounds().getCopy();
-
-            Rectangle rightBounds = separator.getRightFigure().getBounds().getCopy();
-            int wL = X - leftBounds.x;
-
-            int wR = rightBounds.getTopRight().x - X - separator.getWidth();
-            int xR = X + separator.getWidth();
-
-            if (wL < separator.getZoneMinSize()) {
-                wL = separator.getZoneMinSize();
-                wR = rightBounds.getTopRight().x - leftBounds.x - separator.getZoneMinSize() - separator.getWidth();
-                xR = leftBounds.x + separator.getZoneMinSize() + separator.getWidth();
+            if (X < tableBounds.x + columnSash.getSashWidth()
+                    || X > tableBounds.x + tableBounds.width - columnSash.getSashWidth()) {
+                event.detail = DND.DROP_NONE;
+                return;
             }
-            if (wR < separator.getZoneMinSize()) {
-                wL = rightBounds.getTopRight().x - separator.getZoneMinSize() - separator.getWidth() - leftBounds.x;
-                wR = separator.getZoneMinSize();
-                xR = rightBounds.getTopRight().x - separator.getZoneMinSize();
-            }
-            leftBounds.width = wL;
-            layout.setConstraint(separator.getLeftFigure(), leftBounds.getCopy());
-            separator.getLeftFigure().invalidateTree();
 
-            rightBounds.x = xR;
-            rightBounds.width = wR;
-            layout.setConstraint(separator.getRightFigure(), rightBounds.getCopy());
-            separator.getRightFigure().invalidateTree();
-            separator.getParentFigure().revalidate();
+            double newExpressionWidth = X - tableBounds.x;
+
+            double defaultExpressionWidth = table.getDefaultExpressionWidth();
+            double pecnetage = newExpressionWidth / defaultExpressionWidth;
+            table.setExpressWidthPecentage(pecnetage);
         }
+
     }
 
     @Override
     public void dragOver(DropTargetEvent event) {
         super.dragOver(event);
         Object object = TemplateTransfer.getInstance().getObject();
+        if (object == null) {
+            event.detail = DND.DROP_NONE;
+            return;
+        }
 
         // dnd the sash
-        if (object instanceof SashSeparator) {
-            handleSashDrag(event, (SashSeparator) object);
+        if (object instanceof ISash) {
+            handleSashDrag(event, (ISash) object);
             return;
         }
 
@@ -292,6 +316,10 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
 
     @Override
     protected void handleDrop() {
+        final Object object = TemplateTransfer.getInstance().getObject();
+        if (object == null) {
+            return;
+        }
         super.handleDrop();
     }
 
@@ -303,7 +331,7 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
     @Override
     public boolean isEnabled(DropTargetEvent event) {
         final Object object = TemplateTransfer.getInstance().getObject();
-        if (object instanceof SashSeparator) {
+        if (object instanceof ISash) {
             return true;
         }
         return super.isEnabled(event);

@@ -69,7 +69,7 @@ public class XmlMapDataLayout extends AbstractHintLayout {
             if (child instanceof SashSeparator) {
                 separatorNum++;
                 SashSeparator separator = (SashSeparator) child;
-                separatorWith = separatorWith + separator.getWidth();
+                separatorWith = separatorWith + separator.getSashWidth();
             }
         }
 
@@ -88,9 +88,9 @@ public class XmlMapDataLayout extends AbstractHintLayout {
                 Rectangle newBounds = null;
                 if (f instanceof SashSeparator) {
                     SashSeparator separator = (SashSeparator) f;
-                    newBounds = new Rectangle(x, y, separator.getWidth(), avilableSize.y);
+                    newBounds = new Rectangle(x, y, separator.getSashWidth(), avilableSize.y);
                     f.setBounds(newBounds);
-                    x = x + separator.getWidth();
+                    x = x + separator.getSashWidth();
                 } else {
                     newBounds = new Rectangle(x, y, zoneWidth, avilableSize.y);
                     f.setBounds(newBounds);

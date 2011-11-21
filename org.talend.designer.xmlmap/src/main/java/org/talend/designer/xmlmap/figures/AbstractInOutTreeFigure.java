@@ -23,7 +23,7 @@ import org.eclipse.draw2d.ScrollPane;
 import org.talend.designer.xmlmap.figures.borders.RowBorder;
 import org.talend.designer.xmlmap.figures.layout.EqualWidthLayout;
 import org.talend.designer.xmlmap.figures.layout.TreeLayout;
-import org.talend.designer.xmlmap.figures.treeNode.TableTree;
+import org.talend.designer.xmlmap.figures.table.TableTree;
 import org.talend.designer.xmlmap.figures.treesettings.AbstractTreeSettingContainer;
 import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
 import org.talend.designer.xmlmap.figures.treetools.TreeToolBarContainer;

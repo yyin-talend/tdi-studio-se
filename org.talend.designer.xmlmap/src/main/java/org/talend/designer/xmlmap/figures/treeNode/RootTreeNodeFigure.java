@@ -20,6 +20,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
+import org.talend.designer.xmlmap.figures.table.TableTree;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 

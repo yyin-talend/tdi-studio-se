@@ -20,12 +20,12 @@ import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.graphics.Cursor;
-import org.talend.designer.xmlmap.util.SeparatorType;
+import org.talend.designer.xmlmap.figures.sash.ISash;
 
 /**
  * DOC talend class global comment. Detailled comment
  */
-public class SashSeparator extends ImageFigure {
+public class SashSeparator extends ImageFigure implements ISash {
 
     private int SEPARATOR_WIDTH = 10;
 
@@ -36,8 +36,6 @@ public class SashSeparator extends ImageFigure {
     private IFigure rightFigure;
 
     private IFigure parentFigure;
-
-    private SeparatorType type;
 
     public SashSeparator() {
         this.addMouseMotionListener(new MouseMotionListener() {
@@ -69,7 +67,7 @@ public class SashSeparator extends ImageFigure {
         // setBackgroundColor(ColorConstants.red);
     }
 
-    public int getWidth() {
+    public int getSashWidth() {
         return SEPARATOR_WIDTH;
     }
 
@@ -113,14 +111,6 @@ public class SashSeparator extends ImageFigure {
 
     public IFigure getParentFigure() {
         return this.parentFigure;
-    }
-
-    public SeparatorType getType() {
-        return this.type;
-    }
-
-    public void setType(SeparatorType type) {
-        this.type = type;
     }
 
     public int getZoneMinSize() {

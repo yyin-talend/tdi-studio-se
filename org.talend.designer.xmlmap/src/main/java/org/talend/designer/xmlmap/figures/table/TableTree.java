@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.xmlmap.figures.treeNode;
+package org.talend.designer.xmlmap.figures.table;
 
 import org.eclipse.draw2d.AbstractHintLayout;
 import org.eclipse.draw2d.ColorConstants;
@@ -27,7 +27,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 
 /**
- * DOC talend class global comment. Detailled comment
+ * wchen class global comment. Detailled comment
  */
 public class TableTree extends Figure {
 
@@ -41,30 +41,39 @@ public class TableTree extends Figure {
 
     private int defaultTableWidth = 370;
 
+    // the pecentage compare to the original defaultExpressionWidth
+    private double expressionPecentage = 1;
+
+    private ColumnSash columnSash;
+
     public TableTree(AbstractInOutTreeEditPart xmlTreePart) {
         this.xmlTreePart = xmlTreePart;
         this.setLayoutManager(new TableTreeLayout());
 
+        // table column title
         AbstractInOutTree xmlTree = (AbstractInOutTree) xmlTreePart.getModel();
-
         if (xmlTree instanceof InputXmlTree) {
             InputXmlTree inputTree = (InputXmlTree) xmlTree;
             if (inputTree.isLookup()) {
                 expressionColumn = new TableColumn();
                 expressionColumn.setText("Exp.key");
                 this.add(expressionColumn);
+                columnSash = new ColumnSash(this);
+                this.add(columnSash);
             }
         } else {
             expressionColumn = new TableColumn();
             expressionColumn.setText("Expression");
             this.add(expressionColumn);
-
+            columnSash = new ColumnSash(this);
+            this.add(columnSash);
         }
 
         nameColumn = new TableColumn();
         nameColumn.setText("Column");
         this.add(nameColumn);
 
+        // table column container
         tableItemContainer = new Figure();
         tableItemContainer.setLayoutManager(new ToolbarLayout());
         tableItemContainer.setBackgroundColor(ColorConstants.white);
@@ -81,13 +90,19 @@ public class TableTree extends Figure {
         return ((TableTreeLayout) getLayoutManager()).getExpressionWidth();
     }
 
-    public int getDefaultTableWidth() {
-        return defaultTableWidth;
+    public int getDefaultExpressionWidth() {
+        return defaultTableWidth / 2;
     }
 
     public void setDefautTableWidth(int tableMinWidth) {
         this.defaultTableWidth = tableMinWidth;
         invalidateTree();
+    }
+
+    public void setExpressWidthPecentage(double pecentage) {
+        this.expressionPecentage = pecentage;
+        invalidateTree();
+        revalidate();
     }
 
     class TableColumn extends Label {
@@ -134,10 +149,16 @@ public class TableTree extends Figure {
                 maxWidth = Math.max(maxWidth, clientArea.width);
 
                 titleHeight = Math.max(expSize.height, nameSize.height);
-                Rectangle newBounds = new Rectangle(titleX, y, expressionWidth, titleHeight);
+
+                int hafSashWidth = columnSash.getSashWidth() / 2;
+                Rectangle newBounds = new Rectangle(titleX, y, expressionWidth - hafSashWidth, titleHeight);
                 expressionColumn.setBounds(newBounds);
-                titleX = titleX + expressionWidth;
-                nameColumnWidth = nameColumnWidth - newBounds.width;
+                titleX = titleX + newBounds.width;
+                Rectangle sashBounds = new Rectangle(titleX, y, columnSash.getSashWidth(), titleHeight);
+                columnSash.setBounds(sashBounds);
+
+                titleX = titleX + sashBounds.width;
+                nameColumnWidth = nameColumnWidth - expressionWidth - hafSashWidth;
             }
             Rectangle newBounds = new Rectangle(titleX, y, nameColumnWidth, titleHeight);
             nameColumn.setBounds(newBounds);
@@ -156,7 +177,7 @@ public class TableTree extends Figure {
                 Dimension expSize = expressionColumn.getPreferredSize();
                 title.height = expSize.height;
                 title.union(getBorderPreferredSize(expressionColumn));
-                title.width = getDefaultTableWidth() / 2;
+                title.width = (int) (defaultTableWidth / 2 * expressionPecentage);
                 expressionWidth = title.width;
             } else {
                 expressionWidth = 0;

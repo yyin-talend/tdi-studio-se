@@ -24,7 +24,7 @@ import org.eclipse.gef.dnd.TemplateTransfer;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
-import org.talend.designer.xmlmap.figures.SashSeparator;
+import org.talend.designer.xmlmap.figures.sash.ISash;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
@@ -52,7 +52,7 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
             AbstractGraphicalEditPart graphicPart = (AbstractGraphicalEditPart) rootEditPart;
             final IFigure figure = graphicPart.getFigure();
             final IFigure findFigureAt = figure.findFigureAt(new Point(event.x, event.y));
-            if (findFigureAt instanceof SashSeparator) {
+            if (findFigureAt instanceof ISash) {
                 return findFigureAt;
             }
         }
@@ -100,7 +100,7 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
         }
 
         if (toTransfer.isEmpty()) {
-            object = new TransferedObject(null, null);
+            object = null;
         } else {
             object = new TransferedObject(toTransfer, type);
         }

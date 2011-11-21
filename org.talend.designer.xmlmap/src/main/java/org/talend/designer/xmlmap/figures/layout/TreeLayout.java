@@ -20,7 +20,7 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.talend.designer.xmlmap.figures.treeNode.TableTree;
+import org.talend.designer.xmlmap.figures.table.TableTree;
 import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
 import org.talend.designer.xmlmap.figures.treesettings.InputTreeSettingContainer;
 import org.talend.designer.xmlmap.figures.treesettings.OutputTreeSettingContainer;

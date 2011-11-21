@@ -38,7 +38,6 @@ import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.ui.resource.ImageInfo;
 import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
-import org.talend.designer.xmlmap.util.SeparatorType;
 
 /**
  * wchen class global comment. Detailled comment
@@ -92,7 +91,6 @@ public class XmlMapDataEditPart extends BaseEditPart {
 
         // separator 1
         SashSeparator separatorLeft = new SashSeparator();
-        separatorLeft.setType(SeparatorType.ZONE_SEPARATOR);
         separatorLeft.setImage(ImageProviderMapper.getImage(ImageInfo.ZONE_SASH));
         mainFigure.add(separatorLeft);
 
@@ -112,7 +110,6 @@ public class XmlMapDataEditPart extends BaseEditPart {
 
         // separetor 2
         SashSeparator separatorRight = new SashSeparator();
-        separatorRight.setType(SeparatorType.ZONE_SEPARATOR);
         separatorRight.setImage(ImageProviderMapper.getImage(ImageInfo.ZONE_SASH));
         mainFigure.add(separatorRight);
 
