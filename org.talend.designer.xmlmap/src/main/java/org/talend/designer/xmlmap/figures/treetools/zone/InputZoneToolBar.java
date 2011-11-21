@@ -75,8 +75,9 @@ public class InputZoneToolBar extends ZoneToolBar {
         figure.setBackgroundColor(ColorConstants.lightGray);
         add(figure);
 
-        propertyButton = new PropertyButton();
-        add(propertyButton);
+        // disable for 5.0.0
+        // propertyButton = new PropertyButton();
+        // add(propertyButton);
 
         for (InputXmlTree tree : mapData.getInputTrees()) {
             if (!tree.isMinimized()) {
@@ -116,9 +117,10 @@ public class InputZoneToolBar extends ZoneToolBar {
         tooltip.setText("Minimize all input tables");
         min_size.setToolTip(tooltip);
 
-        tooltip = new Label();
-        tooltip.setText("Setup the configurations of tXMLMap");
-        propertyButton.setToolTip(tooltip);
+        // disable for 5.0.0
+        // tooltip = new Label();
+        // tooltip.setText("Setup the configurations of tXMLMap");
+        // propertyButton.setToolTip(tooltip);
 
     }
 
