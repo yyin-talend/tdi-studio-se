@@ -102,7 +102,7 @@ import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.updatesite.IPatchBean;
+import org.talend.core.updatesite.IUpdateSiteBean;
 import org.talend.json.JSONException;
 import org.talend.json.JSONObject;
 import org.talend.repository.i18n.Messages;
@@ -260,7 +260,7 @@ public class LoginComposite extends Composite {
 
     private ConnectionBean firstConnBean;
 
-    private List<IPatchBean> patchesToInstall = new ArrayList<IPatchBean>();
+    private List<IUpdateSiteBean> updateSiteToInstall = new ArrayList<IUpdateSiteBean>();
 
     // only for test
     // private static final String ARCHIVA_URL = "http://192.168.0.58:8080";
@@ -296,7 +296,6 @@ public class LoginComposite extends Composite {
     public LoginComposite(Composite parent, int style, LoginDialog dialog, boolean inuse, TOSLoginComposite tosLoginComposite,
             StackLayout stackLayout) {
         super(parent, style);
-
         this.parent = parent;
         this.dialog = dialog;
         this.inuse = inuse;
@@ -1706,10 +1705,18 @@ public class LoginComposite extends Composite {
                         String archivaServicesURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY)
                                 + ARCHIVA_SERVICES_SEGMENT;
                         String repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
-                        tisService.downLoadAndInstallPatches(archivaServicesURL, patchesToInstall, repository);
+                        String username = archivaProperties.getString(ARCHIVA_USER);
+                        String password = archivaProperties.getString(ARCHIVA_USER_PWD);
+                        List<String> repositories = new ArrayList<String>();
+                        // if no repository return,just use a empty repositories array
+                        if (repository != null) {
+                            repositories.add(repository);
+                        }
+                        tisService.downLoadAndInstallUpdateSites(archivaServicesURL, username, password, updateSiteToInstall,
+                                repositories);
                         afterUpdate = true;
                         tisService.setNeedResartAfterUpdate(afterUpdate);
-                        patchesToInstall.clear();
+                        updateSiteToInstall.clear();
                     }
                     setStatusArea();
                     validateUpdate();
@@ -1741,8 +1748,12 @@ public class LoginComposite extends Composite {
                 repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
                 username = archivaProperties.getString(ARCHIVA_USER);
                 password = archivaProperties.getString(ARCHIVA_USER_PWD);
+                List<String> repositories = new ArrayList<String>();
+                if (repository != null) {
+                    repositories.add(repository);
+                }
                 if (archivaServiceURL != null) {
-                    boolean needUpdate = needUpdate(username, password, archivaServiceURL, repository);
+                    boolean needUpdate = needUpdate(username, password, archivaServiceURL, repositories);
                     if (afterUpdate) {
                         iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                         onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
@@ -1810,20 +1821,20 @@ public class LoginComposite extends Composite {
     }
 
     // method need update is used to control the status of updateBtn
-    private boolean needUpdate(String username, String password, String archivaURL, String... repository) {
+    private boolean needUpdate(String username, String password, String archivaURL, List<String> repositories) {
 
         ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
         if (tisService != null) {
             try {
-                if (patchesToInstall != null) {
-                    patchesToInstall.clear();
+                if (updateSiteToInstall != null) {
+                    updateSiteToInstall.clear();
                 }
-                patchesToInstall = tisService.getPatchesToBeInstall(username, password, archivaURL, repository);
+                updateSiteToInstall = tisService.getUpdateSitesToBeInstall(username, password, archivaURL, repositories);
             } catch (BackingStoreException e) {
                 ExceptionHandler.process(e);
             }
         }
-        return !patchesToInstall.isEmpty();
+        return !updateSiteToInstall.isEmpty();
     }
 
     public void createNewProject() {
