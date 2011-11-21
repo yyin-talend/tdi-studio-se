@@ -248,8 +248,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //end%>
 			String[] temp_row_<%= cid %> = new String[<%=listColumns.size()%>];
 			int actual_end_column_<%= cid %> = end_column_<%= cid %> >	row_<%= cid %>.length ? row_<%= cid %>.length : end_column_<%= cid %>;
-			java.text.DecimalFormat df = new java.text.DecimalFormat("#.####################################");
-			char separatorChar = df.getDecimalFormatSymbols().getDecimalSeparator();
+			java.text.DecimalFormat df_<%=cid %> = new java.text.DecimalFormat("#.####################################");
+			char separatorChar_<%=cid %> = df_<%=cid %>.getDecimalFormatSymbols().getDecimalSeparator();
 			for(int i=0;i<<%=size%>;i++){
 				
 				if(i + start_column_<%= cid %> < actual_end_column_<%= cid %>){
@@ -259,12 +259,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				  if (<%=bReadRealValue%> && jxl.CellType.NUMBER == cell_<%=cid%>.getType()){				   
 				  	temp_row_<%= cid %>[i] = String.valueOf(((jxl.NumberCell)cell_<%=cid%>).getValue());
 					String content = cell_<%=cid%>.getContents();
-					if(content!=null && content.indexOf(separatorChar)==-1 && (temp_row_<%= cid %>[i].indexOf("E")==-1)) {
+					if(content!=null && content.indexOf(separatorChar_<%=cid %>)==-1 && (temp_row_<%= cid %>[i].indexOf("E")==-1)) {
 						temp_row_<%=cid%>[i] = content;
 					} else {
     					String literal = temp_row_<%=cid%>[i];
     					if(literal!=null) {
-    						literal = df.format(((jxl.NumberCell)cell_<%=cid%>).getValue());
+    						literal = df_<%=cid %>.format(((jxl.NumberCell)cell_<%=cid%>).getValue());
     					}
     					temp_row_<%=cid%>[i] = literal;
 					}
