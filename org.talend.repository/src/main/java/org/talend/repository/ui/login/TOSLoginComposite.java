@@ -331,13 +331,14 @@ public class TOSLoginComposite extends Composite {
         gc = new GC(openButton);
         Point labelSizeOpenButton = gc.stringExtent(Messages.getString("TOSLoginComposite.openButton"));
         gc.dispose();
+        int width = OPEN_IMAGE.getBounds().width;
 
         gc = new GC(openButton);
         Point labelSizeDeleteButton = gc.stringExtent(Messages.getString("TOSLoginComposite.deleteButton"));
         gc.dispose();
 
-        if (labelSizeOpenButton.x > labelSizeDeleteButton.x) {
-            data.left = new FormAttachment(100, -10 - labelSizeOpenButton.x - 10);
+        if (labelSizeOpenButton.x+width > labelSizeDeleteButton.x) {
+            data.left = new FormAttachment(100, -10 - labelSizeOpenButton.x - width - 10);
         } else {
             data.left = new FormAttachment(100, -10 - labelSizeDeleteButton.x - 10);
         }
