@@ -337,10 +337,10 @@ public class TOSLoginComposite extends Composite {
         Point labelSizeDeleteButton = gc.stringExtent(Messages.getString("TOSLoginComposite.deleteButton"));
         gc.dispose();
 
-        if (labelSizeOpenButton.x+width > labelSizeDeleteButton.x) {
-            data.left = new FormAttachment(100, -10 - labelSizeOpenButton.x - width - 10);
+        if (labelSizeOpenButton.x + width > labelSizeDeleteButton.x) {
+            data.left = new FormAttachment(100, -20 - labelSizeOpenButton.x - width - 10);
         } else {
-            data.left = new FormAttachment(100, -10 - labelSizeDeleteButton.x - 10);
+            data.left = new FormAttachment(100, -20 - labelSizeDeleteButton.x - 10);
         }
         data.right = new FormAttachment(100, -10);
         // if (Platform.getOS().equals(Platform.OS_WIN32)) {
