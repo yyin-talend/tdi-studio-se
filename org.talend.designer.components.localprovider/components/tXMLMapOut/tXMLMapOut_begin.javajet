@@ -818,6 +818,7 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 	private void addAttribute(String currEleName, OutputTreeNode node){
 		for(TreeNode tmpNode : node.getChildren()) {
 			if(tmpNode.getNodeType()==NodeType.ATTRIBUT) {
+				if(tmpNode.getExpression()!=null && !("").equals(tmpNode.getExpression()) ){
 %>
 //		if(<%//tool.getValue(node);%>!=null){
 			valueMap.put("<%=currEleName%>",<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>);
@@ -829,6 +830,11 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 			<% } %>
 //		}
 <%
+				} else if(allowEmpty) {
+%>
+			<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>","");
+<%
+				}
 			}
 		}
 	}
