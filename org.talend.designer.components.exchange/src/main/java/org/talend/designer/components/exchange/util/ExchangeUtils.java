@@ -48,7 +48,7 @@ import org.osgi.framework.Version;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
-import org.talend.core.CorePlugin;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentUtilities;
@@ -110,8 +110,7 @@ public class ExchangeUtils {
      * @return
      */
     public static String getCurrentTosVersion(boolean normalize) {
-        String version = (String) CorePlugin.getDefault().getBundle().getHeaders()
-                .get(org.osgi.framework.Constants.BUNDLE_VERSION);
+        String version = VersionUtils.getVersion();
         if (normalize) {
             version = normalizeVersion(version);
         }
