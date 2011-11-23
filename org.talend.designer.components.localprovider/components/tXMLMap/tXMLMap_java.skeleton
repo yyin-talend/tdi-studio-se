@@ -111,9 +111,18 @@ public class CLASS {
 		java.util.Map<String, String> pathPatternMap = new java.util.HashMap<String, String>(); // Map<input table xpath, Pattern>
 		java.util.Map<String, String> pathTypeToGenMap = new java.util.HashMap<String, String>(); // Map<"/root/name","String">
 		
+		//only for main input table
 		public MatchXmlTreeExpr(TreeNode node, String cid) {
 			this.cid = cid;
 			init(node);
+		}
+		
+		//for main and all lookup tables
+		public MatchXmlTreeExpr(List<TreeNode> nodes, String cid) {
+			this.cid = cid;
+			for(TreeNode node : nodes) {
+				init(node);
+			}
 		}
 		
 		//NO TYPE CHECK 
@@ -164,7 +173,7 @@ public class CLASS {
 						if("id_String".equals(pathTypeMap.get(tmpXpath)) || "id_Object".equals(pathTypeMap.get(tmpXpath))){
 							strBuilder.append("treeNodeAPI_"+cid+".get_String(\""+ tmpXpath + "\")");
 						} else if("id_Date".equals(pathTypeMap.get(tmpXpath))) {
-							strBuilder.append("treeNodeAPI_"+cid+".get_Date(\""+ tmpXpath + "\" , \"" + pathPatternMap.get(tmpXpath) + "\")");
+							strBuilder.append("treeNodeAPI_"+cid+".get_Date(\""+ tmpXpath + "\" , " + pathPatternMap.get(tmpXpath) + ")");
 						} else if("id_byte[]".equals(pathTypeMap.get(tmpXpath))) {
 							strBuilder.append("treeNodeAPI_"+cid+".get_Bytes(\""+ tmpXpath + "\")");
 						} else {

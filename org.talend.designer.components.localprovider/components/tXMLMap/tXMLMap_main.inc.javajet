@@ -171,7 +171,13 @@ skeleton="tXMLMap_java.skeleton"
 		}
 	}
 	if(mainInputTable != null) {
-		MatchXmlTreeExpr matchXmlTreeExpr = null;
+		
+		List<TreeNode> allNodes = new ArrayList<TreeNode>();
+		for(InputXmlTree inputTable : inputTables) {
+			allNodes.addAll(inputTable.getNodes());
+		}
+		
+		MatchXmlTreeExpr matchXmlTreeExpr = new MatchXmlTreeExpr(allNodes,cid);
 		for(OutputXmlTree outputTable : outputTables) {
 			String outputTableName = outputTable.getName();
 			if(nameToOutputConnection.get(outputTableName) == null) {
@@ -198,7 +204,6 @@ skeleton="tXMLMap_java.skeleton"
 				isPlainNode = false;
 			}
 			
-			matchXmlTreeExpr = new MatchXmlTreeExpr(tmpNode, cid);
 			if(("id_Document").equals(tmpNode.getType())) { // find the type:document node.
 				hasDocumentInMainInputTable = true;
 				//find the loop path
