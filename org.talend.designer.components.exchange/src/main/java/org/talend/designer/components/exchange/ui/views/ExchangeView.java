@@ -21,6 +21,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.components.exchange.ui.actions.RefreshComponenentsAction;
 import org.talend.designer.components.exchange.ui.htmlcontent.MyExtensionLocationListener;
 
@@ -46,13 +47,18 @@ public class ExchangeView extends EditorPart {
      */
     @Override
     public void createPartControl(Composite parent) {
-        browser = new Browser(parent, SWT.NONE);
-        manager.setBrowser(browser);
-        browser.addLocationListener(new MyExtensionLocationListener());
-        browser.setLayoutData(new GridData(GridData.FILL_BOTH));
-        if (manager.getDocument() != null) {
-            RefreshComponenentsAction action = new RefreshComponenentsAction();
-            action.run(new String[] { RefreshComponenentsAction.REFRESH_ALL });
+        try {
+            browser = new Browser(parent, SWT.NONE);
+            manager.setBrowser(browser);
+            browser.addLocationListener(new MyExtensionLocationListener());
+            browser.setLayoutData(new GridData(GridData.FILL_BOTH));
+            if (manager.getDocument() != null) {
+                RefreshComponenentsAction action = new RefreshComponenentsAction();
+                action.run(new String[] { RefreshComponenentsAction.REFRESH_ALL });
+            }
+        } catch (Throwable t) {
+            Exception ex = new Exception("The internal web browser can not be access,the exchange view won't be displayed");
+            ExceptionHandler.process(ex);
         }
     }
 
