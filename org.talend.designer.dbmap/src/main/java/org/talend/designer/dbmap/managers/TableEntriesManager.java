@@ -125,8 +125,8 @@ public class TableEntriesManager {
      */
     public void addTableEntry(ITableEntry dataMapTableEntry, Integer index) {
         if (dataMapTableEntry == null) {
-            throw new IllegalArgumentException(Messages
-                    .getString("TableEntriesManager.exceptionMessage.dataMapTableEntryCannotNull")); //$NON-NLS-1$
+            throw new IllegalArgumentException(
+                    Messages.getString("TableEntriesManager.exceptionMessage.dataMapTableEntryCannotNull")); //$NON-NLS-1$
         }
         addInternal(dataMapTableEntry);
         IDataMapTable dataMapTable = dataMapTableEntry.getParent();
@@ -143,9 +143,8 @@ public class TableEntriesManager {
                 ((OutputTable) dataMapTable).addFilterEntry((FilterTableEntry) dataMapTableEntry, index);
             }
         } else {
-            String exceptionMessage = Messages.getString(
-                    "TableEntriesManager.exceptionMessage.typeIsNotValid", dataMapTableEntry //$NON-NLS-1$
-                            .getClass().toString());
+            String exceptionMessage = Messages.getString("TableEntriesManager.exceptionMessage.typeIsNotValid", dataMapTableEntry //$NON-NLS-1$
+                    .getClass().toString());
             throw new IllegalArgumentException(exceptionMessage);
         }
         // TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.ADD);
@@ -200,7 +199,9 @@ public class TableEntriesManager {
      * @param metadataColumn
      */
     private boolean isColumnExists(String dbTableName, String columnName) {
-
+        if (dbTableName$ColumnNameToColumn.size() == 0) {
+            return true;
+        }
         return dbTableName$ColumnNameToColumn.containsKey(dbTableName, columnName);
 
     }
@@ -321,13 +322,11 @@ public class TableEntriesManager {
      * @param newColumnName
      */
     public void renameEntryName(ITableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
-        TableEntryLocation tableEntryLocationKey = new TableEntryLocation(dataMapTableEntry.getParentName(),
-                previousColumnName);
+        TableEntryLocation tableEntryLocationKey = new TableEntryLocation(dataMapTableEntry.getParentName(), previousColumnName);
         // TableEntriesManager.buildLocation(dataMapTableEntry);
         ITableEntry entry = tableEntries.get(tableEntryLocationKey);
         if (entry != dataMapTableEntry) {
-            throw new IllegalStateException(Messages
-                    .getString("TableEntriesManager.exceptionMessage.tableEntriesNotSame")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("TableEntriesManager.exceptionMessage.tableEntriesNotSame")); //$NON-NLS-1$
         }
         tableEntries.remove(tableEntryLocationKey);
 
@@ -383,6 +382,6 @@ public class TableEntriesManager {
     //
     // public ITableEntry entry;
     // public List<ITableEntry> entries;
-    //        
+    //
     // }
 }
