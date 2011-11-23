@@ -66,14 +66,13 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
     private String outputSuffix;
 
-	public JobJavaScriptsWSManager(Map<ExportChoice, Object> exportChoiceMap,
-			String contextName, String launcher, int statisticPort,
-			int tracePort, String suffix) {
-		super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
-		this.outputSuffix = suffix;
-	}
+    public JobJavaScriptsWSManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
+            int statisticPort, int tracePort, String suffix) {
+        super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
+        this.outputSuffix = suffix;
+    }
 
-	private static Logger log = Logger.getLogger(ExceptionHandler.class);
+    private static Logger log = Logger.getLogger(ExceptionHandler.class);
 
     public static final String EXPORT_METHOD = "runJob"; //$NON-NLS-1$
 
@@ -145,12 +144,10 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
             if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren),
-                        progressMonitor);
+                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
             }
             // generate the WSDL file
-            ExportFileResource wsdlFile = getWSDLFile(processItem, isOptionChoosed(ExportChoice.needWSDL),
-                    talendLibraries);
+            ExportFileResource wsdlFile = getWSDLFile(processItem, isOptionChoosed(ExportChoice.needWSDL), talendLibraries);
             list.add(wsdlFile);
 
             // edit the WSDD file
@@ -196,7 +193,13 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         libResource.addResources(userRoutineList);
 
         // Gets axis libraries
-        List<URL> axisLibList = getLib(axisLib, isOptionChoosed(ExportChoice.needAXISLIB));
+        List<String> newAxisLib = new ArrayList<String>(axisLib);
+        for (URL libUrl : talendLibraries) {
+            if (libUrl.getFile() != null) {
+                newAxisLib.remove(new File(libUrl.getFile()).getName());
+            }
+        }
+        List<URL> axisLibList = getLib(newAxisLib, isOptionChoosed(ExportChoice.needAXISLIB));
         libResource.addResources(axisLibList);
 
         // check the list avoid duplication
@@ -639,15 +642,14 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
     }
 
-	@Override
+    @Override
     public void setTopFolder(List<ExportFileResource> resourcesToExport) {
         return;
     }
 
-	@Override
-	public String getOutputSuffix() {
-		return outputSuffix;
-	}
+    @Override
+    public String getOutputSuffix() {
+        return outputSuffix;
+    }
 
-	
 }
