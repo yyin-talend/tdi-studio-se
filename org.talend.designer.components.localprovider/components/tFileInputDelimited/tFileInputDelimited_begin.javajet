@@ -837,6 +837,8 @@
 					<%
 					}
 					%>
+					
+					csvReader<%=cid %>.setTrimWhitespace(false);
 					if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
 	        			csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
 						<%
@@ -932,6 +934,7 @@
 				 			csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
 				          	new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
 						}
+						csvReader<%=cid %>.setTrimWhitespace(false);
 						if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )	
 	        				csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
 						<%
