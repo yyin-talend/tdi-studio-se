@@ -1,0 +1,51 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tChangeFileEncoding</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapitre&nbsp;9.&nbsp;Composants File"><link rel="prev" href="tApacheLogInput.html" title="tApacheLogInput"><link rel="next" href="tCreateTemporaryFile.html" title="tCreateTemporaryFile"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tChangeFileEncoding"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tChangeFileEncoding"></a>tChangeFileEncoding</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tChangeFileEncoding_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa4268383"></a><div class="section" title="tChangeFileEncoding Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e177640"></a>tChangeFileEncoding Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>File/Management</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tChangeFileEncoding </strong></span>permet de modifier
+                                l&#8217;encodage d&#8217;un fichier donn&eacute;.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tChangeFileEncoding</strong></span> transforme l&#8217;encodage des
+                                caract&egrave;res d&#8217;un fichier donn&eacute;, et g&eacute;n&egrave;re un nouveau fichier en
+                                fonction de l&#8217;encodage des caract&egrave;res transform&eacute;s.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use Custom Input
+                                Encoding</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour personnaliser le type
+                                d&#8217;encodage des caract&egrave;res. Lorsque cette case est coch&eacute;e, une liste
+                                des types d&#8217;encodage d&#8217;entr&eacute;e appara&icirc;t, vous permettant soit de
+                                s&eacute;lectionner un type d&#8217;encodage d&#8217;entr&eacute;e parmi les encodages
+                                propos&eacute;s, soit de sp&eacute;cifier vous-m&ecirc;me un type d&#8217;encodage d&#8217;entr&eacute;e en
+                                s&eacute;lectionnant <span class="bold"><strong>CUSTOM</strong></span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top"><p>A partir de cette liste de types d&#8217;encodage, vous
+                                pouvez s&eacute;lectionnez l&#8217;une des options propos&eacute;es, ou personnaliser
+                                l&#8217;encodage des caract&egrave;res en s&eacute;lectionnant <span class="bold"><strong>CUSTOM</strong></span>, et sp&eacute;cifier un type d&#8217;encodage de
+                                caract&egrave;res..</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Input File Name</em></span></p>
+                        </td><td valign="top"><p>Chemin d&#8217;acc&egrave;s au fichier d&#8217;entr&eacute;e.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Output File Name</em></span></p>
+                        </td><td valign="top"><p>Chemin d&#8217;acc&egrave;s au fichier de sortie.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant doit &ecirc;tre
+                                utilis&eacute; en standalone.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario: Transformer l&#8217;encodage des caract&egrave;res d&#8217;un fichier"><div class="titlepage"><div><div><h3 class="title"><a name="d0e177770"></a>Sc&eacute;nario: Transformer l&#8217;encodage des caract&egrave;res d&#8217;un fichier</h3></div></div></div><p>Ce sc&eacute;nario Java d&eacute;crit un Job tr&egrave;s simple permettant de transformer l&#8217;encodage des
+            caract&egrave;res d&#8217;un fichier texte, et de g&eacute;n&eacute;rer un nouveau fichier en tenant compte du
+            nouvel encodage des caract&egrave;res.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez et d&eacute;posez
+                    un composant <span class="bold"><strong>tChangeFileEncoding</strong></span> dans l&#8217;espace
+                    de mod&eacute;lisation graphique.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="213"><tr><td><img src="../images/Use_Case_tChangeFileEncoding1.png" width="213"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Double-cliquez sur le composant <span class="bold"><strong>tChangeFileEncoding</strong></span> pour afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de sa vue <span class="bold"><strong>Component</strong></span>. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="392"><tr><td><img src="../images/Use_Case_tChangeFileEncoding4.png" width="392"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cochez la case <span class="bold"><strong>Use Custom Input Encoding</strong></span>.
+                    S&eacute;lectionnez le type d&#8217;encodage &#8220;GB2312&#8221; dans la liste d&eacute;roulante <span class="bold"><strong>Encoding</strong></span>.</p></li><li class="listitem"><p> Dans le champ <span class="bold"><strong>Input File Name</strong></span>, parcourez ou
+                    saisissez le chemin d&#8217;acc&egrave;s au fichier d&#8217;entr&eacute;e.</p></li><li class="listitem"><p> Dans le champ <span class="bold"><strong>Output File Name</strong></span>, parcourez ou
+                    saisissez le chemin d&#8217;acc&egrave;s au fichier de sortie.</p></li><li class="listitem"><p> S&eacute;lectionnez <span class="bold"><strong>CUSTOM</strong></span> dans la liste d&eacute;roulante
+                        <span class="bold"><strong>Encoding</strong></span>, et saisissez &#8220;UTF-16&#8221; dans le
+                    champ texte.</p></li><li class="listitem"><p> Sauvegardez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="332"><tr><td><img src="..\images\Use_Case_tChangeFileEncoding5.png" width="332"></td></tr></table></div><p>Le type d&#8217;encodage du fichier <span class="emphasis"><em>in.txt</em></span> est transform&eacute;, et
+                <span class="emphasis"><em>out.txt</em></span> est g&eacute;n&eacute;r&eacute; avec un type d&#8217;encodage UTF-16.</p></div></div></body></html>

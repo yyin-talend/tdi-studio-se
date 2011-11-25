@@ -1,0 +1,50 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode  
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+%>
+	
+<%
+String priority = ElementParameterParser.getValue(node, "__PRIORITY__");
+String label = "WARN";
+if(priority.equals("1")){
+	label = "TRACE";
+}else if(priority.equals("2")){
+	label = "DEBUG";
+}else if(priority.equals("3")){
+	label = "INFO";
+}else if(priority.equals("4")){
+	label = "WARN";
+}else if(priority.equals("5")){
+	label = "ERROR";
+}else if(priority.equals("6")){
+	label = "FATAL";
+}
+%>	
+	resumeUtil.addLog("USER_DEF_LOG", "NODE:<%=cid %>", "", Thread.currentThread().getId() + "", "<%=label %>","",<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>,"", "");
+<%
+			if (node.getProcess().getNodesOfType("tLogCatcher").size() > 0) {
+				List<INode> logCatchers = (List<INode>)node.getProcess().getNodesOfType("tLogCatcher");
+				for (INode logCatcher : logCatchers) {
+					if (("true").equals(ElementParameterParser.getValue(logCatcher, "__CATCH_TWARN__"))) {
+%>
+	<%=logCatcher.getUniqueName() %>.addMessage("tWarn", "<%=cid %>", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, <%=ElementParameterParser.getValue(node, "__CODE__") %>);
+	<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+<%
+					}
+				}
+			}
+%>
+globalMap.put("<%=cid %>_WARN_MESSAGES", <%=ElementParameterParser.getValue(node, "__MESSAGE__")%>); 
+globalMap.put("<%=cid %>_WARN_PRIORITY", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>);
+globalMap.put("<%=cid %>_WARN_CODE", <%=ElementParameterParser.getValue(node, "__CODE__") %>);
+

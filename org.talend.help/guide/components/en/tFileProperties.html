@@ -1,0 +1,103 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileProperties</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapter&nbsp;9.&nbsp;File components"><link rel="prev" href="file-tFileOutputXML.html" title="tFileOutputXML"><link rel="next" href="tFileRowCount.html" title="tFileRowCount"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFileProperties"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileProperties"></a>tFileProperties</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileProperties_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tFileProperties Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e185927"></a>tFileProperties Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Management</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tFileProperties </strong></span>creates a single
+                                row flow that displays the properties of the processed file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tFileProperties</strong></span> obtains
+                                information about the main properties of a defined file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: You create and store
+                                the schema locally for this component only. Related topic: see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: You have already
+                                created the schema and stored it in the Repository. You can reuse it
+                                in various projects and Job designs. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>File</em></span></p>
+                        </td><td valign="top">
+                            <p>Name or path to the file to be processed. Related topic: see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Calculate MD5 Hash</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to check the MD5 of the downloaded
+                                file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can be used as standalone component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>Outgoing links (from one component to another):</p>
+                            <p>
+                                <span class="bold"><strong>Row</strong></span>: Main; Iterate.</p>
+                            <p>
+                                <span class="bold"><strong>Trigger</strong></span>: On Subjob Ok; On Subjob
+                                Error; Run if; On Component Ok; On Component Error.</p>
+                            <p> </p>
+                            <p> Incoming links (from one component to another):</p>
+                            <p>
+                                <span class="bold"><strong>Row</strong></span>: Iterate.</p>
+                            <p>
+                                <span class="bold"><strong>Trigger</strong></span>: Run if; On Subjob Ok; On
+                                Subjob Error; On component Ok; On Component Error; Synchronize;
+                                Parallelize. </p>
+                            <p> </p>
+                            <p> For further information regarding connections, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Displaying the properties of a processed file"><div class="titlepage"><div><div><h3 class="title"><a name="Raa98173"></a>Scenario: Displaying the properties of a processed file</h3></div></div></div><p>This Java scenario describes a very simple Job that displays the properties of the
+            specified file.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop a <span class="bold"><strong>tFileProperties</strong></span> component and a
+                        <span class="bold"><strong>tLogRow</strong></span> component from the <span class="bold"><strong>Palette</strong></span> onto the design workspace.</p></li><li class="listitem"><p>Right-click on <span class="bold"><strong>tFileProperties</strong></span> and connect it
+                    to <span class="bold"><strong>tLogRow</strong></span> using a <span class="bold"><strong>Main
+                        Row</strong></span> link.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="274"><tr><td><img src="../images/Use_Case_tFileProperties.png" width="274"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tFileProperties</strong></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Component</strong></span> tab to define the basic
+                    settings of <span class="bold"><strong>tFileProperties</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="462"><tr><td><img src="../images/Use_Case_tFileProperties1.png" width="462"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set <span class="bold"><strong>Schema</strong></span> type to <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>If desired, click the <span class="bold"><strong>Edit schema</strong></span> button to
+                    see the read-only columns.</p></li><li class="listitem"><p>In the <span class="bold"><strong>File </strong></span>field, enter the file path or
+                    browse to the file you want to display the properties for.</p></li><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tLogRow</strong></span> and
+                    click the <span class="bold"><strong>Component</strong></span> tab to define its basic
+                    settings. For more information, see <a class="xref" href="tLogRow.html" title="tLogRow">the section called &#8220;tLogRow&#8221;</a>.</p></li><li class="listitem"><p>Press <span class="bold"><strong>F6</strong></span> to execute the Job.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="412"><tr><td><img src="../images/Use_Case_tFileProperties3.png" width="412"></td></tr></table></div><p>The properties of the defined file are displayed on the console.</p></div></div></body></html>

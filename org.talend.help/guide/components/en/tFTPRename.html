@@ -1,0 +1,124 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFTPRename</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch10.html" title="Chapter&nbsp;10.&nbsp;Internet components"><link rel="prev" href="tFTPPut.html" title="tFTPPut"><link rel="next" href="tFTPTruncate.html" title="tFTPTruncate"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFTPRename"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFTPRename"></a>tFTPRename</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFTPRename_icon32.png" width="27"></td></tr></table></div><div class="section" title="tFTPRename Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e192779"></a>tFTPRename Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                Family</strong></span></p>
+                        </td><td valign="top"><p>Internet/FTP</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tFTPRename</strong></span> renames the selected files via an FTP
+                                connection.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tFTPRename</strong></span> renames files selected from a local
+                                directory towards a distant FTP directory.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span></p>
+                        </td><td valign="top"><p>A schema is a row description, i.e., it defines
+                                the number of fields that will be processed and passed on to the
+                                next component. The schema is either <span class="bold"><strong>Built-in</strong></span> or remote in the <span class="bold"><strong>Repository</strong></span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: You create and store the schema locally for this
+                                component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: You have already created the schema and stored it
+                                in the Repository. You can reuse it in various projects and Job
+                                designs. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use an existing connection/Component
+                                    List</em></span></p>
+                        </td><td valign="top"><p>Select this check box and in the <span class="bold"><strong>Component List</strong></span> click the relevant
+                                connection component to reuse the connection details you already
+                                defined.</p><p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> When a Job contains the parent Job and the child Job,
+                                        <span class="bold"><strong>Component list</strong></span> presents
+                                    only the connection components in the same Job level, so if you
+                                    need to use an existing connection from the other level, you can
+                                    use <span class="bold"><strong>Dy&shy;namic settings</strong></span> to share
+                                    the intended connection. For more information about <span class="bold"><strong>Dynamic settings</strong></span>, see your studio
+                                    user guide.</p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top"><p>FTP IP address.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top"><p>FTP server listening port number.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Username</em></span></p>
+                        </td><td valign="top"><p>Connection login to the FTP server.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top"><p>Connection password to the FTP server.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Remote directory</em></span></p>
+                        </td><td valign="top"><p>Path to the remote directory.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Overwrite file</em></span>
+                            </p>
+                        </td><td valign="top"><p>List of available options for the transferred
+                                file.</p><p>
+                                <span class="bold"><strong>Append</strong></span>: Select this check box to
+                                write the data at the end of the record, to not delete it.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>SFTPSupport/ Authentication
+                                    method</em></span></p>
+                        </td><td valign="top"><p>Select this check box and then in the <span class="bold"><strong>Authentication method</strong></span> list, select the
+                                SFTP authentication method: </p><p>
+                                <span class="bold"><strong>Password</strong></span>: Type in the password
+                                required in the relevant field. </p><p>
+                                <span class="bold"><strong>Public key</strong></span>: Type in the private key
+                                or click the three dot button next to the <span class="bold"><strong>Private key</strong></span> field to browse to it.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> If you select <span class="bold"><strong>Public Key</strong></span> as
+                                    the SFTP au&shy;thentication method, make sure that the key is added
+                                    to the agent or that no passphrase (secret phrase) is required.
+                                </p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Files</em></span></p>
+                        </td><td valign="top"><p>Click the <span class="bold"><strong>[+]</strong></span>
+                                button to add the lines you want to use as filters:</p><p>
+                                <span class="bold"><strong>Filemask</strong></span>: enter the filename or
+                                filemask using wildcharacters (*) or regular expressions.</p><p>
+                                <span class="bold"><strong>New name</strong></span>: name to give to the FTP
+                                file after the transfer.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Connection Mode</em></span></p>
+                        </td><td valign="top"><p>Select the SFTP connection mode you want to use: </p><p>
+                                <span class="bold"><strong>Active</strong></span>: You determine the
+                                connection port to use to allow data transfer.</p><p>
+                                <span class="bold"><strong>Passive</strong></span>: the FTP server determines
+                                the connection port to use to allow data transfer.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Encoding type</em></span></p>
+                        </td><td valign="top"><p>Select an encoding type from the list, or select
+                                    <span class="bold"><strong>Custom</strong></span> and define it manually.
+                                This field is compulsory for DB data handling.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top"><p>This check box is selected by default. Clear the
+                                check box to skip the row in error and complete the process for
+                                error-free rows.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p>Use Socks Proxy </p>
+                        </td><td valign="top"><p>Select this check box if you want to use a proxy.
+                                Then, set the <span class="bold"><strong>Host</strong></span>, <span class="bold"><strong>Port</strong></span>, <span class="bold"><strong>User</strong></span> and <span class="bold"><strong>Password</strong></span>
+                                proxy fields.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Ignore Failure At Quit
+                                (FTP)</em></span></p>
+                        </td><td valign="top"><p>Select this check box to ignore library closing
+                                errors or FTP closing errors.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Select this check box to gather the Job processing metadata at a Job level as well as at each
+                                component level.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component is
+                                generally used as a subjob with one component, but it can also be
+                                used as an output or end component..</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e193203"></a>Related scenario</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tFTPPut.html#Raa64374" title="Scenario: Putting files on a remote FTP server">the section called &#8220;Scenario: Putting files on a remote FTP server&#8221;</a> .</p></div></div></body></html>

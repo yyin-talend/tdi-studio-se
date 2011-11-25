@@ -1,0 +1,72 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tJava</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch04.html" title="Chapitre&nbsp;4.&nbsp;Composants Custom Code"><link rel="prev" href="tGroovyFile.html" title="tGroovyFile"><link rel="next" href="tJavaFlex.html" title="tJavaFlex"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tJava"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tJava"></a>tJava</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tJava_icon32.png" width="27"></td></tr></table></div><a name="Xaa2930284"></a><div class="section" title="Propri&eacute;t&eacute;s du tJava"><div class="titlepage"><div><div><h3 class="title"><a name="d0e47224"></a>Propri&eacute;t&eacute;s du tJava</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Custom Code</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tJava</strong></span> permet de saisir du code personnalis&eacute; afin de
+                                l&#8217;int&eacute;grer dans le programme <span class="bold"><strong>Talend</strong></span>. Ce code est ex&eacute;cut&eacute; une seule
+                                fois.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tJava</strong></span> permet d&#8217;&eacute;tendre les fonctionnalit&eacute;s du Job
+                                    <span class="bold"><strong>Talend</strong></span> gr&acirc;ce au
+                                langage Java.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Code</em></span></p>
+                        </td><td valign="top"><p>Saisissez le code Java que vous souhaitez
+                                ex&eacute;cuter. Pour plus d&#8217;informations concernant la syntaxe des
+                                fonctions Java sp&eacute;cifiques &agrave; Talend, consultez l&#8217;aide en ligne
+                                de <span class="bluebold">Talend Open Studio</span> dans le
+                                    menu Help&nbsp;Contents &gt; Developer&nbsp;Guide &gt; API&nbsp;Reference. Pour
+                                    la r&eacute;f&eacute;rence Java compl&egrave;te, allez sur&nbsp;:<a class="link" href="http://java.sun.com/javaee/6/docs/api/" target="_top"> </a><span class="webblue">http://java.sun.com/javaee/6/docs/api/</span></p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Import</em></span></p>
+                        </td><td valign="top"><p>Saisissez le code Java permettant d&#8217;importer, si
+                                n&eacute;cessaire, la librairie externe utilis&eacute;e dans le champ <span class="bold"><strong>Main code</strong></span> de l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant est
+                                g&eacute;n&eacute;ralement utilis&eacute; en tant que sous-job &agrave; un seul
+                                composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Il est n&eacute;cessaire de
+                                conna&icirc;tre le langage Java.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Imprimer le contenu d&#8217;une variable"><div class="titlepage"><div><div><h3 class="title"><a name="Raa97290"></a>Sc&eacute;nario&nbsp;: Imprimer le contenu d&#8217;une variable</h3></div></div></div><p>Le sc&eacute;nario suivant est une simple d&eacute;monstration de l&#8217;application possible du
+            composant <span class="bold"><strong>tJava</strong></span>. L&#8217;objectif de ce Job est d&#8217;imprimer
+            les lignes trait&eacute;es &agrave; l&#8217;aide d&#8217;une commande Java et des variables globales fournies dans
+                <span class="bluebold">Talend Open Studio</span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="299"><tr><td><img src="../images/Use_Case_tJava1.png" width="299"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez et d&eacute;posez les composants dans l&#8217;espace de mod&eacute;lisation&nbsp;: <span class="bold"><strong>tFileInputDelimited</strong></span>, <span class="bold"><strong>tFileOutputExcel</strong></span>, <span class="bold"><strong>tJava</strong></span>.</p></li><li class="listitem"><p>Connectez le composant <span class="bold"><strong>tFileInputDelimited</strong></span> au
+                        <span class="bold"><strong>tFileOutputExcel</strong></span> &agrave; l&#8217;aide d&#8217;une connexion
+                    de type <span class="bold"><strong>Row Main</strong></span>. Le contenu du fichier .txt
+                    d&eacute;limit&eacute; sera transmis &agrave; un fichier de type XSL via cette connexion sans subir
+                    de transformation.</p></li><li class="listitem"><p>Ensuite, connectez le composant <span class="bold"><strong>tFileInputDelimited</strong></span> au composant <span class="bold"><strong>tJava</strong></span> &agrave; l&#8217;aide d&#8217;un lien de type <span class="bold"><strong>Then
+                        Run</strong></span>. Ce lien met en place un s&eacute;quen&ccedil;age ordonnant au tJava de se
+                    lancer &agrave; la fin du processus principal.</p></li><li class="listitem"><p>D&eacute;finissez les param&egrave;tres du composant <span class="bold"><strong>tFileInputDelimited</strong></span> dans l&#8217;onglet <span class="bold"><strong>Basic
+                        settings</strong></span> de la vue <span class="bold"><strong>Component</strong></span>. Le
+                    fichier d&#8217;entr&eacute;e utilis&eacute; en exemple est un simple fichier texte &agrave; deux
+                    colonnes&nbsp;: <span class="bold"><strong>Name</strong></span> (des noms de personnes) et leur
+                        <span class="bold"><strong>Emails</strong></span> respectifs.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="440"><tr><td><img src="../images/Use_Case_tJava2.png" width="440"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Pour cet exemple, le sch&eacute;ma n&#8217;a pas &eacute;t&eacute; centralis&eacute; dans le r&eacute;f&eacute;rentiel, vous
+                    devez donc configurer manuellement le sch&eacute;ma de ces deux colonnes.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Edit Schema</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="401"><tr><td><img src="../images/Use_Case_tJava3.png" width="401"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Une bo&icirc;te de dialogue vous demandant si vous souhaitez propager les
+                    modifications apport&eacute;es appara&icirc;t, cliquez sur <span class="bold"><strong>OK</strong></span> pour accepter la propagation. Ainsi, le sch&eacute;ma du composant
+                        <span class="bold"><strong>tFileOutputExcel</strong></span> est automatiquement
+                    renseign&eacute; &agrave; partir du sch&eacute;ma du composant pr&eacute;c&eacute;dent. Vous n&#8217;aurez donc pas &agrave;
+                    d&eacute;finir le sch&eacute;ma de nouveau.</p></li><li class="listitem"><p>Param&eacute;trez le fichier de sortie afin qu&#8217;il re&ccedil;oive le contenu du fichier
+                    d&#8217;entr&eacute;e sans modifications. Si le fichier n&#8217;existe pas d&eacute;j&agrave;, il sera
+                    cr&eacute;&eacute;.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="412"><tr><td><img src="../images/Use_Case_tJava4.png" width="412"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans cet exemple, dans le champ <span class="bold"><strong>Sheet name</strong></span>,
+                    indiquez le nom de la feuille Excel, ici <span class="emphasis"><em>Email</em></span> et la case
+                        <span class="bold"><strong>Header</strong></span> est coch&eacute;e pour indiquer que le
+                    fichier contient un en-t&ecirc;te.</p></li><li class="listitem"><p>Puis s&eacute;lectionnez le composant <span class="bold"><strong>tJava</strong></span> pour
+                    d&eacute;finir la commande Java &agrave; ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="521"><tr><td><img src="../images/Use_Case_tJava5.png" width="521"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la zone <span class="bold"><strong>Code</strong></span>, saisissez la commande
+                    suivante&nbsp;:</p><p>
+                    </p><pre class="programlisting">String var = "Nb of line processed: ";<span></span>
+var = var + globalMap.get("tFileInputDelimited_1_NB_LINE");<span></span>
+System.out.println(var);</pre></li><li class="listitem"><p>Dans cet exemple pr&eacute;cis, utilisez la variable <span class="bold"><strong>NB_Line</strong></span>. Pour acc&eacute;der &agrave; la liste des variables globales, appuyez
+                    sur <span class="bold"><strong>Ctrl&nbsp;+&nbsp;Espace</strong></span> de votre clavier et
+                    s&eacute;lectionnez la variable globale correspondante.</p></li><li class="listitem"><p>Enregistrez le Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="355"><tr><td><img src="../images/Use_Case_tJava6.png" width="355"></td></tr></table></div><p>Le contenu est donc transmis au fichier Excel sp&eacute;cifi&eacute; et le nombre de lignes trait&eacute;es
+            est affich&eacute; dans la console <span class="bold"><strong>Run</strong></span>.</p></div></div></body></html>

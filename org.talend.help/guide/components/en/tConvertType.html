@@ -1,0 +1,159 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tConvertType</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch14.html" title="Chapter&nbsp;14.&nbsp;Processing components"><link rel="prev" href="tAggregateSortedRow.html" title="tAggregateSortedRow"><link rel="next" href="tDenormalize.html" title="tDenormalize"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tConvertType"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tConvertType"></a>tConvertType</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tConvertType_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tConvertType properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e217480"></a>tConvertType properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Component
+                                                  family</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>Processing</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="bold"><strong>tConvertType</strong></span> allows specific
+                                                  conversions at run time from one <span class="bold"><strong>Talend</strong></span>
+                                                  java type to another.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Helps to automatically convert one <span class="bold"><strong>Talend
+                                                  </strong></span>java type to another and thus.avoid
+                                                  compiling errors.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit Schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>A schema is a row description, i.e., it
+                                                  defines the number of fields that will be
+                                                  processed and passed on to the next component. The
+                                                  schema is either built-in or remote in the
+                                                  Repository. </p>
+                                                  <p> Click <span class="bold"><strong>Edit
+                                                  Schema</strong></span> to make changes to the schema. </p>
+                                                  <p> Note that if you make changes, the schema
+                                                  automatically becomes built-in.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Built-in</strong></span>:
+                                                  You create and store the schema locally for only
+                                                  the current component. Related topic: see
+                                                  <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Repository</strong></span>:
+                                                  You have already created the schema and stored it
+                                                  in the Repository, and thus you can reuse it in
+                                                  various projects and Job flowcharts. Related
+                                                  topic: see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Auto Cast</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>This check box is selected by default. It
+                                                  performs an automatic java type conversion.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Manual Cast</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>This mode is not visible if the<span class="bold"><strong> Auto Cast </strong></span>check box is
+                                                  selected. It allows you to precise manually the
+                                                  columns where a java type conversion is
+                                                  needed.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Set empty values to Null before
+                                                  converting</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>This check box is selected to set the empty
+                                                  values of String or Object type to null for the
+                                                  input data.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Die on error</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>This check box is selected to kill the Job
+                                                  when an error occurs.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component cannot be used as a start
+                                                  component as it requires an input flow to
+                                                  operate.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>n/a</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Scenario: Converting java types"><div class="titlepage"><div><div><h3 class="title"><a name="d0e217712"></a>Scenario: Converting java types</h3></div></div></div><p>This Java scenario describes a four-component Job where the <span class="bold"><strong>tConvertType</strong></span> component is used to convert
+                        Java types in three columns, and a <span class="bold"><strong>tMap</strong></span> is
+                        used to adapt the schema and have as an output the first of the three
+                        columns and the sum of the two others after conversion.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> In this scenario, the input schemas for the input delimited file are
+                                stored in the repository, you can simply drag and drop the relevant
+                                file node from <span class="bold"><strong>Repository</strong></span> -
+                                        <span class="bold"><strong>Metadata</strong></span> - <span class="bold"><strong>File delimited </strong></span>onto the design
+                                workspace to automatically retrieve the <span class="bold"><strong>tFileInputDelimited </strong></span>component&#8217;s setting. For
+                                more information, see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace:
+                                                <span class="bold"><strong>tConvertType</strong></span>,
+                                                <span class="bold"><strong>tMap</strong></span>, and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p> In the Repository tree view, expand <span class="bold"><strong>Metadata</strong></span> and from <span class="bold"><strong>File delimited </strong></span>drag the relevant node,
+                                                <span class="emphasis"><em>JavaTypes</em></span> in this scenario, to
+                                        the design workspace.</p><p> The <span class="bold"><strong>[Components]</strong></span> dialog box
+                                        displays.</p></li><li class="listitem"><p> From the component list, select <span class="bold"><strong>tFileInputDelimited</strong></span> and click <span class="bold"><strong>Ok</strong></span>.</p><p> A <span class="bold"><strong>tFileInputComponent</strong></span> called
+                                                <span class="emphasis"><em>Java types</em></span> displays in the
+                                        design workspace.</p></li><li class="listitem"><p> Connect the components using <span class="bold"><strong>Row
+                                                Main</strong></span> links.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="455"><tr><td><img src="../images/Use_Case_tConvertType.png" width="455"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the design workspace, select <span class="bold"><strong>tFileInputDelimited</strong></span> and click the
+                                                <span class="bold"><strong>Component</strong></span> tab to
+                                        define its basic settings.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Basic settings </strong></span>view,
+                                        set <span class="bold"><strong>Property Type</strong></span> to
+                                                <span class="bold"><strong>Repository</strong></span> since
+                                        the file details are stored in the repository. The fields to
+                                        follow are pre-defined using the fetched data.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="500"><tr><td><img src="../images/Use_Case_tConvertType1.png" width="500"></td></tr></table></div><p>The input file used in this scenario is called <span class="emphasis"><em>input.</em></span> It
+                        is a text file that holds string, integer, and float java types.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="176"><tr><td><img src="../images/Use_Case_tConvertType2.png" width="176"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>Basic settings</strong></span> view,
+                                        fill in all other fields as needed. For more information,
+                                        see <a class="xref" href="tMDMInput.html#Raa86313" title="tMDMInput properties">the section called &#8220;tMDMInput properties&#8221;</a>. In this scenario, the header
+                                        and the footer are not set and there is no limit for the
+                                        number of processed rows.</p></li><li class="listitem"><p> Click <span class="bold"><strong>Edit schema </strong></span>to
+                                        describe the data structure of this input file. In this
+                                        scenario, the schema is made of three columns,
+                                                <span class="emphasis"><em>StringtoInteger, IntegerField,
+                                        </em></span>and <span class="emphasis"><em>FloatToInteger</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="386"><tr><td><img src="../images/Use_Case_tConvertType3.png" width="386"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Click <span class="bold"><strong>Ok</strong></span> to close the dialog
+                                        box.</p></li><li class="listitem"><p> In the design workspace, select <span class="bold"><strong>tConvertType</strong></span> and click the <span class="bold"><strong>Component</strong></span> tab to define its
+                                        basic settings.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="467"><tr><td><img src="../images/Use_Case_tConvertType4.png" width="467"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Set <span class="bold"><strong>Schema Type </strong></span>to <span class="bold"><strong>Built in</strong></span>, and click <span class="bold"><strong>Sync columns </strong></span>to automatically
+                                        retrieve the columns from the <span class="bold"><strong>tFileInputDelimited </strong></span>component.</p></li><li class="listitem"><p> If needed, click <span class="bold"><strong>Edit schema
+                                        </strong></span>to describe manually the data structure of this
+                                        processing component.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="511"><tr><td><img src="../images/Use_Case_tConvertType5.png" width="511"></td></tr></table></div><p>In this scenario, we want to convert a string type data into an integer type
+                        and a float type data into an integer type<span class="emphasis"><em>.</em></span></p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Click <span class="bold"><strong>OK</strong></span> to close the
+                                                <span class="bold"><strong>[Schema of
+                                                tConvertType]</strong></span> dialog box.</p></li><li class="listitem"><p> In the design workspace, double-click <span class="bold"><strong>tMap</strong></span> to open the Map editor.</p><p> The Map editor opens displaying the input metadata of
+                                                the<span class="bold"><strong> tFileInputDelimited
+                                        </strong></span>component</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="262"><tr><td><img src="../images/Use_Case_tConvertType7.png" width="262"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>Schema editor</strong></span> panel
+                                        of the Map editor, click the plus button of the output table
+                                        to add two rows and name them as
+                                                <span class="emphasis"><em>StringToInteger</em></span> and
+                                                <span class="emphasis"><em>Sum</em></span>.</p></li><li class="listitem"><p> In the Map editor, drag the <span class="emphasis"><em>StringToInteger
+                                        </em></span>row from the input table to the
+                                                <span class="emphasis"><em>StringToInteger </em></span>row in the
+                                        output table.</p></li><li class="listitem"><p> In the Map editor, drag each of the <span class="emphasis"><em>IntegerField
+                                        </em></span>and the <span class="emphasis"><em>FloatToInteger</em></span> rows
+                                        from the input table to the <span class="emphasis"><em>Sum</em></span> row in
+                                        the output table and click <span class="bold"><strong>OK</strong></span> to close the Map editor.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="521"><tr><td><img src="../images/Use_Case_tConvertType6.png" width="521"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the design workspace, select <span class="bold"><strong>tLogRow</strong></span> and click the <span class="bold"><strong>Component</strong></span> tab to define its
+                                    basic settings. For more information, see <a class="xref" href="tLogRow.html" title="tLogRow">the section called &#8220;tLogRow&#8221;</a>.</p></li><li class="listitem"><p> Save your Job and press <span class="bold"><strong>F6</strong></span>
+                                        to execute it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="320"><tr><td><img src="../images/Use_Case_tConvertType8.png" width="320"></td></tr></table></div><p>The string type data is converted into an integer type and displayed in the
+                                <span class="emphasis"><em>StringToInteger </em></span>column on the console. The
+                        float type data is converted into an integer and added to the
+                                <span class="emphasis"><em>IntegerField </em></span>value to give the addition result
+                        in the <span class="emphasis"><em>Sum </em></span>column on the console.</p></div></div></body></html>

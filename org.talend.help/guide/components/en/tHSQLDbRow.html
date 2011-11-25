@@ -1,0 +1,169 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHSQLDbRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="tHSQLDbOutput.html" title="tHSQLDbOutput"><link rel="next" href="tInformixBulkExec.html" title="tInformixBulkExec"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tHSQLDbRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHSQLDbRow"></a>tHSQLDbRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tUndefDBSQLRow.png" width="27"></td></tr></table></div><div class="section" title="tHSQLDbRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e77349"></a>tHSQLDbRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>Databases/HSQLDb</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tHSQLDbRow</strong></span> is the specific component for this
+                                database query. It executes the SQL query stated onto the specified
+                                database. The row suffix means the component implements a flow in
+                                the job design although it doesn&#8217;t provide output. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Depending on the nature
+                                of the query and the database, <span class="bold"><strong>tHSQLDbRow</strong></span> acts on the actual DB structure or on the
+                                data (although without handling data). The SQLBuilder tool helps you
+                                write easily your SQL statements.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top"><p>Either <span class="bold"><strong>Built-in</strong></span>
+                                or <span class="bold"><strong>Repository</strong></span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: No
+                                property data stored centrally.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>:
+                                Select the repository file in which the properties are stored. The
+                                fields that follow are completed automatically using the data
+                                retrieved.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Running Mode</em></span></p>
+                        </td><td valign="top"><p>Select on the list the Server Mode corresponding
+                                to your DB setup among the four propositions :</p><p>
+                                <span class="bold"><strong>HSQLDb Server</strong></span>, <span class="bold"><strong>HSQLDb WebServer</strong></span>, <span class="bold"><strong>HSQLDb In Process Persistent</strong></span>, <span class="bold"><strong>HSQLDb In Memory</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use TLS/SSL sockets</em></span></p>
+                        </td><td valign="top"><p>Select this check box to enable the secured mode
+                                if required.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top"><p>Database server IP address</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top"><p>Listening port number of DB server.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Database Alias</em></span></p>
+                        </td><td valign="top"><p>Name of the database</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Username</em></span> and
+                                    <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top"><p>DB user authentication data.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>DB path</em></span></p>
+                        </td><td valign="top"><p>Specify the directory to the database you want to
+                                connect to. This field is available only to the <span class="bold"><strong>HSQLDb In Process Persistent</strong></span> running
+                                mode.</p><p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> By default, if the database you specify in this field does
+                                    not exist, it will be created automat&shy;ically. If you want to
+                                    change this default set&shy;ting, modify the connection parameter
+                                    set in the <span class="bold"><strong>Additional JDBC
+                                        parameter</strong></span> field in the <span class="bold"><strong>Advanced settings</strong></span> view</p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Database</em></span></p>
+                        </td><td valign="top"><p>Enter the database name that you want to connect
+                                to. This field is available only to the <span class="bold"><strong>HSQLDb
+                                    In Process Persistent</strong></span> running mode and the <span class="bold"><strong>HSQLDb In Memory</strong></span> running mode.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>A schema is a row description, i.e., it defines
+                                the number of fields to be processed and passed on to the next
+                                component. The schema is either <span class="bold"><strong>Built-in</strong></span> or stored remotely in the <span class="bold"><strong>Repository</strong></span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: The
+                                schema is created and stored locally for this component only.
+                                Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: The
+                                schema already exists and is stored in the Repository, hence can be
+                                reused. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Query type</em></span></p>
+                        </td><td valign="top"><p>Either <span class="bold"><strong>Built-in</strong></span>
+                                or <span class="bold"><strong>Repository</strong></span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: Fill in
+                                manually the query statement or build it graphically using
+                                SQLBuilder</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>:
+                                Select the relevant query stored in the Repository. The Query field
+                                gets accordingly filled in.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Query</em></span></p>
+                        </td><td valign="top"><p>Enter your DB query paying particularly attention
+                                to properly sequence the fields in order to match the schema
+                                definition. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top"><p>This check box is selected by default. Clear the
+                                check box to skip the row on error and complete the process for
+                                error-free rows. If needed, you can retrieve the rows on error via a
+                                    <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Rejects</strong></span> link. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Additional JDBC
+                                parameters</em></span></p>
+                        </td><td valign="top"><p>Specify additional connection properties for the
+                                DB connection you are creating. When the running mode is <span class="bold"><strong>HSQLDb In Process Persistent </strong></span>, this
+                                additional property is set as <code class="code">ifexists=true</code> by default,
+                                meaning that the database will be automatically created when
+                                needed.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Propagate QUERY&#8217;s
+                                recordset</em></span></p>
+                        </td><td valign="top"><p>Select this check box to insert the result of the
+                                query into a COLUMN of the current flow. Select this column from the
+                                    <span class="bold"><strong>use column</strong></span> list.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Commit every</em></span></p>
+                        </td><td valign="top"><p>Number of rows to be completed before committing
+                                batches of rows together into the DB. This option ensures
+                                transaction quality (but not rollback) and above all better
+                                performance on executions.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher
+                                    Statistics</em></span></p>
+                        </td><td valign="top"><p>Select this check box to collect log data at the
+                                component level.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component offers the
+                                flexibility of the DB query and covers all possible SQL
+                                queries.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Global
+                                Variables</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Query</strong></span>: Indicates
+                                the query to be processed. This is available as a <span class="bold"><strong>Flow</strong></span> variable.</p><p> Returns a
+                                string </p><p> For further information about variables, see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                User Guide.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Outgoing links (from one component to
+                                another):</p><p>
+                                <span class="bold"><strong>Row</strong></span>: Main; Reject; Iterate</p><p>
+                                <span class="bold"><strong>Trigger</strong></span>: Run if; On Component Ok;
+                                On Component Error; On Subjob Ok; On Subjob
+                                Error.</p><p> </p><p> Incoming links (from one component
+                                to another):</p><p>
+                                <span class="bold"><strong>Row</strong></span>: Main; Iterate </p><p>
+                                <span class="bold"><strong>Trigger</strong></span>: Run if; On Component Ok;
+                                On Component Error; On Subjob Ok; On Subjob
+                                Error.</p><p> </p><p> For further information regarding
+                                connections, see <span class="bluebold">Talend Open Studio</span>
+                                User Guide.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e77897"></a>Related scenarios</h3></div></div></div><p>For related topics, see:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong> tDBSQLRow</strong></span>
+                    <a class="xref" href="tDBSQLRow.html#Raa17909" title="Scenario: Resetting a DB auto-increment">the section called &#8220;Scenario: Resetting a DB
+            auto-increment&#8221;</a>
+                </p></li><li class="listitem"><p><span class="bold"><strong> tMySQLRow</strong></span>
+                    <a class="xref" href="tMysqlRow.html#Raa11099" title="Scenario 1: Removing and regenerating a MySQL table index">the section called &#8220;Scenario 1: Removing and regenerating a MySQL
+                table index&#8221;</a>.</p></li></ul></div></div></div></body></html>

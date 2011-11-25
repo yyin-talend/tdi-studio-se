@@ -1,0 +1,183 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tOracleConnection</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tOracleCommit.html" title="tOracleCommit"><link rel="next" href="tOracleInput.html" title="tOracleInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tOracleConnection"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tOracleConnection"></a>tOracleConnection</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tOracleConnection_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tOracleConnection"><div class="titlepage"><div><div><h3 class="title"><a name="d0e120819"></a>Propri&eacute;t&eacute;s du tOracleConnection</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants <span class="bold"><strong>tOracleCommit</strong></span> et <span class="bold"><strong>tOracleRollback</strong></span>. Ils
+            sont g&eacute;n&eacute;ralement utilis&eacute;s avec un composant <span class="bold"><strong>tOracleConnection</strong></span> car il permet d&#8217;ouvrir une connexion pour la
+            transaction en cours.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Databases/Oracle</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tOracleConnection</strong></span>
+                                ouvre une connexion vers une base de donn&eacute;es afin d&#8217;effectuer une
+                                transaction.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant permet de commiter les donn&eacute;es d&#8217;un Job entier en une
+                                seule transaction vers une base de donn&eacute;es de sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Property type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Peut &ecirc;tre Built-in ou Repository.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+                                ponctuellement.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+                                fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du composant. Les
+                                champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+                                collect&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Connection type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Liste d&eacute;roulante des pilotes disponibles:</p>
+                            <p><span class="bold"><strong>Oracle OCI</strong></span>&nbsp;: S&eacute;lectionnez ce type
+                                de connexion pour utiliser l&#8217;interface d&#8217;appel de la base de donn&eacute;es
+                                Oracle ( Oracle Call Interface) accompagn&eacute;e d&#8217;un ensemble de
+                                logiciels API de langage C qui fournissent une interface &agrave; cette
+                                base de donn&eacute;es Oracle.</p>
+                            <p><span class="bold"><strong>Oracle RAC</strong></span> : S&eacute;lectionnez ce type
+                                de connexion pour acc&eacute;der &agrave; une base de donn&eacute;es contenant des
+                                clusters.</p>
+                            <p><span class="bold"><strong>Oracle Service Name&nbsp;</strong></span>:
+                                S&eacute;lectionnez ce type de connexion pour utiliser l&#8217;alias TNS que vous
+                                fournissez lorsque vous vous connectez &agrave; la base de donn&eacute;es
+                                distante. </p>
+                            <p><span class="bold"><strong>WALLET&nbsp;</strong></span>: S&eacute;lectionnez ce type de
+                                connexion pour stocker les informations d&#8217;identification dans un
+                                portefeuille Oracle (Oracle wallet).</p>
+                            <p><span class="bold"><strong>Oracle SID&nbsp;</strong></span>: S&eacute;lectionnez ce type
+                                de connexion pour identifier exclusivement une base de donn&eacute;es
+                                sp&eacute;cifique sur un syst&egrave;me.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>DB Version</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez la version d&#8217;Oracle que vous utilisez.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use tns file</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour utiliser les m&eacute;tadonn&eacute;es d&#8217;un contexte
+                                contenu dans un fichier tns. </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Un m&ecirc;me fichier Tns peut contenir plusieurs contextes. </p></td></tr></table></div>
+                            <p><span class="bold"><strong>TNS File</strong></span>&nbsp;: Renseignez
+                                manuellement le chemin d&#8217;acc&egrave;s ou cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> pour parcourir vos dossiers
+                                jusqu&#8217;au fichier Tns &agrave; utiliser. </p>
+                            <p><span class="bold"><strong>Select a DB Connection in Tns
+                                    File</strong></span>&nbsp;: Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> pour afficher tous les contextes du fichier
+                                Tns et s&eacute;lectionner celui &agrave; utiliser. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Host</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Adresse IP du serveur de base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Port</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Database</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nom de la base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Schema</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nom du sch&eacute;ma</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> et
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Informations d&#8217;authentification de l&#8217;utilisateur de base de
+                                donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Additional JDBC parameters</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Sp&eacute;cifiez des informations suppl&eacute;mentaires de connexion &agrave; la base
+                                de donn&eacute;es cr&eacute;&eacute;e.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Dans ce champ, vous pouvez param&eacute;trer le type
+                                    d&#8217;encodage.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use or register a shared DB Connection</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour partager votre connexion ou r&eacute;cup&eacute;rer une
+                                connexion mise en partage dans un Job p&egrave;re ou un Job fils. Cette
+                                option vous permet de partager une seule connexion &agrave; une base de
+                                donn&eacute;es dans plusieurs composants de connexion &agrave; des bases de
+                                donn&eacute;es, dans diff&eacute;rents niveaux de Jobs, qui peuvent &ecirc;tre des Jobs
+                                parent ou enfant.</p>
+                            <p><span class="bold"><strong>Shared DB Connection Name&nbsp;:</strong></span>
+                                d&eacute;finissez ou saisissez le nom de la connexion partag&eacute;e.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; avec des composants Oracle,
+                                notamment les composants <span class="bold"><strong>tOracleCommit</strong></span> et <span class="bold"><strong>tOracleRollback</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e121222"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants <span class="bold"><strong>tOracleCommit</strong></span> et <span class="bold"><strong>tOracleRollback</strong></span>. Ils
+            sont g&eacute;n&eacute;ralement utilis&eacute;s avec un composant <span class="bold"><strong>tOracleConnection</strong></span> car il permet d&#8217;ouvrir une connexion pour la
+            transaction en cours.</p><p>Pour un sc&eacute;nario associ&eacute; au composant <span class="bold"><strong>tOracleConnection</strong></span>, consultez <a class="xref" href="tMysqlConnection.html" title="tMysqlConnection">la section intitul&eacute;e &laquo;&nbsp;tMysqlConnection&nbsp;&raquo;</a></p></div></div></body></html>

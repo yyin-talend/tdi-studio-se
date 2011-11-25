@@ -1,0 +1,68 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAccessRollback</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tAccessOutputBulkExec.html" title="tAccessOutputBulkExec"><link rel="next" href="tAccessRow.html" title="tAccessRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tAccessRollback"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAccessRollback"></a>tAccessRollback</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tAccessRollback_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tAccessRollback"><div class="titlepage"><div><div><h3 class="title"><a name="d0e55600"></a>Propri&eacute;t&eacute;s du tAccessRollback</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants <span class="bold"><strong>tAccessConnection</strong></span> et <span class="bold"><strong>tAccessCommit</strong></span>. Ils
+			sont g&eacute;n&eacute;ralement utilis&eacute;s ensemble lors de transactions.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Access</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tAccessRollback</strong></span> annule la
+								transaction dans une base de donn&eacute;es connect&eacute;e. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant &eacute;vite le commit de transaction involontaire. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Component list</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez le composant de connexion <span class="bold"><strong>tAccessConnection</strong></span> dans la liste si vous pr&eacute;voyez
+								d&#8217;ajouter plus d&#8217;une connexion &agrave; votre Job en cours. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Close Connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>D&eacute;cochez cette case pour continuer &agrave; utiliser la connexion une
+								fois que le composant a ex&eacute;cut&eacute; sa t&acirc;che. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Il faut utiliser ce composant en association avec des composants
+								Access, notamment avec le <span class="bold"><strong>tAccessConnection</strong></span> et le <span class="bold"><strong>tAccessCommit</strong></span>. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e55763"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute; au <span class="bold"><strong>tAccessRollback</strong></span>, consultez
+				<a class="xref" href="tMysqlRollback.html#Raa29494" title="Sc&eacute;nario&nbsp;: Annuler l&#8217;insertion de donn&eacute;es dans des tables m&egrave;re/fille">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Annuler l&#8217;insertion de donn&eacute;es dans des tables m&egrave;re/fille&nbsp;&raquo;</a> du composant <span class="bold"><strong>tMysqlRollback</strong></span>.</p></div></div></body></html>

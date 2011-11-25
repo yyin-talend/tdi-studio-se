@@ -1,0 +1,101 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tXSLT</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch18.html" title="Chapitre&nbsp;18.&nbsp;Composants XML"><link rel="prev" href="tXSDValidator.html" title="tXSDValidator"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tXSLT"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tXSLT"></a>tXSLT</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tXSLT.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tXSLT"><div class="titlepage"><div><div><h3 class="title"><a name="d0e254881"></a>Propri&eacute;t&eacute;s du tXSLT</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>XML</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tXSLT</strong></span> tient compte
+                                d&#8217;une feuille de style XSL pour transformer un fichier source XML et
+                                l&#8217;envoyer vers la sortie d&eacute;finie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tXSLT</strong></span> permet de transformer
+                                une structure de donn&eacute;es en une autre structure.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>XML file</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Chemin d&#8217;acc&egrave;s au fichier XML &agrave; transformer.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>XSL file</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Chemin d&#8217;acc&egrave;s au fichier XSL de r&eacute;f&eacute;rence.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Output</em></span>
+                                <span class="emphasis"><em>file</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Chemin d&#8217;acc&egrave;s du fichier de sortie. Si le fichier n&#8217;existe pas,
+                                il sera cr&eacute;&eacute;. Le fichier de sortie peut &ecirc;tre n&#8217;importe quel fichier
+                                structur&eacute; ou non tels que html, xml, txt ou m&ecirc;me pdf ou edifact en
+                                fonction de votre fichier xsl.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Parameters</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cliquez sur le bouton <span class="bold"><strong>[+] </strong></span>pour
+                                ajouter de nouvelles lignes &agrave; la liste <span class="bold"><strong>Parameters</strong></span> et d&eacute;finir les param&egrave;tres de
+                                transformation du fichier XSLT. Pour chaque ligne, renseignez la cl&eacute;
+                                dans la colonne <span class="emphasis"><em>name</em></span> et sa valeur associ&eacute;e dans
+                                la colonne <span class="emphasis"><em>value</em></span>. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant peut &ecirc;tre utilis&eacute; en standalone.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Transformer un fichier XML en HTML &agrave; l&#8217;aide d&#8217;une feuille de style XSL"><div class="titlepage"><div><div><h3 class="title"><a name="d0e255062"></a>Sc&eacute;nario&nbsp;: Transformer un fichier XML en HTML &agrave; l&#8217;aide d&#8217;une feuille de style
+            XSL</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; deux composants appliquant une feuille de style XSL &agrave; un
+            fichier XML et g&eacute;n&egrave;re un fichier HTML en sortie. Il permet &eacute;galement de d&eacute;finir un
+            param&egrave;tre de transformation pour la feuille de style XSL afin de changer la couleur de
+            l&#8217;arri&egrave;re plan de l&#8217;en-t&ecirc;te dans le document HTML cr&eacute;&eacute; en sortie. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez et d&eacute;posez un
+                    composant <span class="bold"><strong>tXSLT</strong></span> et un <span class="bold"><strong>tMsgBox</strong></span> dans l&#8217;espace graphique.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="371"><tr><td><img src="../images/Use_Case_tXSLT1.png" width="371"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tXSLT </strong></span>pour ouvrir la
+                    vue <span class="bold"><strong>Basic settings </strong></span>et param&eacute;trer le composant. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="490"><tr><td><img src="../images/Use_Case_tXSLT2.png" width="490"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>XML file</strong></span>, renseignez le chemin
+                    d&#8217;acc&egrave;s ou parcourez vos dossiers jusqu&#8217;au fichier XML &agrave; transformer. Dans cet
+                    exemple, il s&#8217;agit d&#8217;une liste de titres MP3 et leurs informations associ&eacute;es
+                    (nom de l&#8217;artiste, maison de disque...). </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="353"><tr><td><img src="../images/Use_Case_tXSLT5.png" width="353"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>XSL file</strong></span> de la vue <span class="bold"><strong>Basic settings</strong></span>, renseignez le chemin d&#8217;acc&egrave;s ou
+                    parcourez vos dossiers jusqu&#8217;au fichier XSL appropri&eacute;.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Output file</strong></span>, renseignez le
+                    chemin d&#8217;acc&egrave;s ou parcourez vos dossiers jusqu&#8217;au fichier HTML.</p></li></ul></div><p>Dans cet exemple, l&#8217;objectif est de convertir les donn&eacute;es XML en fichier HTML
+            comprenant un tableau constitu&eacute; d&#8217;un en-t&ecirc;te suivi de la liste du nom des artistes &agrave;
+            c&ocirc;t&eacute; du nom des chansons. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="351"><tr><td><img src="../images/Use_Case_tXSLT3.png" width="351"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la zone <span class="bold"><strong>Parameters</strong></span> de la vue <span class="bold"><strong>Basic settings</strong></span>, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter une ligne o&ugrave; d&eacute;finir le nom et la
+                    valeur du param&egrave;tre de transformation du fichier XSL. Dans cet exemple, le nom
+                    du param&egrave;tre de transformation utilis&eacute; est <span class="emphasis"><em>bgcolor</em></span> et sa
+                    valeur est <span class="emphasis"><em>green</em></span>. </p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tMsgBox</strong></span> pour afficher
+                    la vue <span class="bold"><strong>Basic settings</strong></span> et param&eacute;trer le
+                    composant. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="482"><tr><td><img src="../images/Use_Case_tXSLT6.png" width="482"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Enregistrez votre Job puis appuyez sur <span class="bold"><strong>F6</strong></span>
+                    pour l&#8217;ex&eacute;cuter. Une bo&icirc;te de dialogue s&#8217;affiche et vient confirmer que le
+                    fichier HTML est bien cr&eacute;&eacute; en sortie et qu&#8217;il est stock&eacute; &agrave; l&#8217;endroit
+                    pr&eacute;alablement d&eacute;fini. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="339"><tr><td><img src="../images/Use_Case_tXSLT7.png" width="339"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK </strong></span>pour fermer la bo&icirc;te de
+                    dialogue.</p></li></ul></div><p>Vous pouvez d&eacute;sormais ouvrir le fichier HTML cr&eacute;&eacute; pour v&eacute;rifier la transformation des
+            donn&eacute;es XML et la couleur d&#8217;arri&egrave;re-plan de l&#8217;en-t&ecirc;te du tableau. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="183"><tr><td><img src="../images/Use_Case_tXSLT4.png" width="183"></td></tr></table></div></div></div></body></html>

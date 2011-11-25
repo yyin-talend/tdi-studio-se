@@ -1,0 +1,157 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMondrianInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch02.html" title="Chapter&nbsp;2.&nbsp;Business Intelligence components"><link rel="prev" href="tLineChart.html" title="tLineChart"><link rel="next" href="tMSSqlSCD.html" title="tMSSqlSCD"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tMondrianInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMondrianInput"></a>tMondrianInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMondrianInput_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tMondrianInput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e22703"></a>tMondrianInput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+              <p><span class="bold"><strong>Component family</strong></span></p>
+            </td><td valign="top">
+              <p>Business Intelligence/OLAP Cube</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+              <p><span class="bold"><strong>Function</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p><span class="bold"><strong>tMondrianInput</strong></span> reads data from relational
+                databases and produces multidimensional data sets based on an MDX query. </p>
+            </td></tr><tr><td valign="top">
+              <p><span class="bold"><strong>Purpose</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p><span class="bold"><strong>tMondrianInput</strong></span> executes a multi-dimensional
+                expression (MDX) query corresponding to the dataset structure and schema definition.
+                Then it passes on the multidimensional dataset obtained to the next component via a
+                Main row link.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="bold"><strong>Basic settings</strong></span></p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Mondrian Version</em></span></p>
+            </td><td valign="top">
+              <p>Select the Mondrian version you are using.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>DB type</em></span></p>
+            </td><td valign="top">
+              <p>Select the relevant type of relational database</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Property type</em></span></p>
+            </td><td valign="top">
+              <p>Either Built-in or Repository.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="bold"><strong>Built-in</strong></span>: No property data stored
+                centrally.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="bold"><strong>Repository</strong></span>: Select the Repository file where
+                Properties are stored. The following fields are pre-filled in using fetched
+                data.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Datasource</em></span></p>
+            </td><td valign="top">
+              <p>Name and path of the file containing the data.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Username</em></span> and <span class="emphasis"><em>Password</em></span></p>
+            </td><td valign="top">
+              <p>DB user authentication data.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit Schema</em></span></p>
+            </td><td valign="top">
+              <p>A schema is a row description, i.e., it defines the number of fields to be
+                processed and passed on to the next component. The schema is either built-in or
+                remotely stored in the Repository. </p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="bold"><strong>Built-in</strong></span>: The schema is created and stored
+                locally for this component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                <span class="bold"><strong>User Guide</strong></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="bold"><strong>Repository</strong></span>: The schema already exists and is
+                stored in the Repository, hence can be reused. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                <span class="bold"><strong>User Guide</strong></span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Catalog</em></span></p>
+            </td><td valign="top">
+              <p>Path to the catalog (structure of the data warehouse).</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>MDX Query</em></span></p>
+            </td><td valign="top">
+              <p>Type in the MDX query paying particularly attention to properly sequence the
+                fields in order to match the schema definition and the data warehouse structure.
+              </p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Encoding</em></span></p>
+            </td><td valign="top">
+              <p>Select the encoding from the list or select Custom and define it manually. This
+                field is compulsory for DB data handling.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="bold"><strong>Advanced settings</strong></span></p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher Statistics</em></span></p>
+            </td><td valign="top">
+              <p>Select this check box to collect log data at the component level.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="bold"><strong>Usage</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>This component covers MDX queries for multi-dimensional datasets.</p>
+            </td></tr></tbody></table></div></div><div class="section" title="Scenario: Cross-join tables"><div class="titlepage"><div><div><h3 class="title"><a name="d0e23031"></a>Scenario: Cross-join tables</h3></div></div></div><p>This Job extracts multi-dimensional datasets from relational database tables stored in a
+      MySQL base. The data are retrieved using a multidimensional expression (MDX query). Obviously
+      you need to have to know the structure of your data, or at least have a structure description
+      (catalog) as a reference for the dataset to be retrieved in the various dimensions.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="343"><tr><td><img src="../images/Use_Case_tMondrianInput1.png" width="343"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop <span class="bold"><strong>tMondrianInput</strong></span> and <span class="bold"><strong>tLogRow</strong></span> from the <span class="bold"><strong>Palette</strong></span> to the design
+          workspace.</p></li><li class="listitem"><p>Link the Mondrian connector to the output component using a <span class="bold"><strong>Row
+            Main</strong></span> connection. </p></li><li class="listitem"><p>Select the <span class="bold"><strong>tMondrianInput</strong></span> component and select the
+            <span class="bold"><strong>Component </strong></span>view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="502"><tr><td><img src="../images/Use_Case_tMondrianInput2.png" width="502"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In <span class="bold"><strong>DB type</strong></span> field, select the relational database you
+          are using with Mondrian.</p></li><li class="listitem"><p>Select the relevant Repository entry as <span class="bold"><strong>Property
+          type</strong></span>, if you store your DB connection details centrally. In this example the
+          properties are built-in.</p></li><li class="listitem"><p>Fill out the details of connection to your DB: <span class="bold"><strong>Host</strong></span>,
+            <span class="bold"><strong>Port</strong></span>, <span class="bold"><strong>Database </strong></span>name,
+            <span class="bold"><strong>User Name </strong></span>and <span class="bold"><strong>Password</strong></span>.</p></li><li class="listitem"><p>Select the relevant <span class="bold"><strong>Schema</strong></span> in the Repository if you
+          store it centrally. In this example, the schema is to be set (built-in).</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="457"><tr><td><img src="../images/Use_Case_tMondrianInput3.png" width="457"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The relational database we want to query contains five columns:
+            <span class="emphasis"><em>media</em></span>, <span class="emphasis"><em>drink</em></span>, <span class="emphasis"><em>unit_sales</em></span>,
+            <span class="emphasis"><em>store_cost</em></span> and <span class="emphasis"><em>store_sales</em></span>.</p></li><li class="listitem"><p>The query aims at retrieving the <span class="emphasis"><em>unit_sales</em></span>,
+            <span class="emphasis"><em>store_cost</em></span> and <span class="emphasis"><em>store_sales</em></span> figures for various
+            <span class="emphasis"><em>media </em></span>/ <span class="emphasis"><em>drink</em></span> using an MDX query such as in
+          the example below:</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="458"><tr><td><img src="../images/Use_Case_tMondrianInput4.png" width="458"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Back on the <span class="bold"><strong>Basic settings</strong></span> tab of the <span class="bold"><strong>tMondrianInput</strong></span> component, set the <span class="bold"><strong>Catalog
+          </strong></span>path to the data warehouse. This catalog describes the structure of the
+          warehouse. </p></li><li class="listitem"><p>Then type in the MDX query such as:</p><p>
+          </p><pre class="programlisting">"select<span></span>
+   {[Measures].[Unit Sales], [Measures].[Store Cost], [Measures].[Store
+Sales]} on columns,<span></span>
+   CrossJoin(<span></span>
+     { [Promotion Media].[All Media].[Radio],<span></span>
+       [Promotion Media].[All Media].[TV],<span></span>
+       [Promotion Media].[All Media].[Sunday Paper],<span></span>
+       [Promotion Media].[All Media].[Street Handout] },<span></span>
+     [Product].[All Products].[Drink].children) on rows<span></span>
+ from Sales<span></span>
+ where ([Time].[1997])"</pre><p>
+        </p></li><li class="listitem"><p>Eventually, select the <span class="bold"><strong>Encoding</strong></span> type on the
+          list.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>tLogRow</strong></span> component and select the <span class="bold"><strong>Print header</strong></span> check box to display the column names on the
+          console. </p></li><li class="listitem"><p>Then press <span class="bold"><strong>F6</strong></span> to run the Job.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tMondrianInput5.png" width="100%"></td></tr></table></div><p>The console shows the result of the <span class="emphasis"><em>unit_sales</em></span>,
+        <span class="emphasis"><em>store_cost</em></span> and <span class="emphasis"><em>store_sales</em></span> for each type of
+        <span class="emphasis"><em>Drink</em></span> (<span class="emphasis"><em>Beverages</em></span>, <span class="emphasis"><em>Dairy</em></span>,
+        <span class="emphasis"><em>Alcoholic beverages</em></span>) crossed with each media (<span class="emphasis"><em>TV</em></span>,
+        <span class="emphasis"><em>Sunday Paper</em></span>, <span class="emphasis"><em>Street handout</em></span>) as shown previously
+      in a table form.</p></div></div></body></html>

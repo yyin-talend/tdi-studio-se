@@ -1,0 +1,112 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tEXistGet</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tEXistDelete.html" title="tEXistDelete"><link rel="next" href="tEXistList.html" title="tEXistList"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tEXistGet"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tEXistGet"></a>tEXistGet</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="28"><tr><td><img src="../images/tEXistGet_icon32_white.png" width="28"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tEXistGet"><div class="titlepage"><div><div><h3 class="title"><a name="d0e68382"></a>Propri&eacute;t&eacute;s du tEXistGet</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+									composant</strong></span></p>
+						</td><td valign="top"><p>Databases/eXist</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tEXistGet</strong></span> r&eacute;cup&egrave;re des ressources &agrave;
+								partir d&#8217;un serveur distant de base de donn&eacute;es eXist.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tEXistGet</strong></span> t&eacute;l&eacute;charge les ressources s&eacute;lectionn&eacute;es &agrave;
+								partir d&#8217;un serveur distant de base de donn&eacute;es dans un r&eacute;pertoire
+								local.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+								settings</strong></span></p>
+						</td><td valign="top"><p><span class="emphasis"><em>Use an existing connection/Component
+									List</em></span></p>
+						</td><td valign="top"><p>Cochez cette case et s&eacute;lectionnez le composant
+									<span class="bold"><strong>tEXistConnection</strong></span> ad&eacute;quat &agrave;
+								partir de la liste <span class="bold"><strong>Component List</strong></span>
+								pour r&eacute;utiliser les param&egrave;tres d&#8217;une connexion que vous avez d&eacute;j&agrave;
+								d&eacute;finis.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la liste <span class="bold"><strong>Component List</strong></span> pr&eacute;sente uniquement les
+									composants de connexion du Job du m&ecirc;me niveau. Si vous souhaitez
+									utiliser une connexion existant dans un autre niveau, v&eacute;rifiez
+									que les composants de connexion disponibles partagent la m&ecirc;me
+									connexion.</p><p>Pour plus d&#8217;informations concernant le partage d&#8217;une connexion &agrave; travers diff&eacute;rents
+									niveaux de Jobs, consultez <span class="bold"><strong>Use or register
+										a shared DB connection</strong></span> dans tous les composants
+									de base de donn&eacute;es que vous utilisez.</p></td></tr></table></div>
+							<p>Sinon, vous pouvez &eacute;galement d&eacute;sactiver le composant de connexion et utiliser les
+									<span class="bold"><strong>Dynamic settings</strong></span> du composant,
+								afin de param&eacute;trer manuellement la connexion. Dans ce cas, v&eacute;rifiez
+								que le nom de la connexion est unique et distinct tout au long des
+								deux niveaux de Jobs. Pour plus d&#8217;informations concernant les
+								param&egrave;tres dynamiques (<span class="bold"><strong>Dynamic
+									settings</strong></span>), consultez le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de votre Studio. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>URI</em></span></p>
+						</td><td valign="top"><p>URI de la base de donn&eacute;es &agrave; laquelle vous
+								souhaitez vous connecter.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Collection</em></span></p>
+						</td><td valign="top"><p>Saisissez le chemin d&#8217;acc&egrave;s &agrave; la collection &agrave;
+								laquelle vous souhaitez acc&eacute;der, sur le serveur de la base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Driver</em></span></p>
+						</td><td valign="top"><p>Ce champ est automatiquement rempli. Par d&eacute;faut,
+								le nom du pilote standard s&#8217;affiche.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Les utilisateurs peuvent sp&eacute;cifier un pilote diff&eacute;rent, selon leurs besoins.</p></td></tr></table></div>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Username et Password</em></span></p>
+						</td><td valign="top"><p>Informations d&#8217;authentification de l&#8217;utilisateur
+								de base de donn&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Local directory</em></span></p>
+						</td><td valign="top"><p>Chemin d&#8217;acc&egrave;s au fichier de destination.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Files</em></span></p>
+						</td><td valign="top"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> afin d&#8217;ajouter les lignes que vous souhaitez
+								utiliser comme filtres&nbsp;:</p><p><span class="bold"><strong>Filemask</strong></span>&nbsp;: saisissez le nom du fichier ou le masque de
+								fichier, en utilisant des caract&egrave;res de remplacement (*) ou des
+								expressions r&eacute;guli&egrave;res.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+								settings</strong></span></p>
+						</td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+								Statistics</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+								log au niveau du composant. </p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Ce
+									composant est utilis&eacute; en tant que sous-job ou comme composant de
+									sortie. La base de donn&eacute;es eXist est un syst&egrave;me de gestion de
+									base de donn&eacute;es open source, construit &agrave; l&#8217;aide de la
+									technologie XML. Elle stocke des donn&eacute;es XML selon le mod&egrave;le de
+									donn&eacute;es XML et offre une fonction efficace de traitement de la
+									requ&ecirc;te XQuery, bas&eacute;e sur l&#8217;index. Pour plus d&#8217;informations
+									concernant XQuery, consultez&nbsp;:
+									http://exist.sourceforge.net/xquery.html (en anglais). Pour plus
+									d&#8217;informations concernant les extensions de XQuery Update,
+									consultez&nbsp;:<a class="link" href="http://exist.sourceforge.net/xquery.html" target="_top">
+								http://exist.sourceforge.net/update_ext.html</a></p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+						</td><td colspan="2" valign="top"><p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: R&eacute;cup&eacute;rer des ressources &agrave; partir d&#8217;un serveur distant de base de donn&eacute;es eXist"><div class="titlepage"><div><div><h3 class="title"><a name="d0e68605"></a>Sc&eacute;nario&nbsp;: R&eacute;cup&eacute;rer des ressources &agrave; partir d&#8217;un
+				serveur distant de base de donn&eacute;es eXist</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; un composant qui
+				permet de r&eacute;cup&eacute;rer des donn&eacute;es &agrave; partir d&#8217;un serveur de base de donn&eacute;es eXist et de
+				t&eacute;l&eacute;charger les donn&eacute;es dans un r&eacute;pertoire local. </p><p>Ce Job simple n&eacute;cessite un composant&nbsp;: le
+				<span class="bold"><strong>tEXistGet</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="164"><tr><td><img src="../images/Use_Case_tEXistGet1.png" width="164"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, d&eacute;posez le composant <span class="bold"><strong>tEXistGet</strong></span> dans l&#8217;espace de mod&eacute;lisation
+					graphique.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tEXistGet</strong></span> pour d&eacute;finir
+					ses propri&eacute;t&eacute;s dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de
+					sa vue <span class="bold"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="470"><tr><td><img src="../images/Use_Case_tEXistGet2.png" width="470"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Renseignez le champ <span class="bold"><strong>URI</strong></span> en saisissant l&#8217;adresse URI de la
+					base de donn&eacute;es eXist &agrave; laquelle vous souhaitez vous connecter. </p><p>Dans ce sc&eacute;nario, l&#8217;URI
+						est&nbsp;<span class="emphasis"><em>xmldb:exist://192.168.0.165:8080/exist/xmlrpc</em></span>.
+					Notez que cette adresse URI est destin&eacute;e essentiellement &agrave; la d&eacute;monstration et
+					que ce n&#8217;est pas une adresse valide.</p></li><li class="listitem"><p>Remplissez le champ <span class="bold"><strong>Collection</strong></span> avec le chemin d&#8217;acc&egrave;s &agrave;
+					la collection souhait&eacute;e sur le serveur de la base de donn&eacute;es,
+						<span class="emphasis"><em>/db/talend</em></span> dans ce sc&eacute;nario.</p></li><li class="listitem"><p>Renseignez le champ <span class="bold"><strong>Driver</strong></span> en saisissant le pilote de la
+					base de donn&eacute;es XML, <span class="emphasis"><em>org.exist.xmldb.DatabaseImpl</em></span> dans ce
+					sc&eacute;nario.</p></li><li class="listitem"><p>Remplissez les champs <span class="bold"><strong>Username</strong></span> et <span class="bold"><strong>Password</strong></span> avec&nbsp;<span class="emphasis"><em>admin</em></span>
+						et&nbsp;<span class="emphasis"><em>talend</em></span> respectivement pour ce sc&eacute;nario.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Local directory</strong></span> pour d&eacute;finir le chemin d&#8217;acc&egrave;s au
+					r&eacute;pertoire dans lequel le fichier XML t&eacute;l&eacute;charg&eacute; &agrave; partir du serveur de la base
+					de donn&eacute;es sera sauvegard&eacute;. </p><p>Dans ce sc&eacute;nario, faites pointer ce chemin vers votre bureau, par exemple&nbsp;:</p><p><span class="emphasis"><em>C:/Documents and Settings/galano/Desktop/ExistGet</em></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Files</strong></span>, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> afin d&#8217;ajouter une nouvelle ligne dans la zone
+						<span class="bold"><strong>Filemask</strong></span> et remplissez-la avec un nom de
+					fichier complet pour r&eacute;cup&eacute;rer les donn&eacute;es &agrave; partir d&#8217;un fichier sp&eacute;cifique sur
+					le serveur, ou avec un masque de fichier (<span class="bold"><strong>filemask</strong></span>) pour r&eacute;cup&eacute;rer les donn&eacute;es &agrave; partir d&#8217;un ensemble de
+					fichiers. Dans ce sc&eacute;nario,
+					saisissez&nbsp;<span class="emphasis"><em>dictionary_en.xml</em></span>.</p></li><li class="listitem"><p>Sauvegardez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+					l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="520"><tr><td><img src="../images/Use_Case_tEXistGet3.png" width="520"></td></tr></table></div><p>Le fichier
+				XML&nbsp;<span class="emphasis"><em>dictionary_en.xml</em></span> est r&eacute;cup&eacute;r&eacute; et t&eacute;l&eacute;charg&eacute; dans
+			le r&eacute;pertoire local d&eacute;fini pr&eacute;alablement.</p></div></div></body></html>

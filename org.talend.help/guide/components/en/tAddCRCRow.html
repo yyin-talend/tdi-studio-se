@@ -1,0 +1,91 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAddCRCRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;5.&nbsp;Data Quality components"><link rel="prev" href="Raa78577.html" title="Chapter&nbsp;5.&nbsp;Data Quality components"><link rel="next" href="dataquality-tChangeFileEncoding .html" title="tChangeFileEncoding"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tAddCRCRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAddCRCRow"></a>tAddCRCRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tAddCRCRow.png" width="27"></td></tr></table></div><div class="section" title="tAddCRCRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e48573"></a>tAddCRCRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Data Quality</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tAddCRCRow</strong></span> calculates a surrogate
+                                key based on one or several columns and adds it to the defined
+                                schema.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Providing a unique ID helps improving the quality of processed
+                                data.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. In this
+                                component, a new CRC column is automatically added.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: The schema will be
+                                created and stored locally for this component only. Related topic:
+                                see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: The schema already
+                                exists and is stored in the Repository, hence can be reused in
+                                various projects and Job designs. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Implication</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the check box facing the relevant columns to be used for
+                                the surrogate key checksum.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced Settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>CRC type</em></span></p>
+                        </td><td valign="top">
+                            <p>Select a CRC type in the list. The longer the CRC, the least
+                                overlap you will have.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher</em></span>
+                                <span class="emphasis"><em>Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to collect log data at the component
+                                level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is an intermediary step. It requires an input flow
+                                as well as an output.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Adding a surrogate key to a file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e48773"></a>Scenario: Adding a surrogate key to a file</h3></div></div></div><p>This scenario describes a Job adding a surrogate key to a delimited file
+            schema.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="390"><tr><td><img src="../images/Use_Case_tAddCRCRow1.png" width="390"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components: <span class="bold"><strong>tFileInputDelimited</strong></span>, <span class="bold"><strong>tAddCRCRow</strong></span>
+                    and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Connect them using a <span class="bold"><strong>Main row</strong></span>
+                    connection.</p></li><li class="listitem"><p>In the <span class="bold"><strong>tFileInputDelimited</strong></span>
+                    <span class="bold"><strong>Component</strong></span> view, set the <span class="bold"><strong>File Name </strong></span>path and all related properties in case these are not
+                    stored in the <span class="bold"><strong>Repository</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tAddCRCRow2.png" width="100%"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Create the schema through the <span class="bold"><strong>Edit Schema</strong></span>
+                    button, if the schema is not stored already in the <span class="bold"><strong>Repository</strong></span>. Remember to set the data type column and for more
+                    information on the Date pattern to be filled in, visit <span class="webblue"><a class="link" href="http://java.sun.com/j2se/1.5.0/docs/api/index.html" target="_top">http://java.sun.com/j2se/1.5.0/docs/api/index.html</a></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>tAddCRCRow</strong></span>
+                    <span class="bold"><strong>Component</strong></span> view, select the check boxes of the
+                    input flow columns to be used to calculate the CRC.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="514"><tr><td><img src="../images/Use_Case_tAddCRCRow3.png" width="514"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Notice that a CRC column (read-only) has been added at the end of the schema. </p></li><li class="listitem"><p>Select <span class="bold"><strong>CRC32</strong></span> as <span class="bold"><strong>CRC
+                        Type</strong></span> to get a longer surrogate key.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="271"><tr><td><img src="../images/Use_Case_tAddCRCRow4.png" width="271"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Basic settings</strong></span> view of <span class="bold"><strong>tLogRow</strong></span>, select the <span class="bold"><strong>Print
+                        values in cells of a table</strong></span> option to display the output data in a
+                    table on the Console.</p></li><li class="listitem"><p>Then save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+                    it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="457"><tr><td><img src="../images/Use_Case_tAddCRCRow5.png" width="457"></td></tr></table></div><p>An additional CRC Column has been added to the schema calculated on all previously
+            selected columns (in this case all columns of the schema).</p></div></div></body></html>

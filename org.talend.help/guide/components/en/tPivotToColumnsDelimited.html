@@ -1,0 +1,104 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPivotToColumnsDelimited</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapter&nbsp;9.&nbsp;File components"><link rel="prev" href="tNamedPipeOutput.html" title="tNamedPipeOutput"><link rel="next" href="ch10.html" title="Chapter&nbsp;10.&nbsp;Internet components"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tPivotToColumnsDelimited"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPivotToColumnsDelimited"></a>tPivotToColumnsDelimited</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tPivotOutputDelimited_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tPivotToColumnsDelimited Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e188500"></a>tPivotToColumnsDelimited Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Output</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tPivotToColumnsDelimited</strong></span> outputs
+                                data based on an aggregation operation carried out on a pivot
+                                column. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tPivotToColumnsDelimited</strong></span> is used
+                                to fine-tune the selection of data to output </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Pivot column</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the column from the incoming flow that will be used as
+                                pivot for the aggregation operation.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Aggregation column</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the column from the incoming flow that contains the data to
+                                be aggregated.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Aggregation function</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the function to be used in case several values are
+                                available for the pivot column. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Group by</em></span></p>
+                        </td><td valign="top">
+                            <p>Define the aggregation sets, the values of which will be used for
+                                calculations.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Input Column</strong></span>: Match the input
+                                column label with your output columns, in case the output label of
+                                the aggregation set needs to be different.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>File Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Name or path to the output file and/or the variable to be used. </p>
+                            <p> </p>
+                            <p> Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Field separator</em></span></p>
+                        </td><td valign="top">
+                            <p>Character, string or regular expression to separate fields of the
+                                output file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Row separator</em></span></p>
+                        </td><td valign="top">
+                            <p>String (ex: &#8220;\n&#8221;on Unix) to distinguish rows in the output
+                                file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component requires an input flow. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Using a pivot column to aggregate data"><div class="titlepage"><div><div><h3 class="title"><a name="d0e188725"></a>Scenario: Using a pivot column to aggregate data</h3></div></div></div><p>The following scenario describes a Job that aggregates data from a delimited input
+            file, using a defined pivot column.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="326"><tr><td><img src="../images/Use_Case_tPivotOutputFile1.png" width="326"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following component from the <span class="bold"><strong>Palette</strong></span>
+                    to the design workspace: <span class="bold"><strong>tFileInputDelimited</strong></span>,
+                        <span class="bold"><strong>tPivotToColumnsDelimited</strong></span>.</p></li><li class="listitem"><p>The file to use as input file is made of 3 columns, including:
+                        <span class="emphasis"><em>ID</em></span>, <span class="emphasis"><em>Question</em></span> and the corresponding
+                        <span class="emphasis"><em>Answer</em></span></p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="208"><tr><td><img src="../images/Use_Case_tPivotOutputFile2.png" width="208"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>On your design workspace, select the <span class="bold"><strong>tFileInputDelimited</strong></span> component</p></li><li class="listitem"><p>Define the basic settings, on the <span class="bold"><strong>Component</strong></span>
+                    view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="386"><tr><td><img src="../images/Use_Case_tPivotOutputFile3.png" width="386"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Browse to the input file to fill out the<span class="bold"><strong> File
+                        Name</strong></span> field.</p></li><li class="listitem"><p>Define the <span class="bold"><strong>Row</strong></span> and <span class="bold"><strong>Field </strong></span>separators, in this example, respectively: carriage return
+                    and semi-colon</p></li><li class="listitem"><p>As the file contains a header line, define it also.</p></li><li class="listitem"><p>Set the schema describing the three columns: <span class="emphasis"><em>ID</em></span>,
+                        <span class="emphasis"><em>Questions</em></span>, <span class="emphasis"><em>Answers</em></span>. </p></li><li class="listitem"><p>Then select the <span class="bold"><strong>tPivotToColumnsDelimited</strong></span> and
+                    set its properties on the <span class="bold"><strong>Basic Settings</strong></span> tab of
+                    the <span class="bold"><strong>Component </strong></span>view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="412"><tr><td><img src="../images/Use_Case_tPivotOutputFile4.png" width="412"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Pivot column</strong></span> field, select the pivot
+                    column from the input schema. this is often the column presenting most
+                    duplicates (pivot aggregation values).</p></li><li class="listitem"><p>In the<span class="bold"><strong> Aggregation column</strong></span> field, select the
+                    column from the input schema that should gets aggregated.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Aggregation function </strong></span>field, select the
+                    function to be used in case duplicates are found out.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Group by </strong></span>table, add an Input column,
+                    that will be used to group by the aggregation column.</p></li><li class="listitem"><p>In the <span class="bold"><strong>File Name </strong></span>field, browse to the output
+                    file path. And on the <span class="bold"><strong>Row</strong></span> and <span class="bold"><strong>Field separator</strong></span> fields, set the separators for the
+                    aggregated output rows and data.</p></li></ul></div><p>Then, press <span class="bold"><strong>F6 </strong></span>to execute the Job. The output file
+            shows the newly aggregated data.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="345"><tr><td><img src="../images/Use_Case_tPivotOutputFile5.png" width="345"></td></tr></table></div></div></div></body></html>

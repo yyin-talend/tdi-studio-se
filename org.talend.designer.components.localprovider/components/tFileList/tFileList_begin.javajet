@@ -1,0 +1,405 @@
+<%@ jet 
+  imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable  
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+  " 
+%>
+  <%
+  CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+  INode node = (INode)codeGenArgument.getArgument();
+  String cid = node.getUniqueName();
+  boolean incldSubdir = ("true").equals(ElementParameterParser.getValue(node, "__INCLUDSUBDIR__"));
+  boolean ifexclude = ("true").equals(ElementParameterParser.getValue(node, "__IFEXCLUDE__"));
+  String filelistType = ElementParameterParser.getValue(node, "__LIST_MODE__");
+  boolean useGlob = ("true").equals(ElementParameterParser.getValue(node, "__GLOBEXPRESSIONS__"));
+  List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
+  boolean toSlash = ("true").equals(ElementParameterParser.getValue(node, "__FORMAT_FILEPATH_TO_SLASH__"));
+  
+  class codeGenerater{
+    public void genFileNameOder(String _cid, String _suffix){
+      if ("ASC".equals(_suffix)){
+      %>  
+        Comparator<java.io.File> fileNameASC_<%=_cid%> = new Comparator<java.io.File>() {
+        
+          public int compare(java.io.File o1, java.io.File o2) {
+            boolean bO1IsFile = o1.isFile();
+            boolean bO2IsFile = o2.isFile();
+            
+            if (bO1IsFile && bO2IsFile) {
+                return (o1.getName()).compareTo(o2.getName());
+            } else if (bO1IsFile && (!bO2IsFile)) {
+                return 1;
+            } else if ((!bO1IsFile) && bO2IsFile) {
+                return -1;
+            } else if (!bO1IsFile && !bO2IsFile) {
+                return (o1.getName()).compareTo(o2.getName());
+            } else {
+                return 0;
+            }
+          }
+        };
+      <%
+      } else if ("DESC".equals(_suffix)){
+      %>
+        Comparator<java.io.File> fileNameDESC_<%=_cid%> = new Comparator<java.io.File>() {
+
+          public int compare(java.io.File o1, java.io.File o2) {
+            boolean bO1IsFile = o1.isFile();
+            boolean bO2IsFile = o2.isFile();
+            
+            if (bO1IsFile && bO2IsFile) {
+                return (o2.getName()).compareTo(o1.getName());
+            } else if (bO1IsFile && !bO2IsFile) {
+                return -1;
+            } else if (!bO1IsFile && bO2IsFile) {
+                return 1;
+            } else if (!bO1IsFile && !bO2IsFile) {
+                return (o2.getName()).compareTo(o1.getName());
+            } else {
+                return 0;
+            }
+          }
+        };
+      <%
+      }
+    }
+    
+    public void genLastModifiedOder(String _cid, String _suffix){
+      if ("ASC".equals(_suffix)){
+      %>
+        Comparator<java.io.File> lastModifiedASC_<%=_cid%> = new Comparator<java.io.File>() {
+        
+          public int compare(java.io.File o1, java.io.File o2) {
+            boolean bO1IsFile = o1.isFile();
+            boolean bO2IsFile = o2.isFile();
+            
+            if ((bO1IsFile && bO2IsFile) || (!bO1IsFile && !bO2IsFile)) {
+                if (o1.lastModified() == o2.lastModified()) {
+                    return (o1.getName()).compareTo(o2.getName());
+                } else if (o1.lastModified() > o2.lastModified()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } else if (bO1IsFile && (!bO2IsFile)) {
+                return 1;
+            } else if ((!bO1IsFile) && bO2IsFile) {
+                return -1;
+            } else {
+                return 0;
+            }
+          }
+        };
+      <%
+      } else if ("DESC".equals(_suffix)){
+      %>
+        Comparator<java.io.File> lastModifiedDESC_<%=_cid%> = new Comparator<java.io.File>() {
+        
+          public int compare(java.io.File o1, java.io.File o2) {
+            boolean bO1IsFile = o1.isFile();
+            boolean bO2IsFile = o2.isFile();
+            
+            if ((bO1IsFile && bO2IsFile) || (!bO1IsFile && !bO2IsFile)) {
+                if (o1.lastModified() == o2.lastModified()) {
+                    return (o2.getName()).compareTo(o1.getName());
+                } else if (o1.lastModified() < o2.lastModified()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } else if (bO1IsFile && (!bO2IsFile)) {
+                return -1;
+            } else if ((!bO1IsFile) && bO2IsFile) {
+                return 1;            
+            } else {
+                return 0;
+            }
+          }
+        };
+      <%
+      }
+    }
+    
+    public void genFileSizeOder(String _cid, String _suffix){
+      if ("ASC".equals(_suffix)){
+      %>
+        Comparator<java.io.File> filseSizeASC_<%=_cid%> = new Comparator<java.io.File>() {
+
+          public int compare(java.io.File o1, java.io.File o2) {
+            boolean bO1IsFile = o1.isFile();
+            boolean bO2IsFile = o2.isFile();
+                      
+            if (bO1IsFile && bO2IsFile) {
+                long size_1 = o1.length();
+                long size_2 = o2.length();                
+       
+                if (size_1 == size_2) {
+                    return (o1.getName()).compareTo(o2.getName());
+                } else if (size_1 > size_2) {
+                    return 1;
+                } else {
+                    return -1;
+                }                
+            } else if (bO1IsFile && (!bO2IsFile)) {
+                return 1;
+            } else if ((!bO1IsFile) && bO2IsFile) {
+                return -1;
+            } else if ((!bO1IsFile) && (!bO2IsFile)){
+                return (o1.getName()).compareTo(o2.getName());
+            } else{
+                return 0;
+            }
+          }
+        };
+      <%
+      } else if ("DESC".equals(_suffix)){
+      %>
+        Comparator<java.io.File> filseSizeDESC_<%=_cid%> = new Comparator<java.io.File>() {
+        
+          public int compare(java.io.File o1, java.io.File o2) {
+            boolean bO1IsFile = o1.isFile();
+            boolean bO2IsFile = o2.isFile();
+            
+            if (bO1IsFile && bO2IsFile) {
+                
+                long size_1 = o1.length();
+                long size_2 = o2.length();
+              
+                if (size_1 == size_2) {
+                    return (o2.getName()).compareTo(o1.getName());
+                } else if (size_1 < size_2) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+                
+            } else if (bO1IsFile && (!bO2IsFile)) {
+                return -1;
+            } else if ((!bO1IsFile) && bO2IsFile) {
+                return 1;
+            } else if ((!bO1IsFile) && (!bO2IsFile)){
+                return (o2.getName()).compareTo(o1.getName());
+            } else {
+                return 0;
+            }
+          }
+        };
+      <%
+      }
+    }
+  }  
+  %>   
+    
+  String directory_<%=cid%> = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
+  java.util.List<String> maskList_<%=cid %> = new java.util.ArrayList<String>();
+  <%
+  if (files.size() == 0){
+    if (useGlob){
+    %>
+      maskList_<%=cid %>.add("*");
+    <%
+    } else{
+    %>
+      maskList_<%=cid %>.add(".*");
+    <%
+    }
+  }
+  
+  for (int i = 0; i < files.size(); i++) {
+    Map<String, String> line = files.get(i);
+    %> 
+    maskList_<%=cid %>.add(<%= line.get("FILEMASK") %>);
+  <%}%>  
+  int NB_FILE<%=cid%> = 0;
+
+  for (String filemask_<%=cid%> : maskList_<%=cid%>) {
+  	boolean case_sensitive_<%=cid%> = <%=("YES").equals(ElementParameterParser.getValue(node, "__CASE_SENSITIVE__")) %>;
+  
+    <%if (useGlob){%>
+      filemask_<%=cid%> = org.apache.oro.text.GlobCompiler.globToPerl5(filemask_<%=cid%>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+    <%
+    }
+    if (ifexclude){
+    %>   
+      String excludefilemask_<%=cid%> = <%=ElementParameterParser.getValue(node, "__EXCLUDEFILEMASK__")%>;
+	  List<java.util.regex.Pattern> excludefileNameEachPattern_<%=cid%> = new java.util.ArrayList<java.util.regex.Pattern>();
+	  if(excludefilemask_<%=cid%>!=null && !"".equals(excludefilemask_<%=cid%>)) {
+	  	for(String excludefilemaskEach_<%=cid%> : excludefilemask_<%=cid%>.split(",")) {
+	  	 <%if (useGlob){%>
+	  		excludefilemaskEach_<%=cid%> = org.apache.oro.text.GlobCompiler.globToPerl5(excludefilemaskEach_<%=cid%>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+	  	 <%}%>
+	  	 	if (!case_sensitive_<%=cid%>){
+				excludefileNameEachPattern_<%=cid%>.add(java.util.regex.Pattern.compile(excludefilemaskEach_<%=cid%>,java.util.regex.Pattern.CASE_INSENSITIVE));
+			} else {
+				excludefileNameEachPattern_<%=cid%>.add(java.util.regex.Pattern.compile(excludefilemaskEach_<%=cid%>));
+			}	  	 		
+	  	}
+	  }
+    <%}%>
+    java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_<%=cid%>);
+    
+    if (!case_sensitive_<%=cid%>){
+      fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
+    } 
+    java.io.File file_<%=cid%> = new java.io.File(directory_<%=cid%>);
+    final java.util.List<java.io.File> list_<%=cid%> = new java.util.ArrayList<java.io.File>();
+    
+    <%
+    if (incldSubdir) {
+    %>
+      file_<%=cid%>.listFiles(new java.io.FilenameFilter() {
+          public boolean accept(java.io.File dir, String name) {
+              java.io.File file = new java.io.File(dir, name);
+              <%
+              if (("FILES").equals(filelistType)) {
+              %>
+                if (!file.isDirectory()) {
+                  list_<%=cid%>.add(file);
+                  return true;
+                } else {
+                  file.listFiles(this);
+                }
+              <%
+              } else if(("DIRECTORIES").equals(filelistType)) {
+              %>
+                if (!file.isDirectory()) {
+                  return true;
+                } else {
+                  list_<%=cid%>.add(file);
+                  file.listFiles(this);
+                }
+              <%
+              } else if(("BOTH").equals(filelistType)) {
+              %>
+                if (!file.isDirectory()) {
+                  list_<%=cid%>.add(file);
+                } else {
+                  list_<%=cid%>.add(file);
+                  file.listFiles(this);
+                }
+              <%
+              }
+              %>
+              return false;
+            }
+          }
+      );
+    <%
+    } else {
+    %> 
+      file_<%=cid%>.listFiles(new java.io.FilenameFilter() {
+          public boolean accept(java.io.File dir, String name) {
+              java.io.File file = new java.io.File(dir, name);
+              <%
+              if (("FILES").equals(filelistType)) {
+              %>
+                if (!file.isDirectory()) {
+                  list_<%=cid%>.add(file);
+                }
+              <%
+              } else if (("DIRECTORIES").equals(filelistType)) {
+              %>
+                if (file.isDirectory()) {
+                  list_<%=cid%>.add(file);
+                }
+              <%
+              } else if (("BOTH").equals(filelistType)) {
+              %>
+                list_<%=cid%>.add(file);
+              <%
+              }
+              %>
+              return true;
+            }
+          }
+      );
+    <%
+    }
+    %> 
+    //int NB_FILE<%=cid%> = 0;
+    java.io.File [] tempArray_<%=cid %> = list_<%=cid%>.toArray(new java.io.File[list_<%=cid%>.size()]);
+    <%
+    boolean bOrdByDefault = "true".equals(ElementParameterParser.getValue(node, "__ORDER_BY_NOTHING__"));
+    boolean bOrdByFileName = "true".equals(ElementParameterParser.getValue(node, "__ORDER_BY_FILENAME__"));
+    boolean bOrdByFileSize = "true".equals(ElementParameterParser.getValue(node, "__ORDER_BY_FILESIZE__"));
+    boolean bOrdByModifiedTime = "true".equals(ElementParameterParser.getValue(node, "__ORDER_BY_MODIFIEDDATE__"));
+    
+    boolean bOrdASC = "true".equals(ElementParameterParser.getValue(node, "__ORDER_ACTION_ASC__"));
+    //boolean bOrdDESC = "true".equals(ElementParameterParser.getValue(node, "__ORDER_ACTION_DESC__"));
+    
+    String suffix = bOrdASC ? "ASC" : "DESC";
+    codeGenerater cg = new codeGenerater();
+    
+    if (bOrdByDefault){
+    %>
+      java.util.Arrays.sort(tempArray_<%=cid %>);
+    <%
+    } else if (bOrdByFileName){
+      cg.genFileNameOder(cid, suffix);
+      %>
+      java.util.Arrays.sort(tempArray_<%=cid %>, fileName<%=suffix%>_<%=cid%>);
+    <%
+    } else if (bOrdByFileSize){
+      cg.genFileSizeOder(cid, suffix);
+      %>
+      java.util.Arrays.sort(tempArray_<%=cid %>, filseSize<%=suffix%>_<%=cid%>);
+    <%
+    } else if (bOrdByModifiedTime){
+      cg.genLastModifiedOder(cid, suffix);
+      %>
+      java.util.Arrays.sort(tempArray_<%=cid %>, lastModified<%=suffix%>_<%=cid%>);
+    <%
+    }
+    %>
+        
+    java.util.List<java.io.File> fileList_<%=cid%> = new java.util.ArrayList<java.io.File>();
+    fileList_<%=cid%> = java.util.Arrays.asList(tempArray_<%=cid %>);
+    
+    for (int i_<%=cid%> = 0; i_<%=cid%> < fileList_<%=cid%>.size(); i_<%=cid%>++){
+      java.io.File files_<%=cid%> = fileList_<%=cid%>.get(i_<%=cid%>);
+      String fileName_<%=cid%> = files_<%=cid%>.getName();
+      
+      <%if (ifexclude){%> 
+        if (!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).matches()){
+          continue;
+        }
+        boolean isExclude_<%=cid%> = false;
+        for(java.util.regex.Pattern pattern : excludefileNameEachPattern_<%=cid%>) {
+        	if(pattern.matcher(fileName_<%=cid%>).matches()) {
+        		isExclude_<%=cid%> = true;
+        		break;
+        	}
+        }
+        if(isExclude_<%=cid%>) {
+          continue;
+        }
+      <%} else {%>
+        if (!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).matches()){
+          continue;
+        }
+      <%}%> 
+      String currentFileName_<%=cid%> = files_<%=cid%>.getName(); 
+      String currentFilePath_<%=cid%> = files_<%=cid%>.getAbsolutePath();
+      String currentFileDirectory_<%=cid%> = files_<%=cid%>.getParent();
+      String currentFileExtension_<%=cid%> = null;
+      
+      if (files_<%=cid%>.getName().contains(".") && files_<%=cid%>.isFile()){
+        currentFileExtension_<%=cid%> = files_<%=cid%>.getName().substring(files_<%=cid%>.getName().lastIndexOf(".") + 1);
+      } else{
+        currentFileExtension_<%=cid%> = "";
+      }
+      <%if (toSlash){%>
+        currentFilePath_<%=cid%> = currentFilePath_<%=cid%>.replaceAll("\\\\", "/");
+        currentFileDirectory_<%=cid%> = currentFileDirectory_<%=cid%>.replaceAll("\\\\", "/");
+      <%}%>
+      
+      NB_FILE<%=cid%> ++;
+      globalMap.put("<%=cid%>_CURRENT_FILE", currentFileName_<%=cid%>);
+      globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
+      globalMap.put("<%=cid %>_CURRENT_FILEDIRECTORY", currentFileDirectory_<%=cid%>);
+      globalMap.put("<%=cid %>_CURRENT_FILEEXTENSION", currentFileExtension_<%=cid%>);
+      globalMap.put("<%=cid%>_NB_FILE", NB_FILE<%=cid%>); 

@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMsgBox</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch12.html" title="Chapter&nbsp;12.&nbsp;Misc group components"><link rel="prev" href="tMemorizeRows.html" title="tMemorizeRows"><link rel="next" href="tRowGenerator.html" title="tRowGenerator"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tMsgBox"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMsgBox"></a>tMsgBox</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMsgBox.png" width="27"></td></tr></table></div><div class="section" title="tMsgBox properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e211864"></a>tMsgBox properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Misc</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Opens a dialog box with an OK button requiring action from the
+                                user.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tMsgBox</strong></span> is a graphical break in
+                                the job execution progress.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Title</em></span></p>
+                        </td><td valign="top">
+                            <p>Text entered shows on the title bar of the dialog box
+                                created.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Buttons</em></span></p>
+                        </td><td valign="top">
+                            <p>Listbox of buttons you want to include in the dialog box. The
+                                button combinations are restricted and cannot be changed.</p>
+                            <p>The <span class="bold"><strong>Question</strong></span> button displays
+                                    the<span class="bold"><strong>Mask Answer</strong></span> check box.
+                                Select this check box if you want to mask the answer you type in the
+                                pop-up window that opens when you run the Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Icon</em></span></p>
+                        </td><td valign="top">
+                            <p>Icon shows on the title bar of the dialog box.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Message</em></span></p>
+                        </td><td valign="top">
+                            <p>Free text to display as message on the dialog box. Text can be
+                                dynamic (for example: retrieve and show a file name).</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can be used as intermediate step in a data flow or
+                                as a start or an end object in the Job flowchart.</p>
+                            <p> It can be connected to the next/previous component using either a
+                                    <span class="bold"><strong>Row</strong></span> or <span class="bold"><strong>Iterate</strong></span> link.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">n/a</td></tr></tbody></table></div></div><div class="section" title="Scenario: &#8216;Hello world!&#8217; type test"><div class="titlepage"><div><div><h3 class="title"><a name="d0e212020"></a>Scenario: &#8216;Hello world!&#8217; type test</h3></div></div></div><p>The following scenario creates a single-component Job, where <span class="bold"><strong>tMsgBox</strong></span> is used to display the pid (process id) in place of the
+            traditional &#8220;Hello World!&#8221; message.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop a <span class="bold"><strong>tMsgBox</strong></span> component from the <span class="bold"><strong>Palette</strong></span> to the design workspace.</p></li><li class="listitem"><p>Define the dialog box display properties: </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="424"><tr><td><img src="../images/Component_tMsgBox_prop.png" width="424"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>&#8216;Title&#8217; is the message box title, it can be any variable. </p></li><li class="listitem"><p>In the Message field, enter <code class="code">"Current date is: " </code><code class="code">between
+                        double quotation marks</code>. Then click CTRL+Space to display the
+                    autocompletion list and select the following system routine, <code class="code">TalendDate.getCurrentDate</code>. Put brackets around this
+                    routine. </p></li><li class="listitem"><p>Switch to the <span class="bold"><strong>Run </strong></span>tab to execute the Job
+                    defined.</p></li></ul></div><p>The Message box displays the message and requires the user to click <span class="bold"><strong>OK</strong></span> to go to the next component or end the Job.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="275"><tr><td><img src="../images/tMsgBox_usecase.png" width="275"></td></tr></table></div><p>After the user clicked <span class="bold"><strong>OK</strong></span>, the <span class="bold"><strong>Run </strong></span>log is updated accordingly.</p><p>Related topic: see <span class="bluebold">Talend Open Studio</span>
+            <span class="bold"><strong>User Guide</strong></span>.</p></div></div></body></html>

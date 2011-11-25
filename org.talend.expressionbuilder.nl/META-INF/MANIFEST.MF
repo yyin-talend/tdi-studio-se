@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Expression Builder Nl Fragment
+Bundle-SymbolicName: org.talend.expressionbuilder.nl
+Bundle-Version: 2.2.0.qualifier
+Fragment-Host: org.talend.expressionbuilder
+Bundle-Vendor: .Talend SA.

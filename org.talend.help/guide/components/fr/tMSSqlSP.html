@@ -1,0 +1,229 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMSSqlSP</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="databases_tMSSqlSCD.html" title="tMSSqlSCD"><link rel="next" href="tMSSqlTableList.html" title="tMSSqlTableList"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tMSSqlSP"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMSSqlSP"></a>tMSSqlSP</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMSSqlSP_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tMSSqlSP"><div class="titlepage"><div><div><h3 class="title"><a name="d0e105064"></a>Propri&eacute;t&eacute;s du tMSSqlSP</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/MSSql</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tMSSqlSP</strong></span> appelle une
+								proc&eacute;dure stock&eacute;e de base de donn&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tMSSqlSP</strong></span> permet de centraliser
+								des requ&ecirc;tes multiples ou complexes dans une base de donn&eacute;es et de
+								les appeler plus facilement.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut &ecirc;tre Built-in ou Repository. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: S&eacute;lectionnez le
+								fichier des propri&eacute;t&eacute;s du composant. Les champs suivants sont alors
+								pr&eacute;-remplis.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case lorsque vous utilisez le composant <span class="bold"><strong>tMSSqlConnection</strong></span>.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la
+									liste <span class="bold"><strong>Component List</strong></span> pr&eacute;sente
+									uniquement les composants de connexion du Job du m&ecirc;me niveau. Si
+									vous souhaitez utiliser une connexion existant dans un autre
+									niveau, v&eacute;rifiez que les composants de connexion disponibles
+									partagent la m&ecirc;me connexion.</p><p>Pour plus d&#8217;informations concernant le partage d&#8217;une connexion
+									&agrave; travers diff&eacute;rents niveaux de Jobs, consultez <span class="bold"><strong>Use or register a shared DB
+										connection</strong></span> dans tous les composants de base de
+									donn&eacute;es que vous utilisez.</p></td></tr></table></div>
+							<p>Sinon, vous pouvez &eacute;galement d&eacute;sactiver le composant de connexion
+								et utiliser les <span class="bold"><strong>Dynamic settings</strong></span> du
+								composant, afin de param&eacute;trer manuellement la connexion. Dans ce
+								cas, v&eacute;rifiez que le nom de la connexion est unique et distinct tout
+								au long des deux niveaux de Jobs. Pour plus d&#8217;informations
+								concernant les param&egrave;tres dynamiques (<span class="bold"><strong>Dynamic
+									settings</strong></span>), consultez le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de votre Studio. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Adresse IP du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Schema</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom du sch&eacute;ma.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Informations d&#8217;authentification sur l&#8217;utilisateur de base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Dans une proc&eacute;dure stock&eacute;e, le sch&eacute;ma est un param&egrave;tre
+								d&#8217;entr&eacute;e.</p>
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma soit local (built-in) soit distant dans le Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; ponctuellement pour ce composant seulement. Voir
+									&eacute;galement&nbsp;le<span class="bold"><strong> Guide utilisateur</strong></span>
+								de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et il est stock&eacute; dans le Repository. Ainsi, il est
+								r&eacute;utilisable. Voir &eacute;galement&nbsp;le<span class="bold"><strong> Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>SP Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom exact de la Proc&eacute;dure Stock&eacute;e (SP).</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Is Function</em></span> /<span class="emphasis"><em> Return result
+									in</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case, si une seule valeur doit &ecirc;tre retourn&eacute;e. </p>
+							<p>S&eacute;lectionnez dans la liste la colonne du sch&eacute;ma sur laquelle est
+								bas&eacute;e la valeur &agrave; obtenir.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> et
+								s&eacute;lectionnez dans le champ <span class="bold"><strong>Schema
+									Columns</strong></span> les diff&eacute;rentes colonnes n&eacute;cessaires &agrave; la
+								proc&eacute;dure. Notez que le sch&eacute;ma de la SP peut contenir plus de
+								colonnes qu&#8217;il n&#8217;y a de param&egrave;tres utilis&eacute;s dans la
+								proc&eacute;dure.</p>
+							<p>S&eacute;lectionnez le <span class="bold"><strong>Type</strong></span> de
+								param&egrave;tre&nbsp;:</p>
+							<p><span class="bold"><strong>IN&nbsp;</strong></span>: param&egrave;tre d&#8217;entr&eacute;e
+								(Input)</p>
+							<p><span class="bold"><strong>OUT&nbsp;</strong></span>: param&egrave;tre de sortie
+								(Output)/valeur retourn&eacute;e</p>
+							<p><span class="bold"><strong>IN OUT&nbsp;</strong></span>: les param&egrave;tres d&#8217;entr&eacute;e
+								doivent &ecirc;tre retourn&eacute;es sous forme de valeur, m&ecirc;me apr&egrave;s
+								modifications via la proc&eacute;dure (fonction).</p>
+							<p><span class="bold"><strong>RECORDSET</strong></span>&nbsp;: les param&egrave;tres
+								d&#8217;entr&eacute;e doivent &ecirc;tre retourn&eacute;es sous forme d&#8217;ensemble de valeurs,
+								au lieu d&#8217;une valeur unique.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Consultez <a class="xref" href="tPostgresPlusClose.html" title="tPostgresPlusClose">la section intitul&eacute;e &laquo;&nbsp;tPostgresPlusClose&nbsp;&raquo;</a> si vous voulez analyser un ensemble
+									d&#8217;enregistrements d&#8217;une table de donn&eacute;es ou d&#8217;une requ&ecirc;te
+									SQL.</p></td></tr></table></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Additional JDBC parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sp&eacute;cifiez des informations suppl&eacute;mentaires de connexion &agrave; la base
+								de donn&eacute;es cr&eacute;&eacute;e. Cette option est disponible lorsque la case
+									<span class="bold"><strong>Use an existing connection</strong></span> est
+								d&eacute;coch&eacute;e dans les <span class="bold"><strong>Basic
+								settings</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est un composant interm&eacute;diaire. Il peut &ecirc;tre utilis&eacute;
+								comme composant de d&eacute;but. Dans ce cas, seuls les param&egrave;tres d&#8217;entr&eacute;e
+								sont autoris&eacute;s.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>La syntaxe de la Proc&eacute;dure Stock&eacute;e doit correspondre &agrave; celle de la
+								base de donn&eacute;es.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d0e105573"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez&nbsp;: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tMDMSP.html#Raa51224" title="Sc&eacute;nario&nbsp;: Ex&eacute;cuter une proc&eacute;dure stock&eacute;e dans le hub MDM">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Ex&eacute;cuter une proc&eacute;dure stock&eacute;e dans le hub MDM&nbsp;&raquo;</a> du composant <span class="bold"><strong>tMysqlSP</strong></span>.</p></li><li class="listitem"><p><a class="xref" href="tOracleSP.html#Raa83947" title="Sc&eacute;nario&nbsp;: V&eacute;rifier le format de num&eacute;ros &agrave; l&#8217;aide d&#8217;une proc&eacute;dure stock&eacute;e">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: V&eacute;rifier le format de num&eacute;ros &agrave; l&#8217;aide d&#8217;une proc&eacute;dure stock&eacute;e&nbsp;&raquo;</a> du <span class="bold"><strong>tOracleSP</strong></span>. </p></li></ul></div><p>Consultez &eacute;galement <a class="xref" href="tPostgresPlusClose.html" title="tPostgresPlusClose">la section intitul&eacute;e &laquo;&nbsp;tPostgresPlusClose&nbsp;&raquo;</a> si vous voulez analyser un ensemble
+			d&#8217;enregistrements d&#8217;une table de donn&eacute;es ou d&#8217;une requ&ecirc;te SQL.</p></div></div></body></html>

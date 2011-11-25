@@ -1,0 +1,120 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tIngresConnection</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tIngresCommit.html" title="tIngresCommit"><link rel="next" href="tIngresInput.html" title="tIngresInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tIngresConnection"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tIngresConnection"></a>tIngresConnection</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tIngresConnection_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tIngresConnection"><div class="titlepage"><div><div><h3 class="title"><a name="d0e86547"></a>Propri&eacute;t&eacute;s du tIngresConnection</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants <span class="bold"><strong>tIngresCommit</strong></span> et <span class="bold"><strong>tIngresRollback</strong></span>. Ils
+            sont g&eacute;n&eacute;ralement utilis&eacute;s avec un composant <span class="bold"><strong>tIngresConnection</strong></span> car il permet d&#8217;ouvrir une connexion pour la
+            transaction en cours. </p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Databases/Ingres</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tIngresConnection</strong></span>
+                                ouvre une connexion vers une base de donn&eacute;es afin d&#8217;effectuer une
+                                transaction. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant permet de commiter les donn&eacute;es d&#8217;un Job entier en une
+                                seule transaction vers une base de donn&eacute;es de sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Property type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+                                ponctuellement.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>&nbsp;: S&eacute;lectionnez le
+                                fichier de propri&eacute;t&eacute;s du composant. Les champs suivants sont alors
+                                pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es collect&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Server</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Adresse IP du serveur de base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Port</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Database</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nom de la base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Table Schema</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nom du sch&eacute;ma.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> et
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Informations d&#8217;authentification de l&#8217;utilisateur de base de
+                                donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use or register a shared DB Connection</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour partager votre connexion ou r&eacute;cup&eacute;rer une
+                                connexion mise en partage dans un Job p&egrave;re ou un Job fils. Cette
+                                option vous permet de partager une seule connexion &agrave; une base de
+                                donn&eacute;es dans plusieurs composants de connexion &agrave; des bases de
+                                donn&eacute;es, dans diff&eacute;rents niveaux de Jobs, qui peuvent &ecirc;tre des Jobs
+                                parent ou enfant.</p>
+                            <p><span class="bold"><strong>Shared DB Connection Name&nbsp;:</strong></span>
+                                d&eacute;finissez ou saisissez le nom de la connexion partag&eacute;e.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; avec des composants JDBC et
+                                notamment avec les composants <span class="bold"><strong>tIngresCommit</strong></span> et <span class="bold"><strong>tIngresRollback</strong></span>. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e86831"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute; au <span class="bold"><strong>tIngresConnection</strong></span>,
+            consultez <a class="xref" href="tMysqlConnection.html#Raa91640" title="Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es dans des tables m&egrave;re/fille">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es dans des tables m&egrave;re/fille&nbsp;&raquo;</a>.</p></div></div></body></html>

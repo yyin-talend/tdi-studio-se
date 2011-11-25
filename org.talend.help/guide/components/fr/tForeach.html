@@ -1,0 +1,41 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tForeach</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch13.html" title="Chapitre&nbsp;13.&nbsp;Composants Orchestration"><link rel="prev" href="tFlowToIterate.html" title="tFlowToIterate"><link rel="next" href="tInfiniteLoop.html" title="tInfiniteLoop"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tForeach"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tForeach"></a>tForeach</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tForeach_icon32.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tForeach"><div class="titlepage"><div><div><h3 class="title"><a name="d0e223397"></a>Propri&eacute;t&eacute;s du tForeach</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Orchestration</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tForeach</strong></span> cr&eacute;e une boucle sur une liste
+                                pour un lien <span class="bold"><strong>Iterate</strong></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tForeach</strong></span> vous permet de cr&eacute;er une boucle sur une
+                                liste pour un lien <span class="bold"><strong>Iterate</strong></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Values</em></span></p>
+                        </td><td valign="top"><p>Utilisez le bouton<span class="bold"><strong>
+                                    [+]</strong></span> pour ajouter des lignes au tableau <span class="bold"><strong>Values</strong></span>. Cliquez ensuite sur les champs
+                                afin de saisir, entre guillemets, les valeurs de la liste sur
+                                laquelle effectuer une boucle.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tForeach</strong></span> est un composant d&#8217;entr&eacute;e. Un lien
+                                    <span class="bold"><strong>Iterate</strong></span> est requis pour relier
+                                ce composant &agrave; un autre.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Faire une boucle sur une liste et r&eacute;cup&eacute;rer les valeurs"><div class="titlepage"><div><div><h3 class="title"><a name="d0e223512"></a>Sc&eacute;nario&nbsp;: Faire une boucle sur une liste et r&eacute;cup&eacute;rer les valeurs</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; deux composants dans lequel une liste est cr&eacute;&eacute;e et sur
+            laquelle est effectu&eacute;e une boucle, via un composant <span class="bold"><strong>tForeach</strong></span>. Les valeurs sont r&eacute;cup&eacute;r&eacute;es par un composant <span class="bold"><strong>tJava</strong></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> D&eacute;posez de la <span class="bold"><strong>Palette</strong></span> dans l&#8217;espace de
+                    mod&eacute;lisation graphique les composants <span class="bold"><strong>tForeach</strong></span>
+                    et <span class="bold"><strong>tJava</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="370"><tr><td><img src="../images/tForeach_scenario_components.png" width="370"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Reliez le <span class="bold"><strong>tForeach</strong></span> au <span class="bold"><strong>tJava</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row &gt;
+                        Iterate</strong></span>.</p></li><li class="listitem"><p> Double-cliquez sur le <span class="bold"><strong>tForeach</strong></span> afin d&#8217;ouvrir
+                    sa vue <span class="bold"><strong>Basic settings</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="418"><tr><td><img src="../images/tForeach_scenario_basic_settings.png" width="418"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez sur le bouton <span class="inlinemediaobject"><img src="../images/plus_button.png" width="20"></span> pour ajouter autant de lignes que n&eacute;cessaire dans le
+                    tableau <span class="bold"><strong>Values</strong></span>.</p></li><li class="listitem"><p> Cliquez sur les champs <span class="bold"><strong>Value</strong></span> afin de saisir
+                    les valeurs de la liste, entre guillemets doubles.</p></li><li class="listitem"><p> Double-cliquez sur le <span class="bold"><strong>tJava</strong></span> afin d&#8217;ouvrir sa
+                    vue <span class="bold"><strong>Basic settings</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="468"><tr><td><img src="../images/tForeach_scenario_tJava_basic_settings.png" width="468"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Saisissez le code Java suivant dans la zone <span class="bold"><strong>Code</strong></span>&nbsp;:
+                    System.out.println(globalMap.get("tForeach_1_CURRENT_VALUE")+"_out");</p></li><li class="listitem"><p> Sauvegardez le Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p><p> La console affiche la liste des valeurs r&eacute;cup&eacute;r&eacute;es du <span class="bold"><strong>tForeach</strong></span>, chaque valeur ayant le suffixe _out.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="433"><tr><td><img src="../images/tforeach_scenario_tjava_run_view.png" width="433"></td></tr></table></div></div></div></body></html>

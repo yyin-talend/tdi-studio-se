@@ -1,0 +1,249 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		org.talend.core.model.process.ElementParameterParser		
+		java.util.List
+	"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+boolean version07 = ("true").equals(ElementParameterParser.getValue(node,"__VERSION_2007__"));
+String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
+String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
+String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
+String font = ElementParameterParser.getValue(node, "__FONT__"); 
+//modif start
+boolean firstCellYAbsolute = ("true").equals(ElementParameterParser.getValue(node, "__FIRST_CELL_Y_ABSOLUTE__"));
+String firstCellXStr = ElementParameterParser.getValue(node, "__FIRST_CELL_X__");
+String firstCellYStr = ElementParameterParser.getValue(node, "__FIRST_CELL_Y__");
+//modif end
+boolean keepCellFormating =  ElementParameterParser.getValue(node, "__KEEP_CELL_FORMATING__").equals("true");
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+		List<IMetadataColumn> columns = metadata.getListColumns();
+		
+		if(!version07){//version judgement
+    	
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	for (IConnection conn : conns) {
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    			int sizeColumns = columns.size();
+    			for (int i = 0; i < sizeColumns; i++) {
+    				IMetadataColumn column = columns.get(i);
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+					if(!isPrimitive) {
+    				%>   				
+	    				if(<%=conn.getName() %>.<%=column.getLabel() %> != null) {
+    				<%
+    				} 
+    				%>
+					
+//modif start
+					<%
+					//Detect the format required for the cell
+					String jxlWriteType;
+    				int staticWidth = 0;
+    				boolean isNumber = false;
+					if(javaType == JavaTypesManager.BOOLEAN){
+						staticWidth=5;
+						jxlWriteType="Boolean";
+					}else if(javaType == JavaTypesManager.DATE){
+						jxlWriteType="DateTime";
+				    }else if(javaType == JavaTypesManager.STRING||
+				    		 javaType == JavaTypesManager.CHARACTER||
+				    		 javaType == JavaTypesManager.BYTE_ARRAY||
+				    		 javaType == JavaTypesManager.OBJECT||
+				    		 (advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable()))
+				    		 ){
+				    	jxlWriteType="Label";
+					}else{
+						isNumber=true;
+						jxlWriteType="Number";
+					};
+   				%>
+
+					<%if(firstCellYAbsolute){%>
+						<%if(keepCellFormating){%>
+							jxl.write.WritableCell existingCell_<%=i%>_<%=cid%> = writableSheet_<%=cid %>.getWritableCell(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %> + nb_line_<%=cid%>) ;
+						<%}%>
+						jxl.write.WritableCell cell_<%=i%>_<%=cid%> = new jxl.write.<%=jxlWriteType%>(<%=i%> + <%=firstCellXStr%>, startRowNum_<%=cid %> + nb_line_<%=cid%> ,
+					<%}else{%>
+						jxl.write.WritableCell cell_<%=i%>_<%=cid%> = new jxl.write.<%=jxlWriteType%>(<%=i%>, startRowNum_<%=cid %> + nb_line_<%=cid%>,
+					<%}%>
+//modif end
+<%
+    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+						staticWidth = pattern.trim().length();
+%>
+								<%=conn.getName() %>.<%=column.getLabel() %>, cell_format_<%=column.getLabel() %>_<%= cid%>
+<%
+					} else {
+						if(javaType == JavaTypesManager.CHARACTER) {
+%>
+							String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
+<%
+						} else if(javaType == JavaTypesManager.OBJECT){
+%>					
+								<%=conn.getName() %>.<%=column.getLabel() %>.toString()
+<%
+						} else if(javaType == JavaTypesManager.BYTE_ARRAY){
+%>					
+								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
+<%
+						} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+%>
+							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
+							FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)				
+							<% } else { %>
+							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)				
+							<% } %>
+<%
+						} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+%>		
+							(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>).doubleValue()
+<%
+					}else {
+%>
+								<%=conn.getName() %>.<%=column.getLabel() %>
+<%				
+					}
+					if(font !=null && font.length()!=0){ 
+%>
+						,format_<%=cid%>
+<%
+					}
+				}
+%>
+							);
+//modif start					
+							//If we keep the cell format from the existing cell in sheet
+							
+							<%if(keepCellFormating && firstCellYAbsolute){%>
+								if(existingCell_<%=i%>_<%=cid%>.getCellFormat()!=null)
+									cell_<%=i%>_<%=cid%>.setCellFormat( existingCell_<%=i%>_<%=cid%>.getCellFormat());
+							<%
+							}
+							%>
+//modif ends							
+							writableSheet_<%=cid %>.addCell(cell_<%=i%>_<%=cid%>);
+<%
+					if(isNumber){
+%>
+							int currentWith_<%=i%>_<%=cid%> = String.valueOf(((jxl.write.Number)cell_<%=i%>_<%=cid%>).getValue()).trim().length();
+							currentWith_<%=i%>_<%=cid%>=currentWith_<%=i%>_<%=cid%>>10?10:currentWith_<%=i%>_<%=cid%>;
+<%
+					}else{
+%>
+							int currentWith_<%=i%>_<%=cid%> = cell_<%=i%>_<%=cid%>.getContents().trim().length();
+<%
+					}
+					if(staticWidth ==0){
+%>
+							fitWidth_<%=cid%>[<%=i%>]=fitWidth_<%=cid%>[<%=i%>]>currentWith_<%=i%>_<%=cid%>?fitWidth_<%=cid%>[<%=i%>]:currentWith_<%=i%>_<%=cid%>;
+<%
+					}else{
+%>
+							fitWidth_<%=cid%>[<%=i%>]=<%=staticWidth%>;
+<%
+					}
+					if(!isPrimitive) {
+    				%>
+	    				} 
+					<%
+    				} 
+    			}
+    			%>
+    			nb_line_<%=cid %>++;
+    <%
+    		}
+    	}
+    	}else{ //version judgement /***excel 2007 xlsx*****/
+
+		List< ? extends IConnection> conns = node.getIncomingConnections();
+    	for (IConnection conn : conns) {
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    			int sizeColumns = columns.size();
+%>
+				xlsxTool_<%=cid%>.addRow();
+<%
+    			for (int i = 0; i < sizeColumns; i++) {
+    				IMetadataColumn column = columns.get(i);
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+					if(!isPrimitive) {
+    				%>   				
+	    				if(<%=conn.getName() %>.<%=column.getLabel() %> != null) {
+    				<%
+    				} 
+    				%>
+<%
+    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+%>
+							xlsxTool_<%=cid%>.addCellValue(<%=conn.getName() %>.<%=column.getLabel() %>, <%=pattern%>);
+<%
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY){
+%>					
+							xlsxTool_<%=cid%>.addCellValue(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString());
+<%
+					} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+%>
+							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
+							xlsxTool_<%=cid%>.addCellValue(FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>));				
+							<% } else { %>
+							xlsxTool_<%=cid%>.addCellValue(FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>));
+							<% } %>
+<%
+					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+%>		
+							xlsxTool_<%=cid%>.addCellValue((<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>).doubleValue());
+<%
+					}else if (javaType == JavaTypesManager.BOOLEAN){
+%>
+							xlsxTool_<%=cid%>.addCellValue(<%=conn.getName() %>.<%=column.getLabel()%>);
+<%
+					}else if (javaType == JavaTypesManager.DOUBLE){
+%>
+							xlsxTool_<%=cid%>.addCellValue(<%=conn.getName() %>.<%=column.getLabel()%>);
+<%					}else if(JavaTypesManager.isNumberType(javaType)){
+%>
+							xlsxTool_<%=cid%>.addCellValue(Double.parseDouble(String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>)));
+<%
+					}else{	
+%>
+							xlsxTool_<%=cid%>.addCellValue(String.valueOf(<%=conn.getName() %>.<%=column.getLabel()%>));
+<%				
+					}
+					if(!isPrimitive) {
+    				%>
+	    				} else {
+	    					xlsxTool_<%=cid%>.addCellValue(null);
+	    				}
+					<%
+    				} 
+    			}
+    			%>
+    			nb_line_<%=cid %>++;
+<%
+    		}
+    	}
+
+    	}
+    }
+}
+%>

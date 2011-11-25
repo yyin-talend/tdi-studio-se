@@ -1,0 +1,64 @@
+<%@ jet
+imports="    
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.INode
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser 
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+
+boolean useDefault = ("true").equals(ElementParameterParser.getValue(node, "__DEFAULT_MAP__"));
+List<Map<String, String>> map = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__MAP__");
+
+String inputRowName = null;
+IConnection inMainConn = null;
+
+List< ? extends IConnection> inMainConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
+if (inMainConns != null && !inMainConns.isEmpty()) {
+    inMainConn = inMainConns.get(0);
+    inputRowName = inMainConn.getName();
+}else{
+	return "";
+ }       
+
+%>
+
+<% if(useDefault){  %>
+    	<%      
+        IMetadataTable metadata = inMainConn.getMetadataTable();
+        List<IMetadataColumn> listColumns = metadata.getListColumns();
+        
+        for (int i = 0; i < listColumns.size(); i++) {
+            IMetadataColumn column = listColumns.get(i);
+            String columnLabel = column.getLabel();
+        %>            
+            globalMap.put("<%=inputRowName %>.<%=columnLabel %>", <%=inputRowName %>.<%=columnLabel %>);
+            nb_line_<%=cid %>++;  
+        <%  
+          }
+        %>
+
+<%  } else { %>	
+    	<%
+        for (int i = 0; i < map.size(); i++) {
+              Map<String, String> line = map.get(i);
+        %>
+              globalMap.put(<%= line.get("KEY") %>, <%=inputRowName %>.<%= line.get("VALUE") %>);
+              nb_line_<%=cid %>++;
+        <%
+            }
+        %>
+ <%
+	}            
+%> 

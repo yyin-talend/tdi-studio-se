@@ -1,0 +1,78 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tGroovyFile</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch04.html" title="Chapitre&nbsp;4.&nbsp;Composants Custom Code"><link rel="prev" href="tGroovy.html" title="tGroovy"><link rel="next" href="tJava.html" title="tJava"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tGroovyFile"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tGroovyFile"></a>tGroovyFile</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tGroovyFile_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tGroovyFile"><div class="titlepage"><div><div><h3 class="title"><a name="d0e46969"></a>Propri&eacute;t&eacute;s du tGroovyFile</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Custom Code</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tGroovyFile</strong></span> permet d&#8217;appeler
+								un script existant d&eacute;velopp&eacute; en Groovy.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tGroovyFile </strong></span>permet d&#8217;&eacute;tendre
+								les fonctionnalit&eacute;s du Job <span class="bold"><strong>Talend</strong></span> gr&acirc;ce au langage Groovy, qui est une
+								syntaxe simplifi&eacute;e du Java..</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Groovy File</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom et chemin d&#8217;acc&egrave;s au fichier contenant votre code
+								Groovy.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Variables</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Ce tableau comprend deux colonnes&nbsp;:</p>
+							<p><span class="bold"><strong>Name</strong></span>&nbsp;: nom de la variable appel&eacute;e dans le code.</p>
+							<p><span class="bold"><strong>Value</strong></span>&nbsp;: valeur associ&eacute;e &agrave; cette variable.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant peut &ecirc;tre utilis&eacute; en standalone, ou en tant que
+								sous-job &agrave; un seul composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Il est n&eacute;cessaire de conna&icirc;tre le langage Groovy.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Appeler du code Groovy contenu dans un fichier"><div class="titlepage"><div><div><h3 class="title"><a name="Raa93075"></a>Sc&eacute;nario&nbsp;: Appeler du code Groovy contenu dans un fichier</h3></div></div></div><p>Ce sc&eacute;nario comprend un composant unique, le <span class="bold"><strong>tGroovyFile</strong></span>, utilis&eacute; en standalone. Le Job a pour but d&#8217;appeler un
+			fichier contenant du code Groovy, afin de retourner dans la <span class="bold"><strong>Console</strong></span> les informations contenues dans ce fichier. Il se pr&eacute;sente comme
+			suit&nbsp;:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="372"><tr><td><img src="../images/Use_Case_tGroovyFile4.png" width="372"></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="128"><tr><td><img src="../images/Use_Case_tGroovyFile1.png" width="128"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la <span class="bold"><strong>Palette</strong></span>, ouvrez le dossier <span class="bold"><strong>Custom_Code</strong></span>, puis glissez-d&eacute;posez un composant <span class="bold"><strong>tGroovyFile</strong></span> dans l&#8217;espace de mod&eacute;lisation
+					graphique.</p></li><li class="listitem"><p>Double-cliquez sur le composant afin d&#8217;afficher sa vue <span class="bold"><strong>Component</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Groovy File</strong></span>, saisissez le chemin d&#8217;acc&egrave;s au
+					fichier contenant votre Code Groovy, ou parcourez votre r&eacute;pertoire.</p></li><li class="listitem"><p>Dans le tableau <span class="bold"><strong>Variables</strong></span>, ajoutez une ligne, en appuyant
+					sur le bouton <span class="bold"><strong>[+]</strong></span>.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Name</strong></span>, saisissez
+						<span class="emphasis"><em>&#8220;age&#8221;</em></span>, puis, dans, la colonne <span class="bold"><strong>Value</strong></span>, saisissez <span class="emphasis"><em>50, </em></span>comme dans la capture
+					d&#8217;&eacute;cran.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="481"><tr><td><img src="../images/Use_Case_tGroovyFile2.png" width="481"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour sauvegarder et ex&eacute;cuter votre
+					Job.</p></li><li class="listitem"><p>La <span class="bold"><strong>Console</strong></span> affiche les informations contenues dans le
+					fichier d&#8217;entr&eacute;e, auxquelles s&#8217;ajoute le r&eacute;sultat de la variable.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="392"><tr><td><img src="../images/Use_Case_tGroovyFile3.png" width="392"></td></tr></table></div></div></div></body></html>

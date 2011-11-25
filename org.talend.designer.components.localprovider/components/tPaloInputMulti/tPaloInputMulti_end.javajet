@@ -1,0 +1,47 @@
+<%@ jet
+	imports="
+	java.util.ArrayList
+	java.util.HashMap
+	java.util.List
+	java.util.Map
+	
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.process.INode
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+
+    boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+
+
+    String sServer = ElementParameterParser.getValue(node, "__SERVER__");
+    String sServerport = ElementParameterParser.getValue(node, "__SERVERPORT__");
+    String sUsername = ElementParameterParser.getValue(node, "__USERNAME__");
+    String sPassword = ElementParameterParser.getValue(node, "__PASS__");
+
+    String sDatabaseName = ElementParameterParser.getValue(node,"__DATABASE__");
+    String sCubeName = ElementParameterParser.getValue(node,"__CUBE__");
+    //String sCubeType = ElementParameterParser.getValue(node,"__CUBE_TYPE__");
+    String sCubeType = "CUBE_NORMAL";
+
+    String sCommitSize = ElementParameterParser.getValue(node,"__COMMITSIZE__");
+    int iCommitSize = Integer.valueOf(sCommitSize).intValue();	
+    List<Map<String, String>> tDimensionElements = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__DIMENSION_ELEMENTS__");
+    
+    String sDeploypalolibs = ElementParameterParser.getValue(node, "__DEPLOY_PALO_LIBS__");
+    boolean bDeploypalolibs=false;
+    if(sDeploypalolibs.equals("true"))bDeploypalolibs=true;
+
+%>
+	}
+}

@@ -1,0 +1,131 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHashInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch17.html" title="Chapitre&nbsp;17.&nbsp;Composants Technical"><link rel="prev" href="ch17.html" title="Chapitre&nbsp;17.&nbsp;Composants Technical"><link rel="next" href="tHashOutput.html" title="tHashOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tHashInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHashInput"></a>tHashInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tHashInput_icon32.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tHashInput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e248555"></a>Propri&eacute;t&eacute;s du tHashInput</h3></div></div></div><p>Ce composant est utilis&eacute; avec le <span class="bold"><strong>tHashOutput</strong></span>. Il lit
+            des donn&eacute;es depuis la m&eacute;moire cache, &eacute;crites par le <span class="bold"><strong>tHashOutput</strong></span>. Ensemble, ces deux composants permettent un acc&egrave;s tr&egrave;s
+            rapide aux donn&eacute;es afin de faciliter les transactions comprenant un grand nombre de
+            donn&eacute;es.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Famille de composant</strong></span></p>
+                        </td><td valign="top">
+                            <p>Technical</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tHashInput</strong></span> lit des
+                                donn&eacute;es dans la m&eacute;moire cache, &eacute;crites par le <span class="bold"><strong>tHashOutput</strong></span> afin de donner une grande vitesse aux
+                                flux de donn&eacute;es.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant lit des donn&eacute;es dans la m&eacute;moire cache, &eacute;crites par le
+                                composant <span class="bold"><strong>tHashOutput</strong></span> afin de
+                                peupler rapidement de donn&eacute;es et de faciliter les transactions
+                                comprenant un large volume de donn&eacute;es.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de ligne, i.e., il d&eacute;finit le nombre
+                                de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma
+                                est soit local (<span class="bold"><strong>Built-in</strong></span>),
+                                soit distant (Repository). </p>
+                            <p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> afin de
+                                modifier le sch&eacute;ma. Si vous modifiez le sch&eacute;ma, il devient
+                                automatiquement built-in.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>&nbsp;:
+                                Le sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>&nbsp;:
+                                Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il
+                                peut &ecirc;tre r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Link with a tHashOutput</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour connecter votre composant &agrave; un <span class="bold"><strong>tHashOutput</strong></span>. Cette case est coch&eacute;e par
+                                d&eacute;faut.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Component list</em></span></p>
+                        </td><td valign="top">
+                            <p>Liste d&eacute;roulante comprenant les composants <span class="bold"><strong>tHashOutput</strong></span> disponibles. </p>
+                        </td></tr><tr><td>
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est utilis&eacute; avec le <span class="bold"><strong>tHashOutput</strong></span>. Il lit des donn&eacute;es depuis la m&eacute;moire
+                                cache, &eacute;crites par le <span class="bold"><strong>tHashOutput</strong></span>.
+                                Ensemble, ces deux composants permettent un acc&egrave;s tr&egrave;s rapide aux
+                                donn&eacute;es afin de faciliter les transactions comprenant un grand
+                                nombre de donn&eacute;es.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Lire des donn&eacute;es directement dans la m&eacute;moire cache afin d'y acc&eacute;der rapidement"><div class="titlepage"><div><div><h3 class="title"><a name="technical-thashinput-scenario_speed"></a>Sc&eacute;nario : Lire des donn&eacute;es directement dans la m&eacute;moire cache afin d'y acc&eacute;der
+            rapidement</h3></div></div></div><p>Le Job suivant lit dans la m&eacute;moire cache un large volume de donn&eacute;es &eacute;crites par deux
+            composants <span class="bold"><strong>tHashOutput</strong></span> et envoie le contenu dans un
+                <span class="bold"><strong>tFileOutputDelimited</strong></span>. L'objectif de ce Job est de
+            montrer la vitesse de lecture et d'&eacute;criture des donn&eacute;es. En pratique, les donn&eacute;es ainsi
+            g&eacute;n&eacute;r&eacute;es peuvent &ecirc;tre utilis&eacute;es comme table de r&eacute;f&eacute;rence dans certains cas o&ugrave; un grand
+            volume de donn&eacute;es doit &ecirc;tre r&eacute;f&eacute;renc&eacute;. </p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e248797"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Glissez-d&eacute;posez les composants suivants de la <span class="bold"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation graphique : <span class="bold"><strong>tFixedFlowInput</strong></span> (X2), <span class="bold"><strong>tHashOutput</strong></span> (X2), <span class="bold"><strong>tHashInput</strong></span> et
+                        <span class="bold"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="listitem"><p>Reliez le premier <span class="bold"><strong>tFixedFlowInput</strong></span> au premier
+                        <span class="bold"><strong>tHashOutput</strong></span> &agrave; l'aide d'un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Reliez le second <span class="bold"><strong>tFixedFlowInput</strong></span> au second
+                        <span class="bold"><strong>tHashOutput</strong></span> &agrave; l'aide d'un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Connectez le premier sous-job (composant <span class="bold"><strong>tFixedFlowInput_1</strong></span>) au deuxi&egrave;me sous-job (composant <span class="bold"><strong>tFixedFlowInput_2</strong></span>) &agrave; l'aide d'un lien <span class="bold"><strong>OnSubjobOk</strong></span>.</p></li><li class="listitem"><p>Reliez le <span class="bold"><strong>tHashInput</strong></span> au <span class="bold"><strong>tFileOutputDelimited</strong></span> &agrave; l'aide d'un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Connectez le deuxi&egrave;me sous-job au dernier sous-job &agrave; l'aide d'un lien
+                        <span class="bold"><strong>OnSubjobOk</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case_thashinput_1.png" align="middle"></div></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e248885"></a>Configurer les composants</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le premier <span class="bold"><strong>tFixedFlowInput</strong></span>
+                    pour afficher sa vue <span class="bold"><strong>Basic settings</strong></span> et
+                    configurer ses propri&eacute;t&eacute;s de base. </p><div class="mediaobject" align="center"><img src="../images/use_case_thashinput_2.png" align="middle"></div></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Built-In</strong></span>. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Vous pouvez s&eacute;lectionner <span class="bold"><strong>Repository</strong></span> dans
+                        la liste <span class="bold"><strong>Schema</strong></span> afin de renseigner
+                        automatiquement les champs, si la m&eacute;tadonn&eacute;e correspondante est stock&eacute;e dans
+                        le <span class="bold"><strong>Repository</strong></span>. Pour plus d'informations
+                        concernant la centralisation des m&eacute;tadonn&eacute;es, consultez le chapitre relatifs
+                        aux m&eacute;tadonn&eacute;es dans le <span class="bold"><strong>Guide utilisateur</strong></span>
+                        de <span class="bluebold">Talend Open Studio</span>.</p></td></tr></table></div></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+                        <span class="bold"><strong>Edit schema</strong></span> afin de d&eacute;finir la structure
+                    des donn&eacute;es du flux d'entr&eacute;e. Dans ce cas, le sch&eacute;ma contient deux colonnes :
+                        <span class="italic">ID</span> et <span class="italic">ID_Insurance</span>. </p><div class="mediaobject" align="center"><img src="../images/use_case_thashinput_3.png" align="middle"></div></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                    dialogue.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Number of rows</strong></span>, saisissez le
+                    nombre d'entr&eacute;es &agrave; &eacute;crire, ici <span class="italic">50000</span>.</p></li><li class="listitem"><p>S&eacute;lectionnez l'option <span class="bold"><strong>Use Single Table</strong></span>. Dans
+                    la table <span class="bold"><strong>Values</strong></span>, saisissez, dans la colonne
+                        <span class="bold"><strong>Value</strong></span>, une valeur pour chaque colonne, ici
+                        <span class="italic">1</span> pour <span class="italic">ID</span> et <span class="italic">3</span> pour <span class="italic">ID_Insurance</span>.</p></li><li class="listitem"><p>Effectuez la m&ecirc;me op&eacute;ration pour le second <span class="bold"><strong>tFixedFlowInput</strong></span> et saisissez <span class="italic">2</span> pour <span class="italic">ID</span> et <span class="italic">4</span> pour <span class="italic">ID_Insurance</span>.</p></li><li class="listitem"><p>Double-cliquez sur le premier <span class="bold"><strong>tHashOutput</strong></span>
+                    afin d'afficher sa vue <span class="bold"><strong>Basic settings</strong></span> et
+                    d&eacute;finir ses propri&eacute;t&eacute;s.</p><div class="mediaobject" align="center"><img src="../images/use_case_thashinput_4.png" align="middle"></div></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Built-In</strong></span> puis cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> afin de r&eacute;cup&eacute;rer le sch&eacute;ma du composant
+                    pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>S&eacute;lectionnez <span class="bold"><strong>Keep all</strong></span> dans la liste <span class="bold"><strong>Keys management</strong></span>. </p></li><li class="listitem"><p>Effectuez la m&ecirc;me op&eacute;ration pour le second <span class="bold"><strong>tHashOutput</strong></span>. Cochez sa case <span class="bold"><strong>Link with a
+                        tHashOutput</strong></span>. </p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tHashInput</strong></span>
+                    pour afficher sa vue <span class="bold"><strong>Basic settings</strong></span> et d&eacute;finir
+                    ses propri&eacute;t&eacute;s.</p><div class="mediaobject" align="center"><img src="../images/use_case_thashinput_5.png" align="middle"></div></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Built-In</strong></span>. Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit
+                        schema</strong></span> pour d&eacute;finir la structure des donn&eacute;es, la m&ecirc;me que dans le
+                        <span class="bold"><strong>tHashOutput</strong></span>. </p></li><li class="listitem"><p>S&eacute;lectionnez <span class="bold"><strong>tHashOutput_1</strong></span> dans la liste
+                        <span class="bold"><strong>Component list</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tFileOutputDelimited</strong></span> pour afficher sa vue <span class="bold"><strong>Basic settings</strong></span> et configurer ses propri&eacute;t&eacute;s.</p><div class="mediaobject" align="center"><img src="../images/use_case_thashinput_6.png" align="middle"></div></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Property Type</strong></span>,
+                            s&eacute;lectionnez<span class="bold"><strong> Built-In</strong></span>. Dans le champ
+                            <span class="bold"><strong>File Name</strong></span>, saisissez le chemin d'acc&egrave;s
+                        &agrave; votre fichier ou cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> afin de parcourir votre syst&egrave;me jusqu'&agrave; votre fichier.
+                        Ici, le chemin d'acc&egrave;s est le suivant : <span class="italic">"E:/Allr70207V5.0/Talend-All-r70207-V5.0.0NB/workspace/out.csv"</span></p></li><li class="listitem"><p>Cochez la case <span class="bold"><strong>Include Header</strong></span> puis cliquez
+                        sur le bouton <span class="bold"><strong>Sync columns</strong></span> afin de
+                        r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e249123"></a>Ex&eacute;cuter le Job</h4></div></div></div><p>Sauvegardez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l'ex&eacute;cuter.</p><p>Vous pouvez voir que les nombreuses entr&eacute;es ont &eacute;t&eacute; &eacute;crites et lues de mani&egrave;re
+                    tr&egrave;s rapide.</p><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="709"><tr><td align="center"><img src="../images/use_case_thashinput_7.png" align="middle" width="709"></td></tr></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h4 class="title"><a name="d0e249136"></a>Sc&eacute;nario associ&eacute;</h4></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez : </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tMap.html#processing-tmap-scenario-explicit_join" title="Sc&eacute;nario&nbsp;1&nbsp;: Mapping simple de donn&eacute;es avec filtre et jointure explicite">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;1&nbsp;: Mapping simple de donn&eacute;es avec filtre et jointure explicite&nbsp;&raquo;</a> du composant
+                            <span class="bold"><strong>tMap</strong></span>.</p></li></ul></div></div></div></div></body></html>

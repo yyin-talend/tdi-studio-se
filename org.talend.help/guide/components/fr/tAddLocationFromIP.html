@@ -1,0 +1,104 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAddLocationFromIP</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch12.html" title="Chapitre&nbsp;12.&nbsp;Composants Misc"><link rel="prev" href="ch12.html" title="Chapitre&nbsp;12.&nbsp;Composants Misc"><link rel="next" href="tBufferInput.html" title="tBufferInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tAddLocationFromIP"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAddLocationFromIP"></a>tAddLocationFromIP</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tAddLocationFromIP_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tAddLocationFromIP"><div class="titlepage"><div><div><h3 class="title"><a name="d0e218993"></a>Propri&eacute;t&eacute;s du tAddLocationFromIP</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille du
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Misc</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tAddLocationFromIP </strong></span>remplace des adresses
+                                IP par le lieu g&eacute;ographique correspondant. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tAddLocationFromIP vous permet de localiser g&eacute;ographiquement
+                                    les visiteurs gr&acirc;ce &agrave; leurs adresses IP&nbsp;: il identifie le lieu
+                                    g&eacute;ographique des visiteurs (pays, r&eacute;gion, ville,
+                                </strong></span>latitude, longitude, code postal, etc.) en utilisant un
+                                fichier de consultation d&#8217;adresse IP. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema type</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le
+                                sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce composant uniquement. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilisable dans divers projets et Jobs. Voir &eacute;galement&nbsp;le
+                                Guide Utilisateur de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Database Filepath</em></span></p>
+                        </td><td valign="top"><p>Chemin d&#8217;acc&egrave;s au fichier de consultation
+                                d&#8217;adresses IP. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Input parameters</em></span></p>
+                        </td><td valign="top"><p><span class="bold"><strong>Input column&nbsp;:
+                                </strong></span>S&eacute;lectionnez la colonne d&#8217;entr&eacute;e &agrave; partir de laquelle les
+                                valeurs sont collect&eacute;es pour l&#8217;agr&eacute;gation. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>input value is a
+                                    hostname&nbsp;</strong></span>: Cochez cette case si la colonne d&#8217;entr&eacute;e
+                                comporte des noms d&#8217;h&ocirc;tes. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>input value is an IP
+                                    address</strong></span>&nbsp;: Cochez cette case si la colonne d&#8217;entr&eacute;e
+                                comporte des adresses IP. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Location type</em></span></p>
+                        </td><td valign="top"><p><span class="bold"><strong>Country code&nbsp;</strong></span>:
+                                Cochez cette case pour remplacer l&#8217;adresse IP par le code du pays
+                                correspondant. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Country name&nbsp;:
+                                </strong></span>Cochez cette case pour remplacer l&#8217;adresse IP par le nom
+                                du pays correspondant. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant peut &ecirc;tre
+                                utilis&eacute; comme &eacute;tape interm&eacute;diaire du traitement permettant de
+                                remplacer des adresses IP par des informations g&eacute;olocalis&eacute;es. Il ne
+                                peut &ecirc;tre utilis&eacute; comme composant de d&eacute;but car il n&eacute;cessite un flux
+                                en entr&eacute;e, ainsi qu&#8217;un composant de sortie. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Identifier la localisation g&eacute;ographique d&#8217;une adresse IP"><div class="titlepage"><div><div><h3 class="title"><a name="d0e219210"></a>Sc&eacute;nario&nbsp;: Identifier la localisation g&eacute;ographique d&#8217;une adresse IP</h3></div></div></div><p>Le sc&eacute;nario Java suivant cr&eacute;e un Job &agrave; trois composants associant une adresse IP &agrave; un
+            lieu g&eacute;ographique. Il permet d&#8217;obtenir la localisation g&eacute;ographique du visiteur d&#8217;un
+            site &agrave; partir de son adresse IP. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> A partir de la Palette, cliquez-d&eacute;posez les composants suivants dans
+                    l&#8217;&eacute;diteur graphique&nbsp;: le <span class="bold"><strong>tFixedFlowInput</strong></span>, le
+                        <span class="bold"><strong>tAddLocationFromIP</strong></span>, et le <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p> Connectez les trois composants en utilisant des liens de type <span class="bold"><strong>Row Main</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="423"><tr><td><img src="../images/Use_Case_tAddLocationFromIP.png" width="423"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;espace graphique, s&eacute;lectionnez le <span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p> Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>)
+                        du<span class="bold"><strong> tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p> Configurez le champ <span class="bold"><strong>Schema Type</strong></span> en mode
+                        <span class="bold"><strong>Built-In</strong></span> puis cliquez sur le bouton
+                        <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit Schema </strong></span>pour d&eacute;finir les donn&eacute;es que vous voulez utiliser en
+                    entr&eacute;e. Dans ce sc&eacute;nario, le sch&eacute;ma est constitu&eacute; d&#8217;une colonne comportant une
+                    adresse IP. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="436"><tr><td><img src="../images/Use_Case_tAddLocationFromIP2.png" width="436"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez sur le bouton <span class="bold"><strong>OK</strong></span> pour fermer la
+                    bo&icirc;te de dialogue, puis acceptez la propagation des modifications lorsque le
+                    syst&egrave;me vous invite &agrave; le faire. La colonne d&eacute;finie s&#8217;affiche dans la section
+                        <span class="bold"><strong>Values</strong></span> de la vue <span class="bold"><strong>Basic settings</strong></span>.</p></li><li class="listitem"><p> Cliquez dans la cellule <span class="bold"><strong>Value</strong></span> puis
+                    d&eacute;finissez la valeur de l&#8217;adresse IP. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="483"><tr><td><img src="../images/Use_Case_tAddLocationFromIP1.png" width="483"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans le champ <span class="bold"><strong>Number of rows</strong></span>, entrez le
+                    nombre de lignes &agrave; g&eacute;n&eacute;rer. </p></li><li class="listitem"><p> Dans l&#8217;espace graphique, s&eacute;lectionnez le composant <span class="bold"><strong>tAddLocationFromIP</strong></span>.</p></li><li class="listitem"><p> Cliquez dans la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir
+                    la configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                        <span class="bold"><strong>tAddLocationFromIP</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="510"><tr><td><img src="../images/Use_Case_tAddLocationFromIP3.png" width="510"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> pour
+                    synchroniser le sch&eacute;ma avec le sch&eacute;ma d&#8217;entr&eacute;e du <span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p> Parcourez vos dossiers jusqu&#8217;au fichier GeoIP.dat pour en d&eacute;finir le chemin
+                    d&#8217;acc&egrave;s dans le champ <span class="bold"><strong>Database filepath</strong></span>.
+                </p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Assurez-vous de t&eacute;l&eacute;charger la derni&egrave;re version du fichier de consultation des
+                adresses IP, &agrave; partir du site indiqu&eacute; dans la vue <span class="bold"><strong>Basic
+                    settings</strong></span> du composant <span class="bold"><strong>tAddLocationFromIp</strong></span>.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans la zone <span class="bold"><strong>Input parameters</strong></span>, d&eacute;finissez
+                    les param&egrave;tres d&#8217;entr&eacute;e selon vos besoins. Dans ce sc&eacute;nario, la colonne d&#8217;entr&eacute;e
+                    correspond &agrave; la colonne <span class="emphasis"><em>ip</em></span>, qui comporte une adresse IP,
+                    d&eacute;finie pr&eacute;c&eacute;demment. </p></li><li class="listitem"><p> Dans la zone <span class="bold"><strong>Location type</strong></span>, d&eacute;finissez le
+                    type de lieu selon vos besoins. Dans ce sc&eacute;nario, on veut afficher le nom du
+                    pays. </p></li><li class="listitem"><p> Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le composant <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p> Cliquez sur la vue <span class="bold"><strong>Component</strong></span> puis d&eacute;finissez
+                    la configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                        <span class="bold"><strong>tLogRow</strong></span> selon vos besoins. Dans ce
+                    sc&eacute;nario, on veut afficher les valeurs dans les cellules d&#8217;une table. </p></li><li class="listitem"><p> Enregistrez votre Job puis cliquez sur <span class="bold"><strong>F6</strong></span>
+                    pour l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="395"><tr><td><img src="../images/Use_Case_tAddLocationFromIP4.png" width="395"></td></tr></table></div><p>La ligne unique g&eacute;n&eacute;r&eacute;e par le Job affiche le nom du pays correspondant &agrave; l&#8217;adresse IP
+            renseign&eacute;e. </p></div></div></body></html>

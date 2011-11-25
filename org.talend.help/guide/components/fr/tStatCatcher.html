@@ -1,0 +1,135 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tStatCatcher</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch11.html" title="Chapitre&nbsp;11.&nbsp;Composants Logs &amp; Errors"><link rel="prev" href="tLogRow.html" title="tLogRow"><link rel="next" href="tWarn.html" title="tWarn"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tStatCatcher"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tStatCatcher"></a>tStatCatcher</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tStatCatcher.png" width="27"></td></tr></table></div><a name="Xaa1552951"></a><div class="section" title="Propri&eacute;t&eacute;s du tStatCatcher"><div class="titlepage"><div><div><h3 class="title"><a name="d0e218373"></a>Propri&eacute;t&eacute;s du tStatCatcher</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Logs &amp; Errors</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tStatCatcher</strong></span> est
+                                bas&eacute; sur le sch&eacute;ma d&eacute;fini et regroupe les m&eacute;tadonn&eacute;es du Job en
+                                cours d&#8217;ex&eacute;cution, ainsi que les m&eacute;tadonn&eacute;es de chaque composant de
+                                ce Job.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant fonctionne comme une fonction de log d&eacute;clench&eacute;e pour
+                                chaque composant dont la case <span class="bold"><strong>StatsCatcher
+                                    Statistics</strong></span> est coch&eacute;e. Il collecte et transfert ces
+                                donn&eacute;es de log &agrave; la sortie d&eacute;finie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Schema type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant.
+                                Pour ce composant, le sch&eacute;ma est en lecture seule, puisqu&#8217;il
+                                regroupe les informations de log standard, notamment&nbsp;:</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Moment</strong></span>&nbsp;: Date et heure du
+                                traitement </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Pid</strong></span>&nbsp;: Identifiant syst&egrave;me du
+                                Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Father_pid&nbsp;</strong></span>: Identifiant syst&egrave;me
+                                du Job parent, le cas &eacute;ch&eacute;ant. Sinon, le Pid est dupliqu&eacute;.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Root_pid&nbsp;</strong></span>: Identifiant syst&egrave;me du
+                                Job racine, le cas &eacute;ch&eacute;ant. Sinon, le Pid est dupliqu&eacute;.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Project&nbsp;:</strong></span> Nom du projet auquel
+                                appartient le Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Job&nbsp;</strong></span>: Nom du Job en cours.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Context&nbsp;</strong></span>: Nom du contexte en
+                                cours.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Origin&nbsp;</strong></span>: Nom du composant, le cas
+                                &eacute;ch&eacute;ant.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Message</strong></span>&nbsp;: Informations de d&eacute;but
+                                et de fin du Job.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est le composant de d&eacute;but d&#8217;un Job secondaire qui se
+                                d&eacute;clenche automatiquement &agrave; la fin du Job principal. Les dates de
+                                d&eacute;but et de fin apparaissent dans le log.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Afficher les statistiques du Job"><div class="titlepage"><div><div><h3 class="title"><a name="d0e218644"></a>Sc&eacute;nario&nbsp;: Afficher les statistiques du Job</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; quatre composants, permettant d&#8217;afficher dans la console
+                <span class="bold"><strong>Run</strong></span> les statistiques recueillies lors de la
+            g&eacute;n&eacute;ration du fichier gr&acirc;ce au composant <span class="bold"><strong>tStatCatcher</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="359"><tr><td><img src="../images/Use_Case_tStatcatch1.png" width="359"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez et d&eacute;posez les composants&nbsp;: <span class="bold"><strong>tRowGenerator</strong></span>, <span class="bold"><strong>tFileOutputDelimited</strong></span>, <span class="bold"><strong>tStatCatcher</strong></span> et <span class="bold"><strong>tLogRow</strong></span></p></li><li class="listitem"><p>Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> du composant
+                        <span class="bold"><strong>tRowGenerator</strong></span>, param&eacute;trez les donn&eacute;es &agrave;
+                    g&eacute;n&eacute;rer. Pour ce Job, le sch&eacute;ma est compos&eacute; de trois colonnes&nbsp;:
+                        <span class="emphasis"><em>ID_Owners</em></span>, <span class="emphasis"><em>Name_Customer</em></span> et
+                        <span class="emphasis"><em>ID_Insurance</em></span></p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/use_case-tstatcatch2.png" width="100%"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Le nombre de lignes peut &ecirc;tre limit&eacute; &agrave; 100.</p></li><li class="listitem"><p>Cliquez sur l&#8217;onglet <span class="bold"><strong>Main</strong></span> de la vue <span class="bold"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="386"><tr><td><img src="../images/Use_Case_tStatcatch3.png" width="386"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Et cochez la case <span class="bold"><strong>tStatCatcher Statistics</strong></span>
+                    pour activer la fonction de r&eacute;cup&eacute;ration des statistiques.</p></li><li class="listitem"><p>Puis, param&eacute;trez les propri&eacute;t&eacute;s du composant de sortie. Dans la vue <span class="bold"><strong>Component</strong></span> du <span class="bold"><strong>tFileOutputDelimited</strong></span>, s&eacute;lectionnez le fichier de sortie ou
+                    saisissez le nom du fichier de sortie &agrave; cr&eacute;er. Param&eacute;trez les s&eacute;parateurs de
+                    champs (point-virgule) et l&#8217;encodage.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Edit schema</strong></span> et assurez-vous que
+                    le sch&eacute;ma est r&eacute;cup&eacute;r&eacute; du sch&eacute;ma d&#8217;entr&eacute;e. Si n&eacute;cessaire, cliquez sur <span class="bold"><strong>Sync Columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma du composant
+                    pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>Puis cliquez sur l&#8217;onglet <span class="bold"><strong>Advanced settings</strong></span>
+                    de la vue <span class="bold"><strong>Component</strong></span>, et cochez la case
+                        <span class="bold"><strong>tStatCatcher Statistics</strong></span> pour activer la
+                    fonction de r&eacute;cup&eacute;ration des statistiques.</p></li><li class="listitem"><p>Dans le deuxi&egrave;me Job, double-cliquez sur le composant <span class="bold"><strong>tStatCatcher</strong></span>. Notez que les propri&eacute;t&eacute;s sont fournis uniquement
+                    pour information puisque le sch&eacute;ma repr&eacute;sentant les donn&eacute;es &agrave; regrouper et
+                    agr&eacute;ger en statistiques, est en lecture seule.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="464"><tr><td><img src="../images/Use_Case_tStatcatch4.png" width="464"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Param&eacute;trez ensuite les propri&eacute;t&eacute;s du <span class="bold"><strong>tLogRow</strong></span>.
+                    D&eacute;finissez le s&eacute;parateur de donn&eacute;es qui appara&icirc;tra dans la console.</p></li><li class="listitem"><p>Enfin, appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter le Job et
+                    afficher les r&eacute;sultats du Job.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="501"><tr><td><img src="../images/Use_Case_tStatcatch5.png" width="501"></td></tr></table></div><p>Les donn&eacute;es de log affiche les informations de d&eacute;but et de fin du Job en lui-m&ecirc;me,
+            ainsi que pour chaque composant.</p></div></div></body></html>

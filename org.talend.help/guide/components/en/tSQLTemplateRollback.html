@@ -1,0 +1,91 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSQLTemplateRollback</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa48933-dup-2.html" title="Chapter&nbsp;7.&nbsp;ELT components"><link rel="prev" href="tSQLTemplateMerge.html" title="tSQLTemplateMerge"><link rel="next" href="Raa48933.html" title="Chapter&nbsp;8.&nbsp;ESB components"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tSQLTemplateRollback"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSQLTemplateRollback"></a>tSQLTemplateRollback</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tSQLTemplateRollback_icon32.png" width="27"></td></tr></table></div><div class="section" title="tSQLTemplateRollback properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e164023"></a>tSQLTemplateRollback properties</h3></div></div></div><p>This component is closely related to <span class="bold"><strong>tSQLTemplateCommit</strong></span> and to the ELT connection component relative to the
+            database you work with. <span class="bold"><strong>tSQLTemplateRollback</strong></span>,<span class="bold"><strong> tSQLTemplateCommit</strong></span> and the ELT database connection component
+            are usually used together in a transaction.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>ELT/SQLTemplate</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tSQLTemplateRollback</strong></span> cancels the
+                                transaction committed in the database you connect to. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>To avoid committing transactions accidentally.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Database Type</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the database type you want to connect to from the
+                                list.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Component List</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the ELT database connection component in the list if more
+                                than one connection is planned for the current Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Close Connection</em></span></p>
+                        </td><td valign="top">
+                            <p>Clear this check box to continue to use the selected connection
+                                once the component has performed its task.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>SQL Template</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>SQL Template List</em></span></p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>To add a default system SQL template:
+                                </strong></span>Click the <span class="bold"><strong>Add</strong></span> button to
+                                add the default system SQL template(s) in the <span class="bold"><strong>SQL Template List</strong></span>. </p>
+                            <p> Click in the SQL template field and then click the arrow to
+                                display the system SQL template list. Select the desired system SQL
+                                template provided by Talend. </p>
+                            <p>
+                                <span class="bold"><strong>Note:</strong></span> You can create your own SQL
+                                template and add them to the <span class="bold"><strong>SQL Template
+                                    List</strong></span>. </p>
+                            <p> </p>
+                            <p>
+                                <span class="bold"><strong>To create a user-defined SQL
+                                    template:</strong></span>
+                            </p>
+                            <p> -Select a system template from the <span class="bold"><strong>SQL
+                                    Template list</strong></span> and click on its code in the code box.
+                                You will be prompted by the system to create a new template.</p>
+                            <p> -Click <span class="bold"><strong>Yes</strong></span> to open the SQL
+                                template wizard.</p>
+                            <p> -Define your new SQL template in the corresponding fields and
+                                click <span class="bold"><strong>Finish</strong></span> to close the wizard.
+                                An SQL template editor opens where you can enter the template
+                                code.</p>
+                            <p> -Click the <span class="bold"><strong>Add</strong></span> button to add the
+                                new created template to the <span class="bold"><strong>SQL Template
+                                    list</strong></span>.</p>
+                            <p> For more information, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is to be used with ELT components, especially with
+                                    <span class="bold"><strong>tSQLTemplateCommit</strong></span> and the
+                                relevant database connection component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e164263"></a>Related scenarios</h3></div></div></div><p>For a <span class="bold"><strong>tSQLTemplateRollback</strong></span> related scenario, see
+                <a class="xref" href="tSQLTemplateAggregate.html#Raa22184" title="Scenario: Filtering and aggregating table columns directly on the DBMS">the section called &#8220;Scenario: Filtering and aggregating table columns directly on the
+                        DBMS&#8221;</a>.</p></div></div></body></html>

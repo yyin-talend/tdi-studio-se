@@ -1,0 +1,67 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSQLiteConnection</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tSQLiteCommit.html" title="tSQLiteCommit"><link rel="next" href="tSQLiteInput.html" title="tSQLiteInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tSQLiteConnection"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSQLiteConnection"></a>tSQLiteConnection</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tSQLiteConnection_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tSQLiteConnection"><div class="titlepage"><div><div><h3 class="title"><a name="d0e140597"></a>Propri&eacute;t&eacute;s du tSQLiteConnection</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants <span class="bold"><strong>tSQLiteCommit</strong></span> et <span class="bold"><strong>tSQLiteRollback</strong></span>. Ils
+			sont g&eacute;n&eacute;ralemet utilis&eacute;s avec un composant <span class="bold"><strong>tSQLiteConnection</strong></span> car il permet d&#8217;ouvrir une connexion pour la
+			transaction en cours.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+									composant</strong></span></p>
+						</td><td valign="top"><p>Databases/SQLite</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tSQLiteConnection</strong></span> ouvre une connexion
+								vers une base de donn&eacute;es afin d&#8217;effectuer une transaction.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Ce composant permet de
+								commiter les donn&eacute;es d&#8217;un Job entier en une seule transaction vers
+								une base de donn&eacute;es de sortie.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+								settings</strong></span></p>
+						</td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+						</td><td valign="top"><p>Peut &ecirc;tre Built-in ou Repository.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>:
+								Propri&eacute;t&eacute;s utilis&eacute;es ponctuellement.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>&nbsp;:
+								S&eacute;lectionnez le fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du
+								composant. Les champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des
+								donn&eacute;es collect&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Database</em></span></p>
+						</td><td valign="top"><p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Table Schema</em></span></p>
+						</td><td valign="top"><p>Nom du sch&eacute;ma.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Use or register a shared DB
+									Connection</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour partager votre connexion ou
+								r&eacute;cup&eacute;rer une connexion mise en partage dans un Job p&egrave;re ou un Job
+								fils. Cette option vous permet de partager une seule connexion &agrave; une
+								base de donn&eacute;es dans plusieurs composants de connexion &agrave; des bases
+								de donn&eacute;es, dans diff&eacute;rents niveaux de Jobs, qui peuvent &ecirc;tre des
+								Jobs parent ou enfant.</p><p><span class="bold"><strong>Shared DB Connection Name&nbsp;:</strong></span> d&eacute;finissez ou saisissez le nom de
+								la connexion partag&eacute;e.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+								settings</strong></span></p>
+						</td><td valign="top"><p><span class="emphasis"><em>Auto commit</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour que, lorsqu&#8217;une d&eacute;claration
+								est termin&eacute;e, la m&eacute;thode commit soit appel&eacute;e automatiquement sur
+								cette d&eacute;claration. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+								Statistics</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+								log, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+							</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Ce composant est
+								g&eacute;n&eacute;ralement utilis&eacute; avec des composants SQLite, notamment les
+								composants <span class="bold"><strong>tSQLiteCommit</strong></span> et
+									<span class="bold"><strong>tSQLiteRollback</strong></span>.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+						</td><td colspan="2" valign="top"><p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d0e140797"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants <span class="bold"><strong>tSQLiteCommit</strong></span> et <span class="bold"><strong>tSQLiteRollback</strong></span>. Ils
+			sont g&eacute;n&eacute;ralement utilis&eacute;s avec un composant <span class="bold"><strong>tSQLiteConnection</strong></span> car il permet d&#8217;ouvrir une connexion pour la
+			transaction en cours.</p><p>Pour un sc&eacute;nario associ&eacute; au composant <span class="bold"><strong>tSQLiteConnection</strong></span>,
+			consultez <a class="xref" href="tMysqlConnection.html" title="tMysqlConnection">la section intitul&eacute;e &laquo;&nbsp;tMysqlConnection&nbsp;&raquo;</a></p></div></div></body></html>

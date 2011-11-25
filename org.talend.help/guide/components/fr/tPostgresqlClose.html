@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPostgresqlClose</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tPostgresqlBulkExec.html" title="tPostgresqlBulkExec"><link rel="next" href="tPostgresqlCommit.html" title="tPostgresqlCommit"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tPostgresqlClose"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPostgresqlClose"></a>tPostgresqlClose</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tPostgresqlClose_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tPostgresqlClose"><div class="titlepage"><div><div><h3 class="title"><a name="d0e135406"></a>Propri&eacute;t&eacute;s du tPostgresqlClose</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Postgresql</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tPostgresqlClose</strong></span>
+								ferme la connexion &agrave; une base de donn&eacute;es connect&eacute;e.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant permet de fermer une connexion &agrave; la base de donn&eacute;es
+								Postgresql.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Component list</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&#8217;il y a plus d&#8217;une connexion dans le Job en cours, s&eacute;lectionnez
+								le composant <span class="bold"><strong>tPostgresqlConnection</strong></span>
+								dans la liste.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; comme composant de d&eacute;but. Il
+								n&eacute;cessite un composant de sortie.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e135536"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants <span class="bold"><strong>tPostgresqlConnection</strong></span> et <span class="bold"><strong>tPostgresqlRollback</strong></span>. Il est g&eacute;n&eacute;ralement utilis&eacute; avec un composant
+				<span class="bold"><strong>tPostgresqlConnection</strong></span> car il permet de fermer une
+			connexion pour la transaction en cours.</p><p> Pour un sc&eacute;nario associ&eacute; au composant <span class="bold"><strong>tPostgresqlClose</strong></span>,
+			consultez <a class="xref" href="tMysqlConnection.html" title="tMysqlConnection">la section intitul&eacute;e &laquo;&nbsp;tMysqlConnection&nbsp;&raquo;</a>
+		</p></div></div></body></html>

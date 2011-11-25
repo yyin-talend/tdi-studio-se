@@ -1,0 +1,78 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tRowGenerator</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch12.html" title="Chapter&nbsp;12.&nbsp;Misc group components"><link rel="prev" href="tMsgBox.html" title="tMsgBox"><link rel="next" href="ch13.html" title="Chapter&nbsp;13.&nbsp;Orchestration components"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tRowGenerator"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tRowGenerator"></a>tRowGenerator</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tRowGenerator.png" width="27"></td></tr></table></div><div class="section" title="tRowGenerator properties"><div class="titlepage"><div><div><h3 class="title"><a name="Raa86373"></a>tRowGenerator properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>Misc</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tRowGenerator</strong></span> generates as many rows and fields as
+                                are required using random values taken from a list.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Can be used to create an
+                                input flow in a Job for testing purposes, in particular for boundary
+                                test sets</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema type</em></span> and
+                                    <span class="emphasis"><em>Edit schema</em></span></p>
+                        </td><td valign="top"><p>A schema is a row description, i.e., it defines
+                                the number of fields to be processed and passed on to the next
+                                component. The schema is either built-in or stored remotely in the
+                                Repository.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: You create and store the schema locally for this
+                                component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>:
+                                Select the Repository file where the properties are stored. When
+                                selected, the fields that follow are filled in automatically using
+                                fetched data.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>RowGenerator editor</em></span></p>
+                        </td><td valign="top"><p>The editor allows you to define the columns and
+                                the nature of data to be generated. You can use predefined routines
+                                or type in the function to be used to generate the data specified
+                            </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>The <span class="bold"><strong>tRowGenerator</strong></span> Editor&#8217;s ease of use allows users without
+                                any Java knowledge to generate random data for test purposes.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div><p>The <span class="bold"><strong>tRowGenerator</strong></span> Editor opens up on a separate
+            window made of two parts:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>a <span class="bold"><strong>Schema</strong></span> definition panel at the top of the
+                    window</p></li><li class="listitem"><p>and a <span class="bold"><strong>Function</strong></span> definition and preview panel
+                    at the bottom.</p></li></ul></div><div class="section" title="Defining the schema"><div class="titlepage"><div><div><h4 class="title"><a name="d0e212250"></a>Defining the schema</h4></div></div></div><p>First you need to define the structure of data to be generated.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Add as many columns to your schema as needed, using the <span class="bold"><strong>plus (+)</strong></span> button.</p></li><li class="listitem"><p>Type in the names of the columns to be created in the <span class="bold"><strong>Columns</strong></span> area and select the <span class="bold"><strong>Key</strong></span> check box if required</p></li><li class="listitem"><p>Make sure you define then the nature of the data contained in the column,
+                        by selecting the <span class="bold"><strong>Type</strong></span> in the list.
+                        According to the type you select, the list of <span class="bold"><strong>Functions</strong></span> offered will differ. This information is therefore
+                        compulsory.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="479"><tr><td><img src="../images/Use_Case_tRowGeneratorSchema.png" width="479"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Some extra information, although not required, might be useful such as
+                            <span class="bold"><strong>Length</strong></span>, <span class="bold"><strong>Precision</strong></span> or <span class="bold"><strong>Comment</strong></span>. You
+                        can also hide these columns, by clicking on the <span class="bold"><strong>Columns </strong></span>drop-down button next to the toolbar, and unchecking
+                        the relevant entries on the list.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Function</strong></span> area, you can select the
+                        predefined routine/function if one of them corresponds to your needs.You can
+                        also add to this list any routine you stored in the <span class="bold"><strong>Routine</strong></span> area of the <span class="bold"><strong>Repository</strong></span>. Or you can type in the function you want to use
+                        in the <span class="bold"><strong>Function </strong></span>definition panel. Related
+                        topic: see <span class="bluebold">Talend Open Studio</span>
+                        <span class="bold"><strong>User Guide</strong></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>Refresh</strong></span> to have a preview of the
+                        data generated. </p></li><li class="listitem"><p>Type in a number of rows to be generated. The more rows to be generated,
+                        the longer it&#8217;ll take to carry out the generation operation.</p></li></ul></div></div><div class="section" title="Defining the function"><div class="titlepage"><div><div><h4 class="title"><a name="Raa20687"></a>Defining the function</h4></div></div></div><p>Select the <span class="bold"><strong>[...]</strong></span> under <span class="bold"><strong>Function</strong></span> in the Schema definition panel in order to customize the
+                function parameters.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the <span class="bold"><strong>Function parameters</strong></span> tab</p></li><li class="listitem"><p>The <span class="bold"><strong>Parameter</strong></span> area displays <span class="bold"><strong>Customized parameter</strong></span> as function name
+                        (read-only)</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="431"><tr><td><img src="../images/Use_Case_tRowGeneratorFunctionCust.png" width="431"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Value</strong></span> area, type in the Java
+                        function to be used to generate the data specified.</p></li><li class="listitem"><p>Click on the <span class="bold"><strong>Preview</strong></span> tab and click
+                            <span class="bold"><strong>Preview</strong></span> to check out a sample of the
+                        data generated.</p></li></ul></div></div></div><div class="section" title="Scenario: Generating random java data"><div class="titlepage"><div><div><h3 class="title"><a name="d0e212376"></a>Scenario: Generating random java data</h3></div></div></div><p>The following scenario creates a two-component Job, generating 50 rows structured as
+            follows: a randomly picked-up ID in a 1-to-3 range, a random ascii First Name and Last
+            Name generation and a random date taken in a defined range.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="265"><tr><td><img src="../images/Use_Case_tRowGenerator1.png" width="265"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop a <span class="bold"><strong>tRowGenerator</strong></span> and a <span class="bold"><strong>tLogRow</strong></span> component from the <span class="bold"><strong>Palette</strong></span> to the design workspace.</p></li><li class="listitem"><p>Right-click <span class="bold"><strong>tRowGenerator</strong></span> and select
+                        <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>. Drag this main row link onto the <span class="bold"><strong>tLogRow</strong></span> component and release when the plug symbol
+                    displays.</p></li><li class="listitem"><p>Double click <span class="bold"><strong>tRowGenerator</strong></span> to open the
+                    Editor.</p></li><li class="listitem"><p>Define the fields to be generated.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tRowGenerator2.png" width="100%"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The random ID column is of integer type, the First and Last names are of
+                    string type and the Date is of date type.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Function</strong></span> list, select the relevant
+                    function or set on the three dots for custom function. </p></li><li class="listitem"><p>On the <span class="bold"><strong>Function parameters</strong></span> tab, define the
+                    Values to be randomly picked up.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="302"><tr><td><img src="../images/Use_Case_tRowGenerator3.png" width="302"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><em>First_Name</em></span> and <span class="emphasis"><em>Last_Name</em></span> columns are
+                    to be generated using the getAsciiRandomString function that is predefined in
+                    the system routines. By default the length defined is 6 characters long. You can
+                    change this if need be.</p></li><li class="listitem"><p>The <span class="emphasis"><em>Date</em></span> column calls the predefined getRandomDate
+                    function. You can edit the parameter values in the <span class="bold"><strong>Function parameters</strong></span> tab.</p></li><li class="listitem"><p>Set the <span class="bold"><strong>Number of Rows</strong></span> to be generated to
+                    50.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate the setting.</p></li><li class="listitem"><p>Double click <span class="bold"><strong>tLogRow</strong></span> to view the Basic
+                    settings. The default setting is retained for this Job.</p></li><li class="listitem"><p>Press <span class="bold"><strong>F6</strong></span> to run the Job.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="333"><tr><td><img src="../images/Use_Case_tRowGenerator4.png" width="333"></td></tr></table></div><p>The 50 rows are generated following the setting defined in the <span class="bold"><strong>tRowGenerator</strong></span> editor and the output is displayed in the <span class="bold"><strong>Run </strong></span>console.</p></div></div></body></html>

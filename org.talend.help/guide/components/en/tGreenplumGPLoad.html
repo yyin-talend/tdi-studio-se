@@ -1,0 +1,294 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tGreenplumGPLoad</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="tGreenplumConnection.html" title="tGreenplumConnection"><link rel="next" href="tGreenplumInput.html" title="tGreenplumInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tGreenplumGPLoad"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tGreenplumGPLoad"></a>tGreenplumGPLoad</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tGreenplumGPLoad_icon32.png" width="27"></td></tr></table></div><p>This component invokes Greenplum's gpload utility to insert records into a
+            Greenplum database. This component can be used either in standalone mode, loading from
+            an existing data file, or connected to an input flow to load data from the connected
+            component.</p><div class="section" title="tGreenplumGPLoad properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e71432"></a>tGreenplumGPLoad properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>Databases/Greenplum</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tGreenplumGPLoad</strong></span> inserts data into a Greenplum
+                                database table using Greenplum's gpload utility.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component is used to
+                                bulk load data into a Greenplum table either from an existing data
+                                file, an input flow, or directly from a data flow in streaming mode
+                                through a named-pipe.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top"><p>Either <span class="bold"><strong>Built-in</strong></span>
+                                or <span class="bold"><strong>Repository</strong></span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: No
+                                property data stored centrally.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>:
+                                Select the repository file in which the properties are stored. The
+                                fields that follow are completed automatically using the data
+                                retrieved.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top"><p>Database server IP address.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top"><p>Listening port number of the DB server.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Database</em></span></p>
+                        </td><td valign="top"><p>Name of the Greenplum database.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span></p>
+                        </td><td valign="top"><p>Exact name of the schema.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Username</em></span> and
+                                    <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top"><p>DB user authentication data.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Table</em></span></p>
+                        </td><td valign="top"><p>Name of the table into which the data is to be
+                                inserted.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Action on table</em></span></p>
+                        </td><td valign="top"><p>On the table defined, you can perform one of the
+                                following operations before loading the data:</p><p>
+                                <span class="bold"><strong>None</strong></span>: No operation is carried
+                                out.</p><p>
+                                <span class="bold"><strong>Clear table</strong></span>: The table content is
+                                deleted before the data is loaded.</p><p>
+                                <span class="bold"><strong>Create table</strong></span>: The table does not
+                                exist and gets created.</p><p>
+                                <span class="bold"><strong>Create table if not exists</strong></span>: The
+                                table is created if it does not exist.</p><p>
+                                <span class="bold"><strong>Drop and create table</strong></span>: The table is
+                                removed and created again.</p><p>
+                                <span class="bold"><strong>Drop table if exists and create</strong></span>:
+                                The table is removed if it already exists and created again.</p><p>
+                                <span class="bold"><strong>Truncate table</strong></span>: The table content
+                                is deleted. You do not have the possibility to rollback the
+                                operation.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Action on data</em></span></p>
+                        </td><td valign="top"><p>On the data of the table defined, you can
+                                perform:</p><p>
+                                <span class="bold"><strong>Insert</strong></span>: Add new entries to the
+                                table. If duplicates are found, Job stops.</p><p>
+                                <span class="bold"><strong>Update</strong></span>: Make changes to existing
+                                entries.</p><p>
+                                <span class="bold"><strong>Merge</strong></span>: Updates or adds data to the
+                                table.</p>
+                            <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                                    <span class="emphasis"><em>It is necessary to specify at least one column as a
+                                        primary key on which the </em></span><span class="bold"><strong>Update</strong></span><span class="emphasis"><em> and </em></span><span class="bold"><strong>Merge</strong></span><span class="emphasis"><em> operations are based.
+                                        You can do that by clicking </em></span><span class="bold"><strong>Edit Schema</strong></span><span class="emphasis"><em> and selecting the check
+                                        box(es) next to the column(s) you want to set as primary
+                                        key(s). To define the </em></span><span class="bold"><strong>Update</strong></span><span class="emphasis"><em>/</em></span><span class="bold"><strong>Merge options</strong></span><span class="emphasis"><em>, select in
+                                        the </em></span><span class="bold"><strong>Match
+                                        Column</strong></span><span class="emphasis"><em> column the check boxes
+                                        corresponding to the column names that you want to use as a
+                                        base for the </em></span><span class="bold"><strong>Update</strong></span><span class="emphasis"><em> and </em></span><span class="bold"><strong>Merge</strong></span><span class="emphasis"><em> operations, and
+                                        select in the </em></span><span class="bold"><strong>Update
+                                        Column</strong></span><span class="emphasis"><em> column the check boxes
+                                        corresponding to the column names that you want to update.
+                                        To define the </em></span><span class="bold"><strong>Update
+                                        condition</strong></span><span class="emphasis"><em>, type in the condition that
+                                        will be used to update the data.</em></span></p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema and Edit schema</em></span></p>
+                        </td><td valign="top"><p>A schema is a row description, i.e., it defines
+                                the number of fields to be processed and passed on to the next
+                                component. The schema is either <span class="bold"><strong>Built-in</strong></span> or stored remotely in the <span class="bold"><strong>Repository</strong></span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: The
+                                schema is created and stored locally for this component only.
+                                Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: The
+                                schema already exists and is stored in the Repository, hence can be
+                                reused. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Data file</em></span></p>
+                        </td><td valign="top"><p>Full path to the data file to be used. If this
+                                component is used in standalone mode, this is the name of an
+                                existing data file to be loaded into the database. If this component
+                                is connected with an input flow, this is the name of the file to be
+                                generated and written with the incoming data to later be used with
+                                gpload to load into the database. This field is hidden when the
+                                    <span class="bold"><strong>Use named-pipe</strong></span> check box is
+                                selected.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use named-pipe</em></span></p>
+                        </td><td valign="top"><p>Select this check box to use a named-pipe. This
+                                option is only applicable when the component is connected with an
+                                input flow. When this check box is selected, no data file is
+                                generated and the data is transferred to gpload through a
+                                named-pipe. This option greatly improves performance in both Linux
+                                and Windows.</p><p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> This component on named-pipe mode uses a JNI interface to
+                                    create and write to a named-pipe on any Windows platform.
+                                    There&shy;fore the path to the associated JNI DLL must be
+                                    con&shy;figured inside the java library path. The component comes
+                                    with two DLLs for both 32 and 64 bit operat&shy;ing systems that are
+                                    automatically provided in the Studio with the component.</p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Named-pipe name</em></span></p>
+                        </td><td valign="top"><p>Specify a name for the named-pipe to be used.
+                                Ensure that the name entered is valid.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top"><p>This check box is selected by default. Clear the
+                                check box to skip the row on error and complete the process for
+                                error-free rows. If needed, you can retrieve the rows on error via a
+                                    <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Rejects</strong></span> link.</p>
+                        </td></tr><tr><td valign="top"><p><a name="Xaa4837642"></a><span class="bold"><strong>Advanced
+                                    settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use existing control file (YAML
+                                    formatted)</em></span></p>
+                        </td><td valign="top"><p>Select this check box to provide a control file to
+                                be used with the gpload utility instead of specifying all the
+                                options explicitly in the component. When this check box is
+                                selected, <span class="bold"><strong>Data file</strong></span> and the other
+                                gpload related options no longer apply. Refer to Greenplum's gpload
+                                manual for details on creating a control file.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Control file</em></span></p>
+                        </td><td valign="top"><p>Enter the path to the control file to be used,
+                                between double quotation marks, or click <span class="bold"><strong>[...]</strong></span> and browse to the control file. This option is
+                                passed on to the gpload utility via the<span class="emphasis"><em> -f</em></span>
+                                argument.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>CSV mode</em></span></p>
+                        </td><td valign="top"><p>Select this check box to include CSV specific
+                                parameters such as <span class="bold"><strong>Escape char</strong></span> and
+                                    <span class="bold"><strong>Text enclosure</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Field separator</em></span></p>
+                        </td><td valign="top"><p>Character, string, or regular expression used to
+                                separate fields.</p>
+                            <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                                    <span class="emphasis"><em>This is gpload's delim argument. The default value is
+                                        </em></span><span class="emphasis"><em>|</em></span><span class="emphasis"><em>. To improve
+                                        performance, use the default value.</em></span></p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Escape char</em></span></p>
+                        </td><td valign="top"><p>Character of the row to be escaped.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Text enclosure</em></span></p>
+                        </td><td valign="top"><p>Character used to enclose text.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Header (skips the first row of data
+                                    file)</em></span></p>
+                        </td><td valign="top"><p>Select this check box to skip the first row of the
+                                data file.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Additional options</em></span></p>
+                        </td><td valign="top"><p>Set the gpload arguments in the corresponding
+                                table. Click <span class="bold"><strong>[+] </strong></span>as many times as
+                                required to add arguments to the table. Click the <span class="bold"><strong>Parameter</strong></span> field and choose among the
+                                arguments from the list. Then click the corresponding <span class="bold"><strong>Value</strong></span> field and enter a value between
+                                quotation marks.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>LOCAL_HOSTNAME</strong></span>:
+                                The host name or IP address of the local machine on which gpload is
+                                running. If this machine is configured with multiple network
+                                interface cards (NICs), you can specify the host name or IP of each
+                                individual NIC to allow network traffic to use all NICs
+                                simultaneously. By default, the local machine&#8217;s primary host name or
+                                IP is used.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>PORT (gpfdist
+                                    port)</strong></span>: The specific port number that the gpfdist file
+                                distribution program should use. You can also specify a <span class="bold"><strong>PORT_RANGE</strong></span> to select an available port
+                                from the specified range. If both <span class="bold"><strong>PORT</strong></span> and <span class="bold"><strong>PORT_RANGE</strong></span>
+                                are defined, then <span class="bold"><strong>PORT</strong></span> takes
+                                precedence. If neither <span class="bold"><strong>PORT</strong></span> or
+                                    <span class="bold"><strong>PORT_RANGE</strong></span> is defined, an
+                                available port between 8000 and 9000 is selected by default. If
+                                multiple host names are declared in <span class="bold"><strong>LOCAL_HOSTNAME</strong></span>, this port number is used for all
+                                hosts. This configuration is desired if you want to use all NICs to
+                                load the same file or set of files in a given directory
+                                location.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>PORT_RANGE</strong></span>: Can
+                                be used instead of <span class="bold"><strong>PORT (gpfdist
+                                    port)</strong></span> to specify a range of port numbers from which
+                                gpload can choose an available port for this instance of the gpfdist
+                                file distribution program.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>NULL_AS</strong></span>: The
+                                string that represents a null value. The default is <code class="code">\N</code>
+                                (backslash-N) in TEXT mode, and an empty value with no quotation
+                                marks in CSV mode. Any source data item that matches this string
+                                will be considered a null value.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>FORCE_NOT_NULL</strong></span>:
+                                In CSV mode, processes each specified column as though it were
+                                quoted and hence not a NULL value. For the default null string in
+                                CSV mode (nothing between two delimiters), this causes missing
+                                values to be evaluated as zero-length strings.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>ERROR_LIMIT (2 or
+                                    higher)</strong></span>: Enables single row error isolation mode for
+                                this load operation. When enabled and the error limit count is not
+                                reached on any Greenplum segment instance during input processing,
+                                all good rows will be loaded and input rows that have format errors
+                                will be discarded or logged to the table specified in <span class="bold"><strong>ERROR_TABLE</strong></span> if available. When the error
+                                limit is reached, input rows that have format errors will cause the
+                                load operation to abort. Note that single row error isolation only
+                                applies to data rows with format errors, for example, extra or
+                                missing attributes, attributes of a wrong data type, or invalid
+                                client encoding sequences. Constraint errors, such as primary key
+                                violations, will still cause the load operation to abort if
+                                encountered. When this option is not enabled, the load operation
+                                will abort on the first error encountered.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p></p>
+                        </td><td valign="top"><p><span class="bold"><strong>ERROR_TABLE</strong></span>: When
+                                    <span class="bold"><strong>ERROR_LIMIT</strong></span> is declared,
+                                specifies an error table where rows with formatting errors will be
+                                logged when running in single row error isolation mode. You can then
+                                examine this error table to see error rows that were not loaded (if
+                                any).</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Log file</em></span></p>
+                        </td><td valign="top"><p>Browse to or enter the access path to the log file
+                                in your directory.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top"><p>Define the encoding type manually in the
+                                field.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Specify gpload path</em></span></p>
+                        </td><td valign="top"><p>Select this check box to specify the full path to
+                                the gpload executable. You must check this option if the gpload path
+                                is not specified in the PATH environment variable.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Full path to gpload
+                                    executable</em></span></p>
+                        </td><td valign="top"><p>Full path to the gpload executable on the machine
+                                in use. It is advisable to specify the gpload path in the PATH
+                                environment variable instead of selecting this option. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Select this check box to collect log data at the
+                                component level.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component is mainly
+                                used when non particular transformation is required on the data to
+                                be loaded on to the database.</p><p> This component can be
+                                used as a standalone or an output component.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e72237"></a>Related scenario</h3></div></div></div><p>For a related use case, see <a class="xref" href="tMysqlOutputBulkExec.html#Raa97924" title="Scenario: Inserting data in MySQL database">the section called &#8220;Scenario: Inserting data in MySQL
+                database&#8221;</a><span class="emphasis"><em>Scenario: Inserting data in MySQL database</em></span> of
+                <span class="bold"><strong>tMysqlOutputBulkExec</strong></span>.</p></div></div></body></html>

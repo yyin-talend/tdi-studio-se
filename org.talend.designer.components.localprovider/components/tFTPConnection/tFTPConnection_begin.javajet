@@ -1,0 +1,156 @@
+<%@ jet 
+  imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+  " 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String host = ElementParameterParser.getValue(node, "__HOST__");
+String port = ElementParameterParser.getValue(node, "__PORT__");
+String user = ElementParameterParser.getValue(node, "__USER__");
+String pass = ElementParameterParser.getValue(node, "__PASS__");
+String connectMode = ElementParameterParser.getValue(node, "__CONNECT_MODE__");
+boolean useProxy = ("true").equals(ElementParameterParser.getValue(node, "__USE_PROXY__"));
+String proxyHost = ElementParameterParser.getValue(node, "__PROXY_HOST__");
+String proxyPort = ElementParameterParser.getValue(node, "__PROXY_PORT__");
+String proxyUser = ElementParameterParser.getValue(node, "__PROXY_USERNAME__");
+String proxyPassword = ElementParameterParser.getValue(node, "__PROXY_PASSWORD__");
+boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
+String authMethod = ElementParameterParser.getValue(node, "__AUTH_METHOD__");
+String privateKey = ElementParameterParser.getValue(node, "__PRIVATEKEY__");
+String passPhrase = ElementParameterParser.getValue(node, "__PASSPHRASE__");
+boolean ftps = ("true").equals(ElementParameterParser.getValue(node, "__FTPS__"));
+String keystoreFile = ElementParameterParser.getValue(node, "__KEYSTORE_FILE__");
+String keystorePass = ElementParameterParser.getValue(node, "__KEYSTORE_PASS__");
+String sEncoding = ElementParameterParser.getValue(node, "__ENCODING__");
+String securityMode = ElementParameterParser.getValue(node, "__SECURITY_MODE__");
+
+if (useProxy) {
+%>  
+  java.util.Properties props_<%=cid%> = System.getProperties();
+  props_<%=cid%>.put("socksProxyPort", <%=proxyPort %>);
+  props_<%=cid%>.put("socksProxyHost", <%=proxyHost %>);
+  props_<%=cid%>.put("java.net.socks.username", <%=proxyUser %>);
+  props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>);
+<%
+}
+
+if (!sftp && !ftps) { // *** ftp *** //
+%>
+  com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+  ftp_<%=cid %>.setRemoteHost(<%=host %>);
+  ftp_<%=cid %>.setRemotePort(<%=port %>);
+
+  <%if (("ACTIVE").equals(connectMode)) {%>
+    ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
+  <%} else {%>
+    ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
+  <%}%>
+  ftp_<%=cid %>.setControlEncoding(<%=sEncoding%>);
+  ftp_<%=cid %>.connect();  
+  ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
+  globalMap.put("conn_<%=cid%>",ftp_<%=cid %>);
+<%
+} else if (!ftps) { // *** sftp *** //
+%>
+  class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
+
+    String passphrase_<%=cid %> = <%=passPhrase %>;
+
+    public String getPassphrase() { return passphrase_<%=cid %>; }
+
+    public String getPassword() { return null; } 
+
+    public boolean promptPassword(String arg0) { return true; } 
+
+    public boolean promptPassphrase(String arg0) { return true; } 
+
+    public boolean promptYesNo(String arg0) { return true; } 
+
+    public void showMessage(String arg0) { } 
+
+    public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
+    boolean[] echo) {
+      String[] password_<%=cid%> = {<%=pass%>};
+      return password_<%=cid%>;
+    }
+  };
+  final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo();
+  com.jcraft.jsch.JSch jsch_<%=cid%> = new com.jcraft.jsch.JSch(); 
+
+  <%if (("PUBLICKEY").equals(authMethod)){%>
+    jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
+  <%}%>
+  com.jcraft.jsch.Session session_<%=cid%> = jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>);
+
+  <%if (("PASSWORD").equals(authMethod)) {%> 
+    session_<%=cid%>.setPassword(<%=pass%>); 
+  <%}%>
+
+  session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
+  session_<%=cid%>.connect();
+  com.jcraft.jsch. Channel channel_<%=cid%> = session_<%=cid%>.openChannel("sftp"); 
+  channel_<%=cid%>.connect();
+  com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
+  c_<%=cid%>.setFilenameEncoding(<%=sEncoding%>);
+  globalMap.put("conn_<%=cid%>", c_<%=cid%>);
+<%
+} else {  // *** ftps *** //
+%>
+  class MyTrust_<%=cid%>{
+
+    private javax.net.ssl.TrustManager[] getTrustManagers() 
+      throws java.security.KeyStoreException, java.security.NoSuchAlgorithmException, 
+      java.security.cert.CertificateException, java.security.UnrecoverableKeyException,
+      java.io.FileNotFoundException, java.io.IOException{
+      java.security.KeyStore ks = java.security.KeyStore.getInstance("JKS");
+      ks.load(new java.io.FileInputStream(<%=keystoreFile%>), <%=keystorePass%>.toCharArray());
+      javax.net.ssl.TrustManagerFactory tmf = javax.net.ssl.TrustManagerFactory.getInstance(javax.net.ssl.KeyManagerFactory.getDefaultAlgorithm());
+      tmf.init(ks);
+      return tmf.getTrustManagers();
+    }
+  }
+  javax.net.ssl.SSLContext sslContext = null;
+  javax.net.ssl.TrustManager[] trustManager = null;
+  javax.net.ssl.SSLSocketFactory sslSocketFactory = null;
+  it.sauronsoftware.ftp4j.FTPClient ftp_<%=cid %> =null;
+  MyTrust_<%=cid%> myTrust_<%=cid%> = null;
+
+  try {
+    sslContext = javax.net.ssl.SSLContext.getInstance("SSL");
+    myTrust_<%=cid%> = new MyTrust_<%=cid%>();
+    trustManager = myTrust_<%=cid%>.getTrustManagers();
+    sslContext.init(null, trustManager, new java.security.SecureRandom());
+    sslSocketFactory = sslContext.getSocketFactory();
+    ftp_<%=cid %> = new it.sauronsoftware.ftp4j.FTPClient();
+    ftp_<%=cid %>.setSSLSocketFactory(sslSocketFactory);
+<%
+    if("IMPLICIT".equals(securityMode)){
+%>
+    	ftp_<%=cid %>.setSecurity(it.sauronsoftware.ftp4j.FTPClient.SECURITY_FTPS);
+<%
+    }else if("EXPLICIT".equals(securityMode)){
+%>
+    	ftp_<%=cid %>.setSecurity(it.sauronsoftware.ftp4j.FTPClient.SECURITY_FTPES);
+<%
+    }
+%>
+    ftp_<%=cid %>.connect(<%=host %>,<%=port %>);
+    ftp_<%=cid %>.login(<%=user %>, <%=pass %>);
+  } catch (java.lang.IllegalStateException e) {
+    e.printStackTrace();
+  } catch (java.io.IOException e) {
+    e.printStackTrace();
+  } catch (it.sauronsoftware.ftp4j.FTPIllegalReplyException e) {
+    e.printStackTrace();
+  } catch (it.sauronsoftware.ftp4j.FTPException e) {
+    e.printStackTrace();
+  }
+  globalMap.put("conn_<%=cid%>", ftp_<%=cid %>);
+<%
+}
+%>

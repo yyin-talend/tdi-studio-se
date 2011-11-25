@@ -1,0 +1,87 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tNormalize</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch14.html" title="Chapter&nbsp;14.&nbsp;Processing components"><link rel="prev" href="tMap.html" title="tMap"><link rel="next" href="tReplace.html" title="tReplace"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tNormalize"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tNormalize"></a>tNormalize</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tNormalize.png" width="27"></td></tr></table></div><div class="section" title="tNormalize Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e224041"></a>tNormalize Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Processing/Fields</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Normalizes the input flow following SQL standard. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tNormalize</strong></span> helps improve data
+                                quality and thus eases the data update.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. In this
+                                component, the schema is read-only.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: The schema will be
+                                created and stored locally for this component only. Related topic:
+                                see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: The schema already
+                                exists and is stored in the Repository, hence can be reused in
+                                various projects and Job designs. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Get rid of duplicated rows from output</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to deduplicate rows in the data of the
+                                output flow.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Use CSVparameters</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to include CSV specific parameters such as
+                                    <span class="bold"><strong>escape mode</strong></span> and <span class="bold"><strong>enclosure</strong></span> character.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Column to normalize</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the column from the input flow which the normalization is
+                                based on</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Item separator</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the separator which will delimits data in the input
+                                flow.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can be used as intermediate step in a data
+                                flow.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Normalizing data"><div class="titlepage"><div><div><h3 class="title"><a name="d0e224250"></a>Scenario: Normalizing data</h3></div></div></div><p>This simple scenario illustrates a Job that normalizes a list of tags for Web forum
+            topics and outputs them into a table in the standard output console (<span class="bold"><strong>Run</strong></span> tab). </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="384"><tr><td><img src="../images/Use_Case_tNormalize1.png" width="384"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tFileInputDelimited</strong></span>, <span class="bold"><strong>tNormalize</strong></span>, <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>tFileInputDelimited</strong></span> Basic settings,
+                    set the input file to be normalized.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="351"><tr><td><img src="../images/Use_Case_tNormalize2.png" width="351"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The file schema is stored in the repository for ease of use. It is made of one
+                    column, called <span class="emphasis"><em>Tags</em></span>, containing rows with one or more
+                    keywords.</p></li><li class="listitem"><p>Set the <span class="bold"><strong>Row Separator</strong></span> and the <span class="bold"><strong>Field Separator</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="477"><tr><td><img src="../images/Use_Case_tNormalize3.png" width="477"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>On the <span class="bold"><strong>tNormalize</strong></span>
+                    <span class="bold"><strong>Basic settings </strong></span>panel, define the column the
+                    normalization operation is based on. </p></li><li class="listitem"><p>In this use case, the column to normalize is <span class="emphasis"><em>Tags</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="396"><tr><td><img src="../images/Use_Case_tNormalize4.png" width="396"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The <span class="bold"><strong>Item separator</strong></span> is the comma, surrounded
+                    by double quotes (requiered in Java).</p></li><li class="listitem"><p>In the <span class="bold"><strong>tLogRow</strong></span> component, select the
+                        <span class="bold"><strong>Print values in the cells of table</strong></span> check
+                    box. </p></li><li class="listitem"><p>Save the Job and press <span class="bold"><strong>F6</strong></span> to execute
+                    it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="358"><tr><td><img src="../images/Use_Case_tNormalize5.png" width="358"></td></tr></table></div><p>The values are normalized and displayed in a table cell on the console.</p></div></div></body></html>

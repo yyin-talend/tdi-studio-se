@@ -1,0 +1,52 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tInformixRollback</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="tInformixOutputBulkExec.html" title="tInformixOutputBulkExec"><link rel="next" href="tInformixRow.html" title="tInformixRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tInformixRollback"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tInformixRollback"></a>tInformixRollback</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tInformixRollback_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tInformixRollback properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e81470"></a>tInformixRollback properties</h3></div></div></div><p>This component is closely related to <span class="bold"><strong>tInformixCommit</strong></span>
+            and <span class="bold"><strong>tInformixConnection</strong></span>. They are generally used
+            together to execute transactions.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Famille de composant</strong></span></p>
+                        </td><td valign="top">
+                            <p>Databases/Informix</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tInformixRollback</strong></span> cancels
+                                transactions in connected databases.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component prevents involuntary transaction commits. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Component list</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the <span class="bold"><strong>tInformixConnection</strong></span>
+                                component from the list if you plan to add more than one connection
+                                to the Job. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Close Connection</em></span></p>
+                        </td><td valign="top">
+                            <p>Clear this checkbox if you want to continue to use the connection
+                                once the component has completed its task.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to collect the log data at a component
+                                level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component must be used with other Informix components,
+                                particularly <span class="bold"><strong>tInformixConnection</strong></span>
+                                and <span class="bold"><strong>tInformixCommit</strong></span>. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related Scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e81612"></a>Related Scenario</h3></div></div></div><p>For a scenario in which <span class="bold"><strong>tInformixRollback</strong></span> might be
+            used, see the <span class="bold"><strong>tMysqlRollback </strong></span><a class="xref" href="tMysqlRollback.html#Raa14463" title="Scenario: Rollback from inserting data in mother/daughter tables">the section called &#8220;Scenario: Rollback from inserting data in
+                mother/daughter tables&#8221;</a>.</p></div></div></body></html>

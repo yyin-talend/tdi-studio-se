@@ -1,0 +1,116 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tEXAInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="tDBSQLRow.html" title="tDBSQLRow"><link rel="next" href="tEXAOutput.html" title="tEXAOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tEXAInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tEXAInput"></a>tEXAInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tEXAInput_icon32.png" width="27"></td></tr></table></div><div class="section" title="tEXAInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e64933"></a>tEXAInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                Family</strong></span></p>
+                        </td><td valign="top"><p>Databases/EXA </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tEXAInput</strong></span> reads databases and extracts fields using
+                                queries. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tEXAInput</strong></span> executes queries in databases according to
+                                a strict order which must correspond exactly to that defined in the
+                                schema. The list of fields retrieved is then transmitted to the
+                                following component via a Main row link.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span> or
+                                    <span class="bold"><strong>Repository</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: No
+                                properties stored centrally</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>:
+                                Select the repository file in which the properties are stored. The
+                                fields that follow are completed automatically using the data
+                                retrieved.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="18"><tr><td><img src="../images/Save_Icon.png" width="18"></td></tr></table></div>
+                        </td><td valign="top"><p>Click this icon to open a database connection
+                                wizard and store the database connection parameters you set in the
+                                component <span class="bold"><strong>Basic settings
+                                </strong></span>view.</p><p> For more information about setting up
+                                and storing database connection parameters, see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Host name</em></span></p>
+                        </td><td valign="top"><p>Database server IP address.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top"><p>Listening port number of the DB server</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema name</em></span></p>
+                        </td><td valign="top"><p>Enter the schema name.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Username</em></span> et
+                                    <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top"><p>User authentication information.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                    schema</em></span></p>
+                        </td><td valign="top"><p>A schema is a row description, i.e., it defines
+                                the number of fields to be processed and passed on to the next
+                                component. The schema is either<span class="bold"><strong>
+                                    Built-in</strong></span> or stored remotely in the <span class="bold"><strong>Repository</strong></span>.</p><p> </p>
+                            
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: The
+                                schema is created and stored locally for this component only.
+                                Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span></p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: The
+                                schema already exists and is stored in the Repository, hence can be
+                                reused. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span></p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Table Name</em></span></p>
+                        </td><td valign="top"><p>Enter the table name.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Query type</em></span> and
+                                    <span class="emphasis"><em>Query</em></span></p>
+                        </td><td valign="top"><p>Enter your database query, taking care to ensure
+                                that the order of the fields corressponds exactly to that defined in
+                                the schema.</p>
+                            
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Guess Query</em></span></p>
+                        </td><td valign="top"><p>Click this button to generate a query that
+                                corresponds to your table schema in the <span class="bold"><strong>Query</strong></span> field.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Guess schema</em></span></p>
+                        </td><td valign="top"><p>Click this button to retrieve the schema from the
+                                table.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Additional JDBC
+                                parameters</em></span></p>
+                        </td><td valign="top"><p>Specify additional connection properties for the
+                                DB connection you are creating. This option is not available if you
+                                have selected the <span class="bold"><strong>Use an existing
+                                    connection</strong></span> check box in the <span class="bold"><strong>Basic settings</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Trim all the String/Char
+                                    columns</em></span></p>
+                        </td><td valign="top"><p>Select this check box to delete the spaces at the
+                                start and end of fields in all of the columns containing
+                                strings.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Trim column</em></span></p>
+                        </td><td valign="top"><p>Deletes the spaces from the start and end of
+                                fields in the selected columns.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStat</em></span>Catcher
+                                Statistics</p>
+                        </td><td valign="top"><p>Select this check box to collect the log data and
+                                a component level.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component covers all
+                                possible SQL queries for EXA databases.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e65315"></a>Related scenarios</h3></div></div></div><p>For scenarios in which <span class="bold"><strong>tEXAInput</strong></span> might be used, see the following <span class="bold"><strong>tBIInput</strong></span> scenarios: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+                    <a class="xref" href="tDBInput.html#Raa95556" title="Scenario 1: Displaying selected data from DB table">the section called &#8220;Scenario 1: Displaying selected data from DB table&#8221;</a></p></li><li class="listitem"><p>
+                    <a class="xref" href="tDBInput.html#Raa80338" title="Scenario 2: Using StoreSQLQuery variable">the section called &#8220;Scenario 2: Using StoreSQLQuery variable&#8221;</a></p></li></ul></div></div></div></body></html>

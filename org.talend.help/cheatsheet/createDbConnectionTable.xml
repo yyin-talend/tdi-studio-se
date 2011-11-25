@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Metadata DbConnection Table">
+		   <dependency task="createDbConnection" />
+  <intro>
+    <description>This tutorial guides you through the creation of metadata DbConnection Table on the repository.</description>
+  </intro>
+  <item title="Select the DbConnection node" skip="true">
+	  <description>On Repository, select a metadata "Db Connection".</description>
+  </item>  
+  <item title="Create a Metadata Db Connection table" dialog="true">
+		  <action pluginId="org.talend.help"
+		  class="org.talend.help.cheatsheet.actions.metadata.CreateDbConnectionTableAction"
+		  param1="sampleMetadata"/>
+		  
+	  <description>
+	  	Define the schema of this metadata. If the DbConnection successful, you can select a table on the combo and use the "Retreive Schema" to win time.
+	  	<br /><br/>Click on "Finish" (or press "Enter") to save it !
+	  </description>
+	  <onCompletion>
+	  	Congratulation, you can now create metadata Db Connection Table !
+	  </onCompletion>
+  </item>
+
+</cheatsheet>

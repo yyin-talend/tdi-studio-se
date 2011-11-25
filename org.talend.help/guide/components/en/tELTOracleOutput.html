@@ -1,0 +1,206 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tELTOracleOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa48933-dup-2.html" title="Chapter&nbsp;7.&nbsp;ELT components"><link rel="prev" href="tELTOracleMap.html" title="tELTOracleMap"><link rel="next" href="tELTPostgresqlInput.html" title="tELTPostgresqlInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tELTOracleOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tELTOracleOutput"></a>tELTOracleOutput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tELTOracleOutput.png" width="27"></td></tr></table></div><div class="section" title="tELTOracleOutput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e158179"></a>tELTOracleOutput properties</h3></div></div></div><p>The three ELT Oracle components are closely related, in terms of their operating
+            conditions. These components should be used to handle Oracle DB schemas to generate
+            Insert, Update or Delete statements, including clauses, which are to be executed in the
+            DB output table defined.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>ELT/Map/Oracle</p>
+                        </td><td>&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Carries out the action on the table specified and inserts the data
+                                according to the output schema defined the ELT Mapper.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Executes the SQL Insert, Update and Delete statement to the Mysql
+                                database</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic Settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Action on data</em></span></p>
+                        </td><td valign="top">
+                            <p>On the data of the table defined, you can perform the following
+                                operation:</p>
+                            <p>
+                                <span class="bold"><strong>Insert</strong></span>: Add new entries to the
+                                table. If duplicates are found, the Job stops.</p>
+                            <p>
+                                <span class="bold"><strong>Update</strong></span>: Updates entries in the
+                                table. <span class="bold"><strong>Delete</strong></span>: Deletes the entries
+                                which correspond to the entry flow.: <span class="bold"><strong>
+                                    MERGE</strong></span>: Updates or adds data to the table.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The options available for the MERGE opera&shy;tion are different
+                                    to those available for the In&shy;sert, Update or Delete
+                                    operations</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields to be processed and passed on to the next component. The
+                                schema is either built-in or remotely stored in the
+                                Repository.</p>
+                            <p> Click <span class="bold"><strong>Edit Schema</strong></span> to modify the
+                                schema. Note that if you make the modifcation, the schema switches
+                                automatically to the <span class="bold"><strong>Built-in</strong></span>
+                                mode.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: The schema is created
+                                and stored locally for this component only. Related topic: see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                User Guide.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: The schema already
+                                exists and is stored in the Repository, hence can be reused. Related
+                                topic: see <span class="bluebold">Talend Open Studio</span>
+                                User Guide.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Where clauses for (for UPDATE and DELETE
+                                only</em></span>)</p>
+                        </td><td valign="top">
+                            <p>Enter a clause to filter the data to be updated or deleted during
+                                the update or delete operations.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Use Merge Update</em></span> (for <span class="bold"><strong>MERGE</strong></span>)</p>
+                        </td><td valign="top">
+                            <p>Select this check box to update the data in the output
+                                table.</p>
+                            <p>
+                                <span class="bold"><strong>Column</strong></span>&nbsp;: Lists the columns in the
+                                entry flow.</p>
+                            <p>
+                                <span class="bold"><strong>Update</strong></span>&nbsp;: Select the check box which
+                                corresponds to the name of the column you want to update.</p>
+                            <p>
+                                <span class="bold"><strong>Use Merge Update Where Clause</strong></span>&nbsp;:
+                                Select this check box and enter the WHERE clause required to filter
+                                the data to be updated, if necessary.</p>
+                            <p>
+                                <span class="bold"><strong>Use Merge Update Delete Clause</strong></span>:
+                                Select this check box and enter the WHERE clause required to filter
+                                the data to be deleted and updated, if necessary.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Use Merge Insert</em></span> (for <span class="bold"><strong>MERGE</strong></span>)</p>
+                        </td><td valign="top">
+                            <p>Select this check box to insert the data in the table.</p>
+                            <p>
+                                <span class="bold"><strong>Column</strong></span>: Lists the entry flow
+                                columns.</p>
+                            <p>
+                                <span class="bold"><strong>Check All</strong></span>: Select the check box
+                                corresponding to the name of the column you want to insert.</p>
+                            <p>
+                                <span class="bold"><strong>Use Merge Update Where Clause</strong></span>:
+                                Select this check box and enter the WHERE clause required to filter
+                                the data to be inserted.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Default Table Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter a default name for the table, between double quotation
+                                marks.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Default Schema Name</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter a name for the default Oracle schema, between double
+                                quotation marks.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use different table name</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to define a different output table name,
+                                between double quotation marks, in the <span class="bold"><strong>Table
+                                    name</strong></span> field which appears.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use Hint Options</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to activate the hint configuration area when
+                                you want to use a hint to optimize a query&#8217;s execution. In this
+                                area, parameters are:</p>
+                            <p> - <span class="bold"><strong>HINT</strong></span>: specify the hint you
+                                need, using the syntax <code class="code">/*+ */</code>. </p>
+                            <p>- <span class="bold"><strong>POSITION</strong></span>: specify where you put
+                                the hint in a SQL statement.</p>
+                            <p> - <span class="bold"><strong>SQL STMT</strong></span>: select the SQL
+                                statement you need to use.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tELTOracleOutput</strong></span> is to be used
+                                along with the <span class="bold"><strong>tELTOracleInput</strong></span> and
+                                    <span class="bold"><strong>tELTOracleMap</strong></span> components. Note
+                                that the Output link to be used with these components must
+                                correspond strictly to the syntax of the table name. </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Note that the ELT components do not handle actual data flow
+                                    but only schema information.</p></td></tr></table></div>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Using the Oracle MERGE function to update and add data simultaneously"><div class="titlepage"><div><div><h3 class="title"><a name="d0e158564"></a>Scenario: Using the Oracle MERGE function to update and add data
+            simultaneously</h3></div></div></div><p>This scenario describes a Job that allows you to add new customer information and
+            update existing customer information in a database table using the Oracle MERGE command. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="463"><tr><td><img src="../images/Use_Case_tELTOracleOutput1.png" width="463"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tELTOracleInput</strong></span>, <span class="bold"><strong>tELTOracleMap</strong></span>,
+                    and <span class="bold"><strong>tELTOracleOutput</strong></span>, and label them to
+                    identify their functionality.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tELTOracleInput</strong></span> component to
+                    display its <span class="bold"><strong>Basic settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504"><tr><td><img src="../images/Use_Case_tELTOracleOutput2.png" width="504"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select <span class="bold"><strong>Repository</strong></span> from the <span class="bold"><strong>Schema</strong></span> list, click the three dot button preceding
+                        <span class="bold"><strong>Edit schema</strong></span>, and select your DB connection
+                    and the desired schema from the <span class="bold"><strong>[Repository
+                        Content]</strong></span> dialog box. </p><p> The selected schema name appears in the <span class="bold"><strong>Default Table
+                        Name</strong></span> field automatically.</p><p> In this use case, the DB connection is <span class="emphasis"><em>Talend_Oracle</em></span> and the schema is
+                        <span class="emphasis"><em>new_customers</em></span>.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>In this use case, the input schema is stored in the <span class="bold"><strong>Metadata</strong></span> node of the <span class="bold"><strong>Repository</strong></span>
+                tree view for easy retrieval. For further information concerning metadata, see
+                    <span class="bluebold">Talend Open Studio</span> User Guide.</p><p> You can also select the input component by dropping the relevant schema from the
+                    <span class="bold"><strong>Metadata</strong></span> area onto the design workspace and
+                double-clicking <span class="bold"><strong>tELTOracleInput</strong></span> from the <span class="bold"><strong>[Components]</strong></span> dialog box. Doing so allows you to skip the
+                steps of labeling the input component and defining its schema manually. </p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect the <span class="bold"><strong>tELTOracleInput</strong></span> component to the
+                        <span class="bold"><strong>tELTOraclelMap</strong></span> component using the link
+                    named strictly after the actual DB table name,
+                        <span class="emphasis"><em>new_customers</em></span> in this use case.</p></li><li class="listitem"><p>Connect the <span class="bold"><strong>tELTOraclelMap</strong></span> component to the
+                        <span class="bold"><strong>tELTOracleOutput</strong></span> component and name the
+                    link <span class="emphasis"><em>customers_merge</em></span>, which is the name of the database
+                    table you will save the merge result to.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>tELTOracleMap</strong></span> component to display
+                    its <span class="bold"><strong>Basic settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="50%"><tr><td><img src="../images/use_case-tetloracleoutput3half.png" width="100%"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select <span class="bold"><strong>Repository</strong></span> from the <span class="bold"><strong>Property Type</strong></span> list, and select the same DB connection
+                    that you use for the input components. </p><p> All the database details are automatically retrieved.</p></li><li class="listitem"><p>Leave the other settings as they are.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tELTOracleMap</strong></span> component to
+                    launch the ELT Map editor to set up the data transformation flow. </p></li><li class="listitem"><p>Display the input table by clicking the green plus button at the upper left
+                    corner of the ELT Map editor and selecting the relevant table name in the
+                        <span class="bold"><strong>[Add a new alias]</strong></span> dialog box. </p><p> In this use case, the only input table is <span class="emphasis"><em>new_customers</em></span>.
+                </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="454"><tr><td><img src="../images/UseCase_tetloracleoutput4.png" width="454"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select all the columns in the input table and drop them to the output table. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="530"><tr><td><img src="../images/UseCase_teltoracleoutput5_top.png" width="530"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the <span class="bold"><strong>Generated SQL Select query tab</strong></span> to
+                    display the query statement to be executed.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="530"><tr><td><img src="../images/Use_Case_tELTOracleOutput5_query.png" width="530"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate the ELT Map settings and
+                    close the ELT Map editor.</p></li><li class="listitem"><p>In the design workspace, double-click the <span class="bold"><strong>tELTOracleOutput</strong></span> component to display its <span class="bold"><strong>Basic settings</strong></span> view.</p></li><li class="listitem"><p>From the <span class="bold"><strong>Action on data</strong></span> list, select
+                        <span class="bold"><strong>MERGE</strong></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Sync columns</strong></span> button to retrieve the
+                    schema from the preceding component.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Use Merge Update</strong></span> check box to
+                    update the data using Oracle&#8217;s MERGE function.</p></li><li class="listitem"><p>In the table that appears, select the check boxes for the columns you want to
+                    update. </p><p> In this use case, we want to update all the data according to the customer
+                    ID. Therefore, select all the check boxes except the one for the
+                        <span class="emphasis"><em>ID</em></span> column.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="473"><tr><td><img src="../images/UseCase_teltoracleoutput6_top.png" width="473"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>The columns defined as the primary key CANNOT and MUST NOT be made
+                    subject to updates.</em></span></p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the <span class="bold"><strong>Use Merge Insert</strong></span> check box to
+                    insert new data while updating the existing data by leveraging Oracle&#8217;s MERGE
+                    function.</p></li><li class="listitem"><p>In the table that appears, select the check boxes for the columns into which
+                    you want to insert new date. </p><p> In this use case, we want to insert all the new customer data. Therefore,
+                    select all the check boxes by clicking the <span class="bold"><strong>Check
+                        All</strong></span> check box.</p></li><li class="listitem"><p>Fill the <span class="bold"><strong>Default Table Name</strong></span> field with the
+                    name of the target table already existing in your database. In this example,
+                    fill in <span class="emphasis"><em>customers_merge</em></span>. </p></li><li class="listitem"><p>Leave the other parameters as they are.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="473"><tr><td><img src="../images/UseCase_teltoracleoutput6_bot.png" width="473"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to run it.</p><p> The data is updated and inserted in the database. The query used is displayed
+                    on the console.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="490"><tr><td><img src="../images/Use_Case_tELTOracleOutput7.png" width="490"></td></tr></table></div></div></div></body></html>

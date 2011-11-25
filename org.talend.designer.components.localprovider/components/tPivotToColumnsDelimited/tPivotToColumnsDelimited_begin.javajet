@@ -1,0 +1,166 @@
+<%@ jet 
+imports="
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.ElementParameterParser  
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.MetadataTalendType
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType 
+    org.talend.core.model.metadata.MappingTypeRetriever
+    org.talend.core.model.metadata.MetadataTalendType
+    java.util.List
+    java.util.ArrayList
+    java.util.Map
+    java.util.HashMap
+    java.util.LinkedList
+"
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+
+        String filename = ElementParameterParser.getValue(node,"__FILENAME__");
+
+        String rowSeparator = ElementParameterParser.getValue(node,"__ROWSEPARATOR__");
+
+        boolean csvOption = ("true").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"));
+        
+        String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
+    	
+    	String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
+    	
+    	if(("'").equals(escapeChar)) escapeChar = "\\'";
+        
+        String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
+    	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
+    	if ("".equals(textEnclosure)) textEnclosure = "\0";
+    	if(("'").equals(textEnclosure)) textEnclosure = "\\'";
+        
+        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+        
+        String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
+        
+        String delim = delim1.substring(1,delim1.length()-1);
+        
+        if(("'").equals(delim)) delim = "\\'";
+        
+            delim = delim1.substring(1,delim1.length()-1);
+
+        int column_number = 0;
+        
+        List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+        
+        List<IMetadataColumn> columnList = getColumnList(node);
+%>
+
+int nb_line_<%=cid%> = 0;
+
+String fileName_<%=cid%> = (new java.io.File(<%=filename%>)).getAbsolutePath().replace("\\","/");
+String fullName_<%=cid%> = null;
+String extension_<%=cid%> = null;
+String directory_<%=cid%> = null;
+if((fileName_<%=cid%>.indexOf("/") != -1)) {
+    if(fileName_<%=cid%>.lastIndexOf(".") < fileName_<%=cid%>.lastIndexOf("/")) {
+        fullName_<%=cid%> = fileName_<%=cid%>;
+        extension_<%=cid%> = "";
+    } else {
+        fullName_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("."));
+        extension_<%=cid%> = fileName_<%=cid%>.substring(fileName_<%=cid%>.lastIndexOf("."));
+    }           
+    directory_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("/"));            
+} else {
+    if(fileName_<%=cid%>.lastIndexOf(".") != -1) {
+        fullName_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("."));
+        extension_<%=cid%> = fileName_<%=cid%>.substring(fileName_<%=cid%>.lastIndexOf("."));
+    } else {
+        fullName_<%=cid%> = fileName_<%=cid%>;
+        extension_<%=cid%> = "";
+    }
+    directory_<%=cid%> = "";
+}
+<%if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){%>
+	 //create directory only if not exists
+	if(directory_<%=cid%> != null && directory_<%=cid%>.trim().length() != 0) {
+	    java.io.File dir_<%=cid%> = new java.io.File(directory_<%=cid%>);
+	    if(!dir_<%=cid%>.exists()) {
+		dir_<%=cid%>.mkdirs();
+	    }
+	}
+<%
+  }
+
+  if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) { %>
+    
+    java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+            new java.io.FileOutputStream(fileName_<%=cid%>, false),<%=encoding%>));
+
+<%}else{%>
+    
+    com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+            new java.io.FileOutputStream(fileName_<%=cid%>, false), <%=encoding%>)), '<%=delim%>');  
+    
+<%              if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){%>
+    CsvWriter<%=cid %>.setRecordDelimiter('<%=rowSeparator.substring(1,rowSeparator.length()-1)  %>');
+<%              }
+%>
+    CsvWriter<%=cid %>.setTextQualifier('<%=textEnclosure %>');                
+
+<%
+if(("\\\\").equals(escapeChar)){
+%>
+    CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);
+<%
+}else if(escapeChar.equals(textEnclosure)){
+%>
+    CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);
+<%
+}else{
+    
+}
+%>    
+	CsvWriter<%=cid %>.setForceQualifier(true);   
+
+
+<%}%>
+
+
+java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
+
+boolean pivot_Exists<%=cid%> = false;
+
+StringBuilder pivot_Key<%=cid%> = new StringBuilder();
+
+String pivot_Keys<%=cid%> = new String("");
+
+String[] pivot_Keys_Split<%=cid%> = null;
+
+boolean group_Exists<%=cid%> = false;
+
+StringBuilder group_Key<%=cid%> = new StringBuilder();
+
+String gKvalue<%=cid%> = new String("");
+
+String group_Keys<%=cid%> = new String("");
+
+String[] group_Keys_Split<%=cid%> = null;
+
+StringBuilder aggValues<%=cid%> = new StringBuilder();
+
+java.util.Map<String,String> aggregation<%=cid%> = new java.util.HashMap<String,String>();
+
+<%
+    }
+}
+%>

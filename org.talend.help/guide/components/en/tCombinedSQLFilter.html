@@ -1,0 +1,143 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tCombinedSQLFilter</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa48933-dup-2.html" title="Chapter&nbsp;7.&nbsp;ELT components"><link rel="prev" href="tCombinedSQLAggregate.html" title="tCombinedSQLAggregate"><link rel="next" href="tCombinedSQLInput.html" title="tCombinedSQLInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tCombinedSQLFilter"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tCombinedSQLFilter"></a>tCombinedSQLFilter</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tCombinedSQLFilter_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tCombinedSQLFilter Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e153006"></a>tCombinedSQLFilter Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Component
+                                                  family</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>ELT/CombinedSQL</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="bold"><strong>tCombinedSQLFilter
+                                                  </strong></span>allows you to alter the schema of a
+                                                  source table through column name mapping and to
+                                                  define a row filter on that table. Therefore, it
+                                                  can be used to filter columns and rows at the same
+                                                  time. This component has real-time capabilities
+                                                  since it runs the data filtering on the DBMS
+                                                  itself.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Helps to filter data by reorganizing,
+                                                  deleting or adding columns based on the source
+                                                  table and to filter the given data source using
+                                                  the filter conditions.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>A schema is a row description, i.e., it
+                                                  defines the number of fields that will be
+                                                  processed and passed on to the next component. The
+                                                  schema is either built-in or remote in the
+                                                  Repository. </p>
+                                                  <p> Click <span class="bold"><strong>Edit Schema
+                                                  </strong></span>to make changes to the schema. Note
+                                                  that if you make changes, the schema automatically
+                                                  becomes built-in.</p>
+                                                  <p> Click <span class="bold"><strong>Sync
+                                                  columns</strong></span> to retrieve the schema from the
+                                                  previous component connected in the Job.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Built-in</strong></span>:
+                                                  You create and store the schema locally for this
+                                                  component only. Related topic: see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Repository</strong></span>:
+                                                  You have already created the schema and stored it
+                                                  in the Repository. You can reuse it in various
+                                                  projects and Jobs. Related topic: see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Logical operator between
+                                                  conditions</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select the logical operator between the
+                                                  filter conditions defined in the <span class="bold"><strong>Conditions</strong></span> panel.</p>
+                                                  <p> Two operators are available: <span class="bold"><strong>Or</strong></span>, <span class="bold"><strong>And</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Conditions</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select the type of WHERE clause along with
+                                                  the values and the columns to use for row
+                                                  filtering.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Input
+                                                  Column</strong></span>: Select the column to filter in
+                                                  the list.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Operator</strong></span>:
+                                                  Select the type of the WHERE clause: <span class="bold"><strong>=</strong></span>, <span class="bold"><strong>&lt; &gt;</strong></span>,<span class="bold"><strong>
+                                                  &gt;</strong></span>, <span class="bold"><strong>&lt;</strong></span>, <span class="bold"><strong>&gt;=</strong></span>, <span class="bold"><strong>&lt;=</strong></span>, <span class="bold"><strong>LIKE</strong></span>, <span class="bold"><strong>IN</strong></span>, <span class="bold"><strong>NOT
+                                                  IN</strong></span>, and <span class="bold"><strong>EXIST
+                                                  IN</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Values</strong></span>:
+                                                  Type in the values to be used in the WHERE
+                                                  clause.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Negate</strong></span>:
+                                                  Select this check box to enable the condition that
+                                                  is opposite to the current setting.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Use custom SQL</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Customize a WHERE clause by selecting this
+                                                  check box and editing in the <span class="bold"><strong>SQL Condition</strong></span> field.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Advanced
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>tStatCatcher
+                                                  Statistics</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to gather the Job
+                                                  processing metadata at a Job level as well as at
+                                                  each component level.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component is an intermediary component.
+                                                  The use of the corresponding connection and commit
+                                                  components is recommended when using this
+                                                  component to allow a unique connection to be open
+                                                  and then closed during the Job execution.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>n/a</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Related Scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e153341"></a>Related Scenario</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tSQLTemplateAggregate.html#Raa22184" title="Scenario: Filtering and aggregating table columns directly on the DBMS">the section called &#8220;Scenario: Filtering and aggregating table columns directly on the
+                        DBMS&#8221;</a>.</p></div></div></body></html>

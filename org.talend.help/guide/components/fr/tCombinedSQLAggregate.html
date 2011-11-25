@@ -1,0 +1,181 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tCombinedSQLAggregate</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa48933.html" title="Chapitre&nbsp;7.&nbsp;Composants ELT"><link rel="prev" href="Raa48933.html" title="Chapitre&nbsp;7.&nbsp;Composants ELT"><link rel="next" href="tCombinedSQLFilter.html" title="tCombinedSQLFilter"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tCombinedSQLAggregate"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tCombinedSQLAggregate"></a>tCombinedSQLAggregate</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tCombinedSQLAggregate_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa3995504"></a><div class="section" title="Propri&eacute;t&eacute;s du tCombinedSQLAggregate"><div class="titlepage"><div><div><h3 class="title"><a name="d0e160081"></a>Propri&eacute;t&eacute;s du tCombinedSQLAggregate</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>ELT/CombinedSQL</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tCombinedSQLAggregate</strong></span> collecte les
+                                valeurs de donn&eacute;es d&#8217;une ou plusieurs colonnes d&#8217;une table dans des
+                                buts statistiques. Ce composant ex&eacute;cute en temps r&eacute;el des
+                                transformations de donn&eacute;es dans le SGBD lui-m&ecirc;me.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant fournit un
+                                ensemble de matrices bas&eacute;es sur des valeurs ou sur des calculs.
+                            </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository.</p><p>Cliquez sur <span class="bold"><strong>Edit
+                                    Schema</strong></span> pour modifier le sch&eacute;ma. Notez que si vous
+                                modifiez le sch&eacute;ma, il devient automatiquement built-in.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le
+                                sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilis&eacute; dans divers projets et Jobs. Voir &eacute;galement&nbsp;le
+                                    <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Group by</em></span></p>
+                        </td><td valign="top"><p>D&eacute;finit les ensembles d&#8217;agr&eacute;gation, dont les
+                                valeurs sont utilis&eacute;es pour les calculs.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Output Column&nbsp;</strong></span>:
+                                S&eacute;lectionnez le libell&eacute; de colonne dans la liste fournie, bas&eacute;e sur
+                                la structure de sch&eacute;ma que vous avez d&eacute;finie. Vous pouvez ajouter
+                                autant de colonnes de sortie que vous le souhaitez afin d&#8217;affiner
+                                les agr&eacute;gations. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Input Column</strong></span>&nbsp;:
+                                S&eacute;lectionnez les libell&eacute;s des colonnes d&#8217;entr&eacute;e afin de les faire
+                                correspondre au contenu attendu des colonnes de sortie, dans le cas
+                                o&ugrave; vous souhaitez que les libell&eacute;s du sch&eacute;ma de sortie soient
+                                diff&eacute;rents du sch&eacute;ma d&#8217;entr&eacute;e.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Operations</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez le type d&#8217;op&eacute;ration et la valeur &agrave;
+                                utiliser pour le calcul et le champ de sortie.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Output Column&nbsp;</strong></span>:
+                                S&eacute;lectionnez le champ de destination dans la liste.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Function</strong></span>&nbsp;:
+                                S&eacute;lectionnez l&#8217;une des op&eacute;rations suivantes &agrave; effectuer sur les
+                                donn&eacute;es&nbsp;: <span class="bold"><strong>count</strong></span>, <span class="bold"><strong>min</strong></span>, <span class="bold"><strong>max</strong></span>, <span class="bold"><strong>avg</strong></span>, <span class="bold"><strong>sum</strong></span>, <span class="bold"><strong>first</strong></span>, <span class="bold"><strong>last</strong></span>,
+                                    <span class="bold"><strong>distinct</strong></span> et <span class="bold"><strong>count</strong></span><span class="bold"><strong>
+                                    (distinct)</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Input column</strong></span>&nbsp;:
+                                S&eacute;lectionnez la colonne d&#8217;entr&eacute;e &agrave; partir de laquelle vous souhaitez
+                                collecter les valeurs &agrave; agr&eacute;ger.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du Job ainsi qu&#8217;au niveau de chaque composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant est utilis&eacute;
+                                en tant que composant interm&eacute;diaire avec d&#8217;autres composants de
+                                bases de donn&eacute;es, en particulier les composants de connexion et de
+                                commit.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Filtrer et agr&eacute;ger des colonnes d&#8217;une table directement sur le SGBD"><div class="titlepage"><div><div><h3 class="title"><a name="d0e160358"></a>Sc&eacute;nario&nbsp;: Filtrer et agr&eacute;ger des colonnes d&#8217;une table directement sur le
+            SGBD</h3></div></div></div><p>Le sc&eacute;nario suivant cr&eacute;e un Job ouvrant une connexion &agrave; une base de donn&eacute;es MySQL
+            et&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>instancie en partie les sch&eacute;mas d&#8217;une table de base de donn&eacute;es (pour filtrer
+                    les colonnes),</p></li><li class="listitem"><p>filtre deux colonnes dans la m&ecirc;me table afin de ne garder que les donn&eacute;es
+                    correspondant aux deux conditions de filtre,</p></li><li class="listitem"><p>collecte les donn&eacute;es des colonnes filtr&eacute;es, regroup&eacute;es par valeur(s)
+                    sp&eacute;cifique(s) et &eacute;crit les donn&eacute;es agr&eacute;g&eacute;es dans une table cible de base de
+                    donn&eacute;es.</p></li></ul></div><p>Pour filtrer et agr&eacute;ger les colonnes d&#8217;une table de base de donn&eacute;es&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;posez les composants suivants de la <span class="bold"><strong>Palette</strong></span>
+                    dans l&#8217;espace de mod&eacute;lisation graphique&nbsp;: <span class="bold"><strong>tMysqlConnection</strong></span>, <span class="bold"><strong>tCombinedSQLInput</strong></span>, <span class="bold"><strong>tCombinedSQLFilter</strong></span>, <span class="bold"><strong>tCombinedSQLAggregate</strong></span>, <span class="bold"><strong>tCombinedSQLOutput</strong></span> et <span class="bold"><strong>tMysqlCommit</strong></span>.</p></li><li class="listitem"><p>Connectez les composants <span class="bold"><strong>tMysqlConnection</strong></span>,
+                        <span class="bold"><strong>tCombinedSQLInput</strong></span> et <span class="bold"><strong>tMysqlCommit</strong></span> &agrave; l&#8217;aide de liens <span class="bold"><strong>OnSubjobOk</strong></span>.</p></li><li class="listitem"><p>Connectez les composants <span class="bold"><strong>tCombinedSQLInput</strong></span>,
+                        <span class="bold"><strong>tCombinedSQLFilter</strong></span>, <span class="bold"><strong>tCombinedSQLAggregate</strong></span> et <span class="bold"><strong>tCombinedSQLOutput </strong></span>&agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Combine</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="510"><tr><td><img src="../images/Use_Case_tCombinedSQLAggregate_1.png" width="510"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le composant
+                        <span class="bold"><strong>tMysqlConnection</strong></span> pour afficher sa vue
+                        <span class="bold"><strong>Component</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s de
+                    base.</p></li><li class="listitem"><p>Dans la vue <span class="bold"><strong>Basic settings</strong></span>, configurez
+                    manuellement les informations de connexion &agrave; la base de donn&eacute;es ou s&eacute;lectionnez
+                        <span class="bold"><strong>Repository</strong></span> dans la liste <span class="bold"><strong>Property Type</strong></span> si votre connexion &agrave; la base de donn&eacute;es
+                    a d&eacute;j&agrave; &eacute;t&eacute; configur&eacute;e et stock&eacute;e sous le n&#339;ud <span class="bold"><strong>Metadata</strong></span> de la vue <span class="bold"><strong>Repository</strong></span>.
+                </p></li></ul></div><p>Pour plus d&#8217;informations concernant le stockage des m&eacute;tadonn&eacute;es dans le <span class="bold"><strong>Repository</strong></span>, consultez&nbsp;le <span class="bold"><strong>Guide
+                utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="466"><tr><td><img src="../images/Use_Case_tCombinedSQLAggregate_2.png" width="466"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le composant
+                        <span class="bold"><strong>tCombinedSQLInput</strong></span> pour afficher sa vue
+                        <span class="bold"><strong>Component</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s de
+                    base.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="405"><tr><td><img src="../images/Use_Case_tCombinedSQLAggregate_3.png" width="405"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Table</strong></span>, saisissez le nom de la
+                    table source puis cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave;
+                    c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit schema</strong></span> afin de d&eacute;finir la
+                    structure des donn&eacute;es.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le sch&eacute;ma d&eacute;fini dans le composant <span class="bold"><strong>tCombinedSQLInput</strong></span> peut &ecirc;tre diff&eacute;rent de celui de la table source,
+                puisque vous pouvez instancier uniquement les colonnes souhait&eacute;es de la table
+                source. Le <span class="bold"><strong>tCombinedSQLInput</strong></span><span class="bold"><strong> </strong></span>joue &eacute;galement un r&ocirc;le de filtre des colonnes.</p></td></tr></table></div><p>Dans ce sc&eacute;nario, la table de la base de donn&eacute;es source contient sept
+                colonnes&nbsp;:&nbsp;<span class="emphasis"><em>id, first_name, last_name, city, state, date_of_birth,
+            </em></span>ainsi que&nbsp;<span class="emphasis"><em>salary</em></span> et le composant <span class="bold"><strong>tCombinedSQLInput</strong></span> instancie uniquement les quatre colonnes n&eacute;cessaires &agrave;
+            l&#8217;agr&eacute;gation&nbsp;: <span class="emphasis"><em>id, state, date_of_birth, </em></span>et&nbsp;<span class="emphasis"><em>salary
+            </em></span>de la table source.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="457"><tr><td><img src="../images/Use_Case_tCombinedSQLAggregate_8.png" width="457"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le composant
+                        <span class="bold"><strong>tCombinedSQLFilter</strong></span> afin d&#8217;afficher sa vue
+                        <span class="bold"><strong>Component</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s de
+                    base.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="499"><tr><td><img src="../images/Use_Case_tCombinedSQLAggregate_4.png" width="499"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> pour
+                    r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent, ou configurez manuellement le sch&eacute;ma
+                    en s&eacute;lectionnant <span class="bold"><strong>Built-in</strong></span> dans la liste
+                        <span class="bold"><strong>Schema</strong></span> et en cliquant sur le bouton
+                        <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit schema</strong></span>.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsque vous d&eacute;finissez la structure des donn&eacute;es du composant <span class="bold"><strong>tCombinedSQLFilter</strong></span>, le nom des colonnes appara&icirc;t
+                automatiquement dans la liste <span class="bold"><strong>Input column</strong></span> dans le
+                tableau <span class="bold"><strong>Conditions</strong></span>.</p></td></tr></table></div><p>Dans ce sc&eacute;nario, le composant <span class="bold"><strong>tCombinedSQLFilter</strong></span>
+            instancie quatre colonnes&nbsp;: <span class="emphasis"><em>id, state, date_of_birth,
+                </em></span>et&nbsp;<span class="emphasis"><em>salary</em></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le tableau <span class="bold"><strong>Conditions</strong></span>, configurez les
+                    param&egrave;tres d&#8217;entr&eacute;e, les op&eacute;rateurs et les valeurs attendues pour extraire les
+                    enregistrements correspondant aux crit&egrave;res sp&eacute;cifi&eacute;s.</p></li></ul></div><p>Dans ce sc&eacute;nario, le composant <span class="bold"><strong>tCombinedSQLFilter
+            </strong></span>filtre les colonnes&nbsp;<span class="emphasis"><em>state
+                </em></span>et&nbsp;<span class="emphasis"><em>date_of_birth</em></span> dans la table source afin
+            d&#8217;extraire uniquement les employ&eacute;s n&eacute;s apr&egrave;s le&nbsp;19 octobre&nbsp;1960, habitant dans les
+                Etats&nbsp;<span class="emphasis"><em>Utah</em></span>,&nbsp;<span class="emphasis"><em>Ohio</em></span>
+                et&nbsp;<span class="emphasis"><em>Iowa</em></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez <span class="bold"><strong>And</strong></span> dans la liste <span class="bold"><strong>Logical operator between conditions</strong></span> afin d&#8217;appliquer
+                    les deux conditions &agrave; la fois. Vous pouvez &eacute;galement personnaliser les
+                    conditions en cochant la case <span class="bold"><strong>Use custom SQL</strong></span> et
+                    en &eacute;ditant les conditions dans le champ de texte.</p></li><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le composant
+                        <span class="bold"><strong>tCombinedSQLAggregate</strong></span> afin d&#8217;afficher sa
+                    vue <span class="bold"><strong>Component</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s de
+                    base.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> pour
+                    r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent, ou configurez manuellement le sch&eacute;ma
+                    en s&eacute;lectionnant <span class="bold"><strong>Built-in</strong></span> dans la liste
+                        <span class="bold"><strong>Schema</strong></span> et en cliquant sur le bouton
+                        <span class="bold"><strong>[...]</strong></span>.</p></li></ul></div><p>Le composant<span class="bold"><strong> tCombinedSQLAggregate</strong></span> instancie quatre
+            colonnes&nbsp;: <span class="emphasis"><em>id, state, date_of_birth,
+            </em></span>et&nbsp;<span class="emphasis"><em>salary</em></span>, provenant du composant pr&eacute;c&eacute;dent. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="514"><tr><td><img src="../images/Use_Case_tCombinedSQLAggregate_5.png" width="514"></td></tr></table></div><p>Le tableau <span class="bold"><strong>Group by</strong></span> vous permet de d&eacute;finir les
+            ensembles de donn&eacute;es &agrave; traiter &agrave; partir d&#8217;une colonne
+                d&eacute;finie,&nbsp;<span class="emphasis"><em>State</em></span> dans cet exemple.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le tableau <span class="bold"><strong>Group by</strong></span>, cliquez sur le
+                    bouton <span class="bold"><strong>[+]</strong></span> pour ajouter une ligne.</p></li><li class="listitem"><p>Dans la liste d&eacute;roulante <span class="bold"><strong>Output column</strong></span>,
+                        s&eacute;lectionnez&nbsp;<span class="emphasis"><em>State</em></span>. Cette colonne sera utilis&eacute;e pour
+                    stocker les donn&eacute;es filtr&eacute;es de la colonne&nbsp;<span class="emphasis"><em>State</em></span>.</p></li></ul></div><p>Le tableau <span class="bold"><strong>Operations</strong></span> vous permet de configurer le
+            type d&#8217;agr&eacute;gation &agrave; effectuer. La liste disponible dans la colonne <span class="bold"><strong>Output column</strong></span> d&eacute;pend du sch&eacute;ma que vous souhaitez &eacute;crire en sortie (via
+            le composant <span class="bold"><strong>tCombinedSQLOutput</strong></span>). Dans ce sc&eacute;nario, le
+            but est de regrouper les employ&eacute;s selon l&#8217;Etat dans lequel il vivent, de calculer le
+            nombre d&#8217;employ&eacute;s par Etat, les salaires moyen/minimum/maximum ainsi que de retourner la
+            date de naissance de l&#8217;employ&eacute; le plus &acirc;g&eacute; et de l&#8217;employ&eacute; de plus jeune de chaque
+            &eacute;tat.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le tableau <span class="bold"><strong>Operations</strong></span>, cliquez sur le
+                    bouton <span class="bold"><strong>[+]</strong></span> pour ajouter une ou plusieurs
+                    ligne(s) puis cliquez dans la liste <span class="bold"><strong>Output
+                        column</strong></span> afin de s&eacute;lectionner la colonne de sortie qui contiendra
+                    les donn&eacute;es calcul&eacute;es. </p></li><li class="listitem"><p>Cliquez dans la ligne <span class="bold"><strong>Function</strong></span> et
+                    s&eacute;lectionnez l&#8217;op&eacute;ration &agrave; effectuer.</p></li><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le <span class="bold"><strong>tCombinedSQLOutput</strong></span> afin d&#8217;afficher sa vue <span class="bold"><strong>Component</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s de base.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="478"><tr><td><img src="../images/Use_Case_tCombinedSQLAggregate_6.png" width="478"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="bold"><strong>Database type</strong></span>, s&eacute;lectionnez la
+                    base de donn&eacute;es correspondante.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Component List</strong></span>, s&eacute;lectionnez le
+                    composant de connexion correspondant si plus d&#8217;un composant de connexion est
+                    utilis&eacute;.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Table</strong></span>, saisissez le nom de la
+                    table cible qui stockera les r&eacute;sultats agr&eacute;g&eacute;s.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Dans cet exemple, il n&#8217;est pas n&eacute;cessaire de renseigner le champ <span class="bold"><strong>Schema</strong></span>, puisque la base de donn&eacute;es utilis&eacute;e est
+                Oracle.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+                        <span class="bold"><strong>Edit schema</strong></span> pour d&eacute;finir la structure des
+                    donn&eacute;es de la table cible.</p></li></ul></div><p>Dans ce sc&eacute;nario, le composant <span class="bold"><strong>tCombinedSQLOutput
+            </strong></span>instancie sept colonnes provenant du composant pr&eacute;c&eacute;dent dans le Job
+                (<span class="bold"><strong>tCombinedSQLAggregate</strong></span>)&nbsp;: <span class="emphasis"><em>state,
+                empl_count, avg_salary, min_salary, max_salary, oldest_empl
+                </em></span>et&nbsp;<span class="emphasis"><em>youngest_empl</em></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le <span class="bold"><strong>tCombinedSQLCommit</strong></span> afin d&#8217;afficher sa vue <span class="bold"><strong>Component</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s de base.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Component list</strong></span>, s&eacute;lectionnez le
+                    composant de connexion &agrave; la base de donn&eacute;es correspondant si plusieurs ont &eacute;t&eacute;
+                    utilis&eacute;s.</p></li><li class="listitem"><p>Sauvegardez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><p>Des lignes sont ins&eacute;r&eacute;es dans une table compos&eacute;e de sept
+                colonnes,&nbsp;<span class="emphasis"><em>empl_by_state</em></span>, dans la base de donn&eacute;es. La table
+            affiche, par Etat d&eacute;fini, le nombre d&#8217;employ&eacute;s, les salaires moyen/minimum/maximum et
+            retourne la date de naissance de l&#8217;employ&eacute; le plus &acirc;g&eacute; et de l&#8217;employ&eacute; le plus jeune de
+            chaque &eacute;tat.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="437"><tr><td><img src="../images/Use_Case_tCombinedSQLAggregate_7.png" width="437"></td></tr></table></div></div></div></body></html>

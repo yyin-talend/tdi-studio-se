@@ -1,0 +1,342 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+	"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();	
+
+	String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
+	String zipFile = ElementParameterParser.getValue(node, "__ZIPFILE__");
+	boolean rootName = ("true").equals(ElementParameterParser.getValue(node, "__ROOTNAME__"));
+	boolean extractPath = ("true").equals(ElementParameterParser.getValue(node, "__EXTRACTPATH__"));
+	
+	boolean isArchiveValid = ("true").equals(ElementParameterParser.getValue(node, "__INTEGRITY__"));
+	boolean isPasswordNeeded = ("true").equals(ElementParameterParser.getValue(node, "__CHECKPASSWORD__"));
+	boolean needPrintout = ("true").equals(ElementParameterParser.getValue(node, "__PRINTOUT__"));
+	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+	
+%>      
+		class UnzippedFile_<%=cid %> {
+			public String fileName;
+			public String filePath;
+			
+			public UnzippedFile_<%=cid %>(String fileName, String filePath) {
+				this.fileName = fileName;
+				this.filePath = filePath;				
+			} 
+			
+		}
+		class Util_<%=cid %>{
+        	public java.util.List<UnzippedFile_<%=cid %>> unzippedFiles = new java.util.ArrayList<UnzippedFile_<%=cid %>>();
+        	
+            public void deleteDir(java.io.File dir) {
+                if (dir.isDirectory()) {
+                    String[] children = dir.list();
+                    for (int i = 0; i < children.length; i++) {
+                       deleteDir(new java.io.File(dir, children[i]));               
+                    }
+                }
+                dir.delete();
+            }
+
+            public void repairDir(java.io.File dir) {
+                java.io.File parentFile = dir.getParentFile();
+        
+                if (parentFile != null) {                            
+                    if (parentFile.exists() && parentFile.isFile())
+                        parentFile.delete();
+                       
+                        repairDir(parentFile);
+                }
+            }
+            public void checkDir(java.io.File file){
+                if (file.exists()) {
+                    if (file.isDirectory())
+                        deleteDir(file);
+                } else {
+                    repairDir(file);
+                }
+            }
+            public void output(String path, String fileName, java.io.InputStream is) throws Exception{
+                <%
+                //deal with the path issue and get the outputstream
+                if (extractPath==true) {
+                    %>          
+                    java.io.File f = new java.io.File(path,fileName);
+                    <%
+                }else{
+                    %>            
+                    String tempName = fileName.replaceAll("\\\\", "/");
+                    int m = tempName.lastIndexOf('/');        
+                    String shortName = tempName.substring(m!=-1? m+1 : 0);  
+      				java.io.File f = new java.io.File(path,shortName);  				
+      				<%
+                }
+                %>
+				checkDir(f);
+             
+                f.getParentFile().mkdirs();
+                f.createNewFile();                
+                java.io.FileOutputStream fos = new java.io.FileOutputStream(f);
+                
+                
+                byte[] buffer = new byte[1024];
+                
+                for (int len = is.read(buffer, 0, 1024); len != -1; len = is.read(buffer, 0, 1024)) {
+                    fos.write(buffer, 0, len);
+                }
+                fos.close();
+                unzippedFiles.add(new UnzippedFile_<%=cid %>(f.getName(), f.getAbsolutePath()));
+            }
+            public void output(String path, String fileName, boolean isDirectory, java.io.InputStream is) throws Exception {
+                <%
+                //deal with the path issue and get the outputstream
+                if (extractPath == true) {
+                    %>          
+                    java.io.File f = new java.io.File(path,fileName);
+                    <%
+                }else{
+                    %>            
+                    String tempName = fileName.replaceAll("\\\\", "/");
+                    int m = tempName.lastIndexOf('/');        
+                    String shortName = tempName.substring(m!=-1 ? m+1 : 0);  
+                    java.io.File f = new java.io.File(path, shortName);                 
+                <%
+                }
+                %>
+                if(isDirectory) {
+                    if(!f.exists()) {
+                        f.mkdirs();
+                    }
+                    ///
+                } else {
+                    java.io.File parent = f.getParentFile();
+                    if(parent != null && !parent.exists()) {
+                        parent.mkdirs();
+                    }
+                    f.createNewFile();
+                    java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream(f));
+                    byte[] buff = new byte[1024];
+                    int data = -1;
+                    while((data = is.read(buff)) != -1) {
+                        bos.write(buff, 0, data);
+                    }
+                    bos.close();                    
+                }
+                unzippedFiles.add(new UnzippedFile_<%=cid %>(f.getName(), f.getAbsolutePath()));
+            }
+            //This function is used for Extract file from the path  
+            public String getEntryName(String fileEntry){  
+                if(fileEntry != null && !fileEntry.equals("")){  
+                        for(int i=fileEntry.length()-1; i>0; i--){  
+                                if(fileEntry.charAt(i)=='/'|| fileEntry.charAt(i) == '\\'){  
+                                        fileEntry = fileEntry.substring(i+1, fileEntry.length());  
+                                        break;  
+                                }  
+                        }  
+                }  
+                return fileEntry;  
+            }
+        } 
+       
+		Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
+        
+        String zipFileURL_<%=cid %> = <%=zipFile %>;
+        String tmpFileURL_<%=cid %> = zipFileURL_<%=cid %>.toLowerCase();
+        String outputPath_<%=cid %> = <%=directory %>;
+<%
+	if (rootName==true) {
+%>        
+        java.io.File file_<%=cid %> = new java.io.File(zipFileURL_<%=cid %>);        
+        String name_<%=cid %> = file_<%=cid %>.getName();        
+		int i_<%=cid %> = 0;
+		if (tmpFileURL_<%=cid %>.endsWith(".tar.gz"))  {
+			i_<%=cid %> = name_<%=cid %>.length()-7;
+   		} else {           
+            i_<%=cid %> = name_<%=cid %>.lastIndexOf('.');        
+            i_<%=cid %> = i_<%=cid %>!=-1? i_<%=cid %> : name_<%=cid %>.length();        
+        }    
+        String root_<%=cid %> = name_<%=cid %>.substring(0, i_<%=cid %>);   
+        new java.io.File(outputPath_<%=cid %>, root_<%=cid %>).mkdir();
+        outputPath_<%=cid %> = outputPath_<%=cid %> +"/" + root_<%=cid %>;
+<%
+  }
+%>
+
+	if (tmpFileURL_<%=cid %>.endsWith(".tar.gz") || tmpFileURL_<%=cid %>.endsWith(".tgz")){   
+		if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isGZIPValid(zipFileURL_<%=cid %>)){
+			throw new RuntimeException ("The file " + zipFileURL_<%=cid %> + " is corrupted, process terminated..." );
+		}
+        org.apache.tools.tar.TarInputStream zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(new java.util.zip.GZIPInputStream(new java.io.FileInputStream(zipFileURL_<%=cid %>)));        
+        org.apache.tools.tar.TarEntry entry_<%=cid %> = null;
+        java.io.InputStream is_<%=cid %> = null;
+        while ((entry_<%=cid %> = zip_<%=cid %>.getNextEntry()) != null) {
+            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
+			if (!isDirectory_<%=cid%>) {
+                is_<%=cid %> = zip_<%=cid %>;
+			}
+            String filename_<%=cid %> =  entry_<%=cid %>.getName();
+            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>);			
+
+            <% if (extractPath == true) {%>  
+            java.io.File f = new java.io.File(outputPath_<%=cid %>+"/"+ filename_<%=cid %>);  
+            f.setLastModified(entry_<%=cid %>.getModTime().getTime());  
+            <%} else {%>  
+            java.io.File unzippedFile = new java.io.File(outputPath_<%=cid %> + util_<%=cid %>.getEntryName(filename_<%=cid %>));  
+            unzippedFile.setLastModified(entry_<%=cid %>.getModTime().getTime());  
+            <% }%> 
+
+        }
+		zip_<%=cid %>.close();
+
+	} else if (tmpFileURL_<%=cid %>.endsWith(".tar")){ 
+		if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isGZIPValid(zipFileURL_<%=cid %>)){
+			throw new RuntimeException ("The file " + zipFileURL_<%=cid %> + " is corrupted, process terminated..." );
+
+		}
+        org.apache.tools.tar.TarInputStream zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(new java.io.FileInputStream(zipFileURL_<%=cid %>));        
+        org.apache.tools.tar.TarEntry entry_<%=cid %> = null;
+        java.io.InputStream is_<%=cid %> = null;
+        while ((entry_<%=cid %> = zip_<%=cid %>.getNextEntry()) != null) {
+            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory(); 
+            if (!isDirectory_<%=cid%>) {
+                is_<%=cid %> = zip_<%=cid %>;
+			}
+            String filename_<%=cid %> =  entry_<%=cid %>.getName();
+            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>);            
+         
+            <% if (extractPath == true) {%>  
+                   java.io.File f = new java.io.File(outputPath_<%=cid %>+"/"+ filename_<%=cid %>);  
+                   f.setLastModified(entry_<%=cid %>.getModTime().getTime());  
+                   <%} else {%>  
+                   java.io.File unzippedFile = new java.io.File(outputPath_<%=cid %> + util_<%=cid %>.getEntryName(filename_<%=cid %>));  
+                   unzippedFile.setLastModified(entry_<%=cid %>.getModTime().getTime());  
+             <% }%> 
+
+        }
+		zip_<%=cid %>.close();
+  	}else if (tmpFileURL_<%=cid %>.endsWith(".gz")){ 
+  		if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isGZIPValid(zipFileURL_<%=cid %>)){
+			throw new RuntimeException ("The file " + zipFileURL_<%=cid %> + " is corrupted, process terminated..." );
+
+		}
+        java.util.zip.GZIPInputStream zip_<%=cid %> = new java.util.zip.GZIPInputStream(new java.io.FileInputStream(new java.io.File(zipFileURL_<%=cid %>)));
+        java.io.InputStream is_<%=cid %> = zip_<%=cid %>;
+        String fullName_<%=cid %> = new java.io.File(zipFileURL_<%=cid %>).getName();  
+		String filename_<%=cid %> =  fullName_<%=cid %>.substring(0, fullName_<%=cid %>.length()-3);  
+		util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>,is_<%=cid%>);
+		zip_<%=cid %>.close();
+	}else { 
+		//the others all use the ZIP to decompression
+		<%if(isPasswordNeeded ){ %>
+			System.out.println("Processing archive "+ tmpFileURL_<%=cid%> + ", please wait...");
+			System.out.println();
+			 if( !<%=password%>.equals("") ){
+				 <%if (rootName!=true) {%> 
+				 	java.io.File file_<%=cid %> = new java.io.File(tmpFileURL_<%=cid%>);
+				 <%}%>
+				 if(<%=isArchiveValid%>){
+					 if(!org.talend.archive.IntegrityUtil.isEncryptedZipValid(file_<%=cid %>, <%=password%>)){
+						 throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
+					 }
+				 }
+			 java.io.InputStream target_<%=cid%> = new java.io.FileInputStream(tmpFileURL_<%=cid%>); 
+			 target_<%=cid%> = 
+				 new javax.crypto.CipherInputStream(target_<%=cid%>, 
+						 org.talend.archive.IntegrityUtil.createCipher(javax.crypto.Cipher.DECRYPT_MODE, <%=password%>)); 
+			 
+			 java.util.zip.ZipInputStream input_<%=cid%> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(target_<%=cid%>)); 
+		     java.util.zip.ZipEntry entry_<%=cid%> ; 
+		     
+			 while ((entry_<%=cid%> = input_<%=cid%>.getNextEntry()) != null) { 
+				 <% if(needPrintout) {%>
+				 		System.out.println("Source file  : " + entry_<%=cid%>.getName()); 
+				 <%}%>
+			            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
+			            String filename_<%=cid %> =  entry_<%=cid %>.getName();
+			           
+			            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, input_<%=cid%>);
+			            <% if (extractPath == true) {%>  
+		                  java.io.File f = new java.io.File(outputPath_<%=cid %>+"/"+ filename_<%=cid %>);  
+		                  f.setLastModified(entry_<%=cid %>.getTime());  
+		             <%} else {%>  
+		                  java.io.File unzippedFile = new java.io.File(outputPath_<%=cid %> + util_<%=cid %>.getEntryName(filename_<%=cid %>));  
+		                  unzippedFile.setLastModified(entry_<%=cid %>.getTime());  
+		            <% }%>
+			 }
+			 target_<%=cid%>.close();
+			 System.out.println();
+			 System.out.println("Process finished"); 
+			}
+			else {
+				Thread.sleep(1000); // To make sure the System.out.println message come before
+				throw new RuntimeException ("Please enter the password and try again.." );
+			}
+    <%  }
+		else {%>
+    	    System.out.println("Processing archive " + tmpFileURL_<%=cid%> + ", please wait...");
+    	    System.out.println();
+    	    
+			if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isZipValid(new java.io.File(zipFileURL_<%=cid %>))){
+				Thread.sleep(1000);  // To make the process terminated after the System.out.println
+				throw new RuntimeException ("The file " + zipFileURL_<%=cid %> + " is corrupted, process terminated..." );
+			}
+			Thread.sleep(1000);
+			//java.util.zip.ZipFile zipFile_<%=cid%> = new java.util.zip.ZipFile(zipFileURL_<%=cid %>); 
+
+			<%if (rootName!=true) {%> 
+			//java.io.File file_<%=cid %> = new java.io.File(zipFileURL_<%=cid %>); 
+			<%}%>
+			//java.io.FileInputStream fileStream_<%=cid %> = new java.io.FileInputStream(file_<%=cid %>);
+			//java.io.BufferedInputStream bufferedStream_<%=cid%> = new java.io.BufferedInputStream(fileStream_<%=cid %>);
+			
+	 		org.apache.tools.zip.ZipFile zip_<%=cid %> = new org.apache.tools.zip.ZipFile(zipFileURL_<%=cid %>);
+	 		//java.util.zip.ZipInputStream zipInputStream_<%=cid%> = new java.util.zip.ZipInputStream(bufferedStream_<%=cid%>);
+	 		//java.util.zip.ZipEntry entry_<%=cid%> ; 
+	           java.util.Enumeration enuFiles_<%=cid %> = zip_<%=cid %>.getEntries();
+	        java.io.InputStream is_<%=cid %> = null;
+	        	
+	        
+	         while (enuFiles_<%=cid %>.hasMoreElements()) {
+	       // while ((entry_<%=cid%> = zipInputStream_<%=cid%>.getNextEntry()) != null) {  
+	            org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuFiles_<%=cid %>.nextElement();
+	        	<% if(needPrintout) {%>
+	        	System.out.println("Source file  : " + entry_<%=cid%>.getName()); 
+	        	<%}%>
+	            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
+	            if (!isDirectory_<%=cid%> ) {
+	                //get the input stream
+	                is_<%=cid %> = zip_<%=cid %>.getInputStream(entry_<%=cid %>);
+				}
+	            String filename_<%=cid %> =  entry_<%=cid %>.getName();
+	            
+	          //  util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, zipInputStream_<%=cid%>);
+	            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>);
+	            
+	           <% if (extractPath == true) {%>  
+	                  java.io.File f = new java.io.File(outputPath_<%=cid %>+"/"+ filename_<%=cid %>);  
+	                  f.setLastModified(entry_<%=cid %>.getTime());  
+	             <%} else {%>  
+	                  java.io.File unzippedFile = new java.io.File(outputPath_<%=cid %> + util_<%=cid %>.getEntryName(filename_<%=cid %>));  
+	                  unzippedFile.setLastModified(entry_<%=cid %>.getTime());  
+	            <% }%> 
+
+	        }
+	        // bufferedStream_<%=cid%>.close();
+	         zip_<%=cid %>.close();
+	         System.out.println();
+			 System.out.println("Process finished"); 
+			 
+		<%} %>
+	}
+	
+
+	for (UnzippedFile_<%=cid %> uf<%=cid %> : util_<%=cid %>.unzippedFiles) {
+		globalMap.put("<%=cid %>_CURRENT_FILE", uf<%=cid %>.fileName);
+		globalMap.put("<%=cid %>_CURRENT_FILEPATH", uf<%=cid %>.filePath);
+	

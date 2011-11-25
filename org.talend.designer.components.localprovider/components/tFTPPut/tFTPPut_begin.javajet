@@ -1,0 +1,174 @@
+<%@ jet 
+  imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+  "
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();  
+String cid = node.getUniqueName();
+String host = ElementParameterParser.getValue(node, "__HOST__");
+String port = ElementParameterParser.getValue(node, "__PORT__");
+String user = ElementParameterParser.getValue(node, "__USERNAME__");
+String pass = ElementParameterParser.getValue(node, "__PASSWORD__");
+String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");  
+String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+String authMethod = ElementParameterParser.getValue(node, "__AUTH_METHOD__");
+String privateKey = ElementParameterParser.getValue(node, "__PRIVATEKEY__");
+String passPhrase = ElementParameterParser.getValue(node, "__PASSPHRASE__");
+List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");  
+boolean useProxy = ("true").equals(ElementParameterParser.getValue(node, "__USE_PROXY__"));
+String proxyHost = ElementParameterParser.getValue(node, "__PROXY_HOST__");
+String proxyPort = ElementParameterParser.getValue(node, "__PROXY_PORT__");
+String proxyUser = ElementParameterParser.getValue(node, "__PROXY_USERNAME__");
+String proxyPassword = ElementParameterParser.getValue(node, "__PROXY_PASSWORD__");  
+String connectMode = ElementParameterParser.getValue(node, "__CONNECT_MODE__");
+String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+boolean sftp = false;
+
+if (("true").equals(useExistingConn)) {
+  List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
+
+  for (INode n : nodeList) {
+    if (n.getUniqueName().equals(connection)) {
+      sftp = ("true").equals(ElementParameterParser.getValue(n, "__SFTP__"));
+    }
+  }
+} else {
+  sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
+}  
+
+//The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 
+//And it can not work with the FTP proxy directly, only support the socks proxy.
+if (useProxy) {
+%>
+  java.util.Properties props_<%=cid%> = System.getProperties();
+  props_<%=cid%>.put("socksProxyPort", <%=proxyPort %>);
+  props_<%=cid%>.put("socksProxyHost", <%=proxyHost %>);
+  props_<%=cid%>.put("java.net.socks.username", <%=proxyUser %>);
+  props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>);        
+<%}%>
+int nb_file_<%=cid%> = 0;
+
+<%if (sftp) {%>
+
+  class MyProgressMonitor_<%=cid%> implements com.jcraft.jsch.SftpProgressMonitor {
+    public void init(int op, String src, String dest, long max) {}
+    public boolean count(long count) { return true;}
+    public void end() {}
+  }
+
+  <%if (("true").equals(useExistingConn)) {
+    String conn= "conn_" + connection;
+    %>
+    com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
+  <%} else {%>    
+    class MyUserInfo_<%=cid %> implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
+      String passphrase_<%=cid %> = <%=passPhrase %>;
+      public String getPassphrase() { return passphrase_<%=cid %>; }
+      public String getPassword() { return null; } 
+      public boolean promptPassword(String arg0) { return true; } 
+      public boolean promptPassphrase(String arg0) { return true; } 
+      public boolean promptYesNo(String arg0) { return true; } 
+      public void showMessage(String arg0) { } 
+      
+      public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
+        boolean[] echo) {
+        String[] password_<%=cid%> = {<%=pass%>};
+        return password_<%=cid%>;
+      }
+    };
+    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo_<%=cid %>();
+    com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
+
+    <%if (("PUBLICKEY").equals(authMethod)) {%>
+      jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
+    <%}%>
+    com.jcraft.jsch.Session session_<%=cid%>=jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>);
+
+    <%if (("PASSWORD").equals(authMethod)) {%> 
+      session_<%=cid%>.setPassword(<%=pass%>); 
+    <%}%>
+    session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
+    session_<%=cid%>.connect();
+    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
+    channel_<%=cid%>.connect();
+    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>;
+    c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
+  <%}%>
+  // becasue there is not the same method in JSch class as FTPClient class, define a list here
+  java.util.List<String> msg_<%=cid%> = new java.util.ArrayList<String>();
+  com.jcraft.jsch.SftpProgressMonitor monitor<%=cid%> = new MyProgressMonitor_<%=cid%>();
+  java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();
+  
+  <%
+  for (int i = 0; i < files.size(); i++) {
+    Map<String, String> line = files.get(i);
+    %>
+    java.util.Map<String,String> map<%=cid %><%=i %> = new java.util.HashMap<String,String>();
+    map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>, <%= line.get("NEWNAME") %>);    
+    list<%=cid %>.add(map<%=cid %><%=i %>);       
+  <%
+  }
+  %>  
+  String localdir<%=cid %> = <%=localdir%>;
+
+  for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) {
+
+<%} else {%>
+  com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
+
+  <%
+  if (("true").equals(useExistingConn)) {
+    String conn= "conn_" + connection;
+    %>
+    ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+  <%} else {%>    
+    ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+    ftp_<%=cid %>.setRemoteHost(<%=host %>);
+    ftp_<%=cid %>.setRemotePort(<%=port %>);
+
+    <%if (("ACTIVE").equals(connectMode)) {%>
+      ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
+    <%} else {%>
+      ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
+    <%}%>
+    ftp_<%=cid %>.setControlEncoding(<%=encoding%>);
+    ftp_<%=cid %>.connect();  
+    ftp_<%=cid %>.login(<%=user %>, <%=pass %>); 
+  <%}%>  
+
+  // msg_<%=cid%> likes a String[] to save the message from transfer.  
+  com.enterprisedt.net.ftp.TransferCompleteStrings msg_<%=cid%> = ftp_<%=cid %>.getTransferCompleteMessages();
+  msg_<%=cid%>.clearAll();
+  java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();
+
+  <%
+  for (int i = 0; i < files.size(); i++) {
+    Map<String, String> line = files.get(i);
+    %>    
+    java.util.Map<String,String> map<%=cid %><%=i %> = new java.util.HashMap<String,String>();
+    map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,<%= line.get("NEWNAME") %>);  
+    list<%=cid %>.add(map<%=cid %><%=i %>);       
+  <%
+  }
+  %>  
+  String remotedir<%=cid %> = <%=remotedir%>;
+  ftp_<%=cid %>.chdir(remotedir<%=cid %>);
+
+  <%if ("binary".equalsIgnoreCase(ElementParameterParser.getValue(node, "__MODE__"))) {%>  
+    ftp_<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.BINARY);
+  <%} else { %>  
+    ftp_<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.ASCII);
+  <%}%>
+  String localdir<%=cid %>  = <%=localdir%>;
+
+  for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) {
+<%}%>

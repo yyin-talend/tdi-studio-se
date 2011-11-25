@@ -1,0 +1,166 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.MetadataTalendType    
+    org.talend.core.model.metadata.MappingTypeRetriever     
+    java.util.List
+    java.util.ArrayList
+    java.util.Map
+    java.util.HashMap    
+" 
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String field_separator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
+String null_string = ElementParameterParser.getValue(node, "__NULL_STRING__");
+String file = ElementParameterParser.getValue(node, "__REMOTE_FILENAME__");
+String host = ElementParameterParser.getValue(node, "__HOST__");
+String port = ElementParameterParser.getValue(node, "__PORT__");
+String db = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+String user = ElementParameterParser.getValue(node, "__USER__");
+String pas = ElementParameterParser.getValue(node, "__PASS__");
+String table = ElementParameterParser.getValue(node, "__TABLE__");
+boolean ros = ("true").equals(ElementParameterParser.getValue(node, "__ROS__"));
+boolean exitOnNoRows = ("true").equals(ElementParameterParser.getValue(node, "__EXIT_ON_NO_ROWS__"));
+boolean hasNullString = !null_string.matches("\"\"");
+boolean convertToUppercase = false; // not active this function
+boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+List<IMetadataColumn> columnList = getColumnList(node);    
+%>
+String tableName_<%=cid%> = null;
+String dbschema_<%=cid %> = null;
+java.io.FileInputStream fis_<%=cid %> = null;
+java.sql.Connection conn_<%=cid%> = null;
+	<%
+	if(useExistingConnection) {
+    		String conn = "conn_" + ElementParameterParser.getValue(node,"__CONNECTION__");
+    		String existDbSchema = "dbschema_" + conn;
+	%>
+		dbschema_<%=cid%> = (String)globalMap.get("<%=existDbSchema%>");
+	 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+	 <%
+	 } else {
+	 %>
+		java.lang.Class.forName("com.vertica.Driver").newInstance();
+		String url_<%=cid %> = "jdbc:vertica://" + <%=host%> + ":" + <%=port%> + "/" + <%=db%>;
+		conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
+		dbschema_<%=cid%> = <%=dbschema%>;
+	<%
+	}
+	%>
+<%
+String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
+String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+
+List<Column> stmtStructure = null;
+StringBuilder insertColName = null;
+Manager manager = null;
+if(columnList != null && columnList.size()>0) {
+	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
+%>
+	if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+	    tableName_<%=cid%> = <%=table%>;
+	} else {
+	    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=table%>;
+	}
+	
+	<%@ include file="../templates/_tableActionForBulk.javajet"%>
+<%    
+}
+String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
+%>
+try{
+<%
+if(("UPDATE").equals(dataAction)) {
+    if(columnList != null && columnList.size() > 0) {
+        int keyCount = 0;
+        for(IMetadataColumn column : columnList) {
+            if(column.isKey()) {
+                keyCount++;
+            }
+        }
+        %>
+        int keyCount_<%=cid%> = <%=keyCount%>;
+        if(keyCount_<%=cid%> == 0) {
+            throw new RuntimeException("For bulk update, Schema must have a key at least."); 
+        }
+        tableName_<%=cid%> = "tmp_<%=cid%>";
+        java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
+        stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+        stmtCreateTmp_<%=cid%>.execute("CREATE PROJECTION " + tableName_<%=cid%> + "_proj (<%=insertColName.toString()%>) AS SELECT <%=insertColName.toString()%> FROM " + tableName_<%=cid%>);
+        stmtCreateTmp_<%=cid%>.close();
+        java.sql.Statement stmtTmpBulk_<%=cid%> = conn_<%=cid%>.createStatement();
+        stmtTmpBulk_<%=cid%>.execute("COPY " + <%=db%> + "." + tableName_<%=cid%> + " FROM '" + <%=file%> + "' WITH DELIMITER '" +<%=field_separator%> + "'" 
+        <%if(hasNullString) {
+        %> + " NULL '" +<%=null_string%> + "'"
+        <%}%>
+        <%if(ros){%> + " DIRECT"<%}%>);
+        stmtTmpBulk_<%=cid%>.close();
+        tableName_<%=cid%> = <%=table%>;
+        String tmpTableName_<%=cid%> = "tmp_<%=cid%>";
+        java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
+        stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
+        stmtUpdateBulk_<%=cid%>.close();
+        tableName_<%=cid%> = tmpTableName_<%=cid%>;
+        java.sql.Statement stmtTmpDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+        stmtTmpDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+        stmtTmpDrop_<%=cid%>.close();        
+        <%
+    }
+} else if(("INSERT").equals(dataAction)) {
+    %>
+	String sql_<%=cid %> = "COPY " + tableName_<%=cid%> + " FROM STDIN DELIMITER '" +<%=field_separator%> + "'" 
+    <%if(hasNullString){
+	%> + " NULL '"  + <%=null_string%> + "'"
+	<%}%>
+	<%if(ros){%> + " DIRECT"<%}%>;
+    java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
+    java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery("select count(*) from " + tableName_<%=cid%>);
+    int nbLineBeforeLoad_<%=cid %> = 0;
+    while (rs_<%=cid %>.next()) {
+    	nbLineBeforeLoad_<%=cid %> = rs_<%=cid %>.getInt(1);
+	}
+    fis_<%=cid %> = new java.io.FileInputStream(new java.io.File(<%=file%>));
+    ((com.vertica.PGStatement) stmt_<%=cid %>).startCopyIn(sql_<%=cid %>, fis_<%=cid %>);
+    ((com.vertica.PGStatement) stmt_<%=cid %>).addStreamToCopyIn(fis_<%=cid %>);
+    ((com.vertica.PGStatement) stmt_<%=cid %>).finishCopyIn();
+	rs_<%=cid %> = stmt_<%=cid %>.executeQuery("select count(*) from " + tableName_<%=cid%>);
+    int nbLineAfterLoad_<%=cid %> = 0;
+    while (rs_<%=cid %>.next()) {
+    	nbLineAfterLoad_<%=cid %> = rs_<%=cid %>.getInt(1);
+	}
+	if(nbLineBeforeLoad_<%=cid %> >= nbLineAfterLoad_<%=cid %>){
+<%
+	if(exitOnNoRows){
+%>stmt_<%=cid %>.close();
+	throw new RuntimeException("No record was loaded in component <%=cid %>");
+<%
+	}
+%>
+	}
+	System.out.println("Number of records loaded to table " + tableName_<%=cid %> + " by <%=cid %>: " + (nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>));
+    stmt_<%=cid %>.close();
+    <%
+}
+%>
+}finally{
+	if(fis_<%=cid %>!=null)
+		fis_<%=cid%>.close();
+	conn_<%=cid%>.close();
+}
+
+
+
+
+
+
+

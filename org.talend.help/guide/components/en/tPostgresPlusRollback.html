@@ -1,0 +1,36 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPostgresPlusRollback</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="tPostgresPlusOutputBulkExec.html" title="tPostgresPlusOutputBulkExec"><link rel="next" href="tPostgresPlusRow.html" title="tPostgresPlusRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tPostgresPlusRollback"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPostgresPlusRollback"></a>tPostgresPlusRollback</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tPostgresPlusRollback_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tPostgresPlusRollback properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e126921"></a>tPostgresPlusRollback properties</h3></div></div></div><p>This component is closely related to <span class="bold"><strong>tPostgresPlusCommit</strong></span> and <span class="bold"><strong>tPostgresPlusConnection</strong></span>. It usually does not make much sense to use
+            these components independently in a transaction.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>Databases/PostgresPlus</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tPostgresPlusRollback</strong></span> cancels the transaction
+                                committed in the connected DB.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component avoids to
+                                commit part of a transaction involuntarily. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Component list</em></span></p>
+                        </td><td valign="top"><p>Select the <span class="bold"><strong>tPostgresPlusConnection</strong></span> component in the list if
+                                more than one connection are planned for the current job.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Close Connection</em></span></p>
+                        </td><td valign="top"><p>Clear this check box to continue to use the
+                                selected connection once the component has performed its
+                                task.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher</em></span>
+                                <span class="emphasis"><em>Statistics</em></span></p>
+                        </td><td valign="top"><p>Select this check box to collect log data at the
+                                component level.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component is to be
+                                used along with PostgresPlus components, especially with <span class="bold"><strong>tPostgresPlusConnection</strong></span> and <span class="bold"><strong>tPostgresPlusCommit</strong></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e127049"></a>Related scenarios</h3></div></div></div><p>For <span class="bold"><strong>tPostgresPlusRollback</strong></span> related
+            scenario, see <a class="xref" href="tMysqlRollback.html#Raa14463" title="Scenario: Rollback from inserting data in mother/daughter tables">the section called &#8220;Scenario: Rollback from inserting data in
+                mother/daughter tables&#8221;</a>.</p></div></div></body></html>

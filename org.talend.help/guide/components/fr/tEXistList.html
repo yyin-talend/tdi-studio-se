@@ -1,0 +1,145 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tEXistList</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tEXistGet.html" title="tEXistGet"><link rel="next" href="tEXistPut.html" title="tEXistPut"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tEXistList"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tEXistList"></a>tEXistList</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tEXistList_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tEXistList"><div class="titlepage"><div><div><h3 class="title"><a name="d0e68741"></a>Propri&eacute;t&eacute;s du tEXistList</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/eXist</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant liste les ressources stock&eacute;es sur un serveur distant
+								de base de donn&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tEXistList</strong></span> liste les
+								ressources stock&eacute;es sur un serveur distant de base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection/Component List</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case et s&eacute;lectionnez le composant <span class="bold"><strong>tEXistConnection</strong></span> ad&eacute;quat &agrave; partir de la
+								liste <span class="bold"><strong>Component List</strong></span> pour
+								r&eacute;utiliser les param&egrave;tres d&#8217;une connexion que vous avez d&eacute;j&agrave;
+								d&eacute;finis.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la
+									liste <span class="bold"><strong>Component List</strong></span> pr&eacute;sente
+									uniquement les composants de connexion du Job du m&ecirc;me niveau. Si
+									vous souhaitez utiliser une connexion existant dans un autre
+									niveau, v&eacute;rifiez que les composants de connexion disponibles
+									partagent la m&ecirc;me connexion.</p><p>Pour plus d&#8217;informations concernant le partage d&#8217;une connexion
+									&agrave; travers diff&eacute;rents niveaux de Jobs, consultez <span class="bold"><strong>Use or register a shared DB
+										connection</strong></span> dans tous les composants de base de
+									donn&eacute;es que vous utilisez.</p></td></tr></table></div>
+							<p>Sinon, vous pouvez &eacute;galement d&eacute;sactiver le composant de connexion
+								et utiliser les <span class="bold"><strong>Dynamic settings</strong></span> du
+								composant, afin de param&eacute;trer manuellement la connexion. Dans ce
+								cas, v&eacute;rifiez que le nom de la connexion est unique et distinct tout
+								au long des deux niveaux de Jobs. Pour plus d&#8217;informations
+								concernant les param&egrave;tres dynamiques (<span class="bold"><strong>Dynamic
+									settings</strong></span>), consultez le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de votre Studio. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>URI</em></span>
+							</p>
+						</td><td valign="top">
+							<p>URI de la base de donn&eacute;es &agrave; laquelle vous souhaitez vous
+								connecter.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Collection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le chemin d&#8217;acc&egrave;s &agrave; la collection &agrave; laquelle vous
+								souhaitez acc&eacute;der, sur le serveur de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Driver</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Ce champ est automatiquement rempli. Par d&eacute;faut, le nom du pilote
+								standard s&#8217;affiche.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Les utilisateurs peuvent sp&eacute;cifier un pilote diff&eacute;rent, selon
+									leurs besoins.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Username et Password</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Informations d&#8217;authentification de l&#8217;utilisateur de base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Files</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> afin
+								d&#8217;ajouter les lignes que vous souhaitez utiliser comme
+								filtres&nbsp;:</p>
+							<p><span class="bold"><strong>Filemask</strong></span>&nbsp;: saisissez le nom du
+								fichier ou le masque de fichier, en utilisant des caract&egrave;res de
+								remplacement (*) ou des expressions r&eacute;guli&egrave;res.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Target Type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez le type de cible&nbsp;:</p>
+							<p><span class="bold"><strong>Resource</strong></span>(Ressource), <span class="bold"><strong>Collection </strong></span>(Collection), ou <span class="bold"><strong>All</strong></span> (Tous).</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; avec un <span class="bold"><strong>tEXistGet</strong></span> afin de r&eacute;cup&eacute;rer les fichiers
+								list&eacute;s, par exemple. La base de donn&eacute;es eXist est un syst&egrave;me de
+								gestion de base de donn&eacute;es open source, construit &agrave; l&#8217;aide de la
+								technologie XML. Elle stocke des donn&eacute;es XML selon le mod&egrave;le de
+								donn&eacute;es XML et offre une fonction efficace de traitement de la
+								requ&ecirc;te XQuery, bas&eacute;e sur l&#8217;index. Pour plus d&#8217;informations
+								concernant XQuery, consultez&nbsp;: <a class="link" href="http://exist.sourceforge.net/xquery.html" target="_top">http://exist.sourceforge.net/xquery.html</a> (en anglais).
+								Pour plus d&#8217;informations concernant les extensions de XQuery Update,
+								consultez&nbsp;: <a class="link" href="http://exist.sourceforge.net/update_ext.html" target="_top">http://exist.sourceforge.net/update_ext.html</a></p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e69043"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute; au <span class="bold"><strong>tEXistList </strong></span>, consultez <a class="xref" href="tFTPFileList.html#Raa55421" title="Sc&eacute;nario&nbsp;: It&eacute;ration sur un r&eacute;pertoire distant">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: It&eacute;ration sur un r&eacute;pertoire distant&nbsp;&raquo;</a>.</p></div></div></body></html>

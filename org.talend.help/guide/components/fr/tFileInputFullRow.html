@@ -1,0 +1,168 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputFullRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapitre&nbsp;9.&nbsp;Composants File"><link rel="prev" href="tFileInputExcel.html" title="tFileInputExcel"><link rel="next" href="tFileInputJSON.html" title="tFileInputJSON"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFileInputFullRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputFullRow"></a>tFileInputFullRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileInputFullRow_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa3448831"></a><div class="section" title="Propri&eacute;t&eacute;s du tFileInputFullRow"><div class="titlepage"><div><div><h3 class="title"><a name="d0e183242"></a>Propri&eacute;t&eacute;s du tFileInputFullRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille du composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>File/Input</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tFileInputFullRow
+                                </strong></span>lit un fichier donn&eacute; ligne par ligne. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tFileInputFullRow </strong></span>ouvre un
+                                fichier qu&#8217;il lit ligne par ligne et passe les lignes compl&egrave;tes au
+                                composant suivant comme d&eacute;fini dans le sch&eacute;ma, via une connexion de
+                                type Row. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p>
+                            <p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma. Notez que si vous modifiez le sch&eacute;ma, il devient
+                                automatiquement built-in.</p>
+                            <p>Cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour
+                                r&eacute;cup&eacute;rer le sch&eacute;ma du composant <span class="bold"><strong>tFileInputFullRow </strong></span>pr&eacute;c&eacute;dent. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>File Name</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Chemin d&#8217;acc&egrave;s et nom du fichier, et/ou variable &agrave; traiter.</p>
+                            <p>Pour plus d&#8217;informations concernant l&#8217;utilisation et la d&eacute;finition
+                                de variables, consultez le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Row separator</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cha&icirc;ne (ex&nbsp;: &#8220;\n&#8221; sous Unix) s&eacute;parant les lignes. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Header</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nombre de lignes &agrave; ignorer en d&eacute;but de fichier.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Footer</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nombre de lignes &agrave; ignorer &agrave; la fin d&#8217;un fichier.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Limit</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nombre maximum de lignes &agrave; traiter. Si Limit = 0, aucune ligne
+                                n&#8217;est lue ni trait&eacute;e.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Skip empty rows</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour ignorer les lignes vides.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Die on error</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job en cas d&#8217;erreur.
+                                D&eacute;cochez cette case pour terminer le traitement avec les lignes sans
+                                erreurs, et ignorer les lignes en erreur.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Encoding</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+                                    <span class="bold"><strong>Custom</strong></span> et d&eacute;finissez-le
+                                manuellement. Ce champ est obligatoire pour la manipulation des
+                                donn&eacute;es des bases de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                Job, ainsi qu&#8217;au niveau de chaque composant.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Extract lines at random</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour d&eacute;finir le nombre de lignes &agrave; extraire de
+                                fa&ccedil;on al&eacute;atoire.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Utilisez ce composant pour lire des lignes compl&egrave;tes dans un
+                                fichier d&eacute;limit&eacute; pouvant &ecirc;tre tr&egrave;s gros. Ce composant permet de
+                                cr&eacute;er un flux de donn&eacute;es &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span>&nbsp;&gt; <span class="bold"><strong>Main</strong></span>,
+                                ainsi que de cr&eacute;er un flux de rejet avec un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span> filtrant les donn&eacute;es dont le type ne
+                                correspond pas au type d&eacute;fini. Pour un exemple d&#8217;utilisation de ces
+                                deux liens, consultez <a class="xref" href="tFileInputXML.html#Raa68027" title="Sc&eacute;nario&nbsp;2&nbsp;: Extraire les donn&eacute;es XML erron&eacute;es dans un flux de rejet">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Extraire les donn&eacute;es XML erron&eacute;es dans un flux de rejet&nbsp;&raquo;</a> du composant
+                                    <span class="bold"><strong>tFileInputXML</strong></span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Lire des lignes compl&egrave;tes dans un fichier d&eacute;limit&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e183579"></a>Sc&eacute;nario&nbsp;: Lire des lignes compl&egrave;tes dans un fichier d&eacute;limit&eacute;</h3></div></div></div><p>Le sc&eacute;nario suivant cr&eacute;e un Job &agrave; deux composants permettant de lire des lignes
+            compl&egrave;tes &agrave; partir d&#8217;un fichier et d&#8217;afficher les donn&eacute;es de sortie dans la console de
+            log <span class="bold"><strong>Run</strong></span>. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la Palette, cliquez-d&eacute;posez les composants <span class="bold"><strong>tFileInputFullRow</strong></span> et <span class="bold"><strong>tLogRow</strong></span>
+                    dans l&#8217;&eacute;diteur graphique. </p></li><li class="listitem"><p>Cliquez-droit sur le composant <span class="bold"><strong>tFileInputFullRow</strong></span> et connectez-le au <span class="bold"><strong>tLogRow </strong></span>&agrave; l&#8217;aide d&#8217;un lien de type <span class="bold"><strong>Row
+                        Main</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="321"><tr><td><img src="../images/Use_Case_tFileInputFullRow.png" width="321"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le composant <span class="bold"><strong>tFileInputFullRow</strong></span>.</p></li><li class="listitem"><p>Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                        <span class="bold"><strong>tFileInputFullRow</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="436"><tr><td><img src="../images/Use_Case_tFileInputFullRow1.png" width="436"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>, configurez le
+                    champ <span class="bold"><strong>Schema</strong></span> en mode <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> du champ
+                        <span class="bold"><strong>Edit schema </strong></span>pour voir les donn&eacute;es &agrave; passer
+                    au composant <span class="bold"><strong>tLogRow</strong></span>. Notez que le sch&eacute;ma est
+                    en read-only et ne comporte qu&#8217;une seule colonne,
+                    <span class="emphasis"><em>line.</em></span></p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="406"><tr><td><img src="../images/Use_Case_tFileInputFullRow2.png" width="406"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>File Name</strong></span>, renseignez le chemin
+                    d&#8217;acc&egrave;s au fichier &agrave; traiter ou cliquez sur le bouton <span class="bold"><strong>[...]</strong></span>. Ce champ est obligatoire. Dans ce sc&eacute;nario, le fichier &agrave;
+                    lire s&#8217;appelle <span class="emphasis"><em>test5 </em></span>et comporte trois lignes comprenant
+                    chacune deux champs s&eacute;par&eacute;s par un point-virgule. </p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Row separator</strong></span>, renseignez le
+                    s&eacute;parateur permettant d&#8217;identifier les fins de ligne. </p></li><li class="listitem"><p>Dans la champ <span class="bold"><strong>Header</strong></span>, indiquez la valeur 1.
+                    Dans ce sc&eacute;nario, ni le pied-de-page ni le nombre de lignes &agrave; traiter ne sont
+                    renseign&eacute;s. </p></li><li class="listitem"><p>Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le <span class="bold"><strong>tLogRow</strong></span> puis cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour en d&eacute;finir la configuration de base (<span class="bold"><strong>Basic settings</strong></span>). Pour plus d&#8217;informations, consultez
+                    le <a class="xref" href="tLogRow.html" title="tLogRow">la section intitul&eacute;e &laquo;&nbsp;tLogRow&nbsp;&raquo;</a>.</p></li><li class="listitem"><p>Enregistrez votre Job puis appuyez sur <span class="bold"><strong>F6</strong></span>
+                    pour l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="352"><tr><td><img src="../images/Use_Case_tFileInputFullRow3.png" width="352"></td></tr></table></div><p>Le composant <span class="bold"><strong>tFileInputFullRow</strong></span> lit les trois lignes
+            une &agrave; une sans tenir compte des s&eacute;parateurs de champs et les lignes compl&egrave;tes
+            apparaissent dans la console <span class="bold"><strong>Run</strong></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Pour extraire des lignes uniquement les champs, utilisez le <span class="bold"><strong>tExtractDelimitedFields</strong></span>, le <span class="bold"><strong>tExtractPositionalFields</strong></span> et le <span class="bold"><strong>tExtractRegexFields</strong></span>. Pour plus d&#8217;informations, consultez <a class="xref" href="tExtractPositionalFields.html" title="tExtractPositionalFields">la section intitul&eacute;e &laquo;&nbsp;tExtractPositionalFields&nbsp;&raquo;</a>, <a class="xref" href="tExtractRegexFields.html" title="tExtractRegexFields">la section intitul&eacute;e &laquo;&nbsp;tExtractRegexFields&nbsp;&raquo;</a>,
+                    .</p></td></tr></table></div></div></div></body></html>

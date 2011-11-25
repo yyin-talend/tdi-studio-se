@@ -1,0 +1,370 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileOutputDelimited</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapter&nbsp;9.&nbsp;File components"><link rel="prev" href="tFileOutputARFF.html" title="tFileOutputARFF"><link rel="next" href="tFileOutputEBCDIC.html" title="tFileOutputEBCDIC"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFileOutputDelimited"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileOutputDelimited"></a>tFileOutputDelimited</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileOutputDelimited_icon32.png" width="27"></td></tr></table></div><div class="section" title="tFileOutputDelimited properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e181206"></a>tFileOutputDelimited properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>File/Output</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tFileOutputDelimited</strong></span> outputs data
+								to a delimited file.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component writes a delimited file that holds data organized
+								according to the defined schema.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Either <span class="bold"><strong>Built-in</strong></span> or <span class="bold"><strong>Repository</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>: Select the repository
+								file where the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use Output Stream</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box process the data flow of interest. Once you
+								have selected it, the <span class="bold"><strong>Output Stream</strong></span>
+								field displays and you can type in the data flow of interest.</p>
+							<p> The data flow to be processed must be added to the flow in order
+								for this component to fetch these data via the corresponding
+								representattive variable.</p>
+							<p> This variable could be already pre-defined in your Studio or
+								provided by the context or the components you are using along with
+								this component; otherwise, you could define it manually and use it
+								according to the design of your Job, for example, using <span class="bold"><strong>tJava</strong></span> or <span class="bold"><strong>tJavaFlex</strong></span>.</p>
+							<p> In order to avoid the inconvenience of hand writing, you could
+								select the variable of interest from the auto-completion list
+									(<span class="bold"><strong>Ctrl+Space</strong></span>) to fill the
+								current field on condition that this variable has been properly
+								defined.</p>
+							<p> For further information about how to use a stream, see <a class="xref" href="tFileInputDelimited.html#Raa47862" title="Scenario 2: Reading data from a remote file in streaming mode">the section called &#8220;Scenario 2: Reading data from a remote file in streaming mode&#8221;</a>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>File name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name or path to the output file and/or the variable to be
+								used.</p>
+							<p> This field becomes unavailable once you have selected the
+									<span class="bold"><strong>Use Output Stream</strong></span> check
+								box.</p>
+							<p> </p>
+							<p> Related topic: see <span class="bluebold">Talend Open Studio</span>
+								<span class="bold"><strong>User Guide</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Row Separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>String (ex: &#8220;\n&#8221; on Unix) to distinguish rows in the output
+								file.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Field Separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Character, string or regular expression to separate fields of the
+								output file.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Append</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to add the new rows at the end of the
+								file.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Include Header</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to include the column header to the
+								file.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Compress as zip file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to compress the output file in zip
+								format.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the Repository.</p>
+							<p> Click <span class="bold"><strong>Edit Schema</strong></span> to make
+								changes to the schema. Note that if you make changes, the schema
+								automatically becomes built-in.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="bluebold">Talend Open Studio</span>
+									<span class="bold"><strong>User Guide</strong></span>.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>: You can create the
+								schema and store it locally for this component. Related topic: see
+									<span class="bluebold">Talend Open Studio</span>
+								<span class="bold"><strong>User Guide</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>: You have already
+								created and stored the schema in the Repository. You can reuse it in
+								various projects and Job flowcharts. Related topic: see <span class="bluebold">Talend Open Studio</span>
+								<span class="bold"><strong>User Guide</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Sync columns</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Click to synchronize the output file schema with the input file
+								schema. The Sync function only displays once the <span class="bold"><strong>Row</strong></span> connection is linked with the output
+								component.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Advanced separator (for numbers)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to modify the separators used for
+								numbers:</p>
+							<p>
+								<span class="bold"><strong>Thousands separator</strong></span>: define
+								separators for thousands.</p>
+							<p>
+								<span class="bold"><strong>Decimal separator</strong></span>: define
+								separators for decimals.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>CSV options</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to take into account all parameters specific
+								to CSV files, in particular <span class="bold"><strong>Escape
+									char</strong></span> and <span class="bold"><strong>Text
+									enclosure</strong></span> parameters.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Create directory if not exists</em></span>
+							</p>
+						</td><td valign="top">
+							<p>This check box is selected by default. It creates the directory
+								that holds the output delimited file, if it does not already
+								exist.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Split output in several files</em></span>
+							</p>
+						</td><td valign="top">
+							<p>In case of very big output files, select this check box to divide
+								the output delimited file into several files.</p>
+							<p>
+								<span class="bold"><strong>Rows in each output file</strong></span>: set the
+								number of lines in each of the output files.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Custom the flush buffer size</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to define the number of lines to write
+								before emptying the buffer.</p>
+							<p>
+								<span class="bold"><strong>Row Number</strong></span>: set the number of lines
+								to write.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Output in row mode</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Writes in row mode.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding </em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the encoding from the list or select <span class="bold"><strong>Custom</strong></span> and define it manually. This field is
+								compulsory for DB data handling.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Don&#8217;t generate empty file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box if you do not want to generate empty
+								files.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at a
+								Job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Use this component to write a delimited file and separate fields
+								using a field separator value.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario: Writing data in a delimited file"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20111116-file-tfileoutputdelimited_scenario"></a>Scenario: Writing data in a delimited file</h3></div></div></div><p>This scenario describes a three-component Job that extracts certain data from a file
+			holding information about clients, <span class="emphasis"><em>customers</em></span>, and then writes the
+			extracted data in a delimited file. </p><p>In the following example, we have already stored the input schema under the<span class="bold"><strong> Metadata</strong></span> node in the <span class="bold"><strong>Repository</strong></span> tree view. For more information about storing schema metadata
+			in the Repository, see <span class="bluebold">Talend Open Studio</span>
+			<span class="bold"><strong>User Guide</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="295"><tr><td><img src="../images/Use_Case_tFileOutputDelimited9.png" width="295"></td></tr></table></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the <span class="bold"><strong>Repository</strong></span> tree view, expand <span class="bold"><strong>Metadata</strong></span> and <span class="bold"><strong>File
+						delimited</strong></span> in succession and then browse to your input schema,
+						<span class="emphasis"><em>customers</em></span>, and drop it on the design workspace. A
+					dialog box displays where you can select the component type you want to
+					use.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="272"><tr><td><img src="../images/Use_Case_tFileOutputDelimited1.png" width="272"></td></tr></table></div></li><li class="listitem"><p>Click <span class="bold"><strong>tFileInputDelimited</strong></span> and then <span class="bold"><strong>OK</strong></span> to close the dialog box. A <span class="bold"><strong>tFileInput Delimited</strong></span> component holding the name of your input
+					schema displays on the design workspace. </p></li><li class="listitem"><p>Drop a <span class="bold"><strong>tMap</strong></span> and a <span class="bold"><strong>tFileOutputDelimited</strong></span> components from the <span class="bold"><strong>Palette</strong></span> to the design workspace.</p></li><li class="listitem"><p>Link the components together using <span class="bold"><strong>Main Row</strong></span>
+					links.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFileInputDelimited</strong></span> to open its
+						<span class="bold"><strong>Basic settings</strong></span> view. All its property
+					fields are automatically filled in because you defined your input file locally. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="508"><tr><td><img src="../images/Use_Case_tFileOutputDelimited2.png" width="508"></td></tr></table></div></li><li class="listitem"><p>If you do not define your input file locally in the <span class="bold"><strong>Repository</strong></span> tree view, fill in the details manually after
+					selecting <span class="bold"><strong>Built-in</strong></span> in the <span class="bold"><strong>Property type</strong></span> list.</p></li><li class="listitem"><p>Click the three-dot button next to the <span class="bold"><strong>File
+						Name</strong></span> field and browse to the input file,
+						<span class="emphasis"><em>customer.csv</em></span> in this example.</p><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If the path of the file contains some accented characters, you will get an
+						error message when executing your Job. For more information regarding the
+						procedures to follow when the support of accented characters is missing, see
+							<span class="bluebold">Talend Open Studio</span><span class="emphasis"><em> </em></span><span class="bold"><strong>Installation
+							Guide</strong></span><span class="emphasis"><em>.</em></span></p></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>Row Separators </strong></span>and <span class="bold"><strong>Field Separators</strong></span> fields, enter respectively
+						"<span class="emphasis"><em>\n</em></span>" and "<span class="emphasis"><em>;</em></span>" as line and field
+					separators.</p></li><li class="listitem"><p>If needed, set the number of lines used as header and the number of lines used
+					as footer in the corresponding fields and then set a limit for the number of
+					processed rows.</p><p> In this example, <span class="bold"><strong>Header</strong></span> is set to 6 while
+						<span class="bold"><strong>Footer</strong></span> and <span class="bold"><strong>Limit</strong></span> are not set.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Schema</strong></span> field, schema is automatically
+					set to <span class="bold"><strong>Repository </strong></span>and your schema is already
+					defined since you have stored your input file locally for this example.
+					Otherwise, select <span class="bold"><strong>Built-in</strong></span> and click <span class="bold"><strong>Edit Schema</strong></span> to open a dialog box where you can define
+					the input schema. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="382"><tr><td><img src="../images/Use_Case_tFileOutputDelimited4.png" width="382"></td></tr></table></div></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog box.</p></li><li class="listitem"><p>In the design workspace, double-click <span class="bold"><strong>tMap </strong></span>to
+					open its editor.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="473"><tr><td><img src="../images/Use_Case_tFileOutputDelimited7.png" width="473"></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>tMap</strong></span> editor, click <span class="inlinemediaobject"><img src="../images/Use_Case_tFileOutputDelimited12.png" width="23"></span> on top of the panel to the right to open the <span class="bold"><strong>[Add a new output table]</strong></span> dialog box. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="337"><tr><td><img src="../images/Use_Case_tFileOutputDelimited6.png" width="337"></td></tr></table></div></li><li class="listitem"><p>Enter a name for the table you want to create, <span class="emphasis"><em>row2</em></span> in
+					this example.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate your changes and close
+					the dialog box.</p></li><li class="listitem"><p>In the table to the left, <span class="emphasis"><em>row1</em></span>, select the first three
+					lines (<span class="emphasis"><em>Id</em></span>, <span class="emphasis"><em>CustomerName</em></span> and
+						<span class="emphasis"><em>CustomerAddress</em></span>) and drop them to the table to the
+					right</p></li><li class="listitem"><p>In the <span class="bold"><strong>Schema editor</strong></span> view situated in the
+					lower left corner of the <span class="bold"><strong>tMap</strong></span> editor, change
+					the type of <span class="emphasis"><em>RegisterTime</em></span> to <span class="bold"><strong>String</strong></span> in the table to the right.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="505"><tr><td><img src="../images/Use_Case_tFileOutputDelimited8.png" width="505"></td></tr></table></div></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to save your changes and close the
+					editor.</p></li><li class="listitem"><p>In the design workspace, double-click <span class="bold"><strong>tFileOutputDelimited</strong></span> to open its <span class="bold"><strong>Basic
+						settings</strong></span> view and define the component properties.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="514"><tr><td><img src="../images/Use_Case_tFileOutputDelimited10.png" width="514"></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>Property Type</strong></span> field, set the type to
+						<span class="bold"><strong>Built-in</strong></span> and fill in the fields that follow
+					manually.</p></li><li class="listitem"><p>Click the three-dot button next to the <span class="bold"><strong>File
+						Name</strong></span> field and browse to the output file you want to write data
+					in, <span class="emphasis"><em>customerselection.txt</em></span> in this example.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Row</strong></span> and <span class="bold"><strong>Field
+						Separator</strong></span><span class="bold"><strong>s</strong></span> fields, set
+						&#8220;<span class="emphasis"><em>\n</em></span>&#8221; and &#8220;<span class="emphasis"><em>;</em></span>&#8221; respectively as row
+					and field separators.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Include Header</strong></span> check box if you
+					want to output columns headers as well.</p></li><li class="listitem"><p>Click <span class="bold"><strong>Edit schema</strong></span> to open the schema dialog
+					box and verify if the recuperated schema corresponds to the input schema. If
+					not, click <span class="bold"><strong>Sync Columns</strong></span> to recuperate the
+					schema from the preceding component. </p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+					it.</p></li></ol></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="405"><tr><td><img src="../images/Use_Case_tFileOutputDelimited11.png" width="405"></td></tr></table></div><p>The three specified columns <span class="emphasis"><em>Id</em></span>, <span class="emphasis"><em>CustomerName</em></span>
+			and <span class="emphasis"><em>CustomerAddress</em></span> are output in the defined output file.</p><p>
+			
+		</p></div><div class="section" title="Scenario: Utilizing Output Stream in saving filtered data to a local file"><div class="titlepage"><div><div><h3 class="title"><a name="fhan-20111017-file_tfileoutputdelimited_sce2"></a>Scenario: Utilizing Output Stream in saving filtered data to a local file</h3></div></div></div><p>Based on the preceding scenario, this scenario saves the filtered data to a local file
+			using output stream.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="295"><tr><td><img src="../images/use_case-tfileoutputdelimited12.png" width="295"></td></tr></table></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Drop <span class="bold"><strong>tJava</strong></span> from the <span class="bold"><strong>Palette</strong></span> to the design workspace.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tJava</strong></span> to <span class="bold"><strong>tFileInputDelimited</strong></span> using a <span class="bold"><strong>Trigger</strong></span> &gt; <span class="bold"><strong>On Subjob OK</strong></span>
+					connection.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tJava</strong></span> to open its <span class="bold"><strong>Basic settings</strong></span> view. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="508"><tr><td><img src="../images/use_case-tfileoutputdelimited13.png" width="508"></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>Code</strong></span> area, type in the following
+					command:</p><p>
+					<code class="code">new java.io.File("C:/myFolder").mkdirs(); </code>
+				</p><p>
+					<code class="code">globalMap.put("out_file",new
+						java.io.FileOutputStream("C:/myFolder/customerselection.txt",false));</code>
+				</p><p>
+					</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>In this scenario, the command we use in the <span class="bold"><strong>Code</strong></span> area of <span class="bold"><strong>tJava</strong></span> will
+							create a new folder <span class="emphasis"><em>C:/myFolder</em></span> where the output
+							file <span class="emphasis"><em>customerselection.txt</em></span> will be saved. You can
+							customize the command in accordance with actual practice.</p></td></tr></table></div><p>
+				</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFileOutputDelimited</strong></span> to open its
+						<span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="382"><tr><td><img src="../images/use_case-tfileoutputdelimited16.png" width="382"></td></tr></table></div></li><li class="listitem"><p>Select <span class="bold"><strong>Use Output Stream</strong></span> check box to enable
+					the <span class="bold"><strong>Output Stream</strong></span> field in which you can define
+					the output stream using command.</p><p>Fill in the <span class="bold"><strong>Output Stream</strong></span> field with
+					following command:</p><p>
+					<code class="code">(java.io.OutputStream)globalMap.get("out_file")</code>
+				</p><p>
+					</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>You can customize the command in the <span class="bold"><strong>Output
+								Stream</strong></span> field by pressing <span class="bold"><strong>CTRL</strong></span>+<span class="bold"><strong>SPACE</strong></span> to select
+							built-in command from the list or type in the command into the field
+							manually in accordance with actual practice. In this scenario, the
+							command we use in the <span class="bold"><strong>Output Stream</strong></span>
+							field will call the <code class="code">java.io.OutputStream</code> class to output
+							the filtered data stream to a local file which is defined in the
+								<span class="bold"><strong>Code</strong></span> area of <span class="bold"><strong>tJava</strong></span> in this scenario.</p></td></tr></table></div><p>
+				</p></li><li class="listitem"><p>Click <span class="bold"><strong>Sync columns</strong></span> to retrieve the schema
+					defined in the preceding component.</p></li><li class="listitem"><p>Leave rest of the components as they were in the previous scenario.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+					it.</p></li></ol></div><p>The three specified columns <span class="emphasis"><em>Id</em></span>, <span class="emphasis"><em>CustomerName</em></span>
+			and <span class="emphasis"><em>CustomerAddress</em></span> are output in the defined output file..</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="50%"><tr><td><img src="../images/Use_Case_tFileOutputDelimited11.png" width="100%"></td></tr></table></div><p>
+			
+		</p></div></div></body></html>

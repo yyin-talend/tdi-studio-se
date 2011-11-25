@@ -1,0 +1,205 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tBufferOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch12.html" title="Chapter&nbsp;12.&nbsp;Misc group components"><link rel="prev" href="tBufferInput.html" title="tBufferInput"><link rel="next" href="tContextDump.html" title="tContextDump"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tBufferOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tBufferOutput"></a>tBufferOutput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tBufferOutput_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tBufferOutput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e209465"></a>tBufferOutput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Component
+                                                  family</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>Misc</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component collects data in a buffer in
+                                                  order to access it later via webservice for
+                                                  example.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component allows a Webservice to access
+                                                  data. Indeed it had been designed to be exported
+                                                  as Webservice in order to access data on the web
+                                                  application server directly. For more information,
+                                                  see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema type</em></span> and
+                                                  <span class="emphasis"><em>Edit Schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>A schema is a row description, i.e., it
+                                                  defines the number of fields that will be
+                                                  processed and passed on to the next component. The
+                                                  schema is either built-in or remote in the
+                                                  Repository. </p>
+                                                  <p> In the case of the <span class="bold"><strong>tBufferOutput</strong></span>, the column position is
+                                                  more important than the column label as this will
+                                                  be taken into account. </p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Built-in</strong></span>:
+                                                  The schema will be created and stored locally for
+                                                  this component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Repository</strong></span>:
+                                                  The schema already exists and is stored in the
+                                                  Repository, hence can be reused in various
+                                                  projects and Job designs. Related topic: see
+                                                  <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component is not startable (green
+                                                  background) and it requires an output
+                                                  component.</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Scenario&nbsp;1: Buffering data (Java)"><div class="titlepage"><div><div><h3 class="title"><a name="Raa80778"></a>Scenario&nbsp;1: Buffering data (Java)</h3></div></div></div><p>This scenario describes an intentionally basic Job that bufferizes data in a
+                        child job while a parent Job simply displays the bufferized data onto the
+                        standard output console. For an example of how to use <span class="bold"><strong>tBufferOutput</strong></span> to access output data directly on the Web
+                        application server, see <a class="xref" href="tBufferOutput.html#Raa69313" title="Scenario 2: Buffering output data on the webapp server">the section called &#8220;Scenario 2: Buffering output data on the webapp server&#8221;</a>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="354"><tr><td><img src="../images/Use_Case_tBufferOutput1.png" width="354"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Create two Jobs: a first Job
+                                                (<span class="emphasis"><em>BufferFatherJob</em></span>) runs the
+                                        second Job and displays its content onto the <span class="bold"><strong>Run </strong></span>console. The second Job
+                                                (<span class="emphasis"><em>BufferChildJob</em></span>) stores the
+                                        defined data into a buffer memory.</p></li><li class="listitem"><p>On the first Job, drop the following components: <span class="bold"><strong>tRunJob</strong></span> and <span class="bold"><strong>tLogRow</strong></span> from the <span class="bold"><strong>Palette</strong></span> to the design
+                                        workspace.</p></li><li class="listitem"><p>On the second Job, drop the following components: <span class="bold"><strong>tFileInputDelimited</strong></span> and
+                                                <span class="bold"><strong>tBufferOutput </strong></span>the
+                                        same way.</p></li></ul></div><p>Let&#8217;s set the parameters of the second Job first:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the <span class="bold"><strong>tFileInputDelimited</strong></span> and on the <span class="bold"><strong>Basic Settings</strong></span> tab of the
+                                                <span class="bold"><strong>Component</strong></span> view, set
+                                        the access parameters to the input file.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="376"><tr><td><img src="../images/Use_Case_tBufferOutput2.png" width="376"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In <span class="bold"><strong>File Name</strong></span>, browse to the
+                                        delimited file whose data are to be bufferized. </p></li><li class="listitem"><p>Define the <span class="bold"><strong>Row</strong></span> and <span class="bold"><strong>Field separators</strong></span>, as well as
+                                        the <span class="bold"><strong>Header</strong></span>. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="457"><tr><td><img src="../images/Use_Case_tBufferOutput3.png" width="457"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Describe the <span class="bold"><strong>Schema </strong></span>of the
+                                        data to be passed on to the <span class="bold"><strong>tBufferOutput </strong></span>component.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>tBufferOutput</strong></span>
+                                        component and set the parameters on the <span class="bold"><strong>Basic Settings </strong></span>tab of the
+                                                <span class="bold"><strong>Component</strong></span> view. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="469"><tr><td><img src="../images/Use_Case_tBufferOutput4.png" width="469"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Generally the schema is propagated from the input component
+                                        and automatically fed into the <span class="bold"><strong>tBufferOutput</strong></span> schema. But you could also
+                                        set part of the schema to be bufferized if you want
+                                        to.</p></li><li class="listitem"><p>Now on the other Job (<span class="emphasis"><em>BufferFatherJob</em></span>)
+                                        Design, define the parameters of the <span class="bold"><strong>tRunJob </strong></span>component.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="510"><tr><td><img src="../images/Use_Case_tBufferOutput5.png" width="510"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Edit the Schema if relevant and select the column to be
+                                        displayed. The schema can be identical to the bufferized
+                                        schema or different.</p></li><li class="listitem"><p>You could also define context parameters to be used for this
+                                        particular execution. To keep it simple, the default context
+                                        with no particular setting is used for this use case. </p></li></ul></div><p>Press <span class="bold"><strong>F6 </strong></span>to execute the parent Job. The
+                                <span class="bold"><strong>tRunJob</strong></span> looks after executing the
+                        child Job and returns the data onto the standard console: </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="422"><tr><td><img src="../images/Use_Case_tBufferOutput6.png" width="422"></td></tr></table></div></div><div class="section" title="Scenario 2: Buffering output data on the webapp server"><div class="titlepage"><div><div><h3 class="title"><a name="Raa69313"></a>Scenario 2: Buffering output data on the webapp server</h3></div></div></div><p>This scenario describes a Job that is called as a Webservice and stores the
+                        output data in a buffer directly on the server of the Web application. This
+                        scenario creates first a Webservice oriented Job with context variables, and
+                        next exports the Job as a Webservice.</p><p><span class="bold"><strong>Creating a Webservice-oriented Job with context
+                                variables:</strong></span></p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace:
+                                                <span class="bold"><strong>tFixedFlowInput</strong></span> and
+                                                <span class="bold"><strong>tBufferOutput</strong></span>.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tFixedFlowInput</strong></span> to
+                                                <span class="bold"><strong>tBufferOutput</strong></span> using
+                                        a <span class="bold"><strong>Row Main</strong></span> link.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="353"><tr><td><img src="../images/Use_Case_tBufferOutput7.png" width="353"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Component</strong></span> tab to
+                                        define the basic settings for <span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p>Set the <span class="bold"><strong>Schema Type</strong></span> to
+                                                <span class="bold"><strong>Built-In</strong></span> and click
+                                        the three-dot <span class="bold"><strong>[...]</strong></span> button
+                                        next to <span class="bold"><strong>Edit Schema </strong></span>to
+                                        describe the data structure you want to create from internal
+                                        variables. In this scenario, the schema is made of three
+                                        columns, <span class="emphasis"><em>now</em></span>,
+                                                <span class="emphasis"><em>firstname</em></span>, and
+                                                <span class="emphasis"><em>lastname</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="419"><tr><td><img src="../images/Use_Case_tBufferOutput9.png" width="419"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add the three parameter lines and
+                                        define your variables.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog
+                                        box and accept propagating the changes when prompted by the
+                                        system. The three defined columns display in the <span class="bold"><strong>Values</strong></span> panel of the <span class="bold"><strong>Basic settings</strong></span> view of
+                                                <span class="bold"><strong>tFixedFlowInput</strong></span>. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504"><tr><td><img src="../images/Use_Case_tBufferOutput8.png" width="504"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click in the <span class="bold"><strong>Value</strong></span> cell of
+                                        each of the first two defined columns and press <span class="bold"><strong>Ctrl+Space </strong></span>to access the
+                                        global variable list.</p></li><li class="listitem"><p>From the global variable list, select <span class="emphasis"><em>TalendDate.getCurrentDate()</em></span>
+                                        and <span class="emphasis"><em>talendDatagenerator.getFirstName</em></span>,
+                                        for the <span class="emphasis"><em>now</em></span> and
+                                                <span class="emphasis"><em>firstname</em></span> columns
+                                        respectively.</p></li></ul></div><p>For this scenario, we want to define two context variables:
+                                <span class="emphasis"><em>nb_lines</em></span> and <span class="emphasis"><em>lastname</em></span>. In
+                        the first we set the number of lines to be generated, and in the second we
+                        set the last name to display in the output list. The <span class="bold"><strong>tFixedFlowInput </strong></span>component will generate the number of
+                        lines set in the context variable with the three columns:
+                                <span class="emphasis"><em>now</em></span>, <span class="emphasis"><em>firstname</em></span> and
+                                <span class="emphasis"><em>lastname</em></span>. For more information about how to
+                        create and use context variables, see <span class="bluebold">Talend Open Studio</span>
+                        <span class="bold"><strong>User Guide</strong></span>.</p><p>To define the two context variables:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select <span class="bold"><strong>tFixedFlowInput </strong></span>and
+                                        click the <span class="bold"><strong>Contexts</strong></span>
+                                        tab.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Variables </strong></span>view, click
+                                        the plus button to add two parameter lines and define
+                                        them.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="439"><tr><td><img src="../images/Use_Case_tBufferOutput10.png" width="439"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the <span class="bold"><strong>Values as table</strong></span> tab
+                                        and define the first parameter to set the number of lines to
+                                        be generated and the second to set the last name to be
+                                        displayed.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="478"><tr><td><img src="../images/Use_Case_tBufferOutput11.png" width="478"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the <span class="bold"><strong>Component </strong></span>tab to go
+                                        back to the <span class="bold"><strong>Basic settings</strong></span>
+                                        view of <span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>Value</strong></span> cell of
+                                                <span class="emphasis"><em>lastname</em></span> column and press
+                                                <span class="bold"><strong>Ctrl+Space </strong></span>to
+                                        access the global variable list.</p></li><li class="listitem"><p>From the global variable list, select
+                                                <span class="emphasis"><em>context.lastname</em></span>, the context
+                                        variable you created for the last name column. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="490"><tr><td><img src="../images/Use_Case_tBufferOutput12.png" width="490"></td></tr></table></div><p><span class="bold"><strong>Exporting your Job as a Webservice:</strong></span></p><p>Before exporting your Job as a Web service, see <span class="bluebold">Talend Open Studio</span>
+                        <span class="bold"><strong>User Guide</strong></span> for more information.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Repository</strong></span> tree view,
+                                        right-click on the above created Job and select <span class="bold"><strong>Export Job Scripts</strong></span>. The
+                                                <span class="bold"><strong>[Export Job Scripts]
+                                        </strong></span>dialog box displays.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="407"><tr><td><img src="../images/Use_Case_tBufferOutput13.png" width="407"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the <span class="bold"><strong>Browse...</strong></span> button to
+                                        select a directory to archive your Job in.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Export type</strong></span> panel,
+                                        select the export type you want to use in the Tomcat webapp
+                                        directory (WAR in this example) and click <span class="bold"><strong>Finish</strong></span>. The <span class="bold"><strong>[Export Job Scripts]</strong></span> dialog
+                                        box disappears.</p></li><li class="listitem"><p>Copy the War folder and paste it in a Tomcat webapp
+                                        directory.</p></li></ul></div></div><div class="section" title="Scenario 3: Calling a Job with context variables from a browser"><div class="titlepage"><div><div><h3 class="title"><a name="d0e210026"></a>Scenario 3: Calling a Job with context variables from a browser</h3></div></div></div><p>This scenario describes how to call the Job you created in scenario 2 from
+                        your browser with/without modifying the values of the context
+                        variables.</p><p>Type the following URL into your browser: <span class="webblue">http://localhost:8080//export_job/services/export_job3?method=runJob</span>
+                        where &#8220;export_job&#8221; is the name of the webapp directory deployed in Tomcat
+                        and &#8220;export_job3&#8221; is the name of the Job.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="370"><tr><td><img src="../images/Use_Case_tBufferOutput14.png" width="370"></td></tr></table></div><p>Click <span class="bold"><strong>Enter</strong></span> to execute your Job from your
+                        browser.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="378"><tr><td><img src="../images/Use_Case_tBufferOutput15.png" width="378"></td></tr></table></div><p>The Job uses the default values of the context variables:
+                                <span class="emphasis"><em>nb_lines</em></span> and <span class="emphasis"><em>lastname</em></span>,
+                        that is it generates three lines with the current date, first name and Ford
+                        as a last name.</p><p>You can modify the values of the context variables directly from your browser.
+                        To call the Job from your browser and modify the values of the two context
+                        variables, type the following URL:</p><p><span class="emphasis"><em>http://localhost:8080//export_job/services/export_job3?method=runJob&amp;arg1=--context_param%20lastname=MASSY&amp;arg2=--context_param%20nb_lines=2.</em></span></p><p>%20 stands for a blank space in the URL language. In the first argument
+                        &#8220;arg1&#8221;, you set the value of the context variable to display &#8220;MASSY&#8221; as last
+                        name. In the second argument &#8220;arg2&#8221;, you set the value of the context
+                        variable to &#8220;2&#8221; to generate only two lines.</p><p>Click <span class="bold"><strong>Enter</strong></span> to execute your Job from your
+                        browser.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="376"><tr><td><img src="../images/Use_Case_tBufferOutput16.png" width="376"></td></tr></table></div><p>The Job generates two lines with MASSY as last name.</p></div><div class="section" title="Scenario 4: Calling a Job exported as Webservice in another Job"><div class="titlepage"><div><div><h3 class="title"><a name="d0e210072"></a>Scenario 4: Calling a Job exported as Webservice in another Job</h3></div></div></div><p>This scenario describes a Job that calls another Job exported as a Webservice
+                        using the <span class="bold"><strong>tWebServiceInput</strong></span>. This scenario
+                        will call the Job created in scenario 2.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace:
+                                                <span class="bold"><strong>tWebServiceInput</strong></span>
+                                        and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tWebserviceInput</strong></span> to
+                                                <span class="bold"><strong>tLogRow</strong></span> using a
+                                                <span class="bold"><strong>Row Main</strong></span>
+                                        link.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="365"><tr><td><img src="../images/Use_Case_CallWebJob1.png" width="365"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tWebServiceInput</strong></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Component</strong></span> tab to
+                                        define the basic settings for <span class="bold"><strong>tWebServiceInput</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="497"><tr><td><img src="../images/Use_Case_CallWebJob6.png" width="497"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set the <span class="bold"><strong>Schema Type</strong></span> to
+                                                <span class="bold"><strong>Built-In</strong></span> and click
+                                        the three-dot <span class="bold"><strong>[...]</strong></span> button
+                                        next to <span class="bold"><strong>Edit Schema </strong></span>to
+                                        describe the data structure you want to call from the
+                                        exported Job. In this scenario, the schema is made of three
+                                        columns, <span class="emphasis"><em>now</em></span>,
+                                                <span class="emphasis"><em>firstname</em></span>, and
+                                                <span class="emphasis"><em>lastname</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="392"><tr><td><img src="../images/Use_Case_CallWebJob5.png" width="392"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add the three parameter lines and
+                                        define your variables.Click <span class="bold"><strong>OK</strong></span> to close the dialog box.</p></li><li class="listitem"><p>In the <span class="bold"><strong>WSDL</strong></span> field of the
+                                                <span class="bold"><strong>Basic settings</strong></span> view
+                                        of <span class="bold"><strong>tWebServiceInput</strong></span>, enter
+                                        the URL <span class="webblue">http://localhost:8080/export_job/services/export_job3?WSDL</span>
+                                        where &#8220;export_job&#8221; is the name od the webapp directory where
+                                        the Job to call is stored and &#8220;export_job3&#8221; is the name of
+                                        the Job itself. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="496"><tr><td><img src="../images/Use_Case_CallWebJob2.png" width="496"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Method name </strong></span>field,
+                                        enter <span class="emphasis"><em>runJob</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Parameters</strong></span> panel,
+                                        Click the plus button to add two parameter lines to define
+                                        your context variables.</p></li><li class="listitem"><p>Click in the first <span class="bold"><strong>Value</strong></span> cell
+                                        to enter the parameter to set the number of generated lines
+                                        using the following syntax: <span class="emphasis"><em>--context_param
+                                                nb_line=3.</em></span></p></li><li class="listitem"><p>Click in the second <span class="bold"><strong>Value</strong></span>
+                                        cell to enter the parameter to set the last name to display
+                                        using the following syntax: <span class="emphasis"><em>--context_param
+                                                lastname=Ford.</em></span></p></li><li class="listitem"><p>Select <span class="bold"><strong>tLogRow</strong></span> and click the
+                                                <span class="bold"><strong>Component</strong></span> tab to
+                                        display the component view.</p></li><li class="listitem"><p>Set the <span class="bold"><strong>Basic settings </strong></span>for
+                                        the <span class="bold"><strong>tLogRow </strong></span>component to
+                                        display the output data in a tabular mode. For more
+                                        information, see <a class="xref" href="tLogRow.html" title="tLogRow">the section called &#8220;tLogRow&#8221;</a>.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to
+                                        execute it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="459"><tr><td><img src="../images/Use_Case_CallWebJob4.png" width="459"></td></tr></table></div><p>The system generates three columns with the current date, first name, and last
+                        name and displays them onto the log console in a tabular mode.</p></div></div></body></html>

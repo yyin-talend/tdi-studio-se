@@ -1,0 +1,184 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFuzzyMatch</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch05.html" title="Chapitre&nbsp;5.&nbsp;Composants Data Quality"><link rel="prev" href="dataquality_tExtractRegexFields.html" title="tExtractRegexFields"><link rel="next" href="tIntervalMatch.html" title="tIntervalMatch"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFuzzyMatch"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFuzzyMatch"></a>tFuzzyMatch</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFuzzyMatch.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tFuzzyMatch"><div class="titlepage"><div><div><h3 class="title"><a name="d0e49263"></a>Propri&eacute;t&eacute;s du tFuzzyMatch</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Data Quality</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tFuzzyMatch</strong></span> compare
+                                une colonne du flux principal avec une colonne du flux de r&eacute;f&eacute;rence
+                                et extrait les donn&eacute;es du flux principal en affichant la
+                                distance.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tFuzzyMatch</strong></span> permet d&#8217;assurer
+                                la qualit&eacute; des donn&eacute;es de n&#8217;importe quelle source de donn&eacute;es en la
+                                comparant avec une source de donn&eacute;es de r&eacute;f&eacute;rence.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (built-in) soit distant dans le Repository. </p>
+                            <p>Deux colonnes en lecture seule sont ajout&eacute;es automatiquement au
+                                sch&eacute;ma de sortie&nbsp;: <span class="bold"><strong>Value</strong></span> et
+                                    <span class="bold"><strong>Match</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma est cr&eacute;&eacute; et
+                                conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+                                r&eacute;utilisable dans divers projets et Job designs. Voir &eacute;galement&nbsp;le
+                                    <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Matching type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez l&#8217;algorithme de correspondance appropri&eacute; parmi les
+                                suivants&nbsp;:</p>
+                            <p><span class="bold"><strong>Levenshtein</strong></span>&nbsp;: Bas&eacute; sur la th&eacute;orie
+                                de la distance d&#8217;&eacute;dition. Il calcule le nombre d&#8217;insertion, de
+                                suppression ou de substitution n&eacute;cessaire pour correspondre &agrave; la
+                                r&eacute;f&eacute;rence.</p>
+                            <p><span class="bold"><strong>Metaphone</strong></span>&nbsp;: Bas&eacute; sur la
+                                phon&eacute;tique. Tout d&#8217;abord, il charge les sonorit&eacute;s de toutes les
+                                entr&eacute;es du flux de r&eacute;f&eacute;rence (Lookup) et les compare avec celles des
+                                entr&eacute;es du flux principal (Main).</p>
+                            <p><span class="bold"><strong>Double Metaphone</strong></span>&nbsp;: une nouvelle
+                                version de l&#8217;algorithme phon&eacute;tique Metaphone, qui produit des
+                                r&eacute;sultats plus pr&eacute;cis que l&#8217;algorithme original. Il peut retourner &agrave;
+                                la fois un code primaire et secondaire pour une cha&icirc;ne de
+                                caract&egrave;res. Pour &eacute;viter toute ambigu&iuml;t&eacute; que le Metaphone n&#8217;aurait
+                                pas pu d&eacute;tecter, utilisez cette option.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Min distance</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>(Levenshtein uniquement) D&eacute;finissez le nombre minimum de
+                                modifications autoris&eacute;es pour correspondre &agrave; la r&eacute;f&eacute;rence. Si vous
+                                d&eacute;finissez 0, seules les correspondances exactes sont
+                                extraites.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Max distance</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>(Levenshtein uniquement) D&eacute;finissez le nombre maximum de
+                                modificiations pouvant correspondre &agrave; la r&eacute;f&eacute;rence.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Matching column</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez la colonne du flux principal qui doit &ecirc;tre compar&eacute;e
+                                avec la colonne cl&eacute; du flux de r&eacute;f&eacute;rence (Lookup).</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Unique matching</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour obtenir la meilleure correspondance
+                                possible, si plusieurs correspondances sont disponibles.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Matching item separator</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Si plusieurs correspondances sont disponibles, elles seront toutes
+                                affich&eacute;es sauf si la case <span class="bold"><strong>Unique
+                                    match</strong></span> est coch&eacute;e. D&eacute;finissez le d&eacute;limiteur entre
+                                chaque correspondance.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant n&#8217;est pas un composant de d&eacute;but (fond vert) et il
+                                n&eacute;cessite deux composants d&#8217;entr&eacute;e et un composant de sortie.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;1&nbsp;: Distance de Levenshtein de 0 pour les pr&eacute;noms"><div class="titlepage"><div><div><h3 class="title"><a name="d0e49549"></a>Sc&eacute;nario&nbsp;1&nbsp;: Distance de Levenshtein de 0 pour les pr&eacute;noms</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job constitu&eacute; de quatre composants dont le but est de v&eacute;rifier
+            la distance d&#8217;&eacute;dition comprise entre les colonnes <span class="emphasis"><em>First Name</em></span>
+            (pr&eacute;nom) d&#8217;un fichier d&#8217;entr&eacute;e et de comparer les donn&eacute;es avec celles du fichier de
+            r&eacute;f&eacute;rence. Le r&eacute;sultat de cette v&eacute;rification de la distance de Levenshtein et le contenu
+            du flux principal sont affich&eacute;s dans une table.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="407"><tr><td><img src="../images/Use_Case_tFuzzyMatch1.png" width="407"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez et d&eacute;posez les composants suivants de la <span class="bold"><strong>Palette</strong></span> dans l&#8217;espace de mod&eacute;lisation&nbsp;: <span class="bold"><strong>tFileInputDelimited</strong></span> (x2), <span class="bold"><strong>tFuzzyMatch</strong></span> et <span class="bold"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="listitem"><p>Param&eacute;trez les propri&eacute;t&eacute;s du composant <span class="bold"><strong>tFileInputDelimited</strong></span> &agrave; partir de l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>. Parcourez votre r&eacute;pertoire et s&eacute;lectionnez le
+                    fichier d&#8217;entr&eacute;e &agrave; analyser. Mais surtout d&eacute;finissez le sch&eacute;ma &agrave; utiliser par le
+                    flux &agrave; v&eacute;rifier.</p></li><li class="listitem"><p>Dans le sch&eacute;ma, d&eacute;finissez le <span class="bold"><strong>Type</strong></span> de donn&eacute;es
+                    en version Java, surtout si vous &ecirc;tes en mode <span class="bold"><strong>Built-in</strong></span>.</p></li><li class="listitem"><p>Connectez ce composant d&#8217;entr&eacute;e au <span class="bold"><strong>tFuzzyMatch</strong></span> &agrave; l&#8217;aide d&#8217;une connexion de type <span class="bold"><strong>Main Row</strong></span>.</p></li><li class="listitem"><p>D&eacute;finissez le deuxi&egrave;me composant <span class="bold"><strong>tFileInputDelimited</strong></span> de la m&ecirc;me mani&egrave;re.</p></li></ul></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Assurez-vous que la colonne de r&eacute;f&eacute;rence a bien &eacute;t&eacute; d&eacute;finie comme
+                    colonne cl&eacute; dans le sch&eacute;ma du flux de r&eacute;f&eacute;rence (lookup).</em></span>
+            </p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="464"><tr><td><img src="../images/Use_Case_tFuzzyMatch2.png" width="464"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Puis connectez le deuxi&egrave;me composant d&#8217;entr&eacute;e au <span class="bold"><strong>tFuzzyMatch</strong></span> &agrave; l&#8217;aide d&#8217;une connexion main row (qui appara&icirc;t
+                    comme une connexion <span class="bold"><strong>Lookup</strong></span> row dans l&#8217;espace de
+                    mod&eacute;lisation).</p></li><li class="listitem"><p>D&eacute;finissez les propri&eacute;t&eacute;s du <span class="bold"><strong>tFuzzyMatch</strong></span> dans
+                    l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>.</p></li><li class="listitem"><p>Le <span class="bold"><strong>Sch&eacute;ma</strong></span> doit correspondre &agrave; celui du flux
+                    d&#8217;entr&eacute;e principal (<span class="bold"><strong>Main</strong></span>) afin que le flux
+                    principal soit compar&eacute; au flux de r&eacute;f&eacute;rence.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="398"><tr><td><img src="../images/Use_Case_tFuzzyMatch4.png" width="398"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Notez que deux colonnes&nbsp;: <span class="bold"><strong>Value</strong></span> et <span class="bold"><strong>Matching</strong></span> sont ajout&eacute;es au sch&eacute;ma de sortie. Elles
+                    correspondent &agrave; des informations standard de correspondance et sont en lecture
+                    seule.</p></li><li class="listitem"><p>S&eacute;lectionnez la m&eacute;thode &agrave; utiliser pour la v&eacute;rification des donn&eacute;es entrantes.
+                    Dans ce sc&eacute;nario, la correspondance &agrave; s&eacute;lectionner dans le champ <span class="bold"><strong>Matching type</strong></span> est de type
+                        <span class="emphasis"><em>Levenshtein</em></span>.</p></li><li class="listitem"><p>Ensuite d&eacute;finissez la distance. Dans cette m&eacute;thode, la distance est le nombre
+                    de caract&egrave;res modifi&eacute;s (insertion, suppression ou substitution) pour que
+                    l&#8217;entr&eacute;e principale corresponde exactement &agrave; l&#8217;entr&eacute;e de r&eacute;f&eacute;rence.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="411"><tr><td><img src="../images/Use_Case_tFuzzyMatch3.png" width="411"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans ce sc&eacute;nario, l&#8217;objectif est de faire en sorte que la distance soit de&nbsp;0
+                    en minimum et en maximum dans les champs <span class="bold"><strong>Min.
+                        distance</strong></span> et <span class="bold"><strong>Max. distance</strong></span>. Ce
+                    qui signifie que seule une correspondance exacte sera redirig&eacute;e en flux de
+                    sortie.</p></li><li class="listitem"><p>D&eacute;cochez la case <span class="bold"><strong>Case sensitive</strong></span> pour ne pas
+                    prendre en compte la casse.</p></li><li class="listitem"><p>Et dans le champ <span class="bold"><strong>Matching column</strong></span>,
+                    s&eacute;lectionnez la colonne du flux principal qui doit &ecirc;tre v&eacute;rifi&eacute;e. Dans cet
+                    exemple, le pr&eacute;nom (<span class="emphasis"><em>First name</em></span>).</p></li><li class="listitem"><p>Ne cochez pas la case <span class="bold"><strong>Unique matching</strong></span> et ne
+                    modifiez pas le s&eacute;parateur.</p></li><li class="listitem"><p>Connectez le <span class="bold"><strong>tFuzzyMatch</strong></span> &agrave; un composant de
+                    sortie standard type <span class="bold"><strong>tLogRow</strong></span>. Ne d&eacute;finissez
+                    aucun autre param&egrave;tre que le d&eacute;limiteur pour ce sc&eacute;nario.</p></li><li class="listitem"><p>Enregistrez le Job et appuyez sur la touche <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter le Job.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="375"><tr><td><img src="../images/Use_Case_tFuzzyMatch5.png" width="375"></td></tr></table></div><p>Comme la distance d&#8217;&eacute;dition d&eacute;finie est de 0 (min. et max.), la sortie correspond &agrave;
+            une jointure entre le flux principal et le flux de r&eacute;f&eacute;rence (lookup), ainsi seules les
+            correspondances totales avec une valeur &eacute;gale &agrave;&nbsp;0 sont affich&eacute;es.</p><p>Pour un exemple plus &eacute;vident avec une distance minimum de&nbsp;1 et une distance maximum
+            de&nbsp;2, consultez <a class="xref" href="tFuzzyMatch.html#Raa70931" title="Sc&eacute;nario&nbsp;2&nbsp;: Distance de Levenshtein de 1 ou 2 pour les pr&eacute;noms">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Distance de Levenshtein de 1 ou 2 pour les pr&eacute;noms&nbsp;&raquo;</a></p></div><div class="section" title="Sc&eacute;nario&nbsp;2&nbsp;: Distance de Levenshtein de 1 ou 2 pour les pr&eacute;noms"><div class="titlepage"><div><div><h3 class="title"><a name="Raa70931"></a>Sc&eacute;nario&nbsp;2&nbsp;: Distance de Levenshtein de 1 ou 2 pour les pr&eacute;noms</h3></div></div></div><p>Ce sc&eacute;nario est bas&eacute; sur le sc&eacute;nario&nbsp;1 d&eacute;crit ci-dessus. Seuls les param&egrave;tres distance
+            min. et max. du composant <span class="bold"><strong>tFuzzyMatch</strong></span> sont modifi&eacute;s, ce
+            qui modifiera la sortie affich&eacute;e.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la vue <span class="bold"><strong>Component</strong></span> du <span class="bold"><strong>tFuzzyMatch</strong></span>, modifiez la distance min. de&nbsp;0 &agrave;&nbsp;1. Ceci
+                    exclut directement les correspondances exactes (qui ont une distance de
+                    0).</p></li><li class="listitem"><p>Maintenant mettez une distance max. de&nbsp;2 puisque la distance max. ne peut &ecirc;tre
+                    inf&eacute;rieure &agrave; la distance min. La sortie correspond &agrave; toutes les donn&eacute;es mises en
+                    correspondance contenant une diff&eacute;rence de 2&nbsp;caract&egrave;res au plus.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="411"><tr><td><img src="../images/Use_Case_tFuzzyMatch6.png" width="411"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Aucune autre modification de param&egrave;tres n&#8217;est n&eacute;cessaire.</p></li><li class="listitem"><p>Assurez-vous que le s&eacute;parateur de champs (<span class="bold"><strong>Matching item
+                        separator</strong></span>) est bien d&eacute;fini, vu que plusieurs entr&eacute;es de r&eacute;f&eacute;rence
+                    peuvent correspondre &agrave; l&#8217;entr&eacute;e du flux principal.</p></li><li class="listitem"><p>Enregistrez votre nouveau Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="429"><tr><td><img src="../images/Use_Case_tFuzzyMatch7.png" width="429"></td></tr></table></div><p>Etant donn&eacute; que la distance d&#8217;&eacute;dition a &eacute;t&eacute; d&eacute;finie &agrave;&nbsp;2, certaines entr&eacute;es du flux
+            principal correspondent &agrave; plusieurs entr&eacute;es de r&eacute;f&eacute;rence (lookup).</p><p>Vous pouvez utiliser une autre m&eacute;thode, la M&eacute;taphone, pour &eacute;valuer la distance entre
+            le flux principal et le flux de r&eacute;f&eacute;rence.</p></div><div class="section" title="Sc&eacute;nario&nbsp;3&nbsp;: Distance m&eacute;taphonique pour les pr&eacute;noms"><div class="titlepage"><div><div><h3 class="title"><a name="d0e49774"></a>Sc&eacute;nario&nbsp;3&nbsp;: Distance m&eacute;taphonique pour les pr&eacute;noms</h3></div></div></div><p>Ce sc&eacute;nario est bas&eacute; sur le sc&eacute;nario&nbsp;1 d&eacute;crit plus haut.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="411"><tr><td><img src="../images/Use_Case_tFuzzyMatch8.png" width="411"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Modifiez le champ <span class="bold"><strong>Matching type</strong></span> avec l&#8217;option
+                        <span class="bold"><strong>Metaphone</strong></span>. Aucune distance minimum et
+                    aucune distance maximum ne sont &agrave; d&eacute;finir puisque cette m&eacute;thode est bas&eacute;e sur
+                    les diff&eacute;rences de phon&eacute;tique avec la r&eacute;f&eacute;rence.</p></li><li class="listitem"><p>Enregistrez le Job et appuyez sur <span class="bold"><strong>F6</strong></span>. La
+                    valeur phon&eacute;tique est affich&eacute;e avec les correspondances possibles.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="365"><tr><td><img src="../images/Use_Case_tFuzzyMatch9.png" width="365"></td></tr></table></div></div></div></body></html>

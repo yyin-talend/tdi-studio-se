@@ -1,0 +1,378 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileOutputDelimited</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapitre&nbsp;9.&nbsp;Composants File"><link rel="prev" href="tFileOutputARFF.html" title="tFileOutputARFF"><link rel="next" href="tFileOutputEBCDIC.html" title="tFileOutputEBCDIC"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFileOutputDelimited"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileOutputDelimited"></a>tFileOutputDelimited</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileOutputDelimited_icon32.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tFileOutputDelimited"><div class="titlepage"><div><div><h3 class="title"><a name="d0e189995"></a>Propri&eacute;t&eacute;s du tFileOutputDelimited</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>File/Output</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tFileOutputDelimited</strong></span>
+                                transmet des donn&eacute;es vers un fichier d&eacute;limit&eacute;.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant &eacute;crit un fichier d&eacute;limit&eacute; contenant des donn&eacute;es
+                                organis&eacute;es en fonction du sch&eacute;ma d&eacute;fini.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Property type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Peut &ecirc;tre Built-in ou Repository.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Propri&eacute;t&eacute;s utilis&eacute;es
+                                ponctuellement.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+                                fichier de propri&eacute;t&eacute;s du composant. Les champs suivants sont alors
+                                pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es collect&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use Output Stream</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez la case pour traiter le flux de donn&eacute;es qui vous int&eacute;resse.
+                                Une fois coch&eacute;e, le champ <span class="bold"><strong>Output
+                                    Stream</strong></span> s&#8217;affiche et vous pouvez saisir le flux de
+                                donn&eacute;es souhait&eacute;.</p>
+                            <p>Le flux de donn&eacute;es &agrave; traiter doit &ecirc;tre ajout&eacute; au flux afin que ce
+                                composant r&eacute;cup&egrave;re ces donn&eacute;es via la variable repr&eacute;sentative
+                                correspondante.</p>
+                            <p>Cette variable peut &ecirc;tre pr&eacute;d&eacute;finie dans votre Studio ou fournie
+                                par le contexte ou les composants utilis&eacute;(s) avec ce composant.
+                                Sinon, vous pouvez la d&eacute;finir manuellement et l&#8217;utiliser selon votre
+                                Job, par exemple &agrave; l&#8217;aide d&#8217;un <span class="bold"><strong>tJava</strong></span> ou d&#8217;un <span class="bold"><strong>tJavaFlex</strong></span>.</p>
+                            <p>Afin d&#8217;&eacute;viter les d&eacute;sagr&eacute;ments de la saisie, vous pouvez
+                                s&eacute;lectionner la variable qui vous int&eacute;resse dans la liste
+                                d&#8217;autocompl&eacute;tion (<span class="bold"><strong>Ctrl+Espace</strong></span>) afin
+                                de remplir le champ, si cette variable a &eacute;t&eacute; correctement
+                                d&eacute;finie.</p>
+                            <p>Pour plus d&#8217;informations concernant l&#8217;utilisation d&#8217;un flux,
+                                    consultez&nbsp;<a class="xref" href="tFileInputDelimited.html#Raa47862" title="Sc&eacute;nario&nbsp;2&nbsp;: Lire les donn&eacute;es d&#8217;un fichier distant en mode stream">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Lire les donn&eacute;es d&#8217;un fichier distant en mode stream&nbsp;&raquo;</a>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>File name</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Chemin d&#8217;acc&egrave;s et nom du fichier de sortie et/ou variable &agrave;
+                                utiliser.</p>
+                            <p>Ce champ est indisponible lorsque vous avez coch&eacute; la case
+                                    <span class="bold"><strong>Use Output Stream</strong></span>.</p>
+                            <p>Pour plus d&#8217;informations concernant l&#8217;utilisation et la d&eacute;finition
+                                de variables, consultez le<span class="bold"><strong>Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Row Separator</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cha&icirc;ne (ex&nbsp;: &#8220;\n&#8221; sous Unix) s&eacute;parant les lignes.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Field Separator</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Caract&egrave;re, cha&icirc;ne ou expression r&eacute;guli&egrave;re pour s&eacute;parer les champs
+                                du fichier de sortie.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Append</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette option pour ajouter de nouvelles lignes &agrave; la fin du
+                                fichier.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Include Header</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour tenir compte de l&#8217;en-t&ecirc;te dans le fichier
+                                de sortie.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Compress as zip file</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour compresser en zip le fichier de
+                                sortie.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (<span class="bold"><strong>Built-in</strong></span>),
+                                soit distant dans le <span class="bold"><strong>Repository</strong></span>..</p>
+                            <p>Si vous effectuez des modifications, le sch&eacute;ma passe
+                                automatiquement en mode <span class="bold"><strong>Built-In</strong></span>.</p>
+                            <p> </p>
+                            
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma est cr&eacute;&eacute; et
+                                conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le<span class="bold"><strong> Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+                                dans divers projets et Jobs. Voir &eacute;galement le<span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Sync columns</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cliquez sur ce bouton pour synchroniser le sch&eacute;ma de sortie avec
+                                celui d&#8217;entr&eacute;e. La fonction <span class="bold"><strong>Sync</strong></span> ne
+                                s&#8217;affiche que si une connexion de type <span class="bold"><strong>Row</strong></span> est li&eacute;e au composant de sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Advanced separator (for numbers)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette option pour modifier les s&eacute;parateurs utilis&eacute;s pour
+                                les nombres&nbsp;:</p>
+                            <p><span class="bold"><strong>Thousands separator</strong></span>&nbsp;: d&eacute;finissez
+                                le s&eacute;parateur utilis&eacute; pour les milliers.</p>
+                            <p><span class="bold"><strong>Decimal separator</strong></span>&nbsp;: d&eacute;finissez le
+                                s&eacute;parateur utilis&eacute; pour les d&eacute;cimaux. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>CSV options</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour prendre en compte les param&egrave;tres
+                                sp&eacute;cifiques aux fichiers CSV, notamment la mani&egrave;re de prot&eacute;ger les
+                                caract&egrave;res dans le champ <span class="bold"><strong>Escape
+                                    char</strong></span> et le type de guillemet dans le champ <span class="bold"><strong>Enclosure</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Create directory if not exists</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cette case est coch&eacute;e par d&eacute;faut. Cette option permet de cr&eacute;er le
+                                dossier contenant le fichier de sortie s&#8217;il n&#8217;existe pas
+                                d&eacute;j&agrave;.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Split output in several files</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Si le fichier d&eacute;limit&eacute; en sortie est volumineux, vous pouvez le
+                                scinder en plusieurs fichiers.</p>
+                            <p><span class="bold"><strong>Rows in each output file</strong></span>&nbsp;:
+                                saisissez le nombre de lignes pour chaque fichier de sortie.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Custom the flush buffer size</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour personnaliser le nombre de lignes &agrave; &eacute;crire
+                                avant de vider le tampon.</p>
+                            <p><span class="bold"><strong>Row Number</strong></span> : Nombre de lignes &agrave;
+                                &eacute;crire avant de vider le tampon.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Output in row mode</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour que l&#8217;&eacute;criture se fasse en mode
+                                ligne.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Encoding</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+                                    <span class="bold"><strong>Custom</strong></span> et d&eacute;finissez-le
+                                manuellement. Ce champ est obligatoire pour la manipulation des
+                                donn&eacute;es de base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Don&#8217;t generate empty file</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour emp&ecirc;cher la g&eacute;n&eacute;ration d&#8217;un fichier
+                                vide.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+                                Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Utilisez ce composant pour &eacute;crire dans un fichier d&eacute;limit&eacute; des
+                                donn&eacute;es r&eacute;cup&eacute;r&eacute;es d&#8217;autres composants &agrave; l&#8217;aide d&#8217;une connexion de
+                                type <span class="bold"><strong>Row</strong></span> et s&eacute;parer les champs &agrave;
+                                l&#8217;aide d&#8217;un s&eacute;parateur.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Ecrire des donn&eacute;es dans un fichier d&eacute;limit&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20111116-file-tfileoutputdelimited_scenario"></a>Sc&eacute;nario&nbsp;: Ecrire des donn&eacute;es dans un fichier d&eacute;limit&eacute;</h3></div></div></div><p>Ce sc&eacute;nario est constitu&eacute; de trois composants et a pour objectif d&#8217;extraire certaines
+            donn&eacute;es d&#8217;un fichier contenant des informations sur les clients
+                (<span class="emphasis"><em>customers</em></span>) puis de les &eacute;crire dans un fichier d&eacute;limit&eacute; en
+            sortie. </p><p>Dans l&#8217;exemple suivant, vous avez enregistr&eacute; les informations de connexion et les
+            m&eacute;tadonn&eacute;es dans le <span class="bold"><strong>Repository </strong></span><span class="underline">afin de faciliter leur r&eacute;utilisation</span>. Pour plus d&#8217;informations sur comment
+            centraliser les donn&eacute;es de connexion et autres m&eacute;tadonn&eacute;es d&#8217;un fichier dans le
+                <span class="bold"><strong>Repository</strong></span>, consultez le <span class="bold"><strong>Guide Utilisateur</strong></span>
+            <span class="Variable"><span class="italic">Talend Integration
+                    Suite Studio</span></span>.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tFileOutputDelimited9.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le <span class="bold"><strong>Repository</strong></span>, ouvrez le n&#339;ud<span class="bold"><strong> File Delimited</strong></span> de la cat&eacute;gorie <span class="bold"><strong>Metadata</strong></span>. Cliquez sur la m&eacute;tadonn&eacute;e
+                        <span class="emphasis"><em>customers</em></span>, et d&eacute;posez-le dans l&#8217;espace de mod&eacute;lisation
+                    graphique. Une bo&icirc;te de dialogue s&#8217;ouvre et vous demande quel type de composant
+                    vous voulez d&eacute;poser.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tFileOutputDelimited1.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="bold"><strong>tFileInputDelimited</strong></span> puis sur
+                        <span class="bold"><strong>OK</strong></span> Un composant <span class="bold"><strong>tFileInputDelimited</strong></span> contenant le nom de votre sch&eacute;ma d&#8217;entr&eacute;e
+                    s&#8217;affiche dans l&#8217;espace de mod&eacute;lisation graphique.</p></li><li class="listitem"><p>D&eacute;posez un composant <span class="bold"><strong>tMap</strong></span> et un composant
+                        <span class="bold"><strong>tFileOutputDelimited</strong></span> de la <span class="bold"><strong>Palette</strong></span> dans l&#8217;espace de mod&eacute;lisation
+                    graphique.</p></li><li class="listitem"><p>Reliez les composants &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span>
+                    &gt; <span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant afin d&#8217;afficher la vue <span class="bold"><strong>Component</strong></span>, afin de param&eacute;trer les informations de connexion et
+                    d&eacute;finir le sch&eacute;ma des donn&eacute;es d'entr&eacute;e. </p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tFileOutputDelimited2.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Si vous s&eacute;lectionnez <span class="bold"><strong>Repository</strong></span> dans la liste
+                        <span class="bold"><strong>Property Type</strong></span>, les champs suivants seront
+                    automatiquement renseign&eacute;s &agrave; partir des informations centralis&eacute;es dans le
+                        <span class="bold"><strong>Repository</strong></span>. Si vous s&eacute;lectionnez le mode
+                        <span class="bold"><strong>Built-In</strong></span>, renseignez les champs
+                    manuellement.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> correspondant au
+                    champ <span class="bold"><strong>File Name</strong></span>. Dans la bo&icirc;te de dialogue de
+                    s&eacute;lection, parcourez le syst&egrave;me de fichiers et s&eacute;lectionnez le fichier d&#8217;entr&eacute;e,
+                    dans cet exemple: <span class="emphasis"><em>customer.csv</em></span>.</p></li></ul></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Si le chemin d&#8217;acc&egrave;s du fichier contient des caract&egrave;res accentu&eacute;s, vous
+                    obtiendrez un message d&#8217;erreur lors de l&#8217;ex&eacute;cution du Job. Pour plus
+                    d&#8217;informations concernant la proc&eacute;dure &agrave; suivre lorsque les accents ne sont pas
+                    support&eacute;s, consultez le</em></span>
+                <span class="bold"><strong>Guide d&#8217;installation</strong></span>
+                <span class="emphasis"><em> </em></span>
+                <span class="bluebold">
+                    Talend Open Studio
+                </span>
+                <span class="emphasis"><em>.</em></span>
+            </p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans les champs<span class="bold"><strong> Row </strong></span>et <span class="bold"><strong>Field Separators</strong></span>, saisissez respectivement le s&eacute;parateur de
+                    lignes "<span class="emphasis"><em>\n</em></span>" et le s&eacute;parateur de champs
+                        "<span class="emphasis"><em>;</em></span>".</p></li><li class="listitem"><p>Si votre fichier contient des en-t&ecirc;tes ou des pieds-de-page, indiquez le
+                    nombre de lignes concern&eacute;es dans les champs <span class="bold"><strong>Header</strong></span> et <span class="bold"><strong>Footer</strong></span>. Dans cet
+                    exemple, saisissez&nbsp;<span class="emphasis"><em>6</em></span> dans le champ <span class="bold"><strong>Header</strong></span>. Vous pouvez &eacute;galement d&eacute;finir une limite au nombre de
+                    lignes trait&eacute;es, en saisissant un nombre dans le champ <span class="bold"><strong>Limit</strong></span>.</p></li><li class="listitem"><p>Si vous avez s&eacute;lectionn&eacute; le mode <span class="bold"><strong>Repository</strong></span>,
+                    le sch&eacute;ma du fichier sera automatiquement renseign&eacute;. En mode <span class="bold"><strong>Built-in</strong></span>, cliquez sur <span class="bold"><strong>Edit
+                        Schema</strong></span> afin de d&eacute;crire les donn&eacute;es d&#8217;entr&eacute;e, et ainsi d&eacute;finir le
+                    sch&eacute;ma trait&eacute;. </p></li></ul></div><p>Le sch&eacute;ma du fichier <span class="emphasis"><em>Customers</em></span> se pr&eacute;sente comme suit&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tFileOutputDelimited4.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                    dialogue.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tMap </strong></span>afin d&#8217;ouvrir son
+                    &eacute;diteur.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tFileOutputDelimited7.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans cet &eacute;diteur, cliquez sur le bouton <span class="bold"><strong>plus</strong></span>
+                    vert <span class="inlinemediaobject"><img src="../images/Use_Case_tFileOutputDelimited12.png" width="23"></span> en haut &agrave; droite pour ouvrir la bo&icirc;te de dialogue <span class="bold"><strong>[Add a new output table]</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tFileOutputDelimited6.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Saisissez un nom pour la table que vous souhaitez cr&eacute;er,
+                        <span class="emphasis"><em>row2</em></span> dans cet exemple.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider vos modifications
+                    et fermer la bo&icirc;te de dialogue.</p></li><li class="listitem"><p>Dans la table de gauche (<span class="emphasis"><em>row1</em></span>), s&eacute;lectionnez les trois
+                    premi&egrave;res lignes (<span class="emphasis"><em>Id</em></span>, <span class="emphasis"><em>CustomerName</em></span> et
+                        <span class="emphasis"><em>CustomerAddress</em></span>) en appuyant sur <span class="bold"><strong>Ctrl</strong></span>, puis glissez-les dans la table de droite.</p></li><li class="listitem"><p>Dans le <span class="bold"><strong>Schema editor</strong></span> en bas de l&#8217;&eacute;diteur,
+                    changez le <span class="bold"><strong>Type</strong></span> de la ligne <span class="bold"><strong>RegisterTime</strong></span>, dans la table de droite, et passez-le
+                    en cha&icirc;ne de caract&egrave;res, <span class="bold"><strong>String</strong></span>. </p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tFileOutputDelimited8.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour enregistrer les
+                    modifications et fermer l&#8217;&eacute;diteur.</p></li><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation, double-cliquez sur le composant<span class="bold"><strong> tFileOutputDelimited</strong></span> pour ouvrir la vue <span class="bold"><strong>Component</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tFileOutputDelimited10.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Property Type</strong></span>, s&eacute;lectionnez le
+                    mode <span class="bold"><strong>Built-in</strong></span> et renseignez les champs suivants
+                    manuellement.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> correspondant au
+                    champ <span class="bold"><strong>File Name</strong></span>. Dans la bo&icirc;te de dialogue de
+                    s&eacute;lection, indiquez le r&eacute;pertoire de destination et le nom de votre
+                    fichier.</p></li><li class="listitem"><p>Pour les champs <span class="bold"><strong>Row</strong></span> et <span class="bold"><strong>Field Separator</strong></span><span class="bold"><strong>s</strong></span>, saisissez
+                    respectivement le s&eacute;parateur de lignes &#8220;<span class="emphasis"><em>\n</em></span>&#8221; et le
+                    s&eacute;parateur de champs &#8220;<span class="emphasis"><em>;</em></span>&#8221;. Ils seront utilis&eacute;s dans le
+                    fichier de sortie pour d&eacute;limiter les valeurs et les lignes.</p></li><li class="listitem"><p>Cochez la case <span class="bold"><strong>Include Header</strong></span> si vous
+                    souhaitez r&eacute;cup&eacute;rer le libell&eacute; des colonnes.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Edit schema</strong></span> et assurez-vous que
+                    le sch&eacute;ma est correctement r&eacute;cup&eacute;r&eacute; du sch&eacute;ma d&#8217;entr&eacute;e. Si n&eacute;cessaire, cliquez
+                    sur <span class="bold"><strong>Sync Columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma du
+                    composant pr&eacute;c&eacute;dent. </p></li><li class="listitem"><p>Pour ex&eacute;cuter le Job, appuyez sur <span class="bold"><strong>F6</strong></span>. </p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tFileOutputDelimited11.png" align="middle"></div><p>Le fichier cr&eacute;&eacute; est d&eacute;limit&eacute; par des points-virgules, il ne contient que les colonnes
+                <span class="emphasis"><em>Id</em></span>, <span class="emphasis"><em>CustomerName</em></span> et
+                <span class="emphasis"><em>CustomerAddress</em></span>.</p></div><div class="section" title="Sc&eacute;nario : Utiliser un flux de sortie pour sauvegarder des donn&eacute;es dans un fichier local"><div class="titlepage"><div><div><h3 class="title"><a name="fhan-20111017-file_tfileoutputdelimited_sce2"></a>Sc&eacute;nario : Utiliser un flux de sortie pour sauvegarder des donn&eacute;es dans un fichier
+            local</h3></div></div></div><p>Bas&eacute; sur le sc&eacute;nario pr&eacute;c&eacute;dent, ce sc&eacute;nario sauvegarde les donn&eacute;es filtr&eacute;es dans un
+            fichier local, &agrave; l'aide de l'option <span class="bold"><strong>Output
+            Stream</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-tfileoutputdelimited12.png" align="middle"></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>D&eacute;posez un composant <span class="bold"><strong>tJava</strong></span> de la <span class="bold"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation
+                    graphique.</p></li><li class="listitem"><p>Connectez le <span class="bold"><strong>tJava</strong></span> au <span class="bold"><strong>tFileInputDelimited</strong></span> &agrave; l'aide d'un lien <span class="bold"><strong>Trigger</strong></span> &gt; <span class="bold"><strong>On Subjob OK</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tJava</strong></span> pour ouvrir sa
+                    vue <span class="bold"><strong>Basic settings</strong></span> et configurer ses
+                    propri&eacute;t&eacute;s. </p><div class="mediaobject" align="center"><img src="../images/use_case-tfileoutputdelimited13.png" align="middle"></div></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>Code</strong></span>, saisissez la commande
+                    suivante :</p><p><code class="code">new java.io.File("C:/myFolder").mkdirs(); </code></p><p><code class="code">globalMap.put("out_file",new
+                    java.io.FileOutputStream("C:/myFolder/customerselection.txt",false));</code></p><p>
+                    </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Dans ce sc&eacute;nario, la commande utilis&eacute;e dans la zone <span class="bold"><strong>Code</strong></span> du <span class="bold"><strong>tJava</strong></span> va cr&eacute;er un nouveau dossier
+                                <span class="emphasis"><em>C:/myFolder</em></span> dans lequel le fichier de sortie
+                                <span class="emphasis"><em>customerselection.txt</em></span> sera sauvegard&eacute;. Vous
+                            pouvez personnaliser la commande selon vos besoins.</p></td></tr></table></div><p>
+                </p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFileOutputDelimited</strong></span>
+                    afin d'ouvrir sa vue <span class="bold"><strong>Basic settings</strong></span> et
+                    configurer ses propri&eacute;t&eacute;s.</p><div class="mediaobject" align="center"><img src="../images/use_case-tfileoutputdelimited16.png" align="middle"></div></li><li class="listitem"><p>Cochez la case <span class="bold"><strong>Use Output Stream</strong></span> pour activer
+                    le champ <span class="bold"><strong>Output Stream</strong></span>, dans lequel vous pouvez
+                    d&eacute;finir le flux de sortie, &agrave; l'aide d'une commande.</p><p>Renseignez le champ <span class="bold"><strong>Output Stream</strong></span> en
+                    saisissant la commande suivante :</p><p><code class="code">(java.io.OutputStream)globalMap.get("out_file")</code></p><p>
+                    </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Vous pouvez personnaliser la commande dans le champ <span class="bold"><strong>Output Stream</strong></span> en appuyant sur les touches
+                                <span class="bold"><strong>Ctrl</strong></span>+<span class="bold"><strong>Espace</strong></span> pour utiliser l'auto-compl&eacute;tion ou saisissez
+                            votre commande manuellement dans le champ. Dans ce sc&eacute;nario, la commande
+                            utilis&eacute;e dans le champ <span class="bold"><strong>Output Stream</strong></span>
+                            appelle la classe <code class="code">java.io.OutputStream</code> pour &eacute;crire le flux
+                            de donn&eacute;es filtr&eacute;es dans un fichier local, d&eacute;fini dans la zone <span class="bold"><strong>Code</strong></span> du composant <span class="bold"><strong>tJava</strong></span>.</p></td></tr></table></div><p>
+                </p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Sync columns</strong></span> afin de r&eacute;cup&eacute;rer le
+                    sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>Laissez les autres composants tels qu'ils sont.</p></li><li class="listitem"><p>Sauvegardez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l'ex&eacute;cuter.</p></li></ol></div><p>Les trois colonnes sp&eacute;cifi&eacute;es, <span class="emphasis"><em>Id</em></span>,
+                <span class="emphasis"><em>CustomerName</em></span> et <span class="emphasis"><em>CustomerAddress</em></span> sont
+            &eacute;crites dans le fichier de sortie d&eacute;fini.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tFileOutputDelimited11.png" align="middle"></div><p></p></div></div></body></html>

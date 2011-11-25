@@ -1,0 +1,238 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileList</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapter&nbsp;9.&nbsp;File components"><link rel="prev" href="file-tFileInputXML.html" title="tFileInputXML"><link rel="next" href="tFileOutputARFF.html" title="tFileOutputARFF"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFileList"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileList"></a>tFileList</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileList.png" width="27"></td></tr></table></div><div class="section" title="tFileList properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e180024"></a>tFileList properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Management</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tFileList</strong></span> iterates on files or
+                                folders of a set directory.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tFileList</strong></span> retrieves a set of
+                                files or folders based on a filemask pattern and iterates on each
+                                unity.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Directory</em></span></p>
+                        </td><td valign="top">
+                            <p>Path to the directory where the files are stored.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>FileList Type</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the type of input you want to iterate on from the
+                                list:</p>
+                            <p>
+                                <span class="bold"><strong>Files</strong></span> if the input is a set of
+                                files, </p>
+                            <p>
+                                <span class="bold"><strong>Directories</strong></span> if the input is a set
+                                of directories,</p>
+                            <p>
+                                <span class="bold"><strong>Both</strong></span> if the input is a set of the
+                                above two types. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Include subdirectories</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box if the selected input source type includes
+                                sub-directories. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Case Sensitive</em></span></p>
+                        </td><td valign="top">
+                            <p>Set the case mode from the list to either create or not create
+                                case sensitive filter on filenames.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Generate Error if no file found</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to generate an error message if no files or
+                                directories are found. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use Glob Expressions as Filemask </em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. It filters the results
+                                using a Global Expression (<span class="bold"><strong>Glob
+                                    Expressions</strong></span>). </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Files</em></span></p>
+                        </td><td valign="top">
+                            <p>Click the plus button to add as many filter lines as needed: </p>
+                            <p>
+                                <span class="bold"><strong>Filemask</strong></span>: in the added filter
+                                lines, type in a filename or a filemask using special characters or
+                                regular expressions. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Order by</em></span></p>
+                        </td><td valign="top">
+                            <p>The folders are listed first of all, then the files. You can
+                                choose to prioritise the folder and file order either: </p>
+                            <p>
+                                <span class="bold"><strong>By default</strong></span>: alphabetical order, by
+                                folder then file;</p>
+                            <p>
+                                <span class="bold"><strong>By file name</strong></span>: alphabetical order or
+                                reverese alphabetical order;</p>
+                            <p>
+                                <span class="bold"><strong>By file size</strong></span>: smallest to largest
+                                or largest to smallest;</p>
+                            <p>
+                                <span class="bold"><strong>By modified date</strong></span>: most recent to
+                                least recent or least recent to most recent.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If ordering <span class="bold"><strong>by file name</strong></span>, in
+                                    the event of identical file names then <span class="bold"><strong>modified date</strong></span> takes precedence. If ordering
+                                        <span class="bold"><strong>by file size</strong></span>, in the event
+                                    of identical file sizes then <span class="bold"><strong>file
+                                        name</strong></span> takes precedence. If ordering by <span class="bold"><strong>modified date</strong></span>, in the event of
+                                    identical dates then <span class="bold"><strong>file name</strong></span>
+                                    takes precedence.</p></td></tr></table></div>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Order action</em></span></td><td valign="top"><p>Select a sort order by clicking one of the following radio buttons:</p>
+                            <p><span class="bold"><strong>ASC</strong></span>: ascending order;</p>
+                            <p><span class="bold"><strong>DESC</strong></span>: descending order;</p></td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use Exclude Filemask</em></span></p>
+                        </td><td valign="top"><p>Select this check box to enable <span class="bold"><strong>Exclude Filemask</strong></span> field to
+                                exclude filtering condition based on file type: </p>
+                            <p><span class="bold"><strong>Exclude Filemask</strong></span>: Fill in the
+                                field with file types to be excluded from the <span class="bold"><strong>Filemasks</strong></span> in the <span class="bold"><strong>Basic
+                                    settings</strong></span> view. </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>File types in this field should be quoted with double
+                                    quotation marks and seperated by comma. </p></td></tr></table></div></td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Format file path to slash(/) style(useful on
+                                    Windows)</em></span></p>
+                        </td><td valign="top">Select this check box to format the file path to
+                            slash(/) style which is useful on Windows.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">Select this check box to gather the Job processing
+                            metadata at a Job level as well as at each component level.</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Enable parallel execution</em></span></td><td valign="top">
+                            <p>Select this check box to perform high-speed data processing, by treating
+                                multiple data flows simultaneously. </p>
+                            <p> In the <span class="bold"><strong>Number of parallel executions</strong></span> field,
+                                either:</p>
+                            <p> - Enter the number of parallel executions desired.</p>
+                            <p> - Press <span class="bold"><strong>Ctrl + Space</strong></span> and select the
+                                appropriate context variable from the list.</p>
+                            <p> </p>
+                            <p> For further information, see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                            <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>The </em></span><span class="bold"><strong>Action on
+                                        table</strong></span><span class="emphasis"><em> field is not available with the
+                                        parallelization function. Therefore, you must use a
+                                        </em></span><span class="bold"><strong>tCreateTable</strong></span><span class="emphasis"><em> component if you want to
+                                        create a table.</em></span></p></td></tr></table></div>
+                            <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>When parallel execution is enabled, it is not
+                                        possible to use global variables to retrieve return values
+                                        in a SubJob.</em></span></p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tFileList</strong></span> provides a list of
+                                files or folders from a defined directory on which it iterates
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Global Variables</strong></span></p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Current File Name</strong></span>: Indicates the
+                                current file name. This is available as a <span class="bold"><strong>Flow</strong></span> variable.</p>
+                            <p> Returns a string.</p>
+                            <p> </p>
+                            <p>
+                                <span class="bold"><strong>Current File Name with
+                                    Path</strong></span><span class="emphasis"><em>:</em></span> Indicates the current file
+                                name as well as the path to the file. This is available as a
+                                    <span class="bold"><strong>Flow</strong></span> variable.</p>
+                            <p> Returns a string. </p>
+                            <p> </p>
+                            <p>
+                                <span class="bold"><strong>Current File
+                                    Extension:</strong></span><span class="emphasis"><em> </em></span>Indicates the
+                                extension of the current file. This is available as a <span class="bold"><strong>Flow</strong></span> variable.</p>
+                            <p> Returns a string.</p>
+                            <p> </p>
+                            <p>
+                                <span class="bold"><strong>Current File Directory</strong></span>:
+                                    <span class="emphasis"><em> </em></span> Indicates the access path to the folder
+                                or subfolder in which the current file is stored. This is available
+                                as a <span class="bold"><strong>Flow</strong></span> variable.</p>
+                            <p> Returns a string.</p>
+                            <p> </p>
+                            <p>
+                                <span class="bold"><strong>Number of files</strong></span>: Indicates the
+                                number of files iterated upon so far. This is available as a
+                                    <span class="bold"><strong>Flow</strong></span> variable.</p>
+                            <p> Returns an integer. </p>
+                            <p> </p>
+                            <p> For further information about variables, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>Outgoing links (from one component to another):</p>
+                            <p>
+                                <span class="bold"><strong>Row</strong></span>: Iterate</p>
+                            <p>
+                                <span class="bold"><strong>Trigger</strong></span>: On Subjob Ok; On Subjob
+                                Error; Run if; On Component Ok; On Component Error.</p>
+                            <p> </p>
+                            <p> Incoming links (from one component to another):</p>
+                            <p>
+                                <span class="bold"><strong>Row</strong></span>: Iterate.</p>
+                            <p>
+                                <span class="bold"><strong>Trigger</strong></span>: Run if; On Subjob Ok; On
+                                Subjob Error; On component Ok; On Component Error; Synchronize;
+                                Parallelize. </p>
+                            <p> </p>
+                            <p> For further information regarding connections, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Iterating on a file directory"><div class="titlepage"><div><div><h3 class="title"><a name="d0e180597"></a>Scenario: Iterating on a file directory</h3></div></div></div><p>The following scenario creates a three-component Job, which aims at listing files from
+            a defined directory, reading each file by iteration, selecting delimited data and
+            displaying the output in the <span class="bold"><strong>Run</strong></span> log console.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="461"><tr><td><img src="../images/Use_Case_tFileList.png" width="461"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tFileList</strong></span>, <span class="bold"><strong>tFileInputDelimited</strong></span>,
+                    and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Right-click on the <span class="bold"><strong>tFileList</strong></span> component, and
+                    pull an <span class="bold"><strong>Iterate</strong></span> connection to the <span class="bold"><strong>tFileInputDelimited</strong></span> component. Then pull a <span class="bold"><strong>Main</strong></span> row from the <span class="bold"><strong>tFileInputDelimited</strong></span> to the <span class="bold"><strong>tLogRow</strong></span> component.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFileList</strong></span> to display its
+                        <span class="bold"><strong>Basic settings</strong></span> view and define its
+                    properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="501"><tr><td><img src="../images/Use_Case_tFileList1.png" width="501"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Browse to the <span class="bold"><strong>Directory</strong></span> that holds the files
+                    you want to process. To display the path on the Job itself, use the label
+                    (__DIRECTORY__) that shows up when you put the pointer anywhere in the <span class="bold"><strong>Directory</strong></span> field. Type in this lable in the <span class="bold"><strong>Label Format</strong></span> field you can find if you click the
+                        <span class="bold"><strong>View</strong></span> tab in the <span class="bold"><strong>Basic
+                        settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="416"><tr><td><img src="../images/Use_Case_tFileList4.png" width="416"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Basic settings</strong></span> view and from the
+                        <span class="bold"><strong>FileList Type</strong></span> list, select the source type
+                    you want to process, <span class="bold"><strong>Files</strong></span> in this example. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Case sensitive</strong></span> list, select a case
+                    mode, <span class="bold"><strong>Yes</strong></span> in this example to create case
+                    sensitive filter on file names.</p></li><li class="listitem"><p>Keep the <span class="bold"><strong>Use Glob Expressions as Filemask</strong></span>
+                    check box selected if you want to use global expressions to filter files. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Filemask</strong></span> field, define a file mask,
+                    use special characters if need be.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFileInputDelimited</strong></span> to display
+                    its <span class="bold"><strong>Basic settings </strong></span>view and set its
+                    properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="493"><tr><td><img src="../images/Use_Case_tFileList2.png" width="493"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Enter the <span class="bold"><strong>File Name</strong></span> field using a variable
+                    containing the current filename path, as you filled in the <span class="bold"><strong>Basic settings</strong></span> of <span class="bold"><strong>tFileList</strong></span>.
+                    Press <span class="bold"><strong>Ctrl+Space bar</strong></span> to access the autocomplete
+                    list of variables.</p></li><li class="listitem"><p>Select the global variable
+                        <code class="code">((String)globalMap.get("tFileList_1_CURRENT_FILEPATH"))</code> . This
+                    way, all files in the input directory can be processed.</p></li><li class="listitem"><p>Fill in all other fields as detailed in the <span class="bold"><strong>tFileInputDelimited</strong></span> section. Related topic: <a class="xref" href="tMDMInput.html#Raa86313" title="tMDMInput properties">the section called &#8220;tMDMInput properties&#8221;</a>.</p></li><li class="listitem"><p>Select the last component, <span class="bold"><strong>tLogRow</strong></span>, to
+                    display its <span class="bold"><strong>Basic settings</strong></span> view and fill in the
+                    separator to be used to distinguish field content displayed on the console.
+                    Related topic: <a class="xref" href="tLogRow.html" title="tLogRow">the section called &#8220;tLogRow&#8221;</a>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="467"><tr><td><img src="../images/Use_Case_tFileList3.png" width="467"></td></tr></table></div><p>The Job iterates on the defined directory, and reads all included files. Then
+            delimited data is passed on to the last component which displays it on the
+            console.</p><p>For other scenarios using <span class="bold"><strong>tFileList</strong></span><a class="xref" href="tFileCopy.html" title="tFileCopy">the section called &#8220;tFileCopy&#8221;</a></p></div></div></body></html>
