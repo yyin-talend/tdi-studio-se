@@ -12,14 +12,20 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor.actions;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
+import org.talend.designer.xmlmap.ui.tabs.TabFolderEditors;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -42,9 +48,50 @@ public class RenameTreeNodeAction extends SelectionAction {
     @Override
     public void run() {
         if (selectedNode != null) {
-            InputDialog dialog = new InputDialog(null, "Rename Tree Node", "", selectedNode.getName(), null);
+            // validataor
+            IInputValidator validataor = new IInputValidator() {
+
+                public String isValid(String newText) {
+                    String xpath = XmlMapUtil.getXPath(((TreeNode) selectedNode.eContainer()).getXpath(), newText,
+                            selectedNode.getNodeType());
+                    EList<TreeNode> children = ((TreeNode) selectedNode.eContainer()).getChildren();
+                    boolean exist = false;
+                    for (TreeNode child : children) {
+                        if (child.getNodeType().equals(selectedNode.getNodeType())) {
+                            if (child.getXpath() != null && child.getXpath().equals(xpath) && !child.equals(selectedNode)) {
+                                exist = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (exist) {
+                        if (selectedNode.getNodeType().equals(NodeType.ATTRIBUT)) {
+                            return "Atribute '" + newText + "' already exist !";
+                        } else if (selectedNode.getNodeType().equals(NodeType.ELEMENT)) {
+                            return "Element '" + newText + "' already exist !";
+                        } else if (selectedNode.getNodeType().equals(NodeType.NAME_SPACE)) {
+                            return "Namespace '" + newText + "' already exist !";
+                        }
+                    }
+                    return null;
+                }
+            };
+            InputDialog dialog = new InputDialog(null, "Rename Tree Node", "", selectedNode.getName(), validataor);
             if (dialog.open() == Window.OK) {
                 selectedNode.setName(dialog.getValue());
+                // refresh
+                XmlMapData externalEmfData = (XmlMapData) mapperManager.getCopyOfMapData();
+                XmlMapUtil.updateXPathAndExpression(externalEmfData, selectedNode, dialog.getValue(),
+                        XmlMapUtil.getXPathLength(selectedNode.getXpath()), true);
+
+                TabFolderEditors tabFolderEditors = mapperManager.getMapperUI().getTabFolderEditors();
+                if (tabFolderEditors != null) {
+                    if (selectedNode instanceof OutputTreeNode) {
+                        tabFolderEditors.getOutputTreeSchemaEditor().refresh();
+                    } else if (selectedNode instanceof TreeNode) {
+                        tabFolderEditors.getInputTreeSchemaEditor().refresh();
+                    }
+                }
             }
         }
     }
