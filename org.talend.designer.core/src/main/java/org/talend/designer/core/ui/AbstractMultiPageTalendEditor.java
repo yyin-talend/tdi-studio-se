@@ -572,9 +572,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     if (file.exists()) {
                         ((AbstractDecoratedTextEditor) getEditor(2)).getDocumentProvider()
                                 .getDocument(getEditor(2).getEditorInput()).set(scriptValue);
+                        boolean isReadjob = ((JobEditorInput) getEditor(0).getEditorInput()).isReadOnly();
 
                         IProxyRepositoryFactory rFactory = ProxyRepositoryFactory.getInstance();
-                        if (rFactory.isUserReadOnlyOnCurrentProject()) {
+                        if (isReadjob || rFactory.isUserReadOnlyOnCurrentProject()) {
                             IDocumentProvider provider = ((AbstractDecoratedTextEditor) getEditor(2)).getDocumentProvider();
                             Class p = provider.getClass();
                             Class[] type = new Class[1];
