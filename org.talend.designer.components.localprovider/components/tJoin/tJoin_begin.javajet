@@ -8,6 +8,7 @@ imports="
 		org.talend.core.model.process.EConnectionType			
 		java.util.List
 		java.util.Map
+		org.talend.core.model.utils.NodeUtil
 " 
 %>
 <%
@@ -29,7 +30,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         List< ? extends IConnection> connsIn = node.getIncomingConnections();     
         for (IConnection conn : connsIn) {//3
         	if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-        		inMainCon = conn;
+        		inMainCon = NodeUtil.getRealConnectionTypeBased(conn);
         	}
         	else if(conn.getLineStyle().equals(EConnectionType.FLOW_REF))
         	{
