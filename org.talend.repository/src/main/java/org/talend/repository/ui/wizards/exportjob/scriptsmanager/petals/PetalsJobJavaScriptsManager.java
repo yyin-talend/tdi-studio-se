@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
@@ -51,16 +52,17 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScri
  */
 public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
 
-    public static final String SU_NAMESPACE_URI_PREFIX = "http://petals.ow2.org/talend/"; //$NON-NLS-1$
+	public static final String SU_NAMESPACE_URI_PREFIX = "http://petals.ow2.org/talend/"; //$NON-NLS-1$
 
     public static final boolean NEED_CONTEXT = true;
 
     public static final boolean APPLY_TO_CHILDREN = true;
 
-    public PetalsJobJavaScriptsManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
-            int statisticPort, int tracePort) {
-        super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
-    }
+    public PetalsJobJavaScriptsManager(
+			Map<ExportChoice, Object> exportChoiceMap, String contextName,
+			String launcher, int statisticPort, int tracePort) {
+		super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
+	}
 
     /*
      * (non-Javadoc)
@@ -484,21 +486,19 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         return jaredContextResource;
     }
 
-    // public String getDestinationPath() {
-    //    	String directory = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
-    //        String suName = UUID.randomUUID().toString() + ".zip"; //$NON-NLS-1$
-    // return new File(directory, suName).getAbsolutePath();
-    // }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getRootFolderName(java.lang.String)
-     */
-    @Override
-    public String getRootFolderName(String path) {
-        return super.getRootFolderName(getDestinationPath());
+    public String getDestinationPath() {
+    	String directory = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
+        String suName = UUID.randomUUID().toString() + ".zip"; //$NON-NLS-1$
+        return new File(directory, suName).getAbsolutePath();
     }
-
+    
+	/* (non-Javadoc)
+	 * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getRootFolderName(java.lang.String)
+	 */
+	@Override
+	public String getRootFolderName(String path) {
+		return super.getRootFolderName(getDestinationPath());
+	}
+    
+    
 }

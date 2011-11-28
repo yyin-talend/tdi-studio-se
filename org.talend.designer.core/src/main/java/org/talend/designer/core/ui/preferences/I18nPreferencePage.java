@@ -53,7 +53,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.advanced.dataeditor.LabelFieldEditor;
-import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.genhtml.FileCopyUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -614,7 +613,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
      * @return
      */
     public static String getCurrentTosVersion(boolean normalize) {
-        String version = VersionUtils.getVersion();
+        String version = (String) CorePlugin.getDefault().getBundle().getHeaders()
+                .get(org.osgi.framework.Constants.BUNDLE_VERSION);
         if (normalize) {
             version = normalizeVersion(version);
         }

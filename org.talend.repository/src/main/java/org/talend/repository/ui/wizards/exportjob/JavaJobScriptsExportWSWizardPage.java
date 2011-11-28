@@ -1409,6 +1409,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             } catch (Exception e) {
                 ExceptionHandler.process(e);
 
+            } finally {
+
+                // Remove the temporary file
+                if (suFile != null && suFile.exists() && !suFile.delete())
+                    suFile.deleteOnExit();
             }
 
             return ok;

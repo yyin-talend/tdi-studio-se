@@ -101,4 +101,8 @@ public class CodeGeneratorActivator extends AbstractUIPlugin {
         return (IDesignerCoreService) service;
     }
 
+    public String getVersion() {
+        return (String) plugin.getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
+    }
+
 }

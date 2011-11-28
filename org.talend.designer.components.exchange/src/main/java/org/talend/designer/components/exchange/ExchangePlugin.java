@@ -6,7 +6,6 @@ import java.util.StringTokenizer;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.talend.commons.utils.VersionUtils;
 import org.talend.designer.components.exchange.util.ExchangeUtils;
 
 /**
@@ -70,8 +69,10 @@ public class ExchangePlugin extends AbstractUIPlugin {
     }
 
     public static String getStudioVersion() {
+        String studioVersion = (String) ExchangePlugin.getDefault().getBundle().getHeaders()
+                .get(org.osgi.framework.Constants.BUNDLE_VERSION);
         StringBuffer sb = new StringBuffer();
-        StringTokenizer stringTokenizer = new StringTokenizer(VersionUtils.getVersion(), LEVEL_SEPARATOR);
+        StringTokenizer stringTokenizer = new StringTokenizer(studioVersion, LEVEL_SEPARATOR);
         try {
             sb.append(stringTokenizer.nextToken());
             sb.append(LEVEL_SEPARATOR);
