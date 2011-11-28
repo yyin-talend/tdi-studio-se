@@ -223,8 +223,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                 int lowerBound = 0;
                 int upperBound = array_<%=cid%>.length - 1;
                 <%
-                String minEqual = minBounds ? "=" : "";
-                String maxEqual = maxBounds ? "=" : "";
+                String minEqual = minBounds ? "" : "=";
+                String maxEqual = maxBounds ? "" : "=";
                 %>               
                 while(true) {
                     int currentIndex = (lowerBound + upperBound)/2;
