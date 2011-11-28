@@ -80,10 +80,6 @@
          id="org.talend.tos.components_feature"
          version="0.0.0"/>
 
-   <includes
-         id="org.talend.esb.tooling_feature"
-         version="0.0.0"/>
-
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
