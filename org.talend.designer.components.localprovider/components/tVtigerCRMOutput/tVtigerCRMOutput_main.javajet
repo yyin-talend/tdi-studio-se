@@ -174,7 +174,7 @@ if(version_selection.equals("VTIGER_50")){
 					<%						
 					}
 					%>
-					if (vtMgr_<%=cid%>.hasError(result_<%=cid%>)) {
+					if (vtMgr_<%=cid%>.hasError(result_<%=cid%>) && vtMgr_<%=cid%>.lastError()!=null) {
 					<%
 	                   if (("true").equals(dieOnError)) {
 	                %>
