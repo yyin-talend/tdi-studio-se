@@ -141,8 +141,8 @@ if(version_selection.equals("VTIGER_50")){
     	    if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 %>
 		org.json.simple.JSONArray qr_<%=cid %> = vtMgr_<%=cid %>.doQuery(<%=sql %>);
-		if(vtMgr_<%=cid%>.hasError(qr_<%=cid%>) && vtMgr_<%=cid%>.lastError()!=null){
-	    	throw new RuntimeException(vtMgr_<%=cid%>.lastError().toString());
+		if(vtMgr_<%=cid%>.hasError(qr_<%=cid%>)){
+	    	throw new RuntimeException(vtMgr_<%=cid%>.lastError()==null? "No response from vtigerCRM": vtMgr_<%=cid%>.lastError().toString());
 	    }
 		java.util.Iterator qrIterator_<%=cid %> = qr_<%=cid %>.iterator();
 

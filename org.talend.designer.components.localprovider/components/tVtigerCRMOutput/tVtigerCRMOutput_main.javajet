@@ -174,15 +174,15 @@ if(version_selection.equals("VTIGER_50")){
 					<%						
 					}
 					%>
-					if (vtMgr_<%=cid%>.hasError(result_<%=cid%>) && vtMgr_<%=cid%>.lastError()!=null) {
+					if (vtMgr_<%=cid%>.hasError(result_<%=cid%>)) {
 					<%
 	                   if (("true").equals(dieOnError)) {
 	                %>
-	                	throw new RuntimeException(vtMgr_<%=cid%>.lastError().toString());
+	                	throw new RuntimeException(vtMgr_<%=cid%>.lastError()==null? "No response from vtigerCRM": vtMgr_<%=cid%>.lastError().toString());
 	                <%
 	                 	} else {
 	                %>
-                        System.err.println(vtMgr_<%=cid%>.lastError().toString());
+                        System.err.println(vtMgr_<%=cid%>.lastError()==null? "No response from vtigerCRM": vtMgr_<%=cid%>.lastError().toString());
                     <%
                     	}
                     %>
