@@ -552,7 +552,6 @@ public class ImportItemUtil {
     private void importItemRecord(ResourcesManager manager, ItemRecord itemRecord, boolean overwrite, IPath destinationPath,
             final Set<String> overwriteDeletedItems, String contentType, final IProgressMonitor monitor) {
         monitor.subTask(Messages.getString("ImportItemWizardPage.Importing") + itemRecord.getItemName()); //$NON-NLS-1$
-
         resolveItem(manager, itemRecord);
 
         int num = 0;
@@ -832,9 +831,11 @@ public class ImportItemUtil {
             // for migration task ,there is not .screeenshot file in preceding version - begin
             boolean hasScreenshotFile = false;
             Iterator it = manager.getPaths().iterator();
+            IPath screenshotNeeded = itemRecord.getPath().removeFileExtension()
+                    .addFileExtension(FileConstants.SCREENSHOT_EXTENSION);
             while (it.hasNext()) {
                 IPath path = (IPath) it.next();
-                if (path.toOSString().endsWith(FileConstants.SCREENSHOT_EXTENSION)) {
+                if (path.equals(screenshotNeeded)) {
                     hasScreenshotFile = true;
                     break;
                 }
@@ -845,8 +846,7 @@ public class ImportItemUtil {
             // for migration task ,there is not .screeenshot file in preceding version - begin
             os = new FileOutputStream(fileURL.getFile());
             manager.getPaths().iterator().next();
-            is = manager.getStream(itemRecord.getPath().removeFileExtension()
-                    .addFileExtension(FileConstants.SCREENSHOT_EXTENSION));
+            is = manager.getStream(screenshotNeeded);
             FileCopyUtils.copyStreams(is, os);
         } finally {
             if (os != null) {
