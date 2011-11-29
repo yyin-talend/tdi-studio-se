@@ -68,7 +68,7 @@ public class MigrationTaskForIssue18419 extends AbstractJobMigrationTask {
             return ExecutionResult.FAILURE;
         }
 
-        return ExecutionResult.SUCCESS_WITH_ALERT;
+        return ExecutionResult.SUCCESS_NO_ALERT;
 
     }
 
