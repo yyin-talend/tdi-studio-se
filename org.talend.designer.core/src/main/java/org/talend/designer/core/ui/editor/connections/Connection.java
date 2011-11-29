@@ -963,7 +963,9 @@ public class Connection extends Element implements IConnection, IPerformance {
                 if (lineStyle.hasConnectionCategory(IConnectionCategory.CUSTOM_NAME)
                         || isInTypes(lineStyle, EConnectionType.ITERATE, EConnectionType.ON_COMPONENT_OK,
                                 EConnectionType.ON_COMPONENT_ERROR, EConnectionType.ON_SUBJOB_OK,
-                                EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF, EConnectionType.ROUTE)) {
+                                EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF, EConnectionType.ROUTE,
+                                EConnectionType.ROUTE_TRY, EConnectionType.ROUTE_CATCH, EConnectionType.ROUTE_FINALLY,
+                                EConnectionType.ROUTE_ENDBLOCK, EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_OTHER)) {
                     source.getProcess().removeUniqueConnectionName(uniqueName);
                 }
             }
