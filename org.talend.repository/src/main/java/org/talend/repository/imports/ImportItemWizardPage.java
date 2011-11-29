@@ -158,6 +158,8 @@ class ImportItemWizardPage extends WizardPage {
 
     protected RepositoryNode rNode;
 
+    private ZipFile sourceFile;
+
     @SuppressWarnings("restriction")
     protected ImportItemWizardPage(RepositoryNode rNode, String pageName) {
 
@@ -678,7 +680,7 @@ class ImportItemWizardPage extends WizardPage {
                             return;
                         }
                     } else if (!dirSelected && ArchiveFileManipulations.isZipFile(path)) {
-                        ZipFile sourceFile = getSpecifiedZipSourceFile(path);
+                        sourceFile = getSpecifiedZipSourceFile(path);
                         if (sourceFile == null) {
                             return;
                         }
@@ -934,6 +936,13 @@ class ImportItemWizardPage extends WizardPage {
     public boolean performCancel() {
         selectedItems = null;
         repositoryUtil.clearAllData();
+        if (sourceFile != null) {
+            try {
+                sourceFile.close();
+            } catch (IOException e) {
+                //
+            }
+        }
         return true;
     }
 
