@@ -37,7 +37,7 @@ public class SetLoopAction extends SelectionAction {
             // root can't be loop
             if (model.eContainer() instanceof TreeNode && XmlMapUtil.DOCUMENT.equals(((TreeNode) model.eContainer()).getType())) {
                 // fix for TDI-18727
-                if (model.getChildren().isEmpty()) {
+                if (XmlMapUtil.isExpressionEditable(model)) {
                     return true;
                 }
                 return false;
