@@ -179,7 +179,7 @@ public final class TalendEditorPaletteFactory {
                 String regex = getFilterRegex();
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
-            if ((oraFamily.equals("Misc")||oraFamily.equals("Messaging")) && !noteAeeded && needAddNote) { //$NON-NLS-1$
+            if ((oraFamily.equals("Misc") || oraFamily.equals("Miscellaneous")) && !noteAeeded && needAddNote) { //$NON-NLS-1$
                 CreationToolEntry noteCreationToolEntry = new CreationToolEntry(
                         Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
                         Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
@@ -399,7 +399,7 @@ public final class TalendEditorPaletteFactory {
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
             // if (isFavorite == false) {
-            if ((oraFamily.equals("Misc")||oraFamily.equals("Messaging")) && !noteAeeded && needAddNote) { //$NON-NLS-1$
+            if ((oraFamily.equals("Misc") || oraFamily.equals("Miscellaneous")) && !noteAeeded && needAddNote) { //$NON-NLS-1$
                 CreationToolEntry noteCreationToolEntry = new CreationToolEntry(
                         Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
                         Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
