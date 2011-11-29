@@ -160,7 +160,8 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
     public void run(IIntroSite site, Properties params) {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (factory.isUserReadOnlyOnCurrentProject()) {
-            MessageDialog.openWarning(null, "User Authority", "Can't create a job! Current user is read-only on this project");
+            MessageDialog.openWarning(null, "User Authority",
+                    "Can't create Business Model! Current user is read-only on this project!");
         } else {
             PlatformUI.getWorkbench().getIntroManager().closeIntro(PlatformUI.getWorkbench().getIntroManager().getIntro());
             setRepositoryNode(params);

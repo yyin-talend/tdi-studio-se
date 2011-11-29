@@ -207,7 +207,7 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
     public void run(IIntroSite site, Properties params) {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (factory.isUserReadOnlyOnCurrentProject()) {
-            MessageDialog.openWarning(null, "User Authority", "Can't create a job! Current user is read-only on this project");
+            MessageDialog.openWarning(null, "User Authority", "Can't create Job! Current user is read-only on this project!");
         } else {
             PlatformUI.getWorkbench().getIntroManager().closeIntro(PlatformUI.getWorkbench().getIntroManager().getIntro());
             selectRootObject(params);
