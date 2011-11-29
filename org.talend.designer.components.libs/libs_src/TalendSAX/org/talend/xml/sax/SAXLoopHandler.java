@@ -52,7 +52,8 @@ public class SAXLoopHandler extends DefaultHandler {
     // to mark the value is set or not
     private boolean[] currentRowHaveValue = null;
 
-    private int indexOfColumn = 0;
+    //cache the index of resultset array for TDI-18671
+    private int[] indexOfColumns = {-1,-1};
 
     private LoopEntry entry;
 
@@ -145,7 +146,7 @@ public class SAXLoopHandler extends DefaultHandler {
             currentRowHaveValue = new boolean[this.loopCols.size() + 1];
         }
         if (isLooping) {
-            indexOfColumn = loopCols.indexOf(currentPath);
+        	indexOfColumns[0] = loopCols.indexOf(currentPath);//index of resultset for not "Get Nodes" column
 
             // count sub loop number
             if (currentPath.equals(subLoopPath)) {
@@ -157,7 +158,7 @@ public class SAXLoopHandler extends DefaultHandler {
                 boolean asXML = this.asXMLs.get(i);
 
                 if (asXML && (currentPath.equals(column) || currentPath.startsWith(column + "/"))) {
-                    indexOfColumn = i; // correct the index for text
+                	indexOfColumns[1] = i; //index of resultset for "Get Nodes" column
                     if (currentRow[i] == null)
                         currentRow[i] = "";
                     currentRow[i] = currentRow[i] + "<" + qName;
@@ -217,12 +218,16 @@ public class SAXLoopHandler extends DefaultHandler {
             String text = new String(ch, start, length);
             // System.out.println(text);
             if (text.length() > 0) {
-                if (outputText && indexOfColumn >= 0 && false == currentRowHaveValue[indexOfColumn]) {
-                    if (currentRow[indexOfColumn] == null) {
-                        currentRow[indexOfColumn] = text;
-                    } else {
-                        currentRow[indexOfColumn] += text;
-                    }
+                if (outputText) {
+                	for(int indexOfColumn : indexOfColumns){
+	                	if(indexOfColumn >= 0 && !currentRowHaveValue[indexOfColumn]) {
+		                    if (currentRow[indexOfColumn] == null) {
+		                        currentRow[indexOfColumn] = text;
+		                    } else {
+		                        currentRow[indexOfColumn] += text;
+		                    }
+	                	}
+                	}
                 }
 
                 /**
@@ -248,15 +253,19 @@ public class SAXLoopHandler extends DefaultHandler {
             loopPath = this.loopPath.replace("*", qName);
         }
 
-        if (isLooping && outputText && indexOfColumn >= 0) {
-            if (currentRow[indexOfColumn] == null) {
-                currentRow[indexOfColumn] = "";
-            }
-            if (currentRow[indexOfColumn].trim().startsWith("<")) {
-                currentRow[indexOfColumn] = currentRow[indexOfColumn] + "</" + qName + ">";
-            } else {
-                currentRowHaveValue[indexOfColumn] = true;
-            }
+        if (isLooping && outputText) {
+        	for(int indexOfColumn : indexOfColumns){
+	        	if(indexOfColumn >= 0){
+		            if (currentRow[indexOfColumn] == null) {
+		                currentRow[indexOfColumn] = "";
+		            }
+		            if (currentRow[indexOfColumn].trim().startsWith("<")) {
+		                currentRow[indexOfColumn] = currentRow[indexOfColumn] + "</" + qName + ">";
+		            } else {
+		                currentRowHaveValue[indexOfColumn] = true;
+		            }
+	        	}
+        	}
         }
 
         outputText = false;
