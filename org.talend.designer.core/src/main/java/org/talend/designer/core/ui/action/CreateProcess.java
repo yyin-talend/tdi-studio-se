@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -204,9 +205,14 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
      * only use for creating a process in the intro by url
      */
     public void run(IIntroSite site, Properties params) {
-        PlatformUI.getWorkbench().getIntroManager().closeIntro(PlatformUI.getWorkbench().getIntroManager().getIntro());
-        selectRootObject(params);
-        doRun();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            MessageDialog.openWarning(null, "User Authority", "Can't create a job! Current user is read-only on this project");
+        } else {
+            PlatformUI.getWorkbench().getIntroManager().closeIntro(PlatformUI.getWorkbench().getIntroManager().getIntro());
+            selectRootObject(params);
+            doRun();
+        }
     }
 
     private void selectRootObject(Properties params) {

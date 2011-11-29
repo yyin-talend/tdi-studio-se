@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -24,6 +25,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
@@ -156,9 +158,14 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
      * @see org.eclipse.ui.intro.config.IIntroAction#run(org.eclipse.ui.intro.IIntroSite, java.util.Properties)
      */
     public void run(IIntroSite site, Properties params) {
-        PlatformUI.getWorkbench().getIntroManager().closeIntro(PlatformUI.getWorkbench().getIntroManager().getIntro());
-        setRepositoryNode(params);
-        doRun();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
+            MessageDialog.openWarning(null, "User Authority", "Can't create a job! Current user is read-only on this project");
+        } else {
+            PlatformUI.getWorkbench().getIntroManager().closeIntro(PlatformUI.getWorkbench().getIntroManager().getIntro());
+            setRepositoryNode(params);
+            doRun();
+        }
     }
 
     private void setRepositoryNode(Properties params) {
