@@ -116,6 +116,13 @@ public class CreateElementAction extends SelectionAction {
                         output.setAggregate(false);
                     }
                 }
+                // fix for TDI-18727
+                if (parent.eContainer() instanceof TreeNode
+                        && XmlMapUtil.DOCUMENT.equals(((TreeNode) parent.eContainer()).getType())) {
+                    if (parent.isLoop()) {
+                        parent.setLoop(false);
+                    }
+                }
             }
 
             if (open == Window.OK && mapperManager != null) {

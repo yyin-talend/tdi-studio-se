@@ -36,6 +36,10 @@ public class SetLoopAction extends SelectionAction {
             TreeNode model = (TreeNode) nodePart.getModel();
             // root can't be loop
             if (model.eContainer() instanceof TreeNode && XmlMapUtil.DOCUMENT.equals(((TreeNode) model.eContainer()).getType())) {
+                // fix for TDI-18727
+                if (model.getChildren().isEmpty()) {
+                    return true;
+                }
                 return false;
             }
             if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())
