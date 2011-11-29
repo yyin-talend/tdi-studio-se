@@ -136,6 +136,7 @@ public class XmlMapEditor extends GraphicalEditor {
         FixValueAction fixValueAction = new FixValueAction(this);
         getActionRegistry().registerAction(fixValueAction);
         getSelectionActions().add(fixValueAction.getId());
+        fixValueAction.setMapperManager(mapperManager);
 
         SetAggregateAction aggreagteAction = new SetAggregateAction(this);
         getActionRegistry().registerAction(aggreagteAction);

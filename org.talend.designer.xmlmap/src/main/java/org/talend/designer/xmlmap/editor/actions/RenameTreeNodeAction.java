@@ -69,8 +69,6 @@ public class RenameTreeNodeAction extends SelectionAction {
                             return "Atribute '" + newText + "' already exist !";
                         } else if (selectedNode.getNodeType().equals(NodeType.ELEMENT)) {
                             return "Element '" + newText + "' already exist !";
-                        } else if (selectedNode.getNodeType().equals(NodeType.NAME_SPACE)) {
-                            return "Namespace '" + newText + "' already exist !";
                         }
                     }
                     return null;
@@ -106,6 +104,9 @@ public class RenameTreeNodeAction extends SelectionAction {
                 if (obj instanceof TreeNodeEditPart) {
                     TreeNodeEditPart nodePart = (TreeNodeEditPart) obj;
                     this.selectedNode = (TreeNode) nodePart.getModel();
+                    if (NodeType.NAME_SPACE.equals(selectedNode.getNodeType())) {
+                        return false;
+                    }
                     int xPathLength = XmlMapUtil.getXPathLength(selectedNode.getXpath());
                     if (xPathLength <= 2) {
                         enable = false;
