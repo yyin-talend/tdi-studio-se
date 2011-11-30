@@ -186,13 +186,15 @@ if(("NORMAL_OUTPUT").equals(outputAction)||("NORMAL_OUTPUT").equals(errorOuput))
     		if (conns!=null && conns.size()>0) {
 				IConnection conn = conns.get(0);  
 %>
-for(String tmp_<%=cid %>:output_<%=cid%>){
+				for(String tmp_<%=cid %>:output_<%=cid%>){
 <%
-				for(IMetadataColumn column:columns) {
+					for(IMetadataColumn column:columns) {
+						if("outputline".equals(column.getLabel())){
 %>
-	<%=conn.getName()%>.<%=column.getLabel()%> = tmp_<%=cid %>;				
+							<%=conn.getName()%>.<%=column.getLabel()%> = tmp_<%=cid %>;				
 <%
-				}
+						}
+					}
 			}
 		}
 	}

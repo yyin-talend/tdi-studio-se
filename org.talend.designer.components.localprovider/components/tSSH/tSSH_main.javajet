@@ -10,6 +10,7 @@ imports="
     org.talend.core.model.process.BlockCode
     java.util.List
 	java.util.Map
+	org.talend.core.model.process.IConnectionCategory
 "
 %>
 
@@ -154,11 +155,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				for(String tmp_<%=cid %>:output_<%=cid%>){ // C_01
 <%
 				for(IMetadataColumn column:columns) {
+					if("outputline".equals(column.getLabel())){
 %>
-					<%=conn.getName()%>.<%=column.getLabel()%> = tmp_<%=cid %>;				
+						<%=conn.getName()%>.outputline = tmp_<%=cid %>;
 <%
+					}
 				}
-				
 				// the following part is used to set the close block
 				List<BlockCode> blockCodes = new java.util.ArrayList<BlockCode>(1);
   				blockCodes.add(new BlockCode("C_01"));
@@ -166,6 +168,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 		}
 		//-----end handle output
+		if (conns!=null && conns.size()>0) {
+			IConnection conn = conns.get(0);
+			String inputConnName = null;
+			if (node.getIncomingConnections()!=null) {
+				for (IConnection incomingConn : node.getIncomingConnections()) {
+					if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+						inputConnName = incomingConn.getName();
+						IMetadataTable inputMetadataTable = incomingConn.getMetadataTable();
+						for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
+%>	
+							<%=conn.getName()%>.<%=inputCol.getLabel() %> = <%=inputConnName %>.<%=inputCol.getLabel() %>;
+<%
+						}
+					}
+				}
+			}
+		}	
     }
 }
 %>
