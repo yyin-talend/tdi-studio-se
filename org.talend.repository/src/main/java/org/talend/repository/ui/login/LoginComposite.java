@@ -122,10 +122,10 @@ import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 
 /**
  * labe Composite login.<br/>
- * 
+ *
  * $Id: /talend/tos/trunk/org.talend.repository/src/main/java/org/talend/repository/ui/login/LoginComposite.java 24167
  * 2009-04-28T09:55:53.574018Z wchen $
- * 
+ *
  */
 public class LoginComposite extends Composite {
 
@@ -289,7 +289,7 @@ public class LoginComposite extends Composite {
 
     /**
      * Constructs a new LoginComposite.
-     * 
+     *
      * @param parent Parent component.
      * @param style Style bits.
      */
@@ -791,7 +791,8 @@ public class LoginComposite extends Composite {
                 newProjectDialog.setTitle(Messages.getString("NewImportProjectWizard.windowTitle")); //$NON-NLS-1$
                 if (newProjectDialog.open() == Window.OK) {
                     final String newName = newPrjWiz.getName();
-                    importCombo.add(newName);
+                    final String demoProjName = importCombo.getCombo().getItem(importCombo.getCombo().getSelectionIndex());
+
                     //
                     ProgressDialog progressDialog = new ProgressDialog(getShell()) {
 
@@ -803,7 +804,16 @@ public class LoginComposite extends Composite {
 
                             try {
                                 final List<DemoProjectBean> demoProjectList = ImportProjectsUtilities.getAllDemoProjects();
-                                DemoProjectBean demoProjectBean = demoProjectList.get(0);
+                                DemoProjectBean demoProjectBean = null;
+                                for (DemoProjectBean bean : demoProjectList) {
+                                    if (bean.getProjectName().equals(demoProjName)) {
+                                        demoProjectBean = bean;
+                                        break;
+                                    }
+                                }
+                                if (null == demoProjectBean) {
+                                    throw new IOException("cannot find selected demo project");
+                                }
                                 String techName = demoProjectBean.getProjectName();
 
                                 String demoFilePath = demoProjectBean.getDemoProjectFilePath();
@@ -824,7 +834,6 @@ public class LoginComposite extends Composite {
                                     ImportProjectsUtilities.importProjectAs(getShell(), newName, newName, filePath, monitorWrap);
                                 } else {// type.equalsIgnoreCase("archive")
                                     ImportProjectsUtilities.importArchiveProject(getShell(), newName, filePath, monitorWrap);
-
                                 }
 
                             } catch (IOException e) {
@@ -1479,7 +1488,7 @@ public class LoginComposite extends Composite {
 
     /**
      * If setted, Select last ? used in PreferenceStore.
-     * 
+     *
      * @param prefManipulator
      */
     private void selectLast(String lastObjectSelected, Combo comboToSelect) {
@@ -1500,7 +1509,7 @@ public class LoginComposite extends Composite {
     }
 
     /**
-     * 
+     *
      * @return
      */
     protected boolean isAuthenticationNeeded() {
@@ -2174,12 +2183,12 @@ public class LoginComposite extends Composite {
                 projects = new Project[0];
 
                 MessageDialog.openError(getShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
-                        Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$ 
+                        Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
             } catch (BusinessException e) {
                 projects = new Project[0];
 
                 MessageDialog.openError(getShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
-                        Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$ 
+                        Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
             }
         }
         if (projectViewer != null) {
@@ -2299,7 +2308,7 @@ public class LoginComposite extends Composite {
 
     /**
      * smallet Comment method "selectLastUsedProject".
-     * 
+     *
      * @param projects
      */
     private void selectLastUsedProject() {
@@ -2328,7 +2337,7 @@ public class LoginComposite extends Composite {
 
     /**
      * smallet Comment method "selectProject".
-     * 
+     *
      * @param goodProject
      */
     private void selectProject(Project goodProject) {
@@ -2417,9 +2426,9 @@ public class LoginComposite extends Composite {
 
     /**
      * Label provider for Projects. <br/>
-     * 
+     *
      * $Id$
-     * 
+     *
      */
     private class ProjectLabelProvider extends LabelProvider {
 
@@ -2440,9 +2449,9 @@ public class LoginComposite extends Composite {
 
     /**
      * DOC smallet LoginComposite class global comment. Detailled comment <br/>
-     * 
+     *
      * $Id$
-     * 
+     *
      */
     private class ConnectionLabelProvider extends LabelProvider {
 
