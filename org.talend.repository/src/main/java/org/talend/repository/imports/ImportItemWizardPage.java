@@ -160,6 +160,8 @@ class ImportItemWizardPage extends WizardPage {
 
     private ZipFile sourceFile;
 
+    private TarFile sourceTarFile;
+
     @SuppressWarnings("restriction")
     protected ImportItemWizardPage(RepositoryNode rNode, String pageName) {
 
@@ -668,7 +670,7 @@ class ImportItemWizardPage extends WizardPage {
                     File directory = new File(path);
                     monitor.worked(10);
                     if (!dirSelected && ArchiveFileManipulations.isTarFile(path)) {
-                        TarFile sourceTarFile = getSpecifiedTarSourceFile(path);
+                        sourceTarFile = getSpecifiedTarSourceFile(path);
                         if (sourceTarFile == null) {
                             return;
                         }
@@ -939,6 +941,13 @@ class ImportItemWizardPage extends WizardPage {
         if (sourceFile != null) {
             try {
                 sourceFile.close();
+            } catch (IOException e) {
+                //
+            }
+        }
+        if (sourceTarFile != null) {
+            try {
+                sourceTarFile.close();
             } catch (IOException e) {
                 //
             }
