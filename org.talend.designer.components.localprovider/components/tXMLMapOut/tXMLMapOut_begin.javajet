@@ -684,6 +684,13 @@ class GenerateToolByDom4j{
 		}
 	}
 	
+	private boolean isRoot(TreeNode node) {
+		if(node == null) return false;
+		TreeNode parent = (TreeNode)node.eContainer();
+		if(parent == null) return false;
+		return "id_Document".equals(parent.getType());
+	}
+	
 	public TreeNode getLoopNode(TreeNode root) {
 		if(root == null) {
 			return null;
@@ -798,7 +805,7 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
         }
 <%
 		}else{
-			if(node.isMain() && (node.isGroup() || node.isLoop())) {
+			if(node.isMain() && (node.isGroup() || (node.isLoop() && !isRoot(node)))) {
 %>
 				org.dom4j.Element <%=currEleName%> = org.dom4j.DocumentHelper.createElement("<%=node.getName()%>");
 				<%=parentName%>.elements().add(orderHelper.getInsertLocation(<%=XMLOrderUtil.getCurrPos(node) %>,<%=XMLOrderUtil.getCurrOrder(node) %>),<%=currEleName%>);
@@ -1033,8 +1040,10 @@ for(OutputXmlTree outputTable : outputTables) {
 	for(OutputTreeNode outputNode: outputTable.getNodes()) {
 		if(("id_Document").equals(outputNode.getType())){
 			
-			//get the document aggregation columns
 			TreeUtil treeUtil = new TreeUtil();
+			//check whether root is loop
+			boolean isRootLoop = treeUtil.isRootLoop(outputNode);
+			//get the document aggregation columns
 			List<TreeNode> allLeaf = new ArrayList<TreeNode>();
 			treeUtil.getAllLeaf(outputNode,allLeaf);
 			for(TreeNode leaf : allLeaf) {
@@ -1185,7 +1194,7 @@ generateToolByDom4j.generateGroupCode(index);
 					throw new Exception("Loop element is missing in the output Table:<%=outputTable.getName()%>!");
 				}
 <%
-			} else {
+			} else if(!isRootLoop){
 				generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
 			}
 %>

@@ -490,6 +490,16 @@ public class CLASS {
 				}
 			}
 		}
+		
+		boolean isRootLoop(TreeNode root) {
+			if(root == null) return false;
+			List<TreeNode> children = root.getChildren();
+			if(children == null || children.size() == 0) {
+				return false;
+			}
+			TreeNode realRoot = children.get(0);
+			return realRoot.isLoop();
+		}
 	}
 	
 	static class XMLOrderUtil {
