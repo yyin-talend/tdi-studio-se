@@ -304,9 +304,9 @@ public class LoginComposite extends Composite {
 
         perReader = ConnectionUserPerReader.getInstance();
         try {
-            Browser browser= new Browser(parent, SWT.BORDER);
-           System.setProperty("USE_BROWSER", "yes");
-           browser.dispose();
+            Browser browser = new Browser(parent, SWT.BORDER);
+            System.setProperty("USE_BROWSER", "yes");
+            browser.dispose();
         } catch (Throwable t) {
             System.setProperty("USE_BROWSER", "no");
         }
@@ -1390,7 +1390,12 @@ public class LoginComposite extends Composite {
             String name = bean.getName();
             if (user2 != null && !"".equals(user2) && repositoryId2 != null && !"".equals(repositoryId2) && workSpace != null //$NON-NLS-1$ //$NON-NLS-2$
                     && !"".equals(workSpace) && name != null && !"".equals(name)) { //$NON-NLS-1$ //$NON-NLS-2$
-                bean.setComplete(true);
+                boolean valid = Pattern.matches(RepositoryConstants.MAIL_PATTERN, user2);
+                if (valid && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(repositoryId2)) {
+                    String url = bean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
+                    valid = url != null || !"".equals(url);
+                }
+                bean.setComplete(valid);
             }
         }
         if (!isOnlyRemoteConnection) {
@@ -2099,7 +2104,13 @@ public class LoginComposite extends Composite {
             String name = getConnection().getName();
             if (user2 != null && !"".equals(user2) && repositoryId2 != null && !"".equals(repositoryId2) && workSpace != null //$NON-NLS-1$ //$NON-NLS-2$
                     && !"".equals(workSpace) && name != null && !"".equals(name)) { //$NON-NLS-1$ //$NON-NLS-2$
-                getConnection().setComplete(true);
+                boolean valid = Pattern.matches(RepositoryConstants.MAIL_PATTERN, user2);
+                if (valid && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(repositoryId2)) {
+                    String url = getConnection().getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
+                    valid = url != null || !"".equals(url);
+                }
+
+                getConnection().setComplete(valid);
             }
         }
 
@@ -2230,7 +2241,12 @@ public class LoginComposite extends Composite {
             String name = getConnection().getName();
             if (user2 != null && !"".equals(user2) && repositoryId2 != null && !"".equals(repositoryId2) && workSpace != null //$NON-NLS-1$ //$NON-NLS-2$
                     && !"".equals(workSpace) && name != null && !"".equals(name)) { //$NON-NLS-1$ //$NON-NLS-2$
-                getConnection().setComplete(true);
+                boolean valid = Pattern.matches(RepositoryConstants.MAIL_PATTERN, user2);
+                if (valid && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(repositoryId2)) {
+                    String url = getConnection().getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
+                    valid = url != null || !"".equals(url);
+                }
+                getConnection().setComplete(valid);
             }
         }
 
