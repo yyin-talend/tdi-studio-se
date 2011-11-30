@@ -79,6 +79,7 @@ imports="
 	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
 	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
 	 		String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+	 		String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
 %>
 			java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
 			<%this.setURL(node);%>
@@ -103,6 +104,10 @@ imports="
 			atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
 			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
 <%
+			}
+			if(!"ojdbc12-8i.jar".equals(dbVersion)){%>
+				((oracle.jdbc.OracleConnection)conn_<%=cid%>).setSessionTimeZone(java.util.TimeZone.getDefault().getID());
+			<%
 			}
 		}
 		

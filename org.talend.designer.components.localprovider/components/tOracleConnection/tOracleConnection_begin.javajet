@@ -57,6 +57,7 @@ imports="
 		public void useShareConnection(INode node) {
 		String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
 		String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__"); 
+		String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
 %>
 		String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;			
 <%
@@ -73,13 +74,16 @@ imports="
 
 <%
 			}
-%>
-<%
+			if(!"ojdbc12-8i.jar".equals(dbVersion)){%>
+				((oracle.jdbc.OracleConnection)conn_<%=cid%>).setSessionTimeZone(java.util.TimeZone.getDefault().getID());
+			<% 
+			}
 		}
 		
 		public void createConnection(INode node) {
-		//dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
-		String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+			//dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+			String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+			String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
 			if(("ORACLE_WALLET").equals(connectionType)) {
 %>
 			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>);
@@ -99,8 +103,10 @@ imports="
 			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
 <%
 			}
-%>
-<%
+			if(!"ojdbc12-8i.jar".equals(dbVersion)){%>
+				((oracle.jdbc.OracleConnection)conn_<%=cid%>).setSessionTimeZone(java.util.TimeZone.getDefault().getID());
+			<% 
+			}
 		}
 		
 		public void afterComponentProcess(INode node){
