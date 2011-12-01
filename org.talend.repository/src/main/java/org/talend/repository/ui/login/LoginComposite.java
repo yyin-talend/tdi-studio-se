@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -1419,7 +1420,7 @@ public class LoginComposite extends Composite {
                         String errorMsg = loginConncetion.checkConnectionValidation(bean.getName(), bean.getDescription(),
                                 bean.getUser(), bean.getPassword(), bean.getWorkSpace(),
                                 bean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
-                        if (errorMsg != null && errorMsg.equals("") && bean.isComplete()) {
+                        if (StringUtils.isEmpty(errorMsg) && bean.isComplete()) {
                             lastRemoteConnections.add(bean);
                         }
                     }
@@ -1961,7 +1962,7 @@ public class LoginComposite extends Composite {
                 errorMsg = loginConncetion.checkConnectionValidation(getConnection().getName(), getConnection().getDescription(),
                         getConnection().getUser(), getConnection().getPassword(), getConnection().getWorkSpace(), getConnection()
                                 .getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
-                if (errorMsg != null) {
+                if (StringUtils.isEmpty(errorMsg)) {
                     break;
                 }
             }

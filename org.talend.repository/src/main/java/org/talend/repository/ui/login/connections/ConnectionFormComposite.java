@@ -353,6 +353,7 @@ public class ConnectionFormComposite extends Composite {
 
         if (connection != null) {
             connection.setComplete(valid);
+            connectionsListComposite.refresh(connection);
         }
         return valid;
     }
