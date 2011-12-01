@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getLookupOutgoingConnections <em>Lookup Outgoing Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getLookupIncomingConnections <em>Lookup Incoming Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getDefaultValue <em>Default Value</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isNullable <em>Nullable</em>}</li>
  * </ul>
  * </p>
  *
@@ -295,5 +296,32 @@ public interface TreeNode extends AbstractNode {
      * @generated
      */
     void setDefaultValue(String value);
+
+    /**
+     * Returns the value of the '<em><b>Nullable</b></em>' attribute.
+     * The default value is <code>"true"</code>.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Nullable</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Nullable</em>' attribute.
+     * @see #setNullable(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_Nullable()
+     * @model default="true"
+     * @generated
+     */
+    boolean isNullable();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isNullable <em>Nullable</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Nullable</em>' attribute.
+     * @see #isNullable()
+     * @generated
+     */
+    void setNullable(boolean value);
 
 } // TreeNode

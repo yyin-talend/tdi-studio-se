@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getName <em>Name</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getExpression <em>Expression</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getType <em>Type</em>}</li>
- *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#isNullable <em>Nullable</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getOutgoingConnections <em>Outgoing Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getIncomingConnections <em>Incoming Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getFilterOutGoingConnections <em>Filter Out Going Connections</em>}</li>
@@ -109,32 +108,6 @@ public interface AbstractNode extends EObject {
      * @generated
      */
     void setType(String value);
-
-    /**
-     * Returns the value of the '<em><b>Nullable</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Nullable</em>' attribute isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-     * @return the value of the '<em>Nullable</em>' attribute.
-     * @see #setNullable(boolean)
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getAbstractNode_Nullable()
-     * @model
-     * @generated
-     */
-    boolean isNullable();
-
-    /**
-     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#isNullable <em>Nullable</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @param value the new value of the '<em>Nullable</em>' attribute.
-     * @see #isNullable()
-     * @generated
-     */
-    void setNullable(boolean value);
 
     /**
      * Returns the value of the '<em><b>Outgoing Connections</b></em>' reference list.

@@ -460,17 +460,8 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getAbstractNode_Nullable() {
-        return (EAttribute)abstractNodeEClass.getEStructuralFeatures().get(3);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public EReference getAbstractNode_OutgoingConnections() {
-        return (EReference)abstractNodeEClass.getEStructuralFeatures().get(4);
+        return (EReference)abstractNodeEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -479,7 +470,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * @generated
      */
     public EReference getAbstractNode_IncomingConnections() {
-        return (EReference)abstractNodeEClass.getEStructuralFeatures().get(5);
+        return (EReference)abstractNodeEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -488,7 +479,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * @generated
      */
     public EReference getAbstractNode_FilterOutGoingConnections() {
-        return (EReference)abstractNodeEClass.getEStructuralFeatures().get(6);
+        return (EReference)abstractNodeEClass.getEStructuralFeatures().get(5);
     }
 
     /**
@@ -604,6 +595,15 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getTreeNode_Nullable() {
+        return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(11);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getOutputTreeNode() {
         return outputTreeNodeEClass;
     }
@@ -624,6 +624,15 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      */
     public EClass getVarNode() {
         return varNodeEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getVarNode_Nullable() {
+        return (EAttribute)varNodeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -846,7 +855,6 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEAttribute(abstractNodeEClass, ABSTRACT_NODE__NAME);
         createEAttribute(abstractNodeEClass, ABSTRACT_NODE__EXPRESSION);
         createEAttribute(abstractNodeEClass, ABSTRACT_NODE__TYPE);
-        createEAttribute(abstractNodeEClass, ABSTRACT_NODE__NULLABLE);
         createEReference(abstractNodeEClass, ABSTRACT_NODE__OUTGOING_CONNECTIONS);
         createEReference(abstractNodeEClass, ABSTRACT_NODE__INCOMING_CONNECTIONS);
         createEReference(abstractNodeEClass, ABSTRACT_NODE__FILTER_OUT_GOING_CONNECTIONS);
@@ -863,11 +871,13 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEReference(treeNodeEClass, TREE_NODE__LOOKUP_OUTGOING_CONNECTIONS);
         createEReference(treeNodeEClass, TREE_NODE__LOOKUP_INCOMING_CONNECTIONS);
         createEAttribute(treeNodeEClass, TREE_NODE__DEFAULT_VALUE);
+        createEAttribute(treeNodeEClass, TREE_NODE__NULLABLE);
 
         outputTreeNodeEClass = createEClass(OUTPUT_TREE_NODE);
         createEAttribute(outputTreeNodeEClass, OUTPUT_TREE_NODE__AGGREGATE);
 
         varNodeEClass = createEClass(VAR_NODE);
+        createEAttribute(varNodeEClass, VAR_NODE__NULLABLE);
 
         iConnectionEClass = createEClass(ICONNECTION);
 
@@ -969,7 +979,6 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEAttribute(getAbstractNode_Name(), ecorePackage.getEString(), "name", null, 0, 1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getAbstractNode_Expression(), ecorePackage.getEString(), "expression", null, 0, 1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getAbstractNode_Type(), ecorePackage.getEString(), "type", null, 0, 1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getAbstractNode_Nullable(), ecorePackage.getEBoolean(), "nullable", null, 0, 1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getAbstractNode_OutgoingConnections(), this.getConnection(), null, "outgoingConnections", null, 0, -1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getAbstractNode_IncomingConnections(), this.getConnection(), null, "incomingConnections", null, 0, -1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getAbstractNode_FilterOutGoingConnections(), this.getFilterConnection(), null, "filterOutGoingConnections", null, 0, -1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -986,11 +995,13 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEReference(getTreeNode_LookupOutgoingConnections(), this.getLookupConnection(), null, "lookupOutgoingConnections", null, 0, -1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getTreeNode_LookupIncomingConnections(), this.getLookupConnection(), null, "lookupIncomingConnections", null, 0, -1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getTreeNode_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTreeNode_Nullable(), ecorePackage.getEBoolean(), "nullable", "true", 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(outputTreeNodeEClass, OutputTreeNode.class, "OutputTreeNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getOutputTreeNode_Aggregate(), ecorePackage.getEBoolean(), "aggregate", null, 0, 1, OutputTreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(varNodeEClass, VarNode.class, "VarNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getVarNode_Nullable(), ecorePackage.getEBoolean(), "nullable", null, 0, 1, VarNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(iConnectionEClass, IConnection.class, "IConnection", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

@@ -528,22 +528,13 @@ public interface XmlmapPackage extends EPackage {
     int ABSTRACT_NODE__TYPE = 2;
 
     /**
-     * The feature id for the '<em><b>Nullable</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int ABSTRACT_NODE__NULLABLE = 3;
-
-    /**
      * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE__OUTGOING_CONNECTIONS = 4;
+    int ABSTRACT_NODE__OUTGOING_CONNECTIONS = 3;
 
     /**
      * The feature id for the '<em><b>Incoming Connections</b></em>' reference list.
@@ -552,7 +543,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE__INCOMING_CONNECTIONS = 5;
+    int ABSTRACT_NODE__INCOMING_CONNECTIONS = 4;
 
     /**
      * The feature id for the '<em><b>Filter Out Going Connections</b></em>' reference list.
@@ -561,7 +552,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE__FILTER_OUT_GOING_CONNECTIONS = 6;
+    int ABSTRACT_NODE__FILTER_OUT_GOING_CONNECTIONS = 5;
 
     /**
      * The number of structural features of the '<em>Abstract Node</em>' class.
@@ -570,7 +561,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE_FEATURE_COUNT = 7;
+    int ABSTRACT_NODE_FEATURE_COUNT = 6;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl <em>Tree Node</em>}' class.
@@ -608,15 +599,6 @@ public interface XmlmapPackage extends EPackage {
      * @ordered
      */
     int TREE_NODE__TYPE = ABSTRACT_NODE__TYPE;
-
-    /**
-     * The feature id for the '<em><b>Nullable</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int TREE_NODE__NULLABLE = ABSTRACT_NODE__NULLABLE;
 
     /**
      * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
@@ -745,13 +727,22 @@ public interface XmlmapPackage extends EPackage {
     int TREE_NODE__DEFAULT_VALUE = ABSTRACT_NODE_FEATURE_COUNT + 10;
 
     /**
+     * The feature id for the '<em><b>Nullable</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__NULLABLE = ABSTRACT_NODE_FEATURE_COUNT + 11;
+
+    /**
      * The number of structural features of the '<em>Tree Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 11;
+    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 12;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.
@@ -789,15 +780,6 @@ public interface XmlmapPackage extends EPackage {
      * @ordered
      */
     int OUTPUT_TREE_NODE__TYPE = TREE_NODE__TYPE;
-
-    /**
-     * The feature id for the '<em><b>Nullable</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int OUTPUT_TREE_NODE__NULLABLE = TREE_NODE__NULLABLE;
 
     /**
      * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
@@ -926,6 +908,15 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_TREE_NODE__DEFAULT_VALUE = TREE_NODE__DEFAULT_VALUE;
 
     /**
+     * The feature id for the '<em><b>Nullable</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__NULLABLE = TREE_NODE__NULLABLE;
+
+    /**
      * The feature id for the '<em><b>Aggregate</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -981,15 +972,6 @@ public interface XmlmapPackage extends EPackage {
     int VAR_NODE__TYPE = ABSTRACT_NODE__TYPE;
 
     /**
-     * The feature id for the '<em><b>Nullable</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int VAR_NODE__NULLABLE = ABSTRACT_NODE__NULLABLE;
-
-    /**
      * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1017,13 +999,22 @@ public interface XmlmapPackage extends EPackage {
     int VAR_NODE__FILTER_OUT_GOING_CONNECTIONS = ABSTRACT_NODE__FILTER_OUT_GOING_CONNECTIONS;
 
     /**
+     * The feature id for the '<em><b>Nullable</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int VAR_NODE__NULLABLE = ABSTRACT_NODE_FEATURE_COUNT + 0;
+
+    /**
      * The number of structural features of the '<em>Var Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int VAR_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 0;
+    int VAR_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 1;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}' class.
@@ -1496,17 +1487,6 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getAbstractNode_Type();
 
     /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#isNullable <em>Nullable</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Nullable</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#isNullable()
-     * @see #getAbstractNode()
-     * @generated
-     */
-    EAttribute getAbstractNode_Nullable();
-
-    /**
      * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode#getOutgoingConnections <em>Outgoing Connections</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1671,6 +1651,17 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getTreeNode_DefaultValue();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isNullable <em>Nullable</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Nullable</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isNullable()
+     * @see #getTreeNode()
+     * @generated
+     */
+    EAttribute getTreeNode_Nullable();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode <em>Output Tree Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1700,6 +1691,17 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EClass getVarNode();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarNode#isNullable <em>Nullable</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Nullable</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.VarNode#isNullable()
+     * @see #getVarNode()
+     * @generated
+     */
+    EAttribute getVarNode_Nullable();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection <em>Connection</em>}'.
@@ -2130,14 +2132,6 @@ public interface XmlmapPackage extends EPackage {
         EAttribute ABSTRACT_NODE__TYPE = eINSTANCE.getAbstractNode_Type();
 
         /**
-         * The meta object literal for the '<em><b>Nullable</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute ABSTRACT_NODE__NULLABLE = eINSTANCE.getAbstractNode_Nullable();
-
-        /**
          * The meta object literal for the '<em><b>Outgoing Connections</b></em>' reference list feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2260,6 +2254,14 @@ public interface XmlmapPackage extends EPackage {
         EAttribute TREE_NODE__DEFAULT_VALUE = eINSTANCE.getTreeNode_DefaultValue();
 
         /**
+         * The meta object literal for the '<em><b>Nullable</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute TREE_NODE__NULLABLE = eINSTANCE.getTreeNode_Nullable();
+
+        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2286,6 +2288,14 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EClass VAR_NODE = eINSTANCE.getVarNode();
+
+        /**
+         * The meta object literal for the '<em><b>Nullable</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute VAR_NODE__NULLABLE = eINSTANCE.getVarNode_Nullable();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl <em>Connection</em>}' class.

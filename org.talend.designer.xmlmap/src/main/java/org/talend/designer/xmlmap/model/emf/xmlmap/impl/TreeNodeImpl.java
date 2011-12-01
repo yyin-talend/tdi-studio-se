@@ -50,6 +50,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getLookupOutgoingConnections <em>Lookup Outgoing Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getLookupIncomingConnections <em>Lookup Incoming Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getDefaultValue <em>Default Value</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isNullable <em>Nullable</em>}</li>
  * </ul>
  * </p>
  *
@@ -245,6 +246,26 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * @ordered
      */
     protected String defaultValue = DEFAULT_VALUE_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #isNullable() <em>Nullable</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isNullable()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean NULLABLE_EDEFAULT = true;
+
+    /**
+     * The cached value of the '{@link #isNullable() <em>Nullable</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isNullable()
+     * @generated
+     * @ordered
+     */
+    protected boolean nullable = NULLABLE_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -474,6 +495,27 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
+    public boolean isNullable() {
+        return nullable;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setNullable(boolean newNullable) {
+        boolean oldNullable = nullable;
+        nullable = newNullable;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__NULLABLE, oldNullable, nullable));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -513,6 +555,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return getLookupIncomingConnections();
             case XmlmapPackage.TREE_NODE__DEFAULT_VALUE:
                 return getDefaultValue();
+            case XmlmapPackage.TREE_NODE__NULLABLE:
+                return isNullable();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -562,6 +606,9 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__DEFAULT_VALUE:
                 setDefaultValue((String)newValue);
                 return;
+            case XmlmapPackage.TREE_NODE__NULLABLE:
+                setNullable((Boolean)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -607,6 +654,9 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__DEFAULT_VALUE:
                 setDefaultValue(DEFAULT_VALUE_EDEFAULT);
                 return;
+            case XmlmapPackage.TREE_NODE__NULLABLE:
+                setNullable(NULLABLE_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -641,6 +691,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return lookupIncomingConnections != null && !lookupIncomingConnections.isEmpty();
             case XmlmapPackage.TREE_NODE__DEFAULT_VALUE:
                 return DEFAULT_VALUE_EDEFAULT == null ? defaultValue != null : !DEFAULT_VALUE_EDEFAULT.equals(defaultValue);
+            case XmlmapPackage.TREE_NODE__NULLABLE:
+                return nullable != NULLABLE_EDEFAULT;
         }
         return super.eIsSet(featureID);
     }
@@ -671,6 +723,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
         result.append(main);
         result.append(", defaultValue: ");
         result.append(defaultValue);
+        result.append(", nullable: ");
+        result.append(nullable);
         result.append(')');
         return result.toString();
     }
