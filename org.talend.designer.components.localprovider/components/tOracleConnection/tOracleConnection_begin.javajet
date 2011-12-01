@@ -57,7 +57,6 @@ imports="
 		public void useShareConnection(INode node) {
 		String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
 		String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__"); 
-		String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
 %>
 		String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;			
 <%
@@ -74,22 +73,13 @@ imports="
 
 <%
 			}
-			if(!"ojdbc12-8i.jar".equals(dbVersion)){%>
-				java.sql.Statement stmtGetTZ_<%=cid%> = conn_<%=cid%>.createStatement();
-				java.sql.ResultSet rsGetTZ_<%=cid%> = stmtGetTZ_<%=cid%>.executeQuery("select sessiontimezone from dual");
-				String sessionTimezone_<%=cid%> = java.util.TimeZone.getDefault().getID();
-				while (rsGetTZ_<%=cid%>.next()) {
-					sessionTimezone_<%=cid%> = rsGetTZ_<%=cid%>.getString(1);
-				}
-				((oracle.jdbc.OracleConnection)conn_<%=cid%>).setSessionTimeZone(sessionTimezone_<%=cid%>);
-			<% 
-			}
+%>
+<%
 		}
 		
 		public void createConnection(INode node) {
-			//dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
-			String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
-			String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
+		//dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+		String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
 			if(("ORACLE_WALLET").equals(connectionType)) {
 %>
 			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>);
@@ -109,16 +99,8 @@ imports="
 			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
 <%
 			}
-			if(!"ojdbc12-8i.jar".equals(dbVersion)){%>
-				java.sql.Statement stmtGetTZ_<%=cid%> = conn_<%=cid%>.createStatement();
-				java.sql.ResultSet rsGetTZ_<%=cid%> = stmtGetTZ_<%=cid%>.executeQuery("select sessiontimezone from dual");
-				String sessionTimezone_<%=cid%> = java.util.TimeZone.getDefault().getID();
-				while (rsGetTZ_<%=cid%>.next()) {
-					sessionTimezone_<%=cid%> = rsGetTZ_<%=cid%>.getString(1);
-				}
-				((oracle.jdbc.OracleConnection)conn_<%=cid%>).setSessionTimeZone(sessionTimezone_<%=cid%>);
-			<% 
-			}
+%>
+<%
 		}
 		
 		public void afterComponentProcess(INode node){
