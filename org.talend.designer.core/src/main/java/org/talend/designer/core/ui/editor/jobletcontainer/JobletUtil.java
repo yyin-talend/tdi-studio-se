@@ -238,6 +238,7 @@ public class JobletUtil {
         }
 
         nodePart.setModel(cloneNode);
+        cloneNode.setLabel(node.getLabel());
         // if (lock == null) {
         // cloneNode.setReadOnly(true);
         // } else {
