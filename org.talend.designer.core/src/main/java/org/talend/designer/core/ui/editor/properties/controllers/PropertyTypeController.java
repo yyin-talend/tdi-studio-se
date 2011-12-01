@@ -372,8 +372,9 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     } else {
                         changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection, fullParamName, id);
                     }
-
-                    compoundCommand.add(changeValuesFromRepository);
+                    if (changeValuesFromRepository != null) {
+                        compoundCommand.add(changeValuesFromRepository);
+                    }
 
                     updateDBType(compoundCommand, repositoryConnection);
                     return compoundCommand;
