@@ -71,12 +71,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 <%
 		}
+		if(("NORMAL_OUTPUT").equals(errorOutput) || ("NORMAL_OUTPUT").equals(standardOutput)){
 %>
-
+			output_<%=cid%>.removeAllElements();
+<%
+		}
+%>
 		java.io.InputStream stdout_<%=cid%> = sess_<%=cid%>.getStdout();
 		java.io.BufferedReader brout_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stdout_<%=cid%>));
         String line_<%=cid%> = "";
-        StringBuilder stringStdout_<%=cid%> =new StringBuilder();
 
         if((line_<%=cid%> = brout_<%=cid%>.readLine()) != null){
             stringStdout_<%=cid%>.append(line_<%=cid%>);
@@ -91,7 +94,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		java.io.InputStream stderr_<%=cid%> = sess_<%=cid%>.getStderr();
         java.io.BufferedReader breer_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stderr_<%=cid%>));
         String line1_<%=cid%> = "";
-        StringBuilder stringStderr_<%=cid%> =new StringBuilder();
 
         if((line1_<%=cid%> = breer_<%=cid%>.readLine()) != null){
         	stringStderr_<%=cid%>.append(line1_<%=cid%>);
@@ -111,41 +113,32 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 <%
 		//-----begin to handle output
-		if(("TO_CONSOLE").equals(standardOutput)){
-%>
-			System.out.println(stringStdout_<%=cid%>.toString());
-<%
-		}else if(("TO_GLOBAL_VARIABLE").equals(standardOutput)){
+		if(("TO_GLOBAL_VARIABLE").equals(standardOutput)){
 %>
 			globalMap.put("<%=cid %>_STDOUT", stringStdout_<%=cid%>.toString());
 <%
 		}else if(("TO_CONSOLE_AND_GLOBAL_VARIABLE").equals(standardOutput)){
 %>
-			System.out.println(stringStdout_<%=cid%>.toString());
 			globalMap.put("<%=cid %>_STDOUT", stringStdout_<%=cid%>.toString());
 <%
 		}else if(("NORMAL_OUTPUT").equals(standardOutput)){
 %>
 			output_<%=cid%>.add(stringStdout_<%=cid%>.toString());
+			stringStdout_<%=cid%>.delete(0,stringStdout_<%=cid%>.length());
 <%
 		}
-		if(("TO_CONSOLE").equals(errorOutput)){
+		if(("TO_GLOBAL_VARIABLE").equals(errorOutput)){
 %>
-			System.out.println(stringStderr_<%=cid%>.toString());
-<%			
-		}else if(("TO_GLOBAL_VARIABLE").equals(errorOutput)){
-%>
-			
 			globalMap.put("<%=cid %>_STDERR", stringStderr_<%=cid%>.toString());
 <%		
 		}else if(("TO_CONSOLE_AND_GLOBAL_VARIABLE").equals(errorOutput)){
 %>
-			System.out.println(stringStderr_<%=cid%>.toString());
 			globalMap.put("<%=cid %>_STDERR", stringStderr_<%=cid%>.toString());
 <%		
 		}else if(("NORMAL_OUTPUT").equals(errorOutput)){
 %>
 			output_<%=cid%>.add(stringStderr_<%=cid%>.toString());
+			stringStderr_<%=cid%>.delete(0, stringStderr_<%=cid%>.length());
 <%		
 		}
 		if(("NORMAL_OUTPUT").equals(errorOutput) || ("NORMAL_OUTPUT").equals(standardOutput)){

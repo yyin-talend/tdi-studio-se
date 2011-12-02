@@ -149,3 +149,5 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     }
 }
 %>
+		StringBuilder stringStdout_<%=cid%> =new StringBuilder();
+        StringBuilder stringStderr_<%=cid%> =new StringBuilder();
