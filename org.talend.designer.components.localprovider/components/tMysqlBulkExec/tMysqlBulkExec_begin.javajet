@@ -147,7 +147,7 @@ if(("UPDATE").equals(dataAction)) {
             "LOAD DATA LOCAL INFILE '" + file_<%=cid %> + "' "  
             + " INTO TABLE " + tableName_<%=cid %>
             + " FIELDS TERMINATED BY '" + field_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
-            + " ENCLOSED BY '" + enclosed_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
+            + " ENCLOSED BY '"+("'".equals(enclosed_str_<%=cid %>)?"\\":"")+ enclosed_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
             + " ESCAPED BY '" + escaped_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
             + " LINES TERMINATED BY '" + lines_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "' <%=loadingCols.toString()%>"    
 <%
@@ -200,7 +200,7 @@ if(("UPDATE").equals(dataAction)) {
         + replace_<%=cid%> 
         + " INTO TABLE " + tableName_<%=cid %>
         + " FIELDS TERMINATED BY '" + field_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
-        + " ENCLOSED BY '" + enclosed_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
+        + " ENCLOSED BY '"+("'".equals(enclosed_str_<%=cid %>)?"\\":"") + enclosed_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
         + " ESCAPED BY '" + escaped_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
         + " LINES TERMINATED BY '" + lines_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "' <%=loadingCols.toString()%>"  
 <%
