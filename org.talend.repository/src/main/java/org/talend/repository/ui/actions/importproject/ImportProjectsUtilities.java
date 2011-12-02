@@ -57,6 +57,7 @@ import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.commons.utils.platform.PluginChecker;
 import org.talend.commons.xml.XmlUtil;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
@@ -383,6 +384,12 @@ public class ImportProjectsUtilities {
                 demoProject.setDemoProjectFileType(EDemoProjectFileType.getDemoProjectFileTypeName(demoProjectFileType));
                 demoProject.setDemoProjectFilePath(demoProjectElement.attributeValue("demoFilePath")); //$NON-NLS-1$
                 demoProject.setDescriptionFilePath(demoProjectElement.attributeValue("descriptionFilePath")); //$NON-NLS-1$
+
+                if (demoProject.getProjectName().equals("ESBDEMOS")) {
+                    if (!PluginChecker.isPluginLoaded("org.talend.repository.services")) {
+                        continue;
+                    }
+                }
                 demoProjectList.add(demoProject);
             }
         }
