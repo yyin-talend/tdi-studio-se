@@ -210,6 +210,17 @@ public class CLASS {
 		Map<String,String> outNodesXPath;
 		Map<String,String> lookupInputNodesXPath;
 		
+		Map<String,String> xpathToPattern = new HashMap<String,String>();
+		Map<String,String> xpathToType = new HashMap<String,String>();
+		
+		public Map<String,String> getXpathToPatternMap(){
+			return xpathToPattern;
+		}
+		
+		public Map<String,String> getXpathToTypeMap(){
+			return xpathToType;
+		}
+		
 		public XPathHelper(TreeNode rootNode){
 			//1. find loop node
 			loopNode = findLoopNode(rootNode);
@@ -275,9 +286,13 @@ public class CLASS {
 			String loopNodeXPath = loopNode.getXpath();
 			for(TreeNode node: nodes){
 				String currentNodeXPath = node.getXpath();
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(node.getType(), node.isNullable()); 
+				xpathToType.put(currentNodeXPath,typeToGenerate);
+				xpathToPattern.put(currentNodeXPath,node.getPattern());
+				
 				if(currentNodeXPath==null || ("").equals(currentNodeXPath)){
 				}else if(loopNodeXPath.equals(currentNodeXPath)){
-					nodesXPath.put(currentNodeXPath, ".");	
+					nodesXPath.put(currentNodeXPath, ".");
 				}else{
 					String nodeXPathWithPrefix = buildXPathWithPrefix(node, dPrefixMapping);
 					if(nodeXPathWithPrefix.startsWith(finalLoopNodeXPath)){

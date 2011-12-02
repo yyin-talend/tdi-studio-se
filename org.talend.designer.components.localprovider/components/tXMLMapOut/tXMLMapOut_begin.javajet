@@ -469,21 +469,26 @@ class TreeNode_API_<%=cid %> {
 				} else if ("id_Date".equals(talendType)) {
 %>
 	java.util.Date get_Date(String xpath, String pattern){
-		if(xpath_value_map.get(xpath)==null) return null;
-		return ParserUtils.parseTo_Date(xpath_value_map.get(xpath), pattern);
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return null;
+		return ParserUtils.parseTo_Date(content, pattern);
 	}
 <%
 				} else if("id_byte[]".equals(talendType)){ 
 %>
 	byte[] get_Bytes(String xpath){
-		if(xpath_value_map.get(xpath)==null) return null;
-		return xpath_value_map.get(xpath).getBytes();
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return null;
+		return content.getBytes();
 	}
 <%
 				} else {
+					String returnValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate);
 %>
 	<%=typeToGenerate %> get_<%=typeToGenerate %>(String xpath){
-		return ParserUtils.parseTo_<%= typeToGenerate %>(xpath_value_map.get(xpath));
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return <%=returnValue%>;
+		return ParserUtils.parseTo_<%= typeToGenerate %>(content);
 	}
 <%
 				}
