@@ -19,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
@@ -64,7 +63,6 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -351,23 +349,23 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     RepositoryNode selectNode = dialog.getResult();
                     ChangeValuesFromRepository changeValuesFromRepository = null;
                     if (selectNode.getObjectType() == ERepositoryObjectType.SERVICESOPERATION) {
-                        if (isJobAlreadyAssignToServiceOperation()) {
-                            MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Message",
-                                    "job already used in other operation!");
-                        } else {
-                            String serviceId = item.getProperty().getId();
-                            String portId = selectNode.getParent().getObject().getId();
-                            String operationId = selectNode.getObject().getId();
-                            changeValuesFromRepository = new ChangeValuesFromRepository(
-                                    elem,
-                                    repositoryConnection,
-                                    param.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), serviceId + " - " + portId + " - " + operationId); //$NON-NLS-1$
-                            if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
-                                IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(
-                                        IESBService.class);
-                                service.updateOperation((INode) elem, serviceId + " - " + portId + " - " + operationId,
-                                        selectNode);
-                            }
+                        String serviceId = item.getProperty().getId();
+                        String portId = selectNode.getParent().getObject().getId();
+                        String operationId = selectNode.getObject().getId();
+                        changeValuesFromRepository = new ChangeValuesFromRepository(
+                                elem,
+                                repositoryConnection,
+                                param.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), serviceId + " - " + portId + " - " + operationId); //$NON-NLS-1$
+                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                            IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+                            boolean foundInOpen = false;
+                            IProcess2 process = null;
+                            IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                    .getEditorReferences();
+                            process = (IProcess2) RepositoryPlugin.getDefault().getDesignerCoreService().getCurrentProcess();
+                            String jobID = process.getProperty().getId();
+                            service.deleteOldRelation(jobID);
+                            service.updateOperation((INode) elem, serviceId + " - " + portId + " - " + operationId, selectNode);
                         }
                     } else {
                         changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection, fullParamName, id);
@@ -553,22 +551,6 @@ public class PropertyTypeController extends AbstractRepositoryController {
             }
         }
         return null;
-    }
-
-    private boolean isJobAlreadyAssignToServiceOperation() {
-        IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
-        boolean foundInOpen = false;
-        IProcess2 process = null;
-        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
-        process = (IProcess2) RepositoryPlugin.getDefault().getDesignerCoreService().getCurrentProcess();
-        String jobID = process.getProperty().getId();
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
-            IESBService esbService = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
-            if (esbService != null) {
-                return esbService.isJobAlreadyAssignToServiceOperation(jobID);
-            }
-        }
-        return false;
     }
 
     // see bug 0004305
