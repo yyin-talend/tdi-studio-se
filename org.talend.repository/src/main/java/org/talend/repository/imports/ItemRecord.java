@@ -20,11 +20,15 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.swt.graphics.Image;
+import org.talend.commons.ui.runtime.image.IImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.ui.images.CoreImageProvider;
 
 /**
@@ -141,7 +145,24 @@ public class ItemRecord {
     }
 
     public Image getImage() {
-        return CoreImageProvider.getImage(getType());
+        // MOD sizhaoliu 2011-12-05
+        // In ImportItemWizard, enable custom icons depending on file extension.
+        Image img = null;
+        boolean isExtensionPoint = false;
+        for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
+            isExtensionPoint = handler.isRepObjType(getType());
+            if (isExtensionPoint == true) {
+                IImage icon = handler.getIcon(getItem());
+                if (icon != null) {
+                    img = ImageProvider.getImage(icon);
+                    break;
+                }
+            }
+        }
+        if (isExtensionPoint == false || img == null) {
+            img = CoreImageProvider.getImage(getType());
+        }
+        return img;
     }
 
     /**
