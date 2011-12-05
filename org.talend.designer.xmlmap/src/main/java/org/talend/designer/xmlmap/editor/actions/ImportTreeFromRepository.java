@@ -46,6 +46,7 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XMLFileNode;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlXPathLoopDescriptorImpl;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
@@ -404,6 +405,9 @@ public class ImportTreeFromRepository extends SelectionAction {
                 lastTreeNode = temp;
                 lastXmlPath = newPath;
             }
+            if (type == null) {
+                type = JavaTypesManager.getDefaultJavaType().getId();
+            }
             temp.setType(type);
 
         }
@@ -447,7 +451,9 @@ public class ImportTreeFromRepository extends SelectionAction {
                 lastXmlPath = newPath;
                 groupElements.add(temp);
             }
-
+            if (type == null) {
+                type = JavaTypesManager.getDefaultJavaType().getId();
+            }
             temp.setType(type);
 
         }
@@ -493,6 +499,9 @@ public class ImportTreeFromRepository extends SelectionAction {
                 }
                 lastTreeNode = temp;
                 lastXmlPath = newPath;
+            }
+            if (type == null) {
+                type = JavaTypesManager.getDefaultJavaType().getId();
             }
             temp.setType(type);
 
