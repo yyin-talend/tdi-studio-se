@@ -123,10 +123,10 @@ import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 
 /**
  * labe Composite login.<br/>
- *
+ * 
  * $Id: /talend/tos/trunk/org.talend.repository/src/main/java/org/talend/repository/ui/login/LoginComposite.java 24167
  * 2009-04-28T09:55:53.574018Z wchen $
- *
+ * 
  */
 public class LoginComposite extends Composite {
 
@@ -290,7 +290,7 @@ public class LoginComposite extends Composite {
 
     /**
      * Constructs a new LoginComposite.
-     *
+     * 
      * @param parent Parent component.
      * @param style Style bits.
      */
@@ -1489,7 +1489,7 @@ public class LoginComposite extends Composite {
 
     /**
      * If setted, Select last ? used in PreferenceStore.
-     *
+     * 
      * @param prefManipulator
      */
     private void selectLast(String lastObjectSelected, Combo comboToSelect) {
@@ -1510,7 +1510,7 @@ public class LoginComposite extends Composite {
     }
 
     /**
-     *
+     * 
      * @return
      */
     protected boolean isAuthenticationNeeded() {
@@ -2124,12 +2124,13 @@ public class LoginComposite extends Composite {
             }
         }
 
-        if (getConnection() == null || !getConnection().isComplete()) {
-            return;
-        }
         ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(getConnection()
                 .getRepositoryId()));
+
+        if (getConnection() == null || !getConnection().isComplete()) {
+            return;
+        }
 
         boolean initialized = false;
 
@@ -2260,12 +2261,13 @@ public class LoginComposite extends Composite {
             }
         }
 
-        if (getConnection() == null || !getConnection().isComplete()) {
-            return;
-        }
         ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(getConnection()
                 .getRepositoryId()));
+
+        if (getConnection() == null || !getConnection().isComplete()) {
+            return;
+        }
 
         boolean initialized = false;
 
@@ -2309,7 +2311,7 @@ public class LoginComposite extends Composite {
 
     /**
      * smallet Comment method "selectLastUsedProject".
-     *
+     * 
      * @param projects
      */
     private void selectLastUsedProject() {
@@ -2338,7 +2340,7 @@ public class LoginComposite extends Composite {
 
     /**
      * smallet Comment method "selectProject".
-     *
+     * 
      * @param goodProject
      */
     private void selectProject(Project goodProject) {
@@ -2427,9 +2429,9 @@ public class LoginComposite extends Composite {
 
     /**
      * Label provider for Projects. <br/>
-     *
+     * 
      * $Id$
-     *
+     * 
      */
     private class ProjectLabelProvider extends LabelProvider {
 
@@ -2450,9 +2452,9 @@ public class LoginComposite extends Composite {
 
     /**
      * DOC smallet LoginComposite class global comment. Detailled comment <br/>
-     *
+     * 
      * $Id$
-     *
+     * 
      */
     private class ConnectionLabelProvider extends LabelProvider {
 
