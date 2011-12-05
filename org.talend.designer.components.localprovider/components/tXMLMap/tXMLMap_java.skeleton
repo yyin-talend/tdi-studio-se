@@ -140,11 +140,11 @@ public class CLASS {
 				pathTypeMap.put(node.getXpath(), talendType);
 				pathPatternMap.put(node.getXpath(), patternValue);
 				pathTypeToGenMap.put(node.getXpath(), typeToGenerate);
-			} else {
-	    		for(TreeNode tmpNode : node.getChildren()) {
-	    			init(tmpNode);
-	    		}
 			}
+    		
+    		for(TreeNode tmpNode : node.getChildren()) {
+    			init(tmpNode);
+    		}
 		}
 		
 		String generateExprCode(String expression){
