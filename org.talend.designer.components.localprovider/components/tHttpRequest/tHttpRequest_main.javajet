@@ -71,7 +71,6 @@ if ("POST".equals(sMethod)){
   %>
     java.io.InputStream bisParam_<%=cid%> = new java.io.BufferedInputStream(new java.io.FileInputStream(<%=sParamFile%>));
     java.io.OutputStream bosParam_<%=cid%> = new java.io.BufferedOutputStream(urlConn_<%=cid%>.getOutputStream());
-    int buffer_<%=cid%> = 0;
     
     while ((bos_buffer_<%=cid%> = bisParam_<%=cid%>.read(buffer_<%=cid%>)) != -1) {
       bosParam_<%=cid%>.write(buffer_<%=cid%>,0,bos_buffer_<%=cid%>);
