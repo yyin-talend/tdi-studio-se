@@ -283,6 +283,9 @@ public class FOXManager {
                 current.addChild(temp);
             } else {
                 temp = this.addElement(current, currentPath, newPath, defaultValue);
+                if (rootNode == null) {
+                    rootNode = temp;
+                }
                 if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
                     temp.setMain(true);
                 }
