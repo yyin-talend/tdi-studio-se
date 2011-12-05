@@ -31,6 +31,7 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
@@ -691,6 +692,14 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      */
     public void setDrop(boolean isDrop) {
         this.isDrop = isDrop;
+    }
+
+    @Override
+    public RootEditPart getRoot() {
+        if (getParent() != null) {
+            return getParent().getRoot();
+        }
+        return null;
     }
 
 }
