@@ -367,7 +367,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         TreeNode lastTreeNode = parentNode;
 
         TreeNode temp = null;
-        TreeNode mainNode = null;
+        TreeNode mainNode = parentNode;
         String mainPath = null;
         String lastXmlPath = null;
 
@@ -478,6 +478,9 @@ public class ImportTreeFromRepository extends SelectionAction {
                 lastTreeNode.getChildren().add(temp);
             } else {
                 temp = this.addElement(lastTreeNode, lastXmlPath, node);
+                if (rootNode == null) {
+                    rootNode = temp;
+                }
                 if (node.getAttribute().equals("main")) {
                     temp.setMain(true);
                     mainNode = temp;
