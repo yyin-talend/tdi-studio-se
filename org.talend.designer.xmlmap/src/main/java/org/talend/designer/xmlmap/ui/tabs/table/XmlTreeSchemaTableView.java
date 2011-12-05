@@ -30,7 +30,6 @@ import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
-import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.CheckColumnSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.behavior.ColumnCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnColorProvider;
@@ -151,14 +150,6 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
             }
         });
 
-        String[] arrayTalendTypes = new String[0];
-        try {
-            arrayTalendTypes = MetadataTalendType.getTalendTypesLabels();
-        } catch (NoClassDefFoundError e) {
-            ExceptionHandler.process(e);
-        } catch (ExceptionInInitializerError e) {
-            ExceptionHandler.process(e);
-        }
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Type");
         column.setToolTipHeader("Type");
@@ -166,13 +157,13 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
         column.setBeanPropertyAccessors(getTalendTypeAccessor());
         column.setModifiable(true);
         column.setWeight(20);
-        ComboBoxCellEditor typeComboEditor = new ComboBoxCellEditor(tableViewerCreator.getTable(), arrayTalendTypes,
-                SWT.READ_ONLY);
-        CCombo typeCombo = (CCombo) typeComboEditor.getControl();
 
-        CellEditorValueAdapter comboValueAdapter = new JavaTypeComboValueAdapter<TreeSchemaTableEntry>(
+        TreeSchemaJavaTypeComboValueAdapter comboValueAdapter = new TreeSchemaJavaTypeComboValueAdapter<TreeSchemaTableEntry>(
                 JavaTypesManager.getDefaultJavaType(), getNullableAccessor());
 
+        ComboBoxCellEditor typeComboEditor = new ComboBoxCellEditor(tableViewerCreator.getTable(),
+                comboValueAdapter.getTalendTypesLabels(), SWT.READ_ONLY);
+        CCombo typeCombo = (CCombo) typeComboEditor.getControl();
         typeCombo.setEditable(false);
         column.setCellEditor(typeComboEditor, comboValueAdapter);
 
