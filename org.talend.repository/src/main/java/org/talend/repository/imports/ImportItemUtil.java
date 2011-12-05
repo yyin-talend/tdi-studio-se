@@ -737,8 +737,10 @@ public class ImportItemUtil {
                         // It's needed to avoid to call the save method mainly just before or after the copy of the old
                         // connection since it will
                         copyScreenshotFile(manager, itemRecord);
-                        copyReferenceFiles(manager, tmpItem, itemRecord.getPath());
-                        repFactory.save(tmpItem, true);
+                        boolean haveRef = copyReferenceFiles(manager, tmpItem, itemRecord.getPath());
+                        if (haveRef) {
+                            repFactory.save(tmpItem, true);
+                        }
                         repFactory.unloadResources(tmpItem.getProperty());
                     }
 
@@ -858,13 +860,15 @@ public class ImportItemUtil {
         }
     }
 
-    private void copyReferenceFiles(ResourcesManager manager, Item tmpItem, IPath pathToRead) throws IOException {
+    private boolean copyReferenceFiles(ResourcesManager manager, Item tmpItem, IPath pathToRead) throws IOException {
         OutputStream os = null;
         InputStream is = null;
 
+        boolean haveRef = false;
         List<ReferenceFileItem> refItems = tmpItem.getReferenceResources();
         URI propertyResourceURI = EcoreUtil.getURI(tmpItem.getProperty());
         for (ReferenceFileItem refItem : refItems) {
+            haveRef = true;
             URI relativePlateformDestUri = propertyResourceURI.trimFileExtension().appendFileExtension(refItem.getExtension());
             try {
                 URL fileURL = FileLocator.toFileURL(new java.net.URL(
@@ -881,7 +885,7 @@ public class ImportItemUtil {
                 }
             }
         }
-
+        return haveRef;
     }
 
     private void applyMigrationTasks(ItemRecord itemRecord, IProgressMonitor monitor) {
