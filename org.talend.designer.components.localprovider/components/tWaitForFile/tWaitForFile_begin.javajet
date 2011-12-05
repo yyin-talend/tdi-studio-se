@@ -190,39 +190,34 @@
             java.util.List<java.io.File> fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();
             <%
             if(("filecreated").equals(triggerAction)) {
-                %>
+            %>
                 java.util.List<java.io.File> newCreatedFiles_<%=cid %> = util_<%=cid %>.getCreatedFiles(originalFiles_<%=cid%>,fetchFilesOneTime_<%=cid%>);
-                // a sign: when there are created files, it is true, when find one of the created file, it should set to false
-                boolean isExistCreated_<%=cid %> = !newCreatedFiles_<%=cid %>.isEmpty();
-                while(isExistCreated_<%=cid %>) {
-                	for ( int i=0; i< newCreatedFiles_<%=cid %>.size(); i++) {
-						java.io.File file_<%=cid %> = newCreatedFiles_<%=cid %>.get(i);
-           	<%	
-   				//fix bug 22123,if we can rename the filename,that means no other program is using the file.
-           		if(waitRelease){
-           	%>
-           				Thread.sleep(200);
+
+               	for ( int i=0; i< newCreatedFiles_<%=cid %>.size(); i++) {
+					java.io.File file_<%=cid %> = newCreatedFiles_<%=cid %>.get(i);
+           			<%	
+   					//fix bug 22123,if we can rename the filename,that means no other program is using the file.
+           			if(waitRelease){
+           			%>
            				java.io.File tempfile=new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile");
                     	if(file_<%=cid %>.renameTo(tempfile)){
                     		tempfile.renameTo(file_<%=cid %>);
                     	}else{
                     		continue;
                     	}
-            <%
+            		<%
+            		}
+            		%>
+                    globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
+                    globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
+                    found_<%=cid %> = true;
+                    originalFiles_<%=cid %>.add(file_<%=cid %>);              
+                    break;
             	}
-            %>
-                    	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
-                        globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
-                        found_<%=cid %> = true;
-                        isExistCreated_<%=cid %> = false;      
-                        originalFiles_<%=cid %>.add(file_<%=cid %>);              
-                        break;
-                    }
-                }
-                <%
+			<%
             } else if(("filedeleted").equals(triggerAction)) {
-                %>
-                for(java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
+            %>
+            	for(java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
                     if(!fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)) {
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
@@ -272,33 +267,27 @@
                     }
                 }
                 java.util.List<java.io.File> newCreatedFiles_<%=cid %> = util_<%=cid %>.getCreatedFiles(originalFiles_<%=cid%>,fetchFilesOneTime_<%=cid%>);
-                // a sign: when there are created files, it is true, when find one of the created file, it should set to false
-                boolean isExistCreated_<%=cid %> = !newCreatedFiles_<%=cid %>.isEmpty();
-                while(isExistCreated_<%=cid %>) {
-                	for ( int i=0; i< newCreatedFiles_<%=cid %>.size(); i++) {
-						java.io.File file_<%=cid %> = newCreatedFiles_<%=cid %>.get(i);
-           	<%	
-   				//fix bug 22123,if we can rename the filename,that means no other program is using the file.
-           		if(waitRelease){
-           	%>
-           				Thread.sleep(200);
+                for ( int i=0; i< newCreatedFiles_<%=cid %>.size(); i++) {
+					java.io.File file_<%=cid %> = newCreatedFiles_<%=cid %>.get(i);
+           			<%	
+   					//fix bug 22123,if we can rename the filename,that means no other program is using the file.
+           			if(waitRelease){
+           			%>
            				java.io.File tempfile=new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile");
                     	if(file_<%=cid %>.renameTo(tempfile)){
                     		tempfile.renameTo(file_<%=cid %>);
                     	}else{
                     		continue;
                     	}
-            <%
-            	}
-            %>
-                    	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
-                        globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
-                        found_<%=cid %> = true;
-                        isExistCreated_<%=cid %> = false;
-                        originalFiles_<%=cid %>.add(file_<%=cid %>);           
-                        break;
-                    }
-                }
+		            <%
+        	    	}
+            		%>
+                    globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
+                    globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
+                    found_<%=cid %> = true;
+                    originalFiles_<%=cid %>.add(file_<%=cid %>);           
+                    break;
+				}
                 for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                     if(null == originalMap_<%=cid%>.get(util_<%=cid %>.getFileChecksum(file_<%=cid%>))) {
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
