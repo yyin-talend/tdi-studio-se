@@ -1387,7 +1387,7 @@ public class Node extends Element implements IGraphicalNode {
         if (this.isJoblet() && this.getNodeContainer() != null && !this.getNodeContainer().isCollapsed()) {
             jobletInputs.addAll(this.getNodeContainer().getInputs());
         } else {
-            jobletInputs.addAll(this.inputs);
+            return this.inputs;
         }
         return jobletInputs;
     }
