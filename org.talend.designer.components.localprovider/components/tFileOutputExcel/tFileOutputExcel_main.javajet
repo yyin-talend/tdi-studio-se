@@ -66,6 +66,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				    }else if(javaType == JavaTypesManager.STRING||
 				    		 javaType == JavaTypesManager.CHARACTER||
 				    		 javaType == JavaTypesManager.BYTE_ARRAY||
+				    		 javaType == JavaTypesManager.LIST||
 				    		 javaType == JavaTypesManager.OBJECT||
 				    		 (advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable()))
 				    		 ){
@@ -97,7 +98,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 							String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
 <%
-						} else if(javaType == JavaTypesManager.OBJECT){
+						} else if(javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.LIST){
 %>					
 								<%=conn.getName() %>.<%=column.getLabel() %>.toString()
 <%
