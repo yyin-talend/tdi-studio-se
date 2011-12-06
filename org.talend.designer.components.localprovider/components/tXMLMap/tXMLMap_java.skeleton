@@ -437,7 +437,7 @@ public class CLASS {
 		}
 	}
 	
-	class FindNodeUtil{
+	/*class FindNodeUtil{
 		
 		TreeNode findLoopPathNode(TreeNode node){
 			if(node == null){
@@ -490,18 +490,28 @@ public class CLASS {
     			}
 			}
 		}
-	}
+	}*/
 
 	class TreeUtil{
-		void getAllLeaf(TreeNode node,List<TreeNode> allLeaf) {
+		//get all nodes whose expression is editable;
+		void getAllLeaf(TreeNode node,List<TreeNode> result) {
 			EList<TreeNode> children = node.getChildren();
 			if(children==null || children.size() == 0) {
-				allLeaf.add(node);
+				result.add(node);//leaf is editable
 			} else {
+				boolean editableAtExpression = true;
 				for(TreeNode child : children) {
 					if(child!=null) {
-						getAllLeaf(child,allLeaf);
+						//attribute and namespace are not treat as subnode , so the expression of treeNode should be editable.
+						if(NodeType.ATTRIBUT != child.getNodeType() && NodeType.NAME_SPACE != child.getNodeType()) {
+							editableAtExpression = false;
+						}
+						getAllLeaf(child,result);
 					}
+				}
+				
+				if(editableAtExpression) {
+					result.add(node);
 				}
 			}
 		}

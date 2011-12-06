@@ -454,7 +454,7 @@ class TreeNode_API_<%=cid %> {
 	
 	void generateMethodCodeForOne(TreeNode node, String cid) {
 		
-		if(!(node.getChildren().size()>0)){
+		if(!(node.getChildren().size()>0) || node.getOutgoingConnections().size()>0 || node.getLookupOutgoingConnections().size()>0){
 			String talendType = node.getType();
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(talendType);
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(talendType, node.isNullable());
@@ -502,10 +502,10 @@ class TreeNode_API_<%=cid %> {
 <%
 				}
 			}
-		} else {
-    		for(TreeNode tmpNode : node.getChildren()) {
-    			generateMethodCodeForOne(tmpNode,cid);
-    		}
+		}
+		
+		for(TreeNode tmpNode : node.getChildren()) {
+			generateMethodCodeForOne(tmpNode,cid);
 		}
 	}
 }
@@ -593,7 +593,7 @@ class TreeNode_API_<%=cid %> {
 		}
 	}
 	
-	class FindNodeUtil{
+	/*class FindNodeUtil{
 		
 		TreeNode findLoopPathNode(TreeNode node){
 			if(node == null){
@@ -645,7 +645,7 @@ class TreeNode_API_<%=cid %> {
     			}
 			}
 		}
-	}
+	}*/
 	GenerateMethodUtil generateMethodUtil = new GenerateMethodUtil();
 	generateMethodUtil.cid = cid;
 	if(mainInputTable != null) {
