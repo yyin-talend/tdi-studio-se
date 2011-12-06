@@ -114,9 +114,11 @@ import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
+import org.talend.core.model.repository.DragAndDropManager;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -1468,7 +1470,20 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
             // for database, file, webservices, saleforce ...
             List<IComponent> neededComponents = TalendDndHelper.filterNeededComponents(item, store.seletetedNode, type);
-
+            List<String> comNameList = new ArrayList<String>();
+            for (IComponent com : neededComponents) {
+                comNameList.add(com.getName());
+            }
+            for (IDragAndDropServiceHandler handler : DragAndDropManager.getHandlers()) {
+                List<IComponent> comList = handler.filterNeededComponents(item, store.seletetedNode, type);
+                if (comList != null) {
+                    for (IComponent handlerComp : comList) {
+                        if (!comNameList.contains(handlerComp.getName())) {
+                            neededComponents.add(handlerComp);
+                        }
+                    }
+                }
+            }
             IComponent component = chooseOneComponent(neededComponents, name, quickCreateInput, quickCreateOutput);
             store.component = component;
         }
