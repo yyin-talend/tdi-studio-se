@@ -557,15 +557,20 @@ public class XmlMapUtil {
     public static boolean isExpressionEditable(TreeNode treeNode) {
         List children = treeNode.getChildren();
         boolean haschild = false;
-        for (int i = 0; i < children.size(); i++) {
-            TreeNode child = (TreeNode) children.get(i);
-            // attribute and namespace are not treat as subnode , so the expression of treeNode should be editable.
-            if (NodeType.ATTRIBUT != child.getNodeType() && NodeType.NAME_SPACE != child.getNodeType()) {
-                haschild = true;
-                break;
+        boolean isNameSpace = false;
+        if (children.size() > 0) {
+            for (int i = 0; i < children.size(); i++) {
+                TreeNode child = (TreeNode) children.get(i);
+                // attribute and namespace are not treat as subnode , so the expression of treeNode should be editable.
+                if (NodeType.ATTRIBUT != child.getNodeType() && NodeType.NAME_SPACE != child.getNodeType()) {
+                    haschild = true;
+                    break;
+                }
             }
+        } else if (NodeType.NAME_SPACE.equals(treeNode.getNodeType())) {
+            isNameSpace = true;
         }
-        return !haschild;
+        return !haschild && !isNameSpace;
     }
 
     public static boolean hasDocument(AbstractInOutTree abstractTree) {
