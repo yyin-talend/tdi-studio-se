@@ -626,6 +626,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			else{
 				actual_end_column_<%= cid %> = end_column_<%= cid %> >	excel_end_column_<%=cid%> ? excel_end_column_<%=cid%> : end_column_<%= cid %>;
 			}
+			org.apache.poi.hssf.usermodel.HSSFDataFormatter dataFormat_<%=cid%>=new org.apache.poi.hssf.usermodel.HSSFDataFormatter();
+			java.text.NumberFormat numberFormat_<%=cid%>=java.text.NumberFormat.getInstance();
 			for(int i=0;i<<%=size%>;i++){
 				if(i + start_column_<%= cid %> < actual_end_column_<%= cid %>){
 					org.apache.poi.ss.usermodel.Cell cell_<%=cid%> = row_<%= cid %>.getCell(i + start_column_<%= cid %>);
@@ -638,7 +640,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell_<%=cid%>)) {
                                 temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
                             } else {
-                                temp_row_<%= cid %>[i] =new java.math.BigDecimal(cell_<%=cid%>.getNumericCellValue()).toPlainString();
+                                temp_row_<%= cid %>[i] =new BigDecimal(numberFormat_<%=cid%>.parse(dataFormat_<%=cid%>.formatCellValue(cell_<%=cid%>)).toString()).toPlainString();
                             }
                             break;
                         case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
@@ -653,7 +655,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                     if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell_<%=cid%>)) {
                                         temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
                                     } else {
-                                        temp_row_<%= cid %>[i] =new java.math.BigDecimal(cell_<%=cid%>.getNumericCellValue()).toPlainString();
+                                        temp_row_<%= cid %>[i] =new BigDecimal(numberFormat_<%=cid%>.parse(String.valueOf(cell_<%=cid%>.getNumericCellValue())).toString()).toPlainString();
                                     }
                                     break;
                                 case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
