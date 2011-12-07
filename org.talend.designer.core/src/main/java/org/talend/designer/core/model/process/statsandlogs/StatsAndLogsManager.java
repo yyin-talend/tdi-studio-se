@@ -722,19 +722,21 @@ public class StatsAndLogsManager {
         return statsNode;
     }
 
-    public static void createStatsAndLogsParameters(IProcess process) {
-        statsAndLogsParametersTitlePart(process);
-        statsAndLogsParametersFilePart(process);
-        statsAndLogsParametersDBPart(process);
-        statsAndLogsParametersFinalPart(process);
+    public static List<IElementParameter> getStatsAndLogsParameters(IProcess process) {
+        List<IElementParameter> paramList = new ArrayList<IElementParameter>();
+        paramList.addAll(statsAndLogsParametersTitlePart(process));
+        paramList.addAll(statsAndLogsParametersFilePart(process));
+        paramList.addAll(statsAndLogsParametersDBPart(process));
+        paramList.addAll(statsAndLogsParametersFinalPart(process));
 
+        return paramList;
     }
 
-    private static void statsAndLogsParametersTitlePart(IProcess process) {
+    private static List<IElementParameter> statsAndLogsParametersTitlePart(IProcess process) {
         ElementParameter param;
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
 
-        List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
+        List<IElementParameter> paramList = new ArrayList<IElementParameter>();
 
         String languagePrefix = LanguageManager.getCurrentLanguage().toString() + "_"; //$NON-NLS-1$
 
@@ -787,13 +789,15 @@ public class StatsAndLogsManager {
         param.setNumRow(2);
         param.setShowIf("((ON_CONSOLE_FLAG == 'true' or ON_CONSOLE_FLAG == 'false') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
         paramList.add(param);
+
+        return paramList;
     }
 
-    private static void statsAndLogsParametersFilePart(IProcess process) {
+    private static List<IElementParameter> statsAndLogsParametersFilePart(IProcess process) {
         ElementParameter param;
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
 
-        List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
+        List<IElementParameter> paramList = new ArrayList<IElementParameter>();
 
         String languagePrefix = LanguageManager.getCurrentLanguage().toString() + "_"; //$NON-NLS-1$
         // on files
@@ -879,13 +883,15 @@ public class StatsAndLogsManager {
         childPram
                 .setShowIf("(ON_FILES_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         childPram.setParentParameter(encodingParam);
+
+        return paramList;
     }
 
-    private static void statsAndLogsParametersDBPart(IProcess process) {
+    private static List<IElementParameter> statsAndLogsParametersDBPart(IProcess process) {
         ElementParameter param;
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
 
-        List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
+        List<IElementParameter> paramList = new ArrayList<IElementParameter>();
 
         // checks current language, if it is perl, set languageType to 0(default value), otherwise to 1.
         int languageType = 0;
@@ -1199,6 +1205,8 @@ public class StatsAndLogsManager {
         param.setNumRow(59);
         param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
+
+        return paramList;
     }
 
     /**
@@ -1211,11 +1219,11 @@ public class StatsAndLogsManager {
         }
     }
 
-    private static void statsAndLogsParametersFinalPart(IProcess process) {
+    private static List<IElementParameter> statsAndLogsParametersFinalPart(IProcess process) {
         ElementParameter param;
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
 
-        List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
+        List<IElementParameter> paramList = new ArrayList<IElementParameter>();
 
         String languagePrefix = LanguageManager.getCurrentLanguage().toString() + "_"; //$NON-NLS-1$
 
@@ -1264,6 +1272,7 @@ public class StatsAndLogsManager {
         param.setShowIf("((CATCH_REALTIME_STATS == 'true' or CATCH_REALTIME_STATS == 'false') and (ON_STATCATCHER_FLAG == 'true'))"); //$NON-NLS-1$
         paramList.add(param);
 
+        return paramList;
     }
 
     /**

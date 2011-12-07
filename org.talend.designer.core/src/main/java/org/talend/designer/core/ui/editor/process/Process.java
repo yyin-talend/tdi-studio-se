@@ -320,7 +320,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * create parameters for tabbed page 'Job Settings'.
      */
     protected void createJobSettingsParameters() {
-        JobSettingsManager.createJobSettingsParemeters(this);
+        ((List<IElementParameter>) this.getElementParameters()).addAll(JobSettingsManager.getJobSettingsParameters(this));
     }
 
     /**
@@ -331,7 +331,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         param = new ElementParameter(this);
         param.setName(EParameterName.COMP_DEFAULT_FILE_DIR.getName());
-        param.setCategory(EComponentCategory.MAIN);
+        param.setCategory(EComponentCategory.TECHNICAL);
         param.setFieldType(EParameterFieldType.DIRECTORY);
         param.setDisplayName(EParameterName.COMP_DEFAULT_FILE_DIR.getDisplayName());
         param.setNumRow(99);
@@ -344,7 +344,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         // MOD by zshen for TDQ_INSTALL_DIR bug 17622
         param = new ElementParameter(this);
         param.setName(EParameterName.PRODUCT_ROOT_DIR.getName());
-        param.setCategory(EComponentCategory.MAIN);
+        param.setCategory(EComponentCategory.TECHNICAL);
         param.setFieldType(EParameterFieldType.DIRECTORY);
         param.setDisplayName(EParameterName.PRODUCT_ROOT_DIR.getDisplayName());
         param.setNumRow(99);
@@ -355,7 +355,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
         param = new ElementParameter(this);
         param.setName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getName());
-        param.setCategory(EComponentCategory.MAIN);
+        param.setCategory(EComponentCategory.TECHNICAL);
         param.setFieldType(EParameterFieldType.DIRECTORY);
         param.setDisplayName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getDisplayName());
         param.setNumRow(99);
@@ -737,11 +737,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 }
             }
             listParamType.add(pType);
-            // saveElementParameter(param, process, fileFact, paramList, listParamType);
-            // for (String key : param.getChildParameters().keySet()) {
-            // saveElementParameter(param.getChildParameters().get(key), process, fileFact, paramList, listParamType);
-            // }
-            // accept only one level of child parameters.
         }
     }
 
@@ -790,16 +785,20 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
 
         if (param.getElement() instanceof Process) {
-            // achen modify to fix bug 0006107
-            // Process tempProcess = new Process(this.property);
-            // IElementParameter tmpParam = tempProcess.getElementParameter(param.getName());
-            // IElementParameter tmpParam = param.getElement().getElementParameter(param.getName());
-            // if (tmpParam != null && tmpParam.getValue() != null && tmpParam.getValue().equals(param.getValue())) {
-            // return;
-            // }
+            if (param.isReadOnly() && param.getCategory() == EComponentCategory.TECHNICAL) {
+                return;
+            }
             if (isJoblet) {
                 if (param != null && !(param.getName().equals(EParameterName.STARTABLE.getName()))) {
                     return;
+                }
+            }
+            for (IElementParameter currentParam : JobSettingsManager.getJobSettingsParameters(this)) {
+                if (currentParam.getName().equals(param.getName())) {
+                    if (currentParam.getValue() != null && currentParam.getValue().equals(param.getValue())) {
+                        // don't save parameter if the value is default one.
+                        return;
+                    }
                 }
             }
         }

@@ -65,35 +65,20 @@ public class JobSettingsManager {
 
     private static final String IMPLICIT_GROUP = "IMPLICIT_GROUP"; //$NON-NLS-1$
 
-    public static void createJobSettingsParemeters(IProcess process) {
-        // not used, only for hiding the table sql-builder button.
-        // ElementParameter param;
-        // List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
-        // param = new ElementParameter(process);
-        // param.setName("MEMO_SQL"); //$NON-NLS-1$
-        // param.setValue(""); //$NON-NLS-1$
-        // param.setDisplayName("MEMO_SQL"); //$NON-NLS-1$
-        // param.setField(EParameterFieldType.MEMO_SQL);
-        // param.setCategory(EComponentCategory.EXTRA);
-        // param.setNumRow(1);
-        // param.setReadOnly(true);
-        // param.setRequired(false);
-        // param.setShow(false);
-        // paramList.add(param);
-
+    public static List<IElementParameter> getJobSettingsParameters(IProcess process) {
+        List<IElementParameter> paramList = new ArrayList<IElementParameter>();
         // for extra
-        createExtraParameters(process);
+        paramList.addAll(getExtraParameters(process));
         // for stats & logs
         boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(process);
         if (!isJoblet) {
-            StatsAndLogsManager.createStatsAndLogsParameters(process);
+            paramList.addAll(StatsAndLogsManager.getStatsAndLogsParameters(process));
         }
 
-        // for context
-        createContextParameters(process);
         // for feature 13940
-        createHeaderFooterParameters(process);
+        paramList.addAll(getHeaderFooterParameters(process));
 
+        return paramList;
     }
 
     private static final String CONTEXTLOAD_CONDITION = EParameterName.IMPLICIT_TCONTEXTLOAD.getName() + " == 'true'"; //$NON-NLS-1$
@@ -102,10 +87,10 @@ public class JobSettingsManager {
 
     private static final String CONNECTOR = TalendTextUtils.getStringConnect();
 
-    private static void createHeaderFooterParameters(IProcess process) {
+    private static List<IElementParameter> getHeaderFooterParameters(IProcess process) {
         // for headerFooter Code
         ElementParameter param;
-        List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
+        List<IElementParameter> paramList = new ArrayList<IElementParameter>();
 
         param = new ElementParameter(process);
         param.setName(EParameterName.HEADERFOOTER_HEADERID.getName());
@@ -206,27 +191,17 @@ public class JobSettingsManager {
         param.setNumRow(4);
         param.setShow(false);
         paramList.add(param);
+
+        return paramList;
     }
 
     /**
      * 
      * create parameter for extra tab.
      */
-    private static void createExtraParameters(IProcess process) {
+    private static List<IElementParameter> getExtraParameters(IProcess process) {
         ElementParameter param;
-        List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
-
-        // param = new ElementParameter(process);
-        // param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName()));
-        // param.setValue(Boolean.FALSE);
-        // param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
-        // param.setField(EParameterFieldType.CHECK);
-        // param.setCategory(EComponentCategory.EXTRA);
-        // param.setNumRow(1);
-        // param.setReadOnly(true);
-        // param.setRequired(false);
-        // param.setShow(false);
-        // paramList.add(param);
+        List<IElementParameter> paramList = new ArrayList<IElementParameter>();
 
         // use project settings
         param = new ElementParameter(process);
@@ -347,17 +322,18 @@ public class JobSettingsManager {
         paramList.add(param);
 
         // on file
-        createExtraOnFileParameters(process);
+        paramList.addAll(getExtraOnFileParameters(process));
         // on database
-        createExtraOnDBParameters(process);
+        paramList.addAll(getExtraOnDBParameters(process));
         // tContextLoad
-        createExtraContextLoadParameters(process);
+        paramList.addAll(getExtraContextLoadParameters(process));
 
+        return paramList;
     }
 
-    private static void createExtraOnFileParameters(IProcess process) {
+    private static List<IElementParameter> getExtraOnFileParameters(IProcess process) {
         ElementParameter param;
-        List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
+        List<IElementParameter> paramList = new ArrayList<IElementParameter>();
         // set Implicit tContextLoad file
         String fileName = ElementParameterParser.parse(process, "__COMP_DEFAULT_FILE_DIR__/in.csv"); //$NON-NLS-1$
         IPath path = Path.fromOSString(fileName);
@@ -399,12 +375,13 @@ public class JobSettingsManager {
         param.setShowIf(condition);
         paramList.add(param);
 
+        return paramList;
     }
 
-    private static void createExtraOnDBParameters(IProcess process) {
+    private static List<IElementParameter> getExtraOnDBParameters(IProcess process) {
 
         ElementParameter param;
-        List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
+        List<IElementParameter> paramList = new ArrayList<IElementParameter>();
 
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
 
@@ -476,7 +453,7 @@ public class JobSettingsManager {
         param.setListItemsValue(JobSettingsConstants.DB_INPUT_COMPONENTS[languageType]);
         param.setListRepositoryItems(StatsAndLogsConstants.REPOSITORY_ITEMS[languageType]);
         param.setListItemsDisplayCodeName(StatsAndLogsConstants.CODE_LIST[languageType]);
-        // param.setValue(JobSettingsConstants.DB_INPUT_COMPONENTS[languageType][0]);
+        param.setValue("");
         param.setNumRow(42);
         param.setRepositoryValue("TYPE"); //$NON-NLS-1$
         param.setRequired(true);
@@ -735,6 +712,7 @@ public class JobSettingsManager {
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
+        return paramList;
     }
 
     private final static class IgnoreCaseComparator implements Comparator<String> {
@@ -744,9 +722,9 @@ public class JobSettingsManager {
         }
     }
 
-    private static void createExtraContextLoadParameters(IProcess process) {
+    private static List<IElementParameter> getExtraContextLoadParameters(IProcess process) {
         ElementParameter param;
-        List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
+        List<IElementParameter> paramList = new ArrayList<IElementParameter>();
 
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
             final String[] itemValues = new String[] { ContextLoadInfo.ERROR.getDisplayName(),
@@ -835,14 +813,7 @@ public class JobSettingsManager {
             paramList.add(param);
         }
 
-    }
-
-    /**
-     * 
-     * create parameter for context tab.
-     */
-    private static void createContextParameters(IProcess process) {
-        //
+        return paramList;
     }
 
     /**
