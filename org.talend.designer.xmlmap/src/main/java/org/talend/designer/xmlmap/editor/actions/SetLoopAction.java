@@ -68,33 +68,36 @@ public class SetLoopAction extends SelectionAction {
         TreeNode model = (TreeNode) nodePart.getModel();
 
         AbstractInOutTree abstractTree = null;
+        TreeNode docRoot = null;
 
         // remove old loop
         if (model instanceof OutputTreeNode) {
             OutputTreeNode outputNode = (OutputTreeNode) model;
-            OutputTreeNode outputDocumentRoot = (OutputTreeNode) XmlMapUtil.getTreeNodeRoot(outputNode);
-            if (outputDocumentRoot != null) {
-                cleanSubLoop(outputDocumentRoot);
+            docRoot = (OutputTreeNode) XmlMapUtil.getTreeNodeRoot(outputNode);
+            if (docRoot != null) {
+                cleanSubLoop(docRoot);
                 XmlMapUtil.cleanSubGroup(outputNode);
                 if (findUpGroupNode(outputNode) == null) {
                     // clean all group
-                    XmlMapUtil.cleanSubGroup(outputDocumentRoot);
+                    XmlMapUtil.cleanSubGroup(docRoot);
                 }
-                if (outputDocumentRoot.eContainer() instanceof AbstractInOutTree) {
-                    abstractTree = (AbstractInOutTree) outputDocumentRoot.eContainer();
+                if (docRoot.eContainer() instanceof AbstractInOutTree) {
+                    abstractTree = (AbstractInOutTree) docRoot.eContainer();
                 }
             }
         } else if (model instanceof TreeNode) {
-            TreeNode inputDocumentRoot = XmlMapUtil.getTreeNodeRoot(model);
-            if (inputDocumentRoot != null) {
-                cleanSubLoop(inputDocumentRoot);
+            docRoot = XmlMapUtil.getTreeNodeRoot(model);
+            if (docRoot != null) {
+                cleanSubLoop(docRoot);
             }
-            if (inputDocumentRoot.eContainer() instanceof AbstractInOutTree) {
-                abstractTree = (AbstractInOutTree) inputDocumentRoot.eContainer();
+            if (docRoot.eContainer() instanceof AbstractInOutTree) {
+                abstractTree = (AbstractInOutTree) docRoot.eContainer();
             }
 
         }
         model.setLoop(true);
+        XmlMapUtil.clearMainNode(docRoot);
+        XmlMapUtil.upsetMainNode(model);
 
         if (abstractTree != null) {
             mapperManager.getProblemsAnalyser().checkLoopProblems(abstractTree);

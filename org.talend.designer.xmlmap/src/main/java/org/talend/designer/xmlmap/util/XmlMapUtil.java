@@ -281,13 +281,13 @@ public class XmlMapUtil {
         return null;
     }
 
-    public static void cleanSubGroup(OutputTreeNode node) {
+    public static void cleanSubGroup(TreeNode node) {
         for (TreeNode treeNode : node.getChildren()) {
-            OutputTreeNode outputNode = (OutputTreeNode) treeNode;
-            if (outputNode.isGroup()) {
-                outputNode.setGroup(false);
+            TreeNode child = treeNode;
+            if (child.isGroup()) {
+                child.setGroup(false);
             }
-            cleanSubGroup(outputNode);
+            cleanSubGroup(child);
 
         }
 
@@ -597,6 +597,40 @@ public class XmlMapUtil {
             return false;
         }
         return getXPathLength(treeNode.getXpath()) > 2;
+    }
+
+    public static void upsetMainNode(TreeNode loop) {
+        if (loop == null) {
+            return;
+        }
+        if (NodeType.ELEMENT.equals(loop.getNodeType())) {
+            TreeNode parent = loop;
+            while (parent != null) {
+                parent.setMain(true);
+                if (parent.eContainer() instanceof TreeNode
+                        && !XmlMapUtil.DOCUMENT.equals(((TreeNode) parent.eContainer()).getType())) {
+                    parent = (TreeNode) parent.eContainer();
+                } else {
+                    parent = null;
+                }
+            }
+
+        }
+    }
+
+    public static void clearMainNode(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        if (NodeType.ELEMENT.equals(root.getNodeType())) {
+            TreeNode e = root;
+            if (e.isMain()) {
+                e.setMain(false);
+            }
+            for (TreeNode child : root.getChildren()) {
+                clearMainNode(child);
+            }
+        }
     }
 
 }

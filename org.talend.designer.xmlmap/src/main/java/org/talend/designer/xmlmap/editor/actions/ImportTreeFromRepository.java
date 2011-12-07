@@ -239,6 +239,9 @@ public class ImportTreeFromRepository extends SelectionAction {
             }
 
             parent.getChildren().add(createTreeNode);
+            if (createTreeNode.isLoop()) {
+                XmlMapUtil.upsetMainNode(createTreeNode);
+            }
             if (foxNode.getChildren() != null && !foxNode.getChildren().isEmpty()) {
                 prepareEmfTree(foxNode.getChildren(), createTreeNode, tempXpath, absoluteXPathQuery);
             }
