@@ -1,43 +1,37 @@
 <%@ jet 
 	imports="
-			org.talend.core.model.process.INode 
-			org.talend.core.model.process.ElementParameterParser 
-			org.talend.designer.codegen.config.CodeGeneratorArgument
-			org.talend.core.model.metadata.types.JavaTypesManager
-			org.talend.core.model.process.AbstractExternalNode
-			org.talend.designer.xmlmap.XmlMapComponent
-			org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData
-			org.eclipse.emf.common.util.EList
+			java.util.ArrayList
+			java.util.Collections
+			java.util.Comparator
+			java.util.HashMap
+			java.util.List
+			java.util.Map
 			
-			org.talend.designer.xmlmap.generation.GenerationManagerFactory
+			org.eclipse.emf.common.util.EList
+			org.talend.core.model.metadata.IMetadataColumn
+			org.talend.core.model.metadata.IMetadataTable
+			org.talend.core.model.metadata.types.JavaType
+			org.talend.core.model.metadata.types.JavaTypesManager
+			org.talend.core.model.process.BlockCode
+			org.talend.core.model.process.EConnectionType
+			org.talend.core.model.process.ElementParameterParser
+			org.talend.core.model.process.IConnection
+			org.talend.core.model.process.INode
+			org.talend.core.model.utils.NodeUtil
+			org.talend.designer.codegen.config.CodeGeneratorArgument
+			org.talend.designer.xmlmap.XmlMapComponent
 			org.talend.designer.xmlmap.generation.GenerationManager
 			org.talend.designer.xmlmap.generation.HashedMetadataTable
-			org.talend.core.model.process.BlockCode
-			
-			org.talend.designer.xmlmap.model.emf.xmlmap.VarNode
-			org.talend.designer.xmlmap.model.emf.xmlmap.VarTable
-			org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree
-			org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree
-			org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode
-			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.Connection
+			org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree
 			org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
 			org.talend.designer.xmlmap.model.emf.xmlmap.NodeType
-			org.talend.core.model.process.IConnection
-			org.talend.core.model.process.EConnectionType
-			org.talend.core.model.metadata.IMetadataTable
-			org.talend.core.model.utils.NodeUtil
-			org.talend.core.model.metadata.IMetadataColumn
-            java.util.Map
-            java.util.HashMap
-            java.util.List
-			java.util.HashSet
-			java.util.Set
-			java.util.Comparator
-			java.util.Collections
-            java.util.ArrayList
-            org.talend.core.model.metadata.types.JavaTypesManager
-        	org.talend.core.model.metadata.types.JavaType
+			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
+			org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree
+			org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode
+			org.talend.designer.xmlmap.model.emf.xmlmap.VarNode
+			org.talend.designer.xmlmap.model.emf.xmlmap.VarTable
+			org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData
 "
 skeleton="tXMLMap_java.skeleton"
 %>
@@ -48,28 +42,14 @@ skeleton="tXMLMap_java.skeleton"
 	GenerationManager gm =  (GenerationManager)node.initGenerationManager();
 	String cid = node.getUniqueName();
 	
-	boolean isVirtualIn = cid.endsWith("TXMLMAP_IN");
-	boolean isVirtualOut = cid.endsWith("TXMLMAP_OUT");
-
 	String uniqueNameComponent = cid.replaceAll("_TXMLMAP_IN", "");
 	uniqueNameComponent = uniqueNameComponent.replaceAll("_TXMLMAP_OUT", "");
 	
 	boolean checkingSyntax = codeGenArgument.isCheckingSyntax();
 	String cr = "\n";
 	
-	INode graphicalNode = null;
-	for(INode loopNode : node.getProcess().getGraphicalNodes()) {
-		if(loopNode.getUniqueName().equals(uniqueNameComponent)) {
-			graphicalNode = loopNode;
-		}
-	}
-	
-	XmlMapData xmlMapData = null;
-	if(isVirtualIn || isVirtualOut) {
-		xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(graphicalNode);
-	} else {
-		xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
-	}
+	XmlMapData xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
+
 	
 	EList<InputXmlTree> inputTablesWithInvalid = xmlMapData.getInputTrees();
 	EList<OutputXmlTree> outputTables = xmlMapData.getOutputTrees();
@@ -80,20 +60,20 @@ skeleton="tXMLMap_java.skeleton"
 	String rejected = "rejected_" + cid;
 	String mainRowRejected = "mainRowRejected_" + cid;
 	
-	boolean isLookup = false;
+//	boolean isLookup = false;
 	boolean isXpathFromLookup = true;
 	boolean isExpressionEmpty = true;
 	boolean hasOutgoingConnection = false;
 	boolean hasDocumentInMainInputTable = false;
 	boolean atLeastOneInputTableWithInnerJoin = false;
 	boolean isPlainNode = true;
-	boolean isPlainNodeInLookup = false;
+//	boolean isPlainNodeInLookup = false;
 	boolean hasValidLookupTables = false;
 	int closeWhileBlockCount = 0;
 	boolean hasDocumentGlobal = false;
 	
-	boolean hasMainFilter = false;
-	boolean mainFilterAlreadyDone = false;
+//	boolean hasMainFilter = false;
+//	boolean mainFilterAlreadyDone = false;
 	
 	List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
 	Map<String, IConnection> nameToOutputConnection = new HashMap<String, IConnection>();
@@ -131,22 +111,22 @@ skeleton="tXMLMap_java.skeleton"
 		}
 	}
 	
-	HashMap<String, TreeNode> hInputTableNodes = new HashMap<String, TreeNode>();
+//	HashMap<String, TreeNode> hInputTableNodes = new HashMap<String, TreeNode>();
 	int sizeInputTables = inputTables.size();
 	InputXmlTree mainInputTable = null;  // the main input table
 	
-	String mainInputTableName = null;
-	IConnection realMainConnection = null;
-	java.util.Map<String, String> xpathTypeMap = null;
-	String str  = "";
-	TreeNode currentMainNode = null;
-	boolean findNext = false;
+//	String mainInputTableName = null;
+//	IConnection realMainConnection = null;
+//	java.util.Map<String, String> xpathTypeMap = null;
+//	String str  = "";
+//	TreeNode currentMainNode = null;
+//	boolean findNext = false;
 
-	String nextLookupName = null;
-	List<IMetadataColumn> nextLookupColumnsKeys = new ArrayList<IMetadataColumn>();
+//	String nextLookupName = null;
+//	List<IMetadataColumn> nextLookupColumnsKeys = new ArrayList<IMetadataColumn>();
  
-	boolean hasPersistentLookup = false;
-	int indexLastPersistentSortedTable = -1;
+//	boolean hasPersistentLookup = false;
+//	int indexLastPersistentSortedTable = -1;
 	 
 	ArrayList<InputXmlTree> inputTablesWithInnerJoin = new ArrayList<InputXmlTree>();
 	if(inputConnections==null || inputConnections.size() < 1) {
@@ -198,7 +178,7 @@ skeleton="tXMLMap_java.skeleton"
 		String mainInputName = mainInputTable.getName();
 		for(TreeNode tmpNode : mainInputTable.getNodes()){
 			boolean isInnerJoin = true;
-			currentMainNode = tmpNode;
+//			currentMainNode = tmpNode;
 
 			if(tmpNode.getType().equals("id_Document")){
 				isPlainNode = false;
@@ -380,7 +360,7 @@ skeleton="tXMLMap_java.skeleton"
         boolean oneFilterForNotRejectTable = false;
         boolean allNotRejectTablesHaveFilter = true;
         boolean atLeastOneReject = false;
-        boolean atLeastOneRejectInnerJoin = false;
+//        boolean atLeastOneRejectInnerJoin = false;
         boolean closeTestInnerJoinConditionsBracket = false;
 
         for (IConnection outputConnection : outputConnections) {
@@ -397,9 +377,9 @@ skeleton="tXMLMap_java.skeleton"
 
             String outputTableName = outputTable.getName();
 
-            if (outputTable.isRejectInnerJoin()) {
-                atLeastOneRejectInnerJoin = true;
-            }
+//            if (outputTable.isRejectInnerJoin()) {
+//               atLeastOneRejectInnerJoin = true;
+//            }
             EList<OutputTreeNode> columnEntries = outputTable.getNodes();
             boolean hasFilter = outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !("").equals(outputTable.getExpressionFilter().trim());
             if (columnEntries != null && columnEntries.size() > 0) {

@@ -1,51 +1,10 @@
 <%@ jet 
 	imports="
-			org.talend.core.model.process.INode 
-			org.talend.core.model.process.ElementParameterParser 
 			org.talend.designer.codegen.config.CodeGeneratorArgument
-			org.talend.core.model.metadata.types.JavaTypesManager
-			org.talend.core.model.process.AbstractExternalNode
-			org.talend.designer.xmlmap.XmlMapComponent
-			org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData
-			org.eclipse.emf.common.util.EList
-			org.talend.designer.xmlmap.model.emf.xmlmap.VarNode
-			org.talend.designer.xmlmap.model.emf.xmlmap.VarTable
-			org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree
-			org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree
-			org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode
-			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
-			org.talend.designer.xmlmap.model.emf.xmlmap.NodeType
-			org.talend.core.model.process.IConnection
-			org.talend.core.model.process.EConnectionType
-			org.talend.core.model.metadata.IMetadataTable
-			org.talend.core.model.metadata.IMetadataColumn
-			org.talend.core.model.utils.NodeUtil
-            java.util.Map
-            java.util.HashMap
-            java.util.List
-            java.util.ArrayList
-			java.util.HashSet
-			java.util.Set
-            org.talend.core.model.metadata.types.JavaTypesManager
-        	org.talend.core.model.metadata.types.JavaType
 "
-skeleton="../tXMLMap/tXMLMap_java.skeleton"
 %>
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	XmlMapComponent node = (XmlMapComponent) codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
-	
-	String uniqueNameComponent = cid.replaceAll("_TXMLMAP_IN", "");
-	
-	INode graphicalNode = null;
-	for(INode loopNode : node.getProcess().getGraphicalNodes()) {
-		if(loopNode.getUniqueName().equals(uniqueNameComponent)) {
-			graphicalNode = loopNode;
-		}
-	}
-	
-	XmlMapData xmlMapData = (XmlMapData)ElementParameterParser.getObjectValueXMLTree(graphicalNode);
 %>
 }//TD512
