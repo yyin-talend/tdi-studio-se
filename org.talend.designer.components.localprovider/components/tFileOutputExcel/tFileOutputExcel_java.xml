@@ -201,11 +201,10 @@
       <IMPORT NAME="dom4j" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
       <IMPORT NAME="geronimo-stax-api" MODULE="geronimo-stax-api_1.0_spec-1.0.jar" REQUIRED="true" />
       <IMPORT NAME="log4j" MODULE="log4j-1.2.15.jar" REQUIRED="true" />
-      <IMPORT NAME="poi" MODULE="poi-3.6-20091214.jar" REQUIRED="true" />
-      <IMPORT NAME="poi-contrib" MODULE="poi-contrib-3.6-20091214.jar" REQUIRED="true" />
-      <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.6-20091214.jar" REQUIRED="true" />
-      <IMPORT NAME="poi-ooxml-schemas" MODULE="poi-ooxml-schemas-3.6-20091214.jar" REQUIRED="true" />
-      <IMPORT NAME="poi-scratchpad" MODULE="poi-scratchpad-3.6-20091214.jar" REQUIRED="true" />
+      <IMPORT NAME="poi" MODULE="poi-3.7-20101029.jar" REQUIRED="true" />
+      <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.7-20101029.jar" REQUIRED="true" />
+      <IMPORT NAME="poi-ooxml-schemas" MODULE="poi-ooxml-schemas-3.7-20101029.jar" REQUIRED="true" />
+      <IMPORT NAME="poi-scratchpad" MODULE="poi-scratchpad-3.7-20101029.jar" REQUIRED="true" />
       <IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.3.0.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
