@@ -525,7 +525,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         }
 
         // 7.17 Rules and BRMS
-        if (PluginChecker.isRulesPluginLoaded() || PluginChecker.isBRMSPluginLoaded()) {
+        if (PluginChecker.isSurvivorshipPluginLoaded() || PluginChecker.isRulesPluginLoaded()
+                || PluginChecker.isBRMSPluginLoaded()) {
             StableRepositoryNode baseRulesNode = new StableRepositoryNode(this,
                     Messages.getString("ProjectRepositoryNode.rulesManagement"), //$NON-NLS-1$
                     ECoreImage.METADATA_RULES_ICON);
