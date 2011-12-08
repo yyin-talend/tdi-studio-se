@@ -1608,6 +1608,9 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         // loadNodeContainer(processType);
         // bug 6158
         this.updateManager.retrieveRefInformation();
+
+        // force a routine dependencies check, in case some dependencies are lost before.
+        checkRoutineDependencies();
     }
 
     private void loadRejectConnector(Hashtable<String, Node> nodesHashtable) {
