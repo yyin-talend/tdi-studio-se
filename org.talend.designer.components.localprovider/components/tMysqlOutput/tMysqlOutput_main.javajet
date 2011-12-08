@@ -627,7 +627,7 @@ if(columnList != null && columnList.size() > 0) {
 	    	}
 	    }
 	    if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
-	    	if (extendedInsert || useBatchSize) {
+	    	if ((extendedInsert&&"INSERT".equals(dataAction)) || (useBatchSize&&("UPDATE".equals(dataAction)||"DELETE".equals(dataAction)))) {
 			    if((!("").equals(numPerInsert)&&!("0").equals(numPerInsert))
 			    	||(!("").equals(batchSize)&&!("0").equals(batchSize))) {
 %>
