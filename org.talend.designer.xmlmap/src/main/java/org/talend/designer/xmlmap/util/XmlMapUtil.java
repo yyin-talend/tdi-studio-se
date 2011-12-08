@@ -281,15 +281,31 @@ public class XmlMapUtil {
         return null;
     }
 
-    public static void cleanSubGroup(TreeNode node) {
+    public static void cleanSubGroup(TreeNode node, List<TreeNode> newLoopUpGroups) {
         for (TreeNode treeNode : node.getChildren()) {
             TreeNode child = treeNode;
             if (child.isGroup()) {
-                child.setGroup(false);
+                if (newLoopUpGroups == null || newLoopUpGroups.isEmpty()) {
+                    child.setGroup(false);
+                } else {
+                    boolean found = false;
+                    for (TreeNode group : newLoopUpGroups) {
+                        if (child == group) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        child.setGroup(false);
+                    }
+                }
             }
-            cleanSubGroup(child);
-
+            cleanSubGroup(child, newLoopUpGroups);
         }
+    }
+
+    public static void cleanSubGroup(TreeNode node) {
+        cleanSubGroup(node, null);
 
     }
 
@@ -631,6 +647,18 @@ public class XmlMapUtil {
                 clearMainNode(child);
             }
         }
+    }
+
+    public static TreeNode findUpGroupNode(OutputTreeNode node) {
+        if (node.eContainer() instanceof OutputTreeNode) {
+            OutputTreeNode parent = (OutputTreeNode) node.eContainer();
+            if (parent.isGroup()) {
+                return parent;
+            } else {
+                return findUpGroupNode(parent);
+            }
+        }
+        return null;
     }
 
 }

@@ -1,5 +1,8 @@
 package org.talend.designer.xmlmap.editor.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -77,10 +80,17 @@ public class SetLoopAction extends SelectionAction {
             if (docRoot != null) {
                 cleanSubLoop(docRoot);
                 XmlMapUtil.cleanSubGroup(outputNode);
-                if (findUpGroupNode(outputNode) == null) {
-                    // clean all group
-                    XmlMapUtil.cleanSubGroup(docRoot);
+                List<TreeNode> newLoopUpGroups = new ArrayList<TreeNode>();
+                findUpGroupNode(newLoopUpGroups, outputNode);
+                // clean all groups except the ancestor of new loop
+                XmlMapUtil.cleanSubGroup(docRoot, newLoopUpGroups);
+
+                // reset the group in case some element ancestor of loop element are not group but under the group
+                if (!newLoopUpGroups.isEmpty()) {
+                    TreeNode rootGroup = newLoopUpGroups.get(newLoopUpGroups.size() - 1);
+                    upsetGroup(outputNode, rootGroup);
                 }
+
                 if (docRoot.eContainer() instanceof AbstractInOutTree) {
                     abstractTree = (AbstractInOutTree) docRoot.eContainer();
                 }
@@ -115,16 +125,23 @@ public class SetLoopAction extends SelectionAction {
         }
     }
 
-    private TreeNode findUpGroupNode(OutputTreeNode node) {
+    private void findUpGroupNode(List<TreeNode> newLoopUpGroups, OutputTreeNode node) {
         if (node.eContainer() instanceof OutputTreeNode) {
             OutputTreeNode parent = (OutputTreeNode) node.eContainer();
             if (parent.isGroup()) {
-                return parent;
-            } else {
-                return findUpGroupNode(parent);
+                newLoopUpGroups.add(parent);
+            }
+            findUpGroupNode(newLoopUpGroups, parent);
+        }
+    }
+
+    private void upsetGroup(TreeNode node, TreeNode rootGroup) {
+        if (node.eContainer() instanceof TreeNode && rootGroup != node.eContainer()) {
+            TreeNode parent = (TreeNode) node.eContainer();
+            if (!parent.isGroup()) {
+                parent.setGroup(true);
             }
         }
-        return null;
     }
 
     public void setMapperManager(MapperManager mapperManager) {
