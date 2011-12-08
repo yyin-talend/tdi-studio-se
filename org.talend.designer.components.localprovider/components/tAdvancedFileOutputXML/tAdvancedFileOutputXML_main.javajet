@@ -505,7 +505,11 @@ class GenerateToolByNull{
 			if(javaType == JavaTypesManager.OBJECT){
 %>
 		if(<%tool.getValue(node);%>!=null){
-			buf_<%=cid%>.append(TalendString.checkCDATAForXML(<%tool.getValue(node);%>));
+			if(routines.system.XMLHelper.getInstance().isValid(<%tool.getValue(node);%>)){
+				buf_<%=cid%>.append(<%tool.getValue(node);%>);
+			} else {
+				buf_<%=cid%>.append(TalendString.checkCDATAForXML(<%tool.getValue(node);%>));
+			}
 		}
 <%
 			}else{
@@ -517,7 +521,11 @@ class GenerateToolByNull{
 			}
 		}else if(node.defaultValue !=null && !("").equals(node.defaultValue) ){
 %>
-		buf_<%=cid %>.append(TalendString.checkCDATAForXML("<%=node.defaultValue %>"));
+		if(routines.system.XMLHelper.getInstance().isValid("<%=node.defaultValue %>")){
+			buf_<%=cid %>.append("<%=node.defaultValue %>");
+		} else {
+			buf_<%=cid %>.append(TalendString.checkCDATAForXML("<%=node.defaultValue %>"));
+		}
 <%
 		}
 	}
