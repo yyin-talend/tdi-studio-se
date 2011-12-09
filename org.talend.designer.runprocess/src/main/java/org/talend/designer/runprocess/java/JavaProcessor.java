@@ -944,7 +944,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         String libFolder = ""; //$NON-NLS-1$
         // libFolder = new Path(libDir.getAbsolutePath()).toPortableString() + classPathSeparator;
         if (exportingJob) {
-            libFolder = new Path(this.getCodeLocation()) + classPathSeparator;
+            String tmp = this.getCodeLocation();
+            tmp = tmp.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
+            libFolder = new Path(tmp) + classPathSeparator;
         } else {
             libFolder = new Path(libDir.getAbsolutePath()).toPortableString() + classPathSeparator;
         }
@@ -974,7 +976,11 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             }
         }
         tmpParams.add("-cp"); //$NON-NLS-1$
-        tmpParams.add(libPath.toString() + portableProjectPath + exportJar + libFolder);
+        if (exportingJob) {
+            tmpParams.add(libPath.toString() + portableProjectPath + exportJar);
+        } else {
+            tmpParams.add(libPath.toString() + portableProjectPath + exportJar + libFolder);
+        }
         tmpParams.add(className);
         strings = tmpParams.toArray(new String[0]);
 

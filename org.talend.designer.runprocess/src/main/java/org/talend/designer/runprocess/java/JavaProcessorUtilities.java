@@ -449,8 +449,8 @@ public class JavaProcessorUtilities {
                 ExceptionHandler.process(be1);
             }
 
-			// http://jira.talendforge.org/browse/TESB-4089
-			synchronizeLog4jFile();
+            // http://jira.talendforge.org/browse/TESB-4089
+            synchronizeLog4jFile();
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
@@ -511,6 +511,27 @@ public class JavaProcessorUtilities {
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 jarsNeedRetrieve.remove(externalLib.getName());
             }
+            List<IClasspathEntry> entriesToRemove = new ArrayList<IClasspathEntry>();
+            for (IClasspathEntry entry : entries) {
+                if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+                    boolean found = false;
+                    for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
+                        if (entry.getPath().toPortableString().endsWith(externalLib.getName())) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        // jar not anymore in the lib path, need to update the classpath
+                        entriesToRemove.add(entry);
+                    }
+                }
+            }
+            for (IClasspathEntry entry : entriesToRemove) {
+                entries = (IClasspathEntry[]) ArrayUtils.remove(entries, ArrayUtils.indexOf(entries, entry));
+                changesDone = true;
+            }
+
             if (!jarsNeedRetrieve.isEmpty()) {
                 ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
                 repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
@@ -584,29 +605,26 @@ public class JavaProcessorUtilities {
         return javaProject;
     }
 
-	/**
-	 * Create default log4j.properties file in project src folder if it doesn't
-	 * exist.
-	 * 
-	 * @param prj
-	 * @throws CoreException
-	 */
-	public static void synchronizeLog4jFile() {
-		try {
-			if (javaProject == null) {
-				initializeProject();
-			}
+    /**
+     * Create default log4j.properties file in project src folder if it doesn't exist.
+     * 
+     * @param prj
+     * @throws CoreException
+     */
+    public static void synchronizeLog4jFile() {
+        try {
+            if (javaProject == null) {
+                initializeProject();
+            }
 
-			Path path = new Path(JavaUtils.JAVA_SRC_DIRECTORY);
-			IFile logFile = javaProject.getProject().getFile(
-					path.append("log4j.properties"));
-			if (!logFile.exists()) {
-				InputStream source = JavaProcessorUtilities.class
-						.getResourceAsStream("log4j.properties.src");
-				logFile.create(source, true, null);
-			}
-		} catch (CoreException e) {
-			ExceptionHandler.process(e);
-		}
-	}
+            Path path = new Path(JavaUtils.JAVA_SRC_DIRECTORY);
+            IFile logFile = javaProject.getProject().getFile(path.append("log4j.properties"));
+            if (!logFile.exists()) {
+                InputStream source = JavaProcessorUtilities.class.getResourceAsStream("log4j.properties.src");
+                logFile.create(source, true, null);
+            }
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
+    }
 }
