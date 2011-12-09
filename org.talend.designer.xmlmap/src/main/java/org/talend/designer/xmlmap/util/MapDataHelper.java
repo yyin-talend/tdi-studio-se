@@ -132,8 +132,9 @@ public class MapDataHelper {
                 // add a default root for document
                 if (XmlMapUtil.DOCUMENT.equals(found.getType())) {
                     EList<TreeNode> children = found.getChildren();
+                    // if type is changed from a non-document to document
                     if (children.isEmpty()) {
-                        XmlMapUtil.detachConnectionsTarget(found, mapData);
+                        XmlMapUtil.detachNodeConnections(found, mapData, true);
                         TreeNode treeRoot = XmlmapFactory.eINSTANCE.createTreeNode();
                         treeRoot.setName("root");
                         treeRoot.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
@@ -146,7 +147,7 @@ public class MapDataHelper {
                 else {
                     EList<TreeNode> children = found.getChildren();
                     if (!children.isEmpty()) {
-                        XmlMapUtil.detachConnectionsTarget(found, mapData);
+                        XmlMapUtil.detachNodeConnections(found, mapData, true);
                         found.getChildren().clear();
                     }
                 }
@@ -156,7 +157,7 @@ public class MapDataHelper {
             if (nodes.size() > listColumns.size()) {
                 List unUsed = new ArrayList();
                 for (int i = listColumns.size(); i < nodes.size(); i++) {
-                    XmlMapUtil.detachConnectionsTarget(nodes.get(i), mapData);
+                    XmlMapUtil.detachNodeConnections(nodes.get(i), mapData, true);
                     unUsed.add(nodes.get(i));
                 }
                 nodes.removeAll(unUsed);

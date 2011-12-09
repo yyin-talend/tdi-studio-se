@@ -40,6 +40,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
@@ -1804,7 +1805,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
         // nc.setData(nType.getBinaryData(), nType.getStringData());
         if (nc.getExternalNode() != null && nType.getNodeData() != null) {
-            nc.getExternalNode().buildExternalData(nType.getNodeData());
+            nc.getExternalNode().buildExternalData(EcoreUtil.copy(nType.getNodeData()));
             nc.setExternalData(nc.getExternalNode().getExternalData());
         }
 

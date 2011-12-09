@@ -318,9 +318,11 @@ public class ChangeMetadataCommand extends Command {
 
                 boolean targetIsBuiltIn = ((Node) targetNode).getConnectorFromType(currentIO.getConnection().getLineStyle())
                         .isMultiSchema();
-                if (baseConnector.equals(baseConnectorForCurrentNode)
-                        && (targetIsBuiltIn || (!targetNode
-                                .getMetadataFromConnector(baseConnector).sameMetadataAs(newOutputMetadata)))) {
+                boolean isJoblet = ((Node) targetNode).isJoblet();
+                if (!isJoblet
+                        && baseConnector.equals(baseConnectorForCurrentNode)
+                        && (targetIsBuiltIn || (!targetNode.getMetadataFromConnector(baseConnector).sameMetadataAs(
+                                newOutputMetadata)))) {
                     targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
                     if (isExecute) {
                         if (targetNode instanceof Node) {
@@ -434,7 +436,9 @@ public class ChangeMetadataCommand extends Command {
 
         if (inputdataContainer != null) {
             for (IODataComponent currentIO : inputdataContainer.getOuputs()) {
-                if (currentIO.hasChanged() && (currentIO.getSource().getConnectorFromName(currentIO.getConnection().getConnectorName()).getBaseSchema().equals(currentConnector))) {
+                if (currentIO.hasChanged()
+                        && (currentIO.getSource().getConnectorFromName(currentIO.getConnection().getConnectorName())
+                                .getBaseSchema().equals(currentConnector))) {
                     INode targetNode = currentIO.getTarget();
                     targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
                     if (isExecute) {
