@@ -17,9 +17,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.Dialog;
@@ -50,9 +52,11 @@ import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -158,7 +162,8 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                     ExceptionHandler.process(e);
                 }
                 CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
-
+                // TDI-18870
+                CorePlugin.getDefault().getRunProcessService().updateLibraries(new HashSet<String>(), null);
             }
         });
 
