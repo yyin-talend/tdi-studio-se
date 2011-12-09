@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -48,6 +49,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.PasswordHelper;
+import org.talend.commons.utils.system.EclipseCommandLine;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -143,6 +145,8 @@ public class RepositoryService implements IRepositoryService {
     private GenericSchemaWizard genericSchemaWizard = null;
 
     private static final String PERSPECTIVE_DI_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$
+
+    private static Logger log = Logger.getLogger(RepositoryService.class);
 
     /*
      * (non-Javadoc)
@@ -332,10 +336,10 @@ public class RepositoryService implements IRepositoryService {
     }
 
     private boolean isloginDialogDisabled() {
-        boolean startable = Boolean.parseBoolean(System.getProperty("talend.project.Startable")); //$NON-NLS-1$
+        boolean reload = Boolean.parseBoolean(System.getProperty("talend.project.reload")); //$NON-NLS-1$
         PreferenceManipulator preferenceManipulator = new PreferenceManipulator();
         ConnectionBean lastBean = null;
-        if (startable) {
+        if (reload) {
             final ConnectionUserPerReader instance = ConnectionUserPerReader.getInstance();
             instance.forceReadConnections();
             final String lastConncetion = ConnectionUserPerReader.getInstance().readLastConncetion();
@@ -347,7 +351,7 @@ public class RepositoryService implements IRepositoryService {
             }
         }
 
-        if (ArrayUtils.contains(Platform.getApplicationArgs(), "--disableLoginDialog") || startable) {
+        if (ArrayUtils.contains(Platform.getApplicationArgs(), EclipseCommandLine.TALEND_DISABLE_LOGINDIALOG_COMMAND) && reload) {
             boolean deleteProjectIfExist = ArrayUtils.contains(Platform.getApplicationArgs(), "--deleteProjectIfExist");
             IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                     IBrandingService.class);
@@ -388,7 +392,7 @@ public class RepositoryService implements IRepositoryService {
 
             String branch = null;
 
-            if (startable && lastBean != null) {
+            if (reload && lastBean != null) {
                 final String lastProject = preferenceManipulator.getLastProject();
                 if (lastProject != null) {
                     projectName = lastProject;
@@ -417,7 +421,7 @@ public class RepositoryService implements IRepositoryService {
 
             try {
                 ConnectionBean bean = ConnectionBean.getDefaultConnectionBean();
-                if (startable && lastBean != null) {
+                if (reload && lastBean != null) {
                     bean = lastBean;
                 }
                 Context ctx = CorePlugin.getContext();
@@ -443,7 +447,7 @@ public class RepositoryService implements IRepositoryService {
                         break;
                     }
                 }
-                if (!startable) {
+                if (!reload) {
                     if (deleteProjectIfExist && project != null) {
                         ResourceModelUtils.getProject(project).delete(true, new NullProgressMonitor());
                     }

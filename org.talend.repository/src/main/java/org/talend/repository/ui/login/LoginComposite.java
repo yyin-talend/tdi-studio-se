@@ -1733,8 +1733,10 @@ public class LoginComposite extends Composite {
                         tisService.setNeedResartAfterUpdate(afterUpdate);
                         updateSiteToInstall.clear();
                     }
-                    setStatusArea();
-                    validateUpdate();
+                    // need to relauch the studio automaticlly after updating
+                    isRestart = true;
+                    perReader.saveLastConnectionBean(getConnection());
+                    dialog.okPressed();
                 } catch (Exception e1) {
                     ExceptionHandler.process(e1);
                 }
