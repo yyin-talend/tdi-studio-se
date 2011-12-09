@@ -173,13 +173,15 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
     public Image getImage(IRepositoryViewObject object) {
         // Item item = property.getItem();
         ERepositoryObjectType itemType = object.getRepositoryObjectType();
+        Property property = object.getProperty();
+        // must get the property here before if/else ,otherwise can not get the correct document(link) icon.
         Image img = null;
         if (object instanceof RepositoryViewObject && ((RepositoryViewObject) object).getCustomImage() != null) {
             img = ((RepositoryViewObject) object).getCustomImage();
         } else {
             // MOD sizhaoliu 2011-10-14
             // TDQ-3356 enable different icons of extension points under a same repository node
-            Item item = object.getProperty().getItem();
+            Item item = property.getItem();
             boolean isExtensionPoint = false;
             for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
                 isExtensionPoint = handler.isRepObjType(itemType);
