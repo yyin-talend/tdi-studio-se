@@ -401,7 +401,6 @@ public class ImportTreeFromRepository extends SelectionAction {
                     rootNode = temp;
                 }
                 if (node.getAttribute().equals("main")) {
-                    temp.setMain(true);
                     mainNode = temp;
                     mainPath = newPath;
                 }
@@ -442,7 +441,6 @@ public class ImportTreeFromRepository extends SelectionAction {
             } else {
                 temp = this.addElement(lastTreeNode, lastXmlPath, node);
                 if (node.getAttribute().equals("main")) {
-                    temp.setMain(true);
                     mainNode = temp;
                     mainPath = newPath;
                 }
@@ -491,12 +489,12 @@ public class ImportTreeFromRepository extends SelectionAction {
                     rootNode = temp;
                 }
                 if (node.getAttribute().equals("main")) {
-                    temp.setMain(true);
                     mainNode = temp;
                     mainPath = newPath;
                 }
                 if (isFirst) {
                     temp.setLoop(true);
+                    XmlMapUtil.upsetMainNode(temp);
                     loopElement = temp;
                     isFirst = false;
                 }
