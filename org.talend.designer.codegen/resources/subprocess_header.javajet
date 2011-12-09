@@ -94,8 +94,8 @@
 									for(Map<String, String> joinKeyLine : joinKeys){ 
 										String lookupKey = joinKeyLine.get("LOOKUP_COLUMN");
 										hashableColumnsNames.add(lookupKey);
+										isLookup = true;
 									}
-									isLookup = true;
 									isLookOftRecordMatching = true;
 								}
 							}
