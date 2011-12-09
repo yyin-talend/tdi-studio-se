@@ -30,7 +30,9 @@ String isUpdate = ElementParameterParser.getValue(node,"__ISUPDATE__");
 List<Map<String,String>> keysReturn = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__RETURN_IDS__");
 
 boolean addTaskID = ("true").equals(ElementParameterParser.getValue(node,"__ADD_TASKID__"));
+boolean isCustom = "true".equals(ElementParameterParser.getValue(node, "__CUSTOM__"));
 String taskID = ElementParameterParser.getValue(node,"__TASKID__");
+String prevColumn = ElementParameterParser.getValue(node, "__PREV_COLUMN_TASK_ID__");
 
 boolean usePartialUpdate = ("true").equals(ElementParameterParser.getValue(node,"__USE_PARTIAL_UPDATE__"));
 String pivot = ElementParameterParser.getValue(node,"__PIVOT__");
@@ -164,7 +166,7 @@ if (metadatas != null && metadatas.size()>0) {
 		
 		        <%if (isMassInsert) {%>
 		        	<%if(addTaskID){%>
-		        		taskIDs_<%=cid%>.add(<%=taskID%>);
+		        		taskIDs_<%=cid%>.add(<%=isCustom?taskID:"xmlFlowList_" + cid + ".get(flowNum_" + cid + ").get(\"" + prevColumn + "\")"%>);
 		        	<%}%>
 		          miList_<%=cid %>.add(itemReport_<%=cid %>);
 		
@@ -179,7 +181,7 @@ if (metadatas != null && metadatas.size()>0) {
 		        <%} else {%>
 		          wspk_<%=cid %> = xtentisWS_<%=cid %>.putItemWithReport(itemReport_<%=cid %>);
 		          	<%if(addTaskID){%>
-		            	xtentisWS_<%=cid %>.updateItemMetadata(util_<%=cid%>. makeUpdateMeteItm(<%=taskID%>,wspk_<%=cid %>));
+		            	xtentisWS_<%=cid %>.updateItemMetadata(util_<%=cid%>. makeUpdateMeteItm(<%=isCustom?taskID:"xmlFlowList_" + cid + ".get(flowNum_" + cid + ").get(\"" + prevColumn + "\")"%>,wspk_<%=cid %>));
 		            <%}%>
 		        <%
 		        }
@@ -198,7 +200,7 @@ if (metadatas != null && metadatas.size()>0) {
 		        if (isMassInsert) {
 		        %>
 		        	<%if(addTaskID){%>
-		        		taskIDs_<%=cid%>.add(<%=taskID%>);
+		        		taskIDs_<%=cid%>.add(<%=isCustom?taskID:"xmlFlowList_" + cid + ".get(flowNum_" + cid + ").get(\"" + prevColumn + "\")"%>);
 		        	<%}%>
 		          miList_<%=cid %>.add(item_<%=cid %>);
 		
@@ -214,7 +216,7 @@ if (metadatas != null && metadatas.size()>0) {
 		        } else {%>
 		          wspk_<%=cid %> = xtentisWS_<%=cid %>.putItem(item_<%=cid %>);
 					<%if(addTaskID){%>
-		            	xtentisWS_<%=cid %>.updateItemMetadata(util_<%=cid%>. makeUpdateMeteItm(<%=taskID%>,wspk_<%=cid %>));
+		            	xtentisWS_<%=cid %>.updateItemMetadata(util_<%=cid%>. makeUpdateMeteItm(<%=isCustom?taskID:"xmlFlowList_" + cid + ".get(flowNum_" + cid + ").get(\"" + prevColumn + "\")"%>,wspk_<%=cid %>));
 		            <%}%>
 		          <%
 		          if (outConnName !=null && !isMassInsert && keysReturn.size() > 0) {
