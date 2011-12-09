@@ -1,0 +1,192 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tStem</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tStandardizeRow.html" title="tStandardizeRow"><link rel="next" href="tSurviveFields.html" title="tSurviveFields"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tStem"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tStem"></a>tStem</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tStem_icon32_white.png" width="27"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the
+						relevant edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Quality
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tStem properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e209020"></a>tStem properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tStem</strong></span> standardizes data
+										in columns through the process of linguistic normalization,
+										in which the variant forms of a word are reduced to a common
+										form. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tStem</strong></span> enables to
+										standardize data in columns before matching this
+										data.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: You create the
+										schema and store it locally for this component only. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: You have
+										already created the schema and stored it in the Repository.
+										You can reuse it in various projects and job designs.
+										Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Select Algorithm</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Set a stemming algorithm for each analyzed column of the
+										type <span class="emphasis"><em>string</em></span>.</p>
+									<p>
+										<span class="bold"><strong>Column</strong></span>: list of the
+										analyzed column.</p>
+									<p>
+										<span class="bold"><strong>Algorithm</strong></span>: Select from the
+										list the algorithm language you want to check the column
+										data against.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher</em></span>
+										<span class="emphasis"><em>Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is an intermediary step. It requires an
+										input flow as well as an output.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Scenario: Extracting the stems of English words from a specific column"><div class="titlepage"><div><div><h3 class="title"><a name="d0e209241"></a>Scenario: Extracting the stems of English words from a specific
+					column</h3></div></div></div><p>This scenario describes a six-component Job that carries out linguistic
+					normalization on data in the <span class="emphasis"><em>translation</em></span> column and extract
+					the base part (word stem) of all English words. </p><p>The aim of this Job is to create a kind of dictionary of stems of the English
+					words listed in the <span class="emphasis"><em>translation</em></span> column. This dictionary may
+					be used at a later stage in order to check new words to be put in the selected
+					table. The extracted English stems are written in an output file along with the
+					number of their occurrences in the <span class="emphasis"><em>translation</em></span> column. </p><p>In this scenario, we have already stored the main input schema in the
+					Repository. For more information about storing schema metadata in the
+					Repository, see <span class="bluebold">Talend Enterprise Studio</span>
+					<span class="bold"><strong>User Guide</strong></span>.</p><p>The main input table contains eight columns: <span class="emphasis"><em>id_key</em></span>,
+						<span class="emphasis"><em>id_lang</em></span>, <span class="emphasis"><em>translation</em></span>,
+						<span class="emphasis"><em>id_status</em></span>, <span class="emphasis"><em>id_user_trans</em></span>,
+						<span class="emphasis"><em>id_user_validate</em></span>, <span class="emphasis"><em>id_editor</em></span> and
+						<span class="emphasis"><em>date</em></span>. We want to extract the stem of the English words
+					in the <span class="emphasis"><em>translation</em></span> column.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Repository</strong></span> tree view, expand
+								<span class="bold"><strong>Metadata</strong></span> - <span class="bold"><strong>DB
+								Connections</strong></span> where you have stored the main input schema
+							and drop the relevant file onto the design workspace.</p><p> The <span class="bold"><strong>[Components]</strong></span> dialog box displays
+							with the corresponding component selected by default.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="272"><tr><td><img src="../images/Use_Case_tRecordMatching.png" width="272"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to drop the <span class="bold"><strong>tMysqlInput</strong></span> component onto the workspace. </p><p> The input table used in this scenario is called
+								<span class="emphasis"><em>translation</em></span>. It holds several columns including
+							the <span class="emphasis"><em>translation</em></span> column that holds the English words
+							we want to stem.</p></li><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace: <span class="bold"><strong>tNormalize</strong></span>, <span class="bold"><strong>tFilterRow</strong></span>,
+								<span class="bold"><strong>tStem</strong></span>, <span class="bold"><strong>tAggregateRow</strong></span> and <span class="bold"><strong>tFileOutputExcel</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="527"><tr><td><img src="../images/Use_Case_tStem.png" width="527"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect the component together using the <span class="bold"><strong>Main</strong></span> links with the exception of the <span class="bold"><strong>tFilterRow</strong></span> - <span class="bold"><strong>tStem
+							</strong></span>connection that should use a <span class="bold"><strong>Filter</strong></span> link.</p></li><li class="listitem"><p>Double-click the main input database component to display its
+								<span class="bold"><strong>Basic settings</strong></span> views.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="483"><tr><td><img src="../images/Use_Case_tStem1.png" width="483"></td></tr></table></div><p>The property fields for <span class="bold"><strong>tMysqlInput </strong></span>are
+					automatically filled in. If you do not define your input schema locally in the
+					Repository, fill in the details manually after selecting <span class="bold"><strong>Built-in</strong></span> in the <span class="bold"><strong>Schema</strong></span> and
+						<span class="bold"><strong>Property Type</strong></span> fields.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>If required, modify the query in the <span class="bold"><strong>Query</strong></span> box. </p><p> In this example, we want to work only on the English words and this
+							is why the <code class="code">id_lang</code> is set to <code class="code">1</code>.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tNormalize</strong></span> to display
+							its <span class="bold"><strong>Basic settings</strong></span> view and define the
+							component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="462"><tr><td><img src="../images/Use_Case_tStem2.png" width="462"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>If required, click <span class="bold"><strong>Sync columns</strong></span> to
+							retrieve the schema from the previous component.</p></li><li class="listitem"><p>From the <span class="bold"><strong>Column to normalize</strong></span> list,
+							select <span class="emphasis"><em>translation</em></span>.</p><p> This will split the data strings in the
+								<span class="emphasis"><em>translation</em></span> column into words.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Item separator</strong></span> field, enter
+							the separator which will delimits data in the
+								<span class="emphasis"><em>translation</em></span> column, a space character in this
+							example.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFilterRow</strong></span> to display
+							its <span class="bold"><strong>Basic settings</strong></span> view and define the
+							component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="512"><tr><td><img src="../images/Use_Case_tStem3.png" width="512"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the logical operator you want to use in order to combine simple
+							filtering and advanced mode.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Conditions</strong></span> area, click the
+							plus button to add one or more conditions to the output flow. And then
+							in the corresponding table column:</p><p> -select the input column you want to operate on,</p><p> -select the needed function on the list,</p><p> -select the operator to bind the input column with the value,</p><p> -type in between the quotes the value to be filtered.</p><p> In this example, we want to filter all words in the
+								<span class="emphasis"><em>translation</em></span> column that have less than three
+							letters.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tStem</strong></span> to display its
+								<span class="bold"><strong>Basic settings</strong></span> view and define the
+							component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="479"><tr><td><img src="../images/Use_Case_tStem4.png" width="479"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>If required, click <span class="bold"><strong>Sync columns</strong></span> to
+							retrieve the schema from the previous component. </p></li><li class="listitem"><p>In the <span class="bold"><strong>select Algorithm</strong></span> area, click
+							in the <span class="bold"><strong>Algorithm</strong></span> cell that corresponds
+							to the <span class="bold"><strong>translation</strong></span> column. And then
+							select from the list the algorithm language you want to check the column
+							data against, <span class="bold"><strong>English</strong></span> in this
+							scenario.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tAggregateRow</strong></span> to display
+							its <span class="bold"><strong>Basic settings</strong></span> view and define the
+							component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="527"><tr><td><img src="../images/Use_Case_tStem5.png" width="527"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to <span class="bold"><strong>Edit
+								schema</strong></span> to open a dialog box. Here you can define the
+							output flow.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="524"><tr><td><img src="../images/Use_Case_tStem6.png" width="524"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the output flow to the right of the dialog box, click the plus
+							button to add as many columns as you need in the output flow.</p><p> In this example, we want to have two output columns, the
+								<span class="emphasis"><em>translation</em></span> column and a new output column
+							called <span class="emphasis"><em>count</em></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog box and
+							proceed to the next step.</p></li><li class="listitem"><p>In the <span class="bold"><strong>tAggregateRow</strong></span> basic settings
+							view and in the <span class="bold"><strong>Group by</strong></span> area, click
+							the plus button to add an many lines as needed. Here you can define the
+							group-by values.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>Output column</strong></span> line to
+							select the output column that will hold the aggregated data, the
+								<span class="emphasis"><em>translation</em></span> column in this example.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>Input column position</strong></span>
+							line and select the input column from which you want to collect the
+							values to be aggregated, the <span class="emphasis"><em>translation</em></span> column in
+							this example.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Operations</strong></span> area, click the
+							plus button to add lines for the columns that will hold the aggregated
+							data. Here you can define the calculation values.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>Output column </strong></span>line and
+							select the destination column from the list, the
+								<span class="emphasis"><em>translation</em></span> column in this example.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>Function</strong></span> column line and
+							select any of the listed operations.</p><p> In this example, we want to count the number of distinct stems to be
+							listed only once in the output column.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>Input column position</strong></span>
+							line and select the input column from which you want to collect the
+							values to be aggregated, the <span class="emphasis"><em>id_key</em></span> column in this
+							example.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFileOutputExcel</strong></span> to
+							display its <span class="bold"><strong>Basic settings</strong></span> view and
+							define the component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="406"><tr><td><img src="../images/Use_Case_tStem7.png" width="406"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set the destination file path and define the settings of the file
+							according to your needs. </p></li><li class="listitem"><p>Save the Job and press <span class="bold"><strong>F6 </strong></span>to execute
+							it.</p></li></ul></div><p>The output Excel file is written in the defined path. This file holds the
+					extracted English word stems in the <span class="emphasis"><em>translation</em></span> column and
+					the count of each stem in the <span class="emphasis"><em>count</em></span> column.</p><p>The figure below illustrates an extraction of the output file.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="215"><tr><td><img src="../images/Use_Case_tStem8.png" width="215"></td></tr></table></div></div></div></body></html>

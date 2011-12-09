@@ -1,0 +1,124 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tQASAddressUnknown</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tQASAddressRow.html" title="tQASAddressRow"><link rel="next" href="tQASAddressVerified.html" title="tQASAddressVerified"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tQASAddressUnknown"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tQASAddressUnknown"></a>tQASAddressUnknown</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tQASAddressUnknown_icon32_white.png" width="27"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the
+						relevant edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Quality
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><p>The address management components discussed here are the result of <span class="bold"><strong>Talend</strong></span> collaboration with Experian QAS, one of the world
+				leaders for global address data quality. </p><p>For more information about the enterprise and its software tools, visit <a class="link" href="http://www.qas.com" target="_top">http://www.qas.com.</a></p><div class="section" title="tQASAddressUnknown properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e200495"></a>tQASAddressUnknown properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data Quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tQASAddressUnknown</strong></span>
+										collects unknown addresses. It iterates on each row and
+										reads all input addresses against the QuickAddress data.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+												<span class="bold"><strong>tQASAddressUnknown</strong></span>
+												uses QAS Pro Web 5.17.</p></td></tr></table></div>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tQASAddressUnknown</strong></span> can
+										give one output flow: <span class="bold"><strong>Unknown</strong></span> that collects all addresses that do
+										not match to deliverable results in the QuickAddress
+										data.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>QAS WSDL url</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Enter the URL for the QuickAdress XML document. The URL is
+										provided by Experian QAS.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Country</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select from the list the country corresponding to your
+										input addresses.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											Schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: You create the
+										schema and store it locally for this component only. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: You have
+										already created the schema and stored it in the Repository.
+										You can reuse it in various projects and job designs.
+										Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span></p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Column to analyze</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select from the list the address column you want to
+										analyze.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStat</em></span>
+										<span class="emphasis"><em>Catcher</em></span>
+										<span class="emphasis"><em>Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is an intermediary step. It requires an
+										input flow as well as an output.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e200750"></a>Related scenarios</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tQASAddressRow.html#Raa31728" title="Scenario: Editing addresses and giving the verification status">the section called &#8220;Scenario: Editing addresses and giving the verification status&#8221;</a>.</p></div></div></body></html>

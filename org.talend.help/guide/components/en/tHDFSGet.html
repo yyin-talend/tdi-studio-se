@@ -1,0 +1,204 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHDFSGet</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch10.html" title="Chapter&nbsp;10.&nbsp;File components"><link rel="prev" href="tHDFSConnection.html" title="tHDFSConnection"><link rel="next" href="tHDFSInput.html" title="tHDFSInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tHDFSGet"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHDFSGet"></a>tHDFSGet</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="28"><tr><td><img src="../images/tHDFSGet_icon.png" width="28"></td></tr></table></div><div class="section" title="tHDFSGet properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e252201"></a>tHDFSGet properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>File/Hadoop</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tHDFSGet </strong></span>gets data from
+										Hadoop file system.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tHDFSGet </strong></span>connects to
+										Hadoop distributed file system, helping to obtain
+										large-scale files with optimized performance.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Host</em></span>
+									</p>
+								</td><td valign="top">
+									<p>IP address of the Hadoop distributed file system
+										server.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Port</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Listening port number of HDFS server.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>User name</em></span>
+									</p>
+								</td><td valign="top">
+									<p>User authentication name of HDFS</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Group</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Membership including the authentication user under which
+										the HDFS instances were started.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>HDFS directory</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Location of the source files in HDFS.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Local directory</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Local directory to store the files obtained from
+										HDFS.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Overwrite file</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Options to overwrite or not the existing file with the new
+										one.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Append</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to add the new rows at the end of
+										the records</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Files</em></span>
+									</p>
+								</td><td valign="top">
+									<p>In the <span class="bold"><strong>Files</strong></span> area, the
+										fields to be completed are:</p>
+									<p> - <span class="bold"><strong>File mask</strong></span>: type in the
+										file name to be selected from HDFS. Regular expression is
+										available.</p>
+									<p> - <span class="bold"><strong>New name</strong></span>: give a new
+										name to the obtained file. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Die on error</em></span>
+									</p>
+								</td><td valign="top">
+									<p>This check box is selected by default. Clear the check box
+										to skip the row on error and complete the process for
+										error-free rows.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component combines HDFS connection and data
+										extraction, thus used as a single-component subjob or to
+										prepare data to feed the input flow of a Job. It is often
+										connected to the Job using <span class="bold"><strong>OnSubJobOk</strong></span> or <span class="bold"><strong>OnComponentOk link</strong></span>, depending on the
+										context.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitations</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>To run <span class="bold"><strong>tHDFSGet</strong></span> and
+											<span class="bold"><strong>tHDFSPut</strong></span>, version 1.6+
+										of JRE is required.</p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Scenario: Computing data with Hadoop distributed file system"><div class="titlepage"><div><div><h3 class="title"><a name="Raa73387"></a>Scenario: Computing data with Hadoop distributed file system</h3></div></div></div><p>The following scenario describes a simple Job that creates a file in a defined
+					directory, get it into and out of HDFS, subsequently store it to another local
+					directory, and read it at the end of the Job.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace: <span class="bold"><strong>tFixedFlowInput</strong></span>, <span class="bold"><strong>tFileOutputDelimited</strong></span>, <span class="bold"><strong>tHDFSPut</strong></span>, <span class="bold"><strong>tHDFSGet</strong></span>,
+								<span class="bold"><strong>tFileInputDelimited</strong></span> and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Right-click <span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p>From the menu, select the <span class="bold"><strong>Row</strong></span> link to
+							connect <span class="bold"><strong>tFixedFlowInput </strong></span>to <span class="bold"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="listitem"><p>The same way, right-click <span class="bold"><strong>tFileInputDelimited
+							</strong></span>to connect it to <span class="bold"><strong>tLogRow</strong></span>
+							using a <span class="bold"><strong>Row Main</strong></span> link.</p></li><li class="listitem"><p>Similarly, right-click <span class="bold"><strong>tFixedFlowInput</strong></span> to connect it to <span class="bold"><strong>tHDFSPut</strong></span> using a <span class="bold"><strong>OnSubjobOk</strong></span> link.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tHDFSGet</strong></span> to <span class="bold"><strong>tFileInputDelimited </strong></span>using a <span class="bold"><strong>On</strong></span><span class="bold"><strong>SubjobOk</strong></span>
+							link.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="272"><tr><td><img src="../images/Use_Case_tHDFSGet1.png" width="272"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Component</strong></span> tab to define the
+							basic settings for <span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p>Set the <span class="bold"><strong>Schema </strong></span>to <span class="bold"><strong>Built-In</strong></span> and click the three-dot <span class="bold"><strong>[...]</strong></span> button next to <span class="bold"><strong>Edit Schema</strong></span> to describe the data structure you want to
+							create from internal variables. In this scenario, the schema contains
+							one column: <span class="emphasis"><em>content</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="415"><tr><td><img src="../images/Use_Case_tHDFSGet3.png" width="415"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add the parameter line.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog box and
+							accept to propagate the changes when prompted by the studio.</p></li><li class="listitem"><p>In <span class="bold"><strong>Basic settings</strong></span>, define the
+							corresponding value in the <span class="bold"><strong>Mode</strong></span> area
+							using the <span class="bold"><strong>Use Single Table </strong></span>option. In
+							this scenario, the value is <span class="emphasis"><em>&#8220;Hello world!&#8221;</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="453"><tr><td><img src="../images/Use_Case_tHDFSGet2.png" width="453"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tFileOutputDelimited</strong></span> and click the <span class="bold"><strong>Component</strong></span> tab to define its basic settings.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="452"><tr><td><img src="../images/Use_Case_tHDFSGet4.png" width="452"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot <span class="bold"><strong>[...]</strong></span> button next
+							to the <span class="bold"><strong>File Name</strong></span> field and browse to
+							the output file you want to write data in, <span class="emphasis"><em>in.txt</em></span>
+							in this example.</p></li><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tHDFSPut</strong></span> and click the <span class="bold"><strong>Component</strong></span> tab to define its basic settings.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="453"><tr><td><img src="../images/Use_Case_tHDFSGet5.png" width="453"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Host</strong></span>, the <span class="bold"><strong>Port</strong></span>, the <span class="bold"><strong>Username</strong></span>, the <span class="bold"><strong>Group</strong></span>
+							fields, enter the connection parameters to the HDFS.</p></li><li class="listitem"><p>Next to the <span class="bold"><strong>Local directory</strong></span> field,
+							click the three-dot <span class="bold"><strong>[...]</strong></span> button to
+							browse to the folder with the file to be loaded into the HDFS. In this
+							scenario, the directory has been specified while configuring <span class="bold"><strong>tFileOutputDelimited</strong></span>:
+								<span class="emphasis"><em>C:/hadoopfiles/putFile/</em></span>. </p></li><li class="listitem"><p>In the <span class="bold"><strong>HDFS directory</strong></span> field, type in
+							the intended location in HDFS to store the file to be loaded. In this
+							example, it is <span class="emphasis"><em>/testFile</em></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Overwrite file</strong></span> field to
+							stretch the drop-down.</p></li><li class="listitem"><p>From the menu, select <span class="bold"><strong>always</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Files</strong></span> area, click the plus
+							button to add a row in which you define the file to be loaded.</p></li><li class="listitem"><p>In the <span class="bold"><strong>File mask</strong></span> column, enter
+								<span class="emphasis"><em>*.txt</em></span> to replace <span class="emphasis"><em>newLine</em></span>
+							between quotation marks and leave the <span class="bold"><strong>New
+								name</strong></span> column as it is. This allows you to extract all the
+								<span class="emphasis"><em>.txt</em></span> files in the specified directory without
+							changing their names. In this example, the file is<span class="emphasis"><em>
+								in.txt</em></span>.</p></li><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tHDFSGet</strong></span> and click the <span class="bold"><strong>Component</strong></span> tab to define its basic settings.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="453"><tr><td><img src="../images/Use_Case_tHDFSGet6.png" width="453"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Host</strong></span>, the <span class="bold"><strong>Port</strong></span>, the <span class="bold"><strong>Username</strong></span>, the <span class="bold"><strong>Group</strong></span>
+							fields, enter the connection parameters to the HDFS.</p></li><li class="listitem"><p>In the <span class="bold"><strong>HDFS directory</strong></span> field, type in
+							location storing the loaded file in HDFS. In this example, it is
+								<span class="emphasis"><em>/testFile</em></span>.</p></li><li class="listitem"><p>Next to the <span class="bold"><strong>Local directory</strong></span> field,
+							click the three-dot <span class="bold"><strong>[...]</strong></span> button to
+							browse to the folder intended to store the files that are extracted out
+							of the HDFS. In this scenario, the directory is:
+								<span class="emphasis"><em>C:/hadoopfiles/getFile/</em></span>. </p></li><li class="listitem"><p>Click the <span class="bold"><strong>Overwrite file</strong></span> field to
+							stretch the drop-down.</p></li><li class="listitem"><p>From the menu, select <span class="bold"><strong>always</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Files</strong></span> area, click the plus
+							button to add a row in which you define the file to be extracted.</p></li><li class="listitem"><p>In the <span class="bold"><strong>File mask</strong></span> column, enter
+								<span class="emphasis"><em>*.txt</em></span> to replace <span class="emphasis"><em>newLine</em></span>
+							between quotation marks and leave the <span class="bold"><strong>New
+								name</strong></span> column as it is. This allows you to extract all the
+								<span class="emphasis"><em>.txt</em></span> files from the specified directory in the
+							HDFS without changing their names. In this example, the file
+								is<span class="emphasis"><em> in.txt</em></span>.</p></li><li class="listitem"><p>In the design workspace, select the <span class="bold"><strong>tFileInputDelimited</strong></span> component.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Component</strong></span> tab to define the
+							basic settings of<span class="bold"><strong>
+							tFileInputDelimited</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="454"><tr><td><img src="../images/Use_Case_tHDFSGet7.png" width="454"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set property type to <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>Next to the <span class="bold"><strong>File Name/Stream</strong></span> field,
+							click the three-dot button to browse to the file you have obtained from
+							the HDFS. In this scenario, the directory is
+								<span class="emphasis"><em>C:/hadoopfiles/getFile/in.txt</em></span>.</p></li><li class="listitem"><p>Set <span class="bold"><strong>Schema</strong></span> to <span class="bold"><strong>Built-In </strong></span>and click <span class="bold"><strong>Edit
+								schema</strong></span> to define the data to pass on to the <span class="bold"><strong>tLogRow</strong></span> component. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="467"><tr><td><img src="../images/Use_Case_tHDFSGet8.png" width="467"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add a new column.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog box and
+							accept to propagate the changes when prompted by the studio.</p></li><li class="listitem"><p>Save the Job and press <span class="bold"><strong>F6</strong></span> to execute
+							the Job.</p></li></ul></div><p>The <span class="emphasis"><em>in.txt</em></span> file is created and loaded into the
+					HDFS.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="410"><tr><td><img src="../images/Use_Case_tHDFSGet9.png" width="410"></td></tr></table></div><p>The file is also extracted from the HDFS by <span class="bold"><strong>tHDFSGet</strong></span> and is read by <span class="bold"><strong>tFileInputDelimited</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="434"><tr><td><img src="../images/Use_Case_tHDFSGet10.png" width="434"></td></tr></table></div></div></div></body></html>

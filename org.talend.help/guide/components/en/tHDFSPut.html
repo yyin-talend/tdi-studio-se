@@ -1,0 +1,137 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHDFSPut</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch10.html" title="Chapter&nbsp;10.&nbsp;File components"><link rel="prev" href="tHDFSOutput.html" title="tHDFSOutput"><link rel="next" href="tNamedPipeClose.html" title="tNamedPipeClose"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tHDFSPut"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHDFSPut"></a>tHDFSPut</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="29"><tr><td><img src="../images/tHDFSPut_icon.png" width="29"></td></tr></table></div><div class="section" title="tHDFSPut properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e253637"></a>tHDFSPut properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>File/Hadoop</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tHDFSPut </strong></span>load data into
+										Hadoop file system.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tHDFSPut </strong></span>connects to
+										Hadoop distributed file system to load large-scale files
+										into it with optimized performance.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Host</em></span>
+									</p>
+								</td><td valign="top">
+									<p>IP address of the Hadoop distributed file system
+										server.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Port</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Listening port number of HDFS server.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>User name</em></span>
+									</p>
+								</td><td valign="top">
+									<p>User authentication name of HDFS</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Group</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Membership including the authentication user under which
+										the HDFS instances were started.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>HDFS directory</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Location to store the files in HDFS.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Local directory</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Local directory where are stored the files to be loaded
+										into HDFS.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Overwrite file</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Options to overwrite or not the existing file with the new
+										one.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Files</em></span>
+									</p>
+								</td><td valign="top">
+									<p>In the <span class="bold"><strong>Files</strong></span> area, the
+										fields to be completed are:</p>
+									<p> - <span class="bold"><strong>File mask</strong></span>: type in the
+										file name to be selected from the local directory. Regular
+										expression is available.</p>
+									<p> - <span class="bold"><strong>New name</strong></span>: give a new
+										name to the loaded file.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Die on error</em></span>
+									</p>
+								</td><td valign="top">
+									<p>This check box is selected by default. Clear the check box
+										to skip the row on error and complete the process for
+										error-free rows.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component combines HDFS connection and data
+										extraction, thus usually used as a single-component subjob
+										but also possible as output or end object.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitations</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>To run <span class="bold"><strong>tHDFSGet</strong></span> and
+											<span class="bold"><strong>tHDFSPut</strong></span>, version 1.6+
+										of JRE is required.</p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e253940"></a>Related scenario</h3></div></div></div><p>For related scenario, see <a class="xref" href="tHDFSGet.html#Raa73387" title="Scenario: Computing data with Hadoop distributed file system">the section called &#8220;Scenario: Computing data with Hadoop distributed file system&#8221;</a>.</p></div></div></body></html>

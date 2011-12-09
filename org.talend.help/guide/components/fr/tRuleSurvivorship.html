@@ -1,0 +1,544 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tRuleSurvivorship</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tReplaceList.html" title="tReplaceList"><link rel="next" href="tSchemaComplianceCheck.html" title="tSchemaComplianceCheck"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tRuleSurvivorship"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tRuleSurvivorship"></a>tRuleSurvivorship</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/trulesurvivorship_icon32_white.png" width="27"></td></tr></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la </em></span><span class="bold"><strong>Palette</strong></span><span class="emphasis"><em> du Studio si vous avez souscrit &agrave; l'&eacute;dition
+				correspondante de </em></span><span class="bluebold">Talend Enterprise Data Quality</span><span class="emphasis"><em>.</em></span>
+		</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tRuleSurvivorship"><div class="titlepage"><div><div><h3 class="title"><a name="d0e189537"></a>Propri&eacute;t&eacute;s du tRuleSurvivorship</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data Quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tRuleSurvivorship</strong></span>
+								re&ccedil;oit des enregistrements dans lesquels les doublons, ou les
+								doublons possibles, sont d&eacute;j&agrave; estim&eacute;s et regroup&eacute;s. A partir de
+								r&egrave;gles m&eacute;tier personnalis&eacute;es, il cr&eacute;e un repr&eacute;sentant unique de
+								chaque groupe de doublons &agrave; l'aide des donn&eacute;es consolid&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tRuleSurvivorship</strong></span> cr&eacute;e un
+								repr&eacute;sentant unique d'une entit&eacute; selon des r&egrave;gles m&eacute;tier. Il permet
+								de cr&eacute;er une copie ma&icirc;tre des donn&eacute;es pour MDM. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (<span class="bold"><strong>Built-in</strong></span>)
+								soit distant dans le <span class="bold"><strong>Repository</strong></span>. </p>
+							<p>Ce composant fournit deux colonnes en lecture seule :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong>SURVIVOR</strong></span> : cette colonne est de type <span class="bold"><strong>Boolean</strong></span>. Elle indique si un
+											enregistrement est l'enregistrement consolid&eacute; (true) ou
+											non (false). Il y a un enregistrement consolid&eacute; pour
+											chaque groupe.</p></li><li class="listitem"><p><span class="bold"><strong>CONFLICT</strong></span> : cette
+											colonne affiche les conflits lorsque plus d'un
+											enregistrement r&eacute;pond &agrave; une r&egrave;gle m&eacute;tier donn&eacute;e.</p></li></ul></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur </strong></span>de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilisable dans divers projets et Job designs. Voir &eacute;galement&nbsp;le
+									<span class="bold"><strong>Guide utilisateur</strong></span>
+								<span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Rule package name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom de l'ensemble de r&egrave;gles que vous cr&eacute;ez via ce
+								composant.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="italic">Generate rules and survivorship flow</span>
+						</td><td valign="top">
+							<p>Une fois que toutes les r&egrave;gles ont &eacute;t&eacute; configur&eacute;es dans un ensemble via ce composant,
+								cliquez sur ce bouton pour que cet ensemble de r&egrave;gles apparaisse
+								sous le n&#339;ud <span class="bold"><strong>Survivorship Rules</strong></span> du
+								dossier <span class="bold"><strong>Rules Management</strong></span> sous
+									<span class="bold"><strong>Metadata</strong></span> dans le <span class="bold"><strong>Repository</strong></span> de votre Studio. Cette &eacute;tape
+								est n&eacute;cessaire pour valider l'ensemble de r&egrave;gles.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Cette &eacute;tape est n&eacute;cessaire pour valider les modifications
+										et les prendre en compte lors de l'ex&eacute;cution. Si un ensemble
+										de r&egrave;gles du m&ecirc;me nom existe d&eacute;j&agrave; dans le <span class="bold"><strong>Repository</strong></span>, ces modifications,
+										une fois valid&eacute;es, vont l'&eacute;craser dans le <span class="bold"><strong>Repository</strong></span>, sinon celui du
+											<span class="bold"><strong>Repository</strong></span> aura
+										priorit&eacute; lors de l'ex&eacute;cution.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Rule table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Renseignez cette table pour cr&eacute;er un flux complet de
+								consolidation. Chaque r&egrave;gle donn&eacute;e est d&eacute;finie comme une &eacute;tape
+								d'ex&eacute;cution. Ainsi, dans l'ordre descendant dans la table, ces
+								r&egrave;gles repr&eacute;sentent une s&eacute;quence et un flux prend forme. Les
+								colonnes de cette table sont :</p>
+							<p><span class="bold"><strong>Order</strong></span> : Dans la liste,
+								s&eacute;lectionnez l'ordre d'ex&eacute;cution des r&egrave;gles que vous cr&eacute;ez afin de
+								d&eacute;finir un flux de consolidation. Les types d'ordre peuvent &ecirc;tre :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong>Sequential</strong></span> : une
+											r&egrave;gle <span class="bold"><strong>Sequential</strong></span> est
+											une &eacute;tape d'ex&eacute;cution d'un flux de consolidation. Par
+											exemple, la premi&egrave;re r&egrave;gle en haut de la table <span class="bold"><strong>Rule table</strong></span> sera la premi&egrave;re
+											&eacute;tape et, en descendant, la r&egrave;gle <span class="bold"><strong>Sequential</strong></span> suivante sera la deuxi&egrave;me
+											&eacute;tape.</p><p>La premi&egrave;re r&egrave;gle en haut doit &ecirc;tre une r&egrave;gle
+												<span class="bold"><strong>Sequential</strong></span>.</p></li><li class="listitem"><p><span class="bold"><strong>Multi-condition</strong></span> : une
+											r&egrave;gle <span class="bold"><strong>Multi-condition</strong></span>
+											est une r&egrave;gle suppl&eacute;mentaire pour une &eacute;tape d'ex&eacute;cution
+											donn&eacute;e. Elle est toujours ajout&eacute;e &agrave; la derni&egrave;re r&egrave;gle
+												<span class="bold"><strong>Sequential</strong></span> du
+											dessus dans la table et, &agrave; cette &eacute;tape, les deux r&egrave;gles
+											doivent obligatoirement &ecirc;tre respect&eacute;es. Par exemple,
+											apr&egrave;s avoir d&eacute;fini la premi&egrave;re r&egrave;gle <span class="bold"><strong>Sequential</strong></span>, d&eacute;finissez une
+											r&egrave;gle <span class="bold"><strong>Multi-condition</strong></span>
+											en-dessous ; les deux r&egrave;gles deviennent les r&egrave;gles de la
+											premi&egrave;re &eacute;tape.</p></li><li class="listitem"><p><span class="bold"><strong>Multi-target</strong></span> : apr&egrave;s ex&eacute;cution, chaque &eacute;tape valide
+											la valeur des champs d'un enregistrement d'une colonne
+												<span class="bold"><strong>Reference column</strong></span>
+											donn&eacute;e et s&eacute;lectionne la valeur correspondante comme
+											&eacute;tant celle de meilleure qualit&eacute; pour renseigner une
+											colonne <span class="bold"><strong>Target column</strong></span>
+											donn&eacute;e, une r&egrave;gle <span class="bold"><strong>Multi-target</strong></span> vous permet d'ajouter une
+											ou plusieurs colonne(s) <span class="bold"><strong>Target
+												column</strong></span> dans la m&ecirc;me &eacute;tape.</p><p>Vous devez d&eacute;finir chaque colonne <span class="bold"><strong>Reference column</strong></span> et <span class="bold"><strong>Target column</strong></span> manuellement
+											dans cette table. </p></li></ul></div>
+							<p><span class="bold"><strong>Rule Name</strong></span> : Saisissez le nom de
+								chaque r&egrave;gle que vous cr&eacute;ez. Cette colonne est disponible uniquement
+								pour les r&egrave;gles <span class="bold"><strong>Sequential</strong></span>
+								puisqu'elle d&eacute;finit les &eacute;tapes du flux de consolidation.</p>
+							<p><span class="bold"><strong>Reference column</strong></span> : S&eacute;lectionnez
+								la colonne sur laquelle vous souhaitez appliquer une r&egrave;gle donn&eacute;e.
+								Ce sont les colonnes d&eacute;finies dans le sch&eacute;ma de ce composant. Cette
+								colonne n'est pas disponible pour les r&egrave;gles <span class="bold"><strong>Multi-target</strong></span> car elles d&eacute;finissent uniquement les
+								colonnes <span class="bold"><strong>Target column</strong></span>.</p>
+							<p><span class="bold"><strong>Function</strong></span> : S&eacute;lectionnez le type d'op&eacute;ration de
+								validation &agrave; effectuer sur une colonne <span class="bold"><strong>Reference column</strong></span> donn&eacute;es. Les types disponibles
+								comprennent :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong>None</strong></span> : aucune
+											op&eacute;ration de validation n'est effectu&eacute;e.</p></li><li class="listitem"><p><span class="bold"><strong>Most common</strong></span> : valide
+											la valeur de champ la plus fr&eacute;quente dans chaque groupe
+											de doublons.</p></li><li class="listitem"><p><span class="bold"><strong>Most recent</strong></span> ou <span class="bold"><strong>Most
+												ancient</strong></span> : le premier valide la valeur de
+											date la plus r&eacute;cente et le second valide la valeur de
+											date la plus ancienne, dans chaque groupe de doublons.
+											La colonne de r&eacute;f&eacute;rence correspondante doit &ecirc;tre de type
+												<span class="bold"><strong>Date</strong></span>.</p></li><li class="listitem"><p><span class="bold"><strong>Longest</strong></span> or <span class="bold"><strong>Shortest</strong></span> : le premier valide la valeur
+											de champ la plus longue et le second valide la valeur de
+											champ la plus courte, dans chaque groupe de
+											doublons.</p></li><li class="listitem"><p><span class="bold"><strong>Largest</strong></span> ou <span class="bold"><strong>Smallest</strong></span> : le premier valide
+											la plus grande valeur num&eacute;rique plus grand num&eacute;ro et le
+											second la plus petite valeur num&eacute;rique, dans chaque
+											groupe de doublons.</p></li><li class="listitem"><p><span class="bold"><strong>Match regex</strong></span> : valide
+											le champ lorsqu'il est conforme &agrave; l'expression r&eacute;guli&egrave;re
+											dans la colonne <span class="bold"><strong>Value</strong></span>.</p></li><li class="listitem"><p><span class="bold"><strong>Expression</strong></span> : valide
+											le champ lorsqu'il est conforme &agrave; l'expression saisie
+											dans la colonne <span class="bold"><strong>Value</strong></span>.
+											La valeur de l'expression doit &ecirc;tre &eacute;crite &agrave; l'aide du
+											langage Drools.</p></li></ul></div>
+							<p><span class="bold"><strong>Value</strong></span> : saisissez l'expression qui vous int&eacute;resse,
+								correspondant &agrave; la fonction <span class="bold"><strong>Match
+									regex</strong></span> ou <span class="bold"><strong>Expression</strong></span>
+								s&eacute;lectionn&eacute;e dans la colonne <span class="bold"><strong>Function</strong></span>.</p>
+							<p><span class="bold"><strong>Target column</strong></span> : lorsqu'une &eacute;tape est ex&eacute;cut&eacute;e, elle
+								valide la valeur d'un champ d'un enregistrement d'une colonne
+									<span class="bold"><strong>Reference column</strong></span> donn&eacute;e et
+								s&eacute;lectionne la valeur correspondante de meilleure qualit&eacute; pour
+								renseigner la colonne <span class="bold"><strong>Target column</strong></span>
+								donn&eacute;e. S&eacute;lectionnez cette colonne <span class="bold"><strong>Target
+									column</strong></span> parmi les colonnes du sch&eacute;ma du
+								composant.</p>
+							<p><span class="bold"><strong>Ignore blanks</strong></span> : Cochez les cases
+								correspondant au nom des colonnes dont vous souhaitez ignorer les
+								valeurs vides.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="italic">tStatCatcher Statistics </span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								Job et du composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant requiert un composant d'entr&eacute;e et un composant de
+								sortie.</p>
+							<p>Comme il requiert des donn&eacute;es group&eacute;es &agrave; traiter, ce composant fonctionne avec des
+								composants comme le <span class="bold"><strong>tMatchGroup</strong></span>
+								comprenant donc des colonnes <span class="bold"><strong>GID</strong></span>
+								(identifiant du groupe) et <span class="bold"><strong>GRP_SIZE</strong></span>
+								(taille du groupe). Il requiert &eacute;galement que les donn&eacute;es d'entr&eacute;e
+								soient tri&eacute;es par l'identifiant du groupe et que la premi&egrave;re ligne
+								du groupe contienne la taille du groupe.</p>
+							<p>Lorsque vous exportez un Job &agrave; l'aide d'un <span class="bold"><strong>tRuleSurvivorship</strong></span>, vous devez cocher la case
+									<span class="bold"><strong>Export Dependencies</strong></span> afin
+								d'exporter ensemble les r&egrave;gles de consolidation g&eacute;n&eacute;r&eacute;es. Pour plus
+								d'informations concernant l'export d'un Job, consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="S&eacute;lectionner les meilleures donn&eacute;es d'un groupe de doublons afin de cr&eacute;er un enregistrement consolid&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e190010"></a>S&eacute;lectionner les meilleures donn&eacute;es d'un groupe de doublons afin de cr&eacute;er un
+			enregistrement consolid&eacute; </h3></div></div></div><p> Le Job de ce sc&eacute;nario utilise cinq composants pour regrouper les donn&eacute;es en doublon
+			et cr&eacute;er un repr&eacute;sentant unique de ces doublons. Ce repr&eacute;sentant est l'enregistrement
+			consolid&eacute; &agrave; la fin du processus de s&eacute;lection et vous pouvez l'utiliser, par exemple,
+			pour cr&eacute;er une copie ma&icirc;tre des donn&eacute;es pour MDM. </p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship1.png" align="middle"></div><p>Les composants utilis&eacute;s dans ce Job sont :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>un <span class="bold"><strong>tFixedFlowInput</strong></span> : il fournit les donn&eacute;es
+					d'entr&eacute;e &agrave; traiter par ce Job. Dans un cas d'utilisation r&eacute;el, vous pouvez
+					utiliser un autre composant d'entr&eacute;e afin de remplacer le <span class="bold"><strong>tFixedFlowInput</strong></span> et fournir les donn&eacute;es n&eacute;cessaires.</p></li><li class="listitem"><p>un <span class="bold"><strong>tMatchGroup</strong></span> : il regroupe les doublons des
+					donn&eacute;es d'entr&eacute;e et donne et donne &agrave; chaque groupe des informations concernant
+					l'identifiant et la taille de son groupe. Les noms techniques de ces
+					informations sont respectivement <span class="bold"><strong>GID</strong></span> et
+						<span class="bold"><strong>GRP_SIZE</strong></span> et elles sont requises par le
+					composant <span class="bold"><strong>tRuleSurvivorship</strong></span>.</p></li><li class="listitem"><p>un <span class="bold"><strong>tRuleSurvivorship</strong></span> : il cr&eacute;e le flux
+					personnalis&eacute; de consolidation afin de s&eacute;lectionner les donn&eacute;es de meilleure
+					qualit&eacute; composant le repr&eacute;sentant unique de chaque groupe de doublons.</p></li><li class="listitem"><p>un <span class="bold"><strong>tFilterColumns</strong></span> : il exclut les colonnes
+					techniques et &eacute;crit en sortie les colonnes contenant les informations qui vous
+					int&eacute;ressent. </p></li><li class="listitem"><p>et un <span class="bold"><strong>tLogRow</strong></span> : il pr&eacute;sente le r&eacute;sultat de
+					l'ex&eacute;cution du Job. </p></li></ul></div><p>Pour reproduire ce sc&eacute;nario, proc&eacute;dez comme dans les sections suivantes.</p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e190065"></a>D&eacute;poser et relier les composants</h4></div></div></div><p>Pour ce faire, effectuez les op&eacute;rations suivantes :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>D&eacute;posez un <span class="bold"><strong>tFixedFlowInput</strong></span>, un <span class="bold"><strong>tMatchGroup</strong></span>, un <span class="bold"><strong>tRuleSurvivorship</strong></span>, un <span class="bold"><strong>tFilterColumns</strong></span> et un <span class="bold"><strong>tLogRow</strong></span> de la <span class="bold"><strong>Palette</strong></span> dans
+						l'espace de mod&eacute;lisation graphique.</p></li><li class="listitem"><p>Cliquez-droit sur le composant <span class="bold"><strong>tFixedFlowInput</strong></span> afin d'ouvrir son menu contextuel et
+						s&eacute;lectionnez <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> afin de relier ce composant au <span class="bold"><strong>tMatchGroup</strong></span>.</p></li><li class="listitem"><p>R&eacute;p&eacute;tez l'op&eacute;ration pour cr&eacute;er un lien <span class="bold"><strong>Main</strong></span> reliant le <span class="bold"><strong>tMatchGroup</strong></span>
+						au <span class="bold"><strong>tRuleSurvivorship</strong></span>, puis le <span class="bold"><strong>tFilterColumns</strong></span> au <span class="bold"><strong>tLogRow</strong></span>.</p></li></ol></div><p>Les composants sont tous plac&eacute;s et reli&eacute;s. Vous pouvez les configurer. </p></div><div class="section" title="Configurer le regroupement des donn&eacute;es d'entr&eacute;e"><div class="titlepage"><div><div><h4 class="title"><a name="d0e190127"></a>Configurer le regroupement des donn&eacute;es d'entr&eacute;e</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFixedFlowInput</strong></span>
+						pour ouvrir sa vue <span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship2.png" align="middle"></div></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+						champ <span class="bold"><strong>Edit schema</strong></span> pour ouvrir l'&eacute;diteur de
+						sch&eacute;ma.</p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship3.png" align="middle"></div></li><li class="listitem"><p>Cliquez neuf fois sur le bouton <span class="bold"><strong>[+]</strong></span> afin
+						d'ajouter neuf lignes. Ce sont les neuf colonnes du sch&eacute;ma des donn&eacute;es
+						d'entr&eacute;e.</p></li><li class="listitem"><p>Renommez ces lignes respectivement <span class="italic">acctName</span>, <span class="italic">addr</span>, <span class="italic">city</span>, <span class="italic">state</span>,
+							<span class="italic">zip</span>, <span class="italic">country</span>, <span class="italic">phone</span>, <span class="italic">data</span> et <span class="italic">credibility</span>.</p></li><li class="listitem"><p>Dans la colonn <span class="bold"><strong>Type</strong></span>, s&eacute;lectionnez les
+						types de donn&eacute;es pour les lignes qui vous int&eacute;ressent. Dans cet exemple,
+						s&eacute;lectionnez <span class="bold"><strong>Date</strong></span> pour la colonne <span class="italic">data</span> et <span class="bold"><strong>Double</strong></span>
+						pour la colonne <span class="italic">credibility</span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Veillez &agrave; d&eacute;finir le bon type de donn&eacute;es afin de pouvoir configurer
+							plus facilement vos r&egrave;gles de validation.</p></td></tr></table></div></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Date Pattern</strong></span>, saisissez
+						le mod&egrave;le de donn&eacute;es refl&eacute;tant le format de date qui vous int&eacute;resse. Dans ce
+						sc&eacute;nario, saisissez <span class="italic">yyyyMMdd</span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider ces
+						modifications et acceptez la propagation demand&eacute;e par la fen&ecirc;tre
+						pop-up.</p></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>Mode</strong></span> de la vue <span class="bold"><strong>Basic settings</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Inline Content (delimited file)</strong></span> pour saisir les
+						donn&eacute;es d'entr&eacute;e.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Content</strong></span>, saisissez les
+						donn&eacute;es d'entr&eacute;e &agrave; traiter. Ces donn&eacute;es doivent correspondre au sch&eacute;ma
+						d&eacute;fini et, dans cet exemple, le contenu des donn&eacute;es est :</p><pre class="programlisting">GRIZZARD CO.;110 N MARYLAND AVE;GLENDALE;CA;912066;FR;8185431314;20110101;5
+GRIZZARD;110 NORTH MARYLAND AVENUE;GLENDALE;CA;912066;US;9003254892;20110118;4
+GRIZZARD INC;110 N. MARYLAND AVENUE;GLENDALE;CA;91206;US;(818) 543-1315;20110103;2
+GRIZZARD CO;1480 S COLORADO BOULEVARD;LOS ANGELES;CA;91206;US;(800) 325-4892;20110115;1</pre></li><li class="listitem"><p>Cliquez-droit sur le composant <span class="bold"><strong>tMatchGroup</strong></span> pour ouvrir
+						son menu contextuel et s&eacute;lectionnez <span class="bold"><strong>Configuration
+							wizard</strong></span>. Cela vous permet de voir &agrave; quoi ressemblent vos
+						groupes et comment ajuster les param&egrave;tres du composant afin d'obtenir
+						correctement les correspondances similaires.</p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship4-config_wizard.png" align="middle"></div></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> sous la table
+							<span class="bold"><strong>Key Definition</strong></span> afin d'ajouter une
+						ligne.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Input Key Attribute</strong></span> de
+						cette ligne, s&eacute;lectionnez <span class="italic">acctName</span>.
+						Ainsi, cette colonne devient la r&eacute;f&eacute;rence utilis&eacute;e pour mettre en
+						correspondance les doublons des donn&eacute;es d'entr&eacute;e. </p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Matching Type</strong></span>,
+						s&eacute;lectionnez l'algorithme de mise en correspondance <span class="bold"><strong>Jaro-Winkler</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Match threshold</strong></span>, saisissez
+						la valeur num&eacute;rique pour indiquer la valeur de correspondance de deux
+						enregistrements. Dans cet exemple, saisissez <span class="italic">0.6</span>.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Refresh</strong></span> pour
+						ex&eacute;cuter cette r&egrave;gle de mise en correspondance et afficher le r&eacute;sultat dans
+						l'assistant. Si les enregistrements d'entr&eacute;e ne sont pas group&eacute;s en un seul
+						groupe, remplacez <span class="italic">0.6</span> par une valeur
+						inf&eacute;rieure et cliquez &agrave; nouveau sur <span class="bold"><strong>Refresh</strong></span>
+						pour v&eacute;rifier le r&eacute;sultat, jusqu'&agrave; ce que les quatre enregistrements soient
+						dans le m&ecirc;me groupe.</p><p>Le Job de ce sc&eacute;nario regroupe quatre enregistrements similaires en un
+						seul groupe de doublons, afin que le composant <span class="bold"><strong>tRuleSurvivorship</strong></span> puisse cr&eacute;er un enregistrement consolid&eacute;.
+						Cet exemple simple vous permet d'avoir une vision claire du fonctionnement
+						du <span class="bold"><strong>tRuleSurvivorship</strong></span> avec d'autres
+						composants pour cr&eacute;er des donn&eacute;es de meilleure qualit&eacute;. Cependant, dans un
+						cas r&eacute;el d'utilisation, vous pouvez traiter beaucoup plus de donn&eacute;es, dans
+						des situations de duplication tr&egrave;s complexes, et regrouper les donn&eacute;es dans
+						de plus nombreux groupes. </p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer l'assistant
+							<span class="bold"><strong>Configuration wizard</strong></span>. La vue <span class="bold"><strong>Basic settings</strong></span> du composant <span class="bold"><strong>tMatchGroup</strong></span> est automatiquement renseign&eacute;e avec les
+						param&egrave;tres que vous avez d&eacute;finis.</p><p>Pour plus d'informations concernant l'assistant <span class="bold"><strong>Configuration wizard</strong></span>, consultez <a class="xref" href="tMatchGroup.html#ychen-20111011-dataquality-configuration_wizard" title="Assistant de configuration">la section intitul&eacute;e &laquo;&nbsp;Assistant de configuration&nbsp;&raquo;</a>.</p></li></ol></div></div><div class="section" title="D&eacute;finir le flux de consolidation"><div class="titlepage"><div><div><h4 class="title"><a name="d0e190339"></a>D&eacute;finir le flux de consolidation</h4></div></div></div><p>Apr&egrave;s avoir configur&eacute; et regroup&eacute; les donn&eacute;es d'entr&eacute;e, vous devez cr&eacute;er le flux
+				de consolidation &agrave; l'aide du composant <span class="bold"><strong>tRuleSurvivorship</strong></span>. Pour ce faire, proc&eacute;dez comme suit : </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tRuleSurvivorship</strong></span>
+						pour ouvrir sa vue <span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td align="center"><img src="../images/use_case-trulesurvivorship5.png" align="middle" width="100%"></td></tr></table></div></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Rule package name</strong></span>,
+						saisissez le nom de l'ensemble de r&egrave;gles que vous devez cr&eacute;er afin de
+						d&eacute;finir le flux de consolidation. Dans cet exemple, le nom est <span class="italic">org.talend.survivorship.sample</span>.</p></li><li class="listitem"><p>Dans la table <span class="bold"><strong>Rule table</strong></span>, cliquez sur le
+						bouton <span class="bold"><strong>[+]</strong></span> pour ajouter autant de lignes
+						que n&eacute;cessaire et renseignez-les &agrave; l'aide des d&eacute;finitions des r&egrave;gles
+						correspondantes. Dans cet exemple, ajoutez dix lignes et renseignes-les
+						comme suit : </p><div class="informaltable"><table border="1"><colgroup><col><col><col><col><col><col></colgroup><thead><tr><th valign="top">
+										<p>Order</p>
+									</th><th valign="top">
+										<p>Rule name</p>
+									</th><th valign="top">
+										<p>Reference column</p>
+									</th><th valign="top">
+										<p>Function</p>
+									</th><th valign="top">
+										<p>Value</p>
+									</th><th valign="top">
+										<p>Target column</p>
+									</th></tr></thead><tbody><tr><td valign="top">
+										<p>
+											<span class="italic">Sequential</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"1_LengthAcct"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">acctName</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">Expression</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">".length &gt;11"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">acctName</span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="italic">Sequential</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"2_LongestAddr"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">addr</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">Longest</span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">addr</span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="italic">Sequential</span>
+										</p>
+									</td><td valign="top">
+										<p><code class="code">"3_HighCredibility</code>" </p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">credibility</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">Expression</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"&gt; 3"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">credibility</span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="italic">Sequential</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"4_MostCommonCity"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">city</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">Most common</span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">city</span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="italic">Sequential</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"5_MostCommonZip"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">zip</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">Most common</span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">zip</span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="italic">Multi-condition</span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">zip</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">Match regex</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"\\d{5}"</code>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="italic">Multi-target</span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">state</span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="italic">Multi-target</span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">country</span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="italic">Sequential</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<code class="code">"6_LatestPhone"</code>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">date</span>
+										</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">Most recent</span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">phone</span>
+										</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="italic">Multi-target</span>
+										</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td><td valign="top">
+										<p>
+											<span class="italic">date</span>
+										</p>
+									</td></tr></tbody></table></div><p>Ces r&egrave;gles sont ex&eacute;cut&eacute;es dans l'ordre descendant. La r&egrave;gle <span class="bold"><strong>Multi-condition</strong></span> est l'une des conditions de la r&egrave;gle
+							<span class="italic">5_MostCommonZip</span>, le code postal
+						conforme &agrave; la r&egrave;gle doit donc &ecirc;tre le code postal le plus courant,
+						comprenant cinq chiffres. La colonne <span class="italic">zip</span>
+						est la colonne cible de la r&egrave;gle <span class="italic">5_MostCommonZip</span> et les deux r&egrave;gles <span class="bold"><strong>Multi-target</strong></span> suivantes ajoutent deux colonnes cible,
+							<span class="italic">state</span> et <span class="italic">country</span>. Les colonnes <span class="italic">zip</span>, <span class="italic">state</span> et <span class="italic">country</span> seront la source des donn&eacute;es
+						consolid&eacute;es. Une fois qu'un code postal est valid&eacute;, les valeurs
+						correspondantes des champs dans les colonnes <span class="italic">zip</span>, <span class="italic">state</span> et <span class="italic">country</span> seront s&eacute;lectionn&eacute;s comme les donn&eacute;es
+						de meilleure qualit&eacute;.</p><p>Cela est vrai &eacute;galement pour la r&egrave;gle <span class="bold"><strong>Sequential</strong></span>
+						<span class="italic">6_LatestPhone</span>. Une fois la valeur d'une
+						date valid&eacute;e, les valeurs correspondantes des champs seront s&eacute;lectionn&eacute;es
+						depuis les colonnes <span class="italic">phone</span> et <span class="italic">date</span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Dans le tableau, les champs contenant <span class="italic">n/a</span> ne sont pas disponibles pour les types <span class="bold"><strong>Order</strong></span> ou <span class="bold"><strong>Function</strong></span> s&eacute;lectionn&eacute;s. Dans la table <span class="bold"><strong>Rule table</strong></span> de la vue <span class="bold"><strong>Basic settings</strong></span> du composant <span class="bold"><strong>tRuleSurvivorship</strong></span>, ces champs indisponibles sont gris&eacute;s.
+							Pour plus d'informations concernant cette table de r&egrave;gles, consultez le
+							tableau des propri&eacute;t&eacute;s du composant <span class="bold"><strong>tRuleSurvivorShip</strong></span>, en haut de la section.</p></td></tr></table></div></li><li class="listitem"><p>A c&ocirc;t&eacute; de <span class="bold"><strong>Generate rules and survivorship
+							flow</strong></span>, cliquez sur le bouton <span class="bold"><strong>Go</strong></span> afin de g&eacute;n&eacute;rer l'ensemble de r&egrave;gles avec son contenu
+						d&eacute;fini.</p><p>Cela fait, vous pouvez trouver l'ensemble de r&egrave;gles g&eacute;n&eacute;r&eacute; dans le
+						r&eacute;pertoire <span class="bold"><strong>Metadata &gt; <span>Rules
+								Management &gt; </span>Survivorship Rules</strong></span> dans la vue
+							<span class="bold"><strong>Repository</strong></span> de votre Studio. Vous pouvez
+						ouvrir le flux de consolidation cr&eacute;&eacute; et consulter son diagramme. Pour plus
+						d'informations, consultez le <span class="bold"><strong>Guide
+							utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship6-validation_flow.png" align="middle"></div></li></ol></div></div><div class="section" title="S&eacute;lectionner les colonnes qui vous int&eacute;ressent"><div class="titlepage"><div><div><h4 class="title"><a name="d0e190957"></a>S&eacute;lectionner les colonnes qui vous int&eacute;ressent</h4></div></div></div><p>Le sch&eacute;ma du <span class="bold"><strong>tRuleSurvivorship</strong></span> comprend
+				diff&eacute;rentes colonnes techniques, comme <span class="bold"><strong>GID</strong></span>,
+					<span class="bold"><strong>GRP_SIZE</strong></span>, qui ne sont pas pertinentes dans cet
+				exemple. Utilisez donc le <span class="bold"><strong>tFilterColumns</strong></span> pour g&eacute;rer
+				ces colonnes techniques. Les colonnes contenant les donn&eacute;es seront &eacute;crites en
+				sortie. Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFilterColumns</strong></span> pour
+						ouvrir sa vue <span class="bold"><strong>Component</strong></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer
+						le sch&eacute;ma du composant pr&eacute;c&eacute;dent. Si une bo&icirc;te de dialogue s'ouvre et vous
+						demande de propager, cliquez sur <span class="bold"><strong>Yes</strong></span> pour
+						accepter.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+						champ <span class="bold"><strong>Edit schema</strong></span> pour ouvrir l'&eacute;diteur de
+						sch&eacute;ma.</p></li><li class="listitem"><p>Du c&ocirc;t&eacute; <span class="bold"><strong>tFilterColumns</strong></span> de l'&eacute;diteur,
+						s&eacute;lectionnez les lignes <span class="bold"><strong>GID</strong></span>, <span class="bold"><strong>GRP_SIZE</strong></span>, <span class="bold"><strong>MASTER</strong></span>
+						et <span class="bold"><strong>SCORE</strong></span> puis cliquez sur le bouton avec
+						une croix rouge afin de les supprimer.</p><div class="mediaobject" align="center"><img src="../images/use_case-trulesurvivorship7.png" align="middle"></div></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider ces
+						modifications et accepter la propagation propos&eacute;e par la bo&icirc;te de
+						dialogue.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e191029"></a>Ex&eacute;cuter le Job </h4></div></div></div><p>Le composant <span class="bold"><strong>tLogRow</strong></span> est utilis&eacute; pour pr&eacute;senter
+				les r&eacute;sultats d'ex&eacute;cution du Job. Vous pouvez configurer le mode d'affichage dans sa
+				vue <span class="bold"><strong>Component</strong></span>.</p><p>Pour ce faire, double-cliquez sur le <span class="bold"><strong>tLogRow</strong></span> afin
+				d'ouvrir sa vue <span class="bold"><strong>Component</strong></span>et, dans la zone <span class="bold"><strong>Mode</strong></span>, cochez la case <span class="bold"><strong>Table (print
+					values in cells of a table)</strong></span>.</p><p>Pour ex&eacute;cuter ce Job, appuyez sur <span class="bold"><strong>F6</strong></span>. </p><p>Cela fait, la vue <span class="bold"><strong>Run</strong></span> est automatiquement
+				ouverte, dans laquelle vous pouvez visualiser les r&eacute;sultats d'ex&eacute;cution.</p><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td align="center"><img src="../images/use_case-trulesurvivorship8.png" align="middle" width="100%"></td></tr></table></div><p>Vous pouvez voir que la derni&egrave;re ligne est l'enregistrement consolid&eacute; (survivor)
+				car la colonne <span class="bold"><strong>SURVIVOR</strong></span> indique <span class="italic">true</span>. Cet enregistrement se compose des donn&eacute;es de
+				meilleure qualit&eacute; de chaque colonne des quatre autres lignes, qui sont les doublons
+				des m&ecirc;mes groupes. </p><p>La colonne <span class="bold"><strong>CONFLICT</strong></span> pr&eacute;sente les colonnes contenant plus
+				d'une valeur de champ conforme aux r&egrave;gles de validation donn&eacute;es. Prenez l'exemple de
+				la colonne <span class="italic">credibility</span> : outre l'enregistrement
+				consolid&eacute; dont la cr&eacute;dibilit&eacute; est de <span class="italic">5.0</span>, la
+				colonne <span class="bold"><strong>CONFLICT</strong></span> indique que la cr&eacute;dibilit&eacute; du
+				deuxi&egrave;me enregistrement <span class="italic">GRIZZARD</span> est de <span class="italic">4.0</span>, c'est-&agrave;-dire qu'elle est sup&eacute;rieure &agrave; <span class="italic">3</span>, le seuil configur&eacute; dans les r&egrave;gles d&eacute;finies.
+				Cependant, comme une cr&eacute;dibilit&eacute; de <span class="italic">5.0</span> appara&icirc;t
+				dans la premier enregistrement <span class="italic">GRIZZARD CO.</span>, le
+				composant <span class="bold"><strong>tRuleSurvivorship</strong></span> le s&eacute;lectionne comme
+				&eacute;tant de la meilleure qualit&eacute;.</p></div></div></div></body></html>

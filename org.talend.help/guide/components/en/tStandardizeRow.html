@@ -1,0 +1,847 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tStandardizeRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tStandardizePhoneNumber.html" title="tStandardizePhoneNumber"><link rel="next" href="tStem.html" title="tStem"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tStandardizeRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tStandardizeRow"></a>tStandardizeRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="28"><tr><td><img src="../images/tStandardizeRow_icon32.png" width="28"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the
+						relevant edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Quality
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tStandardizeRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e206240"></a>tStandardizeRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tStandardizeRow</strong></span> tokenizes
+										the data flow it has received from the preceding component
+										and applies user-defined parser rules to analyze the data.
+										Based on this analysis, this component normalizes and writes
+										these data in a separate XML data flow and tags them using
+										the user-defined rule names. </p>
+									<p> The standardization option adds a supplementary column to
+										the output flow where the normalized data are then
+										standardized.</p>
+									<p> ANTLR is used to parse and tokenize the incoming data.
+										For further information about ANTLR, see the site</p>
+									<p>
+										<a class="link" href="http://www.antlr.org/" target="_top">http://www.antlr.org/</a>
+									</p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This component does not make any changes on your raw
+											data.</p></td></tr></table></div>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tStandardizeRow</strong></span>
+										normalizes the incoming data in a separate XML data flow.
+										This allows you to separate, even standardize if need be,
+										the rule-compliant data from the non-compliant data.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: You create the
+										schema and store it locally for this component only. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: You have
+										already created the schema and stored it in the Repository.
+										You can reuse it in various projects and job designs.
+										Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Column to parse</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select the column to be parsed from the received data flow
+									</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Standardize this field</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to standardize the rule-compliant
+										data identified, that is, to replace the duplicates of the
+										identified data with the corresponding standardized data
+										from a given index.</p>
+									<p> For further information about this index providing
+										standardized data, see <a class="xref" href="tSurviveFields.html" title="tSurviveFields">the section called &#8220;tSurviveFields&#8221;</a>.</p>
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Every time you select or clear this check box, the
+											schema of this component is changed automatically, so in
+											a given Job, you need to click the activated <span class="bold"><strong>Sync columns</strong></span> button to fix
+											the inconsistencies in the schema.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Conversion rules</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Complete this table to define the rules you need to apply.
+										The table columns to be filled are:</p>
+									<p> - <span class="bold"><strong>Name</strong></span>: in this column,
+										name the rule you need to use. This name is also used as the
+										XML tag name and the token name to label the incoming data
+										identified by this rule.</p>
+									<p> - <span class="bold"><strong>Type</strong></span>: in this column,
+										select the type of the rule you need to apply. For further
+										information about the rule types available, see <a class="xref" href="tStandardizeRow.html#Raa20651" title="Rule types">the section called &#8220;Rule types&#8221;</a>.</p>
+									<p> - <span class="bold"><strong>Value</strong></span>: in this column,
+										type in the rule you need to define.</p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>A test view is provided to help you create the parser
+											rules of interest. For further information, see
+												<span class="bluebold">Talend Enterprise Data Quality</span>
+											<span class="bold"><strong>User Guide</strong></span>.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Generate parser code in Routines</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Click this button to enable the data parser of your Studio
+										to recognize the rules defined in the <span class="bold"><strong>Conversion rules</strong></span> table.</p>
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>In a given Job, when a rule is created, this operation
+											is required for the execution of this rule, while if it
+											is on an exiting rule that you have made modification,
+											this operation is required only when the modified rule
+											is of type <span class="bold"><strong>Enumeration</strong></span>,
+												<span class="bold"><strong>Format</strong></span> or <span class="bold"><strong>Combination</strong></span>. For further
+											information about all of the rule types, see <a class="xref" href="tStandardizeRow.html#Raa20651" title="Rule types">the section called &#8220;Rule types&#8221;</a>.</p></td></tr></table></div>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<p><span class="inlinemediaobject"><img src="../images/import.png"></span> and
+												<span class="inlinemediaobject"><img src="../images/export.png"></span></p>
+								</td><td valign="top">
+									<p>Click the import or export button to exchange a given
+										standardization rule set with the <span class="bold"><strong>DQ
+											Repository</strong></span>.</p>
+									<p>- When you click the export button, your studio is
+										switched to the <span class="bold"><strong>Profiling</strong></span>
+										perspective and the <span class="bold"><strong>Parser rule
+											Settings</strong></span> view is opened on the workspace with
+										the relative contents filled automatically . Then if need
+										be, you can edit the exported rule set and save it to the
+											<span class="bold"><strong>Libraries</strong></span> &gt;
+											<span class="bold"><strong>Rules</strong></span> &gt; <span class="bold"><strong>Parser</strong></span> folder in the <span class="bold"><strong>DQ Repository</strong></span> tree view. </p>
+									<p>- When you click the import button, a import wizard is
+										opened to help you import the standardization rule of
+										interest.</p>
+									<p>For further information, see <span class="Variable"><span class="bluebold">Talend Data Quality</span></span><span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher</em></span>
+										<span class="emphasis"><em>Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is an intermediary step. It requires an
+										input flow as well as an output.</p>
+									<p>This component generates Java code in the <span class="bold"><strong>Routines</strong></span> node of the <span class="bold"><strong>Repository</strong></span> tree view. This code
+										implements the grammar defined in rules. It is automatically
+										compiled to be used by the component.</p>
+									<p>When you modify /add/delete a rule, the code must be
+										generated again, so that the Job takes the modifications
+										into account and then becomes runnable.</p>
+									<p>To generate it, click the <span class="bold"><strong>Generate
+											parser code in Routines</strong></span> button.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Connections</strong></span>
+									</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>Outgoing links (from one component to another):</p>
+									<p>
+										<span class="bold"><strong>Row</strong></span>: Main; Reject</p>
+									<p>
+										<span class="bold"><strong>Trigger</strong></span>: Run if; On
+										Component Ok; On Component Error.</p>
+									<p> </p>
+									<p> Incoming links (from one component to another):</p>
+									<p>
+										<span class="bold"><strong>Row</strong></span>: Main; Reject </p>
+									<p> </p>
+									<p> For further information regarding connections, see
+											<span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div><div class="section" title="Rule types"><div class="titlepage"><div><div><h4 class="title"><a name="Raa20651"></a>Rule types</h4></div></div></div><p>Two groups of rule types are provided: the basic rule types and the
+						advanced rule types.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Basic rule types: <span class="bold"><strong>Enumeration</strong></span>,
+									<span class="bold"><strong>Format</strong></span> and <span class="bold"><strong>Combination</strong></span>. Rules of these types are
+								composed with some given ANTLR symbols.</p></li><li class="listitem"><p>Advanced rule types: <span class="bold"><strong>Regex</strong></span>,
+									<span class="bold"><strong>Index</strong></span> and <span class="bold"><strong>Shape</strong></span>. Rules of these types match the tokenized data
+								and standardize them when needed.</p></li></ul></div><p>To create the rules of any type, <span class="bold"><strong>Talend</strong></span>
+						provides the pre-defined and case-sensitive elements (ANTLR tokens) as
+						follows for defining the composition of a string to be matched:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>INT: integer; </p></li><li class="listitem"><p>WORD: word;</p></li><li class="listitem"><p>WORD+: literals of several words;</p></li><li class="listitem"><p>CAPWORD: capitalized word;</p></li><li class="listitem"><p>DECIMAL: decimal float;</p></li><li class="listitem"><p>FRACTION: fraction float;</p></li><li class="listitem"><p>CURRENCY: currencies;</p></li><li class="listitem"><p>ROMAIN_NUMERAL: Romain numerals;</p></li><li class="listitem"><p>ALPHANUM: combination of alphabetic and numeric characters;</p></li><li class="listitem"><p>WHITESPACE: whitespace</p></li><li class="listitem"><p>UNDEFINED: unexpected strings such as ASCII codes that any other
+								token cannot recognize.</p></li></ul></div><p>The following three tables successively present detailed information about
+						the basic types, the advanced types and the ANTLR symbols used by the basic
+						rule types. These three tables help you to complete the <span class="bold"><strong>Conversion rules</strong></span> table in the <span class="bold"><strong>Basic settings</strong></span> of this component.</p><p>For basic rule types:</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"></colgroup><thead><tr><th valign="top">
+										<p>Basic Rule Type</p>
+									</th><th valign="top">
+										<p>Usage</p>
+									</th><th valign="top">
+										<p>Example</p>
+									</th><th valign="top">
+										<p>Conditions of rule composition</p>
+									</th></tr></thead><tbody><tr><td valign="top">
+										<p>
+											<span class="bold"><strong>Enumeration</strong></span>
+										</p>
+									</td><td valign="top">
+										<p>A rule of this type provides a list of possible
+											matches.</p>
+									</td><td valign="top">
+										<p><span class="emphasis"><em>RuleName</em></span>:
+											<code class="code">LengthUnit</code></p>
+										<p><span class="emphasis"><em>RuleValue: </em></span>&#8220;<code class="code"> &#8216;inch&#8217; | &#8216;cm&#8217;
+												&#8221;</code></p>
+									</td><td valign="top">
+										<p>- Each option must be put in a pair of single
+											quotation marks unless this option is a pre-defined
+											element.</p>
+										<p>- Defined options must be separated by the |
+											symbol.</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="bold"><strong>Format</strong></span>
+										</p>
+										<p> (Rule name starts with upper case)</p>
+									</td><td valign="top">
+										<p>A rule of this type uses the pre-defined elements
+											along with any of user-defined <span class="bold"><strong>Enumeration</strong></span>, <span class="bold"><strong>Format</strong></span> or <span class="bold"><strong>Combination</strong></span> rules to define the
+											composition of a string. </p>
+										<p> </p>
+									</td><td valign="top">
+										<p><span class="emphasis"><em>RuleName</em></span>:
+											<code class="code">Length</code></p>
+										<p><span class="emphasis"><em>RuleValue</em></span>: <code class="code">&#8220;DECIMAL
+												WHITESPACE LengthUnit&#8221;</code></p>
+										<p>This rule means that a whitespace between decimal and
+											lengthunit is required, so it matches strings like,
+												<span class="emphasis"><em>1.4 cm</em></span> but does not match a
+											string like 1.4cm. To match both of these cases, you
+											need to define this rule as, for example, <code class="code">&#8220;DECIMAL
+												WHITESPACE* LengthUnit&#8221;</code> .</p>
+										<p><code class="code">LengthUnit</code> is an <span class="bold"><strong>Enumeration</strong></span> rule defining <code class="code">&#8220; &#8216;inch&#8217;
+												| &#8217;cm&#8217; &#8221;</code>.</p>
+									</td><td valign="top">
+										<p>- When the name of a <span class="bold"><strong>Format</strong></span> rule starts with upper case, this
+											rule requires the exact matching result. It means that
+											you need to define exactly any single element of a
+											string, even a whitespace.</p>
+									</td></tr><tr><td valign="top">
+										<p><span class="bold"><strong>Format </strong></span>(Rule name
+											starts with lower case)</p>
+									</td><td valign="top">
+										<p>A rule of this type is almost the same as a <span class="bold"><strong>Format</strong></span> rule starting its name
+											with upper case. The difference is that the <span class="bold"><strong>Format</strong></span> rule with lower-case
+											initial does not require exact match. </p>
+									</td><td valign="top">
+										<p><span class="emphasis"><em>RuleName</em></span>:
+											<code class="code">length</code></p>
+										<p><span class="emphasis"><em>RuleValue</em></span>: <code class="code">&#8220;DECIMAL
+												LengthUnit&#8221;</code></p>
+										<p>The rule matches strings like <span class="emphasis"><em>1.4
+												cm</em></span> or <span class="italic">1.4cm</span> etc. where the
+												<code class="code">Decimal</code> is one of the pre-defined
+											element types and <code class="code">LengthUnit</code> is an
+												<span class="bold"><strong>Enumeration</strong></span> rule
+											defining <code class="code">&#8220; &#8216;inch&#8217; | &#8217;cm&#8217; &#8221;</code>.</p>
+									</td><td valign="top">
+										<p>n/a</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="bold"><strong>Combination</strong></span>
+										</p>
+									</td><td valign="top">
+										<p>A rule of this type is used when you need to create
+											several rules of the same name.</p>
+									</td><td valign="top">
+										<p><span class="emphasis"><em>RuleName</em></span>: <code class="code">Size</code> (or
+												<code class="code">size</code>)</p>
+										<p>
+											<span class="emphasis"><em>RuleValue</em></span>: <code class="code">&#8220;length BY
+												length&#8221;</code></p>
+										<p>The rule matches strings like <span class="emphasis"><em>1.4 cm by 1.4
+												cm</em></span>, where <code class="code">length</code> is a
+												<span class="bold"><strong>Format</strong></span> rule
+											(starting with lower case) and <code class="code">BY</code> is an
+												<span class="bold"><strong>Enumeration</strong></span> rule
+											defining <code class="code">&#8220; &#8216;By&#8217; | &#8217;by&#8217; | &#8216;x&#8217; | &#8216;X&#8217;
+											&#8221;</code>.</p>
+									</td><td valign="top">
+										<p>- Literal texts or characters are not accepted as a
+											part of the rule value. When the literal texts or
+											characters are needed, you must create an <span class="bold"><strong>Enumeration</strong></span> rule to define
+											these texts or characters and then use this <span class="bold"><strong>Enumeration</strong></span> rule
+											instead.</p>
+										<p>- When several <span class="bold"><strong>Combination</strong></span> rules use the identical rule
+											name, they are executed in top-down order in the
+												<span class="bold"><strong>Conversion rules</strong></span>
+											table of the <span class="bold"><strong>Basic
+												settings</strong></span> of <span class="bold"><strong>tStandardizeRow</strong></span>, so arrange them
+											properly in order to obtain the best result. For an
+											example, see the following scenario.</p>
+
+									</td></tr></tbody></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+							<span class="emphasis"><em>Any characters or string literals, if accepted by a rule type,
+								must be put in single quotation marks when used, otherwise they will
+								be treated as ANTLR grammar symbols or variables and generate errors
+								or unexpected results at runtime.</em></span>
+						</p></td></tr></table></div><p>For advanced rule types:</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"></colgroup><thead><tr><th valign="top">
+										<p>Advanced Rule Type</p>
+									</th><th valign="top">
+										<p>Usage</p>
+									</th><th valign="top">
+										<p>Example</p>
+									</th><th valign="top">
+										<p>Conditions</p>
+									</th></tr></thead><tbody><tr><td valign="top">
+										<p>
+											<span class="bold"><strong>Regex</strong></span>
+										</p>
+									</td><td valign="top">
+										<p>A rule of this type uses regular expressions to match
+											the incoming data tokenized by ANTLR.</p>
+									</td><td valign="top">
+										<p><span class="emphasis"><em>RuleName</em></span>:
+											<code class="code">ZipCode</code></p>
+										<p><span class="emphasis"><em>RuleValue</em></span>:
+											<code class="code">&#8220;\\d{5}&#8221;</code></p>
+										<p>The rule matches strings like
+												<span class="emphasis"><em>&#8220;92150&#8221;</em></span></p>
+									</td><td valign="top">
+										<p>Regular expressions must be Java compliant.</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="bold"><strong>Index</strong></span>
+										</p>
+									</td><td valign="top">
+										<p>A rule of this type uses a synonym index as reference
+											to search for the matched incoming data.</p>
+										<p> For further information about available synonym
+											indexes, see the appendix about data synonym
+											dictionaries in the<span class="bluebold">
+												Talend Enterprise Data Quality
+											</span> User Guide.</p>
+										<p> For further information about this synonym index, see
+												<a class="xref" href="tSynonymOutput.html" title="tSynonymOutput">the section called &#8220;tSynonymOutput&#8221;</a>.</p>
+									</td><td valign="top">
+										<p>A scenario is available in <a class="xref" href="tStandardizeRow.html#Raa90078" title="Scenario 2: Standardizing addresses from unstructured data">the section called &#8220;Scenario 2: Standardizing addresses from unstructured data&#8221;</a>.</p>
+									</td><td valign="top">
+										<p>In Windows, the backslashes <code class="code">\</code> need to be
+											doubled or replaced by slashes <code class="code">/</code> if the
+											path is copied from the file system.</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="bold"><strong>Shape</strong></span>
+										</p>
+									</td><td valign="top">
+										<p>A rule of this type uses pre-defined elements along
+											with the established <span class="bold"><strong>Regex</strong></span> or <span class="bold"><strong>Index</strong></span> rules or both to match the
+											incoming data.</p>
+									</td><td valign="top">
+										<p><span class="emphasis"><em>RuleName</em></span>:
+											<code class="code">Address</code></p>
+										<p><span class="emphasis"><em>RuleValue</em></span>:
+												<code class="code">&#8220;&lt;INT&gt;&lt;WORD&gt;&lt;StreetType&gt;&#8221;</code>
+										</p>
+										<p> This rule matches the addresses like <span class="emphasis"><em>12
+												main street</em></span>, where <span class="italic">INT</span> and <span class="italic">WORD</span> are pre-defined tokens
+											(rule elements) and <span class="emphasis"><em>StreetType</em></span> is
+											an <span class="bold"><strong>Index</strong></span> rule which you
+											define along with this example rule in the <span class="bold"><strong>Basic settings</strong></span> view of this
+											component.</p>
+										<p> For further information about the <span class="bold"><strong>Shape</strong></span> rule type, see <a class="xref" href="tStandardizeRow.html#Raa90078" title="Scenario 2: Standardizing addresses from unstructured data">the section called &#8220;Scenario 2: Standardizing addresses from unstructured data&#8221;</a>.</p>
+									</td><td valign="top">
+										<p>Only the contents put in <code class="code">&lt; &gt;</code> are
+											recognizable. In the other cases, the contents are
+											considered as error or are omitted.</p>
+									</td></tr></tbody></table></div><p>For the given ANTLR symbols:</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"></colgroup><thead><tr><th valign="top">
+										<p>Symbols</p>
+									</th><th valign="top">
+										<p>Meaning</p>
+									</th></tr></thead><tbody><tr><td valign="top">
+										<p>
+											<code class="code">|</code>
+										</p>
+									</td><td valign="top">
+										<p>alternative</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<code class="code">'s'</code>
+										</p>
+									</td><td valign="top">
+										<p>char or string literal</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<code class="code">+</code>
+										</p>
+									</td><td valign="top">
+										<p>1 or more</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<code class="code">*</code>
+										</p>
+									</td><td valign="top">
+										<p>0 or more</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<code class="code">?</code>
+										</p>
+									</td><td valign="top">
+										<p>optional or semantic predicate</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<code class="code">~</code>
+										</p>
+									</td><td valign="top">
+										<p>match not</p>
+									</td></tr></tbody></table></div><p>Examples of using these symbols are presented in the following scenarios,
+						but you can also find more examples on the following site:</p><p>
+						<a class="link" href="http://www.antlr.org/wiki/display/ANTLR3/ANTLR+Cheat+Sheet" target="_top">http://www.antlr.org/wiki/display/ANTLR3/ANTLR+Cheat+Sheet</a>
+					</p><p>
+						<span>&nbsp;</span>
+					</p></div></div><div class="section" title="Scenario 1: Normalizing the data using rules of basic types"><div class="titlepage"><div><div><h3 class="title"><a name="d0e207384"></a>Scenario 1: Normalizing the data using rules of basic types</h3></div></div></div><p>In this scenario, two successive steps are performed to:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>normalize the incoming data (separate the compliant data from the
+							non-compliant data) and,</p></li><li class="listitem"><p>extract the data of interests and display them.</p></li></ul></div><p>Before replicating these two steps, we need to analyze the source data in
+					order to figure out what rules need to be composed. For this scenario, the
+					source data are stored in a <span class="emphasis"><em>.csv</em></span> file called
+						<span class="emphasis"><em>partsmaster</em></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="450"><tr><td><img src="../images/Use_Case_tStandardizeRow_rawdata.png" width="450"></td></tr></table></div><p>There are totally 59 rows of raw data, but some of them are not shown in our
+					capture.</p><p>Through observation, you can expect that the third row will not be recognized
+					as it contains Oriental characters. Furthermore, you can figure out that:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>the <span class="emphasis"><em>SKU</em></span> data contains 34-9923, XC-3211 and
+							pb710125 and so on. So the rule used to parse the
+								<span class="emphasis"><em>SKU</em></span> data could be:</p></li></ul></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><thead><tr><th valign="top">
+									<p>Name</p>
+								</th><th valign="top">
+									<p>Type</p>
+								</th><th valign="top">
+									<p>Value</p>
+								</th></tr></thead><tbody><tr><td valign="top">
+									<p>
+										<code class="code">&#8220;SKU&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;Format&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">"(DIGIT DIGIT|LETTER LETTER) '-'? DIGIT DIGIT DIGIT
+											DIGIT (DIGIT DIGIT?)? "</code>
+									</p>
+								</td></tr></tbody></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>for the <span class="emphasis"><em>Size</em></span> data, the correct format is the
+							multiplication of two or three lengths plus the length units. Therefore,
+							the rules used to parse the <span class="emphasis"><em>Size</em></span> data could be:
+						</p></li></ul></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><thead><tr><th valign="top">
+									<p>Name</p>
+								</th><th valign="top">
+									<p>Type</p>
+								</th><th valign="top">
+									<p>Value</p>
+								</th></tr></thead><tbody><tr><td valign="top">
+									<p>
+										<code class="code">&#8220;LengthUnit&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;Enumeration&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220; 'm' | '\'' | 'inch' | 'inches' | '\"'&#8221;</code>
+									</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<code class="code">&#8220;BY&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;Enumeration&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;'X' | 'x' | 'by' &#8221;</code>
+									</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<code class="code">&#8220;Length&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;Format&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;(INT | FRACTION | DECIMAL) WHITESPACE* LengthUnit
+											&#8221;</code>
+									</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<code class="code">&#8220;Size&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;Combination&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;Length BY Length BY Length&#8221;</code>
+									</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<code class="code">&#8220;Size&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;Combination&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;Length BY Length&#8221;</code>
+									</p>
+								</td></tr></tbody></table></div><p>Two <span class="bold"><strong>Combination</strong></span> rules use the same name, in
+					which case, they will be executed in top-down order as is presented in this
+					table.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>for the <span class="emphasis"><em>Weight</em></span> data, the correct format is the
+							weight plus the weight unit. Therefore, the rules used to parse the
+								<span class="emphasis"><em>Weight</em></span> data are: </p></li></ul></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><thead><tr><th valign="top">
+									<p>Name</p>
+								</th><th valign="top">
+									<p>Type</p>
+								</th><th valign="top">
+									<p>Value</p>
+								</th></tr></thead><tbody><tr><td valign="top">
+									<p>
+										<code class="code">&#8220;WeightUnit&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;Enumeration&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220; 'lb' | 'lbs' | 'pounds' | 'Kg' | 'pinds'&#8221;</code>
+									</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<code class="code">&#8220;Weight&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;Format&#8221;</code>
+									</p>
+								</td><td valign="top">
+									<p>
+										<code class="code">&#8220;(INT | FRACTION | DECIMAL) WHITESPACE* WeightUnit
+											&#8221;</code>
+									</p>
+								</td></tr></tbody></table></div><p>Now, you can begin to replicate the two steps of this scenario.</p><div class="section" title="Separating the compliant data and the non-compliant data"><div class="titlepage"><div><div><h4 class="title"><a name="Raa71772"></a>Separating the compliant data and the non-compliant data</h4></div></div></div><p>In this first step, four components are used. They are</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong> tFileInputDelimited</strong></span>
+									(<span class="emphasis"><em>partsmaster</em></span>): this component loads and
+								outputs the source data to the component that follows.</p></li><li class="listitem"><p><span class="bold"><strong> tStandardizeRow</strong></span>: this component
+								normalizes the incoming data and rejects the exception data that it
+								cannot recognize.</p></li><li class="listitem"><p><span class="bold"><strong> tLogRow</strong></span>: this component is used
+								two times to display respectively the exception data and the output
+								XML data.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="351"><tr><td><img src="../images/Use_Case_tStandardizeRow_Normalization.png" width="351"></td></tr></table></div><p>To replicate this step, proceed as the following sections
+						illustrate.</p><div class="section" title="Dropping and linking the components"><div class="titlepage"><div><div><h5 class="title"><a name="d0e207746"></a>Dropping and linking the components</h5></div></div></div><p>To replicate this step, proceed as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Set up the file delimited schema for the
+										<span class="emphasis"><em>partsmaster.csv</em></span> file in the <span class="bold"><strong>Repository</strong></span> of your Studio. For
+									further information about how to set up a file delimited schema,
+									see <span class="bluebold">Talend Enterprise Studio</span>
+									<span class="bold"><strong>User Guide</strong></span>.</p></li><li class="listitem"><p>Under the <span class="bold"><strong>Metadata</strong></span> node of
+									the <span class="bold"><strong>Repository</strong></span> of your Studio,
+									select the file delimited schema for
+										<span class="emphasis"><em>partsmaster.csv</em></span> and drop it on the
+									design workspace.</p></li><li class="listitem"><p>From the dialog box that pops up, select <span class="bold"><strong>tFileInputDelimited</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="272"><tr><td><img src="../images/Use_Case_tStandardizeRow2.png" width="272"></td></tr></table></div><p>Then the <span class="bold"><strong>tFileInputDelimited</strong></span>
+										(<span class="emphasis"><em>partsmaster</em></span>) component displays in the
+									design workspace.</p></li><li class="listitem"><p>From the <span class="bold"><strong>Palette</strong></span>, drop the
+										<span class="bold"><strong>tStandardizeRow</strong></span> component
+									and two <span class="bold"><strong>tLogRow</strong></span> components into
+									the design workspace.</p></li><li class="listitem"><p>Right-click <span class="bold"><strong>tFileInputDelimited</strong></span>
+										(<span class="emphasis"><em>partsmaster</em></span>) to open the contextual
+									menu.</p></li><li class="listitem"><p>From the contextual menu, select <span class="bold"><strong>Row
+										&gt; Main</strong></span> link to connect this component to
+										<span class="bold"><strong>tStandardizeRow</strong></span>.</p></li><li class="listitem"><p>Accept the schema propagation prompted by the pop-up dialog
+									box.</p></li><li class="listitem"><p>From <span class="bold"><strong>tStandardizeRow</strong></span>, do the
+									same to connect this component to one of the two <span class="bold"><strong>tLogRow</strong></span> components using <span class="bold"><strong>Row &gt; Main</strong></span> link and to the other
+									using <span class="bold"><strong>Row &gt; Reject</strong></span> link and
+									accept the schema propagation.</p></li></ol></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>You can change the name displayed for each of these component as
+								what has been done for one of the <span class="bold"><strong>tLogRow</strong></span> component, named as
+									<span class="emphasis"><em>Exception</em></span> in this scenario. For further
+								information, see <span class="bluebold">Talend Enterprise Studio</span>
+								<span class="bold"><strong>User Guide</strong></span>.</p></td></tr></table></div><p>Then you can continue to configure each component to be used.</p></div><div class="section" title="Configuring the process of normalizing rows"><div class="titlepage"><div><div><h5 class="title"><a name="d0e207863"></a>Configuring the process of normalizing rows</h5></div></div></div><p>To do this, proceed as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="bold"><strong>tStandardizeRow</strong></span>
+									to open its <span class="bold"><strong>Component</strong></span>
+									view.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="516"><tr><td><img src="../images/Use_Case_tStandardizeRow3.png" width="516"></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>Column to parse</strong></span> field,
+									select <span class="emphasis"><em>SKU_Description_Size_Weight</em></span>. This is
+									the only column that the incoming schema has.</p></li><li class="listitem"><p>Under the <span class="bold"><strong>Conversion rules</strong></span>
+									table, click the plus button eight times to add eight rows in
+									this table.</p></li><li class="listitem"><p>To complete these rows, type in the rules you have figured out
+									when analyzing the raw data at the beginning of this
+									scenario.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The two <span class="emphasis"><em>Size</em></span> rules are executed in
+										top-down order. In this example, this order allows this
+										component to match firstly the sizes with three numbers and
+										then those with two numbers. If you reverse this order, this
+										component will match the first two numbers of all sizes
+										before all and then treat the last number of the
+										three-numbers sizes as unmatched.</p></td></tr></table></div></li><li class="listitem"><p>Click the <span class="bold"><strong>Generate parser code in
+										routines</strong></span> button.</p></li></ol></div></div><div class="section" title="Executing the normalization Job"><div class="titlepage"><div><div><h5 class="title"><a name="d0e207911"></a>Executing the normalization Job</h5></div></div></div><p>Press <span class="bold"><strong>F6</strong></span> to run this Job.</p><p>In the console of the <span class="bold"><strong>Run</strong></span> view, you
+							can read the output data structure. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="401"><tr><td><img src="../images/Use_Case_tStandardizeRow4.png" width="401"></td></tr></table></div><p>Corresponding to the raw data, such as, <span class="emphasis"><em>34-9923, Monolithic
+								Membrance, 4&#8217; x 8&#8217;, 26 lbs</em></span>, an XML segment is generated
+							where the compliant data are separated from the noncompliant data
+							(unmatched). Thus the raw data are normalized.</p><p>Again from this console, you can read that a row is rejected as it
+							contains unrecognizable data.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="470"><tr><td><img src="../images/Use_Case_tStandardizeRow5.png" width="470"></td></tr></table></div></div></div><div class="section" title="Extracting data of interest from the normalized XML data"><div class="titlepage"><div><div><h4 class="title"><a name="d0e207937"></a>Extracting data of interest from the normalized XML data</h4></div></div></div><p>This section presents the second step of this scenario. Four components
+						are added to receive the normalized XML data in place of the <span class="bold"><strong>tLogRow</strong></span> component which was set for this action
+						in the first step. The four components are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong> tExtractXMLField</strong></span>: this component
+								reads an input XML field and extracts desired data;</p></li><li class="listitem"><p><span class="bold"><strong> tFilterRow</strong></span>: this component
+								filters input rows by setting conditions on the selected
+								columns;</p></li><li class="listitem"><p><span class="bold"><strong> tLogRow</strong></span> (two times): the two
+								components receive and display respectively the valid or invalid
+								data against conditions set in <span class="bold"><strong>tFilterRow</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="477"><tr><td><img src="../images/Use_Case_tStandardizeRow1.png" width="477"></td></tr></table></div><p>To replicate the second step, proceed as the following sections
+						illustrate.</p><div class="section" title="Droping and linking the additional components"><div class="titlepage"><div><div><h5 class="title"><a name="d0e207969"></a>Droping and linking the additional components</h5></div></div></div><p>To do this, proceed as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>On the design workspace, delete the <span class="bold"><strong>tLogRow</strong></span> component that is connected to <span class="bold"><strong>tStandardizeRow</strong></span> with <span class="bold"><strong>Main</strong></span> row link.</p></li><li class="listitem"><p>From the <span class="bold"><strong>Palette</strong></span>, drop
+										<span class="bold"><strong>tExtractXMLField</strong></span>, <span class="bold"><strong>tFilterRow</strong></span> and two <span class="bold"><strong>tLogRow</strong></span> components into the design
+									workspace. In this scenario, the two <span class="bold"><strong>tLogRow</strong></span> components are named respectively
+										<span class="emphasis"><em>ValidSize</em></span> and
+										<span class="emphasis"><em>InvalidSize</em></span>.</p><p> For further information about how to rename a component, see
+										<span class="bluebold">Talend Enterprise Studio</span>
+									<span class="bold"><strong>User Guide</strong></span>.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tExtractXMLField</strong></span> to
+										<span class="bold"><strong>tFilterRow</strong></span> with <span class="bold"><strong>Main</strong></span> link as you did in the first
+									step to connect <span class="emphasis"><em>partsmaster</em></span> to <span class="bold"><strong>tStandardizeRow</strong></span>.</p></li><li class="listitem"><p>Do the same but with <span class="bold"><strong>Filter</strong></span>
+									link to connect <span class="bold"><strong>tFilterRow</strong></span> to
+										<span class="emphasis"><em>ValidSize</em></span>.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tFilterRow</strong></span> to
+										<span class="emphasis"><em>InvalidSize</em></span> with <span class="bold"><strong>Reject</strong></span> link as you did in the first step to
+									connect <span class="bold"><strong>tSandardizeRow</strong></span> to
+										<span class="emphasis"><em>Exception</em></span>.</p></li></ol></div></div><div class="section" title="Configuring the process of extracting the XML fields of interest"><div class="titlepage"><div><div><h5 class="title"><a name="d0e208068"></a>Configuring the process of extracting the XML fields of
+							interest</h5></div></div></div><p>To do this, proceed as follows</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double click <span class="bold"><strong>tExtractXMLField</strong></span>
+									to open its <span class="bold"><strong>Component</strong></span>
+									view.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="471"><tr><td><img src="../images/Use_Case_tStandardizeRow6.png" width="471"></td></tr></table></div></li><li class="listitem"><p>Next to <span class="bold"><strong>Edit schema</strong></span>, click
+									the three-dot button to open the schema editor.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="529"><tr><td><img src="../images/Use_Case_tStandardizeRow7.png" width="529"></td></tr></table></div></li><li class="listitem"><p>On the left side of this editor, select the
+										<span class="emphasis"><em>SKU_Description_Size_Weight</em></span> row.</p></li><li class="listitem"><p>Click the <span class="inlinemediaobject"><img src="../images/Schema_icon_RightArrow.png" width="21"></span> button to add this row to the right side of
+									the editor.</p></li><li class="listitem"><p>On the right side of this editor, click the plus button on the
+									bottom toolbar three times to add three rows.</p></li><li class="listitem"><p>Rename the three rows as <span class="emphasis"><em>SKU</em></span>,
+										<span class="emphasis"><em>Size</em></span>, <span class="emphasis"><em>Weight</em></span>, all
+									of which are tags of the normalized XML data.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate this
+									editing and accept the schema propagation prompted by the pop-up
+									dialog box. Four rows are automatically filled in the <span class="bold"><strong>Mapping</strong></span> table on the <span class="bold"><strong>Component</strong></span> view.</p></li><li class="listitem"><p>In the <span class="bold"><strong>XML field</strong></span> field of the
+										<span class="bold"><strong>Component</strong></span> view, select the
+									desired XML field of the incoming data. In this example, it is
+										<span class="emphasis"><em>Normalized_field</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Loop XPath Query</strong></span>
+									field, type in the name of the XML Tree root tag to replace the
+									default value. In this example, type in
+									<code class="code">&#8220;/record&#8221;</code>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>XPath query</strong></span> column of
+									the <span class="bold"><strong>Mapping</strong></span> table, type in the
+									XML Tree tags corresponding to desired normalized data between
+									quotation marks. In this example, they are<code class="code"> &#8220;SKU&#8221;</code>,
+										<code class="code">&#8220;Size&#8221;</code>, <code class="code">&#8220;Weight&#8221;</code>.</p></li></ol></div></div><div class="section" title="Configuring the process of filtering the rows of interest"><div class="titlepage"><div><div><h5 class="title"><a name="d0e208174"></a>Configuring the process of filtering the rows of interest</h5></div></div></div><p>To do this, proceed as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double click <span class="bold"><strong>tFilterRow</strong></span> to
+									open its <span class="bold"><strong>Component</strong></span> view.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="440"><tr><td><img src="../images/Use_Case_tStandardizeRow8.png" width="440"></td></tr></table></div></li><li class="listitem"><p>Under the <span class="bold"><strong>Conditions</strong></span> table,
+									click the plus button to add one row.</p></li><li class="listitem"><p>In the <span class="bold"><strong>InputColumn</strong></span> column of
+									this row, select <span class="emphasis"><em>Size</em></span> from the drop-down
+									list.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Function</strong></span> column,
+									select <span class="bold"><strong>Empty</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Operator</strong></span> column,
+									select <span class="bold"><strong>Not equal to</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Value</strong></span> column, type in
+									the quotation marks <code class="code">&#8220;&#8221;</code>. </p></li></ol></div><p>The condition is set up. The normalized data which contain no null in
+							the <span class="emphasis"><em>Size</em></span> tag will be output while those which
+							contain null in this <span class="emphasis"><em>Size</em></span> tag will be
+							rejected.</p></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h5 class="title"><a name="d0e208242"></a>Executing the Job</h5></div></div></div><p> Press <span class="bold"><strong>F6</strong></span> to run this Job.</p><p>In the console of the <span class="bold"><strong>Run</strong></span> view, you
+							can read the desired data selected from the normalized XML data
+							flow.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tStandardizeRow9.png" width="100%"></td></tr></table></div><p>This Job lists the normalized data of interest in parallel with the
+							raw data.</p><p>You can read the data rejected by <span class="bold"><strong>tFilterRow</strong></span> as well.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="514"><tr><td><img src="../images/Use_Case_tStandardizeRow10.png" width="514"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>For reason of page space, all of the results are not
+								displayed.</p></td></tr></table></div></div></div></div><div class="section" title="Scenario 2: Standardizing addresses from unstructured data"><div class="titlepage"><div><div><h3 class="title"><a name="Raa90078"></a>Scenario 2: Standardizing addresses from unstructured data</h3></div></div></div><p>In this scenario, six components are used to standardize addresses from
+					unstructured data which were copied from a Website, matching them with the data
+					contained in an index that was previously generated by a Job. </p><p>For more information about index creation, see <a class="xref" href="tSurviveFields.html" title="tSurviveFields">the section called &#8220;tSurviveFields&#8221;</a>.</p><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong> tFixedFlowInput</strong></span>: this component
+							holds the unstructured data from which the addresses are
+							extracted.</p></li><li class="listitem"><p><span class="bold"><strong> tStandardizeRow</strong></span>: this component
+							defines the address rules and generates the addresses in XML format with
+							the defined tags. This is the process of normalizing and standardizing
+							the initially unstructured data.</p></li><li class="listitem"><p><span class="bold"><strong> tFilterColumns</strong></span>: this component
+							filters the standardized addresses.</p></li><li class="listitem"><p><span class="bold"><strong> tExtractXMLField</strong></span>: this component
+							extracts the attributes from the <span class="emphasis"><em>Address</em></span> node of
+							the XML tree in order to output every address item in formatted
+							columns.</p></li><li class="listitem"><p>two <span class="bold"><strong>tLogRow</strong></span>: these components are
+							used to display the output data. The first <span class="bold"><strong>tLogRow</strong></span> returns the errors, if any. The second <span class="bold"><strong>tLogRow</strong></span> displays the result in the
+							console.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="529"><tr><td><img src="../images/Use_Case_tStandardizeRow1_s2.png" width="529"></td></tr></table></div><p>Before starting up to replicate this scenario, you have to retrieve the
+					content of an index in order to match the unstructured data with the index data.
+					The content of the index reads as follows:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="285"><tr><td><img src="../images/Use_Case_tStandardizeRow_s2_Index.png" width="285"></td></tr></table></div><p>On the left side are held Paris street names and on the right side are held
+					the synonyms used in the data. The data will be used as references to
+					standardize the address data collected from the website of interest, for
+					example, from <a class="link" href="http://paris.conciergerie.com/travel_paris/address.php" target="_top">http://paris.conciergerie.com/travel_paris/address.php</a>.</p><p>To replicate this scenario, proceed as the following sections
+					illustrate.</p><div class="section" title="Preparing the unstructured data"><div class="titlepage"><div><div><h4 class="title"><a name="d0e208336"></a>Preparing the unstructured data</h4></div></div></div><p>To do this, proceed as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p> Double-click the <span class="bold"><strong>tFixedFlowInput</strong></span>
+								component to display its <span class="bold"><strong>Basic
+									settings</strong></span> view.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="474"><tr><td><img src="../images/Use_Case_tStandardizeRow2_s2.png" width="474"></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>Schema</strong></span> list, select
+									<span class="bold"><strong>Built-In</strong></span> then click the
+									<span class="bold"><strong>[...]</strong></span> button to define the
+								schema.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="390"><tr><td><img src="../images/Use_Case_tStandardizeRow_s2_SchemaFixedFlow.png" width="390"></td></tr></table></div></li><li class="listitem"><p>In the schema editor, click the <span class="bold"><strong>[+]</strong></span> button to add a column and set the <span class="bold"><strong>Type</strong></span> column on <span class="bold"><strong>String</strong></span>.</p><p> Name it <span class="emphasis"><em>input</em></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate and close
+								the editor.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Number of rows</strong></span> field,
+								enter <span class="emphasis"><em>1</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, select
+									<span class="bold"><strong>Use Inline Content (delimited
+									file)</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Row Separator</strong></span> field, type
+								in the row separator &#8220;\n&#8221;.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Field Separator</strong></span> field,
+								enter the field separator &#8220;;&#8221;.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Content</strong></span> field, paste the
+								data copied from the Website. These data are unstructured.</p></li></ol></div><p>Then you can continue to configure the standardization process.</p></div><div class="section" title="Configuring the process of standardize the unstructured data"><div class="titlepage"><div><div><h4 class="title"><a name="d0e208430"></a>Configuring the process of standardize the unstructured data</h4></div></div></div><p>To do this, proceed as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Connect the <span class="bold"><strong>tFixedFlowInput</strong></span>
+								component to the <span class="bold"><strong>tStandardizeRow</strong></span>
+								component with a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> link.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tStandardizeRow</strong></span>
+								component to display its <span class="bold"><strong>Basic
+									settings</strong></span> view.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="493"><tr><td><img src="../images/Use_Case_tStandardizeRow3_s2.png" width="493"></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>Schema</strong></span> list, select
+									<span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Column to parse</strong></span> list,
+								select <span class="bold"><strong>input</strong></span>.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Standardize this field</strong></span>
+								check box.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Conversion rules</strong></span> table,
+								click six times on the <span class="bold"><strong>[+]</strong></span> button
+								to add six columns. Name them and configure them as shown in the
+								capture.</p><p>For <span class="emphasis"><em>&#8220;StreetName&#8221;</em></span> rule: select the <span class="italic">Index</span> type in the <span class="bold"><strong>Type</strong></span> field and enter the path to your index in the
+									<span class="bold"><strong>Value</strong></span> field. Then the other
+								rules are:</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><thead><tr><th valign="top">
+												<p>Name</p>
+											</th><th valign="top">
+												<p>Type</p>
+											</th><th valign="top">
+												<p>Value</p>
+											</th></tr></thead><tbody><tr><td valign="top">
+												<p>
+												<span class="italic">"Zip"</span>
+												</p>
+											</td><td valign="top">
+												<p>
+												<span class="bold"><strong>Format</strong></span>
+												</p>
+											</td><td valign="top">
+												<p>
+												<code class="code">" DIGIT DIGIT DIGIT DIGIT DIGIT "</code>
+												</p>
+											</td></tr><tr><td valign="top">
+												<span class="italic">"City"</span>
+											</td><td valign="top">
+												<span class="bold"><strong>Enumeration</strong></span>
+											</td><td valign="top">
+												<p>
+												<code class="code"> " 'Paris' | 'Paris' | 'PARIS' | 'Bagnolet'
+												"</code>
+												</p>
+											</td></tr><tr><td valign="top">
+												<span class="italic">"SpecialStreetNumber"</span>
+											</td><td valign="top">
+												<span class="bold"><strong>Format</strong></span>
+											</td><td valign="top">
+												<p>
+												<code class="code">" (INT ('bis'|'ter')) | ( INT '-' INT)
+												"</code>
+												</p>
+											</td></tr><tr><td valign="top">"<span class="italic">INT"</span></td><td valign="top">
+												<span class="bold"><strong>Shape</strong></span>
+											</td><td valign="top">
+												<p>
+												<code class="code">"&lt;SpecialStreetNumber&gt;"</code>
+												</p>
+											</td></tr><tr><td valign="top">
+												<span class="italic">"Address"</span>
+											</td><td valign="top">
+												<span class="bold"><strong>Shape</strong></span>
+											</td><td valign="top">
+												<p>
+												<code class="code">" &lt;INT&gt; &lt;StreetName&gt; &lt;Zip&gt;
+												&lt;City&gt; "</code>
+												</p>
+											</td></tr></tbody></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Among these rules, at first executed are the <span class="italic">"Zip"</span>, <span class="italic">"City"</span> and <span class="italic">"SpecialStreetNumber"</span> rules and then are the
+										<span class="italic">"StreetName"</span>, <span class="italic">"INT"</span> and <span class="italic">"Address"</span> rules, as the former are basic rules
+									and the latter are advanced rules.</p></td></tr></table></div></li><li class="listitem"><p>Click the <span class="bold"><strong>Generate parser code in
+									Routines</strong></span> button in order to generate the code in the
+									<span class="bold"><strong>Routines</strong></span>.</p><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+									<span class="emphasis"><em>If you do not click on this button, the Job will not
+										be executed.</em></span>
+								</p></td></tr></table></div></li><li class="listitem"><p>In the design workspace, right-click the <span class="bold"><strong>tStandardizeRow</strong></span> component to connect it to the
+									<span class="bold"><strong>tLogRow</strong></span> below with a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span> link.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tLogRow</strong></span>
+								component linked to the <span class="bold"><strong>tStandardizeRow</strong></span> component to display its <span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="365"><tr><td><img src="../images/Use_Case_tStandardizeRow6_s2.png" width="365"></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, select the
+									<span class="bold"><strong>Table (print values in cells of a
+									table)</strong></span> option.</p></li></ol></div><p>Then continue to configure the process of filtering and extracting the
+						data of interest.</p></div><div class="section" title="Configuring the process of filtering and extracting the data of interest"><div class="titlepage"><div><div><h4 class="title"><a name="d0e208710"></a>Configuring the process of filtering and extracting the data of
+						interest</h4></div></div></div><p>To do this, proceed as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the design workspace, connect <span class="bold"><strong>tStandardizeRow</strong></span> to <span class="bold"><strong>tFilterColumns</strong></span> with a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>
+								link.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Basic settings</strong></span> view of
+									<span class="bold"><strong>tFilterColumns</strong></span>, click the
+									<span class="bold"><strong>[...]</strong></span> button next to the
+									<span class="bold"><strong>Edit schema</strong></span> field to open the
+								schema editor.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504"><tr><td><img src="../images/Use_Case_tStandardizeRow_s2_FilterColumnsschema.png" width="504"></td></tr></table></div></li><li class="listitem"><p>Click on the <span class="emphasis"><em>STANDARDIZED_FIELD</em></span> column, then
+								click the first arrow to filter this column.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the editor and
+								validate the changes.</p></li><li class="listitem"><p>In the design workspace, connect <span class="bold"><strong>tFilterColumns</strong></span> to <span class="bold"><strong>tExtractXMLField</strong></span> with a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>
+								link.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tExtractXMLField</strong></span>
+								component to display its<span class="bold"><strong> Basic
+									settings</strong></span> view.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Property Type</strong></span> and
+									<span class="bold"><strong>Schema</strong></span> lists, select <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>[...]</strong></span> button next to
+								the <span class="bold"><strong>Edit schema</strong></span> field to open the
+								schema editor.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="525"><tr><td><img src="../images/Use_Case_tStandardizeRow_s2_SchemaExtractXML.png" width="525"></td></tr></table></div></li><li class="listitem"><p>Click four times on the <span class="bold"><strong>[+]</strong></span>
+								button to add four columns and name them respectively
+									<span class="emphasis"><em>number</em></span>, <span class="emphasis"><em>street</em></span>,
+									<span class="emphasis"><em>zip</em></span> and <span class="emphasis"><em>city</em></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate and close
+								the editor.</p></li><li class="listitem"><p>In the <span class="bold"><strong>XML field</strong></span> field, check
+								that the <span class="emphasis"><em>STANDARDIZED_FIELD</em></span> column is
+								selected.</p><p>The content of the <span class="emphasis"><em>STANDARDIZED_FIELD</em></span> column
+								is an XML field with a <code class="code">&lt;record&gt;</code> tag as root.
+								Under this tag, the structure defined by the rules configured in the
+									<span class="bold"><strong>tStandardizeRow</strong></span> component
+								allows to extract each item of the address, as you can see in the
+								following capture.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="370"><tr><td><img src="../images/Use_Case_tStandardizeRow_s2_Result1.png" width="370"></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>Loop XPath query</strong></span> field,
+								type in <span class="emphasis"><em>&#8220;/record/Address&#8221;</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Mapping</strong></span> table, in the
+									<span class="bold"><strong>XPath query</strong></span> field, enter
+									<span class="emphasis"><em>&#8220;INT&#8221;</em></span> for the <span class="emphasis"><em>number</em></span>
+								column, <span class="emphasis"><em>&#8220;StreetName&#8221;</em></span> for the
+									<span class="emphasis"><em>street</em></span> column, <span class="emphasis"><em>&#8220;Zip&#8221;</em></span>
+								for the <span class="emphasis"><em>zip</em></span> column and<span class="emphasis"><em>
+									&#8220;City&#8221;</em></span> for the <span class="emphasis"><em>city</em></span>
+								column.</p></li></ol></div><p>Then you can prepare to execute the Job.</p></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e208900"></a>Executing the Job</h4></div></div></div><p>Before executing the Job, you need to add the <span class="bold"><strong>tLogRow</strong></span> component to display the execution result.</p><p>To do this, perform the following operations:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the design workspace, connect <span class="bold"><strong>tExtractXMLField</strong></span> to the second <span class="bold"><strong>tLogRow</strong></span> with a <span class="bold"><strong>Row</strong></span>
+								&gt; <span class="bold"><strong>Main</strong></span> link.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tLogRow</strong></span>
+								component to open its <span class="bold"><strong>Basic
+									settings</strong></span> view.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="365"><tr><td><img src="../images/Use_Case_tStandardizeRow6_s2.png" width="365"></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>Schema</strong></span> list, select
+									<span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>[...]</strong></span> button next to
+								the <span class="bold"><strong>Edit schema</strong></span> field and check
+								that the input and the output schemas in the <span class="bold"><strong>tLogRow</strong></span> are synchronized.</p><p> If not, click on the <span class="bold"><strong>Sync
+									columns</strong></span> button.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, select the
+									<span class="bold"><strong>Table (print values in cells of a
+									table)</strong></span> option. </p></li></ol></div><p>Press <span class="bold"><strong>F6</strong></span> to execute the Job.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="409"><tr><td><img src="../images/Use_Case_tStandardizeRow8_s2.png" width="409"></td></tr></table></div><p>The second <span class="bold"><strong>tLogRow</strong></span> displays the
+						normalized and standardized addresses in the console according to the
+						index.</p><p> For example, you can see that the Champs Elys&eacute;es address has been
+						selected and formatted.</p><p> The first <span class="bold"><strong>tLogRow</strong></span> does not return
+						anything in this scenario because no error has been generated.</p></div></div></div></body></html>

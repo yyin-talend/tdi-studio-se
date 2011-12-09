@@ -305,6 +305,14 @@
     <description>Sends a trigger message to tCatcher and let the Job die once the message is processed by tCatcher</description>
     <topic href="guide/components/en/tDie.html" label="tDie Component Documentation"/>
   </context>
+  <context id="tDotNETInstantiate">
+    <description>Instantiate a .NET object from Talend.</description>
+    <topic href="guide/components/en/tDotNETInstantiate.html" label="tDotNETInstantiate Component Documentation"/>
+  </context>
+  <context id="tDotNETRow">
+    <description>Pass values from a flow to a .NET object method.</description>
+    <topic href="guide/components/en/tDotNETRow.html" label="tDotNETRow Component Documentation"/>
+  </context>
   <context id="tDTDValidator">
     <description>Validates the XML input file against a DTD file</description>
     <topic href="guide/components/en/tDTDValidator.html" label="tDTDValidator Component Documentation"/>
@@ -424,6 +432,10 @@
   <context id="tEXARow">
     <description>Executes an SQL query at each of Talend flow's iterations</description>
     <topic href="guide/components/en/tEXARow.html" label="tEXARow Component Documentation"/>
+  </context>
+  <context id="tEXistConnection">
+    <description>Connects to EXist database</description>
+    <topic href="guide/components/en/tEXistConnection.html" label="tEXistConnection Component Documentation"/>
   </context>
   <context id="tEXistDelete">
     <description>Deletes resources from a eXist database</description>
@@ -1913,6 +1925,14 @@
     <description>Listens to StatCatch option if enabled in the component's properties and Provides standard log information to the defined output</description>
     <topic href="guide/components/en/tStatCatcher.html" label="tStatCatcher Component Documentation"/>
   </context>
+  <context id="tStewardshipTaskInput">
+    <description>Reads tasks from the DSC database</description>
+    <topic href="guide/components/en/tStewardshipTaskInput.html" label="tStewardshipTaskInput Component Documentation"/>
+  </context>
+  <context id="tStewardshipTaskOutput">
+    <description>create tasks in the DSC database</description>
+    <topic href="guide/components/en/tStewardshipTaskOutput.html" label="tStewardshipTaskOutput Component Documentation"/>
+  </context>
   <context id="tSugarCRMInput">
     <description>Inputs from the SugarCRM</description>
     <topic href="guide/components/en/tSugarCRMInput.html" label="tSugarCRMInput Component Documentation"/>
@@ -2129,6 +2149,10 @@
     <description>Sends a non-blocking trigger message to tCatcher</description>
     <topic href="guide/components/en/tWarn.html" label="tWarn Component Documentation"/>
   </context>
+  <context id="tWebService">
+    <description>Requests a Webservice and reads its result</description>
+    <topic href="guide/components/en/tWebService.html" label="tWebService Component Documentation"/>
+  </context>
   <context id="tWebServiceInput">
     <description>Requests a Webservice and reads its result</description>
     <topic href="guide/components/en/tWebServiceInput.html" label="tWebServiceInput Component Documentation"/>
@@ -2156,5 +2180,349 @@
   <context id="tXSLT">
     <description>Transforms XML with XSL</description>
     <topic href="guide/components/en/tXSLT.html" label="tXSLT Component Documentation"/>
+  </context>
+  <context id="tAS400CDC">
+    <description>Reads a table and extracts fields based on an SQL query</description>
+    <topic href="guide/components/en/tAS400CDC.html" label="tAS400CDC Component Documentation"/>
+  </context>
+  <context id="tDB2CDC">
+    <description>Reads a DB2 table and extracts fields based on an SQL query</description>
+    <topic href="guide/components/en/tDB2CDC.html" label="tDB2CDC Component Documentation"/>
+  </context>
+  <context id="tExtractDynamicFields">
+    <description>tExtractDynamicFields</description>
+    <topic href="guide/components/en/tExtractDynamicFields.html" label="tExtractDynamicFields Component Documentation"/>
+  </context>
+  <context id="tExtractEDIField">
+    <description>Extract EDI Field</description>
+    <topic href="guide/components/en/tExtractEDIField.html" label="tExtractEDIField Component Documentation"/>
+  </context>
+  <context id="tIngresCDC">
+    <description>CDC Ingres Component</description>
+    <topic href="guide/components/en/tIngresCDC.html" label="tIngresCDC Component Documentation"/>
+  </context>
+  <context id="tJBossESBInput">
+    <description>Transfer data from JBoss ESB to a Talend job</description>
+    <topic href="guide/components/en/tJBossESBInput.html" label="tJBossESBInput Component Documentation"/>
+  </context>
+  <context id="tJBossESBOutput">
+    <description>Transfer data from a Talend job to JBoss ESB</description>
+    <topic href="guide/components/en/tJBossESBOutput.html" label="tJBossESBOutput Component Documentation"/>
+  </context>
+  <context id="tMSSqlCDC">
+    <description>Reads an MSSQL table and extracts fields based on an SQL query</description>
+    <topic href="guide/components/en/tMSSqlCDC.html" label="tMSSqlCDC Component Documentation"/>
+  </context>
+  <context id="tMysqlCDC">
+    <description>CDC MySQL Component</description>
+    <topic href="guide/components/en/tMysqlCDC.html" label="tMysqlCDC Component Documentation"/>
+  </context>
+  <context id="tOracleCDC">
+    <description>CDC Oracle Component</description>
+    <topic href="guide/components/en/tOracleCDC.html" label="tOracleCDC Component Documentation"/>
+  </context>
+  <context id="tParallelize">
+    <description>Allow to parallelize and synchronize subjobs</description>
+    <topic href="guide/components/en/tParallelize.html" label="tParallelize Component Documentation"/>
+  </context>
+  <context id="tPostgresqlCDC">
+    <description>Reads a Postgresql table and extracts fields based on an SQL query</description>
+    <topic href="guide/components/en/tPostgresqlCDC.html" label="tPostgresqlCDC Component Documentation"/>
+  </context>
+  <context id="tSAPIDocInput">
+    <description>Extract data from an SAP system using iDoc</description>
+    <topic href="guide/components/en/tSAPIDocInput.html" label="tSAPIDocInput Component Documentation"/>
+  </context>
+  <context id="tSAPIDocOutput">
+    <description>Outputs to an SAP system using iDoc</description>
+    <topic href="guide/components/en/tSAPIDocOutput.html" label="tSAPIDocOutput Component Documentation"/>
+  </context>
+  <context id="tSybaseCDC">
+    <description>Reads a Sybase table and extracts fields based on an SQL query</description>
+    <topic href="guide/components/en/tSybaseCDC.html" label="tSybaseCDC Component Documentation"/>
+  </context>
+  <context id="tWriteDynamicFields">
+    <description>tWriteDynamicFields</description>
+    <topic href="guide/components/en/tWriteDynamicFields.html" label="tWriteDynamicFields Component Documentation"/>
+  </context>
+  <context id="tBRMS">
+    <description>Output an xml structure to the Talend MDM Web Service</description>
+    <topic href="guide/components/en/tBRMS.html" label="tBRMS Component Documentation"/>
+  </context>
+  <context id="tRules">
+    <description>Read a multi level XML file</description>
+    <topic href="guide/components/en/tRules.html" label="tRules Component Documentation"/>
+  </context
+  <context id="tFSAggregate">
+    <description>Aggregate records in a file based on the group keys</description>
+    <topic href="guide/components/en/tFSAggregate.html" label="tFSAggregate Component Documentation"/>
+  </context>
+  <context id="tFSCheck">
+    <description>Validates records against a sort type and order</description>
+    <topic href="guide/components/en/tFSCheck.html" label="tFSCheck Component Documentation"/>
+  </context>
+  <context id="tFSCode">
+    <description>tFSCode supports any FSLang customized code</description>
+    <topic href="guide/components/en/tFSCode.html" label="tFSCode Component Documentation"/>
+  </context>
+  <context id="tFSFilterColumns">
+    <description>Filters columns in a defined table</description>
+    <topic href="guide/components/en/tFSFilterColumns.html" label="tFSFilterColumns Component Documentation"/>
+  </context>
+  <context id="tFSFilterRows">
+    <description>Filters rows according to set conditions</description>
+    <topic href="guide/components/en/tFSFilterRows.html" label="tFSFilterRows Component Documentation"/>
+  </context>
+  <context id="tFSJoin">
+    <description>Join files</description>
+    <topic href="guide/components/en/tFSJoin.html" label="tFSJoin Component Documentation"/>
+  </context>
+  <context id="tFSPartitionFile">
+    <description>Filters columns in a defined table</description>
+    <topic href="guide/components/en/tFSPartitionFile.html" label="tFSPartitionFile Component Documentation"/>
+  </context>
+  <context id="tFSSort">
+    <description>Sorts data by sort type and order based on one or several columns</description>
+    <topic href="guide/components/en/tFSSort.html" label="tFSSort Component Documentation"/>
+  </context>
+  <context id="tFSTransform">
+    <description>Modifies one or more columns when processing the file</description>
+    <topic href="guide/components/en/tFSTransform.html" label="tFSTransform Component Documentation"/>
+  </context>
+  <context id="tFSUnique">
+    <description>Recuperates one occurrence of each record to make the file records unique</description>
+    <topic href="guide/components/en/tFSUnique.html" label="tFSUnique Component Documentation"/>
+  </context>
+  <context id="tHBaseClose">
+    <description>Close a selected HBase connection.</description>
+    <topic href="guide/components/en/tHBaseClose.html" label="tHBaseClose Component Documentation"/>
+  </context>
+  <context id="tHBaseConnection">
+    <description>Reads an HBase table and extracts fields based on an SQL query</description>
+    <topic href="guide/components/en/tHBaseConnection.html" label="tHBaseConnection Component Documentation"/>
+  </context>
+  <context id="tHBaseInput">
+    <description>Reads a HBase table and extracts fields from HBase</description>
+    <topic href="guide/components/en/tHBaseInput.html" label="tHBaseInput Component Documentation"/>
+  </context>
+  <context id="tHBaseOutput">
+    <description>Inserts or updates lines into an HBase table</description>
+    <topic href="guide/components/en/tHBaseOutput.html" label="tHBaseOutput Component Documentation"/>
+  </context>
+  <context id="tHDFSGet">
+    <description>Gets files on Hadoop File System</description>
+    <topic href="guide/components/en/tHDFSGet.html" label="tHDFSGet Component Documentation"/>
+  </context>
+  <context id="tHDFSPut">
+    <description>Puts files on Hadoop File System</description>
+    <topic href="guide/components/en/tHDFSPut.html" label="tHDFSPut Component Documentation"/>
+  </context>
+  <context id="tHiveInput">
+    <description>Reads a Hive table and extracts fields based on an HiveQL query</description>
+    <topic href="guide/components/en/tHiveInput.html" label="tHiveInput Component Documentation"/>
+  </context>
+  <context id="tPigAggregate">
+    <description>Sorts a relation based on one or more fields.</description>
+    <topic href="guide/components/en/tPigAggregate.html" label="tPigAggregate Component Documentation"/>
+  </context>
+  <context id="tPigCode">
+    <description>Executes your own PigLatin script into a Pig flow</description>
+    <topic href="guide/components/en/tPigCode.html" label="tPigCode Component Documentation"/>
+  </context>
+  <context id="tPigCross">
+    <description>Computes the cross product of two relations (Cartesian product).</description>
+    <topic href="guide/components/en/tPigCross.html" label="tPigCross Component Documentation"/>
+  </context>
+  <context id="tPigDistinct">
+    <description>Removes duplicate tuples in a relation</description>
+    <topic href="guide/components/en/tPigDistinct.html" label="tPigDistinct Component Documentation"/>
+  </context>
+  <context id="tPigFilterColumns">
+    <description>Filters columns within a table</description>
+    <topic href="guide/components/en/tPigFilterColumns.html" label="tPigFilterColumns Component Documentation"/>
+  </context>
+  <context id="tPigFilterRow">
+    <description>Selects tuples from a relation based on some condition.</description>
+    <topic href="guide/components/en/tPigFilterRow.html" label="tPigFilterRow Component Documentation"/>
+  </context>
+  <context id="tPigJoin">
+    <description>Performs a join (inner or outer) of two relations based on common field values.</description>
+    <topic href="guide/components/en/tPigJoin.html" label="tPigJoin Component Documentation"/>
+  </context>
+  <context id="tPigLoad">
+    <description>Open the PigServer connection and read the input file</description>
+    <topic href="guide/components/en/tPigLoad.html" label="tPigLoad Component Documentation"/>
+  </context>
+  <context id="tPigSort">
+    <description>Sorts a relation based on one or more fields.</description>
+    <topic href="guide/components/en/tPigSort.html" label="tPigSort Component Documentation"/>
+  </context>
+  <context id="tPigStoreResult">
+    <description>Store the result into a given file.</description>
+    <topic href="guide/components/en/tPigStoreResult.html" label="tPigStoreResult Component Documentation"/>
+  </context>
+  <context id="tSqoopExport">
+    <description>Exports an individual table from an RDBMS to HDFS</description>
+    <topic href="guide/components/en/tSqoopExport.html" label="tSqoopExport Component Documentation"/>
+  </context>
+  <context id="tSqoopImport">
+    <description>Imports an individual table from an RDBMS to HDFS</description>
+    <topic href="guide/components/en/tSqoopImport.html" label="tSqoopImport Component Documentation"/>
+  </context>
+  <context id="tSqoopImportAllTables">
+    <description>Imports individual tables from an RDBMS to HDFS</description>
+    <topic href="guide/components/en/tSqoopImportAllTables.html" label="tSqoopImportAllTables Component Documentation"/>
+  </context>
+  <context id="tBlockedFuzzyJoin">
+    <description>with the same function as tFuzzyJoin, different implementation</description>
+    <topic href="guide/components/en/tBlockedFuzzyJoin.html" label="tBlockedFuzzyJoin Component Documentation"/>
+  </context>
+  <context id="tFindRegexlibExpressions">
+    <description>Returns a data set that holds information about all of the regular expressions that match the request sent to regexlib.com.</description>
+    <topic href="guide/components/en/tFindRegexlibExpressions.html" label="tFindRegexlibExpressions Component Documentation"/>
+  </context>
+  <context id="tFirstnameMatch">
+    <description>Checks given firstnames and returns the most similar firstname found in the indexed data.</description>
+    <topic href="guide/components/en/tFirstnameMatch.html" label="tFirstnameMatch Component Documentation"/>
+  </context>
+  <context id="tFuzzyJoin">
+    <description>Performs inner or outer join between the main data flow and a lookup flow</description>
+    <topic href="guide/components/en/tFuzzyJoin.html" label="tFuzzyJoin Component Documentation"/>
+  </context>
+  <context id="tFuzzyUniqRow">
+    <description>Makes a data flow unique based on the key set on the schema</description>
+    <topic href="guide/components/en/tFuzzyUniqRow.html" label="tFuzzyUniqRow Component Documentation"/>
+  </context>
+  <context id="tGenKey">
+    <description>Generates a kind of functional key from the input columns and to have it in the output flow together with the\r\ninput columns</description>
+    <topic href="guide/components/en/tGenKey.html" label="tGenKey Component Documentation"/>
+  </context>
+  <context id="tGoogleAddressRow">
+    <description>Address Lookup via GoogleMap and Get the detail address information.</description>
+    <topic href="guide/components/en/tGoogleAddressRow.html" label="tGoogleAddressRow Component Documentation"/>
+  </context>
+  <context id="tGoogleGeocoder">
+    <description>Get the (lat,lng) from an address.</description>
+    <topic href="guide/components/en/tGoogleGeocoder.html" label="tGoogleGeocoder Component Documentation"/>
+  </context>
+  <context id="tGoogleMapLookup">
+    <description>Address Lookup via GoogleMap</description>
+    <topic href="guide/components/en/tGoogleMapLookup.html" label="tGoogleMapLookup Component Documentation"/>
+  </context>
+  <context id="tLastRegexlibExpressions">
+    <description>Returns N most recent expressions added to the library at regexlib.com.</description>
+    <topic href="guide/components/en/tLastRegexlibExpressions.html" label="tLastRegexlibExpressions Component Documentation"/>
+  </context>
+  <context id="tLaunchDQReports">
+    <description>Launches existing data quality reports from outside Talend Data Quality platform.</description>
+    <topic href="guide/components/en/tLaunchDQReports.html" label="tLaunchDQReports Component Documentation"/>
+  </context>
+  <context id="tMatchGroup">
+    <description>creates groups of similar records</description>
+    <topic href="guide/components/en/tMatchGroup.html" label="tMatchGroup Component Documentation"/>
+  </context>
+  <context id="tMultiPatternCheck">
+    <description>Checks columns validity in Java regular expression.</description>
+    <topic href="guide/components/en/tMultiPatternCheck.html" label="tMultiPatternCheck Component Documentation"/>
+  </context>
+  <context id="tMysqlInvalidRows">
+    <description>Collects DB rows that do not match a given regular expression.</description>
+    <topic href="guide/components/en/tMysqlInvalidRows.html" label="tMysqlInvalidRows Component Documentation"/>
+  </context>
+  <context id="tMysqlValidRows">
+    <description>Collects DB rows that match a given regular expression.</description>
+    <topic href="guide/components/en/tMysqlValidRows.html" label="tMysqlValidRows Component Documentation"/>
+  </context>
+  <context id="tOracleInvalidRows">
+    <description>Collects DB rows that do not match a given regular expression.</description>
+    <topic href="guide/components/en/tOracleInvalidRows.html" label="tOracleInvalidRows Component Documentation"/>
+  </context>
+  <context id="tOracleValidRows">
+    <description>Collects DB rows that match a given regular expression.</description>
+    <topic href="guide/components/en/tOracleValidRows.html" label="tOracleValidRows Component Documentation"/>
+  </context>
+  <context id="tPatternCheck">
+    <description>Checks all existing data in a column against a given Java regular expression.</description>
+    <topic href="guide/components/en/tPatternCheck.html" label="tPatternCheck Component Documentation"/>
+  </context>
+  <context id="tPatternExtract">
+    <description>Extracts from a column all data strings that match a given Java pattern</description>
+    <topic href="guide/components/en/tPatternExtract.html" label="tPatternExtract Component Documentation"/>
+  </context>
+  <context id="tPostgresqlInvalidRows">
+    <description>Collects DB rows that do not match a given regular expression.</description>
+    <topic href="guide/components/en/tPostgresqlInvalidRows.html" label="tPostgresqlInvalidRows Component Documentation"/>
+  </context>
+  <context id="tPostgresqlValidRows">
+    <description>Collects DB rows that match a given regular expression.</description>
+    <topic href="guide/components/en/tPostgresqlValidRows.html" label="tPostgresqlValidRows Component Documentation"/>
+  </context>
+  <context id="tQASAddressIncomplete">
+    <description>Collects incomplete addresses by filtering all addresses against Quickaddress data.</description>
+    <topic href="guide/components/en/tQASAddressIncomplete.html" label="tQASAddressIncomplete Component Documentation"/>
+  </context>
+  <context id="tQASAddressRow">
+    <description>Adds a validation status to each address and returns the corrected address when available</description>
+    <topic href="guide/components/en/tQASAddressRow.html" label="tQASAddressRow Component Documentation"/>
+  </context>
+  <context id="tQASAddressUnknown">
+    <description>Collects all addresses that do not match to deliverable results in Quickaddress data.</description>
+    <topic href="guide/components/en/tQASAddressUnknown.html" label="tQASAddressUnknown Component Documentation"/>
+  </context>
+  <context id="tQASAddressVerified">
+    <description>Collects all verified addresses after filtering them against Quickaddress data.</description>
+    <topic href="guide/components/en/tQASAddressVerified.html" label="tQASAddressVerified Component Documentation"/>
+  </context>
+  <context id="tQASBatchAddressRow">
+    <description>is similar to tQASAddressRow</description>
+    <topic href="guide/components/en/tQASBatchAddressRow.html" label="tQASBatchAddressRow Component Documentation"/>
+  </context>
+  <context id="tRecordMatching">
+    <description>Calculate fuzzy join value</description>
+    <topic href="guide/components/en/tRecordMatching.html" label="tRecordMatching Component Documentation"/>
+  </context>
+  <context id="tRuleSurvivorship">
+    <description>Receives grouped records and creates a single representation of an entity across business lines with the best of breed data.</description>
+    <topic href="guide/components/en/tRuleSurvivorship.html" label="tRuleSurvivorship Component Documentation"/>
+  </context>
+  <context id="tStandardizePhoneNumber">
+    <description>Formats and standardizes a phone number given its\r\ncountry code.</description>
+    <topic href="guide/components/en/tStandardizePhoneNumber.html" label="tStandardizePhoneNumber Component Documentation"/>
+  </context>
+  <context id="tStandardizeRow">
+    <description>Standardizes an input row</description>
+    <topic href="guide/components/en/tStandardizeRow.html" label="tStandardizeRow Component Documentation"/>
+  </context>
+  <context id="tStem">
+    <description>to stem the String values</description>
+    <topic href="guide/components/en/tStem.html" label="tStem Component Documentation"/>
+  </context>
+  <context id="tSurviveFields">
+    <description>Receives a flow and merges it based on one or more columns. The aggregation key and the relevant result of operations (such as min, max, sum etc) are provided for each output line.</description>
+    <topic href="guide/components/en/tSurviveFields.html" label="tSurviveFields Component Documentation"/>
+  </context>
+  <context id="tSynonymOutput">
+    <description>Creates a lucene index that contains synonyms</description>
+    <topic href="guide/components/en/tSynonymOutput.html" label="tSynonymOutput Component Documentation"/>
+  </context>
+  <context id="tSynonymSearch">
+    <description>Searches synonym from an index</description>
+    <topic href="guide/components/en/tSynonymSearch.html" label="tSynonymSearch Component Documentation"/>
+  </context>
+  <context id="tThresholdViolationAlert">
+    <description>Compose one field with all the input data</description>
+    <topic href="guide/components/en/tThresholdViolationAlert.html" label="tThresholdViolationAlert Component Documentation"/>
+  </context>
+  <context id="tMatchGroupHadoop">
+    <description>creates groups of similar records</description>
+    <topic href="guide/components/en/tMatchGroupHadoop.html" label="tMatchGroupHadoop Component Documentation"/>
+  </context>
+    <context id="tPetalsInput">
+    <description>Transfer data from Petals ESB to a Talend job</description>
+    <topic href="guide/components/en/tPetalsInput.html" label="tPetalsInput Component Documentation"/>
+  </context>
+  <context id="tPetalsOutput">
+    <description>Transfer data from a Talend job to Petals ESB</description>
+    <topic href="guide/components/en/tPetalsOutput.html" label="tPetalsOutput Component Documentation"/>
   </context>
 </contexts>

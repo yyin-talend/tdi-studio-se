@@ -1,0 +1,223 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tDotNETRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="RaaDotNET.html" title="Chapter&nbsp;7.&nbsp;DotNET components"><link rel="prev" href="tDotNETInstantiate.html" title="tDotNETInstantiate"><link rel="next" href="Raa48933-dup-2.html" title="Chapter&nbsp;8.&nbsp;ELT components"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tDotNETRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tDotNETRow"></a>tDotNETRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tDotNetRow_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tDotNETRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e213455"></a>tDotNETRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>DotNET</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tDotNETRow </strong></span> sends data to
+										and from libraries and classes within .NET or other custom
+										dll files. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tDotNETRow</strong></span> helps you
+										facilitate data transform by utilizing custom or built-in
+										.NET classes.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;<span class="bold"><strong>Basic settings</strong></span></p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields to be processed and passed on to the next
+										component. The schema is either built-in or remotely stored
+										in the Repository. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in: </strong></span>No property
+										data stored centrally.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: Select the
+										Repository file where properties are stored. The following
+										fields are pre-filled in using fetched data</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<span class="emphasis"><em>Use a static method</em></span>
+								</td><td valign="top">
+									<p>Select this check box to invoke a static method in .NET
+										and this will disable <span class="bold"><strong>Use an existing
+											intance</strong></span> check box. </p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<span class="emphasis"><em>Propagate a data to output</em></span>
+								</td><td valign="top">
+									<p>Select this check box to propagate a transformed data to
+										output.</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<span class="emphasis"><em>Use an existing instance</em></span>
+								</td><td valign="top">
+									<p>Select this check box to reuse an existing instance of a
+										.NET object from the <span class="bold"><strong>Existing instance
+											to use</strong></span> list.</p>
+									<p><span class="bold"><strong>Existing instance to use</strong></span>:
+										Select an existing instance of .NET objects created by the
+										other .NET components from the list.</p>
+									<p>
+										</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This check box will be disabled if you have
+												selected <span class="bold"><strong>Use a static
+												method</strong></span> and selecting this check box
+												will disable <span class="bold"><strong>Dll to
+												load</strong></span>, <span class="bold"><strong>Fully
+												qualified class name(i.e.
+												ClassLibrary1.NameSpace2.Class1)</strong></span> and
+												<span class="bold"><strong>Value(s) to pass to the
+												constructor</strong></span>.</p></td></tr></table></div><p>
+									</p>
+								</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Dll to load</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Fill this field with the path to a dll library or the
+										assembly&#8217;s name or click the <span class="bold"><strong>[...]</strong></span> button to browse to the library in
+										your directory. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;<span class="emphasis"><em>Fully qualified class name(i.e.
+											ClassLibrary1.NameSpace2.Class1)</em></span></p>
+								</td><td valign="top">
+									<p>Fill this field with a fully qualified name for the class.
+									</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;<span class="emphasis"><em>Method name</em></span></p>
+								</td><td valign="top">
+									<p>Fill this field with the name of the method to be invoked
+										in .NET.</p>
+								</td></tr><tr><td>&nbsp;</td><td>
+									<span class="emphasis"><em>Value(s) to pass to the constructor</em></span>
+								</td><td valign="top">
+									<p>Click the plus button to add one or more lines for values
+										to be passed to the constructor for the object. Or, leave
+										this table empty to call a default constructor for the
+										object.</p>
+								</td></tr><tr><td>&nbsp;</td><td>
+									<span class="emphasis"><em>Method Parameters</em></span>
+								</td><td valign="top">
+									<p>Click the plus button to add one or more lines for
+										parameters to be passed to the method.</p>
+								</td></tr><tr><td>&nbsp;</td><td>
+									<span class="emphasis"><em>Output value target column</em></span>
+								</td><td valign="top">
+									<p>Select a column in the output row from the list to put
+										value into it.</p>
+								</td></tr><tr><td>&nbsp;<span class="bold"><strong>Advanced settings</strong></span></td><td>
+									<span class="emphasis"><em>Create a new instance at each row</em></span>
+								</td><td valign="top">
+									<p>Select this check box to create a new instance at each row
+										that passes through the component.</p>
+								</td></tr><tr><td>&nbsp;</td><td>
+									<span class="emphasis"><em>Method doesn't return a value</em></span>
+								</td><td valign="top">
+									<p>Select this check box to invoke a method without returning
+										a value as a result of the processing.</p>
+								</td></tr><tr><td>&nbsp;</td><td>
+									<span class="emphasis"><em>Returns an instance of a .NET Object</em></span>
+								</td><td valign="top">
+									<p>Select this check box to return an instance of a .NET
+										object as a result of a invoked method.</p>
+								</td></tr><tr><td>&nbsp;</td><td>
+									<span class="emphasis"><em>Store the returned value for later use</em></span>
+								</td><td valign="top">
+									<p>Select this check box to store the returned value of a
+										method for later reuse in another <span class="bold"><strong>tDotNETRow</strong></span> component.</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<span class="emphasis"><em>Enable parallel execution</em></span>
+								</td><td valign="top">
+									<p>Select this check box to perform high-speed data
+										processing, by treating multiple data flows simultaneously. </p>
+									<p> In the <span class="bold"><strong>Number of parallel
+											executions</strong></span> field, either:</p>
+									<p> - Enter the number of parallel executions desired.</p>
+									<p> - Press <span class="bold"><strong>Ctrl + Space</strong></span> and
+										select the appropriate context variable from the
+										list.</p>
+									<p> </p>
+									<p> For further information, see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+									<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+											<span class="emphasis"><em>The </em></span>
+											<span class="bold"><strong>Action on table</strong></span>
+											<span class="emphasis"><em> field is not available with the
+												parallelization function. Therefore, you must use a </em></span>
+											<span class="bold"><strong>tCreateTable</strong></span>
+											<span class="emphasis"><em> component if you want to create a
+												table.</em></span>
+										</p></td></tr></table></div>
+									<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+											<span class="emphasis"><em>When parallel execution is enabled, it is not
+												possible to use global variables to retrieve return
+												values in a SubJob.</em></span>
+										</p></td></tr></table></div>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p> This component is utilized to integrate with .NET
+										objects. </p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Scenario: Utilizing .NET in Talend"><div class="titlepage"><div><div><h3 class="title"><a name="RaaDotNET-DotNETRow-Sce1"></a>Scenario: Utilizing .NET in Talend</h3></div></div></div><p>This scenario describes a three-component Job that uses a dll library
+					containing a class called MySqlDataReader Class and invokes a method on it that
+					reads data from MySql database and output the data onto the console.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow1.png" align="middle"></div><div class="section" title="Connecting components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e213887"></a>Connecting components</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tDotNETInstantiate</strong></span>, <span class="bold"><strong>tDotNETRow</strong></span> and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tDotNETInstantiate</strong></span> to
+									<span class="bold"><strong>tDotNETRow</strong></span> using a <span class="bold"><strong>Trigger On Subjob OK</strong></span> connection.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tDotNETRow</strong></span> to <span class="bold"><strong>tLogRow</strong></span> using a <span class="bold"><strong>Row
+									Main</strong></span> connection.</p></li></ol></div></div><div class="section" title="Configuring tDotNETInstantiate"><div class="titlepage"><div><div><h4 class="title"><a name="d0e213930"></a>Configuring tDotNETInstantiate</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="bold"><strong>tDotNETInstantiate</strong></span>
+								to display its <span class="bold"><strong>Basic settings</strong></span> view
+								and define the component properties.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow2.png" align="middle"></div></li><li class="listitem"><p>Click the three-dot button next to the <span class="bold"><strong>Dll
+									to load</strong></span> field and browse to the dll file to be
+								loaded. Alternatively, you can fill the field with an assembly. In
+								this example, we use:</p><p>
+								<span class="emphasis"><em>"C:/Program Files/MySQL/MySQL Connector Net
+									6.4.4/Assemblies/v4.0/MySql.Data.dll"</em></span>
+							</p></li><li class="listitem"><p>Fill the <span class="bold"><strong>Fully qualified class
+									name</strong></span> field with a valid class name to be used. In
+								this example, we use:</p><p>
+								<span class="emphasis"><em>"MySqlDataReader Class"</em></span>
+							</p></li><li class="listitem"><p>Click the plus button beneath the <span class="bold"><strong>Value(s)
+									to pass to the constructor</strong></span> table to add a new line
+								for the value to be passed to the constructor.</p><p>In this example, we use:</p><p>
+								<code class="code">"Server=192.168.0.63;Port=3306;Database=mysql77;Uid=myroot;Pwd=root;"</code>
+							</p></li></ol></div></div><div class="section" title="Configuring tDotNETRow"><div class="titlepage"><div><div><h4 class="title"><a name="d0e213981"></a>Configuring tDotNETRow</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="bold"><strong>tDotNETRow</strong></span> to
+								display its <span class="bold"><strong>Basic settings</strong></span> view and
+								define the component properties. </p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow3.png" align="middle"></div></li><li class="listitem"><p>Select <span class="bold"><strong>Propagate data to output</strong></span>
+								check box.</p></li><li class="listitem"><p>Select <span class="bold"><strong>Use an existing instance</strong></span>
+								check box and select <span class="bold"><strong>tDotNETInstantiate_1</strong></span> from the <span class="bold"><strong>Existing instance to use</strong></span> list on the right.</p></li><li class="listitem"><p>Fill the <span class="bold"><strong>Method Name</strong></span> field with a
+								method name to be used. In this example, we use
+									<span class="emphasis"><em>"GetData"</em></span>.</p><p>
+								</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>For further information about this method, see <a class="link" href="http://msdn.microsoft.com/en-us/library/1f4hddda" target="_top">DbDataReader.GetData Method</a>.</p></td></tr></table></div><p>
+							</p></li><li class="listitem"><p>Click the three-dot button next to <span class="bold"><strong>Edit
+									schema</strong></span> to add one column to the schema.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow4.png" align="middle"></div><p>Click the plus button beneath the table to add a new column to the
+								schema and click <span class="bold"><strong>OK</strong></span> to save the
+								setting.</p></li><li class="listitem"><p> Select <span class="bold"><strong>newColumn</strong></span> from
+									the<span class="bold"><strong> Output value target column</strong></span>
+								list.</p></li><li class="listitem"><p>Leave rest of the settings as they are.</p></li></ol></div></div><div class="section" title="Configuring tLogRow"><div class="titlepage"><div><div><h4 class="title"><a name="d0e214059"></a>Configuring tLogRow</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="bold"><strong>tLogRow</strong></span> to display
+								its <span class="bold"><strong>Basic settings</strong></span> view and define
+								the component properties. </p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow5.png" align="middle"></div></li><li class="listitem"><p>Click <span class="bold"><strong>Sync columns</strong></span> button to
+								retrieve the schema defined in the preceding component.</p></li><li class="listitem"><p>Select <span class="bold"><strong>Table</strong></span> in the <span class="bold"><strong>Mode</strong></span> area.</p></li><li class="listitem"><p>Leave the rest settings as they are.</p></li></ol></div><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+						it.</p><p>The data read from the MySql database is then output onto the
+						console.</p></div></div></div></body></html>

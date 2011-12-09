@@ -1,0 +1,293 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tBRMS</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch16.html" title="Chapitre&nbsp;16.&nbsp;Composants Processing"><link rel="prev" href="tAggregateSortedRow.html" title="tAggregateSortedRow"><link rel="next" href="tConvertType.html" title="tConvertType"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tBRMS"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tBRMS"></a>tBRMS</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tBRMS_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tBRMS"><div class="titlepage"><div><div><h3 class="title"><a name="d0e279777"></a>Propri&eacute;t&eacute;s du tBRMS</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>Famille de composant</p>
+						</td><td valign="top">
+							<p>Processing</p>
+						</td><td valign="top"> </td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tBRMS</strong></span> r&eacute;cup&egrave;re des
+								r&egrave;gles m&eacute;tier d&#8217;un Repository Drools Guvnor et les applique &agrave; un
+								Job.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tBRMS</strong></span> applique des r&egrave;gles
+								m&eacute;tier Drools &agrave; un flux entrant de donn&eacute;es et &eacute;crit les donn&eacute;es de
+								sortie dans un fichier XML.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut &ecirc;tre Built-in ou Repository. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: S&eacute;lectionnez le
+								fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du composant. Les
+								champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+								collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (built-in) soit distant dans le Repository. </p>
+							<p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour
+								modifier le sch&eacute;ma.</p>
+							<p>Notez que lorsque vous modifiez le sch&eacute;ma, il se met
+								automatiquement en built-in.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide Utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+								dans divers projets et Jobs designs. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>XML Field</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la colonne XML afin de passer les donn&eacute;es &agrave; &eacute;crire au
+								composant de sortie.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Guvnor URL</em></span>
+							</p>
+						</td><td valign="top">
+							<p>URL du Repository Guvnor. </p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Username</span> et <span class="italic">password</span></td><td valign="top">
+							<p>Saisissez les informations d'authentification utilis&eacute;es pour vous
+								connecter &agrave; l'application <span class="bluebold">Talend Administration Center</span> contenant le
+								module Drools Guvnor qui vous int&eacute;resse.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="italic">Name of TAC application</span>
+						</td><td valign="top">
+							<p>Saisissez le nom de l'application <span class="bluebold">Talend Administration Center</span> contenant le
+								module Drools Guvnor qui vous int&eacute;resse.</p>
+							<p>Par exemple lorsque l'URL de <span class="bluebold">Talend Administration Center</span> &agrave; utiliser est <span class="italic">http://localhost:8080/tac500</span>, saisissez
+									<span class="italic">tac500</span>.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="italic">Module List</span>
+						</td><td valign="top">
+							<p>Soit :</p>
+							<p>- S&eacute;lectionnez le fichier Jar contenant la r&egrave;gle m&eacute;tier &agrave;
+								appliquer au flux de donn&eacute;es.</p>
+							<p>- Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> et
+								saisissez vos informations d'authentification &agrave; Drools Guvnor dans
+								la bo&icirc;te de dialogue. Cliquez ensuite sur <span class="bold"><strong>Select Jar</strong></span> afin de parcourir le Repository et
+								s&eacute;lectionner le fichier Jar contenant la r&egrave;gle m&eacute;tier &agrave;
+								appliquer.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Guvnor Package</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Entre guillemets doubles, saisissez la fin du chemin d&#8217;acc&egrave;s &agrave;
+								l&#8217;URL for binary package, comme indiqu&eacute; dans la vue <span class="bold"><strong>Information and important URLs</strong></span> du site
+								Web Drools Guvnor, lorsque vous s&eacute;lectionnez un package particulier,
+								par exemple&nbsp;: "/package/org.talend.bank/LATEST".</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Class Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom de la classe dans laquelle la r&egrave;gle m&eacute;tier est
+								stock&eacute;e dans un fichier Jar.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="italic">Drools flow ID</span>
+						</td><td valign="top">
+							<p>Un flux Drools d&eacute;crit l'ordre dans lequel une s&eacute;rie de r&egrave;gles
+								m&eacute;tier sont ex&eacute;cut&eacute;es.</p>
+							<p>Lorsque vous appelez un flux Drools sp&eacute;cifique via le <span class="bold"><strong>tBRMS</strong></span> afin d'utiliser l'ordre d'ex&eacute;cution
+								qu'il d&eacute;finit, saisissez l'ID du flux correspondant dans ce
+								champ.</p>
+							<p>Pour plus d'informations concernant la cr&eacute;ation d'un flux Drools,
+								consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de
+									<span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced Settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Configure XML Tree</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> pour
+								mapper le sch&eacute;ma source au sch&eacute;ma XML de sortie. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Group by</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Utilisez la barre d&#8217;outils pour modifier l&#8217;ordre des
+								colonnes.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Advanced separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette option pour modifier les s&eacute;parateurs utilis&eacute;s pour
+								les nombres.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+									<span class="bold"><strong>Custom</strong></span> et d&eacute;finissez-le
+								manuellement. Ce champ est obligatoire pour la manipulation des
+								donn&eacute;es des bases de donn&eacute;es..</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant manipule des flux de donn&eacute;es. Il n&eacute;cessite donc un
+								composant d&#8217;entr&eacute;e et un composant de sortie.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Appliquer des r&egrave;gles m&eacute;tier &agrave; un flux d&#8217;entr&eacute;e afin de filtrer les donn&eacute;es correspondantes"><div class="titlepage"><div><div><h3 class="title"><a name="d0e280279"></a>Sc&eacute;nario&nbsp;: Appliquer des r&egrave;gles m&eacute;tier &agrave; un flux d&#8217;entr&eacute;e afin de filtrer les donn&eacute;es
+			correspondantes</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; cinq composants dans lequel le <span class="bold"><strong>tBRMS</strong></span> applique des r&egrave;gles m&eacute;tier Drools Guvnor &agrave; un flux d&#8217;entr&eacute;e, afin
+			que les donn&eacute;es correspondantes puissent &ecirc;tre r&eacute;cup&eacute;r&eacute;es en sortie. Dans ce cas, les
+			r&egrave;gles sont appliqu&eacute;es aux donn&eacute;es d&#8217;entr&eacute;e concernant des personnes demandant un pr&ecirc;t.
+			La sortie montrera si les personnes peuvent avoir acc&egrave;s au pr&ecirc;t ou pas. </p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e280287"></a>D&eacute;poser et relier les composants</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>D&eacute;posez les composants suivants de la <span class="bold"><strong>Palette</strong></span> dans l&#8217;espace de mod&eacute;lisation graphique&nbsp;: <span class="bold"><strong>tFileInputExcel</strong></span>, <span class="bold"><strong>tMap</strong></span>, <span class="bold"><strong>tBRMS</strong></span>, <span class="bold"><strong>tExtractXMLField</strong></span>, et <span class="bold"><strong>tLogRow</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/tBRMS_Components.png" align="middle"></div></li><li class="listitem"><p>Reliez le <span class="bold"><strong>tFileInputExcel</strong></span> au <span class="bold"><strong>tMap</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row
+							&gt; Main</strong></span>.</p></li><li class="listitem"><p>Relie le <span class="bold"><strong>tMap</strong></span> au <span class="bold"><strong>tBRMS</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row &gt; *New
+							Output* (Main)</strong></span>.</p></li><li class="listitem"><p>Reliez le <span class="bold"><strong>tBRMS</strong></span> au <span class="bold"><strong>tExtractXMLField</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> puis utilisez
+						un autre lien <span class="bold"><strong>Row &gt; Main</strong></span> afin de
+						connecter le <span class="bold"><strong>tExtractXMLField</strong></span> au <span class="bold"><strong>tLogRow</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer le flux d'entr&eacute;e"><div class="titlepage"><div><div><h4 class="title"><a name="d0e280365"></a>Configurer le flux d'entr&eacute;e</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFileInputExcel</strong></span>
+						afin d&#8217;ouvrir sa vue <span class="bold"><strong>Basic
+						settings</strong></span>&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/tFileInputExcel_BasicSettings.png" align="middle"></div></li><li class="listitem"><p>A c&ocirc;t&eacute; du champ <span class="bold"><strong>File name/Stream</strong></span>, cliquez
+						sur le bouton<span class="bold"><strong> [...]</strong></span> afin de parcourir votre
+						r&eacute;pertoire et s&eacute;lectionner le fichier Excel contenant les donn&eacute;es d&#8217;entr&eacute;e.
+					</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Sheet list</strong></span>, cliquez sur le
+						bouton <span class="inlinemediaobject"><img src="../images/plus_button.png" width="20"></span> afin d&#8217;ajouter une nouvelle ligne <span class="bold"><strong>Sheet</strong></span> dans le tableau.</p></li><li class="listitem"><p>Saisissez le nom de la feuille (<span class="bold"><strong>Sheet</strong></span>)
+						contenant les donn&eacute;es d&#8217;entr&eacute;e, entre guillemets doubles.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Header</strong></span>, saisissez le num&eacute;ro
+						de la ligne contenant le nom des colonnes.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tMap</strong></span> afin d&#8217;ouvrir
+						le <span class="bold"><strong>Map Editor</strong></span>:</p></li><li class="listitem"><p>En haut &agrave; droite du <span class="bold"><strong>Map Editor</strong></span>, cliquez
+						sur le bouton <span class="inlinemediaobject"><img src="../images/plus_button.png" width="20"></span> afin d&#8217;ajouter un sch&eacute;ma de sortie.</p><div class="mediaobject" align="center"><img src="../images/tMap_NewOutput.png" align="middle"></div></li><li class="listitem"><p>Saisissez un nom pour le nouveau sch&eacute;ma dans le champ <span class="bold"><strong>New output</strong></span> puis cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de dialogue&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/tMap_Mapped.png" align="middle"></div></li><li class="listitem"><p>Mappez les colonnes et d&eacute;finissez les param&egrave;tres selon vos besoins, puis
+						cliquez sur <span class="bold"><strong>Ok</strong></span> pour fermer le <span class="bold"><strong>Map Editor</strong></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Pour plus d&#8217; informations concernant le mapping des sch&eacute;mas et la
+							d&eacute;finition de leurs param&egrave;tres, consultez le <span class="bold"><strong>Guide
+								utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p></td></tr></table></div></li></ol></div></div><div class="section" title="Configurer le tBRMS"><div class="titlepage"><div><div><h4 class="title"><a name="d0e280470"></a>Configurer le tBRMS</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Cliquez sur le <span class="bold"><strong>tBRMS</strong></span> afin d&#8217;ouvrir sa vue
+							<span class="bold"><strong>Basic settings</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/tbrms-basic_settings.png" align="middle"></div></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Property Type</strong></span>, s&eacute;lectionnez
+							<span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+						champ <span class="bold"><strong>Edit schema</strong></span> pour ouvrir l&#8217;&eacute;diteur du
+						sch&eacute;ma.</p><p>Le sch&eacute;ma d&#8217;entr&eacute;e &agrave; gauche est automatiquement r&eacute;cup&eacute;r&eacute; du <span class="bold"><strong>tMap</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/tBRMS_Schemas.png" align="middle"></div></li><li class="listitem"><p>Dans la zone de sortie &agrave; droite, cliquez sur le bouton <span class="inlinemediaobject"><img src="../images/plus_button.png" width="20"></span> pour ajouter une nouvelle colonne qui permettra
+						d&#8217;&eacute;crire les donn&eacute;es de sortie dans un fichier XML et saisissez un nom pour
+						la colonne et d&eacute;finissez le <span class="bold"><strong>Type</strong></span> comme
+						String.</p></li><li class="listitem"><p>A c&ocirc;t&eacute; du champ <span class="bold"><strong>XML Field</strong></span>, s&eacute;lectionnez
+						le nom de la colonne XML ajout&eacute;e au sch&eacute;ma de sortie.</p></li><li class="listitem"><p>Saisissez l&#8217;URL de Guvnor dans le champ <span class="bold"><strong>Guvnor
+							URL</strong></span>.</p></li><li class="listitem"><p>Dans les champs <span class="bold"><strong>Username</strong></span>, <span class="bold"><strong>Password</strong></span> et <span class="bold"><strong>TAC
+							URL</strong></span>, saisissez respectivement votre identifiant et votre mot
+						de passe de connexion &agrave; <span class="italic">Talend Administration
+							Center</span> puis l'URL de <span class="italic">Talend
+							Administration Center</span>.</p></li><li class="listitem"><p>A c&ocirc;t&eacute; du champ <span class="bold"><strong>Module List</strong></span>, cliquez sur
+						le bouton <span class="bold"><strong>[...]</strong></span> afin d&#8217;ouvrir la bo&icirc;te de
+						dialogue <span class="bold"><strong>[Deploy Jar]</strong></span> Dans cette bo&icirc;te de
+						dialogue, les champs <span class="bold"><strong>URL</strong></span>, <span class="bold"><strong>Username</strong></span>, <span class="bold"><strong>Password</strong></span> et <span class="bold"><strong>URL of TAC</strong></span> sont
+						d&eacute;j&agrave; renseign&eacute;s, avec les informations saisies dans les &eacute;tapes
+						pr&eacute;c&eacute;dentes.</p><div class="mediaobject" align="center"><img src="../images/tBRMS_DeployJar.png" align="middle"></div></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> afin de
+						parcourir les fichiers Jar dans la bo&icirc;te de dialogue [Select Jar
+						file]&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/BRMS_Select_Jarfile.png" align="middle"></div></li><li class="listitem"><p>D&eacute;veloppez les n&#339;uds &agrave; parcourir et s&eacute;lectionnez le fichier Jar contenant
+						les r&egrave;gles ad&eacute;quates, puis cliquez sur <span class="bold"><strong>OK</strong></span>
+						afin de fermer la bo&icirc;te de dialogue.</p><div class="mediaobject" align="center"><img src="../images/BRMS_Deploy_Jar2.png" align="middle"></div></li><li class="listitem"><p>Dans la liste &agrave; c&ocirc;t&eacute; du fichier Jar s&eacute;lectionn&eacute;, choisissez le nom de la
+						classe correspondant puis cliquez sur <span class="bold"><strong>OK</strong></span>
+						pour fermer la bo&icirc;te de dialogue.</p><p>Un programme <span class="bold"><strong>Talend</strong></span> transforme la
+						biblioth&egrave;que des r&egrave;gles m&eacute;tier de fa&ccedil;on &agrave; pouvoir l&#8217;utiliser dans un Job et
+						cr&eacute;e un fichier XSD &agrave; la racine de votre Studio.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Drools Flow ID (optional</strong></span>),
+						saisissez, entre guillemets, l'ID du flux Drools &agrave; utiliser lors de
+						l'ex&eacute;cution des r&egrave;gles. Dans cet exemple, saisissez <span class="italic">loanflow</span>. Pour plus d'informations concernant les IDs des
+						flux Drools, consultez le <span class="bold"><strong>Guide utilisateur</strong></span>
+						de <span class="bluebold">Talend Enterprise Studio</span>.</p></li><li class="listitem"><p>Cliquez sur l&#8217;onglet <span class="bold"><strong>Advanced Settings</strong></span>
+						afin de d&eacute;finir des param&egrave;tres suppl&eacute;mentaires.</p><div class="mediaobject" align="center"><img src="../images/BRMS_Advanced_settings.png" align="middle"></div></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>XML mapping</strong></span>, cliquez sur le
+						bouton <span class="bold"><strong>[...]</strong></span> pour configurer l&#8217;arborescence
+						XML.</p><div class="mediaobject" align="center"><img src="../images/brms_xml_tree.png" align="middle"></div></li><li class="listitem"><p>Cliquez-droit sur la premi&egrave;re ligne de la zone <span class="bold"><strong>Link
+							target</strong></span> puis s&eacute;lectionnez <span class="bold"><strong>Import XML
+							Tree</strong></span>.</p></li><li class="listitem"><p>Parcourez votre r&eacute;pertoire et s&eacute;lectionnez le fichier XSD &agrave; la racine de
+						votre Studio. Le sch&eacute;ma <span class="bold"><strong>XML Tree</strong></span> est rempli
+						automatiquement&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/brms_xml_tree2.png" align="middle"></div></li><li class="listitem"><p>D&eacute;posez toutes les colonnes ad&eacute;quates &agrave; partir de <span class="bold"><strong>Schema list</strong></span> dans les champs des colonnes correspondantes
+						dans le sch&eacute;ma <span class="bold"><strong>Link target</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/brms_xml_tree_attribute.png" align="middle"></div></li><li class="listitem"><p>Dans la bo&icirc;te de dialogue qui appara&icirc;t, s&eacute;lectionnez l&#8217;option <span class="bold"><strong>Create as attribute of target node</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/brms_xml_tree3.png" align="middle"></div></li><li class="listitem"><p>Cliquez-droit sur le champ <span class="bold"><strong>reason</strong></span> et
+						s&eacute;lectionnez <span class="bold"><strong>Set As Loop Element</strong></span> dans la
+						liste.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+						dialogue.</p></li></ol></div></div><div class="section" title="Configurer le flux de sortie"><div class="titlepage"><div><div><h4 class="title"><a name="d0e280702"></a>Configurer le flux de sortie</h4></div></div></div><p>Pour extraire les donn&eacute;es qui vous int&eacute;ressent, vous devez configurer le flux de
+				sortie. Les op&eacute;rations &agrave; effectuer sont les suivantes :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tExtractXMLField</strong></span>
+						afin d&#8217;ouvrir sa vue<span class="bold"><strong> Basic settings</strong></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Edit schema</strong></span> pour ouvrir
+						l&#8217;&eacute;diteur du sch&eacute;ma.</p><div class="mediaobject" align="center"><img src="../images/tExtractXMLField_Output_schema.png" align="middle"></div></li><li class="listitem"><p>Dans le sch&eacute;ma de sortie, &agrave; droite de l&#8217;&eacute;diteur, ajoutez et configurez les
+						colonnes exactement comme elles apparaissent dans le sch&eacute;ma d&#8217;entr&eacute;e du
+							<span class="bold"><strong>tBRMS</strong></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer
+						l&#8217;&eacute;diteur.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Loop XPath query</strong></span>, saisissez
+						le nom du tag racine<span class="bold"><strong> XML Tree</strong></span>, tel qu&#8217;il
+						appara&icirc;t dans l&#8217;&eacute;diteur <span class="bold"><strong>Configure XML Tree
+						</strong></span>du composant <span class="bold"><strong>tBRMS</strong></span>, c&#8217;est-&agrave;-dire
+						pr&eacute;c&eacute;d&eacute; d&#8217;un slash et entour&eacute; de guillemets doubles, par exemple&nbsp;:
+						&#8220;/loanSimulator&#8221;.</p></li><li class="listitem"><p>Dans les champs <span class="bold"><strong>XPath query</strong></span>, &agrave; c&ocirc;t&eacute; des
+						colonnes correspondantes, saisissez entre guillemets doubles le nom des
+						champs tels qu&#8217;ils apparaissent dans les champs <span class="bold"><strong>XML
+							Tree</strong></span>, dans la zone <span class="bold"><strong>Link
+							Target</strong></span> de l&#8217;&eacute;diteur <span class="bold"><strong>Configure XML
+							tree</strong></span> du composant <span class="bold"><strong>tBRMS</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tLogRow</strong></span> afin
+						d&#8217;ouvrir sa vue <span class="bold"><strong>Basic settings</strong></span>&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/tLogRow_BasicSettings.png" align="middle"></div></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>Mode</strong></span>, s&eacute;lectionnez l&#8217;option
+							<span class="bold"><strong>Table (print values in cells of a
+							table)</strong></span>.</p></li><li class="listitem"><p>Sauvegardez le Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+						l&#8217;ex&eacute;cuter.</p><p>Les r&eacute;sultats sont &eacute;crits dans une table de sortie dans la vue <span class="bold"><strong>Run</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="405"><tr><td><img src="../images/tbrms_scenario_result.png" width="405"></td></tr></table></div><p>La r&egrave;gle m&eacute;tier a &eacute;t&eacute; appliqu&eacute;e aux donn&eacute;es d&#8217;entr&eacute;e et le tableau des
+						r&eacute;sultats indique quelles personnes ont &eacute;t&eacute; rejet&eacute;es. La colonne <span class="bold"><strong>name</strong></span> indique la raison pour laquelle la personne
+						ne pourra obtenir de pr&ecirc;t.</p></li></ol></div></div></div></div></body></html>

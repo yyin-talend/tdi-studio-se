@@ -1,0 +1,116 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tQASAddressIncomplete</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tPostgresqlValidRows.html" title="tPostgresqlValidRows"><link rel="next" href="tQASAddressRow.html" title="tQASAddressRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tQASAddressIncomplete"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tQASAddressIncomplete"></a>tQASAddressIncomplete</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="35"><tr><td><img src="../images/tQASAddressIncomplete_icon32_white.png" width="35"></td></tr></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la </em></span><span class="bold"><strong>Palette</strong></span><span class="emphasis"><em> du studio uniquement si vous avez souscrit &agrave; l&#8217;&eacute;dition
+                correspondante de </em></span><span class="bluebold">Talend Enterprise Data Quality</span><span class="emphasis"><em>.</em></span>
+        </p></td></tr></table></div><p>Les composants de gestion d&#8217;adresse dont il est question ici
+        sont le r&eacute;sultat de la collaboration de <span class="bold"><strong>Talend</strong></span> et Experian QAS, l&#8217;un des leaders
+        mondiaux en gestion et de v&eacute;rification d&#8217;adresses internationales. </p><p>Pour plus d&#8217;informations &agrave; propos de l&#8217;entreprise et de ses
+        outils logiciels, visitez le site&nbsp;: <a class="link" href="http://www.qas.com" target="_top">http://www.qas.com.</a></p><div class="section" title="Propri&eacute;t&eacute;s du tQASAddressIncomplete"><div class="titlepage"><div><div><h3 class="title"><a name="d0e185917"></a>Propri&eacute;t&eacute;s du tQASAddressIncomplete</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Data Quality</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tQASAddressIncomplete</strong></span> filtre
+                                les adresses. Il fait une boucle sur chaque ligne et lit les
+                                adresses d&#8217;entr&eacute;e, puis les compare aux donn&eacute;es de QuickAddress.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le <span class="bold"><strong>tQASAddressIncomplete</strong></span>
+                                        utilise QAS Pro Web 5.17.</p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tQASAddressIncomplete</strong></span> peut
+                                donner deux flux de sortie&nbsp;: <span class="bold"><strong>Incomplete</strong></span> et <span class="bold"><strong>Reject</strong></span>. <span class="bold"><strong>Incomplete</strong></span>
+                                collecte toutes les adresses qui correspondent &agrave; une adresse
+                                partiellement compl&egrave;te dans les donn&eacute;es de QuickAddress. <span class="bold"><strong>Reject</strong></span> collecte toutes les donn&eacute;es qui
+                                correspondent &agrave; plusieurs r&eacute;sultats possibles, ou ne correspondent
+                                pas &agrave; des r&eacute;sultats retournables dans les donn&eacute;es de
+                                QuickAddress.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>QAS WSDL url</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez l&#8217;URL du document XML QuickAddress (fournit par Experian
+                                QAS).</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Country</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez dans la liste le pays correspondant &agrave; vos adresses
+                                d&#8217;entr&eacute;e.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+                                conserv&eacute; ponctuellement pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+                                r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Column to analyze</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez dans la liste la colonne que vous souhaitez
+                                analyser.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="italic">tStatCatcher Statistics</span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+                                Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est une &eacute;tape interm&eacute;diaire. Il requiert un flux
+                                d&#8217;entr&eacute;e et un flux de sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e186173"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tQASAddressRow.html#Raa31728" title="Sc&eacute;nario&nbsp;: Editer des adresses et donner leur statut de v&eacute;rification">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Editer des adresses et donner leur statut de v&eacute;rification&nbsp;&raquo;</a>.</p></div></div></body></html>

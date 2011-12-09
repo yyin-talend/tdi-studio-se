@@ -1,0 +1,167 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tRules</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch16.html" title="Chapter&nbsp;16.&nbsp;Processing components"><link rel="prev" href="tReplace.html" title="tReplace"><link rel="next" href="tSampleRow.html" title="tSampleRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tRules"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tRules"></a>tRules</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tJRules_white.png" width="27"></td></tr></table></div><div class="section" title="tRules properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e311038"></a>tRules properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Processing</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tRules</strong></span> allows you to
+										apply one or more business rules on a data flow in order to
+										output only relevant data.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Objective</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tRules</strong></span> allows you to use
+										business rules defined in a Drools file of .xls or .drl
+										format in order to filter data.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Property type</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Either <span class="bold"><strong>Built-in</strong></span>
+											or<span class="bold"><strong> Repository</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: No property
+										data stored centrally.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: Select the
+										repository file where properties are stored. The fields that
+										come after are pre-filled in using the fetched data.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>DRL/XLS FILE</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Browse to the Drools or Excel file that holds the business
+										rules you want to use in your Job.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Outputs</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Set the business rules to use on the output data.</p>
+									<p>
+										<span class="bold"><strong>Schema</strong></span>: Create/select the
+										output schema.</p>
+									<p>
+										<span class="bold"><strong>Rule</strong></span>: Create/select the
+										business rule to use on the corresponding output
+										schema.</p>
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The import field in the code of a rule file needs to
+											correspond to the current project name. </p></td></tr></table></div>
+									<p>
+										<a class="link" href="http://www.jboss.org/drools/documentation.html" target="_top">For more information on creating business rules, see
+											the Drools documentation in the following site:
+											http://www.jboss.org/drools/documentation.html </a>
+									</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to gather the Job processing
+										metadata at a Job level as well as at each component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is an intermediate component in a data
+										flow. It needs input and output components.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Scenario: Extracting client data according to business rules"><div class="titlepage"><div><div><h3 class="title"><a name="d0e311276"></a>Scenario: Extracting client data according to business rules</h3></div></div></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+						<span class="emphasis"><em>For this example, you need to have a Drools file of .xls or .drl
+							format that holds the relevant business rules.</em></span>
+					</p></td></tr></table></div><p>In this example, the business rules are defined in an Excel file: </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="511"><tr><td><img src="../images/Use_Case_tRules0.png" width="511"></td></tr></table></div><p>This file defines the rules to be applied on the client data: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>the <span class="bold"><strong>RuleAGE</strong></span> rule retrieves all
+							clients whose age is between 30 and 39 and writes them to the first
+							output flow.</p></li><li class="listitem"><p>the <span class="bold"><strong>RuleREGION</strong></span> rule retrieves all
+							clients who live in the EMEA region and writes them to the second output
+							flow.</p></li></ul></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+						<span class="emphasis"><em>When you use an Excel Drools file, make sure that all occurrences
+							of project and Job names correspond to the project and Job in which you
+							are going to use the business rules.</em></span>
+					</p></td></tr></table></div><p>This Java scenario is a four-component Job that aims at reading client data
+					and retrieving only the clients that match the business rules defined in a
+					Drools file.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="348"><tr><td><img src="../images/Use_Case_tRules1.png" width="348"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tFileInputDelimited</strong></span>, <span class="bold"><strong>tRules</strong></span> and <span class="bold"><strong>tLogRow</strong></span>
+							(x2).</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFileInputDelimited</strong></span> to
+							display its <span class="bold"><strong>Basic settings</strong></span> view and
+							define the component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="492"><tr><td><img src="../images/Use_Case_tRules2.png" width="492"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Property type</strong></span> list, select
+								<span class="bold"><strong>Built-in</strong></span> and fill in the fields
+							that follow.</p></li><li class="listitem"><p>Click the three-dot button next to the <span class="bold"><strong>File
+								Name</strong></span> field and browse to the source file and set its path
+							and name. The source file used in this example is called
+								<span class="emphasis"><em>client</em></span> and it holds client data.</p></li><li class="listitem"><p>Set row and field separators, header, footer and limit, if any, in the
+							corresponding fields.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Schema</strong></span> list, select <span class="bold"><strong>Built-in</strong></span> and click <span class="bold"><strong>Edit
+								schema</strong></span> to open a dialog box where you can define the
+							schema of the input file.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="323"><tr><td><img src="../images/Use_Case_tRules3.png" width="323"></td></tr></table></div><p>In this example, our source file holds four columns:<span class="emphasis"><em> id</em></span>,
+						<span class="emphasis"><em>name</em></span>, <span class="emphasis"><em>age</em></span> and
+						<span class="emphasis"><em>region</em></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate your changes and
+							close the dialog box.</p></li><li class="listitem"><p>In the design workspace, double-click <span class="bold"><strong>tRules</strong></span> to display its <span class="bold"><strong>Basic
+								settings</strong></span> view and define the component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="498"><tr><td><img src="../images/Use_Case_tRules4.png" width="498"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Property type</strong></span> list, select
+								<span class="bold"><strong>Repository</strong></span> if you have stored the
+							file that holds the business rules in the <span class="bold"><strong>Metadata</strong></span> node of the <span class="bold"><strong>Repository</strong></span> tree view. If not, select <span class="bold"><strong>Built-in</strong></span> and fill in the fields that follow
+							manually.</p><p> For more information on how to create and store business rules, see
+								<span class="bluebold">Talend Enterprise Studio</span>
+							<span class="bold"><strong>User Guide</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Outputs</strong></span> table, click the plus
+							button to add two lines that will represent two different output flows,
+							each using one of the two business rules defined in the Drools
+							file.</p></li><li class="listitem"><p>Click in the first line of the <span class="bold"><strong>Schema</strong></span>
+							column to display a three-dot button that you need to click in order to
+							open a dialog box where you can set a name for the output schema.</p></li><li class="listitem"><p>Enter the name you want to give to this output schema,
+								<span class="emphasis"><em>rule_region</em></span> in this example, and then click
+								<span class="bold"><strong>OK</strong></span> to close the first dialog box
+							and open a second one where you can define the output schema.</p></li><li class="listitem"><p>In the second dialog box, define your output schema. In this example,
+							we want to recuperate the input schema. Click <span class="bold"><strong>OK</strong></span> to close the second dialog box.</p></li><li class="listitem"><p>Do the same in the second line of the <span class="bold"><strong>Schema</strong></span> column. Give<span class="emphasis"><em> rule_age</em></span> as
+							name for this second output schema and then recuperate the input schema
+							in the open dialog box.</p></li><li class="listitem"><p>Click in the first line of the <span class="bold"><strong>Rule</strong></span>
+							column to display a three-dot button that you need to click to open the
+								<span class="bold"><strong>[</strong></span><span class="bold"><strong>Rule]</strong></span> dialog box.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="232"><tr><td><img src="../images/Use_Case_tRules6.png" width="232"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the option check box that corresponds to your needs:</p><p> - <span class="bold"><strong>View Rules</strong></span>: to open the business
+							rule file in read-only mode, or </p><p> - <span class="bold"><strong>Select a rule from repository</strong></span>: to
+							select the relevant predefined rule from the business rules file stored
+							in the <span class="bold"><strong>Repository</strong></span> tree view.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Rule</strong></span> list, select the rule you
+							want to apply to the first output schema,
+								<span class="emphasis"><em>rule_region</em></span>, and then click <span class="bold"><strong>OK</strong></span> to validate the operation and close the
+							dialog box. </p><p> The selected rule displays in the <span class="bold"><strong>Rules</strong></span> column.</p></li><li class="listitem"><p>Do the same for the second output schema,
+								<span class="emphasis"><em>rule_age</em></span> and then click <span class="bold"><strong>OK</strong></span> to validate the operation and close the dialog box. </p><p> The selected rule displays in the <span class="bold"><strong>Rules</strong></span> column.</p><p> In this example, we want to apply <span class="bold"><strong>RuleREGION</strong></span> to the first output schema and <span class="bold"><strong>RuleAGE</strong></span> to the second output schema.</p></li><li class="listitem"><p>In the design workspace, double-click each of the <span class="bold"><strong>tLogRow</strong></span> components to define its properties.
+							For more information, see <a class="xref" href="tLogRow.html" title="tLogRow">the section called &#8220;tLogRow&#8221;</a>.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+							it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="390"><tr><td><img src="../images/Use_Case_tRules5.png" width="390"></td></tr></table></div><p>The <span class="bold"><strong>Run</strong></span> console displays the two output
+					flows: the first listing all clients whose age is between 30 and 39, and the
+					second listing all clients who live in the EMEA region.</p></div></div></body></html>

@@ -1,0 +1,410 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tGenKey</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tFuzzyUniqRow.html" title="tFuzzyUniqRow"><link rel="next" href="tGoogleAddressRow.html" title="tGoogleAddressRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tGenKey"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tGenKey"></a>tGenKey</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tWindowKey_icon32_white.png" width="27"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the
+						relevant edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Quality
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tGenKey properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e189161"></a>tGenKey properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data Quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tGenKey </strong></span>enables you to
+										apply several kinds of algorithms on each input column and
+										use the computed results to generate a functional key. These
+										algorithms can be key or optional algorithms.</p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The values returned by the key algorithms will be
+											concatenated, according to the column order in the
+												<span class="bold"><strong>Key composition</strong></span>
+											table.</p></td></tr></table></div>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tGenKey </strong></span>generates a
+										functional key from the input columns, by applying different
+										types of algorithms on each column and grouping the computed
+										results in one key. It outputs this key together with the
+										input columns. </p>
+									<p> This component helps, using the generated functional key,
+										to narrow down your data filter/matching results for
+										example.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository.</p>
+									<p> Click <span class="bold"><strong>Sync columns</strong></span> to
+										retrieve the schema from the previous component in the
+										Job.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: You create and
+										store the schema locally for this component only. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span> User Guide.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: You have
+										already created and stored the schema in the Repository. You
+										can reuse it in other projects and job designs. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span> User Guide.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><em>Algorithm</em></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Column</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select the column(s) from the main flow on which you want
+										to define certain algorithms to set the functional
+										key</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Pre-Algorithm</em></span>
+									</p>
+								</td><td valign="top">
+									<p>If required, select the relevant matching algorithm from
+										the list:</p>
+									<p>
+										<span class="bold"><strong>remove diacritical
+										marks:</strong></span>removes any diacritical mark.</p>
+									<p>
+										<span class="bold"><strong>remove diacritical marks and lower
+											case</strong></span>: removes any diacritical mark and
+										converts to lower case before generating the code of the
+										column.</p>
+									<p>
+										<span class="bold"><strong>remove diacritical marks and upper
+											case: </strong></span>removes any diacritical mark and
+										converts to upper case before generating the code of the
+										column.</p>
+									<p>
+										<span class="bold"><strong>lower case</strong></span>: converts the
+										field to lower case before applying the key
+										algorithm.</p>
+									<p>
+										<span class="bold"><strong>upper case</strong></span>: converts the
+										field to upper case before applying the key
+										algorithm.</p>
+									<p>
+										<span class="bold"><strong>add left position
+										character</strong></span>: enables you to add a character to the
+										left of the column. </p>
+									<p>
+										<span class="bold"><strong>add right position
+											character</strong></span>: enables you to add a character to
+										the right of the column.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Value</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Set the algorithm value, where applicable.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Algorithm</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select the relevant algorithm from the list:</p>
+									<p>
+										<span class="bold"><strong>first character of each
+											word</strong></span>: includes in the functional key the
+										first character of each word in the column.</p>
+									<p>
+										<span class="bold"><strong>N first characters of each
+											word</strong></span>: includes in the functional key N first
+										characters of each word in the column. </p>
+									<p>
+										<span class="bold"><strong>first N characters of the
+											string</strong></span>: includes in the functional key N
+										first characters of the string.</p>
+									<p>
+										<span class="bold"><strong>last N characters of the
+											string</strong></span>: includes in the functional key N last
+										characters of the string.</p>
+									<p>
+										<span class="bold"><strong>first N consonants of the
+											string</strong></span>: includes in the functional key N
+										first consonants of the string.</p>
+									<p>
+										<span class="bold"><strong>first N vowels of the
+											string:</strong></span> includes in the functional key N
+										first vowels of the string.</p>
+									<p>
+										<span class="bold"><strong>pick characters</strong></span>: includes
+										in the functional key the characters located at a fixed
+										position (corresponding to the set digital/range).</p>
+									<p>
+										<span class="bold"><strong>exact</strong></span>: includes in the
+										functional key the full string.</p>
+									<p>
+										<span class="bold"><strong>substring(a,b)</strong></span>: includes in
+										the functional key character according to the set
+										index.</p>
+									<p>
+										<span class="bold"><strong>soundex code</strong></span>: generates a
+										code according to a standard English phonetic algorithm.
+										This code represents the character string that will be
+										included in the functional key. </p>
+									<p>
+										<span class="bold"><strong>metaphone code</strong></span>: generates a
+										code according to the character pronunciation. This code
+										represents the character string that will be included in the
+										functional key. </p>
+									<p>
+										<span class="bold"><strong>double-metaphone code</strong></span>:
+										generates a code according to the character pronunciation
+										using a new version of the Metaphone phonetic algorithm,
+										that produces more accurate results than the original
+										algorithm. This code represents the character string that
+										will be included in the functional key.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Value</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Set the algorithm value, where applicable.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Post-Algorithm</em></span>
+									</p>
+								</td><td valign="top">
+									<p>If required, select the relevant matching algorithm from
+										the list:</p>
+									<p>
+										<span class="bold"><strong>use default value</strong></span> (string):
+										enables you to choose a string to replace null or empty
+										data.</p>
+									<p>
+										<span class="bold"><strong>add left position
+										character</strong></span>: enables you to add a character to the
+										left of the column. </p>
+									<p>
+										<span class="bold"><strong>add right position
+											character</strong></span>: enables you to add a character to
+										the right of the column.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Value</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Set the option value, where applicable.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Show help</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to display instructions on how to
+										set algorithms/options parameters.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStat</em></span>
+										<span class="emphasis"><em>Catcher</em></span>
+										<span class="emphasis"><em>Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is an intermediary step. It requires an
+										input flow as well as an output. This component can be used
+										with other components, such as <span class="bold"><strong>tMatchGroup</strong></span>, in order to create a blocking
+										key.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation/prerequisite</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Scenario&nbsp;1: Generating functional keys in the output flow"><div class="titlepage"><div><div><h3 class="title"><a name="Raa55888"></a>Scenario&nbsp;1: Generating functional keys in the output flow</h3></div></div></div><p>This three-component Java scenario describes a basic Job that generates a
+					functional key for each of the data records using one algorithm on one of the
+					input columns, <span class="emphasis"><em>PostalCode</em></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This functional key can be used in different ways to narrow down the
+						results of data filtering or data matching, for example. So the<span class="bold"><strong> tGenKey</strong></span> component can be used with so many other
+						data quality and data integration components to form different useful use
+						cases. For an example of one use case of <span class="bold"><strong>tGenKey</strong></span>, see <a class="xref" href="tGenKey.html#Raa99658" title="Scenario&nbsp;2: Comparing columns and grouping in the output flow duplicate records that have the same functional key">the section called &#8220;Scenario&nbsp;2: Comparing columns and grouping in the output flow duplicate
+					records that have the same functional key&#8221;</a>.</p></td></tr></table></div><p>In this scenario, the input data flow has four columns:
+						<span class="emphasis"><em>Firstname</em></span>, <span class="emphasis"><em>Lastname</em></span>,
+						<span class="emphasis"><em>DOB</em></span> (date of birth), and
+						<span class="emphasis"><em>PostalCode</em></span>. This data has problems such as duplication,
+					first or last names spelled differently or wrongly, different information for
+					the same customer, etc. This scenario generates a functional key for each data
+					record using an algorithm that concatenates the first two characters of the
+					postal code.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="390"><tr><td><img src="../images/Use_Case_tWindowKey.png" width="390"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace: <span class="bold"><strong>tFixedFlowInput</strong></span>, <span class="bold"><strong>tGenKey</strong></span> and <span class="bold"><strong>tLogRow</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="401"><tr><td><img src="../images/Use_Case_tWindowKey1.png" width="401"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect all the components together using the <span class="bold"><strong>Main </strong></span>link.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFixedFlowInput</strong></span> to
+							display the <span class="bold"><strong>Basic settings</strong></span> view and
+							define the component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="494"><tr><td><img src="../images/Use_Case_tWindowKey2.png" width="494"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>From the <span class="bold"><strong>Schema</strong></span> list, set the schema
+							type to <span class="bold"><strong>Built-In</strong></span> and click the
+							three-dot button next to <span class="bold"><strong>Edit Schema </strong></span>A
+							dialog box displays.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="337"><tr><td><img src="../images/Use_Case_tWindowKey3.png" width="337"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add as many lines as needed for the input
+							schema you want to create from internal variables. </p><p> In this example, the schema is made of four columns:
+								<span class="emphasis"><em>Firstnam</em></span>, <span class="emphasis"><em>Lastname</em></span>,
+								<span class="emphasis"><em>DOB</em></span> and <span class="emphasis"><em>PostalCode</em></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog
+							box.</p><p> The defined columns display in the <span class="bold"><strong>Values</strong></span> table of the component basic settings
+							view.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, select the
+								<span class="bold"><strong>Use Inline Table</strong></span> option.</p><p> The <span class="bold"><strong>Value</strong></span> table displays as
+								<span class="bold"><strong>Inline Table</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="396"><tr><td><img src="../images/Use_Case_tWindowKey4.png" width="396"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add as many line as needed and then click in
+							each of the lines to define the input data for the four columns.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tGenKey</strong></span> to display the
+								<span class="bold"><strong>Basic settings</strong></span> view and define the
+							component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="522"><tr><td><img src="../images/Use_Case_tWindowKey6.png" width="522"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Under the <span class="bold"><strong>Algorithm</strong></span> table, click the
+							plus button to add a row in this table.</p></li><li class="listitem"><p>On the <span class="bold"><strong>column</strong></span> column, click the newly
+							added row and select from the list the column you want to process using
+							an algorithm. In this example, select
+							<span class="emphasis"><em>PostalCode</em></span>.</p></li><li class="listitem"><p>On the <span class="bold"><strong>algorithm</strong></span> column, click the
+							newly added row and select from the list the algorithm you want to apply
+							to the corresponding column. In this example, select <span class="bold"><strong>first N characters of the string</strong></span>.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>Value</strong></span> column and enter
+							the value for the selected algorithm, when needed. In this scenario,
+							type in <span class="emphasis"><em>2</em></span>.</p></li></ul></div><p>In this example, we want to generate a functional key that holds the first two
+					characters of the postal code for each of the data rows and we do not want to
+					define any extra options on these columns.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>You can select the <span class="bold"><strong>Show help</strong></span> check box to
+						display instructions on how to set algorithms/options parameters.</p></td></tr></table></div><p>Once you have defined the <span class="bold"><strong>tGenKey</strong></span> properties,
+					you can display a statistical view of these parameters. To do so:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Right-click on the <span class="bold"><strong>tGenKey</strong></span> component
+							and select <span class="bold"><strong>View Key Profile</strong></span> in the
+							contextual menu.</p></li></ul></div><p>The <span class="bold"><strong>View Key Profile</strong></span> editor displays,
+					allowing you to visualize the statistics regarding the number of rows per block
+					and to adapt them according to the results you want to get.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>When you are processing a large amount of data and when this component is
+						used to partition data in order to use them in a matching component (such as
+							<span class="bold"><strong>tRecordMatching</strong></span> or <span class="bold"><strong>tMatchGroup</strong></span>), it is preferable to have a limited
+						number of rows in one block. An amount of about 50 rows per block is
+						considered optimal, but it depends on the number of fields to compare, the
+						total number of rows and the time considered acceptable for data
+						processing.</p></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>For a use example of the <span class="bold"><strong>View Key Profile</strong></span>
+						option, see <a class="xref" href="tGenKey.html#Raa99658" title="Scenario&nbsp;2: Comparing columns and grouping in the output flow duplicate records that have the same functional key">the section called &#8220;Scenario&nbsp;2: Comparing columns and grouping in the output flow duplicate
+					records that have the same functional key&#8221;</a>.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Double-click the <span class="bold"><strong>tLogRow </strong></span>component
+							to display the <span class="bold"><strong>Basic settings</strong></span> view and
+							define the component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="407"><tr><td><img src="../images/Use_Case_tBlockedFuzzyJoin5.png" width="407"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+							it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="337"><tr><td><img src="../images/Use_Case_tWindowKey8.png" width="337"></td></tr></table></div><p>All the output columns including the <span class="emphasis"><em>T_GEN_KEY</em></span> column are
+					listed in the <span class="bold"><strong>Run</strong></span> console. The functional key
+					for each data record is concatenated from the first two characters of the
+					corresponding value in the <span class="emphasis"><em>PostalCode </em></span>column.</p></div><div class="section" title="Scenario&nbsp;2: Comparing columns and grouping in the output flow duplicate records that have the same functional key"><div class="titlepage"><div><div><h3 class="title"><a name="Raa99658"></a>Scenario&nbsp;2: Comparing columns and grouping in the output flow duplicate
+					records that have the same functional key</h3></div></div></div><p>This second Java scenario describes a four-component Job that aims at:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>generating a functional key using one algorithm on one of the input
+							columns, <span class="emphasis"><em>PostalCode,</em></span> as described in
+							scenario&nbsp;1.</p></li><li class="listitem"><p>matching the columns according to certain matching types.</p></li><li class="listitem"><p>Grouping the output columns by the generated functional key to
+							optimize the matching operation and compare only the records that have
+							the same blocking value, functional key in this scenario. For more
+							information on grouping output columns and using blocking values, see
+								<a class="xref" href="tMatchGroup.html" title="tMatchGroup">the section called &#8220;tMatchGroup&#8221;</a>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="457"><tr><td><img src="../images/Use_Case_tGenKey9.png" width="457"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace: <span class="bold"><strong>tRowGenerator</strong></span>, <span class="bold"><strong>tGenKey</strong></span>,
+								<span class="bold"><strong>tMatchGroup</strong></span> and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Connect all the components together using the <span class="bold"><strong>Main </strong></span>link.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tRowGenerator</strong></span> to define
+							its schema as follows:</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tGenKey10.png" width="100%"></td></tr></table></div><p>The <span class="bold"><strong>tRowGenerator</strong></span> component will generate an
+					input data flow that has three columns: <span class="emphasis"><em>Firstname,
+					Lastname</em></span>, and <span class="emphasis"><em>DOB</em></span> (date of birth). This data may
+					have problems such as duplication, first or last names spelled differently or
+					wrongly, different information for the same customer, etc.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-click <span class="bold"><strong>tGenKey</strong></span> to display the
+								<span class="bold"><strong>Basic settings</strong></span> view and define the
+							component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="528"><tr><td><img src="../images/Use_Case_tGenKey11.png" width="528"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Under the <span class="bold"><strong>Algorithm</strong></span> table, click the
+							plus button to add a row in this table.</p></li><li class="listitem"><p>On the <span class="bold"><strong>column</strong></span> column, click the newly
+							added row and select from the list the column you want to process using
+							an algorithm. In this example, select <span class="emphasis"><em>DoB</em></span>.</p></li><li class="listitem"><p>On the <span class="bold"><strong>algorithm</strong></span> column, click the
+							newly added row and select from the list the algorithm you want to apply
+							to the corresponding column. In this example, select <span class="bold"><strong>substring(a,b)</strong></span>.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>value</strong></span> column and enter
+							the value for the selected algorithm, when needed. In this scenario,
+							type in <span class="emphasis"><em>6,10</em></span>.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The <span class="bold"><strong>substring</strong></span><span class="bold"><strong>(a,b)</strong></span> algorithm allows you to extract the characters from a
+						string, between two specified indices, and to return the new substring.
+						First character is at index <span class="emphasis"><em>0</em></span>. In this scenario, for a
+							given&nbsp;<span class="emphasis"><em>DoB</em></span>
+							&#8220;<span class="emphasis"><em>21-01-1995</em></span>&#8221;,&nbsp;<span class="emphasis"><em>6,10</em></span> will return
+						only the year of birth, that is to say &#8220;1995&#8221; which is the substring from
+						the 7th to the 10th character.</p></td></tr></table></div><p>In this example, we want to generate a functional key that holds the last four
+					characters of the date of birth, which correspond to the year of birth, for each
+					of the data rows and we do not want to define any extra options on these
+					columns.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>You can select the <span class="bold"><strong>Show help</strong></span> check box to
+						display instructions on how to set algorithms/options parameters.</p></td></tr></table></div><p>Once you have defined the <span class="bold"><strong>tGenKey</strong></span> properties,
+					you can display a statistical view of these parameters. To do so:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Right-click on the <span class="bold"><strong>tGenKey</strong></span> component
+							and select <span class="bold"><strong>View Key Profile</strong></span> in the
+							contextual menu.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="523"><tr><td><img src="../images/Use_Case_tGenKey12.png" width="523"></td></tr></table></div><p>The <span class="bold"><strong>View Key Profile</strong></span> editor displays,
+					allowing you to visualize the statistics regarding the number of blocks and to
+					adapt the parameters according to the results you want to get.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>When you are processing a large amount of data and when this component is
+						used to partition data in order to use them in a matching component (such as
+							<span class="bold"><strong>tRecordMatching</strong></span> or <span class="bold"><strong>tMatchGroup</strong></span>), it is preferable to have a limited
+						number of rows in one block. An amount of about 50 rows per block is
+						considered optimal, but it depends on the number of fields to compare, the
+						total number of rows and the time considered acceptable for data
+						processing.</p></td></tr></table></div><p>If necessary, you can:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>edit the <span class="bold"><strong>Limit</strong></span> of rows used to
+							calculate the statistics.</p></li><li class="listitem"><p>edit the <span class="bold"><strong>column</strong></span> you want to process
+							using an algorithm.</p></li><li class="listitem"><p>edit the <span class="bold"><strong>algorithm</strong></span> you want to apply
+							to the corresponding column.</p></li><li class="listitem"><p>edit the <span class="bold"><strong>value</strong></span> the value for the
+							selected algorithm, etc.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Every time you make a modification, you can see its implications by
+						clicking the <span class="bold"><strong>Refresh</strong></span> button which is
+						located at the top right part of the editor.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-click the <span class="bold"><strong>tMatchGroup</strong></span>
+							component to display the <span class="bold"><strong>Basic Settings</strong></span>
+							view and define the component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="514"><tr><td><img src="../images/Use_Case_tWindowKey7.png" width="514"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> If you want to add a fixed output column,
+							<span class="emphasis"><em>MATCHING_DISTANCES,</em></span> which gives the details of the
+						distance between each column, click the <span class="bold"><strong>Advanced
+							settings</strong></span> tab and select the<span class="bold"><strong> Output
+							distance details</strong></span> check box. For more information, see <a class="xref" href="tMatchGroup.html#Raa75287" title="tMatchGroup properties">the section called &#8220;tMatchGroup properties&#8221;</a>.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>Sync columns</strong></span> to retrieve the
+							schema from the preceding component.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Edit schema</strong></span> button to view
+							the input and output schema and do any modifications in the output
+							schema.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tGenKey13.png" width="100%"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>In the output schema of this component, there are four output standard
+						columns that are read-only. For more information, see <a class="xref" href="tMatchGroup.html#Raa75287" title="tMatchGroup properties">the section called &#8220;tMatchGroup properties&#8221;</a>.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Key definition</strong></span> table, click
+							the plus button to add to the list the columns on which you want to do
+							the matching operation, <span class="emphasis"><em>FirstName</em></span> and
+								<span class="emphasis"><em>LastName</em></span> in this scenario.</p></li><li class="listitem"><p>Click in the first and second cells of the <span class="bold"><strong>Matching type</strong></span> column and select from the list the
+							method(s) to be used for the matching operation,
+								<span class="emphasis"><em>Jaro-Winkler</em></span> in this example.</p></li><li class="listitem"><p>Click in the first and second cells of the <span class="bold"><strong>Confidence Weight</strong></span> column and set the numerical weights
+							for each of the columns used as key attributes.</p></li><li class="listitem"><p>Click the plus button below the <span class="bold"><strong>Blocking
+								Definition</strong></span> table to add a line in the table then click in
+							the line and select from the list the column you want to use as a
+							blocking value, <span class="emphasis"><em>T_GEN_KEY</em></span> in this example. </p><p> Using a blocking value reduces the number of pairs of records that
+							needs to be examined. The input data is partitioned into exhaustive
+							blocks based on the functional key. This will decrease the number of
+							pairs to compare, as comparison is restricted to record pairs within
+							each block. </p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tLogRow </strong></span>component to
+							display the <span class="bold"><strong>Basic settings</strong></span> view and
+							define the component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="407"><tr><td><img src="../images/Use_Case_tBlockedFuzzyJoin5.png" width="407"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+							it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tGenKey14.png" width="100%"></td></tr></table></div><p>The output columns include the <span class="emphasis"><em>T_GEN_KEY</em></span> column that
+					holds the functional key generated by the <span class="bold"><strong>tGenKey</strong></span> component. You can see that all records that have the
+					same functional key are grouped together in three different blocks &#8220;groups&#8221;. The
+					identifier for each group is listed in the <span class="emphasis"><em>GID</em></span> column next
+					to the corresponding record. The number of records in each of the three output
+					blocks is listed in the <span class="emphasis"><em>GRP_SIZE</em></span> column and computed only
+					on the master record. The <span class="emphasis"><em>MASTER</em></span> column indicates with
+					true/false if the corresponding record is a master record/not a master record.
+					The <span class="emphasis"><em>SCORE</em></span> column lists the calculated distance between the
+					input record and the master record according to the <span class="bold"><strong>Jaro-Winkler </strong></span>matching algorithm.</p></div></div></body></html>

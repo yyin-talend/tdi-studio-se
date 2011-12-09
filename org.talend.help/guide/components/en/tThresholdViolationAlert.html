@@ -1,0 +1,166 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tThresholdViolationAlert</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tSynonymSearch.html" title="tSynonymSearch"><link rel="next" href="tUniqRow.html" title="tUniqRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tThresholdViolationAlert"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tThresholdViolationAlert"></a>tThresholdViolationAlert</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tThresholdViolationAlert_white.png" width="27"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the
+						relevant edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Quality
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component is only usable with a Job which has generated
+						reports.</em></span>
+				</p></td></tr></table></div><div class="section" title="tThresholdViolationAlert properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e212357"></a>tThresholdViolationAlert properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data Quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tThresholdViolationAlert</strong></span>
+										can alert to any threshold violations regarding the
+										thresholds set on indicators in different analyses created
+										in <span class="bluebold">Talend Enterprise Data Quality</span> studio.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tThresholdViolationAlert</strong></span>
+										can communicate with <span class="bluebold">Talend Enterprise Data Quality</span> in order to check
+										on thresholds put on the indicators used in analyses created
+										in <span class="bluebold">Talend Enterprise Data Quality</span>. You can then use it
+										with other components, for example <span class="bold"><strong>tSendMail</strong></span>, to alert to the violation of
+										thresholds.</p>
+									<p> For information on how to generate a Job to alert to
+										threshold violation directly from <span class="bluebold">Talend Enterprise Data Quality</span> studio, see
+											<span class="bluebold">Talend Enterprise Data Quality</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Schema and Edit schema</em></span>
+									</p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields to be processed and passed on to the next
+										component. The schema is either built-in or remotely stored
+										in the Repository.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: You create and
+										store the schema locally for this component only. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span></p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: You have
+										already created the schema and stored it in the Repository
+										and thus reuse it when needed. Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span></p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Output field</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select in the list the output field that will hold the
+										input data.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Addition Information</em></span>
+									</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="italic">Advanced separator (for
+											numbers)</span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to change data separators for
+										numbers:</p>
+									<p> Thousands separator: define separators you want to use
+										for thousands.</p>
+									<p> Decimal separator: define separators you want to use for
+										decimals.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Separator between Suffix and Field
+											Value</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Enter the separator that will delimit the field name from
+										its value.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Field Separator</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Character, string or regular expression to separate
+										fields.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Row Separator</em></span>
+									</p>
+								</td><td valign="top">
+									<p>String (ex: &#8220;\n&#8221;on Unix) to separate rows.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStat</em></span>
+										<span class="emphasis"><em>Catcher</em></span>
+										<span class="emphasis"><em>Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is used as an intermediate component in a
+										job design. It needs an input and output components.
+											<span class="bold"><strong>tThresholdViolationAlert</strong></span> only works with a
+										MySQL database.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e212691"></a>Related scenarios</h3></div></div></div><p>
+					<span>
+						No scenario is available for this component yet.
+					</span>
+				</p></div></div></body></html>

@@ -1,0 +1,275 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHBaseInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;5.&nbsp;Database components"><link rel="prev" href="tHBaseConnection.html" title="tHBaseConnection"><link rel="next" href="tHBaseOutput.html" title="tHBaseOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tHBaseInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHBaseInput"></a>tHBaseInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tHBaseInput_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tHBaseInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e84714"></a>
+					<span>tHBaseInput properties</span>
+				</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Databases/HBase</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tHBaseInput</strong></span> reads the
+										corresponding database and extracts fields of selection.
+									</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tHBaseInput</strong></span> extracts
+										columns corresponding to schema definition. Then it passes
+										these columns to the next component via a Main row
+										link.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Property type</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Either <span class="bold"><strong>Built-in</strong></span> or
+											<span class="bold"><strong>Repository</strong></span>.</p>
+									<p>- <span class="bold"><strong>Built-in</strong></span> : No property
+										data stored centrally.</p>
+									<p>- <span class="bold"><strong>Repository</strong></span> : Select the
+										repository file in which the properties are stored. The
+										fields that follow are completed automatically using the
+										data retrieved.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="18"><tr><td><img src="../images/Save_Icon.png" width="18"></td></tr></table></div>
+								</td><td valign="top">
+									<p>Click this icon to open a database connection wizard and
+										store the database connection parameters you set in the
+										component <span class="bold"><strong>Basic settings
+										</strong></span>view.</p>
+									<p>For more information about setting up and storing database
+										connection parameters, see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Use an existing connection</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box and select the appropriate <span class="bold"><strong>tHBaseConnection</strong></span> component from
+										the <span class="bold"><strong>Component list</strong></span> if you
+										want to re-use the connection parameters that you have
+										already defined.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Zookeeper quorum</em></span>
+									</p>
+								</td><td valign="top">Type in the name or the URL of the Zookeeper
+									service you use to coordinate the transaction between <span class="bold"><strong>Talend</strong></span> and HBase.</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Zookeeper client port</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Type in the number of the client listening port of the
+										Zookeeper service you are using.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields to be processed and passed on to the next
+										component. The schema is either <span class="bold"><strong>Built-in</strong></span> or stored remotely in the <span class="bold"><strong>Repository</strong></span>. </p>
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span>This component offers the advantage of the
+												dynamic schema feature. This allows you to retrieve
+												unknown columns from source files or to copy batches
+												of columns from a source without mapping each column
+												individually. For further information about dynamic
+												schemas, see </span><span class="bluebold">Talend Enterprise Studio</span>
+											<span class="bold"><strong>User Guide</strong></span>.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: The schema is
+										created and stored locally for this component only. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: The schema
+										already exists and is stored in the Repository, hence can be
+										reused. Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>&nbsp;</td><td>
+									<span class="italic">Table name</span>
+								</td><td>Type in the name of the HBase table from which you need to
+									extract columns.</td></tr><tr><td>&nbsp;</td><td>
+									<span class="italic">Mapping</span>
+								</td><td>Complete this table to specify the column or columns to be
+									extracted and the corresponding column family or families. The
+										<span class="bold"><strong>Column</strong></span> column of this table
+									is automatically filled once you have defined the
+									schema.</td></tr><tr><td>
+									<p>&nbsp;<span class="bold"><strong>Advanced settings</strong></span></p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStat Catcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<span class="italic">Properties</span>
+								</td><td valign="top">
+									<p>If you need to use custom configuration for your HBase,
+										complete this table with the property or properties to be
+										customized. Then at runtime, the customized property or
+										properties will override those corresponding ones defined
+										earlier for your HBase. </p>
+									<p>For example, you need to define the value of the <span class="italic">dfs.replication</span> property as
+											<span class="italic">1</span> for the HBase
+										configuration. Then you need to add one row to this table
+										using the plus button and type in the name and the value of
+										this property in this row.</p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This table is not available when you are using an
+											existing connection by selecting the <span class="bold"><strong>Using an existing connection</strong></span>
+											check box in the <span class="bold"><strong>Basic
+												settings</strong></span> view.</p></td></tr></table></div>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is a start component of a Job and always
+										needs an output link.</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Scenario: Exchanging customer data with HBase"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20110922-databases-thbaseinput_scenario"></a>
+					<span>Scenario: Exchanging customer data with HBase</span>
+				</h3></div></div></div><p>In this scenario, a six-component Job is used to exchange customer data with a
+					given HBase.</p><div class="mediaobject"><img src="../images/use_case-thbaseinput.png"></div><p> The six components are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong>tHBaseConnection</strong></span>: creates a
+								connection to your HBase database.</p></li><li class="listitem"><p><span class="bold"><strong>tFixedFlowInput</strong></span>: creates the data
+								to be written into your HBase. In the real use case, this component
+								could be replaced by the other input components like <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li><li class="listitem"><p><span class="bold"><strong>tHBaseOutput</strong></span>: writes the data it
+								receives from the preceding component into your HBase. </p></li><li class="listitem"><p><span class="bold"><strong>tHBaseInput</strong></span>: extracts the columns
+								of interest from your HBase.</p></li><li class="listitem"><p><span class="bold"><strong>tLogRow</strong></span>: presents the execution
+								result.</p></li><li class="listitem"><p><span class="bold"><strong>tHBaseClose</strong></span>: closes the
+								transaction.</p></li></ul></div><p>To replicate this scenario, proceed as the following sections
+					illustrate.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Before starting the replication, your Hbase and Zookeeper service should
+						have been correctly installed and well configured. This scenario explains
+						only how to use Talend solution to make data transaction with a given
+						HBase.</p></td></tr></table></div><div class="section" title="Dropping and linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e85137"></a>Dropping and linking the components</h4></div></div></div><p>To do this, proceed as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Drop <span class="bold"><strong>tHBaseConnection</strong></span>, <span class="bold"><strong>tFixedFlowInput</strong></span>, <span class="bold"><strong>tHBaseOutput</strong></span>, <span class="bold"><strong>tHBaseInput</strong></span>,<span class="bold"><strong>
+									tLogRow</strong></span> and <span class="bold"><strong>tHBaseClose</strong></span> from Palette onto the Design
+								workspace.</p></li><li class="listitem"><p>Right-click <span class="bold"><strong>tHBaseConnection</strong></span> to
+								open its contextual menu and select the <span class="bold"><strong>Trigger</strong></span> &gt; <span class="bold"><strong>On Subjob
+									Ok</strong></span> link from this menu to connect this component to
+									<span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p>Do the same to create the <span class="bold"><strong>OnSubjobOk</strong></span> link from <span class="bold"><strong>tFixedFlowInput</strong></span> to <span class="bold"><strong>tHBaseInput</strong></span> and then to <span class="bold"><strong>tHBaseClose</strong></span>.</p></li><li class="listitem"><p>Right-click <span class="bold"><strong>tFixedFlowInput</strong></span> and
+								select the <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> link to connect this component to
+									<span class="bold"><strong>tHBaseOutput</strong></span>.</p></li><li class="listitem"><p>Do the same to create the <span class="bold"><strong>Main</strong></span>
+								link from <span class="bold"><strong>tHBaseInput</strong></span> to <span class="bold"><strong>tLogrow</strong></span>.</p></li></ol></div><p>The components to be used in this scenario are all placed and linked. Then
+						you need continue to configure them sucessively. </p></div><div class="section" title="Configuring the connection"><div class="titlepage"><div><div><h4 class="title"><a name="d0e85223"></a>Configuring the connection</h4></div></div></div><p>To configure the connection to your Zookeeper service and thus to the
+						HBase of interest, proceed as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>On the Design workspace of your Studio, double-click the <span class="bold"><strong>tHBaseConnection</strong></span> component to open its
+									<span class="bold"><strong>Component</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case-thbaseinput_connection.png"></div></li><li class="listitem"><p>In the <span class="bold"><strong>Zookeeper quorum</strong></span> field,
+								type in the name or the URL of the Zookeeper service you are using.
+								In this example, the name of the service in use is <span class="italic">hbase</span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Zookeeper client port</strong></span>
+								field, type in the number of client listening port. In this example,
+								it is <span class="italic">2181</span>.</p></li></ol></div></div><div class="section" title="Configuring the process of writing data into the HBase"><div class="titlepage"><div><div><h4 class="title"><a name="d0e85259"></a>Configuring the process of writing data into the HBase</h4></div></div></div><p>To do this, proceed as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>On the Design workspace, double-click the <span class="bold"><strong>tFixedFlowInput</strong></span> component to open its <span class="bold"><strong>Component</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case-thbaseinput_inflow.png"></div></li><li class="listitem"><p>In this view, click the three-dot button next to <span class="bold"><strong>Edit schema</strong></span> to open the schema
+								editor.</p><div class="mediaobject"><img src="../images/use_case-thbaseinput_inflow_schema.png"></div></li><li class="listitem"><p>Click the plus button three times to add three rows and in the
+									<span class="bold"><strong>Column</strong></span> column, rename the three
+								rows respectively as:<span class="italic">
+									id</span>,<span class="italic"> name</span> and
+									<span class="italic">age</span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Type</strong></span> column, click each of
+								these rows and from the drop-down list, select the data type of
+								every row. In this scenario, they are <span class="bold"><strong>Integer</strong></span> for <span class="italic">id</span>
+								and <span class="italic">age</span>, <span class="bold"><strong>String</strong></span> for <span class="italic">name</span>.
+							</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate these
+								changes and accept the propagation prompted by the pop-up dialog
+								box.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, select the
+									<span class="bold"><strong>Use Inline Content (delimited
+									file)</strong></span> to display the fields for editing.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Content</strong></span> field, type in the
+								delimited data to be written into the HBase, separated with the
+								semicolon "<code class="code">;</code>". In this example, they are:</p><pre class="programlisting"><code class="code">1;Albert;23<span></span>
+2;Alexandre;24<span></span>
+3;Alfred-Hubert;22<span></span>
+4;Andr&eacute;;40<span></span>
+5;Didier;28<span></span>
+6;Anthony;35<span></span>
+7;Artus;32<span></span>
+8;Beno&icirc;t;56<span></span>
+9;Catherine;34<span></span>
+10;Charles;21<span></span>
+11;Christophe;36<span></span>
+12;Christian;67<span></span>
+13;Cl&eacute;ment ;64<span></span>
+14;Danniel;54<span></span>
+15;Elisabeth;58<span></span>
+16;Emile;32<span></span>
+17;Gregory;30&nbsp;<span></span></code></pre></li><li class="listitem"><p>Double-click <span class="bold"><strong>tHBaseOutput</strong></span> to open
+								its <span class="bold"><strong>Component</strong></span> view.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If this component does not have the same schema of the
+									preceding component, a warning icon appears. In this case, click
+									the <span class="bold"><strong>Sync columns</strong></span> button to
+									retrieve the schema from the preceding one and once done, the
+									warning icon disappears. </p></td></tr></table></div><div class="mediaobject"><img src="../images/use_case-thbaseoutput.png"></div></li><li class="listitem"><p>Select the <span class="bold"><strong>Use an existing
+									connection</strong></span> check box and then select the connection
+								you have configured earlier. In this example, it is <span class="italic">tHBaseConnection_1</span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Table name</strong></span> field, type in
+								the name of the table to be created in the HBase. In this example,
+								it is <span class="italic">customer</span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Action on table</strong></span> field,
+								select the action of interest from the drop-down list. In this
+								scenario, select <span class="bold"><strong>Drop table if exists and
+									create</strong></span>. This way, if a table named customer exists
+								already in the HBase, it will be disabled and deleted before
+								creating this current table.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Advanced settings</strong></span> tab
+								to open the corresponding view. </p><div class="mediaobject"><img src="../images/use_case-thbaseoutput-advanced.png"></div></li><li class="listitem"><p>In the <span class="bold"><strong>Family parameters</strong></span> table,
+								add two rows by clicking the plus button, rename them as <span class="italic">family1</span> and <span class="italic">family2</span> respectively and then leave the other
+								columns empty. These two column families will be created in the
+								HBase using the default family performance options.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The <span class="bold"><strong>Family parameters</strong></span> table
+									is available only when the action you have selected in the
+										<span class="bold"><strong>Action on table</strong></span> field is to
+									create a table in HBase. For further information about this
+										<span class="bold"><strong>Family parameters</strong></span> table,
+									see <a class="xref" href="tHBaseOutput.html" title="tHBaseOutput">the section called &#8220;tHBaseOutput&#8221;</a>.</p><p> </p></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>Families</strong></span> table of the
+									<span class="bold"><strong>Basic settings</strong></span> view, enter the
+								family names in the <span class="bold"><strong>Family name</strong></span>
+								column, each corresponding to the column this family contains. In
+								this example, the <span class="italic">id</span> and the
+									<span class="italic">age</span> columns belong to
+									<span class="italic">family1</span> and the <span class="italic">name</span> column to <span class="italic">family2</span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>These column families should already exist in the HBase to be
+									connected to; if not, you need to define them in the <span class="bold"><strong>Family parameters</strong></span> table of the
+										<span class="bold"><strong>Advanced settings</strong></span> view for
+									creating them at runtime.</p></td></tr></table></div></li></ol></div></div><div class="section" title="Configuring the process of extracting data from the HBase"><div class="titlepage"><div><div><h4 class="title"><a name="d0e85500"></a>Configuring the process of extracting data from the HBase</h4></div></div></div><p> To do this, perform the following operations:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="bold"><strong>tHBaseInput</strong></span> to open
+								its <span class="bold"><strong>Component</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case-thbaseinput_config.png"></div></li><li class="listitem"><p> Select the <span class="bold"><strong>Use an existing
+									connection</strong></span> check box and then select the connection
+								you have configured earlier. In this example, it is <span class="italic">tHBaseConnection_1</span>. </p></li><li class="listitem"><p> Click the three-dot button next to <span class="bold"><strong>Edit
+									schema</strong></span> to open the schema editor.</p><div class="mediaobject"><img src="../images/use_case-tHBaseInput_schema.png"></div></li><li class="listitem"><p>Click the plus button three times to add three rows and rename
+								them as <span class="italic">id</span>, <span class="italic">name</span> and <span class="italic">age</span> respectively in the <span class="bold"><strong>Column</strong></span> column. This means that you extract these
+								three columns from the HBase.</p></li><li class="listitem"><p>Select the types for each of the three columns. In this example,
+									<span class="bold"><strong>Integer</strong></span> for <span class="italic">id</span> and <span class="italic">age</span>, <span class="bold"><strong>String</strong></span> for
+									<span class="italic">name</span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate these
+								changes and accept the propagation prompted by the pop-up dialog
+								box.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Table name</strong></span> field, type in
+								the table from which you extract the columns of interest. In this
+								scenario, the table is <span class="italic">customer</span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Mapping</strong></span> table, the
+									<span class="bold"><strong>Column</strong></span> column has been already
+								filled automatically since the schema was defined, so simply enter
+								the name of every family in the <span class="bold"><strong>Column
+									family</strong></span> column, each corresponding to the column it
+								contains. </p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tHBaseClose</strong></span> to open
+								its <span class="bold"><strong>Component</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case-thbaseclose.png"></div></li><li class="listitem"><p>In the <span class="bold"><strong>Component List</strong></span> field,
+								select the connection you need to close. In this example, this
+								connection is <span class="italic">tHBaseConnection_1</span>.</p></li></ol></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e85617"></a>Executing the Job</h4></div></div></div><p>To execute this Job, press <span class="bold"><strong>F6</strong></span>. </p><p>Once done, the <span class="bold"><strong>Run</strong></span> view is opened
+						automatically, where you can check the execution result.</p><div class="mediaobject"><img src="../images/use_case-result-processed_data.png"></div><p> These columns of interest are extracted and you can process them
+						according to your needs. </p><p>Login to your HBase database, you can check the <span class="italic">customer</span> table this Job has created.</p></div></div></div></body></html>

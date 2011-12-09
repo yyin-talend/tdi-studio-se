@@ -1,0 +1,229 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tOracleInvalidRows</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tMysqlValidRows.html" title="tMysqlValidRows"><link rel="next" href="tOracleValidRows.html" title="tOracleValidRows"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tOracleInvalidRows"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tOracleInvalidRows"></a>tOracleInvalidRows</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="35"><tr><td><img src="../images/tOracleInvalidRows_icon32_white.png" width="35"></td></tr></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la </em></span>
+            <span class="bold"><strong>Palette</strong></span>
+            <span class="emphasis"><em> du studio uniquement si vous avez souscrit &agrave; l&#8217;&eacute;dition correspondante de </em></span>
+            <span class="bluebold">
+                Talend Enterprise Data Quality
+            </span>
+            <span class="emphasis"><em>.</em></span>
+        </p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tOracleInvalidRows"><div class="titlepage"><div><div><h3 class="title"><a name="d0e183070"></a>Propri&eacute;t&eacute;s du tOracleInvalidRows</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Data Quality</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tOracleInvalidRows</strong></span> v&eacute;rifie les
+                                lignes d&#8217;une base de donn&eacute;es par rapport &agrave; des mod&egrave;les de bases de
+                                donn&eacute;es sp&eacute;cifiques &agrave; <span class="bluebold">Talend Enterprise Data Quality</span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tOracleInvalidRows</strong></span> vous permet
+                                d&#8217;extraire des lignes d&#8217;une base de donn&eacute;es qui ne correspondent pas
+                                &agrave; un mod&egrave;le donn&eacute; de qualit&eacute; de donn&eacute;es. Vous pouvez impl&eacute;menter
+                                n&#8217;importe quelle correction n&eacute;cessaire.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Property type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+                                ponctuellement.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+                                fichier de propri&eacute;t&eacute;s du composant. Les champs suivants sont alors
+                                pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es collect&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use an existing connection</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez la case et cliquez sur le composant de connexion ad&eacute;quat
+                                dans la liste <span class="bold"><strong>Component list</strong></span> pour
+                                r&eacute;utiliser les informations de connexion que vous avez d&eacute;j&agrave;
+                                d&eacute;finies.</p>
+                            <p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la
+                                    liste <span class="bold"><strong>Component List</strong></span> pr&eacute;sente
+                                    uniquement les composants de connexion du Job du m&ecirc;me niveau. Si
+                                    vous souhaitez utiliser une connexion existant dans un autre
+                                    niveau, v&eacute;rifiez que les composants de connexion disponibles
+                                    partagent la m&ecirc;me connexion.</p><p>Pour plus d&#8217;informations concernant le partage d&#8217;une connexion
+                                    &agrave; travers diff&eacute;rents niveaux de Jobs, consultez <span class="bold"><strong>Use or register a shared DB
+                                        connection</strong></span> dans tous les composants de base de
+                                    donn&eacute;es que vous utilisez.</p></td></tr></table></div>
+                            <p>Sinon, vous pouvez &eacute;galement d&eacute;sactiver le composant de connexion
+                                et utiliser les <span class="bold"><strong>Dynamic settings</strong></span> du
+                                composant, afin de param&eacute;trer manuellement la connexion. Dans ce
+                                cas, v&eacute;rifiez que le nom de la connexion est unique et distinct tout
+                                au long des deux niveaux de Jobs. Pour plus d&#8217;informations
+                                concernant les param&egrave;tres dynamiques (<span class="bold"><strong>Dynamic
+                                    settings</strong></span>), consultez le <span class="bold"><strong>Guide
+                                    Utilisateur</strong></span> de votre Studio. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Host</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Adresse IP du serveur de base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Port</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Database</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nom de la base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Oracle schema</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nom du sch&eacute;ma Oracle.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> et
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Informations d&#8217;identification de l&#8217;utilisateur de la base de
+                                donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (<span class="bold"><strong>built-in)</strong></span>
+                                soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+                                conserv&eacute; ponctuellement pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+                                r&eacute;utilisable dans divers projets et Job designs. Voir &eacute;galement&nbsp;le
+                                    <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Table Name</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez le nom de la table devant &ecirc;tre lue.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Where clause</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez une clause WHERE afin de d&eacute;finir les crit&egrave;res auxquels
+                                doivent correspondre les lignes.</p>
+                            <p>Vous pouvez utiliser la clause WHERE pour s&eacute;lectionner des lignes
+                                sp&eacute;cifiques de la table correspondant &agrave; certains crit&egrave;res ou
+                                certaines conditions.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Analyzed column</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez la colonne &agrave; analyser dans la liste des colonnes du
+                                sch&eacute;ma.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Custom pattern</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin de d&eacute;finir manuellement l&#8217;expression
+                                r&eacute;guli&egrave;re par rapport &agrave; laquelle vous voulez v&eacute;rifier les lignes de
+                                la base de donn&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Patterns list</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez le mod&egrave;le dans la liste par rapport auquel vous
+                                souhaitez v&eacute;rifier les lignes de la base de donn&eacute;es.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="italic">tStatCatcher Statistics </span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+                                Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant peut &ecirc;tre utilis&eacute; comme composant de d&eacute;but ou
+                                interm&eacute;diaire. Il requiert un flux de sortie.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e183565"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tMysqlInvalidRows.html#Raa46471" title="Sc&eacute;nario&nbsp;: Lire des adresses e-mail d&#8217;une table d&#8217;une base de donn&eacute;es, et extraire les lignes invalides">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Lire des adresses e-mail d&#8217;une table d&#8217;une base de donn&eacute;es, et extraire
+            les lignes invalides&nbsp;&raquo;</a>. </p></div></div></body></html>

@@ -1,0 +1,189 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSqoopExport</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch10.html" title="Chapter&nbsp;10.&nbsp;File components"><link rel="prev" href="tPivotToColumnsDelimited.html" title="tPivotToColumnsDelimited"><link rel="next" href="tSqoopImport.html" title="tSqoopImport"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tSqoopExport"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSqoopExport"></a>tSqoopExport</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="29"><tr><td><img src="../images/tSqoopExport.png" width="29"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the
+						relevant edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Integration Big Data
+				edition
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tSqoopExport Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e255526"></a>tSqoopExport Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>File/Sqoop</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tSqoopExport</strong></span> calls sqoop
+										to transfer data from the Hadoop Distributed File System
+										(HDFS) to a relational database management system (RDBMS).
+									</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tSqoopExport</strong></span> is used to
+										define the arguments required by Sqoop for transferring data
+										to a RDBMS.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Connection</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Type in the JDBC URL used to connect to the target
+										database.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Table Name</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Type in the name of the target table which data is
+										tranfered to from HDFS. This table must already exist in the
+										target database. The input files are read and parsed into a
+										set of records according to the user-specified
+										delimiters.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Export Dir</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Type in the path, or browse to the source data to be
+										transferred in HDFS.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>User name</em></span> and
+											<span class="emphasis"><em>Password</em></span></p>
+								</td><td valign="top">
+									<p>Type in the authentication information to the target
+										database.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Specify Number of Mappers</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to precise the number of mappers,
+										which is the degree of parallelism used.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Print Log</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to activate the <span class="bold"><strong>Verbose</strong></span> check box.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Verbose</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to print more information while
+										working, for example, the debugging information.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Direct</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to use the export fast path.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Use MySQL default delimiters</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to use MySQL&#8217;s default delimiter
+										set</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Additional arguments</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Complete this table to use an additional argument. </p>
+									<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+											<span class="emphasis"><em>At each time, only one additional argument is
+												allowed. Use of multiple additional arguments at the
+												same time may lead to exception error..</em></span>
+										</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is used standalone. </p>
+									<p> If your HDFS is hosted on a different server from the one
+										hosting your Studio, install a Jobserver of equal or later
+										version than your Studio&#8217;s in the server of this HDFS and
+										run the Job of interest remotely on this server. For further
+										information about how to run a Job remotely, see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Connections</strong></span>
+									</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>Outgoing links (from one component to another):</p>
+									<p>
+										<span class="bold"><strong>Trigger</strong></span>: Run if; On Subjob
+										Ok; On Subjob Error.</p>
+									<p> </p>
+									<p> Incoming links (from one component to another):</p>
+									<p>
+										<span class="bold"><strong>Row</strong></span>: Iterate; </p>
+									<p>
+										<span class="bold"><strong>Trigger</strong></span>: Run if; On Subjob
+										Ok; On Subjob Error; On Component Ok; On Component
+										Error</p>
+									<p> </p>
+									<p> For further information regarding connections, see
+											<span class="bluebold">Talend Enterprise Studio</span> User Guide.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e255904"></a>Related scenario</h3></div></div></div><p>
+					<span>
+						No scenario is available for this component yet.
+					</span>
+				</p></div></div></body></html>

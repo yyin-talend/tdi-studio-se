@@ -1,0 +1,138 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFuzzyUniqRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tFuzzyMatch.html" title="tFuzzyMatch"><link rel="next" href="tGenKey.html" title="tGenKey"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFuzzyUniqRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFuzzyUniqRow"></a>tFuzzyUniqRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="35"><tr><td><img src="../images/tFuzzyUniqRow_icon32_white.png" width="35"></td></tr></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la </em></span><span class="bold"><strong>Palette</strong></span><span class="emphasis"><em> du studio uniquement si vous avez souscrit &agrave; l&#8217;&eacute;dition
+                correspondante de </em></span><span class="bluebold">Talend Enterprise Data Quality</span><span class="emphasis"><em>.</em></span></p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tFuzzyUniqRow"><div class="titlepage"><div><div><h3 class="title"><a name="d0e175054"></a>Propri&eacute;t&eacute;s du tFuzzyUniqRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Data Quality</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tFuzzyUniqRow </strong></span>compare des colonnes dans le flux
+                                d&#8217;entr&eacute;e, en utilisant une m&eacute;thode de correspondance d&eacute;finie, et
+                                collecte les duplicats rencontr&eacute;s.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tFuzzyUniqRow</strong></span> aide &agrave; v&eacute;rifier la qualit&eacute; des donn&eacute;es
+                                de n&#8217;importe quelle source.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (<span class="bold"><strong>Built-in</strong></span>) soit distant dans le <span class="bold"><strong>Repository</strong></span>. </p><p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour modifier le sch&eacute;ma.
+                                Notez que si vous effectuez des modifications, le sch&eacute;ma passera
+                                automatiquement en Built-in.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le
+                                sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; ponctuellement pour ce composant
+                                seulement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Column</em></span></p>
+                        </td><td valign="top"><p>Liste de toutes les colonnes du flux
+                                d&#8217;entr&eacute;e.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Key attribute</em></span></p>
+                        </td><td valign="top"><p>Cochez les cases &agrave; c&ocirc;t&eacute; des colonnes que vous
+                                voulez s&eacute;lectionnez.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Matching type</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez l&#8217;algorithme de correspondance dans
+                                la liste&nbsp;:</p><p><span class="bold"><strong>Exact
+                                Match&nbsp;</strong></span>: associe chaque entr&eacute;e trait&eacute;e &agrave; toutes les
+                                entr&eacute;es possibles de r&eacute;f&eacute;rence qui ont exactement la m&ecirc;me
+                                valeur.</p><p><span class="bold"><strong>Levenshtein&nbsp;</strong></span>:
+                                cette option se base sur la th&eacute;orie de la distance d&#8217;&eacute;dition. Elle
+                                calcule le nombre d&#8217;insertions, suppressions ou substitutions
+                                n&eacute;cessaires pour qu&#8217;une entr&eacute;e corresponde &agrave; l&#8217;entr&eacute;e de
+                                r&eacute;f&eacute;rence.</p><p><span class="bold"><strong>Metaphone&nbsp;</strong></span>:
+                                Cette option se base sur un algorithme phon&eacute;tique afin d&#8217;indexer les
+                                entr&eacute;es selon leur prononciation. Elle charge d&#8217;abord la phon&eacute;tique
+                                de toutes les entr&eacute;es du flux lookup de r&eacute;f&eacute;rence, puis v&eacute;rifie
+                                toutes les entr&eacute;es du flux principal par rapport aux entr&eacute;es du flux
+                                de r&eacute;f&eacute;rence.</p><p><span class="bold"><strong>Double
+                                    Metaphone&nbsp;</strong></span>: une nouvelle version de l&#8217;algorithme
+                                phon&eacute;tique M&eacute;taphone, qui produit des r&eacute;sultats plus pr&eacute;cis que
+                                l&#8217;algorithme originel. Il peut retourner un code primaire et un code
+                                secondaire pour une cha&icirc;ne de caract&egrave;res. Cela est utile dans des
+                                cas ambigus, mais &eacute;galement pour de multiples variantes de noms de
+                                famille aux origines communes.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Min. Distance</em></span></p>
+                        </td><td valign="top"><p>Uniquement pour <span class="bold"><strong>Levenshtein</strong></span>. Param&eacute;trez le nombre minimal de
+                                changements permis afin de correspondre &agrave; la r&eacute;f&eacute;rence. Si vous
+                                saisissez 0, seules les correspondances parfaites (<span class="bold"><strong>Exact Match</strong></span>) seront retourn&eacute;es.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Max. Distance</em></span></p>
+                        </td><td valign="top"><p>Uniquement pour <span class="bold"><strong>Levenshtein</strong></span>. Param&eacute;trez le nombre maximal de
+                                changements permis afin de correspondre &agrave; la r&eacute;f&eacute;rence.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="italic">tStatCatcher Statistics
+                                </span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es
+                                de process du Job, aussi bien au niveau du Job qu&#8217;au niveau de
+                                chaque composant. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant n&#8217;est pas un
+                                composant de d&eacute;but (fond vert), il n&eacute;cessite un composant d&#8217;entr&eacute;e,
+                                et un ou plusieurs composant(s) de sortie.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation/pr&eacute;requis</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Comparer quatre colonnes en utilisant diff&eacute;rentes m&eacute;thodes de correspondance, et collecter les doublons rencontr&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d0e175303"></a>Sc&eacute;nario&nbsp;: Comparer quatre colonnes en utilisant diff&eacute;rentes m&eacute;thodes de
+            correspondance, et collecter les doublons rencontr&eacute;s</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; quatre composants, dont le but
+            est de collecter dans deux fichiers s&eacute;par&eacute;s toutes les entr&eacute;es uniques et tous les
+            duplicats d&#8217;entr&eacute;es depuis des colonnes trait&eacute;es d&eacute;finies, &agrave; partir des types de
+            correspondance Levenshtein et Double M&eacute;taphone.</p><p>Le fichier d&#8217;entr&eacute;e dans cet exemple ressemble &agrave;
+            ceci&nbsp;:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="339"><tr><td><img src="../images/Use_Case_tFuzzyUniqRow4.png" width="339"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Glissez le <span class="bold"><strong>tFileInputDelimited</strong></span>, <span class="bold"><strong>tFuzzyUniqRow</strong></span>, et deux <span class="bold"><strong>tFileOutputExcel</strong></span> de la <span class="bold"><strong>Palette</strong></span>
+                    dans l&#8217;espace de mod&eacute;lisation graphique.</p></li><li class="listitem"><p>Connectez le <span class="bold"><strong>tFileInputDelimited</strong></span> au <span class="bold"><strong>tFuzzyUniqRow</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Main</strong></span>
+                    <span class="bold"><strong>row</strong></span>, le <span class="bold"><strong>tFuzzyUniqRow</strong></span> au premier <span class="bold"><strong>tFileOutputExcel</strong></span> avec un lien <span class="bold"><strong>Uniques</strong></span>, puis au second <span class="bold"><strong>tFileOutputExcel</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Duplicates</strong></span>. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="353"><tr><td><img src="../images/Use_Case_tFuzzyUniqRow.png" width="353"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFileInputDelimited</strong></span>
+                    afin d&#8217;ouvrir sa vue <span class="bold"><strong>Basic settings</strong></span> et d&eacute;finir
+                    ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="527"><tr><td><img src="../images/Use_Case_tFuzzyUniqRow1.png" width="527"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez <span class="bold"><strong>Built-In</strong></span> dans le champ <span class="bold"><strong>Property Type</strong></span>.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+                        <span class="bold"><strong>File Name</strong></span> pour s&eacute;lectionner le fichier
+                    contenant les donn&eacute;es d&#8217;entr&eacute;e.</p></li><li class="listitem"><p>D&eacute;finissez les s&eacute;parateurs de lignes et de champs.</p></li><li class="listitem"><p>Au besoin, param&eacute;trez les champs <span class="bold"><strong>Header</strong></span>, <span class="bold"><strong>Footer</strong></span>, and
+                        <span class="bold"><strong>Limit</strong></span>.</p><p> Pour ce sc&eacute;nario, saisissez <span class="emphasis"><em>1</em></span> dans le champ <span class="bold"><strong>Header</strong></span>. Les champs <span class="bold"><strong>Footer</strong></span> et <span class="bold"><strong>Limit</strong></span> pour le nombre
+                    de lignes trait&eacute;es ne sont pas param&eacute;tr&eacute;s. </p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Edit schema</strong></span> pour ouvrir une bo&icirc;te
+                    de dialogue o&ugrave; vous pourrez d&eacute;crire la structure des donn&eacute;es du fichier d&eacute;limit&eacute;
+                    source.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="314"><tr><td><img src="../images/Use_Case_tFuzzyUniqRow2.png" width="314"></td></tr></table></div><p>Dans ce sc&eacute;nario, le sch&eacute;ma source est compos&eacute; des
+            colonnes suivantes&nbsp;: <span class="emphasis"><em>ID, Status, FirstName, Email, City, Initial,
+                ZipCode,</em></span> et <span class="emphasis"><em>Header</em></span> (ID, Statut, Pr&eacute;nom, E-mail,
+            Ville, Initiales, Code postal, et En-t&ecirc;te).</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFuzzyUniqRow</strong></span> afin
+                    d&#8217;afficher sa vue <span class="bold"><strong>Basic settings</strong></span> et d&eacute;finir ses
+                    propri&eacute;t&eacute;s.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Key Attribute</strong></span>, cochez les
+                    cases &agrave; c&ocirc;t&eacute; des colonnes que vous souhaitez v&eacute;rifier en utilisant la m&eacute;thode de
+                    correspondance d&eacute;finie, <span class="emphasis"><em>Firstname</em></span>,
+                        <span class="emphasis"><em>Email</em></span>, <span class="emphasis"><em>City</em></span> et
+                        <span class="emphasis"><em>ZipCode</em></span> (Pr&eacute;nom, E-mail, Ville et Code postal) dans cet
+                    exemple.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="518"><tr><td><img src="../images/Use_Case_tFuzzyUniqRow3.png" width="518"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Matching
+                        Type</strong></span>, param&eacute;trez les m&eacute;thodes de correspondance que vous
+                    souhaitez appliquer pour chaque colonne s&eacute;lectionn&eacute;e.</p><p> Dans cet exemple, <span class="emphasis"><em>Levenshtein</em></span> est utilis&eacute; comme m&eacute;thode
+                    de correspondance pour les colonnes <span class="emphasis"><em>FirstName, Email, </em></span>et
+                        <span class="emphasis"><em>ZipCode</em></span>, le <span class="emphasis"><em>Double Metaphone</em></span> sera
+                    utilis&eacute; comme m&eacute;thode de correspondance pour la colonne
+                        <span class="emphasis"><em>City</em></span>.</p></li><li class="listitem"><p>Param&eacute;trez ensuite les distances minimale et maximale pour la m&eacute;thode
+                    Levenshtein. Dans cette m&eacute;thode, la distance est le nombre de changements devant
+                    &ecirc;tre apport&eacute; aux caract&egrave;res (insertion, suppression ou substitution) afin que
+                    l&#8217;entr&eacute;e corresponde enti&egrave;rement &agrave; la r&eacute;f&eacute;rence. Dans cet exemple, l&#8217;objectif
+                    est de faire en sorte que la distance minimale soit &eacute;gale &agrave; 0, et que la
+                    distance maximale soit &eacute;gale &agrave; 2. Cela conduira &agrave; l&#8217;&eacute;criture de toutes les
+                    entr&eacute;es des colonnes <span class="emphasis"><em>FirstName, Email, </em></span>et <span class="emphasis"><em>ZipCode
+                    </em></span>qui correspondent exactement ou ont au plus deux modifications de
+                    caract&egrave;res. Il n&#8217;y a ni distance minimale, ni distance maximale &agrave; param&eacute;trer
+                    pour le <span class="emphasis"><em>Double Metaphone</em></span>, car cette m&eacute;thode de
+                    correspondance est bas&eacute;e sur les divergences phon&eacute;tiques dans les donn&eacute;es
+                    d&#8217;entr&eacute;e.</p></li><li class="listitem"><p>Double-cliquez sur le premier <span class="bold"><strong>tFileOutputExcel</strong></span> afin d&#8217;afficher sa vue <span class="bold"><strong>Basic settings</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="485"><tr><td><img src="../images/Use_Case_tFuzzyUniqRow5.png" width="485"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Param&eacute;trez le r&eacute;pertoire de destination, ainsi que la nom de la feuille (Sheet
+                    name), et cochez la case Include header.</p></li><li class="listitem"><p>R&eacute;p&eacute;tez l&#8217;op&eacute;ration pour le deuxi&egrave;me <span class="bold"><strong>tFileOutputExcel</strong></span>.</p></li><li class="listitem"><p>Sauvegardez votre Job et cliquez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><p>Le <span class="bold"><strong>tFuzzyUniqRow</strong></span> utilise
+            la m&eacute;thode de <span class="emphasis"><em>Levenshtein</em></span> pour comparer s&eacute;par&eacute;ment chacune des
+            trois colonnes d&eacute;finies, il utilise la m&eacute;thode du <span class="emphasis"><em>Double Metaphone</em></span>,
+            afin de comparer les donn&eacute;es de la colonne <span class="emphasis"><em>City</em></span>, puis passer la
+            ligne unique et les duplicats aux fichiers de sortie d&eacute;finis. Dans notre exemple, les
+            deux premi&egrave;res lignes correspondent, cependant, la deuxi&egrave;me ligne ira dans la sortie
+                <span class="emphasis"><em>duplicates</em></span>. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="486"><tr><td><img src="../images/Use_Case_tFuzzyUniqRow6.png" width="486"></td></tr></table></div><p>La troisi&egrave;me ligne est unique et ira dans la sortie
+                <span class="emphasis"><em>uniques</em></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="490"><tr><td><img src="../images/Use_Case_tFuzzyUniqRow7.png" width="490"></td></tr></table></div></div></div></body></html>

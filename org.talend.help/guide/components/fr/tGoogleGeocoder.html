@@ -1,0 +1,138 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tGoogleGeocoder</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tGoogleAddressRow.html" title="tGoogleAddressRow"><link rel="next" href="tGoogleMapLookup.html" title="tGoogleMapLookup"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tGoogleGeocoder"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tGoogleGeocoder"></a>tGoogleGeocoder</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tGoogleGeocoder_icon32_white.png" width="27"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la </em></span><span class="bold"><strong>Palette</strong></span><span class="emphasis"><em> du Studio si vous avez souscrit &agrave; l'&eacute;dition correspondante de
+        </em></span><span class="bluebold">Talend Enterprise Data Quality</span>.</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tGoogleGeocoder"><div class="titlepage"><div><div><h3 class="title"><a name="d0e177188"></a>Propri&eacute;t&eacute;s du tGoogleGeocoder</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+              <p>
+                <span class="bold"><strong>Famille de composant</strong></span>
+              </p>
+            </td><td valign="top">
+              <p>Data Quality/Address</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+              <p>
+                <span class="bold"><strong>Fonction</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p>Le composant <span class="bold"><strong>tGoogleGeocoder </strong></span> acc&egrave;de &agrave; l'API
+                Google Geocoding via une requ&ecirc;te HTTP afin d'obtenir des coordonn&eacute;es g&eacute;ographiques,
+                selon les informations relatives &agrave; l'adresse que vous avez fournies.</p>
+              <p>
+                </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Pour plus d'informations concernant l'API Google Geocoding, consultez <a class="link" href="http://code.google.com/intl/en/apis/maps/documentation/geocoding/#ReverseGeocoding/" target="_top">The Google Geocoding API</a> (en anglais).</p></td></tr></table></div><p>
+              </p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="bold"><strong>Objectif</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p>Le <span class="bold"><strong>tGoogleGeocoder</strong></span> vous permet de convertir des
+                adresses d'un format lisible par l'homme en coordonn&eacute;es g&eacute;ographiques et autres
+                informations g&eacute;ographiques.</p>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="bold"><strong>Basic settings</strong></span>
+              </p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>Pause(in 1/10 seconds)</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Temps de pause entre les requ&ecirc;tes HTTP pour les enregistrements relatifs aux
+                informations g&eacute;ographiques. Par d&eacute;faut, la valeur de ce champ est 1.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Schema </em></span>et <span class="emphasis"><em>Edit Schema</em></span></p>
+            </td><td valign="top">
+              <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le nombre de champs
+                qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local (built-in)
+                soit distant dans le Repository.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td>
+              <p>
+                <span class="emphasis"><em>&nbsp;Address column</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Dans cette liste, s&eacute;lectionnez un param&egrave;tre &agrave; utiliser lors de l'envoi de la
+                requ&ecirc;te Geocoding vers l'API Google Geocoding. Les param&egrave;tres de la liste sont
+                pr&eacute;d&eacute;finis dans le sch&eacute;ma des donn&eacute;es d'entr&eacute;e. </p>
+            </td></tr><tr><td>&nbsp;</td><td>
+              <span class="emphasis"><em>Sync columns</em></span>
+            </td><td valign="top">Cliquez sur le bouton afin de r&eacute;cup&eacute;rer le sch&eacute;ma du composant
+              pr&eacute;c&eacute;dent dans le Job.</td></tr><tr><td>
+              <p>&nbsp;<span class="bold"><strong>Advanced settings</strong></span></p>
+            </td><td valign="top">
+              <p>
+                <span class="emphasis"><em>import</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Personnalisez ce champ pour importer une classe Java pour le <span class="bold"><strong>tGoogleGeocoder</strong></span>. Par d&eacute;faut, vous n'avez pas &agrave; modifier
+                cette partie.</p>
+            </td></tr><tr><td>&nbsp;</td><td valign="top">
+              <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+            </td><td valign="top">
+              <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                composant.</p>
+            </td></tr><tr><td>&nbsp;</td><td valign="top">
+              <span class="emphasis"><em>Enable parallel execution</em></span>
+            </td><td valign="top">
+              <p>Cocher cette case permet de traiter
+                plusieurs flux de donn&eacute;es simultan&eacute;ment. Cela permet de traiter les donn&eacute;es plus
+                rapidement.</p>
+              <p>Dans le champ <span class="bold"><strong>Number
+                  of parallel executions</strong></span>, vous pouvez&nbsp;:</p>
+              <p>- Saisir le nombre d&#8217;ex&eacute;cutions parall&egrave;les
+                d&eacute;sir&eacute;</p>
+              <p>- Appuyer sur <span class="bold"><strong>Ctrl+Espace </strong></span>et s&eacute;lectionner la variable de contexte dans la
+                liste.</p>
+              <p>Pour plus d&#8217;informations, consultez
+                  le<span class="bold"><strong> Guide utilisateur</strong></span>
+                <span class="bluebold">Talend Enterprise Studio</span>.</p>
+              <div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                  <span class="emphasis"><em>Les actions sur la table (</em></span>
+                  <span class="bold"><strong>Action on table</strong></span>
+                  <span class="emphasis"><em>) ne sont pas disponibles avec la fonction de parall&eacute;lisation. Ainsi,
+                    pour cr&eacute;er une table, vous devez utiliser un composant </em></span>
+                  <span class="bold"><strong>tCreateTable</strong></span>
+                  <span class="emphasis"><em>. </em></span>
+                </p></td></tr></table></div>
+              <div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                  <span class="emphasis"><em>Lorsque l&#8217;ex&eacute;cution parall&egrave;le est activ&eacute;e, il n&#8217;est pas possible
+                    d&#8217;utiliser les variables globales pour retrouver les valeurs de retour dans un
+                    sous-job.</em></span>
+                </p></td></tr></table></div>
+            </td></tr><tr><td valign="top">
+              <p>
+                <span class="bold"><strong>Utilisation</strong></span>
+              </p>
+            </td><td colspan="2" valign="top">
+              <p>Ce composant est un composant interm&eacute;diaire. Il n&eacute;cessite un composant d'entr&eacute;e,
+                un composant de sortie et un lien <span class="bold"><strong>Main Row</strong></span>. </p>
+            </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Obtenir des coordonn&eacute;es g&eacute;ographiques &agrave; l'aide d'adresses"><div class="titlepage"><div><div><h3 class="title"><a name="d0e177442"></a>Sc&eacute;nario : Obtenir des coordonn&eacute;es g&eacute;ographiques &agrave; l'aide d'adresses</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job a trois composants envoyant une requ&ecirc;te HTTP &agrave; l'API Google
+      Geocoding et obtenant des coordonn&eacute;es, &agrave; partir d'une adresse fournie.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="489"><tr><td><img src="../images/use_case-tgooglegeocoder1.png" width="489"></td></tr></table></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>D&eacute;posez les composants suivants de la <span class="bold"><strong>Palette</strong></span> dans
+          l'espace de mod&eacute;lisation graphique : <span class="bold"><strong>tFixedFlowInput</strong></span>,
+            <span class="bold"><strong>tGoogleGeocoder</strong></span> et <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Reliez le <span class="bold"><strong>tFixedFlowInput</strong></span> au <span class="bold"><strong>tGoogleGeocoder</strong></span> et le <span class="bold"><strong>tGoogleGeocoder</strong></span> au
+            <span class="bold"><strong>tLogRow</strong></span> &agrave; l'aide de liens <span class="bold"><strong>Main</strong></span>. </p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tFixedFlowInput</strong></span> pour
+          afficher sa vue <span class="bold"><strong>Basic settings</strong></span> et configurer ses
+          propri&eacute;t&eacute;s.</p><div class="mediaobject"><img src="../images/use_case-tgooglegeocoder2.png"></div></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Edit schema</strong></span> afin d'ouvrir une bo&icirc;te de
+          dialogue affichant la structure des donn&eacute;es d'entr&eacute;e. D&eacute;finissez les donn&eacute;es que vous
+          souhaitez passer au composant <span class="bold"><strong>tGoogleGeocoder</strong></span>, deux
+          colonnes dans ce sc&eacute;nario, <span class="emphasis"><em>AddressID</em></span> et
+          <span class="emphasis"><em>Address</em></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="489"><tr><td><img src="../images/use_case-tgooglegeocoder3.png" width="489"></td></tr></table></div></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+          dialogue.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Use Inline Table</strong></span> dans la zone<span class="bold"><strong>Mode</strong></span> de la vue <span class="bold"><strong>Basic settings</strong></span> du
+          composant <span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>Mode</strong></span> de la vue <span class="bold"><strong>Basic settings</strong></span>, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span>
+          afin d'ajouter une colonne &agrave; la table.</p></li><li class="listitem"><p>Dans la table <span class="bold"><strong>Inline Table</strong></span>, saisissez <code class="code">1</code>
+          dans la colonne <span class="emphasis"><em>AddressID</em></span> et "<code class="code">500 Oracle Parkway,Redwood
+            Shores, CA 94065</code>" dans la colonne <span class="emphasis"><em>Address</em></span> .</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tGoogleGeocoder</strong></span> afin
+          d'afficher sa vue <span class="bold"><strong>Basic settings</strong></span> et configurer ses
+          propri&eacute;t&eacute;s.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="489"><tr><td><img src="../images/use_case-tgooglegeocoder4.png" width="489"></td></tr></table></div></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma du
+            <span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p>S&eacute;lectionnez <span class="bold"><strong>Address</strong></span> dans la liste<span class="bold"><strong>Address Column</strong></span> et laissez les champs tels qu'ils sont.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tLogRow</strong></span> pour afficher sa vue
+            <span class="bold"><strong>Basic settings</strong></span> et configurer ses propri&eacute;t&eacute;s.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="489"><tr><td><img src="../images/use_case-tgooglegeocoder5.png" width="489"></td></tr></table></div></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Sync columns</strong></span> afin de r&eacute;cup&eacute;rer le sch&eacute;ma
+          du <span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p>S&eacute;lectionnez <span class="bold"><strong>Vertical (each row is a key/value list)</strong></span>
+          dans la zone <span class="bold"><strong>Mode</strong></span> puis <span class="bold"><strong>Print unique
+            name</strong></span> dans la zone <span class="bold"><strong>Title printing
+          mode</strong></span>.</p></li><li class="listitem"><p>Sauvegardez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour l'ex&eacute;cuter.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Une limite de 2500 requ&ecirc;tes de g&eacute;olocalisation par jour pour la m&ecirc;me adresse IP
+              est appliqu&eacute;e par Google, m&ecirc;me si aucune cl&eacute; Google API n'est requise par l'API
+              Geocoding (V3). Pour plus d'informations concernant les limites d'utilisation de l'API
+              Geocoding, consultez <span class="emphasis"><em>Usage Limits</em></span> dans <a class="link" href="http://code.google.com/intl/en/apis/maps/documentation/geocoding/#ReverseGeocoding/" target="_top">The Google Geocoding API</a> (en anglais). </p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="489"><tr><td><img src="../images/use_case-tgooglegeocoder6.png" width="489"></td></tr></table></div></li></ol></div><p>Les coordonn&eacute;es g&eacute;ographiques <span class="emphasis"><em>Address</em></span>
+      <code class="code">500 Oracle Parkway,Redwood Shores, CA 94065</code> sont obtenues de la base de donn&eacute;es
+      Google Map et affich&eacute;es dans la console.</p></div></div></body></html>

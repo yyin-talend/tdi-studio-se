@@ -1,0 +1,122 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tParallelize</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch15.html" title="Chapter&nbsp;15.&nbsp;Orchestration components"><link rel="prev" href="tLoop.html" title="tLoop"><link rel="next" href="tPostjob.html" title="tPostjob"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tParallelize"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tParallelize"></a>tParallelize</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tParallelize.png" width="27"></td></tr></table></div><p><span class="bold"><strong>tParallelize</strong></span> displays as a component on the
+				design workspace. However, its usage is slightly different to that of typical
+				components.</p><p>The <span class="bold"><strong>tParallelize</strong></span> component itself does not
+				process data or data flows, but helps you to parallelize and synchronize the
+				execution of numerous subjobs in your main Job.</p><div class="section" title="tParallelize Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e293675"></a>tParallelize Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Orchestration</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tParallelize </strong></span>allows you
+										to synchronize the execution of a subjob with the execution
+										of other subjobs in your main Job.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tParallelize</strong></span> helps you
+										manage complex Job systems. It executes several subjobs
+										simultaneously and synchronizes the execution of a subjob
+										with other sub-jobs within the main Job.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Wait For</em></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>end of first subjob:</em></span> sequence the
+										relevant subjob to be executed at the end of the first
+										subjob.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>end of all subjobs:</em></span> sequence the
+										relevant subjob to be executed at the end of all
+										subjobs.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Sleep Duration</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Set the time interval in seconds between each check for
+										subjob execution.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component can be used as either a start or middle
+										component in a main Job built of numerous subjobs. It can be
+										connected to preceding or following components using
+											<span class="bold"><strong>OnSubjobOk</strong></span>, <span class="bold"><strong>Parallelize</strong></span> or <span class="bold"><strong>Synchronize</strong></span> links. You can use as
+										many <span class="bold"><strong>tParallelize</strong></span>
+										components as you want in your master Job.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Connections</strong></span>
+									</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>Outgoing links (from one component to another):</p>
+									<p>
+										<span class="bold"><strong>Trigger</strong></span>: Synchronize;
+										Parallelize.</p>
+									<p> </p>
+									<p> Incoming links (from one component to another):</p>
+									<p>
+										<span class="bold"><strong>Trigger</strong></span>: On Subjob Ok; On
+										Subjob Error; Run if; On Component Ok; On Component
+										Error.</p>
+									<p> </p>
+									<p> For further information regarding connections, see
+											<span class="bluebold">Talend Enterprise Studio</span> User Guide.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Scenario: Parallelize/synchronize subjobs execution"><div class="titlepage"><div><div><h3 class="title"><a name="d0e293884"></a>Scenario: Parallelize/synchronize subjobs execution</h3></div></div></div><p>The following simple scenario creates a five-component main Job that uses one
+						<span class="bold"><strong>tParallelize</strong></span> component with four <span class="bold"><strong>tMsgBox</strong></span> single-component subjobs. The <span class="bold"><strong>tMsgBox_1</strong></span> component is the trigger subjob. The
+						<span class="bold"><strong>tParallelize_1</strong></span> component executes <span class="bold"><strong>tMsgBox_2</strong></span> and <span class="bold"><strong>tMsgBox_3</strong></span> simultaneously, and then synchronizes <span class="bold"><strong>tMsgBox_4</strong></span> to be executed at the end of the
+					simultaneous execution of the subjobs.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop four <span class="bold"><strong>tMsgBox</strong></span> components from the
+							Palette to the design workspace.</p></li><li class="listitem"><p>Define their dialog box display properties as desired. </p></li></ul></div><p>For more information on defining <span class="bold"><strong>tMsgBox</strong></span>
+					properties, see <a class="xref" href="tMsgBox.html" title="tMsgBox">the section called &#8220;tMsgBox&#8221;</a>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop a <span class="bold"><strong>tParallelize</strong></span> component onto
+							the design workspace. </p></li><li class="listitem"><p>Connect the <span class="bold"><strong>tMsgBox_1</strong></span> component to
+								<span class="bold"><strong>tParallelize_1</strong></span> using an <span class="bold"><strong>OnSubjobOk</strong></span> link, available on the right-click
+							menu. This link will trigger the next subjob(s) on the condition that
+							the first subjob has completed without error.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tParallelize_1</strong></span> to <span class="bold"><strong>tMsgBox_2</strong></span> and <span class="bold"><strong>tMsgBox_3</strong></span> using a <span class="bold"><strong>Parallelize</strong></span> link for each, available on the right-click
+							menu.These links will simply parallelize the execution of the two
+							connected subjobs.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tParallelize_1</strong></span> to <span class="bold"><strong>tMsgBox_4 </strong></span>using a <span class="bold"><strong>Synchronize</strong></span> link to seqeunce the execution of this
+							fourth subjob.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="332"><tr><td><img src="../images/Component_tParallelize.png" width="332"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the <span class="bold"><strong>tMsgBox_4</strong></span> and set its
+								<span class="bold"><strong>Basic settings</strong></span> parameters. </p></li><li class="listitem"><p>On the <span class="bold"><strong>Basic settings</strong></span> panel of the
+								<span class="bold"><strong>tParallelize</strong></span> component and from the
+								<span class="bold"><strong>Wait For</strong></span> list, select either
+								<span class="emphasis"><em>end of first subjob</em></span> or <span class="emphasis"><em>end of all
+								subjobs.</em></span> This will sequence your fourth subjob to be
+							executed at the end of the first subjob or at the end of all subjobs
+							respectively.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Sleep Duration </strong></span>field, set the
+							time interval in seconds between each check of a subjob
+							execution.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="424"><tr><td><img src="../images/Component_tParallelize_BasicSettings.png" width="424"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Save your main Job.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>F6</strong></span> key to run it.</p></li></ul></div><p>The four message boxes are displayed according to the defined sequence.</p><p>The above was a very simple scenario of what the <span class="bold"><strong>tParallelize </strong></span>component can do for you. However, you can
+					parallelize/synchronize far more complex Jobs with this component whereby each
+					of the subjobs that build the main Job can execute any possible task processed
+					in <span class="bluebold">Talend Enterprise Studio</span>.</p></div></div></body></html>

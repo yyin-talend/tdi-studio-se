@@ -1,0 +1,129 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPigFilterRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch16.html" title="Chapter&nbsp;16.&nbsp;Processing components"><link rel="prev" href="tPigFilterColumns.html" title="tPigFilterColumns"><link rel="next" href="tPigJoin.html" title="tPigJoin"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tPigFilterRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPigFilterRow"></a>tPigFilterRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tPigFilterRow_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tPigFilterRow Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e308548"></a>tPigFilterRow Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Processing/Fields</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>The <span class="bold"><strong>tPigFilterRow</strong></span>
+										component allows you to select one or more rows of data from
+										a relation based on defined conditions.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component selects data or filters out data from a
+										relation based on defined filter conditions.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											Schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository. In this component, the schema is
+										read-only.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: The schema will
+										be created and stored locally for this component only.
+										Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: The schema
+										already exists and is stored in the Repository, hence can be
+										reused in various projects and Job designs. Related topic:
+										see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Filter configuration</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Click the <span class="bold"><strong>Add</strong></span> button
+										beneath the <span class="bold"><strong>Filter
+											configuration</strong></span> table to set one or more filter
+										conditions.</p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This table disappears if you select <span class="bold"><strong>Use advanced filter</strong></span>.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Use advanced filter</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to define advanced filter condition
+										by entering customized filter expression in the <span class="bold"><strong>Filter</strong></span> field.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to gather the Job processing
+										metadata at the Job level as well as at each component
+										level. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is commonly used as intermediate step
+										together with input component and output component.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>Knowledge of Pig scripts is required.</p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Scenario: Selecting rows of data from a relation and storing the result into a local file"><div class="titlepage"><div><div><h3 class="title"><a name="Raa73213"></a>Scenario: Selecting rows of data from a relation and storing the result into
+					a local file</h3></div></div></div><p>This scenario describes a three-component Job that selects rows of data that
+					matches filter condition from a relation and stores the filter result into a
+					local file.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="378"><tr><td><img src="../images/Use_Case_tPigFilterRow1.png" width="378"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tPigFilterRow</strong></span>, <span class="bold"><strong>tPigLoad</strong></span>, <span class="bold"><strong>tPigStoreResult</strong></span>.</p></li><li class="listitem"><p>Right-click <span class="bold"><strong>tPigLoad</strong></span> to connect it to
+								<span class="bold"><strong>tPigFilterRow</strong></span> using a <span class="bold"><strong>Row &gt; Pig Combine</strong></span> connection.</p></li><li class="listitem"><p>Right-click <span class="bold"><strong>tPigFilterRow</strong></span> to connect
+							it to <span class="bold"><strong>tPigStoreResult</strong></span> using a <span class="bold"><strong>Row &gt; Pig Combine</strong></span> connection.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tPigLoad</strong></span> to open its
+								<span class="bold"><strong>Basic settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="429"><tr><td><img src="../images/Use_Case_tPigFilterRow2.png" width="429"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to <span class="bold"><strong>Edit
+								schema</strong></span> to add columns for <span class="bold"><strong>tPigLoad</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="350"><tr><td><img src="../images/Use_Case_tPigFilterRow3.png" width="350"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add <span class="emphasis"><em>Name</em></span>,
+								<span class="emphasis"><em>Country</em></span> and <span class="emphasis"><em>Age</em></span> and click
+								<span class="bold"><strong>OK</strong></span> to save the setting.</p></li><li class="listitem"><p>Select <span class="bold"><strong>Local</strong></span> from the <span class="bold"><strong>Mode</strong></span> list.</p></li><li class="listitem"><p>Fill in the <span class="bold"><strong>Input filename</strong></span> field with
+							the full path to the input file.</p><p> In this scenario, the input file is <span class="emphasis"><em>CustomerList</em></span>
+							which contains rows of names, country names and age.</p></li><li class="listitem"><p>Select <span class="bold"><strong>PigStorage</strong></span> from the <span class="bold"><strong>Load function</strong></span> list.</p></li><li class="listitem"><p>Leave rest of the settings as they are.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tPigFilterRow</strong></span> to open
+							its <span class="bold"><strong>Basic settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="509"><tr><td><img src="../images/Use_Case_tPigFilterRow4.png" width="509"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>Sync columns</strong></span> to retrieve the
+							schema structure from the preceding component.</p></li><li class="listitem"><p>Select <span class="bold"><strong>Use advanced filter</strong></span> and fill
+							in the <span class="bold"><strong>Filter</strong></span> field with filter
+							expression:</p><p>
+							</p><pre class="programlisting">Country matches &#8216;PuertoRico&#8217;<span></span>
+</pre><p>This
+							filter expression selects rows of data that contains &#8220;PuertoRico&#8221; from
+								<span class="emphasis"><em>CustomerList</em></span>. </p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tPigStoreResult</strong></span> to open
+							its <span class="bold"><strong>Basic settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="511"><tr><td><img src="../images/Use_Case_tPigFilterRow5.png" width="511"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>Sync columns</strong></span> to retrieve the
+							schema structure from the preceding component.</p></li><li class="listitem"><p>Fill in the <span class="bold"><strong>Result file</strong></span> field with
+							the full path to the result file.</p><p> In this scenario, the result of filter is saved in
+								<span class="emphasis"><em>Lucky_Customer</em></span> file.</p></li><li class="listitem"><p>Select <span class="bold"><strong>PigStorage</strong></span> from the <span class="bold"><strong>Store function</strong></span> list.</p></li><li class="listitem"><p>Leave rest of the settings as they are.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to run
+							it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="296"><tr><td><img src="../images/Use_Case_tPigFilterRow6.png" width="296"></td></tr></table></div><p>The <span class="emphasis"><em>Lucky_Customer</em></span> file is generated containing the
+					selected rows of data.</p></div></div></body></html>

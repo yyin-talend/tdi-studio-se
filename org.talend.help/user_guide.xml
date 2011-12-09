@@ -9,7 +9,7 @@
   </topic>  
   
   <topic label="Integration Components">
-	<topic label="tAccessBulkExec" href="guide/components/en/tAccessBulkExec.html"/>
+    <topic label="tAccessBulkExec" href="guide/components/en/tAccessBulkExec.html"/>
     <topic label="tAccessCommit" href="guide/components/en/tAccessCommit.html"/>
     <topic label="tAccessConnection" href="guide/components/en/tAccessConnection.html"/>
     <topic label="tAccessInput" href="guide/components/en/tAccessInput.html"/>
@@ -39,6 +39,7 @@
     <topic label="tAmazonOracleRollback" href="guide/components/en/tAmazonOracleRollback.html"/>
     <topic label="tAmazonOracleRow" href="guide/components/en/tAmazonOracleRow.html"/>
     <topic label="tApacheLogInput" href="guide/components/en/tApacheLogInput.html"/>
+    <topic label="tAS400CDC" href="guide/components/en/tAS400CDC.html"/>
     <topic label="tAS400Close" href="guide/components/en/tAS400Close.html"/>
     <topic label="tAS400Commit" href="guide/components/en/tAS400Commit.html"/>
     <topic label="tAS400Connection" href="guide/components/en/tAS400Connection.html"/>
@@ -50,8 +51,10 @@
     <topic label="tAssert" href="guide/components/en/tAssert.html"/>
     <topic label="tAssertCatcher" href="guide/components/en/tAssertCatcher.html"/>
     <topic label="tBarChart" href="guide/components/en/tBarChart.html"/>
+    <topic label="tBlockedFuzzyJoin" href="guide/components/en/tBlockedFuzzyJoin.html"/>
     <topic label="tBonitaDeploy" href="guide/components/en/tBonitaDeploy.html"/>
     <topic label="tBonitaInstantiateProcess" href="guide/components/en/tBonitaInstantiateProcess.html"/>
+    <topic label="tBRMS" href="guide/components/en/tBRMS.html"/>
     <topic label="tBufferInput" href="guide/components/en/tBufferInput.html"/>
     <topic label="tBufferOutput" href="guide/components/en/tBufferOutput.html"/>
     <topic label="tCentricCRMInput" href="guide/components/en/tCentricCRMInput.html"/>
@@ -69,6 +72,7 @@
     <topic label="tCreateTable" href="guide/components/en/tCreateTable.html"/>
     <topic label="tCreateTemporaryFile" href="guide/components/en/tCreateTemporaryFile.html"/>
     <topic label="tDB2BulkExec" href="guide/components/en/tDB2BulkExec.html"/>
+    <topic label="tDB2CDC" href="guide/components/en/tDB2CDC.html"/>
     <topic label="tDB2Close" href="guide/components/en/tDB2Close.html"/>
     <topic label="tDB2Commit" href="guide/components/en/tDB2Commit.html"/>
     <topic label="tDB2Connection" href="guide/components/en/tDB2Connection.html"/>
@@ -85,6 +89,8 @@
     <topic label="tDenormalize" href="guide/components/en/tDenormalize.html"/>
     <topic label="tDenormalizeSortedRow" href="guide/components/en/tDenormalizeSortedRow.html"/>
     <topic label="tDie" href="guide/components/en/tDie.html"/>
+    <topic label="tDotNETInstantiate" href="guide/components/en/tDotNETInstantiate.html"/>
+    <topic label="tDotNETRow" href="guide/components/en/tDotNETRow.html"/>
     <topic label="tDTDValidator" href="guide/components/en/tDTDValidator.html"/>
     <topic label="tEDIFACTtoXML" href="guide/components/en/tEDIFACTtoXML.html"/>
     <topic label="tELTJDBCInput" href="guide/components/en/tELTJDBCInput.html"/>
@@ -124,6 +130,8 @@
     <topic label="tEXistXUpdate" href="guide/components/en/tEXistXUpdate.html"/>
     <topic label="tExternalSortRow" href="guide/components/en/tExternalSortRow.html"/>
     <topic label="tExtractDelimitedFields" href="guide/components/en/tExtractDelimitedFields.html"/>
+    <topic label="tExtractDynamicFields" href="guide/components/en/tExtractDynamicFields.html"/>
+    <topic label="tExtractEDIField" href="guide/components/en/tExtractEDIField.html"/>
     <topic label="tExtractPositionalFields" href="guide/components/en/tExtractPositionalFields.html"/>
     <topic label="tExtractRegexFields" href="guide/components/en/tExtractRegexFields.html"/>
     <topic label="tExtractXMLField" href="guide/components/en/tExtractXMLField.html"/>
@@ -167,6 +175,7 @@
     <topic label="tFileUnarchive" href="guide/components/en/tFileUnarchive.html"/>
     <topic label="tFilterColumns" href="guide/components/en/tFilterColumns.html"/>
     <topic label="tFilterRow" href="guide/components/en/tFilterRow.html"/>
+    <topic label="tFindRegexlibExpressions" href="guide/components/en/tFindRegexlibExpressions.html"/>
     <topic label="tFirebirdClose" href="guide/components/en/tFirebirdClose.html"/>
     <topic label="tFirebirdCommit" href="guide/components/en/tFirebirdCommit.html"/>
     <topic label="tFirebirdConnection" href="guide/components/en/tFirebirdConnection.html"/>
@@ -174,11 +183,22 @@
     <topic label="tFirebirdOutput" href="guide/components/en/tFirebirdOutput.html"/>
     <topic label="tFirebirdRollback" href="guide/components/en/tFirebirdRollback.html"/>
     <topic label="tFirebirdRow" href="guide/components/en/tFirebirdRow.html"/>
+    <topic label="tFirstnameMatch" href="guide/components/en/tFirstnameMatch.html"/>
     <topic label="tFixedFlowInput" href="guide/components/en/tFixedFlowInput.html"/>
     <topic label="tFlowMeter" href="guide/components/en/tFlowMeter.html"/>
     <topic label="tFlowMeterCatcher" href="guide/components/en/tFlowMeterCatcher.html"/>
     <topic label="tFlowToIterate" href="guide/components/en/tFlowToIterate.html"/>
     <topic label="tForeach" href="guide/components/en/tForeach.html"/>
+    <topic label="tFSAggregate" href="guide/components/en/tFSAggregate.html"/>
+    <topic label="tFSCheck" href="guide/components/en/tFSCheck.html"/>
+    <topic label="tFSCode" href="guide/components/en/tFSCode.html"/>
+    <topic label="tFSFilterColumns" href="guide/components/en/tFSFilterColumns.html"/>
+    <topic label="tFSFilterRows" href="guide/components/en/tFSFilterRows.html"/>
+    <topic label="tFSJoin" href="guide/components/en/tFSJoin.html"/>
+    <topic label="tFSPartitionFile" href="guide/components/en/tFSPartitionFile.html"/>
+    <topic label="tFSSort" href="guide/components/en/tFSSort.html"/>
+    <topic label="tFSTransform" href="guide/components/en/tFSTransform.html"/>
+    <topic label="tFSUnique" href="guide/components/en/tFSUnique.html"/>
     <topic label="tFTPConnection" href="guide/components/en/tFTPConnection.html"/>
     <topic label="tFTPDelete" href="guide/components/en/tFTPDelete.html"/>
     <topic label="tFTPFileExist" href="guide/components/en/tFTPFileExist.html"/>
@@ -188,7 +208,13 @@
     <topic label="tFTPPut" href="guide/components/en/tFTPPut.html"/>
     <topic label="tFTPRename" href="guide/components/en/tFTPRename.html"/>
     <topic label="tFTPTruncate" href="guide/components/en/tFTPTruncate.html"/>
+    <topic label="tFuzzyJoin" href="guide/components/en/tFuzzyJoin.html"/>
     <topic label="tFuzzyMatch" href="guide/components/en/tFuzzyMatch.html"/>
+    <topic label="tFuzzyUniqRow" href="guide/components/en/tFuzzyUniqRow.html"/>
+    <topic label="tGenKey" href="guide/components/en/tGenKey.html"/>
+    <topic label="tGoogleAddressRow" href="guide/components/en/tGoogleAddressRow.html"/>
+    <topic label="tGoogleGeocoder" href="guide/components/en/tGoogleGeocoder.html"/>
+    <topic label="tGoogleMapLookup" href="guide/components/en/tGoogleMapLookup.html"/>
     <topic label="tGPGDecrypt" href="guide/components/en/tGPGDecrypt.html"/>
     <topic label="tGreenplumBulkExec" href="guide/components/en/tGreenplumBulkExec.html"/>
     <topic label="tGreenplumClose" href="guide/components/en/tGreenplumClose.html"/>
@@ -206,8 +232,18 @@
     <topic label="tGroovyFile" href="guide/components/en/tGroovyFile.html"/>
     <topic label="tHashInput" href="guide/components/en/tHashInput.html"/>
     <topic label="tHashOutput" href="guide/components/en/tHashOutput.html"/>
+    <topic label="tHBaseClose" href="guide/components/en/tHBaseClose.html"/>
+    <topic label="tHBaseConnection" href="guide/components/en/tHBaseConnection.html"/>
+    <topic label="tHBaseInput" href="guide/components/en/tHBaseInput.html"/>
+    <topic label="tHBaseOutput" href="guide/components/en/tHBaseOutput.html"/>
+    <topic label="tHDFSConnection" href="guide/components/en/tHDFSConnection.html"/>
+    <topic label="tHDFSGet" href="guide/components/en/tHDFSGet.html"/>
+    <topic label="tHDFSInput" href="guide/components/en/tHDFSInput.html"/>
+    <topic label="tHDFSOutput" href="guide/components/en/tHDFSOutput.html"/>
+    <topic label="tHDFSPut" href="guide/components/en/tHDFSPut.html"/>
     <topic label="tHiveClose" href="guide/components/en/tHiveClose.html"/>
     <topic label="tHiveConnection" href="guide/components/en/tHiveConnection.html"/>
+    <topic label="tHiveInput" href="guide/components/en/tHiveInput.html"/>
     <topic label="tHiveRow" href="guide/components/en/tHiveRow.html"/>
     <topic label="tHL7Input" href="guide/components/en/tHL7Input.html"/>
     <topic label="tHL7Output" href="guide/components/en/tHL7Output.html"/>
@@ -228,6 +264,7 @@
     <topic label="tInformixRow" href="guide/components/en/tInformixRow.html"/>
     <topic label="tInformixSCD" href="guide/components/en/tInformixSCD.html"/>
     <topic label="tInformixSP" href="guide/components/en/tInformixSP.html"/>
+    <topic label="tIngresCDC" href="guide/components/en/tIngresCDC.html"/>
     <topic label="tIngresClose" href="guide/components/en/tIngresClose.html"/>
     <topic label="tIngresCommit" href="guide/components/en/tIngresCommit.html"/>
     <topic label="tIngresConnection" href="guide/components/en/tIngresConnection.html"/>
@@ -253,6 +290,8 @@
     <topic label="tJavaDBRow" href="guide/components/en/tJavaDBRow.html"/>
     <topic label="tJavaFlex" href="guide/components/en/tJavaFlex.html"/>
     <topic label="tJavaRow" href="guide/components/en/tJavaRow.html"/>
+    <topic label="tJBossESBInput" href="guide/components/en/tJBossESBInput.html"/>
+    <topic label="tJBossESBOutput" href="guide/components/en/tJBossESBOutput.html"/>
     <topic label="tJDBCClose" href="guide/components/en/tJDBCClose.html"/>
     <topic label="tJDBCColumnList" href="guide/components/en/tJDBCColumnList.html"/>
     <topic label="tJDBCCommit" href="guide/components/en/tJDBCCommit.html"/>
@@ -266,6 +305,8 @@
     <topic label="tJMSInput" href="guide/components/en/tJMSInput.html"/>
     <topic label="tJMSOutput" href="guide/components/en/tJMSOutput.html"/>
     <topic label="tJoin" href="guide/components/en/tJoin.html"/>
+    <topic label="tLastRegexlibExpressions" href="guide/components/en/tLastRegexlibExpressions.html"/>
+    <topic label="tLaunchDQReports" href="guide/components/en/tLaunchDQReports.html"/>
     <topic label="tLDAPAttributesInput" href="guide/components/en/tLDAPAttributesInput.html"/>
     <topic label="tLDAPConnection" href="guide/components/en/tLDAPConnection.html"/>
     <topic label="tLDAPInput" href="guide/components/en/tLDAPInput.html"/>
@@ -280,6 +321,8 @@
     <topic label="tMarketoInput" href="guide/components/en/tMarketoInput.html"/>
     <topic label="tMarketoListOperation" href="guide/components/en/tMarketoListOperation.html"/>
     <topic label="tMarketoOutput" href="guide/components/en/tMarketoOutput.html"/>
+    <topic label="tMatchGroup" href="guide/components/en/tMatchGroup.html"/>
+    <topic label="tMatchGroupHadoop" href="guide/components/en/tMatchGroupHadoop.html"/>
     <topic label="tMaxDBInput" href="guide/components/en/tMaxDBInput.html"/>
     <topic label="tMaxDBOutput" href="guide/components/en/tMaxDBOutput.html"/>
     <topic label="tMaxDBRow" href="guide/components/en/tMaxDBRow.html"/>
@@ -310,6 +353,7 @@
     <topic label="tMSAXOutput" href="guide/components/en/tMSAXOutput.html"/>
     <topic label="tMsgBox" href="guide/components/en/tMsgBox.html"/>
     <topic label="tMSSqlBulkExec" href="guide/components/en/tMSSqlBulkExec.html"/>
+    <topic label="tMSSqlCDC" href="guide/components/en/tMSSqlCDC.html"/>
     <topic label="tMSSqlClose" href="guide/components/en/tMSSqlClose.html"/>
     <topic label="tMSSqlColumnList" href="guide/components/en/tMSSqlColumnList.html"/>
     <topic label="tMSSqlCommit" href="guide/components/en/tMSSqlCommit.html"/>
@@ -324,12 +368,15 @@
     <topic label="tMSSqlSCD" href="guide/components/en/tMSSqlSCD.html"/>
     <topic label="tMSSqlSP" href="guide/components/en/tMSSqlSP.html"/>
     <topic label="tMSSqlTableList" href="guide/components/en/tMSSqlTableList.html"/>
+    <topic label="tMultiPatternCheck" href="guide/components/en/tMultiPatternCheck.html"/>
     <topic label="tMysqlBulkExec" href="guide/components/en/tMysqlBulkExec.html"/>
+    <topic label="tMysqlCDC" href="guide/components/en/tMysqlCDC.html"/>
     <topic label="tMysqlClose" href="guide/components/en/tMysqlClose.html"/>
     <topic label="tMysqlColumnList" href="guide/components/en/tMysqlColumnList.html"/>
     <topic label="tMysqlCommit" href="guide/components/en/tMysqlCommit.html"/>
     <topic label="tMysqlConnection" href="guide/components/en/tMysqlConnection.html"/>
     <topic label="tMysqlInput" href="guide/components/en/tMysqlInput.html"/>
+    <topic label="tMysqlInvalidRows" href="guide/components/en/tMysqlInvalidRows.html"/>
     <topic label="tMysqlLastInsertId" href="guide/components/en/tMysqlLastInsertId.html"/>
     <topic label="tMysqlOutput" href="guide/components/en/tMysqlOutput.html"/>
     <topic label="tMysqlOutputBulk" href="guide/components/en/tMysqlOutputBulk.html"/>
@@ -340,6 +387,7 @@
     <topic label="tMysqlSCDELT" href="guide/components/en/tMysqlSCDELT.html"/>
     <topic label="tMysqlSP" href="guide/components/en/tMysqlSP.html"/>
     <topic label="tMysqlTableList" href="guide/components/en/tMysqlTableList.html"/>
+    <topic label="tMysqlValidRows" href="guide/components/en/tMysqlValidRows.html"/>
     <topic label="tNamedPipeClose" href="guide/components/en/tNamedPipeClose.html"/>
     <topic label="tNamedPipeOpen" href="guide/components/en/tNamedPipeOpen.html"/>
     <topic label="tNamedPipeOutput" href="guide/components/en/tNamedPipeOutput.html"/>
@@ -356,10 +404,12 @@
     <topic label="tOpenbravoERPInput" href="guide/components/en/tOpenbravoERPInput.html"/>
     <topic label="tOpenbravoERPOutput" href="guide/components/en/tOpenbravoERPOutput.html"/>
     <topic label="tOracleBulkExec" href="guide/components/en/tOracleBulkExec.html"/>
+    <topic label="tOracleCDC" href="guide/components/en/tOracleCDC.html"/>
     <topic label="tOracleClose" href="guide/components/en/tOracleClose.html"/>
     <topic label="tOracleCommit" href="guide/components/en/tOracleCommit.html"/>
     <topic label="tOracleConnection" href="guide/components/en/tOracleConnection.html"/>
     <topic label="tOracleInput" href="guide/components/en/tOracleInput.html"/>
+    <topic label="tOracleInvalidRows" href="guide/components/en/tOracleInvalidRows.html"/>
     <topic label="tOracleOutput" href="guide/components/en/tOracleOutput.html"/>
     <topic label="tOracleOutputBulk" href="guide/components/en/tOracleOutputBulk.html"/>
     <topic label="tOracleOutputBulkExec" href="guide/components/en/tOracleOutputBulkExec.html"/>
@@ -369,6 +419,7 @@
     <topic label="tOracleSCDELT" href="guide/components/en/tOracleSCDELT.html"/>
     <topic label="tOracleSP" href="guide/components/en/tOracleSP.html"/>
     <topic label="tOracleTableList" href="guide/components/en/tOracleTableList.html"/>
+    <topic label="tOracleValidRows" href="guide/components/en/tOracleValidRows.html"/>
     <topic label="tPaloCheckElements" href="guide/components/en/tPaloCheckElements.html"/>
     <topic label="tPaloConnection" href="guide/components/en/tPaloConnection.html"/>
     <topic label="tPaloCube" href="guide/components/en/tPaloCube.html"/>
@@ -393,7 +444,22 @@
     <topic label="tParAccelRollback" href="guide/components/en/tParAccelRollback.html"/>
     <topic label="tParAccelRow" href="guide/components/en/tParAccelRow.html"/>
     <topic label="tParAccelSCD" href="guide/components/en/tParAccelSCD.html"/>
+    <topic label="tParallelize" href="guide/components/en/tParallelize.html"/>
     <topic label="tParseRecordSet" href="guide/components/en/tParseRecordSet.html"/>
+    <topic label="tPatternCheck" href="guide/components/en/tPatternCheck.html"/>
+    <topic label="tPatternExtract" href="guide/components/en/tPatternExtract.html"/>
+    <topic label="tPetalsInput" href="guide/components/en/tPetalsInput.html"/>
+    <topic label="tPetalsOutput" href="guide/components/en/tPetalsOutput.html"/>
+    <topic label="tPigAggregate" href="guide/components/en/tPigAggregate.html"/>
+    <topic label="tPigCode" href="guide/components/en/tPigCode.html"/>
+    <topic label="tPigCross" href="guide/components/en/tPigCross.html"/>
+    <topic label="tPigDistinct" href="guide/components/en/tPigDistinct.html"/>
+    <topic label="tPigFilterColumns" href="guide/components/en/tPigFilterColumns.html"/>
+    <topic label="tPigFilterRow" href="guide/components/en/tPigFilterRow.html"/>
+    <topic label="tPigJoin" href="guide/components/en/tPigJoin.html"/>
+    <topic label="tPigLoad" href="guide/components/en/tPigLoad.html"/>
+    <topic label="tPigSort" href="guide/components/en/tPigSort.html"/>
+    <topic label="tPigStoreResult" href="guide/components/en/tPigStoreResult.html"/>
     <topic label="tPivotToColumnsDelimited" href="guide/components/en/tPivotToColumnsDelimited.html"/>
     <topic label="tPOP" href="guide/components/en/tPOP.html"/>
     <topic label="tPostgresPlusBulkExec" href="guide/components/en/tPostgresPlusBulkExec.html"/>
@@ -409,10 +475,12 @@
     <topic label="tPostgresPlusSCD" href="guide/components/en/tPostgresPlusSCD.html"/>
     <topic label="tPostgresPlusSCDELT" href="guide/components/en/tPostgresPlusSCDELT.html"/>
     <topic label="tPostgresqlBulkExec" href="guide/components/en/tPostgresqlBulkExec.html"/>
+    <topic label="tPostgresqlCDC" href="guide/components/en/tPostgresqlCDC.html"/>
     <topic label="tPostgresqlClose" href="guide/components/en/tPostgresqlClose.html"/>
     <topic label="tPostgresqlCommit" href="guide/components/en/tPostgresqlCommit.html"/>
     <topic label="tPostgresqlConnection" href="guide/components/en/tPostgresqlConnection.html"/>
     <topic label="tPostgresqlInput" href="guide/components/en/tPostgresqlInput.html"/>
+    <topic label="tPostgresqlInvalidRows" href="guide/components/en/tPostgresqlInvalidRows.html"/>
     <topic label="tPostgresqlOutput" href="guide/components/en/tPostgresqlOutput.html"/>
     <topic label="tPostgresqlOutputBulk" href="guide/components/en/tPostgresqlOutputBulk.html"/>
     <topic label="tPostgresqlOutputBulkExec" href="guide/components/en/tPostgresqlOutputBulkExec.html"/>
@@ -420,8 +488,15 @@
     <topic label="tPostgresqlRow" href="guide/components/en/tPostgresqlRow.html"/>
     <topic label="tPostgresqlSCD" href="guide/components/en/tPostgresqlSCD.html"/>
     <topic label="tPostgresqlSCDELT" href="guide/components/en/tPostgresqlSCDELT.html"/>
+    <topic label="tPostgresqlValidRows" href="guide/components/en/tPostgresqlValidRows.html"/>
     <topic label="tPostjob" href="guide/components/en/tPostjob.html"/>
     <topic label="tPrejob" href="guide/components/en/tPrejob.html"/>
+    <topic label="tQASAddressIncomplete" href="guide/components/en/tQASAddressIncomplete.html"/>
+    <topic label="tQASAddressRow" href="guide/components/en/tQASAddressRow.html"/>
+    <topic label="tQASAddressUnknown" href="guide/components/en/tQASAddressUnknown.html"/>
+    <topic label="tQASAddressVerified" href="guide/components/en/tQASAddressVerified.html"/>
+    <topic label="tQASBatchAddressRow" href="guide/components/en/tQASBatchAddressRow.html"/>
+    <topic label="tRecordMatching" href="guide/components/en/tRecordMatching.html"/>
     <topic label="tReplace" href="guide/components/en/tReplace.html"/>
     <topic label="tReplaceList" href="guide/components/en/tReplaceList.html"/>
     <topic label="tReplicate" href="guide/components/en/tReplicate.html"/>
@@ -431,6 +506,8 @@
     <topic label="tRowGenerator" href="guide/components/en/tRowGenerator.html"/>
     <topic label="tRSSInput" href="guide/components/en/tRSSInput.html"/>
     <topic label="tRSSOutput" href="guide/components/en/tRSSOutput.html"/>
+    <topic label="tRules" href="guide/components/en/tRules.html"/>
+    <topic label="tRuleSurvivorship" href="guide/components/en/tRuleSurvivorship.html"/>
     <topic label="tRunJob" href="guide/components/en/tRunJob.html"/>
     <topic label="tSageX3Input" href="guide/components/en/tSageX3Input.html"/>
     <topic label="tSageX3Output" href="guide/components/en/tSageX3Output.html"/>
@@ -446,6 +523,8 @@
     <topic label="tSampleRow" href="guide/components/en/tSampleRow.html"/>
     <topic label="tSAPCommit" href="guide/components/en/tSAPCommit.html"/>
     <topic label="tSAPConnection" href="guide/components/en/tSAPConnection.html"/>
+    <topic label="tSAPIDocInput" href="guide/components/en/tSAPIDocInput.html"/>
+    <topic label="tSAPIDocOutput" href="guide/components/en/tSAPIDocOutput.html"/>
     <topic label="tSAPInput" href="guide/components/en/tSAPInput.html"/>
     <topic label="tSAPOutput" href="guide/components/en/tSAPOutput.html"/>
     <topic label="tSAPRollback" href="guide/components/en/tSAPRollback.html"/>
@@ -488,11 +567,21 @@
     <topic label="tSQLTemplateFilterRows" href="guide/components/en/tSQLTemplateFilterRows.html"/>
     <topic label="tSQLTemplateMerge" href="guide/components/en/tSQLTemplateMerge.html"/>
     <topic label="tSQLTemplateRollback" href="guide/components/en/tSQLTemplateRollback.html"/>
+    <topic label="tSqoopExport" href="guide/components/en/tSqoopExport.html"/>
+    <topic label="tSqoopImport" href="guide/components/en/tSqoopImport.html"/>
+    <topic label="tSqoopImportAllTables" href="guide/components/en/tSqoopImportAllTables.html"/>
     <topic label="tSSH" href="guide/components/en/tSSH.html"/>
+    <topic label="tStandardizePhoneNumber" href="guide/components/en/tStandardizePhoneNumber.html"/>
+    <topic label="tStandardizeRow" href="guide/components/en/tStandardizeRow.html"/>
     <topic label="tStatCatcher" href="guide/components/en/tStatCatcher.html"/>
+    <topic label="tStem" href="guide/components/en/tStem.html"/>
+    <topic label="tStewardshipTaskInput" href="guide/components/en/tStewardshipTaskInput.html"/>
+    <topic label="tStewardshipTaskOutput" href="guide/components/en/tStewardshipTaskOutput.html"/>
     <topic label="tSugarCRMInput" href="guide/components/en/tSugarCRMInput.html"/>
     <topic label="tSugarCRMOutput" href="guide/components/en/tSugarCRMOutput.html"/>
+    <topic label="tSurviveFields" href="guide/components/en/tSurviveFields.html"/>
     <topic label="tSybaseBulkExec" href="guide/components/en/tSybaseBulkExec.html"/>
+    <topic label="tSybaseCDC" href="guide/components/en/tSybaseCDC.html"/>
     <topic label="tSybaseClose" href="guide/components/en/tSybaseClose.html"/>
     <topic label="tSybaseCommit" href="guide/components/en/tSybaseCommit.html"/>
     <topic label="tSybaseConnection" href="guide/components/en/tSybaseConnection.html"/>
@@ -507,6 +596,8 @@
     <topic label="tSybaseSCD" href="guide/components/en/tSybaseSCD.html"/>
     <topic label="tSybaseSCDELT" href="guide/components/en/tSybaseSCDELT.html"/>
     <topic label="tSybaseSP" href="guide/components/en/tSybaseSP.html"/>
+    <topic label="tSynonymOutput" href="guide/components/en/tSynonymOutput.html"/>
+    <topic label="tSynonymSearch" href="guide/components/en/tSynonymSearch.html"/>
     <topic label="tSystem" href="guide/components/en/tSystem.html"/>
     <topic label="tTeradataClose" href="guide/components/en/tTeradataClose.html"/>
     <topic label="tTeradataCommit" href="guide/components/en/tTeradataCommit.html"/>
@@ -520,6 +611,7 @@
     <topic label="tTeradataRollback" href="guide/components/en/tTeradataRollback.html"/>
     <topic label="tTeradataRow" href="guide/components/en/tTeradataRow.html"/>
     <topic label="tTeradataTPump" href="guide/components/en/tTeradataTPump.html"/>
+    <topic label="tThresholdViolationAlert" href="guide/components/en/tThresholdViolationAlert.html"/>
     <topic label="tUniqRow" href="guide/components/en/tUniqRow.html"/>
     <topic label="tUnite" href="guide/components/en/tUnite.html"/>
     <topic label="tVectorWiseCommit" href="guide/components/en/tVectorWiseCommit.html"/>
@@ -544,7 +636,9 @@
     <topic label="tWaitForSocket" href="guide/components/en/tWaitForSocket.html"/>
     <topic label="tWaitForSqlData" href="guide/components/en/tWaitForSqlData.html"/>
     <topic label="tWarn" href="guide/components/en/tWarn.html"/>
+    <topic label="tWebService" href="guide/components/en/tWebService.html"/>
     <topic label="tWebServiceInput" href="guide/components/en/tWebServiceInput.html"/>
+    <topic label="tWriteDynamicFields" href="guide/components/en/tWriteDynamicFields.html"/>
     <topic label="tWriteJsonField" href="guide/components/en/tWriteJsonField.html"/>
     <topic label="tWriteXMLField" href="guide/components/en/tWriteXMLField.html"/>
     <topic label="tXMLMap" href="guide/components/en/tXMLMap.html"/>
