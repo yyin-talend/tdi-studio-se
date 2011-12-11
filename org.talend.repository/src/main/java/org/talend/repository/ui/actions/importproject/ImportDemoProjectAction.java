@@ -123,7 +123,7 @@ public final class ImportDemoProjectAction extends Action {
                         if (demoProjectFileType.getName().equalsIgnoreCase("folder")) { //$NON-NLS-1$
                             ImportProjectsUtilities.importProjectAs(shell, techName, techName, filePath, monitorWrap);
                         } else {// type.equalsIgnoreCase("archive")
-                            ImportProjectsUtilities.importArchiveProject(shell, techName, filePath, monitorWrap);
+                            ImportProjectsUtilities.importArchiveProjectAs(shell, techName, techName, filePath, monitorWrap);
 
                         }
                         lastImportedName = techName;

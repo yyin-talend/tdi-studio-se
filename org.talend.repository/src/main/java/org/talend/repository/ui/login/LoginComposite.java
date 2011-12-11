@@ -834,7 +834,8 @@ public class LoginComposite extends Composite {
                                 if (demoProjectFileType.getName().equalsIgnoreCase("folder")) { //$NON-NLS-1$
                                     ImportProjectsUtilities.importProjectAs(getShell(), newName, newName, filePath, monitorWrap);
                                 } else {// type.equalsIgnoreCase("archive")
-                                    ImportProjectsUtilities.importArchiveProject(getShell(), newName, filePath, monitorWrap);
+                                    ImportProjectsUtilities.importArchiveProjectAs(getShell(), newName, newName, filePath,
+                                            monitorWrap);
                                 }
 
                             } catch (IOException e) {
