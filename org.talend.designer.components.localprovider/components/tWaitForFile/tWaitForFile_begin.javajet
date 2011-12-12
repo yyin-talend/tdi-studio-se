@@ -21,6 +21,7 @@
     String triggerAction = ElementParameterParser.getValue(node, "__ACTION_ON__");
     boolean waitRelease = ("true").equals(ElementParameterParser.getValue(node, "__WAIT_RELEASE__"));
     boolean nonUpdate = "true".equals(ElementParameterParser.getValue(node, "__NON_UPDATE__"));
+    Integer interval = Integer.parseInt(ElementParameterParser.getValue(node, "__INTERVAL_CHECK__"));
 %>
        
         class Util_<%=cid %> {
@@ -199,10 +200,12 @@
    					//fix bug 22123,if we can rename the filename,that means no other program is using the file.
            			if(waitRelease){
            			%>
+					long timestamp_<%=cid%> = file_<%=cid %>.lastModified();
+
+					Thread.sleep(<%=interval%>);
+
            				java.io.File tempfile=new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile");
-                    	if(file_<%=cid %>.renameTo(tempfile)){
-                    		tempfile.renameTo(file_<%=cid %>);
-                    	}else{
+                    	if(file_<%=cid %>.lastModified() != timestamp_<%=cid%>){
                     		continue;
                     	}
             		<%
