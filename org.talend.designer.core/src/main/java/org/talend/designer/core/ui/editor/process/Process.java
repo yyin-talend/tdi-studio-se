@@ -468,6 +468,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param.setValue(DesignerPlugin.getDefault().getPluginPreferences().getString(TalendDesignerPrefConstants.SCHEMA_OPTIONS));
         param.setReadOnly(true);
         addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName("OEM_CUSTOM_ATTRIBUTE");
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setFieldType(EParameterFieldType.TEXT);
+        param.setShow(false);
+        param.setValue("");
+        param.setReadOnly(false);
+        addElementParameter(param);
     }
 
     /**
