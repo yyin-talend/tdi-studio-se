@@ -836,7 +836,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         display = getSite().getShell().getDisplay();
         repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
 
-        if (getActivePage() == 0) {
+        if (getActivePage() == 0 || getActivePage() == 1) {
             getEditor(0).doSave(monitor);
         } else if (getActivePage() == 2) {
             getEditor(2).doSave(monitor);
