@@ -387,53 +387,32 @@ public class LoginComposite extends Composite {
                 boolean local = RepositoryConstants.REPOSITORY_LOCAL_ID.equals(getConnection().getRepositoryId());
                 if (local) {
                     GridData layoutData = (GridData) passwordComposite.getLayoutData();
-                    layoutData.heightHint = -20;
-                    passwordComposite.setLayoutData(layoutData);
                     passwordComposite.setVisible(false);
-                    passwordComposite.layout();
-                    formBody.layout();
-                    formBody.pack();
+                    layoutData.exclude = true;
 
                     GridData layoutData2 = (GridData) tisBlankCompoiste.getLayoutData();
-                    layoutData2.heightHint = 20;
-                    tisBlankCompoiste.setLayoutData(layoutData2);
                     tisBlankCompoiste.setVisible(true);
-                    tisBlankCompoiste.layout();
+                    layoutData2.exclude = false;
                     formBody.layout();
-                    formBody.pack();
                 } else {
                     GridData layoutData = (GridData) passwordComposite.getLayoutData();
-                    layoutData.heightHint = 24;
-                    passwordComposite.setLayoutData(layoutData);
                     passwordComposite.setVisible(true);
-                    passwordComposite.layout();
-                    formBody.layout();
-                    formBody.pack();
+                    layoutData.exclude = false;
 
                     GridData layoutData2 = (GridData) tisBlankCompoiste.getLayoutData();
-                    layoutData2.heightHint = -20;
-                    tisBlankCompoiste.setLayoutData(layoutData2);
                     tisBlankCompoiste.setVisible(false);
-                    tisBlankCompoiste.layout();
+                    layoutData2.exclude = true;
                     formBody.layout();
-                    formBody.pack();
                 }
             } else {
                 GridData layoutData = (GridData) passwordComposite.getLayoutData();
-                layoutData.heightHint = 20;
-                passwordComposite.setLayoutData(layoutData);
                 passwordComposite.setVisible(true);
-                passwordComposite.layout();
-                formBody.layout();
-                formBody.pack();
+                layoutData.exclude = false;
 
                 GridData layoutData2 = (GridData) tisBlankCompoiste.getLayoutData();
-                layoutData2.heightHint = -20;
-                tisBlankCompoiste.setLayoutData(layoutData2);
                 tisBlankCompoiste.setVisible(false);
-                tisBlankCompoiste.layout();
+                layoutData2.exclude = true;
                 formBody.layout();
-                formBody.pack();
             }
             getShell().pack();
         }
@@ -1154,7 +1133,7 @@ public class LoginComposite extends Composite {
         formData.top = new FormAttachment(passwordComposite, 3, SWT.TOP);
         formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE - 5);//
         formData.right = new FormAttachment(0, LEFTSPACE - 5);// - 5
-        formData.bottom = new FormAttachment(100, -1);
+        // formData.bottom = new FormAttachment(100, -1);
         passwordLabel.setLayoutData(formData);
 
         passwordText = toolkit.createText(passwordComposite, null, SWT.PASSWORD | SWT.BORDER);
@@ -1164,7 +1143,7 @@ public class LoginComposite extends Composite {
         formData.top = new FormAttachment(passwordComposite, 1, SWT.TOP);
         formData.left = new FormAttachment(passwordLabel, HORIZONTAL_SPACE);
         formData.right = new FormAttachment(100, -45);
-        formData.bottom = new FormAttachment(100, -1);
+        // formData.bottom = new FormAttachment(100, -1);
         passwordText.setLayoutData(formData);
 
     }
@@ -1198,9 +1177,9 @@ public class LoginComposite extends Composite {
         tisBlankCompoiste = toolkit.createComposite(parent);
         // tisBlankCompoiste.setBackground(RED_COLOR);
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.heightHint = -20;
+        gd.heightHint = 20;
         tisBlankCompoiste.setLayoutData(gd);
-        tisBlankCompoiste.setVisible(false);
+        tisBlankCompoiste.setVisible(true);
         tisBlankCompoiste.setBackgroundMode(SWT.INHERIT_DEFAULT);
         tisBlankCompoiste.setBackground(parent.getBackground());
     }
