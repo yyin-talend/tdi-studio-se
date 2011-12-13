@@ -71,7 +71,7 @@
     
     if (node.getIncomingConnections().size() == 0 && outName != null) {
     %>
-    <%=outName%>Struct <%=outName%> = new <%=outName%>Struct();
+    <%=outName%> = new <%=outName%>Struct();
     <%
     }    
     
@@ -137,7 +137,7 @@ String cCall = "org.talend.net.Object.createInstance("+dllLoad+","+clazz+")";
      for (int i = 0; i < values.size(); i++) {
          Map<String,String> line = values.get(i);
      %>
-     <%=line.get("VALUE") %>
+     <%=line.get("PARAMETER") %>
      <%
         if (i < values.size() - 1) {
         %>
