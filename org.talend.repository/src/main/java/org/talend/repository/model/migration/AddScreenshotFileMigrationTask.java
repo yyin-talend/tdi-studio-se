@@ -15,7 +15,6 @@ package org.talend.repository.model.migration;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -23,13 +22,9 @@ import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.model.ResourceModelUtils;
-import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
-import org.talend.repository.ProjectManager;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -106,7 +101,7 @@ public class AddScreenshotFileMigrationTask extends AbstractJobMigrationTask {
             ExceptionHandler.process(e);
             return ExecutionResult.FAILURE;
         }
-        return ExecutionResult.NOTHING_TO_DO;
+        return ExecutionResult.SUCCESS_NO_ALERT;
     }
 
 }
