@@ -34,8 +34,8 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.imports.ImportItemWizard;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
@@ -93,6 +93,10 @@ public final class ImportItemAction extends AContextualAction implements IWorkbe
 
     @Override
     protected void doRun() {
+        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            return;
+        }
+
         // qli modified to fix the bug "6999".
         final TreeViewer repositoryTreeView = CorePlugin.getDefault().getRepositoryService().getRepositoryTreeView();
         if (repositoryTreeView != null) {

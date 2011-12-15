@@ -415,6 +415,7 @@
       </wizard>
    </extension-->
    <extension
+         id="ReadOnlyUser"
          point="org.eclipse.ui.actionSets">
       <actionSet
             id="org.talend.repository.actionSet"
@@ -444,6 +445,12 @@
                style="push"
                toolbarPath="Default"
                tooltip="%updateAllJobs.tooltip">
+            <enablement>
+               <systemProperty
+                     name="ReadOnlyUser"
+                     value="false">
+               </systemProperty>
+            </enablement>
          </action>
          <action
                class="org.talend.repository.ui.actions.toolbar.ProjectSettingsAction"
@@ -474,7 +481,14 @@
                label="%ImportItemAction.title"
                style="push"
                toolbarPath="Default"
-               tooltip="%ImportItemAction.tooltip"/>
+               tooltip="%ImportItemAction.tooltip">
+            <enablement>
+               <systemProperty
+                     name="ReadOnlyUser"
+                     value="false">
+               </systemProperty>
+            </enablement>
+         </action>
          <action
                class="org.talend.repository.ui.actions.importexport.ExportItemAction"
                icon="platform:/plugin/org.talend.common.ui.runtime/icons/export.gif"
