@@ -57,6 +57,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageUtils;
@@ -1570,7 +1571,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         setActivate(false);
 
         ProcessType processType = getProcessType();
-        // EmfHelper.visitChilds(processType);
+        EmfHelper.visitChilds(processType);
 
         if (processType.getParameters() != null) {
             routinesDependencies = new ArrayList<RoutinesParameterType>(processType.getParameters().getRoutinesParameter());
