@@ -166,11 +166,11 @@
     <topic href="guide/components/en/tBarChart.html" label="tBarChart Component Documentation"/>
   </context>
   <context id="tBonitaDeploy">
-    <description>Deploys a specific Bonita Process (with the BAR file) to Bonita Runtime</description>
+    <description>Deploys a specific Bonita Process (with the BAR file) to Bonita Runtime</description>
     <topic href="guide/components/en/tBonitaDeploy.html" label="tBonitaDeploy Component Documentation"/>
   </context>
   <context id="tBonitaInstantiateProcess">
-    <description>Instantiate an existing process in Bonita Runtime and start its.</description>
+    <description>Instantiate an existing process in Bonita Runtime and start its.</description>
     <topic href="guide/components/en/tBonitaInstantiateProcess.html" label="tBonitaInstantiateProcess Component Documentation"/>
   </context>
   <context id="tBufferInput">
