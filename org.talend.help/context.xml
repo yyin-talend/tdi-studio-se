@@ -2252,7 +2252,7 @@
   <context id="tRules">
     <description>Read a multi level XML file</description>
     <topic href="guide/components/en/tRules.html" label="tRules Component Documentation"/>
-  </context
+  </context>
   <context id="tFSAggregate">
     <description>Aggregate records in a file based on the group keys</description>
     <topic href="guide/components/en/tFSAggregate.html" label="tFSAggregate Component Documentation"/>
